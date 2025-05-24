@@ -1,0 +1,5 @@
+query Column($rowId: UUID!) {
+  column(rowId: $rowId) {
+    ...ColumnFragment
+  }
+}

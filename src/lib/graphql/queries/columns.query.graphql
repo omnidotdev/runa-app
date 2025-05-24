@@ -1,0 +1,12 @@
+query Columns($first: Int, $filter: ColumnFilter, $orderBy: [ColumnOrderBy!]) {
+  columns(first: $first, filter: $filter, orderBy: $orderBy) {
+    nodes {
+      ...ColumnFragment
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}

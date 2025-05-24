@@ -1,0 +1,15 @@
+mutation UpdateWorkspace($input: UpdateWorkspaceInput!) {
+  updateWorkspace(input: $input) {
+    clientMutationId
+    workspace {
+      ...WorkspaceFragment
+    }
+    query {
+      workspaces(first: 10) {
+        nodes {
+          ...WorkspaceFragment
+        }
+      }
+    }
+  }
+}

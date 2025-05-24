@@ -1,0 +1,12 @@
+query Assignees($first: Int, $filter: AssigneeFilter, $orderBy: [AssigneeOrderBy!]) {
+  assignees(first: $first, filter: $filter, orderBy: $orderBy) {
+    nodes {
+      ...AssigneeFragment
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}

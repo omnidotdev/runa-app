@@ -1,0 +1,5 @@
+query User($rowId: UUID!) {
+  user(rowId: $rowId) {
+    ...UserFragment
+  }
+}

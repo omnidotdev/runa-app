@@ -1,0 +1,15 @@
+mutation UpdateColumn($input: UpdateColumnInput!) {
+  updateColumn(input: $input) {
+    clientMutationId
+    column {
+      ...ColumnFragment
+    }
+    query {
+      columns(first: 10) {
+        nodes {
+          ...ColumnFragment
+        }
+      }
+    }
+  }
+}

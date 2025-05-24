@@ -1,0 +1,13 @@
+mutation DeleteUser($input: DeleteUserInput!) {
+  deleteUser(input: $input) {
+    clientMutationId
+    deletedUserId
+    query {
+      users(first: 10) {
+        nodes {
+          ...UserFragment
+        }
+      }
+    }
+  }
+}

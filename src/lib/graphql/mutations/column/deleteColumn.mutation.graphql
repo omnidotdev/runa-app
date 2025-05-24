@@ -1,0 +1,13 @@
+mutation DeleteColumn($input: DeleteColumnInput!) {
+  deleteColumn(input: $input) {
+    clientMutationId
+    deletedColumnId
+    query {
+      columns(first: 10) {
+        nodes {
+          ...ColumnFragment
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+mutation DeleteWorkspaceUser($input: DeleteWorkspaceUserInput!) {
+  deleteWorkspaceUser(input: $input) {
+    clientMutationId
+    deletedWorkspaceUserId
+    query {
+      workspaceUsers(first: 10) {
+        nodes {
+          id
+          workspaceId
+          userId
+          createdAt
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+fragment ProjectFragment on Project {
+  id
+  rowId
+  name
+  description
+  prefix
+  color
+  labels
+  workspaceId
+  columns
+  viewMode
+  createdAt
+  updatedAt
+  workspace {
+    ...WorkspaceFragment
+  }
+}

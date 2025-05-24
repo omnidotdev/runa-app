@@ -1,0 +1,12 @@
+query Workspaces($first: Int, $filter: WorkspaceFilter, $orderBy: [WorkspaceOrderBy!]) {
+  workspaces(first: $first, filter: $filter, orderBy: $orderBy) {
+    nodes {
+      ...WorkspaceFragment
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}

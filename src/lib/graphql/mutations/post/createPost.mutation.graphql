@@ -1,0 +1,15 @@
+mutation CreatePost($input: CreatePostInput!) {
+  createPost(input: $input) {
+    clientMutationId
+    post {
+      ...PostFragment
+    }
+    query {
+      posts(first: 10) {
+        nodes {
+          ...PostFragment
+        }
+      }
+    }
+  }
+}

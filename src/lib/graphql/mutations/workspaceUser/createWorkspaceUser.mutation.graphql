@@ -1,0 +1,30 @@
+mutation CreateWorkspaceUser($input: CreateWorkspaceUserInput!) {
+  createWorkspaceUser(input: $input) {
+    clientMutationId
+    workspaceUser {
+      id
+      workspaceId
+      userId
+      createdAt
+      workspace {
+        id
+        rowId
+        name
+      }
+      user {
+        id
+        rowId
+      }
+    }
+    query {
+      workspaceUsers(first: 10) {
+        nodes {
+          id
+          workspaceId
+          userId
+          createdAt
+        }
+      }
+    }
+  }
+}

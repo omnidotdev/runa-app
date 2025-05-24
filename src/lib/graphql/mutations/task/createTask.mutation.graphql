@@ -1,0 +1,15 @@
+mutation CreateTask($input: CreateTaskInput!) {
+  createTask(input: $input) {
+    clientMutationId
+    task {
+      ...TaskFragment
+    }
+    query {
+      tasks(first: 10) {
+        nodes {
+          ...TaskFragment
+        }
+      }
+    }
+  }
+}

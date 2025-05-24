@@ -1,0 +1,15 @@
+mutation UpdateAssignee($input: UpdateAssigneeInput!) {
+  updateAssignee(input: $input) {
+    clientMutationId
+    assignee {
+      ...AssigneeFragment
+    }
+    query {
+      assignees(first: 10) {
+        nodes {
+          ...AssigneeFragment
+        }
+      }
+    }
+  }
+}

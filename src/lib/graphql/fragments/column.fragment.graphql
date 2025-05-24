@@ -1,0 +1,14 @@
+fragment ColumnFragment on Column {
+  id
+  rowId
+  title
+  projectId
+  tasks
+  createdAt
+  updatedAt
+  project {
+    id
+    rowId
+    name
+  }
+}

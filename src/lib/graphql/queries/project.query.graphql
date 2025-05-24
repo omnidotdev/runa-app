@@ -1,0 +1,5 @@
+query Project($rowId: UUID!) {
+  project(rowId: $rowId) {
+    ...ProjectFragment
+  }
+}

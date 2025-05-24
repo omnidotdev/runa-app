@@ -1,0 +1,13 @@
+mutation DeleteTask($input: DeleteTaskInput!) {
+  deleteTask(input: $input) {
+    clientMutationId
+    deletedTaskId
+    query {
+      tasks(first: 10) {
+        nodes {
+          ...TaskFragment
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+query Post($rowId: UUID!) {
+  post(rowId: $rowId) {
+    ...PostFragment
+  }
+}

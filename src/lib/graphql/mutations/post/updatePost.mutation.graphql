@@ -1,0 +1,15 @@
+mutation UpdatePost($input: UpdatePostInput!) {
+  updatePost(input: $input) {
+    clientMutationId
+    post {
+      ...PostFragment
+    }
+    query {
+      posts(first: 10) {
+        nodes {
+          ...PostFragment
+        }
+      }
+    }
+  }
+}

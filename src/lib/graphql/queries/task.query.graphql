@@ -1,0 +1,5 @@
+query Task($rowId: UUID!) {
+  task(rowId: $rowId) {
+    ...TaskFragment
+  }
+}

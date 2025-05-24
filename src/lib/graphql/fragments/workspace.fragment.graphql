@@ -1,0 +1,7 @@
+fragment WorkspaceFragment on Workspace {
+  id
+  rowId
+  name
+  createdAt
+  updatedAt
+}

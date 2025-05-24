@@ -1,0 +1,18 @@
+fragment TaskFragment on Task {
+  id
+  rowId
+  content
+  description
+  priority
+  columnId
+  assignees
+  labels
+  dueDate
+  createdAt
+  updatedAt
+  column {
+    id
+    rowId
+    title
+  }
+}

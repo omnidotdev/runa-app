@@ -1,0 +1,12 @@
+query Tasks($first: Int, $filter: TaskFilter, $orderBy: [TaskOrderBy!]) {
+  tasks(first: $first, filter: $filter, orderBy: $orderBy) {
+    nodes {
+      ...TaskFragment
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}

@@ -1,0 +1,12 @@
+query Users($first: Int, $filter: UserFilter, $orderBy: [UserOrderBy!]) {
+  users(first: $first, filter: $filter, orderBy: $orderBy) {
+    nodes {
+      ...UserFragment
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}

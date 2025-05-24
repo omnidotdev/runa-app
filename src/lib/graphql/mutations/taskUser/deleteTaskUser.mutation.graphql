@@ -1,0 +1,16 @@
+mutation DeleteTaskUser($input: DeleteTaskUserInput!) {
+  deleteTaskUser(input: $input) {
+    clientMutationId
+    deletedTaskUserId
+    query {
+      taskUsers(first: 10) {
+        nodes {
+          id
+          taskId
+          userId
+          createdAt
+        }
+      }
+    }
+  }
+}

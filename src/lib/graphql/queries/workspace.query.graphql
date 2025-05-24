@@ -1,0 +1,5 @@
+query Workspace($rowId: UUID!) {
+  workspace(rowId: $rowId) {
+    ...WorkspaceFragment
+  }
+}

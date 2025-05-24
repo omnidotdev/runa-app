@@ -1,0 +1,15 @@
+mutation UpdateTask($input: UpdateTaskInput!) {
+  updateTask(input: $input) {
+    clientMutationId
+    task {
+      ...TaskFragment
+    }
+    query {
+      tasks(first: 10) {
+        nodes {
+          ...TaskFragment
+        }
+      }
+    }
+  }
+}
