@@ -7,7 +7,11 @@ fragment ProjectFragment on Project {
   color
   labels
   workspaceId
-  columns
+  columns {
+    nodes {
+      rowId
+    }
+  }
   viewMode
   createdAt
   updatedAt

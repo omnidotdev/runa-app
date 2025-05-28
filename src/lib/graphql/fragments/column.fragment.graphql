@@ -3,7 +3,11 @@ fragment ColumnFragment on Column {
   rowId
   title
   projectId
-  tasks
+  tasks {
+    nodes {
+      rowId
+    }
+  }
   createdAt
   updatedAt
   project {
