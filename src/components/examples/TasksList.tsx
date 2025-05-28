@@ -30,7 +30,7 @@ export function TasksList() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-blue-500" />
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary-500" />
       </div>
     );
   }
@@ -59,7 +59,7 @@ export function TasksList() {
         <button
           onClick={handleRefetch}
           disabled={isRefetching}
-          className="rounded-md bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100 disabled:opacity-50"
+          className="rounded-md bg-primary-50 px-3 py-1.5 text-sm font-medium text-primary-700 hover:bg-primary-100 disabled:opacity-50"
         >
           {isRefetching ? 'Refreshing...' : 'Refresh'}
         </button>

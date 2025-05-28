@@ -69,7 +69,7 @@ const initialProjects: { [key: string]: Project } = {
     workspaceId: 'personal',
     description: 'A beautiful Kanban board application for managing projects and tasks efficiently.',
     prefix: 'RUNA',
-    color: '#0ea5e9',
+    color: "#0fa968",
     labels: ['bug', 'feature', 'documentation', 'enhancement', 'design'],
     team: teamMembers,
     viewMode: 'board',
@@ -651,7 +651,7 @@ export default function Home() {
           <div className="mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
               <div className="flex items-center">
-                <h1 className="text-xl font-bold text-blue-600 dark:text-blue-400">Runa</h1>
+                <h1 className="text-xl font-bold text-primary-600 dark:text-primary-400">Runa</h1>
               </div>
               <div className="flex items-center space-x-6">
                 <ThemeToggle />
@@ -663,7 +663,7 @@ export default function Home() {
                 </Link>
                 <button
                   onClick={handleLogin}
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  className="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 >
                   Sign In
                 </button>
@@ -676,13 +676,13 @@ export default function Home() {
           {/* Hero section */}
           <div className="py-20 md:py-28 lg:py-36">
             <div className="max-w-3xl relative z-10">
-              <div className="inline-block mb-5 px-3 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 rounded-full shadow-sm">
+              <div className="inline-block mb-5 px-3 py-1 text-xs font-semibold text-primary-700 dark:text-primary-300 bg-primary-100 dark:bg-primary-900/30 rounded-full shadow-sm">
                 Introducing Runa
               </div>
               <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl mb-8">
-                Transform Your Projects into <span className="text-blue-600 dark:text-blue-400 relative whitespace-nowrap">
+                Transform Your Projects into <span className="text-primary-600 dark:text-primary-400 relative whitespace-nowrap">
                   <span className="relative z-10">Success Stories</span>
-                  <span className="absolute -inset-1 bg-blue-100 dark:bg-blue-900/40 -skew-y-3 -z-10 rounded-sm"></span>
+                  <span className="absolute -inset-1 bg-primary-100 dark:bg-primary-900/40 -skew-y-3 -z-10 rounded-sm"></span>
                 </span>
               </h1>
               <p className="text-xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl leading-relaxed">
@@ -691,13 +691,13 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-5">
                 <button
                   onClick={handleLogin}
-                  className="group px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-md hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                  className="group px-8 py-4 text-base font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 shadow-md hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2"
                 >
                   Get Started <span className="inline-block transition-transform group-hover:translate-x-1 ml-1">→</span>
                 </button>
                 <Link
                   href="/pricing"
-                  className="text-center px-8 py-4 text-base font-medium text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm hover:shadow"
+                  className="text-center px-8 py-4 text-base font-medium text-primary-600 dark:text-primary-400 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm hover:shadow"
                 >
                   View Pricing
                 </Link>
@@ -709,13 +709,13 @@ export default function Home() {
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-16 gap-4">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white relative inline-block">
                   <span>Everything you need to manage projects effectively</span>
-                  <span className="absolute -bottom-2 left-0 right-0 h-1 bg-blue-600/30 dark:bg-blue-600/40 rounded-full"></span>
+                  <span className="absolute -bottom-2 left-0 right-0 h-1 bg-primary-600/30 dark:bg-primary-600/40 rounded-full"></span>
                 </h2>
               </div>
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-4">
-                <div className="bg-white dark:bg-gray-800 p-7 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-800 hover:translate-y-[-2px] transition-transform">
-                  <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mb-5">
-                    <svg className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="bg-white dark:bg-gray-800 p-7 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-primary-200 dark:hover:border-primary-800 hover:translate-y-[-2px] transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mb-5">
+                    <svg className="h-6 w-6 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                     </svg>
                   </div>

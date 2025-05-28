@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 const getColorClasses = (label: string) => {
   const labelColors: { [key: string]: { bg: string; text: string; icon: string } } = {
     bug: { bg: 'bg-red-50 dark:bg-red-900/30', text: 'text-red-700 dark:text-red-400', icon: 'text-red-500' },
-    feature: { bg: 'bg-blue-50 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-400', icon: 'text-blue-500' },
+    feature: { bg: 'bg-primary-50 dark:bg-primary-900/30', text: 'text-primary-700 dark:text-primary-400', icon: 'text-primary-500' },
     documentation: { bg: 'bg-purple-50 dark:bg-purple-900/30', text: 'text-purple-700 dark:text-purple-400', icon: 'text-purple-500' },
     enhancement: { bg: 'bg-green-50 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-400', icon: 'text-green-500' },
     design: { bg: 'bg-orange-50 dark:bg-orange-900/30', text: 'text-orange-700 dark:text-orange-400', icon: 'text-orange-500' },
@@ -32,7 +32,7 @@ interface TaskProps {
 
 const columnIcons = {
   'todo': <Clock className="w-4 h-4 text-gray-400 dark:text-gray-500" />,
-  'in-progress': <AlertCircle className="w-4 h-4 text-blue-500" />,
+  'in-progress': <AlertCircle className="w-4 h-4 text-primary-500" />,
   'awaiting-review': <Eye className="w-4 h-4 text-purple-500" />,
   'done': <CheckCircle2 className="w-4 h-4 text-green-500" />,
   'planned': <Rocket className="w-4 h-4 text-purple-500" />,
@@ -61,7 +61,7 @@ export function Task({ task, index, onClick, columnId, isProject = false, projec
           {...provided.dragHandleProps}
           onClick={onClick}
           className={`p-3 mb-2 rounded-lg bg-white/70 dark:bg-gray-900/70 border border-gray-200/50 dark:border-gray-800/50 cursor-pointer
-            ${snapshot.isDragging ? 'shadow-lg ring-2 ring-blue-500 ring-opacity-50' : 'shadow-sm hover:shadow-md'}`}
+            ${snapshot.isDragging ? 'shadow-lg ring-2 ring-primary-500 ring-opacity-50' : 'shadow-sm hover:shadow-md'}`}
         >
           <div className="flex flex-col gap-2">
             <div className="flex items-start gap-2">

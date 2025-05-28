@@ -54,7 +54,7 @@ export function AssigneePicker({
                 <span>{assignee.name}</span>
               </div>
               {assignees.some(a => a.id === assignee.id) && (
-                <div className="w-2 h-2 rounded-full bg-blue-500" />
+                <div className="w-2 h-2 rounded-full bg-primary-500" />
               )}
             </button>
           ))}

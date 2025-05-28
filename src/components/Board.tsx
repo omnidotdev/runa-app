@@ -44,7 +44,7 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
 
   const handleMouseMove = (e: MouseEvent) => {
     if (!isMouseDown.current || isDragging.current || !containerRef.current) return;
-    
+
     e.preventDefault();
     const dx = e.pageX - startX.current;
     containerRef.current.scrollLeft = scrollLeft.current - dx;
@@ -57,7 +57,7 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-    
+
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
@@ -70,7 +70,7 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
 
   const onDragEnd = (result: DropResult) => {
     isDragging.current = false;
-    
+
     const { destination, source } = result;
 
     if (!destination) return;
@@ -88,7 +88,7 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
     const destTasks = source.droppableId === destination.droppableId
       ? sourceTasks
       : [...destColumn.tasks];
-    
+
     const [removed] = sourceTasks.splice(source.index, 1);
     destTasks.splice(destination.index, 0, removed);
 
@@ -115,7 +115,7 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
 
     // Get all tasks from the column being deleted
     const tasksToMove = project.columns[columnId].tasks;
-    
+
     // Create new columns object without the deleted column
     const { [columnId]: deletedColumn, ...remainingColumns } = project.columns;
 
@@ -188,7 +188,7 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
   } : {};
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="h-full overflow-x-auto select-none custom-scrollbar"
       onMouseDown={handleMouseDown}
@@ -198,13 +198,13 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <Droppable droppableId="board" direction="horizontal" type="column">
             {(provided) => (
-              <div 
+              <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
                 className="flex gap-3 h-full"
               >
                 {Object.entries(project.columns).map(([columnId, column], index) => (
-                  <Column 
+                  <Column
                     key={columnId}
                     column={column}
                     index={index}

@@ -12,7 +12,7 @@ export const MentionList = forwardRef<HTMLDivElement, MentionListProps>(
     const getIcon = (type: string) => {
       switch (type) {
         case 'user':
-          return <Users className="w-4 h-4 text-blue-500" />;
+          return <Users className="w-4 h-4 text-primary-500" />;
         case 'task':
           return <FileText className="w-4 h-4 text-purple-500" />;
         case 'project':

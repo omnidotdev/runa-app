@@ -248,7 +248,7 @@ export function RichTextEditor({
           readOnly
             ? 'cursor-pointer'
             : editor?.isFocused
-              ? 'border-2 border-blue-500/20 dark:border-blue-500/10 bg-blue-50/50 dark:bg-blue-900/5'
+              ? 'border-2 border-primary-500/20 dark:border-primary-500/10 bg-primary-50/50 dark:bg-primary-900/5'
               : 'border border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
         }`}
       />

@@ -199,7 +199,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               required
             />
           </div>
@@ -213,7 +213,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
               value={prefix}
               onChange={(e) => setPrefix(e.target.value.toUpperCase())}
               placeholder="e.g., RUNA"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               Used for task IDs (e.g., RUNA-1, RUNA-2)
@@ -227,7 +227,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
               <button
                 type="button"
                 onClick={() => setShowColorPicker(!showColorPicker)}
-                className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
                 <div className="flex items-center gap-2">
                   {color && (
@@ -258,7 +258,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
                           setShowColorPicker(false);
                         }}
                         className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                          color === projectColor.value ? 'ring-2 ring-blue-500 ring-offset-2' : ''
+                          color === projectColor.value ? 'ring-2 ring-primary-500 ring-offset-2' : ''
                         }`}
                         style={{ backgroundColor: projectColor.value }}
                         title={projectColor.name}
@@ -290,7 +290,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
             />
           </div>
 
@@ -316,7 +316,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
                   value={newColumnTitle}
                   onChange={(e) => setNewColumnTitle(e.target.value)}
                   placeholder="Enter column title..."
-                  className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-gray-100"
                   autoFocus
                 />
                 <div className="flex justify-end gap-2">
@@ -334,7 +334,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
                     type="button"
                     onClick={handleAddColumn}
                     disabled={!newColumnTitle.trim()}
-                    className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-3 py-1 text-sm bg-primary-500 text-white rounded hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Add
                   </button>
@@ -392,7 +392,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
               <button
                 type="button"
                 onClick={onImport}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <Upload className="w-4 h-4" />
                 Import Project
@@ -400,7 +400,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
               <button
                 type="button"
                 onClick={onExport}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 rounded-md border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
               >
                 <Download className="w-4 h-4" />
                 Export Project
@@ -413,13 +413,13 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 text-sm font-medium text-white bg-primary-500 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               Save Changes
             </button>

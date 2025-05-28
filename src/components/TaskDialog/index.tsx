@@ -311,7 +311,7 @@ export function TaskDialog({
                       value={newLabel}
                       onChange={(e) => setNewLabel(e.target.value)}
                       placeholder="Add new label..."
-                      className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-gray-100"
+                      className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-gray-100"
                       autoFocus
                     />
                   </form>
@@ -354,7 +354,7 @@ export function TaskDialog({
                           >
                             <span className="text-gray-900 dark:text-gray-100">{label}</span>
                             {task.labels?.includes(label) && (
-                              <div className="w-2 h-2 rounded-full bg-blue-500" />
+                              <div className="w-2 h-2 rounded-full bg-primary-500" />
                             )}
                           </button>
                         ))}
@@ -406,7 +406,7 @@ export function TaskDialog({
               <button
                 onClick={handleSave}
                 disabled={!task.content.trim() || isSaving}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSaving ? 'Creating...' : `Create ${itemType}`}
               </button>

@@ -106,7 +106,7 @@ export function ListView({
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                     className={`rounded-b-lg divide-y divide-gray-200 dark:divide-gray-700 ${
-                      snapshot.isDraggingOver ? project.color ? `${project.color}10` : 'bg-blue-50/50 dark:bg-gray-800/50' : ''
+                      snapshot.isDraggingOver ? project.color ? `${project.color}10` : 'bg-primary-50/50 dark:bg-gray-800/50' : ''
                     }`}
                   >
                     {filteredTasks.map((task, index) => (
@@ -116,7 +116,7 @@ export function ListView({
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`${snapshot.isDragging ? 'bg-white dark:bg-gray-700 shadow-lg ring-2 ring-blue-500 ring-opacity-50 z-10' : ''}`}
+                            className={`${snapshot.isDragging ? 'bg-white dark:bg-gray-700 shadow-lg ring-2 ring-primary-500 ring-opacity-50 z-10' : ''}`}
                           >
                             <TaskListItem
                               task={task}
@@ -217,7 +217,7 @@ function TaskListItem({ task, project, onClick }: TaskListItemProps) {
 const getColorClasses = (label: string) => {
   const labelColors: { [key: string]: { bg: string; text: string; icon: string } } = {
     bug: { bg: 'bg-red-50 dark:bg-red-900/30', text: 'text-red-700 dark:text-red-400', icon: 'text-red-500' },
-    feature: { bg: 'bg-blue-50 dark:bg-blue-900/30', text: 'text-blue-700 dark:text-blue-400', icon: 'text-blue-500' },
+    feature: { bg: 'bg-primary-50 dark:bg-primary-900/30', text: 'text-primary-700 dark:text-primary-400', icon: 'text-primary-500' },
     documentation: { bg: 'bg-purple-50 dark:bg-purple-900/30', text: 'text-purple-700 dark:text-purple-400', icon: 'text-purple-500' },
     enhancement: { bg: 'bg-green-50 dark:bg-green-900/30', text: 'text-green-700 dark:text-green-400', icon: 'text-green-500' },
     design: { bg: 'bg-orange-50 dark:bg-orange-900/30', text: 'text-orange-700 dark:text-orange-400', icon: 'text-orange-500' },

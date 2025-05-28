@@ -73,7 +73,7 @@ export function Column({
                   snapshot.isDraggingOver
                     ? projectColor
                       ? 'bg-white/5 dark:bg-white/10'
-                      : 'bg-blue-50/50 dark:bg-gray-800/50'
+                      : 'bg-primary-50/50 dark:bg-gray-800/50'
                     : ''
                 }`}
                 style={{

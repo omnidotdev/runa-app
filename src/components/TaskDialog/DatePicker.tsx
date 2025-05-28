@@ -51,7 +51,7 @@ export function DatePicker({
               }
             }}
             placeholder="Type a date (e.g., next monday)"
-            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            className="w-full px-2 py-1 text-sm border border-gray-200 dark:border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           />
           <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
             Try: "tomorrow", "next monday", "in 2 weeks"

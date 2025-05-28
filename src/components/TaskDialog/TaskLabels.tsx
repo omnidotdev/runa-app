@@ -67,7 +67,7 @@ export function TaskLabels({ labels, projectLabels, onChange }: TaskLabelsProps)
               value={newLabel}
               onChange={(e) => setNewLabel(e.target.value)}
               placeholder="Add new label..."
-              className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-gray-100"
+              className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-gray-100"
               autoFocus
             />
           </form>
@@ -110,7 +110,7 @@ export function TaskLabels({ labels, projectLabels, onChange }: TaskLabelsProps)
                   >
                     <span className="text-gray-900 dark:text-gray-100">{label}</span>
                     {labels.includes(label) && (
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      <div className="w-2 h-2 rounded-full bg-primary-500" />
                     )}
                   </button>
                 ))}

@@ -149,14 +149,14 @@ export function Sidebar({
                     value={newProjectName}
                     onChange={(e) => setNewProjectName(e.target.value)}
                     placeholder="Project name"
-                    className="w-full text-sm px-2 py-1 border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full text-sm px-2 py-1 border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
                     autoFocus
                   />
                   <textarea
                     value={newProjectDescription}
                     onChange={(e) => setNewProjectDescription(e.target.value)}
                     placeholder="Project description (optional)"
-                    className="w-full text-sm px-2 py-1 border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded resize-none h-20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full text-sm px-2 py-1 border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded resize-none h-20 focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
                   <div className="flex justify-end gap-2">
                     <button
@@ -173,7 +173,7 @@ export function Sidebar({
                     <button
                       type="submit"
                       disabled={!newProjectName.trim()}
-                      className="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-2 py-1 text-xs bg-primary-500 text-white rounded hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Create
                     </button>

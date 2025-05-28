@@ -59,14 +59,14 @@ export default function Pricing() {
               </ul>
               <a
                 href="https://github.com/your-repo/runa"
-                className="block w-full py-3 px-4 text-center font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md"
+                className="block w-full py-3 px-4 text-center font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
               >
                 View on GitHub
               </a>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border-2 border-blue-500">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border-2 border-primary-500">
             <div className="p-8">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                 Cloud
@@ -102,7 +102,7 @@ export default function Pricing() {
               </ul>
               <button
                 onClick={() => window.location.href = '/signup'}
-                className="block w-full py-3 px-4 text-center font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md"
+                className="block w-full py-3 px-4 text-center font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
               >
                 Start Free Trial
               </button>
