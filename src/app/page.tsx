@@ -13,6 +13,7 @@ import { Project, Assignee, Workspace } from '@/types';
 import { ProjectSettings } from '@/components/ProjectSettings';
 import { WorkspaceSettings } from '@/components/WorkspaceSettings';
 import { TaskDialog } from '@/components/TaskDialog';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const teamMembers: Assignee[] = [
   { id: 'user-1', name: 'John Doe' },
@@ -631,17 +632,38 @@ export default function Home() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <nav className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden relative">
+        {/* Background elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div
+            className="absolute inset-0 z-0 opacity-50 dark:opacity-20"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='200' height='200' patternUnits='userSpaceOnUse' patternTransform='rotate(12)'%3E%3Cpath d='M 200 0 L 0 0 0 200' fill='none' stroke='rgba(37, 99, 235, 0.45)' stroke-width='2.5' class='light-stroke'/%3E%3Cpath d='M 200 0 L 0 0 0 200' fill='none' stroke='rgba(96, 165, 250, 0.55)' stroke-width='2.5' class='dark-stroke' style='display:none'/%3E%3C/pattern%3E%3CradialGradient id='fade' cx='50%25' cy='50%25' r='70%25' fx='50%25' fy='50%25'%3E%3Cstop offset='0%25' style='stop-color:white;stop-opacity:0' /%3E%3Cstop offset='70%25' style='stop-color:white;stop-opacity:1' /%3E%3C/radialGradient%3E%3Cmask id='mask' x='0' y='0' width='100%25' height='100%25'%3E%3Crect x='0' y='0' width='100%25' height='100%25' fill='url(%23fade)'/%3E%3C/mask%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)' mask='url(%23mask)'/%3E%3Cstyle%3E@media (prefers-color-scheme: dark) { .light-stroke { display: none; } .dark-stroke { display: block !important; } }%3C/style%3E%3C/svg%3E")`,
+              backgroundSize: 'cover',
+            }}
+          ></div>
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-100/70 via-transparent to-gray-100/70 dark:from-gray-800/70 dark:via-transparent dark:to-gray-800/70"></div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="relative z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
               <div className="flex items-center">
-                <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Runa</h1>
+                <h1 className="text-xl font-bold text-blue-600 dark:text-blue-400">Runa</h1>
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center space-x-6">
+                <ThemeToggle />
+                <Link
+                  href="/docs"
+                  className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
+                >
+                  Docs
+                </Link>
                 <button
                   onClick={handleLogin}
-                  className="ml-4 px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
                   Sign In
                 </button>
@@ -650,92 +672,93 @@ export default function Home() {
           </div>
         </nav>
 
-        <main>
-          <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-gray-100 sm:text-5xl md:text-6xl">
-                <span className="block">Beautiful project management</span>
-                <span className="block text-blue-500">for modern teams</span>
+        <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Hero section */}
+          <div className="py-20 md:py-28 lg:py-36">
+            <div className="max-w-3xl relative z-10">
+              <div className="inline-block mb-5 px-3 py-1 text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 rounded-full shadow-sm">
+                Introducing Runa
+              </div>
+              <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl mb-8">
+                Transform Your Projects into <span className="text-blue-600 dark:text-blue-400 relative whitespace-nowrap">
+                  <span className="relative z-10">Success Stories</span>
+                  <span className="absolute -inset-1 bg-blue-100 dark:bg-blue-900/40 -skew-y-3 -z-10 rounded-sm"></span>
+                </span>
               </h1>
-              <p className="mt-3 max-w-md mx-auto text-base text-gray-500 dark:text-gray-400 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+              <p className="text-xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl leading-relaxed">
                 Streamline your workflow, collaborate seamlessly, and deliver projects on time with our intuitive Kanban board solution.
               </p>
-              <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
-                <div className="rounded-md shadow">
-                  <button
-                    onClick={handleLogin}
-                    className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 md:py-4 md:text-lg md:px-10"
-                  >
-                    Get started
-                  </button>
-                </div>
-                <div className="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
-                  <Link
-                    href="/pricing"
-                    className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 md:py-4 md:text-lg md:px-10"
-                  >
-                    View pricing
-                  </Link>
-                </div>
+              <div className="flex flex-col sm:flex-row gap-5">
+                <button
+                  onClick={handleLogin}
+                  className="group px-8 py-4 text-base font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-md hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                >
+                  Get Started <span className="inline-block transition-transform group-hover:translate-x-1 ml-1">→</span>
+                </button>
+                <Link
+                  href="/pricing"
+                  className="text-center px-8 py-4 text-base font-medium text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm hover:shadow"
+                >
+                  View Pricing
+                </Link>
               </div>
             </div>
 
-            <div id="features" className="mt-32">
-              <div className="grid grid-cols-1 gap-16 lg:grid-cols-3">
-                <div className="relative">
-                  <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            {/* Features grid */}
+            <div className="mt-32 relative z-10">
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-16 gap-4">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white relative inline-block">
+                  <span>Everything you need to manage projects effectively</span>
+                  <span className="absolute -bottom-2 left-0 right-0 h-1 bg-blue-600/30 dark:bg-blue-600/40 rounded-full"></span>
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-4">
+                <div className="bg-white dark:bg-gray-800 p-7 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-800 hover:translate-y-[-2px] transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mb-5">
+                    <svg className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                     </svg>
                   </div>
-                  <div className="ml-16">
-                    <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Flexible Views</h2>
-                    <p className="mt-2 text-base text-gray-500 dark:text-gray-400">
-                      Switch seamlessly between Kanban boards and list views. Organize tasks your way with drag-and-drop simplicity.
-                    </p>
-                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Task Management</h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Organize and track your tasks with flexible views and intuitive workflows.
+                  </p>
                 </div>
 
-                <div className="relative">
-                  <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="bg-white dark:bg-gray-800 p-7 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-purple-200 dark:hover:border-purple-800 hover:translate-y-[-2px] transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center mb-5">
+                    <svg className="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                   </div>
-                  <div className="ml-16">
-                    <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Team Collaboration</h2>
-                    <p className="mt-2 text-base text-gray-500 dark:text-gray-400">
-                      Work together seamlessly with your team. Assign tasks, add comments, and track progress in real-time.
-                    </p>
-                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Team Collaboration</h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Collaborate effortlessly with team members through comments, mentions, and assignments.
+                  </p>
                 </div>
 
-                <div className="relative">
-                  <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="bg-white dark:bg-gray-800 p-7 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-green-200 dark:hover:border-green-800 hover:translate-y-[-2px] transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center mb-5">
+                    <svg className="h-6 w-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                   </div>
-                  <div className="ml-16">
-                    <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Task Organization</h2>
-                    <p className="mt-2 text-base text-gray-500 dark:text-gray-400">
-                      Group and filter tasks with powerful list views. Add labels, due dates, and priorities to keep everything organized.
-                    </p>
-                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Customizable Workflows</h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Create custom workflows that match your team's processes and project needs.
+                  </p>
                 </div>
 
-                <div className="relative">
-                  <div className="absolute flex items-center justify-center h-12 w-12 rounded-md bg-blue-500 text-white">
-                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="bg-white dark:bg-gray-800 p-7 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-amber-200 dark:hover:border-amber-800 hover:translate-y-[-2px] transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center mb-5">
+                    <svg className="h-6 w-6 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                   </div>
-                  <div className="ml-16">
-                    <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Project Analytics</h2>
-                    <p className="mt-2 text-base text-gray-500 dark:text-gray-400">
-                      Get insights into your team's performance with detailed analytics and progress tracking.
-                    </p>
-                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Project Analytics</h3>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Get insights into your team's performance with detailed analytics and progress tracking.
+                  </p>
                 </div>
               </div>
             </div>
