@@ -19,17 +19,17 @@ interface ColumnProps {
 const defaultColumns = ['backlog', 'todo', 'in-progress', 'awaiting-review', 'done'];
 const overviewColumns = ['planned', 'in-progress', 'completed'];
 
-export function Column({ 
-  column, 
+export function Column({
+  column,
   index,
-  onTaskClick, 
+  onTaskClick,
   onAddClick,
   onDeleteClick,
-  isProjectView = false, 
+  isProjectView = false,
   projectPrefix,
   projectColor,
 }: ColumnProps) {
-  const isDefaultColumn = isProjectView 
+  const isDefaultColumn = isProjectView
     ? overviewColumns.includes(column.id)
     : defaultColumns.includes(column.id);
 
@@ -39,7 +39,7 @@ export function Column({
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
-          className="flex-shrink-0 w-[320px] flex flex-col"
+          className="flex-shrink-0 w-[320px] flex flex-col bg-neutral-50/30 dark:bg-neutral-950/10 rounded-md"
         >
           <div className="mb-3 flex items-center justify-between px-3 pt-3">
             <div className="flex items-center gap-2">
@@ -50,29 +50,29 @@ export function Column({
               {!isDefaultColumn && onDeleteClick && (
                 <button
                   onClick={() => onDeleteClick(column.id)}
-                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
                 >
                   <Trash2 className="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400" />
                 </button>
               )}
               <button
                 onClick={onAddClick}
-                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
               >
                 <Plus className="w-4 h-4 text-gray-500 dark:text-gray-400" />
               </button>
             </div>
           </div>
-          
+
           <Droppable droppableId={column.id}>
             {(provided, snapshot) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={`flex-1 px-3 py-2 transition-colors duration-200 ${
-                  snapshot.isDraggingOver 
-                    ? projectColor 
-                      ? 'bg-white/5 dark:bg-white/10' 
+                className={`flex-1 px-3 py-2 rounded-b-md ${
+                  snapshot.isDraggingOver
+                    ? projectColor
+                      ? 'bg-white/5 dark:bg-white/10'
                       : 'bg-blue-50/50 dark:bg-gray-800/50'
                     : ''
                 }`}
@@ -84,9 +84,9 @@ export function Column({
                 }}
               >
                 {column.tasks.map((task, index) => (
-                  <Task 
-                    key={task.id} 
-                    task={task} 
+                  <Task
+                    key={task.id}
+                    task={task}
                     index={index}
                     onClick={() => onTaskClick(task.id)}
                     columnId={column.id}

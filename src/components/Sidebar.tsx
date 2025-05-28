@@ -22,16 +22,16 @@ interface SidebarProps {
   onSignOut: () => void;
 }
 
-export function Sidebar({ 
+export function Sidebar({
   workspaces,
   currentWorkspace,
   onWorkspaceSelect,
   onWorkspaceCreate,
   onWorkspaceDelete,
-  projects, 
-  currentProject, 
-  onProjectSelect, 
-  onProjectCreate, 
+  projects,
+  currentProject,
+  onProjectSelect,
+  onProjectCreate,
   onProjectDelete,
   onOpenWorkspaceSettings,
   onSignOut,
@@ -45,7 +45,7 @@ export function Sidebar({
   const handleCreateProject = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!newProjectName.trim()) return;
-    
+
     const newProject: Project = {
       id: newProjectName.toLowerCase().replace(/\s+/g, '-'),
       name: newProjectName,
@@ -80,7 +80,7 @@ export function Sidebar({
   const handleProjectsHeaderClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     if (target.closest('button')) return;
-    
+
     setIsProjectsOpen(!isProjectsOpen);
   };
 
@@ -101,9 +101,9 @@ export function Sidebar({
             <ThemeToggle />
           </div>
         </div>
-        
+
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <div 
+          <div
             className="flex items-center justify-between px-2 py-1 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded cursor-pointer"
             onClick={handleProjectsHeaderClick}
           >
@@ -121,12 +121,12 @@ export function Sidebar({
                 e.stopPropagation();
                 setIsAddingProject(true);
               }}
-              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
             >
               <Plus className="w-3 h-3 text-gray-500 dark:text-gray-400" />
             </button>
           </div>
-          
+
           {isProjectsOpen && (
             <div className="ml-4 mt-1">
               <div
@@ -139,9 +139,9 @@ export function Sidebar({
               >
                 <span>Overview</span>
               </div>
-              
+
               <div className="my-2 border-t border-gray-200 dark:border-gray-700" />
-              
+
               {isAddingProject && (
                 <form onSubmit={handleCreateProject} className="px-2 py-1 space-y-2">
                   <input
@@ -194,12 +194,12 @@ export function Sidebar({
                   >
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       {project.viewMode === 'board' ? (
-                        <LayoutGrid 
-                          className="w-3 h-3 flex-shrink-0" 
+                        <LayoutGrid
+                          className="w-3 h-3 flex-shrink-0"
                           style={{ color: project.color || 'currentColor' }}
                         />
                       ) : (
-                        <List 
+                        <List
                           className="w-3 h-3 flex-shrink-0"
                           style={{ color: project.color || 'currentColor' }}
                         />
@@ -227,14 +227,14 @@ export function Sidebar({
       <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
         <button
           onClick={onOpenWorkspaceSettings}
-          className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
         >
           <Users className="w-4 h-4" />
           Workspace Settings
         </button>
         <button
           onClick={onSignOut}
-          className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
         >
           <LogOut className="w-4 h-4" />
           Sign Out

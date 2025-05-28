@@ -23,8 +23,8 @@ export const MentionList = forwardRef<HTMLDivElement, MentionListProps>(
     };
 
     return (
-      <div 
-        ref={ref} 
+      <div
+        ref={ref}
         className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50 min-w-[200px]"
       >
         {items.length ? (
@@ -37,7 +37,7 @@ export const MentionList = forwardRef<HTMLDivElement, MentionListProps>(
                   e.stopPropagation();
                   command(item);
                 }}
-                className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left transition-colors ${
+                className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left ${
                   index === selectedIndex
                     ? 'bg-gray-100 dark:bg-gray-700'
                     : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'

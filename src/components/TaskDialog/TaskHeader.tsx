@@ -53,7 +53,7 @@ export function TaskHeader({
               disabled={isSaving}
             />
           ) : (
-            <h2 
+            <h2
               className="text-xl font-semibold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300"
               onClick={onEditStart}
             >
@@ -69,7 +69,7 @@ export function TaskHeader({
               <button
                 onClick={onSave}
                 disabled={isSaving}
-                className="text-gray-500 dark:text-gray-400 hover:text-green-500 dark:hover:text-green-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-gray-500 dark:text-gray-400 hover:text-green-500 dark:hover:text-green-400 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Save className="w-5 h-5" />
               </button>
@@ -77,7 +77,7 @@ export function TaskHeader({
               <button
                 onClick={onDelete}
                 disabled={isSaving}
-                className="text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Trash className="w-5 h-5" />
               </button>
@@ -87,7 +87,7 @@ export function TaskHeader({
         <button
           onClick={onClose}
           disabled={isSaving}
-          className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <X className="w-5 h-5" />
         </button>

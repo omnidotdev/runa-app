@@ -23,8 +23,8 @@ interface RichTextEditorProps {
   onEditStart?: () => void;
 }
 
-export function RichTextEditor({ 
-  content, 
+export function RichTextEditor({
+  content,
   onChange,
   placeholder = 'Write something...',
   readOnly = false,
@@ -63,7 +63,7 @@ export function RichTextEditor({
       })),
     ];
 
-    return items.filter(item => !query || 
+    return items.filter(item => !query ||
       item.label.toLowerCase().includes(query) ||
       (item.description?.toLowerCase() || '').includes(query)
     );
@@ -235,17 +235,17 @@ export function RichTextEditor({
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
       onClick={handleContainerClick}
       className={`relative prose prose-sm max-w-none dark:prose-invert ${
         readOnly ? 'cursor-pointer' : ''
       } ${readOnly ? 'pointer-events-none' : ''}`}
     >
-      <EditorContent 
+      <EditorContent
         editor={editor}
-        className={`min-h-[120px] text-gray-600 dark:text-gray-300 bg-transparent transition-colors duration-200 rounded-md p-3 pointer-events-auto ${
-          readOnly 
+        className={`min-h-[120px] text-gray-600 dark:text-gray-300 bg-transparent rounded-md p-3 pointer-events-auto ${
+          readOnly
             ? 'cursor-pointer'
             : editor?.isFocused
               ? 'border-2 border-blue-500/20 dark:border-blue-500/10 bg-blue-50/50 dark:bg-blue-900/5'

@@ -8,7 +8,7 @@ export default function Pricing() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="mb-12">
-          <Link 
+          <Link
             href="/"
             className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
           >
@@ -59,7 +59,7 @@ export default function Pricing() {
               </ul>
               <a
                 href="https://github.com/your-repo/runa"
-                className="block w-full py-3 px-4 text-center font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md transition-colors"
+                className="block w-full py-3 px-4 text-center font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md"
               >
                 View on GitHub
               </a>
@@ -102,7 +102,7 @@ export default function Pricing() {
               </ul>
               <button
                 onClick={() => window.location.href = '/signup'}
-                className="block w-full py-3 px-4 text-center font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md transition-colors"
+                className="block w-full py-3 px-4 text-center font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md"
               >
                 Start Free Trial
               </button>

@@ -77,32 +77,32 @@ const initialProjects: { [key: string]: Project } = {
         id: 'backlog',
         title: 'Backlog',
         tasks: [
-          { 
-            id: 'task-1', 
-            content: 'Create project documentation', 
-            priority: 'high', 
-            description: 'Write comprehensive documentation covering project setup, architecture, and deployment.', 
-            assignees: [teamMembers[0]], 
+          {
+            id: 'task-1',
+            content: 'Create project documentation',
+            priority: 'high',
+            description: 'Write comprehensive documentation covering project setup, architecture, and deployment.',
+            assignees: [teamMembers[0]],
             labels: ['documentation'],
-            dueDate: '2024-03-15T23:59:59.999Z' 
+            dueDate: '2024-03-15T23:59:59.999Z'
           },
-          { 
-            id: 'task-2', 
-            content: 'Design user interface', 
-            priority: 'medium', 
-            description: 'Create wireframes and high-fidelity designs for the main application interface.', 
-            assignees: [teamMembers[1]], 
+          {
+            id: 'task-2',
+            content: 'Design user interface',
+            priority: 'medium',
+            description: 'Create wireframes and high-fidelity designs for the main application interface.',
+            assignees: [teamMembers[1]],
             labels: ['design'],
-            dueDate: '2024-03-20T23:59:59.999Z' 
+            dueDate: '2024-03-20T23:59:59.999Z'
           },
-          { 
-            id: 'task-3', 
-            content: 'Set up development environment', 
-            priority: 'low', 
-            description: 'Configure development tools, linters, and CI/CD pipeline.', 
-            assignees: [teamMembers[2]], 
+          {
+            id: 'task-3',
+            content: 'Set up development environment',
+            priority: 'low',
+            description: 'Configure development tools, linters, and CI/CD pipeline.',
+            assignees: [teamMembers[2]],
             labels: ['enhancement'],
-            dueDate: undefined 
+            dueDate: undefined
           },
         ],
       },
@@ -110,23 +110,23 @@ const initialProjects: { [key: string]: Project } = {
         id: 'todo',
         title: 'To Do',
         tasks: [
-          { 
-            id: 'task-4', 
-            content: 'Implement authentication', 
-            priority: 'high', 
-            description: 'Set up user authentication flow with email and password.', 
-            assignees: [teamMembers[0], teamMembers[1]], 
+          {
+            id: 'task-4',
+            content: 'Implement authentication',
+            priority: 'high',
+            description: 'Set up user authentication flow with email and password.',
+            assignees: [teamMembers[0], teamMembers[1]],
             labels: ['feature'],
-            dueDate: '2024-03-25T23:59:59.999Z' 
+            dueDate: '2024-03-25T23:59:59.999Z'
           },
-          { 
-            id: 'task-5', 
-            content: 'Create API endpoints', 
-            priority: 'medium', 
-            description: 'Design and implement RESTful API endpoints for core functionality.', 
-            assignees: [teamMembers[2]], 
+          {
+            id: 'task-5',
+            content: 'Create API endpoints',
+            priority: 'medium',
+            description: 'Design and implement RESTful API endpoints for core functionality.',
+            assignees: [teamMembers[2]],
             labels: ['feature'],
-            dueDate: undefined 
+            dueDate: undefined
           },
         ],
       },
@@ -134,14 +134,14 @@ const initialProjects: { [key: string]: Project } = {
         id: 'in-progress',
         title: 'In Progress',
         tasks: [
-          { 
-            id: 'task-6', 
-            content: 'Project setup', 
-            priority: 'low', 
-            description: 'Initial project configuration and dependency setup.', 
-            assignees: [teamMembers[0]], 
+          {
+            id: 'task-6',
+            content: 'Project setup',
+            priority: 'low',
+            description: 'Initial project configuration and dependency setup.',
+            assignees: [teamMembers[0]],
             labels: ['enhancement'],
-            dueDate: undefined 
+            dueDate: undefined
           },
         ],
       },
@@ -154,14 +154,14 @@ const initialProjects: { [key: string]: Project } = {
         id: 'done',
         title: 'Done',
         tasks: [
-          { 
-            id: 'task-7', 
-            content: 'Initial planning', 
-            priority: 'medium', 
-            description: 'Define project scope, timeline, and key milestones.', 
-            assignees: teamMembers, 
+          {
+            id: 'task-7',
+            content: 'Initial planning',
+            priority: 'medium',
+            description: 'Define project scope, timeline, and key milestones.',
+            assignees: teamMembers,
             labels: ['documentation'],
-            dueDate: '2024-03-01T23:59:59.999Z' 
+            dueDate: '2024-03-01T23:59:59.999Z'
           },
         ],
       },
@@ -369,7 +369,7 @@ export default function Home() {
 
   const projectsOverview = useMemo(() => {
     const workspaceProjects = Object.values(projects).filter(p => p.workspaceId === currentWorkspace);
-    
+
     return {
       id: `projects-${currentWorkspace}`,
       name: 'Projects Overview',
@@ -435,7 +435,7 @@ export default function Home() {
 
   const handleWorkspaceDelete = (workspaceId: string) => {
     setWorkspaces(prev => prev.filter(w => w.id !== workspaceId));
-    
+
     setProjects(prev => {
       const newProjects = { ...prev };
       Object.keys(newProjects).forEach(projectId => {
@@ -471,12 +471,12 @@ export default function Home() {
   const handleProjectDelete = (projectId: string) => {
     setProjects(prev => {
       const { [projectId]: deleted, ...rest } = prev;
-      
+
       // If we're deleting a project, update the overview
       if (projectId === `projects-${currentWorkspace}`) {
         return rest;
       }
-      
+
       return rest;
     });
 
@@ -504,13 +504,13 @@ export default function Home() {
         // Ensure tasks are preserved when columns are updated
         const allTasks = Object.values(prev[projectId].columns)
           .flatMap(column => column.tasks);
-        
+
         // Redistribute tasks to their respective columns in the new structure
         Object.keys(updates.columns).forEach(columnId => {
           const existingTasks = updates.columns![columnId].tasks;
           if (existingTasks.length === 0) {
             // Only copy tasks if the column is empty (new column)
-            updates.columns![columnId].tasks = allTasks.filter(task => 
+            updates.columns![columnId].tasks = allTasks.filter(task =>
               prev[projectId].columns[columnId]?.tasks.some(t => t.id === task.id)
             );
           }
@@ -522,7 +522,7 @@ export default function Home() {
   };
 
   const handleTeamUpdate = (newTeam: Assignee[]) => {
-    setWorkspaces(prev => 
+    setWorkspaces(prev =>
       prev.map(w => w.id === currentWorkspace ? { ...w, team: newTeam } : w)
     );
 
@@ -539,7 +539,7 @@ export default function Home() {
 
   const handleDeleteTask = (columnId: string, taskId: string) => {
     if (!currentProjectData) return;
-    
+
     setProjects(prev => ({
       ...prev,
       [currentProject]: {
@@ -553,17 +553,17 @@ export default function Home() {
         }
       }
     }));
-    
+
     setSelectedTask(null);
   };
 
   const handleUpdateTask = (taskId: string, updates: Partial<Task>) => {
     if (!currentProjectData) return;
-    
+
     setProjects(prev => {
       const newProjects = { ...prev };
       const project = newProjects[currentProject];
-      
+
       for (const columnId in project.columns) {
         const taskIndex = project.columns[columnId].tasks.findIndex(t => t.id === taskId);
         if (taskIndex !== -1) {
@@ -574,7 +574,7 @@ export default function Home() {
           break;
         }
       }
-      
+
       return newProjects;
     });
   };
@@ -585,7 +585,7 @@ export default function Home() {
     const filteredColumns = Object.entries(project.columns).reduce((acc, [columnId, column]) => {
       acc[columnId] = {
         ...column,
-        tasks: column.tasks.filter(task => 
+        tasks: column.tasks.filter(task =>
           task.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
           task.description.toLowerCase().includes(searchQuery.toLowerCase())
         )
@@ -596,7 +596,7 @@ export default function Home() {
     return { ...project, columns: filteredColumns };
   };
 
-  const workspaceProjects = Object.values(projects).filter(p => 
+  const workspaceProjects = Object.values(projects).filter(p =>
     p.workspaceId === currentWorkspace
   );
 
@@ -604,7 +604,7 @@ export default function Home() {
     setCurrentWorkspace(workspaceId);
     setCurrentProject(`projects-${workspaceId}`);
   };
-  
+
   // Add the projects overview to the current workspace's projects
   if (!projects[`projects-${currentWorkspace}`]) {
     projects[`projects-${currentWorkspace}`] = projectsOverview;
@@ -754,10 +754,10 @@ export default function Home() {
         onChange={handleImportProject}
         className="hidden"
       />
-      
-      <div className={`relative flex-shrink-0 transition-[width] duration-300 ${isSidebarCollapsed ? 'w-0' : 'w-60'}`}>
-        <div className={`absolute inset-0 transition-opacity duration-300 ${isSidebarCollapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-          <Sidebar 
+
+      <div className={`relative flex-shrink-0 ${isSidebarCollapsed ? 'w-0' : 'w-60'}`}>
+        <div className={`absolute inset-0 ${isSidebarCollapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+          <Sidebar
             workspaces={workspaces}
             currentWorkspace={currentWorkspace}
             onWorkspaceSelect={handleWorkspaceSelect}
@@ -812,7 +812,7 @@ export default function Home() {
                 />
               ) : currentProjectData.viewMode === 'board' ? (
                 <div className="h-full overflow-x-auto overflow-y-hidden">
-                  <Board 
+                  <Board
                     project={filterTasks(currentProjectData)}
                     onProjectUpdate={(updatedColumns) => {
                       setProjects({

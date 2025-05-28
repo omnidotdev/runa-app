@@ -73,7 +73,7 @@ export function WorkspaceSelector({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        className="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
       >
         <span className="truncate">{currentWorkspaceData?.name || 'Select Workspace'}</span>
         <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -134,7 +134,7 @@ export function WorkspaceSelector({
                   {workspaces.length > 1 && workspace.id === currentWorkspace && (
                     <button
                       onClick={() => setWorkspaceToDelete(workspace.id)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition-all"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded"
                     >
                       <Plus className="w-3 h-3 rotate-45 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400" />
                     </button>

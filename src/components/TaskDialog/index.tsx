@@ -7,7 +7,7 @@ import { ConfirmDialog } from '../ConfirmDialog';
 import { TaskHeader } from './TaskHeader';
 import { AssigneePicker } from './AssigneePicker';
 import { DatePicker } from './DatePicker';
-import { TaskDescription } from './TaskDescription'; 
+import { TaskDescription } from './TaskDescription';
 import { Tag, X } from 'lucide-react';
 
 interface TaskDialogProps {
@@ -25,19 +25,19 @@ interface TaskDialogProps {
   onUpdate?: (taskId: string, updates: Partial<Task>) => void;
 }
 
-export function TaskDialog({ 
-  task: initialTask, 
+export function TaskDialog({
+  task: initialTask,
   team,
   projects = [],
   tasks = [],
-  isNew = false, 
-  isProject = false, 
+  isNew = false,
+  isProject = false,
   projectPrefix,
   currentProject,
-  onClose, 
-  onDelete, 
-  onSave, 
-  onUpdate 
+  onClose,
+  onDelete,
+  onSave,
+  onUpdate
 }: TaskDialogProps) {
   const [task, setTask] = useState(initialTask);
   const [isEditing, setIsEditing] = useState(isNew);
@@ -101,7 +101,7 @@ export function TaskDialog({
 
   useEffect(() => {
     if (!mounted.current) return;
-    
+
     setLocalContent(initialTask.content);
     setLocalDescription(initialTask.description);
     setTask(prev => ({
@@ -131,14 +131,14 @@ export function TaskDialog({
     if (!localContent.trim() || isSaving || !mounted.current) return;
 
     setIsSaving(true);
-    
+
     try {
       const updatedTask = {
         ...task,
         content: localContent,
         description: localDescription
       };
-      
+
       if (isNew && onSave) {
         await Promise.resolve(onSave(updatedTask));
         if (mounted.current) {
@@ -161,7 +161,7 @@ export function TaskDialog({
 
   const handleDateSubmit = () => {
     if (!mounted.current || isSaving) return;
-    
+
     const parsedDate = parseDate(dateInput);
     if (parsedDate) {
       const newTask = { ...task, dueDate: parsedDate.toISOString() };
@@ -174,7 +174,7 @@ export function TaskDialog({
 
   const handleAssigneeToggle = (assignee: Assignee) => {
     if (!mounted.current || isSaving) return;
-    
+
     const isAssigned = task.assignees.some(a => a.id === assignee.id);
     const newTask = {
       ...task,
@@ -189,9 +189,9 @@ export function TaskDialog({
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (!onDelete || isSaving || !mounted.current) return;
-    
+
     setIsSaving(true);
     try {
       await Promise.resolve(onDelete(task.id));
@@ -239,7 +239,7 @@ export function TaskDialog({
 
   const handleDescriptionChange = (content: string) => {
     if (!mounted.current || isSaving) return;
-    
+
     setLocalDescription(content);
   };
 
@@ -248,7 +248,7 @@ export function TaskDialog({
 
   return (
     <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50">
-      <div 
+      <div
         ref={modalRef}
         role="dialog"
         aria-modal="true"
@@ -297,7 +297,7 @@ export function TaskDialog({
                     setShowAssigneePicker(false);
                   }
                 }}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
               >
                 <Tag className="w-4 h-4" />
                 <span>{task.labels?.length ? `${task.labels.length} labels` : 'Add labels'}</span>
@@ -364,7 +364,7 @@ export function TaskDialog({
                 </div>
               )}
             </div>
-            
+
             <div ref={datePickerRef}>
               <DatePicker
                 dueDate={task.dueDate}

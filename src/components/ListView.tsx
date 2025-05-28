@@ -45,7 +45,7 @@ export function ListView({
     const destTasks = source.droppableId === destination.droppableId
       ? sourceTasks
       : [...destColumn.tasks];
-    
+
     const [removed] = sourceTasks.splice(source.index, 1);
     destTasks.splice(destination.index, 0, removed);
 
@@ -64,18 +64,18 @@ export function ListView({
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div 
+      <div
         className="p-6 h-full overflow-y-auto custom-scrollbar"
         style={{
           backgroundColor: project.color ? `${project.color}10` : undefined
         }}
       >
       {Object.entries(project.columns).map(([columnId, column]) => {
-        const filteredTasks = column.tasks.filter(task => 
+        const filteredTasks = column.tasks.filter(task =>
           searchQuery ? (
             task.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
             task.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            task.assignees.some(assignee => 
+            task.assignees.some(assignee =>
               assignee.name.toLowerCase().includes(searchQuery.toLowerCase())
             )
           ) : true
@@ -84,8 +84,8 @@ export function ListView({
         if (filteredTasks.length === 0) return null;
 
         return (
-          <div 
-            key={columnId} 
+          <div
+            key={columnId}
             className="mb-6 last:mb-0 bg-white dark:bg-gray-800 rounded-lg shadow-sm"
           >
             <button
@@ -98,7 +98,7 @@ export function ListView({
               <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{column.title}</span>
               <span className="text-sm text-gray-500 dark:text-gray-400">{filteredTasks.length}</span>
             </button>
-            
+
             {expandedSections[columnId] && (
               <Droppable droppableId={columnId}>
                 {(provided, snapshot) => (
@@ -151,9 +151,9 @@ function TaskListItem({ task, project, onClick }: TaskListItemProps) {
   const displayId = task.id.split('-').pop() || task.id;
 
   return (
-    <div 
+    <div
       onClick={onClick}
-      className="flex items-start px-4 py-3 cursor-pointer transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+      className="flex items-start px-4 py-3 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5"
     >
       <div className="flex gap-2 flex-1 min-w-0">
         <span className="text-xs font-mono text-gray-400 dark:text-gray-500 font-medium flex-shrink-0 mt-1">

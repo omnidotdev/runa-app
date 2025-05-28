@@ -39,7 +39,7 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
 
     window.addEventListener('keydown', handleEscape);
     window.addEventListener('mousedown', handleClickOutside);
-    
+
     return () => {
       window.removeEventListener('keydown', handleEscape);
       window.removeEventListener('mousedown', handleClickOutside);
@@ -87,7 +87,7 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
 
     // Get all tasks from the column being deleted
     const tasksToMove = project.columns[columnId].tasks;
-    
+
     // Create new columns object without the deleted column
     const { [columnId]: deletedColumn, ...remainingColumns } = project.columns;
 
@@ -124,7 +124,7 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
 
   return (
     <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50">
-      <div 
+      <div
         ref={modalRef}
         className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-lg max-h-[85vh] overflow-auto"
       >
@@ -132,7 +132,7 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Overview Settings</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
           >
             <X className="w-5 h-5" />
           </button>
@@ -241,7 +241,7 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
                                 e.stopPropagation();
                                 setColumnToDelete(columnId);
                               }}
-                              className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-all"
+                              className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>

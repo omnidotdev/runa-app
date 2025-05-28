@@ -59,11 +59,11 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
 
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
-      
+
       if (modalRef.current && !modalRef.current.contains(target) && !columnToDelete) {
         onClose();
       }
-      
+
       if (colorPickerRef.current && !colorPickerRef.current.contains(target)) {
         setShowColorPicker(false);
       }
@@ -71,7 +71,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
 
     window.addEventListener('keydown', handleEscape);
     window.addEventListener('mousedown', handleClickOutside);
-    
+
     return () => {
       window.removeEventListener('keydown', handleEscape);
       window.removeEventListener('mousedown', handleClickOutside);
@@ -139,7 +139,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
 
     // Get all tasks from the column being deleted
     const tasksToMove = project.columns[columnId].tasks;
-    
+
     // Create new columns object without the deleted column
     const { [columnId]: deletedColumn, ...remainingColumns } = project.columns;
 
@@ -176,7 +176,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
 
   return (
     <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50">
-      <div 
+      <div
         ref={modalRef}
         className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-lg max-h-[85vh] overflow-auto"
       >
@@ -184,7 +184,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Project Settings</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
           >
             <X className="w-5 h-5" />
           </button>
@@ -242,7 +242,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
                 </div>
                 <Palette className="w-4 h-4 text-gray-400" />
               </button>
-              
+
               {showColorPicker && (
                 <div
                   ref={colorPickerRef}
@@ -371,7 +371,7 @@ export function ProjectSettings({ project, onClose, onUpdate, onImport, onExport
                                 e.stopPropagation();
                                 setColumnToDelete(columnId);
                               }}
-                              className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-all"
+                              className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>

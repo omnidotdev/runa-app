@@ -30,7 +30,7 @@ export function WorkspaceSettings({ team, onClose, onUpdate }: WorkspaceSettings
 
     window.addEventListener('keydown', handleEscape);
     window.addEventListener('mousedown', handleClickOutside);
-    
+
     return () => {
       window.removeEventListener('keydown', handleEscape);
       window.removeEventListener('mousedown', handleClickOutside);
@@ -61,7 +61,7 @@ export function WorkspaceSettings({ team, onClose, onUpdate }: WorkspaceSettings
 
   return (
     <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50">
-      <div 
+      <div
         ref={modalRef}
         className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-lg"
       >
@@ -69,7 +69,7 @@ export function WorkspaceSettings({ team, onClose, onUpdate }: WorkspaceSettings
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Workspace Settings</h2>
           <button
             onClick={onClose}
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
           >
             <X className="w-5 h-5" />
           </button>
@@ -79,7 +79,7 @@ export function WorkspaceSettings({ team, onClose, onUpdate }: WorkspaceSettings
             <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">Team Members</h3>
             <div className="space-y-2">
               {members.map(member => (
-                <div 
+                <div
                   key={member.id}
                   className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
                 >
@@ -91,7 +91,7 @@ export function WorkspaceSettings({ team, onClose, onUpdate }: WorkspaceSettings
                   </div>
                   <button
                     onClick={() => setMemberToDelete(member.id)}
-                    className="p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                    className="p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
