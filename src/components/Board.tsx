@@ -1,19 +1,23 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { DragDropContext, DropResult, Droppable } from '@hello-pangea/dnd';
-import { Column } from './Column';
-import { Project, Task } from '@/types';
-import { TaskDialog } from './TaskDialog';
-import { ConfirmDialog } from './ConfirmDialog';
+import { useState, useRef, useEffect } from "react";
+import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
+import { Column } from "./Column";
+import { Project, Task } from "@/types";
+import { TaskDialog } from "./TaskDialog";
+import { ConfirmDialog } from "./ConfirmDialog";
 
 interface BoardProps {
   project: Project;
-  onProjectUpdate: (columns: Project['columns']) => void;
+  onProjectUpdate: (columns: Project["columns"]) => void;
   isProjectView?: boolean;
 }
 
-function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) {
+function Board({
+  project,
+  onProjectUpdate,
+  isProjectView = false,
+}: BoardProps) {
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [newTaskColumn, setNewTaskColumn] = useState<string | null>(null);
@@ -28,10 +32,10 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
     // Don't initiate board scroll if clicking on interactive elements
     const target = e.target as HTMLElement;
     if (
-      target.closest('[data-rbd-draggable-id]') || // Draggable elements
-      target.closest('button') || // Buttons
-      target.closest('input') || // Input fields
-      target.closest('[data-rbd-droppable-id]') || // Droppable areas
+      target.closest("[data-rbd-draggable-id]") || // Draggable elements
+      target.closest("button") || // Buttons
+      target.closest("input") || // Input fields
+      target.closest("[data-rbd-droppable-id]") || // Droppable areas
       target.closest('[role="dialog"]') // Dialog content
     ) {
       return;
@@ -43,7 +47,8 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
   };
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!isMouseDown.current || isDragging.current || !containerRef.current) return;
+    if (!isMouseDown.current || isDragging.current || !containerRef.current)
+      return;
 
     e.preventDefault();
     const dx = e.pageX - startX.current;
@@ -55,12 +60,12 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
   };
 
   useEffect(() => {
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, []);
 
@@ -85,9 +90,10 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
     const sourceColumn = project.columns[source.droppableId];
     const destColumn = project.columns[destination.droppableId];
     const sourceTasks = [...sourceColumn.tasks];
-    const destTasks = source.droppableId === destination.droppableId
-      ? sourceTasks
-      : [...destColumn.tasks];
+    const destTasks =
+      source.droppableId === destination.droppableId
+        ? sourceTasks
+        : [...destColumn.tasks];
 
     const [removed] = sourceTasks.splice(source.index, 1);
     destTasks.splice(destination.index, 0, removed);
@@ -108,7 +114,7 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
   const handleDeleteColumn = (columnId: string) => {
     const columnCount = Object.keys(project.columns).length;
     if (columnCount <= 1) {
-      alert('Cannot delete the last column');
+      alert("Cannot delete the last column");
       setColumnToDelete(null);
       return;
     }
@@ -124,7 +130,7 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
       const firstColumnId = Object.keys(remainingColumns)[0];
       remainingColumns[firstColumnId] = {
         ...remainingColumns[firstColumnId],
-        tasks: [...remainingColumns[firstColumnId].tasks, ...tasksToMove]
+        tasks: [...remainingColumns[firstColumnId].tasks, ...tasksToMove],
       };
     }
 
@@ -135,7 +141,7 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
 
   const getTaskById = (taskId: string) => {
     for (const column of Object.values(project.columns)) {
-      const task = column.tasks.find(t => t.id === taskId);
+      const task = column.tasks.find((t) => t.id === taskId);
       if (task) return task;
     }
     return null;
@@ -155,7 +161,7 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
   const handleUpdateTask = (task: Task) => {
     for (const columnId in project.columns) {
       const column = project.columns[columnId];
-      const taskIndex = column.tasks.findIndex(t => t.id === task.id);
+      const taskIndex = column.tasks.findIndex((t) => t.id === task.id);
       if (taskIndex !== -1) {
         const updatedTasks = [...column.tasks];
         updatedTasks[taskIndex] = task;
@@ -177,15 +183,17 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
       ...project.columns,
       [columnId]: {
         ...column,
-        tasks: column.tasks.filter(t => t.id !== taskId),
+        tasks: column.tasks.filter((t) => t.id !== taskId),
       },
     });
     setSelectedTask(null);
   };
 
-  const boardStyle = project.color ? {
-    backgroundColor: `${project.color}10`,
-  } : {};
+  const boardStyle = project.color
+    ? {
+        backgroundColor: `${project.color}10`,
+      }
+    : {};
 
   return (
     <div
@@ -203,22 +211,24 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
                 {...provided.droppableProps}
                 className="flex gap-3 h-full"
               >
-                {Object.entries(project.columns).map(([columnId, column], index) => (
-                  <Column
-                    key={columnId}
-                    column={column}
-                    index={index}
-                    onTaskClick={(taskId) => setSelectedTask(taskId)}
-                    onAddClick={() => {
-                      setIsAddingTask(true);
-                      setNewTaskColumn(columnId);
-                    }}
-                    onDeleteClick={(columnId) => setColumnToDelete(columnId)}
-                    isProjectView={isProjectView}
-                    projectPrefix={project.prefix}
-                    projectColor={project.color}
-                  />
-                ))}
+                {Object.entries(project.columns).map(
+                  ([columnId, column], index) => (
+                    <Column
+                      key={columnId}
+                      column={column}
+                      index={index}
+                      onTaskClick={(taskId) => setSelectedTask(taskId)}
+                      onAddClick={() => {
+                        setIsAddingTask(true);
+                        setNewTaskColumn(columnId);
+                      }}
+                      onDeleteClick={(columnId) => setColumnToDelete(columnId)}
+                      isProjectView={isProjectView}
+                      projectPrefix={project.prefix}
+                      projectColor={project.color}
+                    />
+                  ),
+                )}
                 {provided.placeholder}
               </div>
             )}
@@ -236,7 +246,7 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
           onDelete={(taskId) => {
             for (const columnId in project.columns) {
               const column = project.columns[columnId];
-              if (column.tasks.some(t => t.id === taskId)) {
+              if (column.tasks.some((t) => t.id === taskId)) {
                 handleDeleteTask(columnId, taskId);
                 break;
               }
@@ -253,10 +263,10 @@ function Board({ project, onProjectUpdate, isProjectView = false }: BoardProps) 
           isProject={isProjectView}
           projectPrefix={project.prefix}
           task={{
-            id: `${isProjectView ? 'project' : 'task'}-${Date.now()}`,
-            content: '',
-            description: '',
-            priority: 'medium',
+            id: `${isProjectView ? "project" : "task"}-${Date.now()}`,
+            content: "",
+            description: "",
+            priority: "medium",
             assignees: [],
             dueDate: undefined,
           }}

@@ -927,7 +927,7 @@ export default function Home() {
             />
           )}
 
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1">
             {currentProjectData &&
               (currentProject === "projects" ? (
                 <ProjectOverview
@@ -947,7 +947,7 @@ export default function Home() {
                   }}
                 />
               ) : currentProjectData.viewMode === "board" ? (
-                <div className="h-full overflow-x-auto overflow-y-hidden">
+                <div className="h-full">
                   <Board
                     project={filterTasks(currentProjectData)}
                     onProjectUpdate={(updatedColumns) => {
