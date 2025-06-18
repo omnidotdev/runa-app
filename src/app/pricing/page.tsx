@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { ArrowLeft, Check } from 'lucide-react';
-import Link from 'next/link';
+import { ArrowLeft, Check } from "lucide-react";
+import Link from "next/link";
 
 export default function Pricing() {
   return (
@@ -27,39 +27,52 @@ export default function Pricing() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-            <div className="p-8">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+            <div className="flex flex-col h-full p-8">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                 Self-Hosted
               </h2>
               <div className="flex items-baseline mb-8">
-                <span className="text-4xl font-bold text-gray-900 dark:text-gray-100">$0</span>
-                <span className="ml-1 text-gray-500 dark:text-gray-400">/forever</span>
+                <span className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+                  $0
+                </span>
+                <span className="ml-1 text-gray-500 dark:text-gray-400">
+                  /forever
+                </span>
               </div>
               <p className="text-gray-600 dark:text-gray-400 mb-8">
-                Host Runa on your own infrastructure with full control over your data.
+                Host Runa on your own infrastructure with full control over your
+                data.
               </p>
-              <ul className="space-y-4 mb-8">
+              <ul className="space-y-4 mb-8 flex-1">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">Unlimited projects and tasks</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Unlimited projects and tasks
+                  </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">Full source code access</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Full source code access
+                  </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">Self-hosted deployment</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Self-hosted deployment
+                  </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">Community support</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Community support
+                  </span>
                 </li>
               </ul>
               <a
                 href="https://github.com/your-repo/runa"
-                className="block w-full py-3 px-4 text-center font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
+                className="w-full py-3 px-4 text-center font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
               >
                 View on GitHub
               </a>
@@ -72,36 +85,51 @@ export default function Pricing() {
                 Cloud
               </h2>
               <div className="flex items-baseline mb-8">
-                <span className="text-4xl font-bold text-gray-900 dark:text-gray-100">$8</span>
-                <span className="ml-1 text-gray-500 dark:text-gray-400">/user/month</span>
+                <span className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+                  $8
+                </span>
+                <span className="ml-1 text-gray-500 dark:text-gray-400">
+                  /user/month
+                </span>
               </div>
               <p className="text-gray-600 dark:text-gray-400 mb-8">
-                Let us handle the infrastructure while you focus on your projects.
+                Let us handle the infrastructure while you focus on your
+                projects.
               </p>
               <ul className="space-y-4 mb-8">
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">Everything in Self-Hosted</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Everything in Self-Hosted
+                  </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">Managed cloud hosting</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Managed cloud hosting
+                  </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">Automatic backups & updates</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Automatic backups & updates
+                  </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">Priority support</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Priority support
+                  </span>
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">30-day free trial</span>
+                  <span className="text-gray-600 dark:text-gray-400">
+                    30-day free trial
+                  </span>
                 </li>
               </ul>
               <button
-                onClick={() => window.location.href = '/signup'}
+                onClick={() => (window.location.href = "/signup")}
                 className="block w-full py-3 px-4 text-center font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
               >
                 Start Free Trial
@@ -120,7 +148,8 @@ export default function Pricing() {
                 What's included in the free trial?
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                The 30-day free trial includes all Cloud features with no limitations. No credit card required.
+                The 30-day free trial includes all Cloud features with no
+                limitations. No credit card required.
               </p>
             </div>
             <div className="text-left">
@@ -128,7 +157,8 @@ export default function Pricing() {
                 Can I cancel at any time?
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Yes, you can cancel your subscription at any time. You'll continue to have access until the end of your billing period.
+                Yes, you can cancel your subscription at any time. You'll
+                continue to have access until the end of your billing period.
               </p>
             </div>
             <div className="text-left">
@@ -136,7 +166,9 @@ export default function Pricing() {
                 What happens to my data if I cancel?
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                You can export all your data at any time. After cancellation, your data will be retained for 30 days before being permanently deleted.
+                You can export all your data at any time. After cancellation,
+                your data will be retained for 30 days before being permanently
+                deleted.
               </p>
             </div>
           </div>
