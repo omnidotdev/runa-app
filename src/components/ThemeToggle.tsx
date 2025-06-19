@@ -1,29 +1,13 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 
 const ThemeToggle = () => {
-  const [isDark, setIsDark] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
 
-  useEffect(() => {
-    const theme = localStorage.getItem("theme");
-    setIsDark(theme === "dark");
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    setIsDark(!isDark);
-    if (!isDark) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  };
+  const toggleTheme = () =>
+    resolvedTheme === "dark" ? setTheme("light") : setTheme("dark");
 
   return (
     <button
@@ -32,11 +16,8 @@ const ThemeToggle = () => {
       className="rounded-md p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
       aria-label="Toggle theme"
     >
-      {isDark ? (
-        <Moon className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-      ) : (
-        <Sun className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-      )}
+      <Moon className="hidden h-5 w-5 text-gray-600 dark:block dark:text-gray-300" />
+      <Sun className="h-5 w-5 text-gray-600 dark:hidden dark:text-gray-300" />
     </button>
   );
 };

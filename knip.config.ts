@@ -11,7 +11,11 @@ const knipConfig: KnipConfig = {
   "graphql-codegen": {
     config: ["package.json", "src/lib/graphql/codegen.config.ts"],
   },
-  ignore: ["src/generated/**"],
+  ignore: [
+    "src/generated/**",
+    "src/lib/graphql/getSdk.ts",
+    "src/lib/graphql/graphqlFetch.ts",
+  ],
   ignoreDependencies: [
     // used by GraphQL Code Generator scripts
     "dotenv",

@@ -1,9 +1,11 @@
 import { Inter } from "next/font/google";
 
-import type { Metadata } from "next";
-import "./globals.css";
-
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import ThemeProvider from "@/providers/ThemeProvider";
+
+import type { Metadata } from "next";
+
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,9 +16,11 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} dark:bg-gray-900`}>
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <ThemeProvider>
+          <ReactQueryProvider>{children}</ReactQueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
