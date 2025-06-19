@@ -3,7 +3,7 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-import { getQueryClient } from "../utils/graphql-client";
+import getQueryClient from "@/utils/getQueryClient";
 
 import type { ReactNode } from "react";
 

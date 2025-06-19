@@ -1,16 +1,11 @@
 import { useState } from "react";
 
 import { useGetTasksQuery } from "@/generated/graphql";
-import { createGraphQLClient } from "@/utils/createGraphQLClient";
 
 const TasksList = () => {
   const [isRefetching, setIsRefetching] = useState(false);
 
-  // Create a GraphQL client
-  const graphQLClient = createGraphQLClient();
-
-  const { data, isLoading, isError, error, refetch } =
-    useGetTasksQuery(graphQLClient);
+  const { data, isLoading, isError, error, refetch } = useGetTasksQuery();
 
   const handleRefetch = async () => {
     setIsRefetching(true);

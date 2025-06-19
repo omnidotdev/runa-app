@@ -1,11 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-import {
-  useCreateTaskMutation,
-  useGetTasksQuery,
-} from "@/graphql/generated/graphql";
-import { createGraphQLClient } from "@/utils/createGraphQLClient";
+import { useCreateTaskMutation, useGetTasksQuery } from "@/generated/graphql";
 
 interface FormData {
   title: string;
@@ -21,29 +17,25 @@ const CreateTaskForm = () => {
   });
 
   const queryClient = useQueryClient();
-  const graphQLClient = createGraphQLClient();
 
-  const { mutate, isPending, isError, error } = useCreateTaskMutation(
-    graphQLClient,
-    {
-      onSuccess: () => {
-        // Reset form
-        setFormData({
-          title: "",
-          description: "",
-          dueDate: "",
-        });
+  const { mutate, isPending, isError, error } = useCreateTaskMutation({
+    onSuccess: () => {
+      // Reset form
+      setFormData({
+        title: "",
+        description: "",
+        dueDate: "",
+      });
 
-        // Invalidate tasks queries to trigger a refetch
-        queryClient.invalidateQueries({
-          queryKey: [useGetTasksQuery.getKey()],
-        });
+      // Invalidate tasks queries to trigger a refetch
+      queryClient.invalidateQueries({
+        queryKey: [useGetTasksQuery.getKey()],
+      });
 
-        // Show success message
-        alert("Task created successfully!");
-      },
+      // Show success message
+      alert("Task created successfully!");
     },
-  );
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
