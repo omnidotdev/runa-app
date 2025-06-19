@@ -1,4 +1,4 @@
-import { API_GRAPHQL_URL } from "@/lib/config";
+import { API_GRAPHQL_URL } from "../config";
 
 import type { CodegenConfig } from "@graphql-codegen/cli";
 import type { Types } from "@graphql-codegen/plugin-helpers";

@@ -1,5 +1,3 @@
-"use client";
-
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { Plus, Trash2 } from "lucide-react";
 
