@@ -1,7 +1,6 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { useCreateTaskMutation, useGetTasksQuery } from "@/generated/graphql";
+import { useCreateTaskMutation } from "@/generated/graphql";
 
 interface FormData {
   title: string;
@@ -16,8 +15,6 @@ const CreateTaskForm = () => {
     dueDate: "",
   });
 
-  const queryClient = useQueryClient();
-
   const { mutate, isPending, isError, error } = useCreateTaskMutation({
     onSuccess: () => {
       // Reset form
@@ -25,11 +22,6 @@ const CreateTaskForm = () => {
         title: "",
         description: "",
         dueDate: "",
-      });
-
-      // Invalidate tasks queries to trigger a refetch
-      queryClient.invalidateQueries({
-        queryKey: [useGetTasksQuery.getKey()],
       });
 
       // Show success message
@@ -71,7 +63,8 @@ const CreateTaskForm = () => {
       {isError && (
         <div className="mb-4 rounded-md bg-red-50 p-3 text-red-800">
           <p className="text-sm">
-            {error?.message || "An error occurred while creating the task"}
+            {(error as Error)?.message ||
+              "An error occurred while creating the task"}
           </p>
         </div>
       )}

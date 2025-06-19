@@ -346,9 +346,9 @@ const TaskDialog = ({
                         Applied Labels
                       </div>
                       <div className="flex flex-wrap gap-1">
-                        {task.labels.map((label, index) => (
+                        {task.labels.map((label) => (
                           <span
-                            key={index}
+                            key={label}
                             className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-1 font-medium text-gray-700 text-xs dark:bg-gray-700 dark:text-gray-300"
                           >
                             {label}
@@ -372,10 +372,10 @@ const TaskDialog = ({
                           Project Labels
                         </div>
                         <div className="space-y-1">
-                          {currentProject.labels.map((label, index) => (
+                          {currentProject.labels.map((label) => (
                             <button
                               type="button"
-                              key={index}
+                              key={label}
                               onClick={() => handleToggleLabel(label)}
                               className="flex w-full items-center justify-between rounded px-2 py-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
                             >

@@ -38,7 +38,7 @@ const RichTextEditor = ({
 }: RichTextEditorProps) => {
   const mounted = useRef(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mentionQuery, setMentionQuery] = useState("");
+  const [mentionQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const suggestionRef = useRef<{ destroy: () => void } | null>(null);
 

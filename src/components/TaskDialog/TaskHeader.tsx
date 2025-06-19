@@ -65,29 +65,26 @@ const TaskHeader = ({
         </div>
       </div>
       <div className="flex items-center gap-2">
-        {!isNew && (
-          <>
-            {isEditing ? (
-              <button
-                type="button"
-                onClick={onSave}
-                disabled={isSaving}
-                className="text-gray-500 hover:text-green-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:text-green-400"
-              >
-                <Save className="h-5 w-5" />
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={onDelete}
-                disabled={isSaving}
-                className="text-gray-500 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:text-red-400"
-              >
-                <Trash className="h-5 w-5" />
-              </button>
-            )}
-          </>
-        )}
+        {!isNew &&
+          (isEditing ? (
+            <button
+              type="button"
+              onClick={onSave}
+              disabled={isSaving}
+              className="text-gray-500 hover:text-green-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:text-green-400"
+            >
+              <Save className="h-5 w-5" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={onDelete}
+              disabled={isSaving}
+              className="text-gray-500 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:text-red-400"
+            >
+              <Trash className="h-5 w-5" />
+            </button>
+          ))}
         <button
           type="button"
           onClick={onClose}

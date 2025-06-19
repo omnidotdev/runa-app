@@ -222,11 +222,11 @@ const TaskListItem = ({ task, project, onClick }: TaskListItemProps) => {
             )}
             {task.labels && task.labels.length > 0 && (
               <div className="flex flex-wrap gap-1">
-                {task.labels.map((label, index) => {
+                {task.labels.map((label) => {
                   const colors = getColorClasses(label);
                   return (
                     <div
-                      key={index}
+                      key={label}
                       className={`flex items-center gap-1 rounded-full px-1.5 py-0.5 ${colors.bg}`}
                     >
                       <Tag className={`h-3 w-3 ${colors.icon}`} />

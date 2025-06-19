@@ -126,7 +126,7 @@ const Board = ({
     const tasksToMove = project.columns[columnId].tasks;
 
     // Create new columns object without the deleted column
-    const { [columnId]: deletedColumn, ...remainingColumns } = project.columns;
+    const { [columnId]: _deletedColumn, ...remainingColumns } = project.columns;
 
     // If there are tasks in the deleted column, move them to the first remaining column
     if (tasksToMove.length > 0) {

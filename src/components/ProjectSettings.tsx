@@ -57,7 +57,6 @@ const ProjectSettings = ({
   const [newColumnTitle, setNewColumnTitle] = useState("");
   const [columnToDelete, setColumnToDelete] = useState<string | null>(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const [newLabel, setNewLabel] = useState("");
   const modalRef = useRef<HTMLDivElement>(null);
   const colorPickerRef = useRef<HTMLDivElement>(null);
 
@@ -115,22 +114,6 @@ const ProjectSettings = ({
     onClose();
   };
 
-  const handleAddLabel = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newLabel.trim()) return;
-
-    const updatedLabels = [...(project.labels || []), newLabel.trim()];
-    onUpdate({ labels: updatedLabels });
-    setNewLabel("");
-  };
-
-  const handleRemoveLabel = (labelToRemove: string) => {
-    const updatedLabels = (project.labels || []).filter(
-      (label) => label !== labelToRemove,
-    );
-    onUpdate({ labels: updatedLabels });
-  };
-
   const handleAddColumn = () => {
     if (!newColumnTitle.trim()) return;
 
@@ -164,7 +147,7 @@ const ProjectSettings = ({
     const tasksToMove = project.columns[columnId].tasks;
 
     // Create new columns object without the deleted column
-    const { [columnId]: deletedColumn, ...remainingColumns } = project.columns;
+    const { [columnId]: _deletedColumn, ...remainingColumns } = project.columns;
 
     // If there are tasks in the deleted column, move them to the first remaining column
     if (tasksToMove.length > 0) {

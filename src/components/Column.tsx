@@ -41,7 +41,7 @@ const Column = ({
 
   return (
     <Draggable draggableId={column.id} index={index} isDragDisabled={true}>
-      {(provided, snapshot) => (
+      {(provided) => (
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}

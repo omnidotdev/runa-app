@@ -500,7 +500,7 @@ const Home = () => {
 
   const handleProjectDelete = (projectId: string) => {
     setProjects((prev) => {
-      const { [projectId]: deleted, ...rest } = prev;
+      const { [projectId]: _deleted, ...rest } = prev;
 
       // If we're deleting a project, update the overview
       if (projectId === `projects-${currentWorkspace}`) {
