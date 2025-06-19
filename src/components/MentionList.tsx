@@ -73,5 +73,4 @@ const MentionList = forwardRef<HTMLDivElement, MentionListProps>(
   },
 );
 
-export { MentionList };
 export default MentionList;
