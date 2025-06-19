@@ -3,12 +3,12 @@
 import { Tag, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import ConfirmDialog from "@/components/ConfirmDialog";
+import AssigneePicker from "@/components/TaskDialog/AssigneePicker";
+import DatePicker from "@/components/TaskDialog/DatePicker";
+import TaskDescription from "@/components/TaskDialog/TaskDescription";
+import TaskHeader from "@/components/TaskDialog/TaskHeader";
 import { parseDate } from "@/utils/dates";
-import ConfirmDialog from "../ConfirmDialog";
-import AssigneePicker from "./AssigneePicker";
-import DatePicker from "./DatePicker";
-import TaskDescription from "./TaskDescription";
-import TaskHeader from "./TaskHeader";
 
 import type { Assignee, Project, Task } from "@/types";
 

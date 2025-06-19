@@ -13,9 +13,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import ConfirmDialog from "./ConfirmDialog";
-import ThemeToggle from "./ThemeToggle";
-import WorkspaceSelector from "./WorkspaceSelector";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import ThemeToggle from "@/components/ThemeToggle";
+import WorkspaceSelector from "@/components/WorkspaceSelector";
 
 import type { Project, Workspace } from "@/types";
 

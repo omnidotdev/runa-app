@@ -1,6 +1,6 @@
 import { Type } from "lucide-react";
 
-import RichTextEditor from "../RichTextEditor";
+import RichTextEditor from "@/components/RichTextEditor";
 
 import type { Assignee, Project, Task } from "@/types";
 

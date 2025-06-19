@@ -8,8 +8,8 @@ import { EditorContent, ReactRenderer, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
+import MentionList from "@/components/MentionList";
 import { MentionExtension } from "@/extensions/mention";
-import MentionList from "./MentionList";
 
 import type { Assignee, Project, Task } from "@/types";
 

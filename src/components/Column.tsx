@@ -1,7 +1,7 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { Plus, Trash2 } from "lucide-react";
 
-import Task from "./Task";
+import Task from "@/components/Task";
 
 import type { Column as ColumnType } from "@/types";
 

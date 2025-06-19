@@ -3,9 +3,9 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useEffect, useRef, useState } from "react";
 
-import Column from "./Column";
-import ConfirmDialog from "./ConfirmDialog";
-import TaskDialog from "./TaskDialog";
+import Column from "@/components/Column";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import TaskDialog from "@/components/TaskDialog";
 
 import type { DropResult } from "@hello-pangea/dnd";
 import type { Project, Task } from "@/types";

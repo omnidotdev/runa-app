@@ -4,7 +4,7 @@ import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { GripVertical, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import ConfirmDialog from "./ConfirmDialog";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 import type { DropResult } from "@hello-pangea/dnd";
 import type { Column, Project } from "@/types";

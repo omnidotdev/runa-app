@@ -1,5 +1,5 @@
-import Board from "./Board";
-import ListView from "./ListView";
+import Board from "@/components/Board";
+import ListView from "@/components/ListView";
 
 import type { Project } from "@/types";
 
