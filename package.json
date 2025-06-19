@@ -10,7 +10,8 @@
     "format": "biome format --write src",
     "lint": "biome lint --diagnostic-level=error src",
     "graphql:generate": "NODE_PATH=src/ dotenv -e .env.development -- graphql-codegen --config src/lib/graphql/codegen.config.ts",
-    "graphql:generate:watch": "bun graphql:generate -w"
+    "graphql:generate:watch": "bun graphql:generate -w",
+    "prepare": "husky"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
@@ -49,6 +50,7 @@
     "concurrently": "^9.1.2",
     "dotenv": "^16.5.0",
     "dotenv-cli": "^8.0.0",
+    "husky": "^9.1.7",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.7",
     "typescript": "^5"
