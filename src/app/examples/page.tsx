@@ -2,10 +2,10 @@
 
 import { Suspense } from "react";
 
-import { CreateTaskForm } from "@/components/examples/CreateTaskForm";
-import { TasksList } from "@/components/examples/TasksList";
+import CreateTaskForm from "@/components/examples/CreateTaskForm";
+import TasksList from "@/components/examples/TasksList";
 
-export default function ExamplesPage() {
+const ExamplesPage = () => {
   return (
     <div className="container mx-auto max-w-4xl p-6">
       <div className="mb-8">
@@ -32,4 +32,6 @@ export default function ExamplesPage() {
       </div>
     </div>
   );
-}
+};
+
+export default ExamplesPage;

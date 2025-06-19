@@ -3,9 +3,9 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useEffect, useRef, useState } from "react";
 
-import { Column } from "./Column";
-import { ConfirmDialog } from "./ConfirmDialog";
-import { TaskDialog } from "./TaskDialog";
+import Column from "./Column";
+import ConfirmDialog from "./ConfirmDialog";
+import TaskDialog from "./TaskDialog";
 
 import type { DropResult } from "@hello-pangea/dnd";
 import type { Project, Task } from "@/types";
@@ -16,11 +16,11 @@ interface BoardProps {
   isProjectView?: boolean;
 }
 
-function Board({
+const Board = ({
   project,
   onProjectUpdate,
   isProjectView = false,
-}: BoardProps) {
+}: BoardProps) => {
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [newTaskColumn, setNewTaskColumn] = useState<string | null>(null);
@@ -296,6 +296,6 @@ function Board({
       )}
     </div>
   );
-}
+};
 
-export { Board };
+export default Board;

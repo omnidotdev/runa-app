@@ -19,7 +19,7 @@ interface TaskHeaderProps {
   onKeyDown: (e: React.KeyboardEvent) => void;
 }
 
-export function TaskHeader({
+const TaskHeader = ({
   task,
   content,
   isNew,
@@ -34,7 +34,7 @@ export function TaskHeader({
   onClose,
   onEditStart,
   onKeyDown,
-}: TaskHeaderProps) {
+}: TaskHeaderProps) => {
   return (
     <div className="flex items-start justify-between border-gray-200 border-b p-6 dark:border-gray-700">
       <div className="flex-1">
@@ -99,4 +99,6 @@ export function TaskHeader({
       </div>
     </div>
   );
-}
+};
+
+export default TaskHeader;

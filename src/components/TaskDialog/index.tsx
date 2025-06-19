@@ -4,11 +4,11 @@ import { Tag, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { parseDate } from "@/utils/dates";
-import { ConfirmDialog } from "../ConfirmDialog";
-import { AssigneePicker } from "./AssigneePicker";
-import { DatePicker } from "./DatePicker";
-import { TaskDescription } from "./TaskDescription";
-import { TaskHeader } from "./TaskHeader";
+import ConfirmDialog from "../ConfirmDialog";
+import AssigneePicker from "./AssigneePicker";
+import DatePicker from "./DatePicker";
+import TaskDescription from "./TaskDescription";
+import TaskHeader from "./TaskHeader";
 
 import type { Assignee, Project, Task } from "@/types";
 
@@ -27,7 +27,7 @@ interface TaskDialogProps {
   onUpdate?: (taskId: string, updates: Partial<Task>) => void;
 }
 
-export function TaskDialog({
+const TaskDialog = ({
   task: initialTask,
   team,
   projects = [],
@@ -40,7 +40,7 @@ export function TaskDialog({
   onDelete,
   onSave,
   onUpdate,
-}: TaskDialogProps) {
+}: TaskDialogProps) => {
   const [task, setTask] = useState(initialTask);
   const [isEditing, setIsEditing] = useState(isNew);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -456,4 +456,6 @@ export function TaskDialog({
       )}
     </div>
   );
-}
+};
+
+export default TaskDialog;

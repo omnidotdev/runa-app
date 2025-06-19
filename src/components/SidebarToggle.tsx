@@ -5,7 +5,7 @@ interface SidebarToggleProps {
   onToggle: () => void;
 }
 
-export function SidebarToggle({ isCollapsed, onToggle }: SidebarToggleProps) {
+const SidebarToggle = ({ isCollapsed, onToggle }: SidebarToggleProps) => {
   return (
     <button
       type="button"
@@ -22,4 +22,6 @@ export function SidebarToggle({ isCollapsed, onToggle }: SidebarToggleProps) {
       )}
     </button>
   );
-}
+};
+
+export default SidebarToggle;

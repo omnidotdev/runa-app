@@ -3,7 +3,7 @@
 import { ChevronDown, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { ConfirmDialog } from "./ConfirmDialog";
+import ConfirmDialog from "./ConfirmDialog";
 
 interface Workspace {
   id: string;
@@ -18,13 +18,13 @@ interface WorkspaceSelectorProps {
   onWorkspaceDelete: (workspaceId: string) => void;
 }
 
-export function WorkspaceSelector({
+const WorkspaceSelector = ({
   workspaces,
   currentWorkspace,
   onWorkspaceSelect,
   onWorkspaceCreate,
   onWorkspaceDelete,
-}: WorkspaceSelectorProps) {
+}: WorkspaceSelectorProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [newWorkspaceName, setNewWorkspaceName] = useState("");
@@ -182,4 +182,6 @@ export function WorkspaceSelector({
       )}
     </div>
   );
-}
+};
+
+export default WorkspaceSelector;

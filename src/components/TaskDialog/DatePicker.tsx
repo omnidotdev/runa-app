@@ -12,7 +12,7 @@ interface DatePickerProps {
   onDateInputChange: (value: string) => void;
 }
 
-export function DatePicker({
+const DatePicker = ({
   dueDate,
   isOpen,
   onToggle,
@@ -20,7 +20,7 @@ export function DatePicker({
   onDateRemove,
   dateInput,
   onDateInputChange,
-}: DatePickerProps) {
+}: DatePickerProps) => {
   const dateInputRef = useRef<HTMLInputElement>(null);
 
   return (
@@ -72,4 +72,6 @@ export function DatePicker({
       )}
     </div>
   );
-}
+};
+
+export default DatePicker;

@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { ConfirmDialog } from "./ConfirmDialog";
+import ConfirmDialog from "./ConfirmDialog";
 
 import type { DropResult } from "@hello-pangea/dnd";
 import type { Column, Project } from "@/types";
@@ -42,13 +42,13 @@ const projectColors = [
   { name: "Cyan", value: "#06b6d4" },
 ];
 
-export function ProjectSettings({
+const ProjectSettings = ({
   project,
   onClose,
   onUpdate,
   onImport,
   onExport,
-}: ProjectSettingsProps) {
+}: ProjectSettingsProps) => {
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description || "");
   const [prefix, setPrefix] = useState(project.prefix || "");
@@ -494,4 +494,6 @@ export function ProjectSettings({
       )}
     </div>
   );
-}
+};
+
+export default ProjectSettings;

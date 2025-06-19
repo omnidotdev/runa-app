@@ -11,7 +11,7 @@ interface ReactQueryProviderProps {
   children: ReactNode;
 }
 
-export function ReactQueryProvider({ children }: ReactQueryProviderProps) {
+const ReactQueryProvider = ({ children }: ReactQueryProviderProps) => {
   const queryClient = getQueryClient();
 
   return (
@@ -22,4 +22,6 @@ export function ReactQueryProvider({ children }: ReactQueryProviderProps) {
       <ReactQueryDevtools />
     </QueryClientProvider>
   );
-}
+};
+
+export default ReactQueryProvider;

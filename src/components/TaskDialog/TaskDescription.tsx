@@ -2,9 +2,9 @@
 
 import { Type } from "lucide-react";
 
-import { RichTextEditor } from "../RichTextEditor";
+import RichTextEditor from "../RichTextEditor";
 
-import type { Project, Task } from "@/types";
+import type { Assignee, Project, Task } from "@/types";
 
 interface TaskDescriptionProps {
   description: string;
@@ -17,7 +17,7 @@ interface TaskDescriptionProps {
   onEditStart: () => void;
 }
 
-export function TaskDescription({
+const TaskDescription = ({
   description,
   isNew,
   isEditing,
@@ -26,7 +26,7 @@ export function TaskDescription({
   team,
   onDescriptionChange,
   onEditStart,
-}: TaskDescriptionProps) {
+}: TaskDescriptionProps) => {
   return (
     <div className="prose prose-sm dark:prose-invert max-w-none">
       <div className="mb-2 flex items-center gap-2">
@@ -50,4 +50,6 @@ export function TaskDescription({
       </div>
     </div>
   );
-}
+};
+
+export default TaskDescription;

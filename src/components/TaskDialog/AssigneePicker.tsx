@@ -10,13 +10,13 @@ interface AssigneePickerProps {
   onAssigneeToggle: (assignee: Assignee) => void;
 }
 
-export function AssigneePicker({
+const AssigneePicker = ({
   assignees,
   team,
   isOpen,
   onToggle,
   onAssigneeToggle,
-}: AssigneePickerProps) {
+}: AssigneePickerProps) => {
   return (
     <div className="relative">
       <button
@@ -67,4 +67,6 @@ export function AssigneePicker({
       )}
     </div>
   );
-}
+};
+
+export default AssigneePicker;

@@ -15,7 +15,7 @@ interface FormData {
   dueDate: string;
 }
 
-export function CreateTaskForm() {
+const CreateTaskForm = () => {
   const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
@@ -143,4 +143,6 @@ export function CreateTaskForm() {
       </form>
     </div>
   );
-}
+};
+
+export default CreateTaskForm;

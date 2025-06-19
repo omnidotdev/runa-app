@@ -10,13 +10,13 @@ interface HeaderProps {
   onOpenSettings: () => void;
 }
 
-export function Header({
+const Header = ({
   project,
   searchQuery,
   onSearchChange,
   onViewModeChange,
   onOpenSettings,
-}: HeaderProps) {
+}: HeaderProps) => {
   return (
     <div className="border-gray-200 border-b px-6 py-4 dark:border-gray-700">
       <div className="flex flex-col gap-4">
@@ -72,4 +72,6 @@ export function Header({
       </div>
     </div>
   );
-}
+};
+
+export default Header;

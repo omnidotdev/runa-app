@@ -1,5 +1,5 @@
-import { Board } from "./Board";
-import { ListView } from "./ListView";
+import Board from "./Board";
+import ListView from "./ListView";
 
 import type { Project } from "@/types";
 
@@ -12,14 +12,14 @@ interface ProjectOverviewProps {
   onProjectUpdate: (columns: Project["columns"]) => void;
 }
 
-export function ProjectOverview({
+const ProjectOverview = ({
   project,
   searchQuery,
   expandedSections,
   onToggleSection,
   onTaskClick,
   onProjectUpdate,
-}: ProjectOverviewProps) {
+}: ProjectOverviewProps) => {
   const filterTasks = (project: Project) => {
     if (!searchQuery) return project;
 
@@ -59,4 +59,6 @@ export function ProjectOverview({
       searchQuery={searchQuery}
     />
   );
-}
+};
+
+export default ProjectOverview;

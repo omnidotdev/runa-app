@@ -3,17 +3,17 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { Board } from "@/components/Board";
-import { Header } from "@/components/Header";
-import { ListView } from "@/components/ListView";
-import { ProjectOverview } from "@/components/ProjectOverview";
-import { ProjectOverviewSettings } from "@/components/ProjectOverviewSettings";
-import { ProjectSettings } from "@/components/ProjectSettings";
-import { Sidebar } from "@/components/Sidebar";
-import { SidebarToggle } from "@/components/SidebarToggle";
-import { TaskDialog } from "@/components/TaskDialog";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { WorkspaceSettings } from "@/components/WorkspaceSettings";
+import Board from "@/components/Board";
+import Header from "@/components/Header";
+import ListView from "@/components/ListView";
+import ProjectOverview from "@/components/ProjectOverview";
+import ProjectOverviewSettings from "@/components/ProjectOverviewSettings";
+import ProjectSettings from "@/components/ProjectSettings";
+import Sidebar from "@/components/Sidebar";
+import SidebarToggle from "@/components/SidebarToggle";
+import TaskDialog from "@/components/TaskDialog";
+import ThemeToggle from "@/components/ThemeToggle";
+import WorkspaceSettings from "@/components/WorkspaceSettings";
 
 import type { Assignee, Project, Task, Workspace } from "@/types";
 
@@ -375,7 +375,7 @@ const initialProjects: { [key: string]: Project } = {
   },
 };
 
-export default function Home() {
+const Home = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -1052,4 +1052,6 @@ export default function Home() {
       )}
     </div>
   );
-}
+};
+
+export default Home;

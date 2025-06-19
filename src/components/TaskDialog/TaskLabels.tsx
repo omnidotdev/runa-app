@@ -7,11 +7,7 @@ interface TaskLabelsProps {
   onChange: (labels: string[]) => void;
 }
 
-export function TaskLabels({
-  labels,
-  projectLabels,
-  onChange,
-}: TaskLabelsProps) {
+const TaskLabels = ({ labels, projectLabels, onChange }: TaskLabelsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [newLabel, setNewLabel] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -136,4 +132,6 @@ export function TaskLabels({
       )}
     </div>
   );
-}
+};
+
+export default TaskLabels;

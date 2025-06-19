@@ -13,9 +13,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import { ConfirmDialog } from "./ConfirmDialog";
-import { ThemeToggle } from "./ThemeToggle";
-import { WorkspaceSelector } from "./WorkspaceSelector";
+import ConfirmDialog from "./ConfirmDialog";
+import ThemeToggle from "./ThemeToggle";
+import WorkspaceSelector from "./WorkspaceSelector";
 
 import type { Project, Workspace } from "@/types";
 
@@ -34,7 +34,7 @@ interface SidebarProps {
   onSignOut: () => void;
 }
 
-export function Sidebar({
+const Sidebar = ({
   workspaces,
   currentWorkspace,
   onWorkspaceSelect,
@@ -47,7 +47,7 @@ export function Sidebar({
   onProjectDelete,
   onOpenWorkspaceSettings,
   onSignOut,
-}: SidebarProps) {
+}: SidebarProps) => {
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
@@ -274,4 +274,6 @@ export function Sidebar({
       )}
     </div>
   );
-}
+};
+
+export default Sidebar;

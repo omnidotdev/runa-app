@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useGetTasksQuery } from "@/generated/graphql";
 import { createGraphQLClient } from "@/utils/createGraphQLClient";
 
-export function TasksList() {
+const TasksList = () => {
   const [isRefetching, setIsRefetching] = useState(false);
 
   // Create a GraphQL client
@@ -96,4 +96,6 @@ export function TasksList() {
       )}
     </div>
   );
-}
+};
+
+export default TasksList;

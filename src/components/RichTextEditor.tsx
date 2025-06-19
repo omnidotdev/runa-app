@@ -9,7 +9,7 @@ import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { MentionExtension } from "@/extensions/mention";
-import { MentionList } from "./MentionList";
+import MentionList from "./MentionList";
 
 import type { Assignee, Project, Task } from "@/types";
 
@@ -25,7 +25,7 @@ interface RichTextEditorProps {
   onEditStart?: () => void;
 }
 
-export function RichTextEditor({
+const RichTextEditor = ({
   content,
   onChange,
   placeholder = "Write something...",
@@ -35,7 +35,7 @@ export function RichTextEditor({
   tasks = [],
   team = [],
   onEditStart,
-}: RichTextEditorProps) {
+}: RichTextEditorProps) => {
   const mounted = useRef(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const [mentionQuery, setMentionQuery] = useState("");
@@ -269,4 +269,6 @@ export function RichTextEditor({
       />
     </div>
   );
-}
+};
+
+export default RichTextEditor;

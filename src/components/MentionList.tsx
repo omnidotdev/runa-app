@@ -7,7 +7,7 @@ interface MentionListProps {
   selectedIndex: number;
 }
 
-export const MentionList = forwardRef<HTMLDivElement, MentionListProps>(
+const MentionList = forwardRef<HTMLDivElement, MentionListProps>(
   ({ items, command, selectedIndex }, ref) => {
     const getIcon = (type: string) => {
       switch (type) {
@@ -72,3 +72,6 @@ export const MentionList = forwardRef<HTMLDivElement, MentionListProps>(
     );
   },
 );
+
+export { MentionList };
+export default MentionList;

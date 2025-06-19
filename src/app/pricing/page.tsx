@@ -4,7 +4,7 @@ import { ArrowLeft, Check } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-export default function Pricing() {
+const Pricing = () => {
   const router = useRouter();
 
   return (
@@ -180,4 +180,6 @@ export default function Pricing() {
       </div>
     </div>
   );
-}
+};
+
+export default Pricing;

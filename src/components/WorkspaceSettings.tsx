@@ -3,7 +3,7 @@
 import { Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { ConfirmDialog } from "./ConfirmDialog";
+import ConfirmDialog from "./ConfirmDialog";
 
 import type { Assignee } from "@/types";
 
@@ -13,11 +13,11 @@ interface WorkspaceSettingsProps {
   onUpdate: (team: Assignee[]) => void;
 }
 
-export function WorkspaceSettings({
+const WorkspaceSettings = ({
   team,
   onClose,
   onUpdate,
-}: WorkspaceSettingsProps) {
+}: WorkspaceSettingsProps) => {
   const [members, setMembers] = useState<Assignee[]>(team);
   const [newMemberName, setNewMemberName] = useState("");
   const [memberToDelete, setMemberToDelete] = useState<string | null>(null);
@@ -146,4 +146,6 @@ export function WorkspaceSettings({
       )}
     </div>
   );
-}
+};
+
+export default WorkspaceSettings;

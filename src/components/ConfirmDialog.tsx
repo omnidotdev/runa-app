@@ -10,12 +10,12 @@ interface ConfirmDialogProps {
   onCancel: () => void;
 }
 
-export function ConfirmDialog({
+const ConfirmDialog = ({
   title,
   message,
   onConfirm,
   onCancel,
-}: ConfirmDialogProps) {
+}: ConfirmDialogProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -76,4 +76,6 @@ export function ConfirmDialog({
       </div>
     </div>
   );
-}
+};
+
+export default ConfirmDialog;

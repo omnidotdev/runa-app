@@ -9,6 +9,7 @@ import {
   Tag,
 } from "lucide-react";
 
+import type { DropResult } from "@hello-pangea/dnd";
 import type { Project, Task } from "@/types";
 
 const priorityConfig = {
@@ -29,14 +30,14 @@ interface ListViewProps {
   searchQuery: string;
 }
 
-export function ListView({
+const ListView = ({
   project,
   expandedSections,
   onToggleSection,
   onTaskClick,
   onProjectUpdate,
   searchQuery,
-}: ListViewProps) {
+}: ListViewProps) => {
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
 
@@ -170,7 +171,7 @@ export function ListView({
       </div>
     </DragDropContext>
   );
-}
+};
 
 interface TaskListItemProps {
   task: Task;
@@ -178,7 +179,7 @@ interface TaskListItemProps {
   onClick: () => void;
 }
 
-function TaskListItem({ task, project, onClick }: TaskListItemProps) {
+const TaskListItem = ({ task, project, onClick }: TaskListItemProps) => {
   const PriorityIcon = priorityConfig[task.priority].icon;
   const displayId = task.id.split("-").pop() || task.id;
 
@@ -246,7 +247,7 @@ function TaskListItem({ task, project, onClick }: TaskListItemProps) {
       </div>
     </div>
   );
-}
+};
 
 const getColorClasses = (label: string) => {
   const labelColors: {
@@ -311,3 +312,5 @@ const getColorClasses = (label: string) => {
     }
   );
 };
+
+export default ListView;

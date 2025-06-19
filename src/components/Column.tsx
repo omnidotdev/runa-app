@@ -3,7 +3,7 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { Plus, Trash2 } from "lucide-react";
 
-import { Task } from "./Task";
+import Task from "./Task";
 
 import type { Column as ColumnType } from "@/types";
 
@@ -27,7 +27,7 @@ const defaultColumns = [
 ];
 const overviewColumns = ["planned", "in-progress", "completed"];
 
-export function Column({
+const Column = ({
   column,
   index,
   onTaskClick,
@@ -36,7 +36,7 @@ export function Column({
   isProjectView = false,
   projectPrefix,
   projectColor,
-}: ColumnProps) {
+}: ColumnProps) => {
   const isDefaultColumn = isProjectView
     ? overviewColumns.includes(column.id)
     : defaultColumns.includes(column.id);
@@ -118,4 +118,6 @@ export function Column({
       )}
     </Draggable>
   );
-}
+};
+
+export default Column;

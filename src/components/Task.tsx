@@ -111,14 +111,14 @@ const priorityConfig = {
   low: { icon: MinusCircle, className: "text-green-500 dark:text-green-400" },
 };
 
-export function Task({
+const Task = ({
   task,
   index,
   onClick,
   columnId,
   isProject = false,
   projectPrefix,
-}: TaskProps) {
+}: TaskProps) => {
   const displayId = projectPrefix
     ? `${projectPrefix}-${task.id.split("-").pop() || task.id}`
     : `#${task.id.split("-").pop() || task.id}`;
@@ -204,4 +204,6 @@ export function Task({
       )}
     </Draggable>
   );
-}
+};
+
+export default Task;

@@ -4,7 +4,7 @@ import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { GripVertical, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { ConfirmDialog } from "./ConfirmDialog";
+import ConfirmDialog from "./ConfirmDialog";
 
 import type { DropResult } from "@hello-pangea/dnd";
 import type { Column, Project } from "@/types";
@@ -15,11 +15,11 @@ interface ProjectOverviewSettingsProps {
   onUpdate: (updates: Partial<Project>) => void;
 }
 
-export function ProjectOverviewSettings({
+const ProjectOverviewSettings = ({
   project,
   onClose,
   onUpdate,
-}: ProjectOverviewSettingsProps) {
+}: ProjectOverviewSettingsProps) => {
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description || "");
   const [isAddingColumn, setIsAddingColumn] = useState(false);
@@ -320,4 +320,6 @@ export function ProjectOverviewSettings({
       )}
     </div>
   );
-}
+};
+
+export default ProjectOverviewSettings;
