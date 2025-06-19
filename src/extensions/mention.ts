@@ -1,5 +1,5 @@
-import { Extension } from '@tiptap/core';
-import Suggestion from '@tiptap/suggestion';
+import { Extension } from "@tiptap/core";
+import Suggestion from "@tiptap/suggestion";
 
 interface MentionItem {
   id: string;
@@ -9,26 +9,35 @@ interface MentionItem {
 }
 
 export const MentionExtension = Extension.create({
-  name: 'mention',
+  name: "mention",
 
   addOptions() {
     return {
       suggestion: {
-        char: '',
-        command: ({ editor, range, props }: { editor: any, range: any, props: MentionItem }) => {
-          const text = props.type === 'user'
-            ? `@${props.label}`
-            : props.type === 'task'
-            ? `#${props.id}`
-            : props.label;
-            
+        char: "",
+        command: ({
+          editor,
+          range,
+          props,
+        }: {
+          editor: any;
+          range: any;
+          props: MentionItem;
+        }) => {
+          const text =
+            props.type === "user"
+              ? `@${props.label}`
+              : props.type === "task"
+                ? `#${props.id}`
+                : props.label;
+
           editor
             .chain()
             .focus()
             .deleteRange(range)
             .insertContent(`${text} `)
             .run();
-        }, 
+        },
       },
     };
   },

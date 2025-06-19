@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { DragDropContext, DropResult, Droppable } from "@hello-pangea/dnd";
+import { DragDropContext, Droppable } from "@hello-pangea/dnd";
+import { useEffect, useRef, useState } from "react";
+
 import { Column } from "./Column";
-import { Project, Task } from "@/types";
-import { TaskDialog } from "./TaskDialog";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { TaskDialog } from "./TaskDialog";
+
+import type { DropResult } from "@hello-pangea/dnd";
+import type { Project, Task } from "@/types";
 
 interface BoardProps {
   project: Project;
@@ -46,20 +49,20 @@ function Board({
     scrollLeft.current = containerRef.current?.scrollLeft || 0;
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isMouseDown.current || isDragging.current || !containerRef.current)
-      return;
-
-    e.preventDefault();
-    const dx = e.pageX - startX.current;
-    containerRef.current.scrollLeft = scrollLeft.current - dx;
-  };
-
-  const handleMouseUp = () => {
-    isMouseDown.current = false;
-  };
-
   useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isMouseDown.current || isDragging.current || !containerRef.current)
+        return;
+
+      e.preventDefault();
+      const dx = e.pageX - startX.current;
+      containerRef.current.scrollLeft = scrollLeft.current - dx;
+    };
+
+    const handleMouseUp = () => {
+      isMouseDown.current = false;
+    };
+
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
 
@@ -198,18 +201,18 @@ function Board({
   return (
     <div
       ref={containerRef}
-      className="h-full overflow-x-auto select-none custom-scrollbar"
+      className="custom-scrollbar h-full select-none overflow-x-auto"
       onMouseDown={handleMouseDown}
       style={boardStyle}
     >
-      <div className="min-w-fit px-4 py-4 h-full">
+      <div className="h-full min-w-fit px-4 py-4">
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <Droppable droppableId="board" direction="horizontal" type="column">
             {(provided) => (
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className="flex gap-3 h-full"
+                className="flex h-full gap-3"
               >
                 {Object.entries(project.columns).map(
                   ([columnId, column], index) => (
@@ -252,6 +255,7 @@ function Board({
               }
             }
           }}
+          // @ts-ignore: TODO
           onUpdate={handleUpdateTask}
         />
       )}

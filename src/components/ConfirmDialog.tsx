@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 interface ConfirmDialogProps {
   title: string;
@@ -10,12 +10,17 @@ interface ConfirmDialogProps {
   onCancel: () => void;
 }
 
-export function ConfirmDialog({ title, message, onConfirm, onCancel }: ConfirmDialogProps) {
+export function ConfirmDialog({
+  title,
+  message,
+  onConfirm,
+  onCancel,
+}: ConfirmDialogProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onCancel();
+      if (e.key === "Escape") onCancel();
     };
 
     const handleClickOutside = (e: MouseEvent) => {
@@ -24,39 +29,45 @@ export function ConfirmDialog({ title, message, onConfirm, onCancel }: ConfirmDi
       }
     };
 
-    window.addEventListener('keydown', handleEscape);
-    window.addEventListener('mousedown', handleClickOutside);
-    
+    window.addEventListener("keydown", handleEscape);
+    window.addEventListener("mousedown", handleClickOutside);
+
     return () => {
-      window.removeEventListener('keydown', handleEscape);
-      window.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onCancel]);
 
   return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50">
-      <div 
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 dark:bg-black/70">
+      <div
         ref={modalRef}
-        className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-md"
+        className="w-full max-w-md rounded-lg bg-white dark:bg-gray-800"
       >
         <div className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400" />
+          <div className="mb-4 flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
             </div>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h2>
+            <h2 className="font-semibold text-gray-900 text-lg dark:text-gray-100">
+              {title}
+            </h2>
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">{message}</p>
+          <p className="mb-6 text-gray-600 text-sm dark:text-gray-300">
+            {message}
+          </p>
           <div className="flex justify-end gap-2">
             <button
+              type="button"
               onClick={onCancel}
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="rounded-md border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
             >
               Cancel
             </button>
             <button
+              type="button"
               onClick={onConfirm}
-              className="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="rounded-md bg-red-500 px-4 py-2 font-medium text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
             >
               Delete
             </button>

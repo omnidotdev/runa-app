@@ -1,9 +1,13 @@
-'use client';
+"use client";
 
-import { useCreateTaskMutation, useGetTasksQuery } from '@/graphql/generated/graphql';
-import { createGraphQLClient } from '@/utils/createGraphQLClient';
-import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+
+import {
+  useCreateTaskMutation,
+  useGetTasksQuery,
+} from "@/graphql/generated/graphql";
+import { createGraphQLClient } from "@/utils/createGraphQLClient";
 
 interface FormData {
   title: string;
@@ -13,71 +17,78 @@ interface FormData {
 
 export function CreateTaskForm() {
   const [formData, setFormData] = useState<FormData>({
-    title: '',
-    description: '',
-    dueDate: '',
+    title: "",
+    description: "",
+    dueDate: "",
   });
-  
+
   const queryClient = useQueryClient();
   const graphQLClient = createGraphQLClient();
-  
-  const { mutate, isPending, isError, error } = useCreateTaskMutation(graphQLClient, {
-    onSuccess: () => {
-      // Reset form
-      setFormData({
-        title: '',
-        description: '',
-        dueDate: '',
-      });
-      
-      // Invalidate tasks queries to trigger a refetch
-      queryClient.invalidateQueries({
-        queryKey: [useGetTasksQuery.getKey()]
-      });
-      
-      // Show success message
-      alert('Task created successfully!');
+
+  const { mutate, isPending, isError, error } = useCreateTaskMutation(
+    graphQLClient,
+    {
+      onSuccess: () => {
+        // Reset form
+        setFormData({
+          title: "",
+          description: "",
+          dueDate: "",
+        });
+
+        // Invalidate tasks queries to trigger a refetch
+        queryClient.invalidateQueries({
+          queryKey: [useGetTasksQuery.getKey()],
+        });
+
+        // Show success message
+        alert("Task created successfully!");
+      },
     },
-  });
-  
+  );
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.title) {
-      alert('Title is required');
+      alert("Title is required");
       return;
     }
-    
+
     mutate({
       input: {
         title: formData.title,
         description: formData.description || undefined,
         dueDate: formData.dueDate || undefined,
-      }
+      },
     });
   };
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
-  
+
   return (
     <div className="rounded-lg border p-6">
-      <h2 className="mb-4 text-xl font-semibold">Create New Task</h2>
-      
+      <h2 className="mb-4 font-semibold text-xl">Create New Task</h2>
+
       {isError && (
         <div className="mb-4 rounded-md bg-red-50 p-3 text-red-800">
-          <p className="text-sm">{error?.message || 'An error occurred while creating the task'}</p>
+          <p className="text-sm">
+            {error?.message || "An error occurred while creating the task"}
+          </p>
         </div>
       )}
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="title" className="mb-1 block text-sm font-medium">
+          <label htmlFor="title" className="mb-1 block font-medium text-sm">
             Title <span className="text-red-500">*</span>
           </label>
           <input
@@ -90,9 +101,12 @@ export function CreateTaskForm() {
             required
           />
         </div>
-        
+
         <div>
-          <label htmlFor="description" className="mb-1 block text-sm font-medium">
+          <label
+            htmlFor="description"
+            className="mb-1 block font-medium text-sm"
+          >
             Description
           </label>
           <textarea
@@ -104,9 +118,9 @@ export function CreateTaskForm() {
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
           />
         </div>
-        
+
         <div>
-          <label htmlFor="dueDate" className="mb-1 block text-sm font-medium">
+          <label htmlFor="dueDate" className="mb-1 block font-medium text-sm">
             Due Date
           </label>
           <input
@@ -118,13 +132,13 @@ export function CreateTaskForm() {
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
           />
         </div>
-        
+
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50"
+          className="rounded-md bg-primary-600 px-4 py-2 font-medium text-sm text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50"
         >
-          {isPending ? 'Creating...' : 'Create Task'}
+          {isPending ? "Creating..." : "Create Task"}
         </button>
       </form>
     </div>

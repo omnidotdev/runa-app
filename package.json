@@ -6,7 +6,9 @@
     "dev": "concurrently --kill-others --names \"GRAPHQL-CODEGEN,CLIENT\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run graphql:generate:watch\" \"next dev --turbo --experimental-https\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "check": "biome check --diagnostic-level=error",
+    "format": "biome format --write src",
+    "lint": "biome lint --diagnostic-level=error src",
     "graphql:generate": "NODE_PATH=src/ dotenv -e .env.development -- graphql-codegen --config src/lib/graphql/codegen.config.ts",
     "graphql:generate:watch": "bun graphql:generate -w"
   },
@@ -30,6 +32,7 @@
     "react-dom": "^19"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.0.0",
     "@graphql-codegen/cli": "^5.0.6",
     "@graphql-codegen/import-types-preset": "^3.0.0",
     "@graphql-codegen/typescript": "^4.1.6",

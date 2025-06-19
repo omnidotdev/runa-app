@@ -8,7 +8,7 @@ export interface Task {
   id: string;
   content: string;
   description: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   assignees: Assignee[];
   labels?: string[];
   dueDate?: string;
@@ -30,7 +30,7 @@ export interface Project {
   workspaceId: string;
   columns: { [key: string]: Column };
   team: Assignee[];
-  viewMode: 'board' | 'list';
+  viewMode: "board" | "list";
 }
 
 export interface Workspace {

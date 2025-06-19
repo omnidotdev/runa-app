@@ -3,7 +3,7 @@
  */
 const projectColorsFlag = {
   key: "project-colors",
-  enabled: true // Enabled by default for demonstration
+  enabled: true, // Enabled by default for demonstration
 };
 
 export default projectColorsFlag;

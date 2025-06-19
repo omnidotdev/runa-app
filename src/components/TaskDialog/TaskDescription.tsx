@@ -1,8 +1,10 @@
-'use client';
+"use client";
 
-import { Type } from 'lucide-react';
-import { RichTextEditor } from '../RichTextEditor';
-import { Project, Task } from '@/types';
+import { Type } from "lucide-react";
+
+import { RichTextEditor } from "../RichTextEditor";
+
+import type { Project, Task } from "@/types";
 
 interface TaskDescriptionProps {
   description: string;
@@ -26,10 +28,12 @@ export function TaskDescription({
   onEditStart,
 }: TaskDescriptionProps) {
   return (
-    <div className="prose prose-sm max-w-none dark:prose-invert">
-      <div className="flex items-center gap-2 mb-2">
-        <Type className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 m-0">Description</h3>
+    <div className="prose prose-sm dark:prose-invert max-w-none">
+      <div className="mb-2 flex items-center gap-2">
+        <Type className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+        <h3 className="m-0 font-medium text-gray-700 text-sm dark:text-gray-300">
+          Description
+        </h3>
       </div>
       <div>
         <RichTextEditor

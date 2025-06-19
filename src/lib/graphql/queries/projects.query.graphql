@@ -1,4 +1,8 @@
-query Projects($first: Int, $filter: ProjectFilter, $orderBy: [ProjectOrderBy!]) {
+query Projects(
+  $first: Int
+  $filter: ProjectFilter
+  $orderBy: [ProjectOrderBy!]
+) {
   projects(first: $first, filter: $filter, orderBy: $orderBy) {
     nodes {
       ...ProjectFragment

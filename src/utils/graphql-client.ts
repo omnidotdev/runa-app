@@ -1,8 +1,8 @@
-import { QueryClient } from '@tanstack/react-query';
-import { isServer } from '@tanstack/react-query';
+import { isServer, QueryClient } from "@tanstack/react-query";
 
 // Define the GraphQL endpoint URL
-const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_API_URL || 'http://localhost:4000/graphql';
+const GRAPHQL_ENDPOINT =
+  process.env.NEXT_PUBLIC_GRAPHQL_API_URL || "http://localhost:4000/graphql";
 
 /**
  * Fetcher function to be used with GraphQL Code Generator's React Query hooks
@@ -10,26 +10,26 @@ const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_API_URL || 'http://loca
 export const fetcher = <TData, TVariables>(
   query: string,
   variables?: TVariables,
-  options?: RequestInit['headers']
+  options?: RequestInit["headers"],
 ): (() => Promise<TData>) => {
   return async () => {
     const res = await fetch(GRAPHQL_ENDPOINT, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...options,
       },
       body: JSON.stringify({
         query,
         variables,
       }),
-      credentials: 'include', // Include cookies if using session-based auth
+      credentials: "include", // Include cookies if using session-based auth
     });
 
     const json = await res.json();
 
     if (json.errors) {
-      const { message } = json.errors[0] || 'Error fetching data';
+      const { message } = json.errors[0] || "Error fetching data";
       throw new Error(message);
     }
 
@@ -38,7 +38,7 @@ export const fetcher = <TData, TVariables>(
 };
 
 // Store the QueryClient for browser environments to avoid recreating it on each render
-let browserQueryClient: QueryClient | undefined = undefined;
+let browserQueryClient: QueryClient | undefined;
 
 /**
  * Creates a new QueryClient with default configuration

@@ -1,6 +1,7 @@
-import { Project, Task } from '@/types';
-import { Board } from './Board';
-import { ListView } from './ListView';
+import { Board } from "./Board";
+import { ListView } from "./ListView";
+
+import type { Project } from "@/types";
 
 interface ProjectOverviewProps {
   project: Project;
@@ -8,7 +9,7 @@ interface ProjectOverviewProps {
   expandedSections: { [key: string]: boolean };
   onToggleSection: (columnId: string) => void;
   onTaskClick: (taskId: string) => void;
-  onProjectUpdate: (columns: Project['columns']) => void;
+  onProjectUpdate: (columns: Project["columns"]) => void;
 }
 
 export function ProjectOverview({
@@ -22,22 +23,28 @@ export function ProjectOverview({
   const filterTasks = (project: Project) => {
     if (!searchQuery) return project;
 
-    const filteredColumns = Object.entries(project.columns).reduce((acc, [columnId, column]) => {
-      acc[columnId] = {
-        ...column,
-        tasks: column.tasks.filter(task => 
-          task.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          task.description.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      };
-      return acc;
-    }, {} as Project['columns']);
+    const filteredColumns = Object.entries(project.columns).reduce(
+      (acc, [columnId, column]) => {
+        acc[columnId] = {
+          ...column,
+          tasks: column.tasks.filter(
+            (task) =>
+              task.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              task.description
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()),
+          ),
+        };
+        return acc;
+      },
+      {} as Project["columns"],
+    );
 
     return { ...project, columns: filteredColumns };
   };
 
-  return project.viewMode === 'board' ? (
-    <Board 
+  return project.viewMode === "board" ? (
+    <Board
       project={filterTasks(project)}
       onProjectUpdate={onProjectUpdate}
       isProjectView={true}

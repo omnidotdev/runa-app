@@ -1,13 +1,15 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { ReactQueryProvider } from '@/providers/ReactQueryProvider';
+import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ['latin'] });
+import type { Metadata } from "next";
+import "./globals.css";
+
+import { ReactQueryProvider } from "@/providers/ReactQueryProvider";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Runa',
-  description: 'A beautiful Kanban board application',
+  title: "Runa",
+  description: "A beautiful Kanban board application",
 };
 
 export default function RootLayout({
@@ -18,9 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} dark:bg-gray-900`}>
-        <ReactQueryProvider>
-          {children}
-        </ReactQueryProvider>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
       </body>
     </html>
   );

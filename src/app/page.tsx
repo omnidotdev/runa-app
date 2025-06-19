@@ -1,19 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { Sidebar } from "@/components/Sidebar";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import { Board } from "@/components/Board";
 import { Header } from "@/components/Header";
 import { ListView } from "@/components/ListView";
-import { SidebarToggle } from "@/components/SidebarToggle";
 import { ProjectOverview } from "@/components/ProjectOverview";
 import { ProjectOverviewSettings } from "@/components/ProjectOverviewSettings";
-import { Project, Assignee, Workspace } from "@/types";
 import { ProjectSettings } from "@/components/ProjectSettings";
-import { WorkspaceSettings } from "@/components/WorkspaceSettings";
+import { Sidebar } from "@/components/Sidebar";
+import { SidebarToggle } from "@/components/SidebarToggle";
 import { TaskDialog } from "@/components/TaskDialog";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { WorkspaceSettings } from "@/components/WorkspaceSettings";
+
+import type { Assignee, Project, Task, Workspace } from "@/types";
 
 const teamMembers: Assignee[] = [
   { id: "user-1", name: "John Doe" },
@@ -654,6 +656,7 @@ export default function Home() {
 
   // Add the projects overview to the current workspace's projects
   if (!projects[`projects-${currentWorkspace}`]) {
+    // @ts-ignore: TODO
     projects[`projects-${currentWorkspace}`] = projectsOverview;
   }
 
@@ -678,7 +681,7 @@ export default function Home() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 overflow-hidden relative">
+      <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         {/* Background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div
@@ -693,11 +696,11 @@ export default function Home() {
         </div>
 
         {/* Navigation */}
-        <nav className="relative z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <nav className="relative z-10 border-gray-200 border-b bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
           <div className="mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
+            <div className="flex h-16 justify-between">
               <div className="flex items-center">
-                <h1 className="text-xl font-bold text-primary-600 dark:text-primary-400">
+                <h1 className="font-bold text-primary-600 text-xl dark:text-primary-400">
                   Runa
                 </h1>
               </div>
@@ -705,13 +708,14 @@ export default function Home() {
                 <ThemeToggle />
                 <Link
                   href="/docs"
-                  className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
+                  className="font-medium text-gray-600 text-sm hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                 >
                   Docs
                 </Link>
                 <button
+                  type="button"
                   onClick={handleLogin}
-                  className="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                  className="rounded-md bg-primary-600 px-4 py-2 font-medium text-sm text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 >
                   Sign In
                 </button>
@@ -720,37 +724,38 @@ export default function Home() {
           </div>
         </nav>
 
-        <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Hero section */}
           <div className="py-20 md:py-28 lg:py-36">
-            <div className="max-w-3xl relative z-10">
-              <div className="inline-block mb-5 px-3 py-1 text-xs font-semibold text-primary-700 dark:text-primary-300 bg-primary-100 dark:bg-primary-900/30 rounded-full shadow-sm">
+            <div className="relative z-10 max-w-3xl">
+              <div className="mb-5 inline-block rounded-full bg-primary-100 px-3 py-1 font-semibold text-primary-700 text-xs shadow-sm dark:bg-primary-900/30 dark:text-primary-300">
                 Introducing Runa
               </div>
-              <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl mb-8">
+              <h1 className="mb-8 font-extrabold text-4xl text-gray-900 sm:text-5xl md:text-6xl dark:text-white">
                 Transform Your Projects into{" "}
-                <span className="text-primary-600 dark:text-primary-400 relative whitespace-nowrap">
+                <span className="relative whitespace-nowrap text-primary-600 dark:text-primary-400">
                   <span className="relative z-10">Success Stories</span>
-                  <span className="absolute -inset-1 bg-primary-100 dark:bg-primary-900/40 -skew-y-3 -z-10 rounded-sm"></span>
+                  <span className="-inset-1 -skew-y-3 -z-10 absolute rounded-sm bg-primary-100 dark:bg-primary-900/40"></span>
                 </span>
               </h1>
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl leading-relaxed">
+              <p className="mb-12 max-w-2xl text-gray-600 text-xl leading-relaxed dark:text-gray-400">
                 Streamline your workflow, collaborate seamlessly, and deliver
                 projects on time with our intuitive Kanban board solution.
               </p>
-              <div className="flex flex-col sm:flex-row gap-5">
+              <div className="flex flex-col gap-5 sm:flex-row">
                 <button
+                  type="button"
                   onClick={handleLogin}
-                  className="group cursor-pointer px-8 py-4 text-base font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 shadow-md hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2"
+                  className="group cursor-pointer rounded-lg bg-primary-600 px-8 py-4 font-medium text-base text-white shadow-md transition-all hover:bg-primary-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2"
                 >
                   Get Started{" "}
-                  <span className="inline-block transition-transform group-hover:translate-x-1 ml-1">
+                  <span className="ml-1 inline-block transition-transform group-hover:translate-x-1">
                     →
                   </span>
                 </button>
                 <Link
                   href="/pricing"
-                  className="text-center px-8 py-4 text-base font-medium text-primary-600 dark:text-primary-400 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm hover:shadow"
+                  className="rounded-lg border border-gray-300 bg-white px-8 py-4 text-center font-medium text-base text-primary-600 shadow-sm hover:bg-gray-50 hover:shadow dark:border-gray-700 dark:bg-gray-800 dark:text-primary-400 dark:hover:bg-gray-700"
                 >
                   View Pricing
                 </Link>
@@ -758,24 +763,26 @@ export default function Home() {
             </div>
 
             {/* Features grid */}
-            <div className="mt-32 relative z-10">
-              <div className="flex flex-col md:flex-row md:items-center justify-between mb-16 gap-4">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white relative inline-block">
+            <div className="relative z-10 mt-32">
+              <div className="mb-16 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+                <h2 className="relative inline-block font-bold text-2xl text-gray-900 dark:text-white">
                   <span>
                     Everything you need to manage projects effectively
                   </span>
-                  <span className="absolute -bottom-2 left-0 right-0 h-1 bg-primary-600/30 dark:bg-primary-600/40 rounded-full"></span>
+                  <span className="-bottom-2 absolute right-0 left-0 h-1 rounded-full bg-primary-600/30 dark:bg-primary-600/40"></span>
                 </h2>
               </div>
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-4">
-                <div className="bg-white dark:bg-gray-800 p-7 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-primary-200 dark:hover:border-primary-800 hover:translate-y-[-2px] transition-transform">
-                  <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mb-5">
+                <div className="rounded-xl border border-gray-200 bg-white p-7 shadow-sm transition-transform hover:translate-y-[-2px] hover:border-primary-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-primary-800">
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-100 dark:bg-primary-900/50">
                     <svg
                       className="h-6 w-6 text-primary-600 dark:text-primary-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
+                      aria-label="Task Management Icon"
                     >
+                      <title>Task Management Icon</title>
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -784,7 +791,7 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  <h3 className="mb-2 font-semibold text-gray-900 text-lg dark:text-gray-100">
                     Task Management
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400">
@@ -793,14 +800,16 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 p-7 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-purple-200 dark:hover:border-purple-800 hover:translate-y-[-2px] transition-transform">
-                  <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center mb-5">
+                <div className="rounded-xl border border-gray-200 bg-white p-7 shadow-sm transition-transform hover:translate-y-[-2px] hover:border-purple-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-purple-800">
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-900/50">
                     <svg
                       className="h-6 w-6 text-purple-600 dark:text-purple-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
+                      aria-label="Team Collaboration Icon"
                     >
+                      <title>Team Collaboration Icon</title>
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -809,7 +818,7 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  <h3 className="mb-2 font-semibold text-gray-900 text-lg dark:text-gray-100">
                     Team Collaboration
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400">
@@ -818,14 +827,16 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 p-7 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-green-200 dark:hover:border-green-800 hover:translate-y-[-2px] transition-transform">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center mb-5">
+                <div className="rounded-xl border border-gray-200 bg-white p-7 shadow-sm transition-transform hover:translate-y-[-2px] hover:border-green-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-green-800">
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/50">
                     <svg
                       className="h-6 w-6 text-emerald-600 dark:text-emerald-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
+                      aria-label="Customizable Workflows Icon"
                     >
+                      <title>Customizable Workflows Icon</title>
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -834,7 +845,7 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  <h3 className="mb-2 font-semibold text-gray-900 text-lg dark:text-gray-100">
                     Customizable Workflows
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400">
@@ -843,14 +854,16 @@ export default function Home() {
                   </p>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 p-7 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-amber-200 dark:hover:border-amber-800 hover:translate-y-[-2px] transition-transform">
-                  <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center mb-5">
+                <div className="rounded-xl border border-gray-200 bg-white p-7 shadow-sm transition-transform hover:translate-y-[-2px] hover:border-amber-200 hover:shadow-md dark:border-gray-700 dark:bg-gray-800 dark:hover:border-amber-800">
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/50">
                     <svg
                       className="h-6 w-6 text-amber-600 dark:text-amber-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
+                      aria-label="Project Analytics Icon"
                     >
+                      <title>Project Analytics Icon</title>
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -859,7 +872,7 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  <h3 className="mb-2 font-semibold text-gray-900 text-lg dark:text-gray-100">
                     Project Analytics
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400">
@@ -889,7 +902,7 @@ export default function Home() {
         className={`relative flex-shrink-0 ${isSidebarCollapsed ? "w-0" : "w-60"}`}
       >
         <div
-          className={`absolute inset-0 ${isSidebarCollapsed ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+          className={`absolute inset-0 ${isSidebarCollapsed ? "pointer-events-none opacity-0" : "opacity-100"}`}
         >
           <Sidebar
             workspaces={workspaces}
@@ -914,7 +927,7 @@ export default function Home() {
       />
 
       <main className="flex-1 overflow-hidden">
-        <div className="h-full flex flex-col">
+        <div className="flex h-full flex-col">
           {currentProjectData && (
             <Header
               project={currentProjectData}

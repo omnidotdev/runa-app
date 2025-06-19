@@ -1,4 +1,8 @@
-query Assignees($first: Int, $filter: AssigneeFilter, $orderBy: [AssigneeOrderBy!]) {
+query Assignees(
+  $first: Int
+  $filter: AssigneeFilter
+  $orderBy: [AssigneeOrderBy!]
+) {
   assignees(first: $first, filter: $filter, orderBy: $orderBy) {
     nodes {
       ...AssigneeFragment

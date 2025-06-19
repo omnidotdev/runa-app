@@ -1,15 +1,17 @@
-'use client';
+"use client";
 
-import { useLayoutEffect, useRef, useEffect, useState, useMemo } from 'react';
-import { useEditor, EditorContent, ReactRenderer } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Placeholder from '@tiptap/extension-placeholder';
-import TaskList from '@tiptap/extension-task-list';
-import TaskItem from '@tiptap/extension-task-item';
-import Link from '@tiptap/extension-link';
-import { MentionExtension } from '@/extensions/mention';
-import { MentionList } from './MentionList';
-import { Project, Task, Assignee } from '@/types';
+import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
+import { EditorContent, ReactRenderer, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+
+import { MentionExtension } from "@/extensions/mention";
+import { MentionList } from "./MentionList";
+
+import type { Assignee, Project, Task } from "@/types";
 
 interface RichTextEditorProps {
   content: string;
@@ -26,7 +28,7 @@ interface RichTextEditorProps {
 export function RichTextEditor({
   content,
   onChange,
-  placeholder = 'Write something...',
+  placeholder = "Write something...",
   readOnly = false,
   autoFocus = false,
   projects = [],
@@ -36,7 +38,7 @@ export function RichTextEditor({
 }: RichTextEditorProps) {
   const mounted = useRef(true);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mentionQuery, setMentionQuery] = useState('');
+  const [mentionQuery, setMentionQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const suggestionRef = useRef<{ destroy: () => void } | null>(null);
 
@@ -44,28 +46,30 @@ export function RichTextEditor({
     const query = mentionQuery.toLowerCase();
 
     const items = [
-      ...team.map(member => ({
+      ...team.map((member) => ({
         id: member.id,
-        type: 'user',
-        label: member.name
+        type: "user",
+        label: member.name,
       })),
-      ...tasks.map(task => ({
+      ...tasks.map((task) => ({
         id: task.id,
-        type: 'task',
+        type: "task",
         label: task.content,
-        description: `#${task.id}`
+        description: `#${task.id}`,
       })),
-      ...projects.map(project => ({
+      ...projects.map((project) => ({
         id: project.id,
-        type: 'project',
+        type: "project",
         label: project.name,
-        description: project.description
+        description: project.description,
       })),
     ];
 
-    return items.filter(item => !query ||
-      item.label.toLowerCase().includes(query) ||
-      (item.description?.toLowerCase() || '').includes(query)
+    return items.filter(
+      (item) =>
+        !query ||
+        item.label.toLowerCase().includes(query) ||
+        (item.description?.toLowerCase() || "").includes(query),
     );
   }, [mentionQuery, team, tasks, projects]);
 
@@ -95,7 +99,7 @@ export function RichTextEditor({
         suggestion: {
           allowSpaces: true,
           startOfLine: false,
-          char: '@',
+          char: "@",
           items: () => {
             setSelectedIndex(0);
             return filteredItems;
@@ -119,10 +123,10 @@ export function RichTextEditor({
                 });
                 suggestionRef.current = component;
 
-                popup = document.createElement('div');
-                popup.className = 'mention-popup';
-                popup.style.position = 'absolute';
-                popup.style.zIndex = '50';
+                popup = document.createElement("div");
+                popup.className = "mention-popup";
+                popup.style.position = "absolute";
+                popup.style.zIndex = "50";
                 document.body.appendChild(popup);
 
                 popup.appendChild(component.element);
@@ -139,21 +143,32 @@ export function RichTextEditor({
                 if (coordinates && popup) {
                   popup.style.left = `${coordinates.left}px`;
                   popup.style.top = `${coordinates.top + coordinates.height}px`;
-                  popup.style.visibility = filteredItems.length ? 'visible' : 'hidden';
+                  popup.style.visibility = filteredItems.length
+                    ? "visible"
+                    : "hidden";
                 }
               },
-              onKeyDown: ({ event, props }: { event: KeyboardEvent; props: any }) => {
-                if (event.key === 'ArrowUp') {
-                  setSelectedIndex((selectedIndex + filteredItems.length - 1) % filteredItems.length);
+              onKeyDown: ({
+                event,
+                props,
+              }: {
+                event: KeyboardEvent;
+                props: any;
+              }) => {
+                if (event.key === "ArrowUp") {
+                  setSelectedIndex(
+                    (selectedIndex + filteredItems.length - 1) %
+                      filteredItems.length,
+                  );
                   return true;
                 }
 
-                if (event.key === 'ArrowDown') {
+                if (event.key === "ArrowDown") {
                   setSelectedIndex((selectedIndex + 1) % filteredItems.length);
                   return true;
                 }
 
-                if (event.key === 'Enter') {
+                if (event.key === "Enter") {
                   const item = filteredItems[selectedIndex];
                   if (item) {
                     props.command(item);
@@ -188,8 +203,8 @@ export function RichTextEditor({
     },
     editorProps: {
       attributes: {
-        class: 'focus:outline-none prose-sm',
-        spellcheck: 'false',
+        class: "focus:outline-none prose-sm",
+        spellcheck: "false",
       },
       handleDOMEvents: {
         click: (view, event) => {
@@ -238,18 +253,18 @@ export function RichTextEditor({
     <div
       ref={containerRef}
       onClick={handleContainerClick}
-      className={`relative prose prose-sm max-w-none dark:prose-invert ${
-        readOnly ? 'cursor-pointer' : ''
-      } ${readOnly ? 'pointer-events-none' : ''}`}
+      className={`prose prose-sm dark:prose-invert relative max-w-none ${
+        readOnly ? "cursor-pointer" : ""
+      } ${readOnly ? "pointer-events-none" : ""}`}
     >
       <EditorContent
         editor={editor}
-        className={`min-h-[120px] text-gray-600 dark:text-gray-300 bg-transparent rounded-md p-3 pointer-events-auto ${
+        className={`pointer-events-auto min-h-[120px] rounded-md bg-transparent p-3 text-gray-600 dark:text-gray-300 ${
           readOnly
-            ? 'cursor-pointer'
+            ? "cursor-pointer"
             : editor?.isFocused
-              ? 'border-2 border-primary-500/20 dark:border-primary-500/10 bg-primary-50/50 dark:bg-primary-900/5'
-              : 'border border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
+              ? "border-2 border-primary-500/20 bg-primary-50/50 dark:border-primary-500/10 dark:bg-primary-900/5"
+              : "border border-gray-300 border-dashed hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500"
         }`}
       />
     </div>

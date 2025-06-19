@@ -1,9 +1,10 @@
-import { getQueryClient } from './graphql-client';
+import { getQueryClient } from "./graphql-client";
 
 /**
  * API endpoint for GraphQL requests
  */
-export const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_API_URL || 'http://localhost:4000/graphql';
+export const GRAPHQL_ENDPOINT =
+  process.env.NEXT_PUBLIC_GRAPHQL_API_URL || "http://localhost:4000/graphql";
 
 /**
  * Creates headers for GraphQL requests
@@ -12,11 +13,11 @@ export const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_API_URL || 'http
  */
 export const createHeaders = (token?: string) => {
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
 
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   return headers;
@@ -32,7 +33,7 @@ export const createGraphQLClient = (token?: string) => {
     endpoint: GRAPHQL_ENDPOINT,
     fetchParams: {
       headers: createHeaders(token),
-      credentials: 'include', // Include cookies if using session-based auth
+      credentials: "include", // Include cookies if using session-based auth
     },
   };
 };
@@ -44,7 +45,7 @@ export const createGraphQLClient = (token?: string) => {
 export const prepareGraphQLRequests = (token?: string) => {
   const client = createGraphQLClient(token);
   const queryClient = getQueryClient();
-  
+
   return {
     client,
     queryClient,

@@ -1,10 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { X, Plus, GripVertical, Trash2 } from 'lucide-react';
-import { Project, Column } from '@/types';
-import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { ConfirmDialog } from './ConfirmDialog';
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import { GripVertical, Plus, Trash2, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+import { ConfirmDialog } from "./ConfirmDialog";
+
+import type { DropResult } from "@hello-pangea/dnd";
+import type { Column, Project } from "@/types";
 
 interface ProjectOverviewSettingsProps {
   project: Project;
@@ -12,17 +15,21 @@ interface ProjectOverviewSettingsProps {
   onUpdate: (updates: Partial<Project>) => void;
 }
 
-export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectOverviewSettingsProps) {
+export function ProjectOverviewSettings({
+  project,
+  onClose,
+  onUpdate,
+}: ProjectOverviewSettingsProps) {
   const [name, setName] = useState(project.name);
-  const [description, setDescription] = useState(project.description || '');
+  const [description, setDescription] = useState(project.description || "");
   const [isAddingColumn, setIsAddingColumn] = useState(false);
-  const [newColumnTitle, setNewColumnTitle] = useState('');
+  const [newColumnTitle, setNewColumnTitle] = useState("");
   const [columnToDelete, setColumnToDelete] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         if (columnToDelete) {
           setColumnToDelete(null);
         } else {
@@ -32,17 +39,21 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
     };
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node) && !columnToDelete) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(e.target as Node) &&
+        !columnToDelete
+      ) {
         onClose();
       }
     };
 
-    window.addEventListener('keydown', handleEscape);
-    window.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener("keydown", handleEscape);
+    window.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      window.removeEventListener('keydown', handleEscape);
-      window.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose, columnToDelete]);
 
@@ -60,7 +71,7 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
   const handleAddColumn = () => {
     if (!newColumnTitle.trim()) return;
 
-    const columnId = newColumnTitle.toLowerCase().replace(/\s+/g, '-');
+    const columnId = newColumnTitle.toLowerCase().replace(/\s+/g, "-");
     const newColumn: Column = {
       id: columnId,
       title: newColumnTitle.trim(),
@@ -73,14 +84,14 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
     };
 
     onUpdate({ columns: updatedColumns });
-    setNewColumnTitle('');
+    setNewColumnTitle("");
     setIsAddingColumn(false);
   };
 
   const handleDeleteColumn = (columnId: string) => {
     const columnCount = Object.keys(project.columns).length;
     if (columnCount <= 1) {
-      alert('Cannot delete the last column');
+      alert("Cannot delete the last column");
       setColumnToDelete(null);
       return;
     }
@@ -96,7 +107,7 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
       const firstColumnId = Object.keys(remainingColumns)[0];
       remainingColumns[firstColumnId] = {
         ...remainingColumns[firstColumnId],
-        tasks: [...remainingColumns[firstColumnId].tasks, ...tasksToMove]
+        tasks: [...remainingColumns[firstColumnId].tasks, ...tasksToMove],
       };
     }
 
@@ -114,32 +125,41 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
     const [removed] = columnOrder.splice(source.index, 1);
     columnOrder.splice(destination.index, 0, removed);
 
-    const reorderedColumns = columnOrder.reduce((acc, columnId) => {
-      acc[columnId] = project.columns[columnId];
-      return acc;
-    }, {} as Project['columns']);
+    const reorderedColumns = columnOrder.reduce(
+      (acc, columnId) => {
+        acc[columnId] = project.columns[columnId];
+        return acc;
+      },
+      {} as Project["columns"],
+    );
 
     onUpdate({ columns: reorderedColumns });
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 dark:bg-black/70">
       <div
         ref={modalRef}
-        className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-lg max-h-[85vh] overflow-auto"
+        className="max-h-[85vh] w-full max-w-lg overflow-auto rounded-lg bg-white dark:bg-gray-800"
       >
-        <div className="p-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Overview Settings</h2>
+        <div className="flex items-center justify-between border-gray-200 border-b p-6 dark:border-gray-700">
+          <h2 className="font-semibold text-gray-900 text-xl dark:text-gray-100">
+            Overview Settings
+          </h2>
           <button
+            type="button"
             onClick={onClose}
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 p-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="name"
+              className="mb-1 block font-medium text-gray-700 text-sm dark:text-gray-300"
+            >
               Title
             </label>
             <input
@@ -147,12 +167,15 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
               required
             />
           </div>
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="description"
+              className="mb-1 block font-medium text-gray-700 text-sm dark:text-gray-300"
+            >
               Description
             </label>
             <textarea
@@ -160,20 +183,22 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
+              className="w-full resize-none rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Project Status Columns</h3>
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="font-medium text-gray-700 text-sm dark:text-gray-300">
+                Project Status Columns
+              </h3>
               {!isAddingColumn && (
                 <button
                   type="button"
                   onClick={() => setIsAddingColumn(true)}
-                  className="flex items-center gap-2 px-3 py-1 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded hover:bg-gray-200 dark:hover:bg-gray-600"
+                  className="flex items-center gap-2 rounded bg-gray-100 px-3 py-1 font-medium text-gray-600 text-sm hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="h-4 w-4" />
                   Add Column
                 </button>
               )}
@@ -186,7 +211,8 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
                   value={newColumnTitle}
                   onChange={(e) => setNewColumnTitle(e.target.value)}
                   placeholder="Enter column title..."
-                  className="w-full px-3 py-2 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-gray-100"
+                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                  // biome-ignore lint/a11y/noAutofocus: TODO
                   autoFocus
                 />
                 <div className="flex justify-end gap-2">
@@ -194,9 +220,9 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
                     type="button"
                     onClick={() => {
                       setIsAddingColumn(false);
-                      setNewColumnTitle('');
+                      setNewColumnTitle("");
                     }}
-                    className="px-3 py-1 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                    className="px-3 py-1 text-gray-600 text-sm hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
                   >
                     Cancel
                   </button>
@@ -204,7 +230,7 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
                     type="button"
                     onClick={handleAddColumn}
                     disabled={!newColumnTitle.trim()}
-                    className="px-3 py-1 text-sm bg-primary-500 text-white rounded hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded bg-primary-500 px-3 py-1 text-sm text-white hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Add
                   </button>
@@ -220,35 +246,45 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
                     {...provided.droppableProps}
                     className="space-y-2"
                   >
-                    {Object.entries(project.columns).map(([columnId, column], index) => (
-                      <Draggable key={columnId} draggableId={columnId} index={index}>
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg group"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div {...provided.dragHandleProps}>
-                                <GripVertical className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                              </div>
-                              <span className="text-sm text-gray-900 dark:text-gray-100">{column.title}</span>
-                              <span className="text-xs text-gray-500 dark:text-gray-400">{column.tasks.length}</span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setColumnToDelete(columnId);
-                              }}
-                              className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400"
+                    {Object.entries(project.columns).map(
+                      ([columnId, column], index) => (
+                        <Draggable
+                          key={columnId}
+                          draggableId={columnId}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className="group flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-700/50"
                             >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
+                              <div className="flex items-center gap-3">
+                                <div {...provided.dragHandleProps}>
+                                  <GripVertical className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                                </div>
+                                <span className="text-gray-900 text-sm dark:text-gray-100">
+                                  {column.title}
+                                </span>
+                                <span className="text-gray-500 text-xs dark:text-gray-400">
+                                  {column.tasks.length}
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setColumnToDelete(columnId);
+                                }}
+                                className="p-1 text-gray-400 opacity-0 hover:text-red-500 group-hover:opacity-100 dark:hover:text-red-400"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          )}
+                        </Draggable>
+                      ),
+                    )}
                     {provided.placeholder}
                   </div>
                 )}
@@ -256,17 +292,17 @@ export function ProjectOverviewSettings({ project, onClose, onUpdate }: ProjectO
             </DragDropContext>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex justify-end gap-2 border-gray-200 border-t pt-4 dark:border-gray-700">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="rounded-md border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-primary-500 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="rounded-md bg-primary-500 px-4 py-2 font-medium text-sm text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               Save Changes
             </button>

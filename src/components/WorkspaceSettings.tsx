@@ -1,9 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { X, Plus, Trash2 } from 'lucide-react';
-import { Assignee } from '@/types';
-import { ConfirmDialog } from './ConfirmDialog';
+import { Plus, Trash2, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+import { ConfirmDialog } from "./ConfirmDialog";
+
+import type { Assignee } from "@/types";
 
 interface WorkspaceSettingsProps {
   team: Assignee[];
@@ -11,15 +13,19 @@ interface WorkspaceSettingsProps {
   onUpdate: (team: Assignee[]) => void;
 }
 
-export function WorkspaceSettings({ team, onClose, onUpdate }: WorkspaceSettingsProps) {
+export function WorkspaceSettings({
+  team,
+  onClose,
+  onUpdate,
+}: WorkspaceSettingsProps) {
   const [members, setMembers] = useState<Assignee[]>(team);
-  const [newMemberName, setNewMemberName] = useState('');
+  const [newMemberName, setNewMemberName] = useState("");
   const [memberToDelete, setMemberToDelete] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
 
     const handleClickOutside = (e: MouseEvent) => {
@@ -28,12 +34,12 @@ export function WorkspaceSettings({ team, onClose, onUpdate }: WorkspaceSettings
       }
     };
 
-    window.addEventListener('keydown', handleEscape);
-    window.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener("keydown", handleEscape);
+    window.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      window.removeEventListener('keydown', handleEscape);
-      window.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
 
@@ -49,51 +55,59 @@ export function WorkspaceSettings({ team, onClose, onUpdate }: WorkspaceSettings
     const updatedMembers = [...members, newMember];
     setMembers(updatedMembers);
     onUpdate(updatedMembers);
-    setNewMemberName('');
+    setNewMemberName("");
   };
 
   const handleRemoveMember = (memberId: string) => {
-    const updatedMembers = members.filter(member => member.id !== memberId);
+    const updatedMembers = members.filter((member) => member.id !== memberId);
     setMembers(updatedMembers);
     onUpdate(updatedMembers);
     setMemberToDelete(null);
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 dark:bg-black/70">
       <div
         ref={modalRef}
-        className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-lg"
+        className="w-full max-w-lg rounded-lg bg-white dark:bg-gray-800"
       >
-        <div className="p-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Workspace Settings</h2>
+        <div className="flex items-center justify-between border-gray-200 border-b p-6 dark:border-gray-700">
+          <h2 className="font-semibold text-gray-900 text-xl dark:text-gray-100">
+            Workspace Settings
+          </h2>
           <button
+            type="button"
             onClick={onClose}
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
         <div className="p-6">
           <div className="mb-6">
-            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">Team Members</h3>
+            <h3 className="mb-4 font-medium text-gray-700 text-sm dark:text-gray-300">
+              Team Members
+            </h3>
             <div className="space-y-2">
-              {members.map(member => (
+              {members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                  className="flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-700/50"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 font-medium text-gray-900 text-sm dark:bg-gray-600 dark:text-gray-100">
                       {member.name[0].toUpperCase()}
                     </div>
-                    <span className="text-sm text-gray-900 dark:text-gray-100">{member.name}</span>
+                    <span className="text-gray-900 text-sm dark:text-gray-100">
+                      {member.name}
+                    </span>
                   </div>
                   <button
+                    type="button"
                     onClick={() => setMemberToDelete(member.id)}
                     className="p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
               ))}
@@ -107,14 +121,14 @@ export function WorkspaceSettings({ team, onClose, onUpdate }: WorkspaceSettings
                 value={newMemberName}
                 onChange={(e) => setNewMemberName(e.target.value)}
                 placeholder="Enter member name"
-                className="flex-1 px-3 py-2 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+                className="flex-1 rounded-md border border-gray-200 bg-white px-3 py-2 text-gray-900 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
               />
               <button
                 type="submit"
                 disabled={!newMemberName.trim()}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary-500 rounded-md hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 rounded-md bg-primary-500 px-4 py-2 font-medium text-sm text-white hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <Plus className="w-4 h-4" />
+                <Plus className="h-4 w-4" />
                 Add Member
               </button>
             </div>

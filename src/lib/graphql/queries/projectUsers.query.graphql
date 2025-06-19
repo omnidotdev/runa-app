@@ -1,4 +1,8 @@
-query ProjectUsers($first: Int, $filter: ProjectUserFilter, $orderBy: [ProjectUserOrderBy!]) {
+query ProjectUsers(
+  $first: Int
+  $filter: ProjectUserFilter
+  $orderBy: [ProjectUserOrderBy!]
+) {
   projectUsers(first: $first, filter: $filter, orderBy: $orderBy) {
     nodes {
       id

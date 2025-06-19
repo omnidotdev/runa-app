@@ -10,6 +10,7 @@ coverage
 
 # editor
 .vscode
+.zed
 
 #generated artifacts
 **/generated/*

@@ -1,14 +1,16 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { Task, Assignee, Project } from '@/types';
-import { parseDate } from '@/utils/dates';
-import { ConfirmDialog } from '../ConfirmDialog';
-import { TaskHeader } from './TaskHeader';
-import { AssigneePicker } from './AssigneePicker';
-import { DatePicker } from './DatePicker';
-import { TaskDescription } from './TaskDescription';
-import { Tag, X } from 'lucide-react';
+import { Tag, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+import { parseDate } from "@/utils/dates";
+import { ConfirmDialog } from "../ConfirmDialog";
+import { AssigneePicker } from "./AssigneePicker";
+import { DatePicker } from "./DatePicker";
+import { TaskDescription } from "./TaskDescription";
+import { TaskHeader } from "./TaskHeader";
+
+import type { Assignee, Project, Task } from "@/types";
 
 interface TaskDialogProps {
   task: Task;
@@ -37,7 +39,7 @@ export function TaskDialog({
   onClose,
   onDelete,
   onSave,
-  onUpdate
+  onUpdate,
 }: TaskDialogProps) {
   const [task, setTask] = useState(initialTask);
   const [isEditing, setIsEditing] = useState(isNew);
@@ -45,11 +47,13 @@ export function TaskDialog({
   const [showAssigneePicker, setShowAssigneePicker] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showLabelPicker, setShowLabelPicker] = useState(false);
-  const [newLabel, setNewLabel] = useState('');
-  const [dateInput, setDateInput] = useState('');
+  const [newLabel, setNewLabel] = useState("");
+  const [dateInput, setDateInput] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [localContent, setLocalContent] = useState(initialTask.content);
-  const [localDescription, setLocalDescription] = useState(initialTask.description);
+  const [localDescription, setLocalDescription] = useState(
+    initialTask.description,
+  );
   const modalRef = useRef<HTMLDivElement>(null);
   const assigneePickerRef = useRef<HTMLDivElement>(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
@@ -60,9 +64,15 @@ export function TaskDialog({
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
         if (showDeleteConfirm) {
           setShowDeleteConfirm(false);
-        } else if (showDatePicker && !datePickerRef.current?.contains(e.target as Node)) {
+        } else if (
+          showDatePicker &&
+          !datePickerRef.current?.contains(e.target as Node)
+        ) {
           setShowDatePicker(false);
-        } else if (showAssigneePicker && !assigneePickerRef.current?.contains(e.target as Node)) {
+        } else if (
+          showAssigneePicker &&
+          !assigneePickerRef.current?.contains(e.target as Node)
+        ) {
           setShowAssigneePicker(false);
         } else if (!isSaving) {
           onClose();
@@ -71,7 +81,7 @@ export function TaskDialog({
     };
 
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         if (showDeleteConfirm) {
           setShowDeleteConfirm(false);
         } else if (showDatePicker) {
@@ -84,13 +94,19 @@ export function TaskDialog({
       }
     };
 
-    window.addEventListener('keydown', handleEscape);
-    window.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener("keydown", handleEscape);
+    window.addEventListener("mousedown", handleClickOutside);
     return () => {
-      window.removeEventListener('keydown', handleEscape);
-      window.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [onClose, showDeleteConfirm, showDatePicker, showAssigneePicker, isSaving]);
+  }, [
+    onClose,
+    showDeleteConfirm,
+    showDatePicker,
+    showAssigneePicker,
+    isSaving,
+  ]);
 
   useEffect(() => {
     mounted.current = true;
@@ -104,21 +120,21 @@ export function TaskDialog({
 
     setLocalContent(initialTask.content);
     setLocalDescription(initialTask.description);
-    setTask(prev => ({
+    setTask((prev) => ({
       ...initialTask,
       content: prev.content,
-      description: prev.description
+      description: prev.description,
     }));
     setIsEditing(isNew);
     setShowDatePicker(false);
     setShowAssigneePicker(false);
     setShowDeleteConfirm(false);
-    setDateInput('');
+    setDateInput("");
     setIsSaving(false);
   }, [initialTask, isNew]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSave(e as unknown as React.MouseEvent);
     }
@@ -136,7 +152,7 @@ export function TaskDialog({
       const updatedTask = {
         ...task,
         content: localContent,
-        description: localDescription
+        description: localDescription,
       };
 
       if (isNew && onSave) {
@@ -151,7 +167,7 @@ export function TaskDialog({
         }
       }
     } catch (error) {
-      console.error('Error saving task:', error);
+      console.error("Error saving task:", error);
     } finally {
       if (mounted.current) {
         setIsSaving(false);
@@ -166,7 +182,7 @@ export function TaskDialog({
     if (parsedDate) {
       const newTask = { ...task, dueDate: parsedDate.toISOString() };
       setTask(newTask);
-      setDateInput('');
+      setDateInput("");
       setShowDatePicker(false);
       onUpdate?.(task.id, newTask);
     }
@@ -175,12 +191,12 @@ export function TaskDialog({
   const handleAssigneeToggle = (assignee: Assignee) => {
     if (!mounted.current || isSaving) return;
 
-    const isAssigned = task.assignees.some(a => a.id === assignee.id);
+    const isAssigned = task.assignees.some((a) => a.id === assignee.id);
     const newTask = {
       ...task,
       assignees: isAssigned
-        ? task.assignees.filter(a => a.id !== assignee.id)
-        : [...task.assignees, assignee]
+        ? task.assignees.filter((a) => a.id !== assignee.id)
+        : [...task.assignees, assignee],
     };
     setTask(newTask);
     onUpdate?.(task.id, newTask);
@@ -199,7 +215,7 @@ export function TaskDialog({
         onClose();
       }
     } catch (error) {
-      console.error('Error deleting task:', error);
+      console.error("Error deleting task:", error);
     } finally {
       if (mounted.current) {
         setIsSaving(false);
@@ -215,12 +231,14 @@ export function TaskDialog({
     const updatedTask = { ...task, labels: updatedLabels };
     setTask(updatedTask);
     onUpdate?.(task.id, updatedTask);
-    setNewLabel('');
+    setNewLabel("");
   };
 
   const handleRemoveLabel = (labelToRemove: string) => {
     if (isSaving) return;
-    const updatedLabels = (task.labels || []).filter(label => label !== labelToRemove);
+    const updatedLabels = (task.labels || []).filter(
+      (label) => label !== labelToRemove,
+    );
     const updatedTask = { ...task, labels: updatedLabels };
     setTask(updatedTask);
     onUpdate?.(task.id, updatedTask);
@@ -230,7 +248,7 @@ export function TaskDialog({
     if (isSaving) return;
     const isSelected = task.labels?.includes(label);
     const updatedLabels = isSelected
-      ? (task.labels || []).filter(l => l !== label)
+      ? (task.labels || []).filter((l) => l !== label)
       : [...(task.labels || []), label];
     const updatedTask = { ...task, labels: updatedLabels };
     setTask(updatedTask);
@@ -244,15 +262,15 @@ export function TaskDialog({
   };
 
   const displayId = task.id.match(/\d+/)?.[0] || task.id;
-  const itemType = isProject ? 'Project' : 'Task';
+  const itemType = isProject ? "Project" : "Task";
 
   return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 dark:bg-black/70">
       <div
         ref={modalRef}
         role="dialog"
         aria-modal="true"
-        className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-3xl min-h-[600px] max-h-[85vh] overflow-auto"
+        className="max-h-[85vh] min-h-[600px] w-full max-w-3xl overflow-auto rounded-lg bg-white dark:bg-gray-800"
       >
         <TaskHeader
           task={task}
@@ -272,7 +290,7 @@ export function TaskDialog({
         />
 
         <div className="p-6">
-          <div className="flex items-center gap-4 mb-6">
+          <div className="mb-6 flex items-center gap-4">
             <div ref={assigneePickerRef}>
               <AssigneePicker
                 assignees={task.assignees}
@@ -290,6 +308,7 @@ export function TaskDialog({
 
             <div className="relative">
               <button
+                type="button"
                 onClick={() => {
                   if (!isSaving) {
                     setShowLabelPicker(!showLabelPicker);
@@ -297,42 +316,48 @@ export function TaskDialog({
                     setShowAssigneePicker(false);
                   }
                 }}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
               >
-                <Tag className="w-4 h-4" />
-                <span>{task.labels?.length ? `${task.labels.length} labels` : 'Add labels'}</span>
+                <Tag className="h-4 w-4" />
+                <span>
+                  {task.labels?.length
+                    ? `${task.labels.length} labels`
+                    : "Add labels"}
+                </span>
               </button>
 
               {showLabelPicker && (
-                <div className="absolute top-full left-0 mt-1 w-64 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 p-2 z-20">
+                <div className="absolute top-full left-0 z-20 mt-1 w-64 rounded-md border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
                   <form onSubmit={handleAddLabel} className="mb-2">
                     <input
                       type="text"
                       value={newLabel}
                       onChange={(e) => setNewLabel(e.target.value)}
                       placeholder="Add new label..."
-                      className="w-full px-2 py-1 text-sm bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-gray-100"
+                      className="w-full rounded border border-gray-200 bg-white px-2 py-1 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                      // biome-ignore lint/a11y/noAutofocus: allow
                       autoFocus
                     />
                   </form>
 
-                  {task.labels?.length > 0 && (
-                    <div className="mb-2 p-2 bg-gray-50 dark:bg-gray-700/50 rounded">
-                      <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+                  {task.labels?.length && (
+                    <div className="mb-2 rounded bg-gray-50 p-2 dark:bg-gray-700/50">
+                      <div className="mb-1 font-medium text-gray-500 text-xs dark:text-gray-400">
                         Applied Labels
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {task.labels.map((label, index) => (
                           <span
                             key={index}
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                            className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-1 font-medium text-gray-700 text-xs dark:bg-gray-700 dark:text-gray-300"
                           >
                             {label}
                             <button
+                              type="button"
                               onClick={() => handleRemoveLabel(label)}
                               className="hover:text-red-500 dark:hover:text-red-400"
                             >
-                              <X className="w-3 h-3" />
+                              <X className="h-3 w-3" />
                             </button>
                           </span>
                         ))}
@@ -340,27 +365,31 @@ export function TaskDialog({
                     </div>
                   )}
 
-                  {currentProject?.labels && currentProject.labels.length > 0 && (
-                    <div>
-                      <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                        Project Labels
+                  {currentProject?.labels &&
+                    currentProject.labels.length > 0 && (
+                      <div>
+                        <div className="mb-1 font-medium text-gray-500 text-xs dark:text-gray-400">
+                          Project Labels
+                        </div>
+                        <div className="space-y-1">
+                          {currentProject.labels.map((label, index) => (
+                            <button
+                              type="button"
+                              key={index}
+                              onClick={() => handleToggleLabel(label)}
+                              className="flex w-full items-center justify-between rounded px-2 py-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
+                            >
+                              <span className="text-gray-900 dark:text-gray-100">
+                                {label}
+                              </span>
+                              {task.labels?.includes(label) && (
+                                <div className="h-2 w-2 rounded-full bg-primary-500" />
+                              )}
+                            </button>
+                          ))}
+                        </div>
                       </div>
-                      <div className="space-y-1">
-                        {currentProject.labels.map((label, index) => (
-                          <button
-                            key={index}
-                            onClick={() => handleToggleLabel(label)}
-                            className="w-full flex items-center justify-between px-2 py-1 text-sm rounded hover:bg-gray-50 dark:hover:bg-gray-700"
-                          >
-                            <span className="text-gray-900 dark:text-gray-100">{label}</span>
-                            {task.labels?.includes(label) && (
-                              <div className="w-2 h-2 rounded-full bg-primary-500" />
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               )}
             </div>
@@ -404,11 +433,12 @@ export function TaskDialog({
           {isNew && onSave && (
             <div className="mt-6 flex justify-end">
               <button
+                type="button"
                 onClick={handleSave}
                 disabled={!task.content.trim() || isSaving}
-                className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-md bg-primary-500 px-4 py-2 text-white hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {isSaving ? 'Creating...' : `Create ${itemType}`}
+                {isSaving ? "Creating..." : `Create ${itemType}`}
               </button>
             </div>
           )}
@@ -419,6 +449,7 @@ export function TaskDialog({
         <ConfirmDialog
           title={`Delete ${itemType}`}
           message={`Are you sure you want to delete this ${itemType.toLowerCase()}? This action cannot be undone.`}
+          // @ts-ignore TODO
           onConfirm={handleDelete}
           onCancel={() => !isSaving && setShowDeleteConfirm(false)}
         />
