@@ -1,6 +1,4 @@
-"use client";
-
-import Link from "next/link";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import Board from "@/components/Board";
@@ -706,12 +704,13 @@ const Home = () => {
               </div>
               <div className="flex items-center space-x-6">
                 <ThemeToggle />
-                <Link
+                {/* TODO */}
+                {/* <Link
                   href="/docs"
                   className="font-medium text-gray-600 text-sm hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
                 >
                   Docs
-                </Link>
+                </Link> */}
                 <button
                   type="button"
                   onClick={handleLogin}
@@ -754,7 +753,7 @@ const Home = () => {
                   </span>
                 </button>
                 <Link
-                  href="/pricing"
+                  to="/pricing"
                   className="rounded-lg border border-gray-300 bg-white px-8 py-4 text-center font-medium text-base text-primary-600 shadow-sm hover:bg-gray-50 hover:shadow dark:border-gray-700 dark:bg-gray-800 dark:text-primary-400 dark:hover:bg-gray-700"
                 >
                   View Pricing
@@ -1054,4 +1053,6 @@ const Home = () => {
   );
 };
 
-export default Home;
+export const Route = createFileRoute("/")({
+  component: Home,
+});

@@ -1,15 +1,5 @@
-"use client";
-
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import {
-  Download,
-  GripVertical,
-  Palette,
-  Plus,
-  Trash2,
-  Upload,
-  X,
-} from "lucide-react";
+import { GripVertical, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
@@ -17,56 +7,29 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import type { DropResult } from "@hello-pangea/dnd";
 import type { Column, Project } from "@/types";
 
-interface ProjectSettingsProps {
+interface ProjectOverviewSettingsProps {
   project: Project;
   onClose: () => void;
   onUpdate: (updates: Partial<Project>) => void;
-  onImport: () => void;
-  onExport: () => void;
 }
 
-const projectColors = [
-  { name: "Sky", value: "#0ea5e9" },
-  { name: "Blue", value: "#3b82f6" },
-  { name: "Indigo", value: "#6366f1" },
-  { name: "Purple", value: "#a855f7" },
-  { name: "Pink", value: "#ec4899" },
-  { name: "Rose", value: "#f43f5e" },
-  { name: "Orange", value: "#f97316" },
-  { name: "Amber", value: "#f59e0b" },
-  { name: "Yellow", value: "#eab308" },
-  { name: "Lime", value: "#84cc16" },
-  { name: "Green", value: "#22c55e" },
-  { name: "Emerald", value: "#10b981" },
-  { name: "Teal", value: "#14b8a6" },
-  { name: "Cyan", value: "#06b6d4" },
-];
-
-const ProjectSettings = ({
+const ProjectOverviewSettings = ({
   project,
   onClose,
   onUpdate,
-  onImport,
-  onExport,
-}: ProjectSettingsProps) => {
+}: ProjectOverviewSettingsProps) => {
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description || "");
-  const [prefix, setPrefix] = useState(project.prefix || "");
-  const [color, setColor] = useState(project.color || "");
   const [isAddingColumn, setIsAddingColumn] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState("");
   const [columnToDelete, setColumnToDelete] = useState<string | null>(null);
-  const [showColorPicker, setShowColorPicker] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
-  const colorPickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         if (columnToDelete) {
           setColumnToDelete(null);
-        } else if (showColorPicker) {
-          setShowColorPicker(false);
         } else {
           onClose();
         }
@@ -74,18 +37,12 @@ const ProjectSettings = ({
     };
 
     const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-
       if (
         modalRef.current &&
-        !modalRef.current.contains(target) &&
+        !modalRef.current.contains(e.target as Node) &&
         !columnToDelete
       ) {
         onClose();
-      }
-
-      if (colorPickerRef.current && !colorPickerRef.current.contains(target)) {
-        setShowColorPicker(false);
       }
     };
 
@@ -96,21 +53,16 @@ const ProjectSettings = ({
       window.removeEventListener("keydown", handleEscape);
       window.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [onClose, columnToDelete, showColorPicker]);
+  }, [onClose, columnToDelete]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    const updates: Partial<Project> = {
+    onUpdate({
       name: name.trim(),
       description: description.trim() || undefined,
-      prefix: prefix.trim() || undefined,
-      color: color || undefined,
-      labels: project.labels,
-    };
-
-    onUpdate(updates);
+    });
     onClose();
   };
 
@@ -124,13 +76,12 @@ const ProjectSettings = ({
       tasks: [],
     };
 
-    onUpdate({
-      columns: {
-        ...project.columns,
-        [columnId]: newColumn,
-      },
-    });
+    const updatedColumns = {
+      ...project.columns,
+      [columnId]: newColumn,
+    };
 
+    onUpdate({ columns: updatedColumns });
     setNewColumnTitle("");
     setIsAddingColumn(false);
   };
@@ -191,7 +142,7 @@ const ProjectSettings = ({
       >
         <div className="flex items-center justify-between border-gray-200 border-b p-6 dark:border-gray-700">
           <h2 className="font-semibold text-gray-900 text-xl dark:text-gray-100">
-            Project Settings
+            Overview Settings
           </h2>
           <button
             type="button"
@@ -207,7 +158,7 @@ const ProjectSettings = ({
               htmlFor="name"
               className="mb-1 block font-medium text-gray-700 text-sm dark:text-gray-300"
             >
-              Project Name
+              Title
             </label>
             <input
               type="text"
@@ -217,92 +168,6 @@ const ProjectSettings = ({
               className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
               required
             />
-          </div>
-          <div>
-            <label
-              htmlFor="prefix"
-              className="mb-1 block font-medium text-gray-700 text-sm dark:text-gray-300"
-            >
-              Project Prefix
-            </label>
-            <input
-              type="text"
-              id="prefix"
-              value={prefix}
-              onChange={(e) => setPrefix(e.target.value.toUpperCase())}
-              placeholder="e.g., RUNA"
-              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
-            />
-            <p className="mt-1 text-gray-500 text-xs dark:text-gray-400">
-              Used for task IDs (e.g., RUNA-1, RUNA-2)
-            </p>
-          </div>
-          <div>
-            <p className="mb-1 block font-medium text-gray-700 text-sm dark:text-gray-300">
-              Project Color
-            </p>
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowColorPicker(!showColorPicker)}
-                className="flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700"
-              >
-                <div className="flex items-center gap-2">
-                  {color && (
-                    <div
-                      className="h-4 w-4 rounded-full"
-                      style={{ backgroundColor: color }}
-                    />
-                  )}
-                  <span className="text-gray-900 text-sm dark:text-gray-100">
-                    {color
-                      ? projectColors.find((c) => c.value === color)?.name ||
-                        "Custom"
-                      : "Select color"}
-                  </span>
-                </div>
-                <Palette className="h-4 w-4 text-gray-400" />
-              </button>
-
-              {showColorPicker && (
-                <div
-                  ref={colorPickerRef}
-                  className="absolute top-full left-0 z-10 mt-1 w-full rounded-md border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800"
-                >
-                  <div className="grid grid-cols-7 gap-1">
-                    {projectColors.map((projectColor) => (
-                      <button
-                        key={projectColor.value}
-                        type="button"
-                        onClick={() => {
-                          setColor(projectColor.value);
-                          setShowColorPicker(false);
-                        }}
-                        className={`flex h-6 w-6 items-center justify-center rounded-full ${
-                          color === projectColor.value
-                            ? "ring-2 ring-primary-500 ring-offset-2"
-                            : ""
-                        }`}
-                        style={{ backgroundColor: projectColor.value }}
-                        title={projectColor.name}
-                      />
-                    ))}
-                  </div>
-                  {color && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setColor("");
-                        setShowColorPicker(false);
-                      }}
-                      className="mt-2 text-red-500 text-xs hover:text-red-600"
-                    >
-                      Remove color
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
           </div>
           <div>
             <label
@@ -323,7 +188,7 @@ const ProjectSettings = ({
           <div>
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-medium text-gray-700 text-sm dark:text-gray-300">
-                Columns
+                Project Status Columns
               </h3>
               {!isAddingColumn && (
                 <button
@@ -425,30 +290,6 @@ const ProjectSettings = ({
             </DragDropContext>
           </div>
 
-          <div className="border-gray-200 border-t pt-4 dark:border-gray-700">
-            <h3 className="mb-2 font-medium text-gray-700 text-sm dark:text-gray-300">
-              Project Data
-            </h3>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={onImport}
-                className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
-              >
-                <Upload className="h-4 w-4" />
-                Import Project
-              </button>
-              <button
-                type="button"
-                onClick={onExport}
-                className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
-              >
-                <Download className="h-4 w-4" />
-                Export Project
-              </button>
-            </div>
-          </div>
-
           <div className="flex justify-end gap-2 border-gray-200 border-t pt-4 dark:border-gray-700">
             <button
               type="button"
@@ -479,4 +320,4 @@ const ProjectSettings = ({
   );
 };
 
-export default ProjectSettings;
+export default ProjectOverviewSettings;

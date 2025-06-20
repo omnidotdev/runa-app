@@ -11,9 +11,9 @@
       "**",
       "!**/generated/**",
       "!node_modules",
-      "!.next",
       "!certificates",
-      "!public"
+      "!public",
+      "!src/routeTree.gen.ts"
     ]
   },
   "formatter": {

@@ -1,5 +1,3 @@
-"use client";
-
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useEffect, useRef, useState } from "react";
 
