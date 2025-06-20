@@ -1,5 +1,0 @@
-query Assignee($rowId: UUID!) {
-  assignee(rowId: $rowId) {
-    ...AssigneeFragment
-  }
-}

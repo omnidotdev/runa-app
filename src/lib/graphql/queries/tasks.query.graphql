@@ -1,12 +1,20 @@
-query Tasks($first: Int, $filter: TaskFilter, $orderBy: [TaskOrderBy!]) {
-  tasks(first: $first, filter: $filter, orderBy: $orderBy) {
+query Tasks {
+  tasks {
     nodes {
-      ...TaskFragment
+      rowId
+      content
+      author {
+        rowId
+        name
+        avatarUrl
+      }
+      projectId
+      column {
+        rowId
+        title
+      }
+      priority
+      createdAt
     }
-    pageInfo {
-      hasNextPage
-      endCursor
-    }
-    totalCount
   }
 }

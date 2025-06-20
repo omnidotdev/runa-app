@@ -1,7 +1,0 @@
-fragment UserFragment on User {
-  id
-  rowId
-  identityProviderId
-  createdAt
-  updatedAt
-}

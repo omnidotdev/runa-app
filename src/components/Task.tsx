@@ -123,7 +123,7 @@ const Task = ({ task, index, onClick, columnId, projectPrefix }: TaskProps) => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={onClick}
-          className={`mb-2 cursor-pointer rounded-lg border border-gray-200/50 bg-white/70 p-3 dark:border-gray-800/50 dark:bg-gray-900/70 ${snapshot.isDragging ? "shadow-lg ring-2 ring-primary-500 ring-opacity-50" : "shadow-sm hover:shadow-md"}`}
+          className={`mb-2 cursor-pointer rounded-lg border border-gray-200/50 bg-white p-3 dark:border-gray-800/50 dark:bg-gray-900 ${snapshot.isDragging ? "shadow-lg ring-2 ring-primary-500 ring-opacity-50" : "shadow-sm hover:shadow-md"}`}
         >
           <div className="flex flex-col gap-2">
             <div className="flex items-start gap-2">
