@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ChevronDown,
   ChevronRight,
@@ -97,9 +95,9 @@ const Sidebar = ({
   };
 
   return (
-    <div className="flex h-full flex-col border-gray-200 border-r bg-white dark:border-gray-700 dark:bg-gray-800">
-      <div className="flex min-h-0 flex-1 flex-col p-4">
-        <div className="mb-4 flex items-center justify-between">
+    <div className="flex h-full flex-col border-gray-200 border-r bg-white dark:border-gray-700 dark:bg-gray-800/40">
+      <div className="flex flex-1 flex-col p-4">
+        <div className="mb-4 flex items-center justify-between gap-2">
           <div className="flex-1">
             <WorkspaceSelector
               workspaces={workspaces}
@@ -109,9 +107,8 @@ const Sidebar = ({
               onWorkspaceDelete={onWorkspaceDelete}
             />
           </div>
-          <div className="ml-2">
-            <ThemeToggle />
-          </div>
+
+          <ThemeToggle />
         </div>
 
         <div className="custom-scrollbar flex-1 overflow-y-auto">

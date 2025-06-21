@@ -1,9 +1,9 @@
 node_modules
 
-# Next.js
-.next
-next-env.d.ts
-.swc
+# Tanstack
+.tanstack
+.nitro
+.output
 
 # tests
 coverage
@@ -22,7 +22,7 @@ certificates
 # environment
 *.env*
 
-# below are safe to commit: https://nextjs.org/docs/basic-features/environment-variables
+# below are safe to commit
 !.env
 !.env.development
 !.env.production

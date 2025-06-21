@@ -2,8 +2,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
-body {
-  @apply bg-gray-50;
+:root {
+  --primary-50: oklch(0.9848 0.0133 188.69);
+  --primary-100: oklch(0.9546 0.0419 188.91);
+  --primary-200: oklch(0.9126 0.0775 188.86);
+  --primary-300: oklch(0.8584 0.1147 189.63);
+  --primary-400: oklch(0.758 0.1301 191.61);
+  --primary-500: oklch(0.7076 0.1202 192.87);
+  --primary-600: oklch(0.6031 0.1027 195.48);
+  --primary-700: oklch(0.5142 0.0843 197.08);
+  --primary-800: oklch(0.4414 0.0684 198.69);
+  --primary-900: oklch(0.3902 0.0556 199.49);
+  --primary-950: oklch(0.2852 0.0419 202.03);
+  --primary-1000: oklch(0.2171 0.0331 202.65);
 }
 
 @theme inline {
@@ -19,21 +30,6 @@ body {
   --color-primary-900: var(--primary-900);
   --color-primary-950: var(--primary-950);
   --color-primary-1000: var(--primary-1000);
-}
-
-:root {
-  --primary-50: oklch(0.9848 0.0133 188.69);
-  --primary-100: oklch(0.9546 0.0419 188.91);
-  --primary-200: oklch(0.9126 0.0775 188.86);
-  --primary-300: oklch(0.8584 0.1147 189.63);
-  --primary-400: oklch(0.758 0.1301 191.61);
-  --primary-500: oklch(0.7076 0.1202 192.87);
-  --primary-600: oklch(0.6031 0.1027 195.48);
-  --primary-700: oklch(0.5142 0.0843 197.08);
-  --primary-800: oklch(0.4414 0.0684 198.69);
-  --primary-900: oklch(0.3902 0.0556 199.49);
-  --primary-950: oklch(0.2852 0.0419 202.03);
-  --primary-1000: oklch(0.2171 0.0331 202.65);
 }
 
 /* Custom Scrollbar Styles */
@@ -63,6 +59,16 @@ body {
   }
 }
 
-.dark .custom-scrollbar {
-  scrollbar-color: rgba(75, 85, 99, 0.5) transparent;
+@layer base {
+  * {
+    @apply min-h-0 min-w-0;
+  }
+
+  body {
+    @apply bg-gray-50 dark:bg-gray-900;
+  }
+
+  .dark .custom-scrollbar {
+    scrollbar-color: rgba(75, 85, 99, 0.5) transparent;
+  }
 }

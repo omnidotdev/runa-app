@@ -1,5 +1,3 @@
-"use client";
-
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useEffect, useRef, useState } from "react";
 
@@ -194,7 +192,7 @@ const Board = ({
 
   const boardStyle = project.color
     ? {
-        backgroundColor: `${project.color}10`,
+        backgroundColor: `${project.color}08`,
       }
     : {};
 

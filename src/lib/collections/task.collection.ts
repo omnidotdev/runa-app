@@ -13,6 +13,7 @@ const taskCollection = createCollection(
   // TODO: determine proper generic for this considering the different mutations. Possibly use fragment?
   queryCollectionOptions<Partial<Task>>({
     queryKey: ["Tasks"],
+    // @ts-ignore seems to be an upstream type issue
     queryClient,
     // TODO: discuss and determine the appropriate refetch interval for live queries
     // refetchInterval: 3000,

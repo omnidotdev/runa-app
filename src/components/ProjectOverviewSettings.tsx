@@ -1,5 +1,3 @@
-"use client";
-
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { GripVertical, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";

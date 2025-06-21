@@ -45,7 +45,7 @@ const Column = ({
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
-          className="flex w-[320px] flex-shrink-0 flex-col rounded-md bg-neutral-50/60 dark:bg-neutral-950/10"
+          className="flex w-[320px] flex-shrink-0 flex-col rounded-md bg-neutral-50/80 dark:bg-neutral-950/20"
         >
           <div className="mb-3 flex items-center justify-between px-3 pt-3">
             <div className="flex items-center gap-2">

@@ -1,5 +1,3 @@
-"use client";
-
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { format } from "date-fns";
 import {
