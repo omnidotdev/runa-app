@@ -59,7 +59,7 @@ const RouteComponent = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div className="flex min-h-screen items-center justify-center">
       {isClient ? (
         <div className="flex flex-col items-start justify-center gap-2">
           <h1 className="mb-4">Tasks</h1>

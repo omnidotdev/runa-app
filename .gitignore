@@ -2,6 +2,8 @@ node_modules
 
 # Tanstack
 .tanstack
+.nitro
+.output
 
 # tests
 coverage

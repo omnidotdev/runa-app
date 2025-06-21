@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 
+import seo from "@/utils/seo";
+
 const Pricing = () => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-12">
           <Link
@@ -69,7 +71,9 @@ const Pricing = () => {
                 </li>
               </ul>
               <a
-                href="https://github.com/your-repo/runa"
+                href="https://github.com/omnidotdev/runa"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full rounded-md bg-primary-500 px-4 py-3 text-center font-medium text-white hover:bg-primary-600"
               >
                 View on GitHub
@@ -179,5 +183,8 @@ const Pricing = () => {
 };
 
 export const Route = createFileRoute("/pricing")({
+  head: () => ({
+    meta: [...seo({ title: "Pricing" })],
+  }),
   component: Pricing,
 });

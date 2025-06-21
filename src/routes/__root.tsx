@@ -1,15 +1,18 @@
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
-  createRootRoute,
+  createRootRouteWithContext,
   HeadContent,
   Outlet,
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
-import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import appCss from "@/styles/globals.css?url";
+import seo from "@/utils/seo";
 
+import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 
 const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => {
@@ -25,11 +28,12 @@ const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => {
           // NB: See https://github.com/pacocoursey/next-themes?tab=readme-ov-file#disable-transitions-on-theme-change
           disableTransitionOnChange
         >
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+          {children}
         </ThemeProvider>
 
-        {/* React Router Dev Tools - only included in development */}
+        {/* Dev Tools - only included in development */}
         <TanStackRouterDevtools />
+        <ReactQueryDevtools />
         <Scripts />
       </body>
     </html>
@@ -44,25 +48,26 @@ const RootComponent = () => {
   );
 };
 
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        title: "Runa",
-      },
-      {
-        name: "description",
-        content: "A beautiful Kanban board application",
-      },
-    ],
-    links: [{ rel: "stylesheet", href: appCss }],
-  }),
-  component: RootComponent,
-});
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    head: () => ({
+      meta: [
+        {
+          charSet: "utf-8",
+        },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1",
+        },
+        ...seo(),
+      ],
+      links: [{ rel: "stylesheet", href: appCss }],
+    }),
+    errorComponent: (props) => (
+      <RootDocument>
+        <DefaultCatchBoundary {...props} />
+      </RootDocument>
+    ),
+    component: RootComponent,
+  },
+);

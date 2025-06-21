@@ -192,7 +192,7 @@ const Board = ({
 
   const boardStyle = project.color
     ? {
-        backgroundColor: `${project.color}10`,
+        backgroundColor: `${project.color}08`,
       }
     : {};
 
