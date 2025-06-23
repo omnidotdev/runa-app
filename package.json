@@ -15,6 +15,7 @@
     "knip": "knip-bun --cache --tags=-knipignore"
   },
   "dependencies": {
+    "@ark-ui/react": "^5.15.1",
     "@hello-pangea/dnd": "^18.0.1",
     "@tailwindcss/vite": "^4.1.10",
     "@tanstack/db-collections": "^0.0.13",
@@ -32,11 +33,15 @@
     "@tiptap/starter-kit": "^2.22.3",
     "@tiptap/suggestion": "^2.22.3",
     "chrono-node": "^2.8.3",
+    "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "graphql": "^16.11.0",
     "lucide-react": "^0.522.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "tailwind-merge": "^3.3.1",
+    "tailwind-variants": "^1.0.0",
+    "ts-pattern": "^5.7.1",
     "usehooks-ts": "^3.1.1",
     "vite": "^6.3.5"
   },

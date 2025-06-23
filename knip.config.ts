@@ -13,6 +13,7 @@ const knipConfig: KnipConfig = {
     config: ["package.json", "src/lib/graphql/codegen.config.ts"],
   },
   ignore: [
+    "src/components/ui/**",
     "src/generated/**",
     "src/lib/graphql/getSdk.ts",
     "src/lib/graphql/graphqlFetch.ts",
@@ -21,7 +22,6 @@ const knipConfig: KnipConfig = {
   ignoreDependencies: [
     // used by GraphQL Code Generator scripts
     "dotenv",
-    "tailwindcss",
   ],
 };
 
