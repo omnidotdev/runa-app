@@ -15,6 +15,6 @@ export default defineConfig(({ command }) => ({
     command === "serve" && mkcert(),
     tailwindcss(),
     tsConfigPaths({ projects: ["./tsconfig.json"] }),
-    tanstackStart(),
+    tanstackStart({ tsr: { verboseFileRoutes: false } }),
   ],
 }));

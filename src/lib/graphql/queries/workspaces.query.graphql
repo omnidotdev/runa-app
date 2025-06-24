@@ -1,0 +1,8 @@
+query Workspaces {
+  workspaces {
+    nodes {
+      rowId
+      name
+    }
+  }
+}

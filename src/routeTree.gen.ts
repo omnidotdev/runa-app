@@ -8,11 +8,18 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import type { CreateFileRoute, FileRoutesByPath } from '@tanstack/react-router'
+import type {
+  CreateServerFileRoute,
+  ServerFileRoutesByPath,
+} from '@tanstack/react-start/server'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TestingRouteImport } from './routes/testing'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as WorkspacesIndexRouteImport } from './routes/workspaces/index'
+import { Route as WorkspacesWorkspaceIdRouteImport } from './routes/workspaces/$workspaceId'
 
 const TestingRoute = TestingRouteImport.update({
   id: '/testing',
@@ -29,9 +36,14 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/dashboard/',
-  path: '/dashboard/',
+const WorkspacesIndexRoute = WorkspacesIndexRouteImport.update({
+  id: '/workspaces/',
+  path: '/workspaces/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkspacesWorkspaceIdRoute = WorkspacesWorkspaceIdRouteImport.update({
+  id: '/workspaces/$workspaceId',
+  path: '/workspaces/$workspaceId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -39,43 +51,58 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/testing': typeof TestingRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
+  '/workspaces': typeof WorkspacesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/testing': typeof TestingRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
+  '/workspaces': typeof WorkspacesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
   '/testing': typeof TestingRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
+  '/workspaces/': typeof WorkspacesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/pricing' | '/testing' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/pricing'
+    | '/testing'
+    | '/workspaces/$workspaceId'
+    | '/workspaces'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pricing' | '/testing' | '/dashboard'
-  id: '__root__' | '/' | '/pricing' | '/testing' | '/dashboard/'
+  to: '/' | '/pricing' | '/testing' | '/workspaces/$workspaceId' | '/workspaces'
+  id:
+    | '__root__'
+    | '/'
+    | '/pricing'
+    | '/testing'
+    | '/workspaces/$workspaceId'
+    | '/workspaces/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PricingRoute: typeof PricingRoute
   TestingRoute: typeof TestingRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
+  WorkspacesWorkspaceIdRoute: typeof WorkspacesWorkspaceIdRoute
+  WorkspacesIndexRoute: typeof WorkspacesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/testing': {
-      id: '/testing'
-      path: '/testing'
-      fullPath: '/testing'
-      preLoaderRoute: typeof TestingRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -85,28 +112,122 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/testing': {
+      id: '/testing'
+      path: '/testing'
+      fullPath: '/testing'
+      preLoaderRoute: typeof TestingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardIndexRouteImport
+    '/workspaces/$workspaceId': {
+      id: '/workspaces/$workspaceId'
+      path: '/workspaces/$workspaceId'
+      fullPath: '/workspaces/$workspaceId'
+      preLoaderRoute: typeof WorkspacesWorkspaceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workspaces/': {
+      id: '/workspaces/'
+      path: '/workspaces'
+      fullPath: '/workspaces'
+      preLoaderRoute: typeof WorkspacesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
+}
+
+declare module './routes/index' {
+  const createFileRoute: CreateFileRoute<
+    '/',
+    FileRoutesByPath['/']['parentRoute'],
+    FileRoutesByPath['/']['id'],
+    FileRoutesByPath['/']['path'],
+    FileRoutesByPath['/']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/']['parentRoute'],
+    ServerFileRoutesByPath['/']['id'],
+    ServerFileRoutesByPath['/']['path'],
+    ServerFileRoutesByPath['/']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/pricing' {
+  const createFileRoute: CreateFileRoute<
+    '/pricing',
+    FileRoutesByPath['/pricing']['parentRoute'],
+    FileRoutesByPath['/pricing']['id'],
+    FileRoutesByPath['/pricing']['path'],
+    FileRoutesByPath['/pricing']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/pricing']['parentRoute'],
+    ServerFileRoutesByPath['/pricing']['id'],
+    ServerFileRoutesByPath['/pricing']['path'],
+    ServerFileRoutesByPath['/pricing']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/testing' {
+  const createFileRoute: CreateFileRoute<
+    '/testing',
+    FileRoutesByPath['/testing']['parentRoute'],
+    FileRoutesByPath['/testing']['id'],
+    FileRoutesByPath['/testing']['path'],
+    FileRoutesByPath['/testing']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/testing']['parentRoute'],
+    ServerFileRoutesByPath['/testing']['id'],
+    ServerFileRoutesByPath['/testing']['path'],
+    ServerFileRoutesByPath['/testing']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/workspaces/$workspaceId' {
+  const createFileRoute: CreateFileRoute<
+    '/workspaces/$workspaceId',
+    FileRoutesByPath['/workspaces/$workspaceId']['parentRoute'],
+    FileRoutesByPath['/workspaces/$workspaceId']['id'],
+    FileRoutesByPath['/workspaces/$workspaceId']['path'],
+    FileRoutesByPath['/workspaces/$workspaceId']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/workspaces/$workspaceId']['parentRoute'],
+    ServerFileRoutesByPath['/workspaces/$workspaceId']['id'],
+    ServerFileRoutesByPath['/workspaces/$workspaceId']['path'],
+    ServerFileRoutesByPath['/workspaces/$workspaceId']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/workspaces/index' {
+  const createFileRoute: CreateFileRoute<
+    '/workspaces/',
+    FileRoutesByPath['/workspaces/']['parentRoute'],
+    FileRoutesByPath['/workspaces/']['id'],
+    FileRoutesByPath['/workspaces/']['path'],
+    FileRoutesByPath['/workspaces/']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/workspaces/']['parentRoute'],
+    ServerFileRoutesByPath['/workspaces/']['id'],
+    ServerFileRoutesByPath['/workspaces/']['path'],
+    ServerFileRoutesByPath['/workspaces/']['fullPath'],
+    unknown
+  >
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PricingRoute: PricingRoute,
   TestingRoute: TestingRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
+  WorkspacesWorkspaceIdRoute: WorkspacesWorkspaceIdRoute,
+  WorkspacesIndexRoute: WorkspacesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

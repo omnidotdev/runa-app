@@ -1,0 +1,11 @@
+query Workspace($rowId: UUID!) {
+  workspace(rowId: $rowId) {
+    rowId
+    name
+    projects {
+      nodes {
+        name
+      }
+    }
+  }
+}

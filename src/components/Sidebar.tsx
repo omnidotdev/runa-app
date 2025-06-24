@@ -20,7 +20,6 @@ import type { Project, Workspace } from "@/types";
 interface SidebarProps {
   workspaces: Workspace[];
   currentWorkspace: string;
-  onWorkspaceSelect: (workspaceId: string) => void;
   onWorkspaceCreate: (workspace: Workspace) => void;
   onWorkspaceDelete: (workspaceId: string) => void;
   projects: Project[];
@@ -35,7 +34,6 @@ interface SidebarProps {
 const Sidebar = ({
   workspaces,
   currentWorkspace,
-  onWorkspaceSelect,
   onWorkspaceCreate,
   onWorkspaceDelete,
   projects,
@@ -102,7 +100,6 @@ const Sidebar = ({
             <WorkspaceSelector
               workspaces={workspaces}
               currentWorkspace={currentWorkspace}
-              onWorkspaceSelect={onWorkspaceSelect}
               onWorkspaceCreate={onWorkspaceCreate}
               onWorkspaceDelete={onWorkspaceDelete}
             />
@@ -196,7 +193,7 @@ const Sidebar = ({
               )}
 
               {projects
-                .filter((project) => !project.id.startsWith("projects-"))
+                // .filter((project) => !project.id.startsWith("projects-"))
                 .map((project) => (
                   <div
                     key={project.id}

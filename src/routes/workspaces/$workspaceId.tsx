@@ -1,65 +1,28 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { notFound, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 
 import Board from "@/components/Board";
 import Header from "@/components/Header";
 import ListView from "@/components/ListView";
+import NotFound from "@/components/layout/NotFound";
 import ProjectOverview from "@/components/ProjectOverview";
 import ProjectOverviewSettings from "@/components/ProjectOverviewSettings";
 import ProjectSettings from "@/components/ProjectSettings";
 import Sidebar from "@/components/Sidebar";
 import SidebarToggle from "@/components/SidebarToggle";
 import TaskDialog from "@/components/TaskDialog";
-import WorkspaceSettings from "@/components/WorkspaceSettings";
+import workspaceOptions from "@/lib/options/workspace.options";
+// import WorkspaceSettings from "@/components/WorkspaceSettings";
+import workspacesOptions from "@/lib/options/workspaces.options";
 import seo from "@/utils/seo";
 
-import type { Assignee, Project, Task, Workspace } from "@/types";
+import type { Assignee, Project } from "@/types";
 
 const teamMembers: Assignee[] = [
   { id: "user-1", name: "John Doe" },
   { id: "user-2", name: "Jane Smith" },
   { id: "user-3", name: "Alex Johnson" },
-];
-
-const defaultColumns = {
-  backlog: {
-    id: "backlog",
-    title: "Backlog",
-    tasks: [],
-  },
-  todo: {
-    id: "todo",
-    title: "To Do",
-    tasks: [],
-  },
-  "in-progress": {
-    id: "in-progress",
-    title: "In Progress",
-    tasks: [],
-  },
-  "awaiting-review": {
-    id: "awaiting-review",
-    title: "Awaiting Review",
-    tasks: [],
-  },
-  done: {
-    id: "done",
-    title: "Done",
-    tasks: [],
-  },
-};
-
-const initialWorkspaces: Workspace[] = [
-  {
-    id: "personal",
-    name: "Personal",
-    team: teamMembers,
-  },
-  {
-    id: "team",
-    name: "Team",
-    team: teamMembers,
-  },
 ];
 
 const initialProjects: { [key: string]: Project } = {
@@ -373,13 +336,45 @@ const initialProjects: { [key: string]: Project } = {
   },
 };
 
-const Dashboard = () => {
-  const navigate = useNavigate({ from: "/dashboard" });
+export const Route = createFileRoute({
+  loader: async ({ params: { workspaceId }, context }) => {
+    const [{ workspace }] = await Promise.all([
+      context.queryClient.ensureQueryData(workspaceOptions(workspaceId)),
+      context.queryClient.ensureQueryData(workspacesOptions),
+    ]);
+
+    if (!workspace) {
+      throw notFound();
+    }
+
+    return { name: workspace.name };
+  },
+  head: ({ loaderData }) => ({
+    meta: loaderData ? [...seo({ title: loaderData.name })] : undefined,
+  }),
+  notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,
+  component: RouteComponent,
+});
+
+function RouteComponent() {
+  const { workspaceId } = Route.useParams();
+
+  const navigate = useNavigate();
+
+  const { data: workspace } = useSuspenseQuery({
+    ...workspaceOptions(workspaceId),
+    select: (data) => data.workspace,
+  });
+
+  // TODO: determine why this is still showing data as possibly being undefined
+  const { data: workspaces } = useSuspenseQuery({
+    ...workspacesOptions,
+    select: (data) => data?.workspaces?.nodes,
+  });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [workspaces, setWorkspaces] = useState(initialWorkspaces);
-  const [currentWorkspace, setCurrentWorkspace] = useState("personal");
+  const [currentWorkspace, setCurrentWorkspace] = useState(workspace?.rowId);
   const [projects, setProjects] = useState(initialProjects);
   const [currentProject, setCurrentProject] = useState("runa");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -389,48 +384,6 @@ const Dashboard = () => {
   const [expandedSections, setExpandedSections] = useState<{
     [key: string]: boolean;
   }>({});
-
-  const projectsOverview = useMemo(() => {
-    const workspaceProjects = Object.values(projects).filter(
-      (p) => p.workspaceId === currentWorkspace,
-    );
-
-    return {
-      id: `projects-${currentWorkspace}`,
-      name: "Projects Overview",
-      workspaceId: currentWorkspace,
-      description:
-        "Overview of all active and planned projects in this workspace.",
-      team: workspaces.find((w) => w.id === currentWorkspace)?.team || [],
-      viewMode: "board",
-      columns: {
-        planned: {
-          id: "planned",
-          title: "Planned",
-          tasks: workspaceProjects
-            .filter((p) => !p.id.startsWith("projects-"))
-            .map((p) => ({
-              id: p.id,
-              content: p.name,
-              priority: "medium",
-              description: p.description || "",
-              assignees: [],
-              dueDate: undefined,
-            })),
-        },
-        "in-progress": {
-          id: "in-progress",
-          title: "In Progress",
-          tasks: [],
-        },
-        completed: {
-          id: "completed",
-          title: "Completed",
-          tasks: [],
-        },
-      },
-    };
-  }, [currentWorkspace, projects, workspaces]);
 
   const currentProjectData = projects[currentProject];
 
@@ -456,171 +409,6 @@ const Dashboard = () => {
     // Implementation needed
   };
 
-  const handleWorkspaceCreate = (workspace: Workspace) => {
-    setWorkspaces((prev) => [...prev, workspace]);
-    setCurrentWorkspace(workspace.id);
-    setCurrentProject(`projects-${workspace.id}`);
-  };
-
-  const handleWorkspaceDelete = (workspaceId: string) => {
-    setWorkspaces((prev) => prev.filter((w) => w.id !== workspaceId));
-
-    setProjects((prev) => {
-      const newProjects = { ...prev };
-      Object.keys(newProjects).forEach((projectId) => {
-        if (newProjects[projectId].workspaceId === workspaceId) {
-          delete newProjects[projectId];
-        }
-      });
-      return newProjects;
-    });
-
-    if (currentWorkspace === workspaceId) {
-      const firstWorkspace = workspaces.find((w) => w.id !== workspaceId);
-      if (firstWorkspace) {
-        setCurrentWorkspace(firstWorkspace.id);
-        setCurrentProject(`projects-${firstWorkspace.id}`);
-      }
-    }
-  };
-
-  const handleProjectCreate = (project: Project) => {
-    setProjects((prev) => ({
-      ...prev,
-      [project.id]: {
-        ...project,
-        workspaceId: currentWorkspace,
-        team: workspaces.find((w) => w.id === currentWorkspace)?.team || [],
-        viewMode: "board",
-        columns: { ...defaultColumns },
-      },
-    }));
-  };
-
-  const handleProjectDelete = (projectId: string) => {
-    setProjects((prev) => {
-      const { [projectId]: _deleted, ...rest } = prev;
-
-      // If we're deleting a project, update the overview
-      if (projectId === `projects-${currentWorkspace}`) {
-        return rest;
-      }
-
-      return rest;
-    });
-
-    if (currentProject === projectId) {
-      const firstProject = Object.values(projects).find(
-        (p) => p.id !== projectId && p.workspaceId === currentWorkspace,
-      );
-      if (firstProject) {
-        setCurrentProject(firstProject.id);
-      }
-    }
-  };
-
-  const handleProjectUpdate = (
-    projectId: string,
-    updates: Partial<Project>,
-  ) => {
-    setProjects((prev) => {
-      const newProjects = {
-        ...prev,
-        [projectId]: {
-          ...prev[projectId],
-          ...updates,
-        },
-      };
-
-      // If we're updating columns in the projects overview
-      if (projectId === `projects-${currentWorkspace}` && updates.columns) {
-        // Ensure tasks are preserved when columns are updated
-        const allTasks = Object.values(prev[projectId].columns).flatMap(
-          (column) => column.tasks,
-        );
-
-        // Redistribute tasks to their respective columns in the new structure
-        Object.keys(updates.columns).forEach((columnId) => {
-          const existingTasks = updates.columns![columnId].tasks;
-          if (existingTasks.length === 0) {
-            // Only copy tasks if the column is empty (new column)
-            updates.columns![columnId].tasks = allTasks.filter((task) =>
-              prev[projectId].columns[columnId]?.tasks.some(
-                (t) => t.id === task.id,
-              ),
-            );
-          }
-        });
-      }
-
-      return newProjects;
-    });
-  };
-
-  const handleTeamUpdate = (newTeam: Assignee[]) => {
-    setWorkspaces((prev) =>
-      prev.map((w) =>
-        w.id === currentWorkspace ? { ...w, team: newTeam } : w,
-      ),
-    );
-
-    setProjects((prev) => {
-      const newProjects = { ...prev };
-      Object.keys(newProjects).forEach((projectId) => {
-        if (newProjects[projectId].workspaceId === currentWorkspace) {
-          newProjects[projectId].team = newTeam;
-        }
-      });
-      return newProjects;
-    });
-  };
-
-  const handleDeleteTask = (columnId: string, taskId: string) => {
-    if (!currentProjectData) return;
-
-    setProjects((prev) => ({
-      ...prev,
-      [currentProject]: {
-        ...prev[currentProject],
-        columns: {
-          ...prev[currentProject].columns,
-          [columnId]: {
-            ...prev[currentProject].columns[columnId],
-            tasks: prev[currentProject].columns[columnId].tasks.filter(
-              (t) => t.id !== taskId,
-            ),
-          },
-        },
-      },
-    }));
-
-    setSelectedTask(null);
-  };
-
-  const handleUpdateTask = (taskId: string, updates: Partial<Task>) => {
-    if (!currentProjectData) return;
-
-    setProjects((prev) => {
-      const newProjects = { ...prev };
-      const project = newProjects[currentProject];
-
-      for (const columnId in project.columns) {
-        const taskIndex = project.columns[columnId].tasks.findIndex(
-          (t) => t.id === taskId,
-        );
-        if (taskIndex !== -1) {
-          project.columns[columnId].tasks[taskIndex] = {
-            ...project.columns[columnId].tasks[taskIndex],
-            ...updates,
-          };
-          break;
-        }
-      }
-
-      return newProjects;
-    });
-  };
-
   const filterTasks = (project: Project) => {
     if (!searchQuery) return project;
 
@@ -644,21 +432,6 @@ const Dashboard = () => {
     return { ...project, columns: filteredColumns };
   };
 
-  const workspaceProjects = Object.values(projects).filter(
-    (p) => p.workspaceId === currentWorkspace,
-  );
-
-  const handleWorkspaceSelect = (workspaceId: string) => {
-    setCurrentWorkspace(workspaceId);
-    setCurrentProject(`projects-${workspaceId}`);
-  };
-
-  // Add the projects overview to the current workspace's projects
-  if (!projects[`projects-${currentWorkspace}`]) {
-    // @ts-ignore: TODO
-    projects[`projects-${currentWorkspace}`] = projectsOverview;
-  }
-
   const toggleSection = (columnId: string) => {
     setExpandedSections((prev) => ({
       ...prev,
@@ -675,7 +448,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-screen">
       <input
         ref={fileInputRef}
         type="file"
@@ -692,15 +465,10 @@ const Dashboard = () => {
         >
           <Sidebar
             workspaces={workspaces}
-            currentWorkspace={currentWorkspace}
-            onWorkspaceSelect={handleWorkspaceSelect}
-            onWorkspaceCreate={handleWorkspaceCreate}
-            onWorkspaceDelete={handleWorkspaceDelete}
-            projects={workspaceProjects}
+            currentWorkspace={currentWorkspace ?? "personal"}
+            projects={workspace?.projects.nodes}
             currentProject={currentProject}
             onProjectSelect={setCurrentProject}
-            onProjectCreate={handleProjectCreate}
-            onProjectDelete={handleProjectDelete}
             onOpenWorkspaceSettings={() => setIsWorkspaceSettingsOpen(true)}
             onSignOut={() => navigate({ to: "/" })}
           />
@@ -719,8 +487,9 @@ const Dashboard = () => {
               project={currentProjectData}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
-              onViewModeChange={(viewMode) =>
-                handleProjectUpdate(currentProject, { viewMode })
+              onViewModeChange={
+                (viewMode) => console.warn("TODO: View Mode Change", viewMode)
+                // handleProjectUpdate(currentProject, { viewMode })
               }
               onOpenSettings={() => setIsSettingsOpen(true)}
             />
@@ -789,7 +558,8 @@ const Dashboard = () => {
             project={currentProjectData}
             onClose={() => setIsSettingsOpen(false)}
             onUpdate={(updates) => {
-              handleProjectUpdate(currentProject, updates);
+              console.warn("TODO Project Overview Settings Updated:", updates);
+              // handleProjectUpdate(currentProject, updates);
             }}
           />
         ) : (
@@ -797,20 +567,22 @@ const Dashboard = () => {
             project={currentProjectData}
             onClose={() => setIsSettingsOpen(false)}
             onUpdate={(updates) => {
-              handleProjectUpdate(currentProject, updates);
+              console.warn("TODO Project Settings Updated:", updates);
+              // handleProjectUpdate(currentProject, updates);
             }}
             onImport={() => fileInputRef.current?.click()}
             onExport={handleExportProject}
           />
         ))}
 
-      {isWorkspaceSettingsOpen && (
+      {/* TODO */}
+      {/* {isWorkspaceSettingsOpen && (
         <WorkspaceSettings
           team={workspaces.find((w) => w.id === currentWorkspace)?.team || []}
           onClose={() => setIsWorkspaceSettingsOpen(false)}
           onUpdate={handleTeamUpdate}
         />
-      )}
+      )} */}
 
       {selectedTask && (
         <TaskDialog
@@ -824,25 +596,19 @@ const Dashboard = () => {
           projectPrefix={currentProjectData.prefix}
           currentProject={currentProjectData}
           onClose={() => setSelectedTask(null)}
-          onDelete={(taskId) => {
-            for (const columnId in currentProjectData.columns) {
-              const column = currentProjectData.columns[columnId];
-              if (column.tasks.some((t) => t.id === taskId)) {
-                handleDeleteTask(columnId, taskId);
-                break;
-              }
-            }
-          }}
-          onUpdate={handleUpdateTask}
+          // TODO
+          // onDelete={(taskId) => {
+          //   for (const columnId in currentProjectData.columns) {
+          //     const column = currentProjectData.columns[columnId];
+          //     if (column.tasks.some((t) => t.id === taskId)) {
+          //       handleDeleteTask(columnId, taskId);
+          //       break;
+          //     }
+          //   }
+          // }}
+          // onUpdate={handleUpdateTask}
         />
       )}
     </div>
   );
-};
-
-export const Route = createFileRoute("/dashboard/")({
-  head: () => ({
-    meta: [...seo({ title: "Dashboard" })],
-  }),
-  component: Dashboard,
-});
+}

@@ -1,7 +1,12 @@
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { ChevronDown, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { useCreateWorkspaceMutation } from "@/generated/graphql";
+import workspacesOptions from "@/lib/options/workspaces.options";
+import getQueryClient from "@/utils/getQueryClient";
 
 interface Workspace {
   id: string;
@@ -11,7 +16,6 @@ interface Workspace {
 interface WorkspaceSelectorProps {
   workspaces: Workspace[];
   currentWorkspace: string;
-  onWorkspaceSelect: (workspaceId: string) => void;
   onWorkspaceCreate: (workspace: Workspace) => void;
   onWorkspaceDelete: (workspaceId: string) => void;
 }
@@ -19,10 +23,11 @@ interface WorkspaceSelectorProps {
 const WorkspaceSelector = ({
   workspaces,
   currentWorkspace,
-  onWorkspaceSelect,
   onWorkspaceCreate,
   onWorkspaceDelete,
 }: WorkspaceSelectorProps) => {
+  const queryClient = getQueryClient();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [newWorkspaceName, setNewWorkspaceName] = useState("");
@@ -31,6 +36,15 @@ const WorkspaceSelector = ({
   );
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const { data: workspaces2 } = useQuery({
+    ...workspacesOptions,
+    select: (data) => data.workspaces?.nodes,
+  });
+
+  const { mutateAsync: createNewWorkspace } = useCreateWorkspaceMutation({
+    onSettled: () => queryClient.invalidateQueries(workspacesOptions),
+  });
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -56,23 +70,29 @@ const WorkspaceSelector = ({
     }
   }, [isCreating]);
 
-  const handleCreateWorkspace = (e?: React.FormEvent) => {
+  const handleCreateWorkspace = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!newWorkspaceName.trim()) return;
 
-    const newWorkspace: Workspace = {
-      id: newWorkspaceName.toLowerCase().replace(/\s+/g, "-"),
-      name: newWorkspaceName.trim(),
-    };
+    const { createWorkspace } = await createNewWorkspace({
+      input: {
+        workspace: {
+          name: newWorkspaceName,
+        },
+      },
+    });
 
-    onWorkspaceCreate(newWorkspace);
+    onWorkspaceCreate({
+      id: createWorkspace?.workspace?.rowId!,
+      name: newWorkspaceName,
+    });
     setNewWorkspaceName("");
     setIsCreating(false);
     setIsOpen(false);
   };
 
-  const currentWorkspaceData = workspaces.find(
-    (w) => w.id === currentWorkspace,
+  const currentWorkspaceData = workspaces2?.find(
+    (w) => w?.rowId === currentWorkspace,
   );
 
   return (
@@ -124,30 +144,26 @@ const WorkspaceSelector = ({
             </form>
           ) : (
             <>
-              {workspaces.map((workspace) => (
-                <div key={workspace.id} className="group relative">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onWorkspaceSelect(workspace.id);
-                      setIsOpen(false);
-                    }}
-                    className={`w-full px-3 py-2 text-left text-sm ${
-                      workspace.id === currentWorkspace
-                        ? "bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
-                        : "text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
-                    }`}
+              {workspaces2?.map((workspace) => (
+                <div
+                  key={workspace?.rowId}
+                  // TODO: active styles. Waiting for `cn` from shadcn implementation so that styles are properly merged
+                  className="group relative w-full px-3 py-2 text-left text-gray-700 text-sm hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                >
+                  <Link
+                    to="/workspaces/$workspaceId"
+                    params={{ workspaceId: workspace?.rowId! }}
                   >
-                    {workspace.name}
-                  </button>
+                    {workspace?.name}
+                  </Link>
                   {workspaces.length > 1 &&
-                    workspace.id === currentWorkspace && (
+                    workspace?.rowId === currentWorkspace && (
                       <button
                         type="button"
-                        onClick={() => setWorkspaceToDelete(workspace.id)}
-                        className="-translate-y-1/2 absolute top-1/2 right-2 rounded p-1 opacity-0 hover:bg-gray-200 group-hover:opacity-100 dark:hover:bg-gray-600"
+                        onClick={() => setWorkspaceToDelete(workspace.rowId)}
+                        className="group -translate-y-1/2 absolute top-1/2 right-2 rounded p-1 text-gray-500 opacity-0 hover:bg-gray-200 hover:text-red-500 group-hover:opacity-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-red-400"
                       >
-                        <Plus className="h-3 w-3 rotate-45 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400" />
+                        <Plus className="h-3 w-3 rotate-45" />
                       </button>
                     )}
                 </div>

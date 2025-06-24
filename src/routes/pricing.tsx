@@ -1,15 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 
 import {
   AccordionItem,
-  AccordionRoot,
   AccordionItemContent,
   AccordionItemTrigger,
+  AccordionRoot,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import seo from "@/utils/seo";
 import { cn } from "@/lib/utils";
+import seo from "@/utils/seo";
 
 const faqItems = [
   {
@@ -77,7 +77,14 @@ const pricingPlans = [
   },
 ];
 
-const Pricing = () => {
+export const Route = createFileRoute({
+  head: () => ({
+    meta: [...seo({ title: "Pricing" })],
+  }),
+  component: Pricing,
+});
+
+function Pricing() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -172,11 +179,4 @@ const Pricing = () => {
       </div>
     </div>
   );
-};
-
-export const Route = createFileRoute("/pricing")({
-  head: () => ({
-    meta: [...seo({ title: "Pricing" })],
-  }),
-  component: Pricing,
-});
+}

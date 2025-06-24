@@ -12,10 +12,6 @@ coverage
 .vscode
 .zed
 
-#generated artifacts
-**/generated/*
-!**/generated/.gitignore
-
 # TLS/HTTPS
 certificates
 
