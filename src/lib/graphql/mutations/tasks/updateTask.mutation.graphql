@@ -1,0 +1,7 @@
+mutation UpdateTask($rowId: UUID!, $patch: TaskPatch!) {
+  updateTask(input: { rowId: $rowId, patch: $patch }) {
+    task {
+      rowId
+    }
+  }
+}
