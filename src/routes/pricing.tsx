@@ -3,13 +3,13 @@ import { ArrowLeft, Check } from "lucide-react";
 
 import {
   AccordionItem,
-  AccordionRoot,
   AccordionItemContent,
   AccordionItemTrigger,
+  AccordionRoot,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import seo from "@/utils/seo";
 import { cn } from "@/lib/utils";
+import seo from "@/utils/seo";
 
 const faqItems = [
   {
@@ -128,13 +128,13 @@ const Pricing = () => {
                 <ul className="mb-8 flex-1 space-y-4">
                   {plan.features.map((feature, i) => (
                     // biome-ignore lint/suspicious/noArrayIndexKey: Allow for simplicity
-                    (<li key={i} className="flex items-center gap-2">
+                    <li key={i} className="flex items-center gap-2">
                       <Check
                         size={20}
                         className="flex-shrink-0 text-green-500"
                       />
                       <span className="text-muted-foreground">{feature}</span>
-                    </li>)
+                    </li>
                   ))}
                 </ul>
 
@@ -171,7 +171,7 @@ const Pricing = () => {
         </div>
       </div>
     </div>
-  )
+  );
 };
 
 export const Route = createFileRoute({
