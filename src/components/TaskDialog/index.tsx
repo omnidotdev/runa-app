@@ -268,7 +268,7 @@ const TaskDialog = ({
         ref={modalRef}
         role="dialog"
         aria-modal="true"
-        className="max-h-[85vh] min-h-[600px] w-full max-w-3xl overflow-auto rounded-lg bg-white dark:bg-gray-800"
+        className="max-h-[85vh] min-h-[600px] w-full max-w-3xl overflow-auto rounded-lg bg-white dark:bg-base-800"
       >
         <TaskHeader
           task={task}
@@ -314,7 +314,7 @@ const TaskDialog = ({
                     setShowAssigneePicker(false);
                   }
                 }}
-                className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                className="flex items-center gap-2 rounded-md border border-base-200 bg-white px-3 py-2 font-medium text-base-700 text-sm hover:bg-base-50 dark:border-base-700 dark:bg-base-800 dark:text-base-200 dark:hover:bg-base-700"
               >
                 <Tag className="h-4 w-4" />
                 <span>
@@ -325,29 +325,29 @@ const TaskDialog = ({
               </button>
 
               {showLabelPicker && (
-                <div className="absolute top-full left-0 z-20 mt-1 w-64 rounded-md border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                <div className="absolute top-full left-0 z-20 mt-1 w-64 rounded-md border border-base-200 bg-white p-2 shadow-lg dark:border-base-700 dark:bg-base-800">
                   <form onSubmit={handleAddLabel} className="mb-2">
                     <input
                       type="text"
                       value={newLabel}
                       onChange={(e) => setNewLabel(e.target.value)}
                       placeholder="Add new label..."
-                      className="w-full rounded border border-gray-200 bg-white px-2 py-1 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                      className="w-full rounded border border-base-200 bg-white px-2 py-1 text-base-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-100"
                       // biome-ignore lint/a11y/noAutofocus: allow
                       autoFocus
                     />
                   </form>
 
                   {task.labels?.length && (
-                    <div className="mb-2 rounded bg-gray-50 p-2 dark:bg-gray-700/50">
-                      <div className="mb-1 font-medium text-gray-500 text-xs dark:text-gray-400">
+                    <div className="mb-2 rounded bg-base-50 p-2 dark:bg-base-700/50">
+                      <div className="mb-1 font-medium text-base-500 text-xs dark:text-base-400">
                         Applied Labels
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {task.labels.map((label) => (
                           <span
                             key={label}
-                            className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-1 font-medium text-gray-700 text-xs dark:bg-gray-700 dark:text-gray-300"
+                            className="inline-flex items-center gap-1 rounded-full bg-base-100 px-2 py-1 font-medium text-base-700 text-xs dark:bg-base-700 dark:text-base-300"
                           >
                             {label}
                             <button
@@ -366,7 +366,7 @@ const TaskDialog = ({
                   {currentProject?.labels &&
                     currentProject.labels.length > 0 && (
                       <div>
-                        <div className="mb-1 font-medium text-gray-500 text-xs dark:text-gray-400">
+                        <div className="mb-1 font-medium text-base-500 text-xs dark:text-base-400">
                           Project Labels
                         </div>
                         <div className="space-y-1">
@@ -375,9 +375,9 @@ const TaskDialog = ({
                               type="button"
                               key={label}
                               onClick={() => handleToggleLabel(label)}
-                              className="flex w-full items-center justify-between rounded px-2 py-1 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
+                              className="flex w-full items-center justify-between rounded px-2 py-1 text-sm hover:bg-base-50 dark:hover:bg-base-700"
                             >
-                              <span className="text-gray-900 dark:text-gray-100">
+                              <span className="text-base-900 dark:text-base-100">
                                 {label}
                               </span>
                               {task.labels?.includes(label) && (

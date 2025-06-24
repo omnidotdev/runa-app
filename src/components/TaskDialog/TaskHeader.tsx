@@ -36,10 +36,10 @@ const TaskHeader = ({
   onKeyDown,
 }: TaskHeaderProps) => {
   return (
-    <div className="flex items-start justify-between border-gray-200 border-b p-6 dark:border-gray-700">
+    <div className="flex items-start justify-between border-base-200 border-b p-6 dark:border-base-700">
       <div className="flex-1">
         <div className="mb-2 flex items-center gap-2 text-sm">
-          <span className="font-medium font-mono text-gray-400 dark:text-gray-500">
+          <span className="font-medium font-mono text-base-400 dark:text-base-500">
             {projectPrefix ? `${projectPrefix}-${displayId}` : `#${displayId}`}
           </span>
           {isNew || isEditing ? (
@@ -49,14 +49,14 @@ const TaskHeader = ({
               onChange={(e) => onContentChange(e.target.value)}
               onKeyDown={onKeyDown}
               placeholder={`${itemType} title`}
-              className="w-full border-none bg-transparent font-semibold text-gray-900 text-xl focus:outline-none focus:ring-0 dark:text-gray-100"
+              className="w-full border-none bg-transparent font-semibold text-base-900 text-xl focus:outline-none focus:ring-0 dark:text-base-100"
               // biome-ignore lint/a11y/noAutofocus: TODO
               autoFocus
               disabled={isSaving}
             />
           ) : (
             <h2
-              className="cursor-pointer font-semibold text-gray-900 text-xl hover:text-gray-700 dark:text-gray-100 dark:hover:text-gray-300"
+              className="cursor-pointer font-semibold text-base-900 text-xl hover:text-base-700 dark:text-base-100 dark:hover:text-base-300"
               onClick={onEditStart}
             >
               {task.content}
@@ -71,7 +71,7 @@ const TaskHeader = ({
               type="button"
               onClick={onSave}
               disabled={isSaving}
-              className="text-gray-500 hover:text-green-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:text-green-400"
+              className="text-base-500 hover:text-green-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-base-400 dark:hover:text-green-400"
             >
               <Save className="h-5 w-5" />
             </button>
@@ -80,7 +80,7 @@ const TaskHeader = ({
               type="button"
               onClick={onDelete}
               disabled={isSaving}
-              className="text-gray-500 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:text-red-400"
+              className="text-base-500 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-base-400 dark:hover:text-red-400"
             >
               <Trash className="h-5 w-5" />
             </button>
@@ -89,7 +89,7 @@ const TaskHeader = ({
           type="button"
           onClick={onClose}
           disabled={isSaving}
-          className="text-gray-500 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:text-gray-300"
+          className="text-base-500 hover:text-base-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-base-400 dark:hover:text-base-300"
         >
           <X className="h-5 w-5" />
         </button>

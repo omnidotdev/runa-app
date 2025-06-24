@@ -258,12 +258,12 @@ const RichTextEditor = ({
     >
       <EditorContent
         editor={editor}
-        className={`pointer-events-auto min-h-[120px] rounded-md bg-transparent p-3 text-gray-600 dark:text-gray-300 ${
+        className={`pointer-events-auto min-h-[120px] rounded-md bg-transparent p-3 text-base-600 dark:text-base-300 ${
           readOnly
             ? "cursor-pointer"
             : editor?.isFocused
               ? "border-2 border-primary-500/20 bg-primary-50/50 dark:border-primary-500/10 dark:bg-primary-900/5"
-              : "border border-gray-300 border-dashed hover:border-gray-400 dark:border-gray-600 dark:hover:border-gray-500"
+              : "border border-base-300 border-dashed hover:border-base-400 dark:border-base-600 dark:hover:border-base-500"
         }`}
       />
     </div>

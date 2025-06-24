@@ -25,7 +25,7 @@ const MentionList = forwardRef<HTMLDivElement, MentionListProps>(
     return (
       <div
         ref={ref}
-        className="z-50 min-w-[200px] overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
+        className="z-50 min-w-[200px] overflow-hidden rounded-lg border border-base-200 bg-white shadow-lg dark:border-base-700 dark:bg-base-800"
       >
         {items.length ? (
           <div className="max-h-[300px] overflow-y-auto">
@@ -40,22 +40,22 @@ const MentionList = forwardRef<HTMLDivElement, MentionListProps>(
                 }}
                 className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm ${
                   index === selectedIndex
-                    ? "bg-gray-100 dark:bg-gray-700"
-                    : "hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                    ? "bg-base-100 dark:bg-base-700"
+                    : "hover:bg-base-50 dark:hover:bg-base-700/50"
                 }`}
               >
                 {getIcon(item.type)}
                 <div className="min-w-0 flex-1">
-                  <span className="flex items-center gap-2 font-medium text-gray-900 dark:text-gray-100">
+                  <span className="flex items-center gap-2 font-medium text-base-900 dark:text-base-100">
                     {item.label}
                     {item.type === "task" && (
-                      <span className="text-gray-500 text-xs dark:text-gray-400">
+                      <span className="text-base-500 text-xs dark:text-base-400">
                         #{item.id}
                       </span>
                     )}
                   </span>
                   {item.description && (
-                    <div className="truncate text-gray-500 text-xs dark:text-gray-400">
+                    <div className="truncate text-base-500 text-xs dark:text-base-400">
                       {item.description}
                     </div>
                   )}
@@ -64,7 +64,7 @@ const MentionList = forwardRef<HTMLDivElement, MentionListProps>(
             ))}
           </div>
         ) : (
-          <div className="p-4 text-center text-gray-500 text-sm dark:text-gray-400">
+          <div className="p-4 text-center text-base-500 text-sm dark:text-base-400">
             No results found
           </div>
         )}

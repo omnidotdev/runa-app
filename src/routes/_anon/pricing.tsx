@@ -86,7 +86,7 @@ export const Route = createFileRoute({
 
 function Pricing() {
   return (
-    <div className="min-h-screen">
+    <div className="size-full pt-8">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-12">
           <Link
@@ -114,7 +114,7 @@ function Pricing() {
             <div
               key={plan.id}
               className={cn(
-                "rounded-lg bg-white shadow-lg dark:bg-gray-800",
+                "rounded-lg bg-white shadow-lg dark:bg-muted",
                 plan.highlight && "border-2 border-primary-500",
               )}
             >

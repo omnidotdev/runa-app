@@ -74,9 +74,9 @@ const getColorClasses = (label: string) => {
   };
   return (
     labelColors[label] || {
-      bg: "bg-gray-50 dark:bg-gray-900/30",
-      text: "text-gray-700 dark:text-gray-400",
-      icon: "text-gray-500",
+      bg: "bg-base-50 dark:bg-base-900/30",
+      text: "text-base-700 dark:text-base-400",
+      icon: "text-base-500",
     }
   );
 };
@@ -91,13 +91,13 @@ interface TaskProps {
 }
 
 const columnIcons = {
-  todo: <Clock className="h-4 w-4 text-gray-400 dark:text-gray-500" />,
+  todo: <Clock className="h-4 w-4 text-base-400 dark:text-base-500" />,
   "in-progress": <AlertCircle className="h-4 w-4 text-primary-500" />,
   "awaiting-review": <Eye className="h-4 w-4 text-purple-500" />,
   done: <CheckCircle2 className="h-4 w-4 text-green-500" />,
   planned: <Rocket className="h-4 w-4 text-purple-500" />,
   completed: <Archive className="h-4 w-4 text-green-500" />,
-  backlog: <Circle className="h-4 w-4 text-gray-400 dark:text-gray-500" />,
+  backlog: <Circle className="h-4 w-4 text-base-400 dark:text-base-500" />,
 };
 
 const priorityConfig = {
@@ -123,7 +123,7 @@ const Task = ({ task, index, onClick, columnId, projectPrefix }: TaskProps) => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           onClick={onClick}
-          className={`mb-2 cursor-pointer rounded-lg border border-gray-200/50 bg-white p-3 dark:border-gray-800/50 dark:bg-gray-900 ${snapshot.isDragging ? "shadow-lg ring-2 ring-primary-500 ring-opacity-50" : "shadow-sm hover:shadow-md"}`}
+          className={`mb-2 cursor-pointer rounded-lg border border-base-200/50 bg-white p-3 dark:border-base-800/50 dark:bg-base-900 ${snapshot.isDragging ? "shadow-lg ring-2 ring-primary-500 ring-opacity-50" : "shadow-sm hover:shadow-md"}`}
         >
           <div className="flex flex-col gap-2">
             <div className="flex items-start gap-2">
@@ -132,14 +132,14 @@ const Task = ({ task, index, onClick, columnId, projectPrefix }: TaskProps) => {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="flex-shrink-0 font-medium font-mono text-gray-400 text-xs dark:text-gray-500">
+                  <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
                     {displayId}
                   </span>
                   <PriorityIcon
                     className={`h-4 w-4 ${priorityConfig[task.priority].className} flex-shrink-0`}
                   />
                 </div>
-                <p className="my-2 line-clamp-2 font-medium text-gray-900 text-sm dark:text-gray-100">
+                <p className="my-2 line-clamp-2 font-medium text-base-900 text-sm dark:text-base-100">
                   {task.content}
                 </p>
               </div>
@@ -152,7 +152,7 @@ const Task = ({ task, index, onClick, columnId, projectPrefix }: TaskProps) => {
                     {task.assignees.map((assignee) => (
                       <div
                         key={assignee.id}
-                        className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-gray-200 font-medium text-gray-900 text-xs dark:border-gray-800 dark:bg-gray-600 dark:text-gray-100"
+                        className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-800 dark:bg-base-600 dark:text-base-100"
                         title={assignee.name}
                       >
                         {assignee.name[0].toUpperCase()}
@@ -184,7 +184,7 @@ const Task = ({ task, index, onClick, columnId, projectPrefix }: TaskProps) => {
               </div>
 
               {task.dueDate && (
-                <div className="mr-1 flex items-center gap-1 text-gray-500 text-xs dark:text-gray-400">
+                <div className="mr-1 flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
                   <Calendar className="h-3 w-3" />
                   <span>{format(new Date(task.dueDate), "MMM d")}</span>
                 </div>

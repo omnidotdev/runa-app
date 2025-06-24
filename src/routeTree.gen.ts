@@ -15,19 +15,14 @@ import type {
 } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnonRouteImport } from './routes/_anon'
 import { Route as WorkspacesIndexRouteImport } from './routes/workspaces/index'
+import { Route as AnonIndexRouteImport } from './routes/_anon/index'
 import { Route as WorkspacesWorkspaceIdRouteImport } from './routes/workspaces/$workspaceId'
+import { Route as AnonPricingRouteImport } from './routes/_anon/pricing'
 
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AnonRoute = AnonRouteImport.update({
+  id: '/_anon',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WorkspacesIndexRoute = WorkspacesIndexRouteImport.update({
@@ -35,66 +30,77 @@ const WorkspacesIndexRoute = WorkspacesIndexRouteImport.update({
   path: '/workspaces/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnonIndexRoute = AnonIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AnonRoute,
+} as any)
 const WorkspacesWorkspaceIdRoute = WorkspacesWorkspaceIdRouteImport.update({
   id: '/workspaces/$workspaceId',
   path: '/workspaces/$workspaceId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnonPricingRoute = AnonPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => AnonRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/pricing': typeof PricingRoute
+  '/pricing': typeof AnonPricingRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
+  '/': typeof AnonIndexRoute
   '/workspaces': typeof WorkspacesIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/pricing': typeof PricingRoute
+  '/pricing': typeof AnonPricingRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
+  '/': typeof AnonIndexRoute
   '/workspaces': typeof WorkspacesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/pricing': typeof PricingRoute
+  '/_anon': typeof AnonRouteWithChildren
+  '/_anon/pricing': typeof AnonPricingRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
+  '/_anon/': typeof AnonIndexRoute
   '/workspaces/': typeof WorkspacesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/pricing' | '/workspaces/$workspaceId' | '/workspaces'
+  fullPaths: '/pricing' | '/workspaces/$workspaceId' | '/' | '/workspaces'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pricing' | '/workspaces/$workspaceId' | '/workspaces'
+  to: '/pricing' | '/workspaces/$workspaceId' | '/' | '/workspaces'
   id:
     | '__root__'
-    | '/'
-    | '/pricing'
+    | '/_anon'
+    | '/_anon/pricing'
     | '/workspaces/$workspaceId'
+    | '/_anon/'
     | '/workspaces/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  PricingRoute: typeof PricingRoute
+  AnonRoute: typeof AnonRouteWithChildren
   WorkspacesWorkspaceIdRoute: typeof WorkspacesWorkspaceIdRoute
   WorkspacesIndexRoute: typeof WorkspacesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/_anon': {
+      id: '/_anon'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AnonRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/pricing': {
-      id: '/pricing'
+    '/_anon/pricing': {
+      id: '/_anon/pricing'
       path: '/pricing'
       fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AnonPricingRouteImport
+      parentRoute: typeof AnonRoute
     }
     '/workspaces/$workspaceId': {
       id: '/workspaces/$workspaceId'
@@ -102,6 +108,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/workspaces/$workspaceId'
       preLoaderRoute: typeof WorkspacesWorkspaceIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_anon/': {
+      id: '/_anon/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AnonIndexRouteImport
+      parentRoute: typeof AnonRoute
     }
     '/workspaces/': {
       id: '/workspaces/'
@@ -113,37 +126,37 @@ declare module '@tanstack/react-router' {
   }
 }
 
-declare module './routes/index' {
+declare module './routes/_anon' {
   const createFileRoute: CreateFileRoute<
-    '/',
-    FileRoutesByPath['/']['parentRoute'],
-    FileRoutesByPath['/']['id'],
-    FileRoutesByPath['/']['path'],
-    FileRoutesByPath['/']['fullPath']
+    '/_anon',
+    FileRoutesByPath['/_anon']['parentRoute'],
+    FileRoutesByPath['/_anon']['id'],
+    FileRoutesByPath['/_anon']['path'],
+    FileRoutesByPath['/_anon']['fullPath']
   >
 
   const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/']['parentRoute'],
-    ServerFileRoutesByPath['/']['id'],
-    ServerFileRoutesByPath['/']['path'],
-    ServerFileRoutesByPath['/']['fullPath'],
+    ServerFileRoutesByPath['/_anon']['parentRoute'],
+    ServerFileRoutesByPath['/_anon']['id'],
+    ServerFileRoutesByPath['/_anon']['path'],
+    ServerFileRoutesByPath['/_anon']['fullPath'],
     unknown
   >
 }
-declare module './routes/pricing' {
+declare module './routes/_anon/pricing' {
   const createFileRoute: CreateFileRoute<
-    '/pricing',
-    FileRoutesByPath['/pricing']['parentRoute'],
-    FileRoutesByPath['/pricing']['id'],
-    FileRoutesByPath['/pricing']['path'],
-    FileRoutesByPath['/pricing']['fullPath']
+    '/_anon/pricing',
+    FileRoutesByPath['/_anon/pricing']['parentRoute'],
+    FileRoutesByPath['/_anon/pricing']['id'],
+    FileRoutesByPath['/_anon/pricing']['path'],
+    FileRoutesByPath['/_anon/pricing']['fullPath']
   >
 
   const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/pricing']['parentRoute'],
-    ServerFileRoutesByPath['/pricing']['id'],
-    ServerFileRoutesByPath['/pricing']['path'],
-    ServerFileRoutesByPath['/pricing']['fullPath'],
+    ServerFileRoutesByPath['/_anon/pricing']['parentRoute'],
+    ServerFileRoutesByPath['/_anon/pricing']['id'],
+    ServerFileRoutesByPath['/_anon/pricing']['path'],
+    ServerFileRoutesByPath['/_anon/pricing']['fullPath'],
     unknown
   >
 }
@@ -161,6 +174,23 @@ declare module './routes/workspaces/$workspaceId' {
     ServerFileRoutesByPath['/workspaces/$workspaceId']['id'],
     ServerFileRoutesByPath['/workspaces/$workspaceId']['path'],
     ServerFileRoutesByPath['/workspaces/$workspaceId']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/_anon/index' {
+  const createFileRoute: CreateFileRoute<
+    '/_anon/',
+    FileRoutesByPath['/_anon/']['parentRoute'],
+    FileRoutesByPath['/_anon/']['id'],
+    FileRoutesByPath['/_anon/']['path'],
+    FileRoutesByPath['/_anon/']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/_anon/']['parentRoute'],
+    ServerFileRoutesByPath['/_anon/']['id'],
+    ServerFileRoutesByPath['/_anon/']['path'],
+    ServerFileRoutesByPath['/_anon/']['fullPath'],
     unknown
   >
 }
@@ -182,9 +212,20 @@ declare module './routes/workspaces/index' {
   >
 }
 
+interface AnonRouteChildren {
+  AnonPricingRoute: typeof AnonPricingRoute
+  AnonIndexRoute: typeof AnonIndexRoute
+}
+
+const AnonRouteChildren: AnonRouteChildren = {
+  AnonPricingRoute: AnonPricingRoute,
+  AnonIndexRoute: AnonIndexRoute,
+}
+
+const AnonRouteWithChildren = AnonRoute._addFileChildren(AnonRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  PricingRoute: PricingRoute,
+  AnonRoute: AnonRouteWithChildren,
   WorkspacesWorkspaceIdRoute: WorkspacesWorkspaceIdRoute,
   WorkspacesIndexRoute: WorkspacesIndexRoute,
 }

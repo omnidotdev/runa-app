@@ -49,10 +49,10 @@ const Column = ({
         >
           <div className="mb-3 flex items-center justify-between px-3 pt-3">
             <div className="flex items-center gap-2">
-              <h2 className="font-semibold text-gray-900 text-sm dark:text-gray-100">
+              <h2 className="font-semibold text-base-900 text-sm dark:text-base-100">
                 {column.title}
               </h2>
-              <span className="text-gray-500 text-xs dark:text-gray-400">
+              <span className="text-base-500 text-xs dark:text-base-400">
                 {column.tasks.length}
               </span>
             </div>
@@ -61,17 +61,17 @@ const Column = ({
                 <button
                   type="button"
                   onClick={() => onDeleteClick(column.id)}
-                  className="rounded-md p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="rounded-md p-1 hover:bg-base-100 dark:hover:bg-base-700"
                 >
-                  <Trash2 className="h-4 w-4 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400" />
+                  <Trash2 className="h-4 w-4 text-base-500 hover:text-red-500 dark:text-base-400 dark:hover:text-red-400" />
                 </button>
               )}
               <button
                 type="button"
                 onClick={onAddClick}
-                className="rounded-md p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="rounded-md p-1 hover:bg-base-100 dark:hover:bg-base-700"
               >
-                <Plus className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <Plus className="h-4 w-4 text-base-500 dark:text-base-400" />
               </button>
             </div>
           </div>
@@ -85,7 +85,7 @@ const Column = ({
                   snapshot.isDraggingOver
                     ? projectColor
                       ? "bg-white/5 dark:bg-white/10"
-                      : "bg-primary-50/50 dark:bg-gray-800/50"
+                      : "bg-primary-50/50 dark:bg-base-800/50"
                     : ""
                 }`}
                 style={{

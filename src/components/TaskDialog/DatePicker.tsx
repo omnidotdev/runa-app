@@ -33,7 +33,7 @@ const DatePicker = ({
             setTimeout(() => dateInputRef.current?.focus(), 0);
           }
         }}
-        className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+        className="flex items-center gap-2 rounded-md border border-base-200 bg-white px-3 py-2 font-medium text-base-700 text-sm hover:bg-base-50 dark:border-base-700 dark:bg-base-800 dark:text-base-200 dark:hover:bg-base-700"
       >
         <Calendar className="h-4 w-4" />
         <span>
@@ -42,7 +42,7 @@ const DatePicker = ({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 z-20 mt-1 w-64 rounded-md border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <div className="absolute top-full left-0 z-20 mt-1 w-64 rounded-md border border-base-200 bg-white p-3 shadow-lg dark:border-base-700 dark:bg-base-800">
           <input
             ref={dateInputRef}
             type="text"
@@ -54,9 +54,9 @@ const DatePicker = ({
               }
             }}
             placeholder="Type a date (e.g., next monday)"
-            className="w-full rounded border border-gray-200 bg-white px-2 py-1 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-100"
+            className="w-full rounded border border-base-200 bg-white px-2 py-1 text-base-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-700 dark:bg-base-700 dark:text-base-100"
           />
-          <div className="mt-2 text-gray-500 text-xs dark:text-gray-400">
+          <div className="mt-2 text-base-500 text-xs dark:text-base-400">
             Try: "tomorrow", "next monday", "in 2 weeks"
           </div>
           {dueDate && (

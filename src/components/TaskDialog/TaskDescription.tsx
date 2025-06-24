@@ -28,8 +28,8 @@ const TaskDescription = ({
   return (
     <div className="prose prose-sm dark:prose-invert max-w-none">
       <div className="mb-2 flex items-center gap-2">
-        <Type className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-        <h3 className="m-0 font-medium text-gray-700 text-sm dark:text-gray-300">
+        <Type className="h-4 w-4 text-base-500 dark:text-base-400" />
+        <h3 className="m-0 font-medium text-base-700 text-sm dark:text-base-300">
           Description
         </h3>
       </div>

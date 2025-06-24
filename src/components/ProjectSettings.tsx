@@ -185,16 +185,16 @@ const ProjectSettings = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 dark:bg-black/70">
       <div
         ref={modalRef}
-        className="max-h-[85vh] w-full max-w-lg overflow-auto rounded-lg bg-white dark:bg-gray-800"
+        className="max-h-[85vh] w-full max-w-lg overflow-auto rounded-lg bg-white dark:bg-base-800"
       >
-        <div className="flex items-center justify-between border-gray-200 border-b p-6 dark:border-gray-700">
-          <h2 className="font-semibold text-gray-900 text-xl dark:text-gray-100">
+        <div className="flex items-center justify-between border-base-200 border-b p-6 dark:border-base-700">
+          <h2 className="font-semibold text-base-900 text-xl dark:text-base-100">
             Project Settings
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            className="text-base-500 hover:text-base-700 dark:text-base-400 dark:hover:text-base-300"
           >
             <X className="h-5 w-5" />
           </button>
@@ -203,7 +203,7 @@ const ProjectSettings = ({
           <div>
             <label
               htmlFor="name"
-              className="mb-1 block font-medium text-gray-700 text-sm dark:text-gray-300"
+              className="mb-1 block font-medium text-base-700 text-sm dark:text-base-300"
             >
               Project Name
             </label>
@@ -212,14 +212,14 @@ const ProjectSettings = ({
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              className="w-full rounded-md border border-base-300 bg-white px-3 py-2 text-base-900 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-100"
               required
             />
           </div>
           <div>
             <label
               htmlFor="prefix"
-              className="mb-1 block font-medium text-gray-700 text-sm dark:text-gray-300"
+              className="mb-1 block font-medium text-base-700 text-sm dark:text-base-300"
             >
               Project Prefix
             </label>
@@ -229,21 +229,21 @@ const ProjectSettings = ({
               value={prefix}
               onChange={(e) => setPrefix(e.target.value.toUpperCase())}
               placeholder="e.g., RUNA"
-              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              className="w-full rounded-md border border-base-300 bg-white px-3 py-2 text-base-900 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-100"
             />
-            <p className="mt-1 text-gray-500 text-xs dark:text-gray-400">
+            <p className="mt-1 text-base-500 text-xs dark:text-base-400">
               Used for task IDs (e.g., RUNA-1, RUNA-2)
             </p>
           </div>
           <div>
-            <p className="mb-1 block font-medium text-gray-700 text-sm dark:text-gray-300">
+            <p className="mb-1 block font-medium text-base-700 text-sm dark:text-base-300">
               Project Color
             </p>
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setShowColorPicker(!showColorPicker)}
-                className="flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700"
+                className="flex w-full items-center justify-between rounded-md border border-base-300 bg-white px-3 py-2 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700"
               >
                 <div className="flex items-center gap-2">
                   {color && (
@@ -252,20 +252,20 @@ const ProjectSettings = ({
                       style={{ backgroundColor: color }}
                     />
                   )}
-                  <span className="text-gray-900 text-sm dark:text-gray-100">
+                  <span className="text-base-900 text-sm dark:text-base-100">
                     {color
                       ? projectColors.find((c) => c.value === color)?.name ||
                         "Custom"
                       : "Select color"}
                   </span>
                 </div>
-                <Palette className="h-4 w-4 text-gray-400" />
+                <Palette className="h-4 w-4 text-base-400" />
               </button>
 
               {showColorPicker && (
                 <div
                   ref={colorPickerRef}
-                  className="absolute top-full left-0 z-10 mt-1 w-full rounded-md border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800"
+                  className="absolute top-full left-0 z-10 mt-1 w-full rounded-md border border-base-200 bg-white p-2 shadow-lg dark:border-base-700 dark:bg-base-800"
                 >
                   <div className="grid grid-cols-7 gap-1">
                     {projectColors.map((projectColor) => (
@@ -305,7 +305,7 @@ const ProjectSettings = ({
           <div>
             <label
               htmlFor="description"
-              className="mb-1 block font-medium text-gray-700 text-sm dark:text-gray-300"
+              className="mb-1 block font-medium text-base-700 text-sm dark:text-base-300"
             >
               Description
             </label>
@@ -314,20 +314,20 @@ const ProjectSettings = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
-              className="w-full resize-none rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+              className="w-full resize-none rounded-md border border-base-300 bg-white px-3 py-2 text-base-900 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-100"
             />
           </div>
 
           <div>
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-medium text-gray-700 text-sm dark:text-gray-300">
+              <h3 className="font-medium text-base-700 text-sm dark:text-base-300">
                 Columns
               </h3>
               {!isAddingColumn && (
                 <button
                   type="button"
                   onClick={() => setIsAddingColumn(true)}
-                  className="flex items-center gap-2 rounded bg-gray-100 px-3 py-1 font-medium text-gray-600 text-sm hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                  className="flex items-center gap-2 rounded bg-base-100 px-3 py-1 font-medium text-base-600 text-sm hover:bg-base-200 dark:bg-base-700 dark:text-base-300 dark:hover:bg-base-600"
                 >
                   <Plus className="h-4 w-4" />
                   Add Column
@@ -342,7 +342,7 @@ const ProjectSettings = ({
                   value={newColumnTitle}
                   onChange={(e) => setNewColumnTitle(e.target.value)}
                   placeholder="Enter column title..."
-                  className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                  className="w-full rounded-md border border-base-300 bg-white px-3 py-2 text-base-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-100"
                   // biome-ignore lint/a11y/noAutofocus: TODO
                   autoFocus
                 />
@@ -353,7 +353,7 @@ const ProjectSettings = ({
                       setIsAddingColumn(false);
                       setNewColumnTitle("");
                     }}
-                    className="px-3 py-1 text-gray-600 text-sm hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                    className="px-3 py-1 text-base-600 text-sm hover:text-base-900 dark:text-base-400 dark:hover:text-base-100"
                   >
                     Cancel
                   </button>
@@ -388,16 +388,16 @@ const ProjectSettings = ({
                             <div
                               ref={provided.innerRef}
                               {...provided.draggableProps}
-                              className="group flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-700/50"
+                              className="group flex items-center justify-between rounded-lg bg-base-50 p-3 dark:bg-base-700/50"
                             >
                               <div className="flex items-center gap-3">
                                 <div {...provided.dragHandleProps}>
-                                  <GripVertical className="h-4 w-4 text-gray-400 dark:text-gray-500" />
+                                  <GripVertical className="h-4 w-4 text-base-400 dark:text-base-500" />
                                 </div>
-                                <span className="text-gray-900 text-sm dark:text-gray-100">
+                                <span className="text-base-900 text-sm dark:text-base-100">
                                   {column.title}
                                 </span>
-                                <span className="text-gray-500 text-xs dark:text-gray-400">
+                                <span className="text-base-500 text-xs dark:text-base-400">
                                   {column.tasks.length}
                                 </span>
                               </div>
@@ -407,7 +407,7 @@ const ProjectSettings = ({
                                   e.stopPropagation();
                                   setColumnToDelete(columnId);
                                 }}
-                                className="p-1 text-gray-400 opacity-0 hover:text-red-500 group-hover:opacity-100 dark:hover:text-red-400"
+                                className="p-1 text-base-400 opacity-0 hover:text-red-500 group-hover:opacity-100 dark:hover:text-red-400"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </button>
@@ -423,15 +423,15 @@ const ProjectSettings = ({
             </DragDropContext>
           </div>
 
-          <div className="border-gray-200 border-t pt-4 dark:border-gray-700">
-            <h3 className="mb-2 font-medium text-gray-700 text-sm dark:text-gray-300">
+          <div className="border-base-200 border-t pt-4 dark:border-base-700">
+            <h3 className="mb-2 font-medium text-base-700 text-sm dark:text-base-300">
               Project Data
             </h3>
             <div className="flex gap-2">
               <button
                 type="button"
                 onClick={onImport}
-                className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                className="flex items-center gap-2 rounded-md border border-base-300 bg-white px-3 py-2 font-medium text-base-700 text-sm hover:bg-base-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-800 dark:text-base-200 dark:hover:bg-base-700"
               >
                 <Upload className="h-4 w-4" />
                 Import Project
@@ -439,7 +439,7 @@ const ProjectSettings = ({
               <button
                 type="button"
                 onClick={onExport}
-                className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                className="flex items-center gap-2 rounded-md border border-base-300 bg-white px-3 py-2 font-medium text-base-700 text-sm hover:bg-base-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-800 dark:text-base-200 dark:hover:bg-base-700"
               >
                 <Download className="h-4 w-4" />
                 Export Project
@@ -447,11 +447,11 @@ const ProjectSettings = ({
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 border-gray-200 border-t pt-4 dark:border-gray-700">
+          <div className="flex justify-end gap-2 border-base-200 border-t pt-4 dark:border-base-700">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-md border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+              className="rounded-md border border-base-300 bg-white px-4 py-2 font-medium text-base-700 text-sm hover:bg-base-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-800 dark:text-base-200 dark:hover:bg-base-700"
             >
               Cancel
             </button>

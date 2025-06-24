@@ -8,7 +8,6 @@ import {
 import { match } from "ts-pattern";
 
 import Link from "@/components/core/Link";
-import ThemeToggle from "@/components/ThemeToggle";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -61,46 +60,20 @@ export const Route = createFileRoute({
 
 function Home() {
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      {/* Background elements */}
+    <div className="relative size-full">
+      {/* Background Image */}
       <div className="absolute inset-0">
         <div
-          className="absolute inset-0 z-0 opacity-50 dark:opacity-20"
+          className="absolute inset-0 left-[calc(-1*calc(100vw-100%))] z-0 w-[calc(100%+calc(100vw-100%))] opacity-50 dark:opacity-20"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='200' height='200' patternUnits='userSpaceOnUse' patternTransform='rotate(12)'%3E%3Cpath d='M 200 0 L 0 0 0 200' fill='none' stroke='rgba(37, 99, 235, 0.45)' stroke-width='2.5' class='light-stroke'/%3E%3Cpath d='M 200 0 L 0 0 0 200' fill='none' stroke='rgba(96, 165, 250, 0.55)' stroke-width='2.5' class='dark-stroke' style='display:none'/%3E%3C/pattern%3E%3CradialGradient id='fade' cx='50%25' cy='50%25' r='70%25' fx='50%25' fy='50%25'%3E%3Cstop offset='0%25' style='stop-color:white;stop-opacity:0' /%3E%3Cstop offset='70%25' style='stop-color:white;stop-opacity:1' /%3E%3C/radialGradient%3E%3Cmask id='mask' x='0' y='0' width='100%25' height='100%25'%3E%3Crect x='0' y='0' width='100%25' height='100%25' fill='url(%23fade)'/%3E%3C/mask%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)' mask='url(%23mask)'/%3E%3Cstyle%3E@media (prefers-color-scheme: dark) { .light-stroke { display: none; } .dark-stroke { display: block !important; } }%3C/style%3E%3C/svg%3E")`,
             backgroundSize: "cover",
           }}
         />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-100/70 via-transparent to-gray-100/70 dark:from-gray-800/70 dark:via-transparent dark:to-gray-800/70" />
+        <div className="absolute inset-0 left-[calc(-1*calc(100vw-100%))] z-0 w-[calc(100%+calc(100vw-100%))] bg-gradient-to-b from-base-100/70 via-transparent to-base-100/70 dark:from-base-950/70 dark:via-transparent dark:to-base-900/70" />
       </div>
 
-      {/* Navigation */}
-      <nav className="relative z-10 border-gray-200 border-b bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 justify-between">
-            <div className="flex items-center">
-              <h1 className="font-bold text-primary-600 text-xl dark:text-primary-400">
-                Runa
-              </h1>
-            </div>
-            <div className="flex items-center space-x-6">
-              <ThemeToggle />
-              {/* TODO */}
-              {/* <Link
-                  to="/docs"
-                  variant="link"
-                >
-                  Docs
-                </Link> */}
-
-              <Link to="/workspaces">Sign In</Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Hero section */}
         <div className="py-20 md:py-28 lg:py-36">
           <div className="relative z-10 max-w-3xl">
@@ -108,7 +81,7 @@ function Home() {
               Introducing Runa
             </Badge>
 
-            <h1 className="mb-8 font-extrabold text-4xl text-gray-900 sm:text-5xl md:text-6xl dark:text-white">
+            <h1 className="mb-8 font-extrabold text-4xl text-base-900 sm:text-5xl md:text-6xl dark:text-white">
               Transform Your Projects into{" "}
               <span className="relative whitespace-nowrap text-primary-600 dark:text-primary-400">
                 <span className="relative z-10">Success Stories</span>
@@ -116,7 +89,7 @@ function Home() {
               </span>
             </h1>
 
-            <p className="mb-12 max-w-2xl text-gray-600 text-xl leading-relaxed dark:text-gray-400">
+            <p className="mb-12 max-w-2xl text-base-600 text-xl leading-relaxed dark:text-base-400">
               Streamline your workflow, collaborate seamlessly, and deliver
               projects on time with our intuitive Kanban board solution.
             </p>
@@ -132,7 +105,7 @@ function Home() {
               <Link
                 to="/pricing"
                 variant="outline"
-                className="group h-full px-8 py-4 text-primary dark:bg-gray-800 dark:text-primary-400 dark:hover:bg-gray-700"
+                className="group h-full px-8 py-4 text-primary dark:bg-base-800 dark:text-primary-400 dark:hover:bg-base-700"
               >
                 View Pricing
               </Link>
@@ -142,7 +115,7 @@ function Home() {
           {/* Features grid */}
           <div className="relative z-10 mt-32">
             <div className="mb-16 flex flex-col justify-between gap-4 md:flex-row md:items-center">
-              <h2 className="relative inline-block font-bold text-2xl text-gray-900 underline decoration-4 decoration-primary-600/30 underline-offset-8 dark:text-white dark:decoration-primary-600/40">
+              <h2 className="relative inline-block font-bold text-2xl text-base-900 underline decoration-4 decoration-primary-600/30 underline-offset-8 dark:text-white dark:decoration-primary-600/40">
                 Everything you need to manage projects effectively
               </h2>
             </div>
@@ -188,7 +161,7 @@ function Home() {
                       </div>
                     }
                     className={cn(
-                      "hover:-translate-y-0.5 rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-transform hover:shadow-md dark:border-gray-700 dark:bg-gray-800",
+                      "hover:-translate-y-0.5 rounded-xl border border-base-200 bg-white p-6 shadow-sm transition-transform hover:shadow-md dark:border-base-700 dark:bg-base-900",
                       hoverBorder,
                     )}
                     headerProps={{ className: "gap-4 p-0 pt-2" }}
@@ -198,7 +171,7 @@ function Home() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

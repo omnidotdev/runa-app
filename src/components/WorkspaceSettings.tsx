@@ -67,43 +67,43 @@ const WorkspaceSettings = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 dark:bg-black/70">
       <div
         ref={modalRef}
-        className="w-full max-w-lg rounded-lg bg-white dark:bg-gray-800"
+        className="w-full max-w-lg rounded-lg bg-white dark:bg-base-800"
       >
-        <div className="flex items-center justify-between border-gray-200 border-b p-6 dark:border-gray-700">
-          <h2 className="font-semibold text-gray-900 text-xl dark:text-gray-100">
+        <div className="flex items-center justify-between border-base-200 border-b p-6 dark:border-base-700">
+          <h2 className="font-semibold text-base-900 text-xl dark:text-base-100">
             Workspace Settings
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            className="text-base-500 hover:text-base-700 dark:text-base-400 dark:hover:text-base-300"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
         <div className="p-6">
           <div className="mb-6">
-            <h3 className="mb-4 font-medium text-gray-700 text-sm dark:text-gray-300">
+            <h3 className="mb-4 font-medium text-base-700 text-sm dark:text-base-300">
               Team Members
             </h3>
             <div className="space-y-2">
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-700/50"
+                  className="flex items-center justify-between rounded-lg bg-base-50 p-3 dark:bg-base-700/50"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 font-medium text-gray-900 text-sm dark:bg-gray-600 dark:text-gray-100">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-base-200 font-medium text-base-900 text-sm dark:bg-base-600 dark:text-base-100">
                       {member.name[0].toUpperCase()}
                     </div>
-                    <span className="text-gray-900 text-sm dark:text-gray-100">
+                    <span className="text-base-900 text-sm dark:text-base-100">
                       {member.name}
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setMemberToDelete(member.id)}
-                    className="p-1 text-gray-400 hover:text-red-500 dark:hover:text-red-400"
+                    className="p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -119,7 +119,7 @@ const WorkspaceSettings = ({
                 value={newMemberName}
                 onChange={(e) => setNewMemberName(e.target.value)}
                 placeholder="Enter member name"
-                className="flex-1 rounded-md border border-gray-200 bg-white px-3 py-2 text-gray-900 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
+                className="flex-1 rounded-md border border-base-200 bg-white px-3 py-2 text-base-900 text-sm placeholder-base-500 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-100 dark:placeholder-base-400"
               />
               <button
                 type="submit"

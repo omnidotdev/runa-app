@@ -104,7 +104,7 @@ const ListView = ({
           return (
             <div
               key={columnId}
-              className="mb-6 rounded-lg bg-white shadow-sm last:mb-0 dark:bg-gray-800"
+              className="mb-6 rounded-lg bg-white shadow-sm last:mb-0 dark:bg-base-800"
             >
               <button
                 type="button"
@@ -112,14 +112,14 @@ const ListView = ({
                 className="flex w-full items-center gap-2 rounded-t-lg px-4 py-3 text-left"
               >
                 <ChevronDown
-                  className={`h-4 w-4 text-gray-500 transition-transform dark:text-gray-400 ${
+                  className={`h-4 w-4 text-base-500 transition-transform dark:text-base-400 ${
                     expandedSections[columnId] ? "" : "-rotate-90"
                   }`}
                 />
-                <span className="font-medium text-gray-900 text-sm dark:text-gray-100">
+                <span className="font-medium text-base-900 text-sm dark:text-base-100">
                   {column.title}
                 </span>
-                <span className="text-gray-500 text-sm dark:text-gray-400">
+                <span className="text-base-500 text-sm dark:text-base-400">
                   {filteredTasks.length}
                 </span>
               </button>
@@ -130,11 +130,11 @@ const ListView = ({
                     <div
                       ref={provided.innerRef}
                       {...provided.droppableProps}
-                      className={`divide-y divide-gray-200 rounded-b-lg dark:divide-gray-700 ${
+                      className={`divide-y divide-base-200 rounded-b-lg dark:divide-base-700 ${
                         snapshot.isDraggingOver
                           ? project.color
                             ? `${project.color}10`
-                            : "bg-primary-50/50 dark:bg-gray-800/50"
+                            : "bg-primary-50/50 dark:bg-base-800/50"
                           : ""
                       }`}
                     >
@@ -149,7 +149,7 @@ const ListView = ({
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
-                              className={`${snapshot.isDragging ? "z-10 bg-white shadow-lg ring-2 ring-primary-500 ring-opacity-50 dark:bg-gray-700" : ""}`}
+                              className={`${snapshot.isDragging ? "z-10 bg-white shadow-lg ring-2 ring-primary-500 ring-opacity-50 dark:bg-base-700" : ""}`}
                             >
                               <TaskListItem
                                 task={task}
@@ -186,10 +186,10 @@ const TaskListItem = ({ task, project, onClick }: TaskListItemProps) => {
   return (
     <div
       onClick={onClick}
-      className="flex cursor-pointer items-start bg-gray-50/70 px-4 py-3 hover:bg-gray-100/50 dark:bg-gray-900/70 dark:hover:bg-gray-900/80"
+      className="flex cursor-pointer items-start bg-base-50/70 px-4 py-3 hover:bg-base-100/50 dark:bg-base-900/70 dark:hover:bg-base-900/80"
     >
       <div className="flex min-w-0 flex-1 gap-2">
-        <span className="flex-shrink-0 font-medium font-mono text-gray-400 text-xs dark:text-gray-500">
+        <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
           {project.prefix ? `${project.prefix}-${displayId}` : `#${displayId}`}
         </span>
         <PriorityIcon
@@ -197,11 +197,11 @@ const TaskListItem = ({ task, project, onClick }: TaskListItemProps) => {
         />
         <div className="-mt-0.5 min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="truncate font-medium text-gray-900 text-sm dark:text-gray-100">
+            <span className="truncate font-medium text-base-900 text-sm dark:text-base-100">
               {task.content}
             </span>
           </div>
-          <div className="mt-1 text-gray-500 text-sm dark:text-gray-400">
+          <div className="mt-1 text-base-500 text-sm dark:text-base-400">
             {task.description || "No description provided"}
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-1">
@@ -210,7 +210,7 @@ const TaskListItem = ({ task, project, onClick }: TaskListItemProps) => {
                 {task.assignees.map((assignee) => (
                   <div
                     key={assignee.id}
-                    className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-gray-200 font-medium text-gray-900 text-xs dark:border-gray-800 dark:bg-gray-600 dark:text-gray-100"
+                    className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-800 dark:bg-base-600 dark:text-base-100"
                     title={assignee.name}
                   >
                     {assignee.name[0].toUpperCase()}
@@ -237,7 +237,7 @@ const TaskListItem = ({ task, project, onClick }: TaskListItemProps) => {
               </div>
             )}
             {task.dueDate && (
-              <div className="ml-2 flex items-center gap-1 text-gray-500 text-xs dark:text-gray-400">
+              <div className="ml-2 flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
                 <Calendar className="h-3 w-3" />
                 <span>{format(new Date(task.dueDate), "MMM d")}</span>
               </div>
@@ -306,9 +306,9 @@ const getColorClasses = (label: string) => {
   };
   return (
     labelColors[label] || {
-      bg: "bg-gray-50 dark:bg-gray-900/30",
-      text: "text-gray-700 dark:text-gray-400",
-      icon: "text-gray-500",
+      bg: "bg-base-50 dark:bg-base-900/30",
+      text: "text-base-700 dark:text-base-400",
+      icon: "text-base-500",
     }
   );
 };

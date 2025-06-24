@@ -430,7 +430,7 @@ function Workspaces() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-screen bg-base-50 dark:bg-base-900">
       <input
         ref={fileInputRef}
         type="file"

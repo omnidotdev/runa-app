@@ -96,7 +96,7 @@ const WorkspaceSelector = () => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-100 px-3 py-2 font-medium text-gray-900 text-sm hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600"
+        className="flex w-full items-center justify-between gap-2 rounded-lg bg-base-100 px-3 py-2 font-medium text-base-900 text-sm hover:bg-base-200 dark:bg-base-700 dark:text-base-100 dark:hover:bg-base-600"
       >
         <span className="truncate">
           {currentWorkspace?.name || "Select Workspace"}
@@ -107,7 +107,7 @@ const WorkspaceSelector = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 left-0 z-50 mt-1 rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <div className="absolute top-full right-0 left-0 z-50 mt-1 rounded-lg border border-base-200 bg-white py-1 shadow-lg dark:border-base-700 dark:bg-base-800">
           {isCreating ? (
             <form onSubmit={handleCreateWorkspace} className="p-2">
               <input
@@ -116,7 +116,7 @@ const WorkspaceSelector = () => {
                 value={newWorkspaceName}
                 onChange={(e) => setNewWorkspaceName(e.target.value)}
                 placeholder="Workspace name"
-                className="w-full rounded border border-gray-200 bg-white px-2 py-1 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
+                className="w-full rounded border border-base-200 bg-white px-2 py-1 text-base-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-100"
               />
               <div className="mt-2 flex justify-end gap-2">
                 <button
@@ -125,7 +125,7 @@ const WorkspaceSelector = () => {
                     setIsCreating(false);
                     setNewWorkspaceName("");
                   }}
-                  className="px-2 py-1 text-gray-600 text-xs hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                  className="px-2 py-1 text-base-600 text-xs hover:text-base-900 dark:text-base-400 dark:hover:text-base-100"
                 >
                   Cancel
                 </button>
@@ -172,11 +172,11 @@ const WorkspaceSelector = () => {
                   </Link>
                 </div>
               ))}
-              <div className="my-1 h-px bg-gray-200 dark:bg-gray-700" />
+              <div className="my-1 h-px bg-base-200 dark:bg-base-700" />
               <button
                 type="button"
                 onClick={() => setIsCreating(true)}
-                className="flex w-full items-center gap-2 px-3 py-2 text-gray-700 text-sm hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                className="flex w-full items-center gap-2 px-3 py-2 text-base-700 text-sm hover:bg-base-50 dark:text-base-300 dark:hover:bg-base-700"
               >
                 <Plus className="h-4 w-4" />
                 New Workspace

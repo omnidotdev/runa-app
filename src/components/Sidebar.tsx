@@ -46,7 +46,7 @@ const Sidebar = ({
   };
 
   return (
-    <div className="flex h-full flex-col border-gray-200 border-r bg-white dark:border-gray-700 dark:bg-gray-800/40">
+    <div className="flex h-full flex-col border-base-200 border-r bg-white dark:border-base-700 dark:bg-base-800/40">
       <div className="flex flex-1 flex-col p-4">
         <div className="mb-4 flex items-center justify-between gap-2">
           <div className="flex-1">
@@ -58,7 +58,7 @@ const Sidebar = ({
 
         <div className="custom-scrollbar flex-1 overflow-y-auto">
           <div
-            className="flex cursor-pointer items-center justify-between rounded px-2 py-1 font-medium text-gray-700 text-sm hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-700/50"
+            className="flex cursor-pointer items-center justify-between rounded px-2 py-1 font-medium text-base-700 text-sm hover:bg-base-50 dark:text-base-200 dark:hover:bg-base-700/50"
             onClick={handleProjectsHeaderClick}
           >
             <div className="flex items-center gap-2">
@@ -76,9 +76,9 @@ const Sidebar = ({
                 e.stopPropagation();
                 setIsAddingProject(true);
               }}
-              className="rounded-md p-1 hover:bg-gray-100 dark:hover:bg-gray-700"
+              className="rounded-md p-1 hover:bg-base-100 dark:hover:bg-base-700"
             >
-              <Plus className="h-3 w-3 text-gray-500 dark:text-gray-400" />
+              <Plus className="h-3 w-3 text-base-500 dark:text-base-400" />
             </button>
           </div>
 
@@ -88,14 +88,14 @@ const Sidebar = ({
                 // onClick={() => onProjectSelect(`projects-${currentWorkspace}`)}
                 className={`flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm ${
                   currentProject === `projects-${currentWorkspace}`
-                    ? "bg-gray-50 text-gray-700 dark:bg-gray-700/50 dark:text-gray-200"
-                    : "text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700/50"
+                    ? "bg-base-50 text-base-700 dark:bg-base-700/50 dark:text-base-200"
+                    : "text-base-600 hover:bg-base-50 dark:text-base-300 dark:hover:bg-base-700/50"
                 }`}
               >
                 <span>Overview</span>
               </div>
 
-              <div className="my-2 border-gray-200 border-t dark:border-gray-700" />
+              <div className="my-2 border-base-200 border-t dark:border-base-700" />
 
               {isAddingProject && (
                 <form
@@ -107,7 +107,7 @@ const Sidebar = ({
                     value={newProjectName}
                     onChange={(e) => setNewProjectName(e.target.value)}
                     placeholder="Project name"
-                    className="w-full rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                    className="w-full rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-200"
                     // biome-ignore lint/a11y/noAutofocus: TODO
                     autoFocus
                   />
@@ -115,7 +115,7 @@ const Sidebar = ({
                     value={newProjectDescription}
                     onChange={(e) => setNewProjectDescription(e.target.value)}
                     placeholder="Project description (optional)"
-                    className="h-20 w-full resize-none rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                    className="h-20 w-full resize-none rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-200"
                   />
                   <div className="flex justify-end gap-2">
                     <button
@@ -125,7 +125,7 @@ const Sidebar = ({
                         setNewProjectName("");
                         setNewProjectDescription("");
                       }}
-                      className="px-2 py-1 text-gray-600 text-xs hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                      className="px-2 py-1 text-base-600 text-xs hover:text-base-900 dark:text-base-400 dark:hover:text-base-100"
                     >
                       Cancel
                     </button>
@@ -145,8 +145,8 @@ const Sidebar = ({
                   key={project?.rowId}
                   className={`group flex items-center justify-between rounded px-2 py-1 text-sm ${
                     currentProject === project?.rowId
-                      ? "bg-gray-50 text-gray-700 dark:bg-gray-700/50 dark:text-gray-200"
-                      : "text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700/50"
+                      ? "bg-base-50 text-base-700 dark:bg-base-700/50 dark:text-base-200"
+                      : "text-base-600 hover:bg-base-50 dark:text-base-300 dark:hover:bg-base-700/50"
                   }`}
                 >
                   <div className="flex min-w-0 flex-1 items-center gap-2">
@@ -171,9 +171,9 @@ const Sidebar = ({
                   <button
                     type="button"
                     onClick={() => setProjectToDelete(project?.rowId!)}
-                    className="rounded-md p-1 opacity-0 transition-all hover:bg-gray-200 group-hover:opacity-100 dark:hover:bg-gray-600"
+                    className="rounded-md p-1 opacity-0 transition-all hover:bg-base-200 group-hover:opacity-100 dark:hover:bg-base-600"
                   >
-                    <Trash2 className="h-3 w-3 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400" />
+                    <Trash2 className="h-3 w-3 text-base-500 hover:text-red-500 dark:text-base-400 dark:hover:text-red-400" />
                   </button>
                 </div>
               ))}
@@ -182,11 +182,11 @@ const Sidebar = ({
         </div>
       </div>
 
-      <div className="space-y-2 border-gray-200 border-t p-4 dark:border-gray-700">
+      <div className="space-y-2 border-base-200 border-t p-4 dark:border-base-700">
         <button
           type="button"
           onClick={onOpenWorkspaceSettings}
-          className="flex w-full items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+          className="flex w-full items-center gap-2 rounded-md border border-base-200 bg-white px-3 py-2 font-medium text-base-700 text-sm hover:bg-base-50 dark:border-base-700 dark:bg-base-800 dark:text-base-200 dark:hover:bg-base-700"
         >
           <Users className="h-4 w-4" />
           Workspace Settings
@@ -194,7 +194,7 @@ const Sidebar = ({
         <button
           type="button"
           onClick={onSignOut}
-          className="flex w-full items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 font-medium text-red-600 text-sm hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-gray-700"
+          className="flex w-full items-center gap-2 rounded-md border border-base-200 bg-white px-3 py-2 font-medium text-red-600 text-sm hover:bg-base-50 dark:border-base-700 dark:bg-base-800 dark:text-red-400 dark:hover:bg-base-700"
         >
           <LogOut className="h-4 w-4" />
           Sign Out
