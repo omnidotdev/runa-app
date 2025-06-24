@@ -9,8 +9,6 @@ import type { Variables } from "graphql-request";
 type FetchOptions = {
   /** Request cache setting. */
   cache?: RequestCache;
-  /** Next.js request options. */
-  next?: NextFetchRequestConfig;
 };
 
 /**
@@ -27,7 +25,7 @@ export const graphqlFetch =
   async (): Promise<TData> => {
     // const session = await getAuthSession();
 
-    const { next, cache, ...restOptions } = options || {};
+    const { cache, ...restOptions } = options || {};
 
     const client = new GraphQLClient(API_GRAPHQL_URL!, {
       headers: {
@@ -35,7 +33,6 @@ export const graphqlFetch =
         // Authorization: `Bearer ${session?.accessToken ?? ""}`,
         ...restOptions,
       },
-      next,
       cache,
     });
 

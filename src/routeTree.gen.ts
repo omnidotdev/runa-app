@@ -8,17 +8,17 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import type { CreateFileRoute, FileRoutesByPath } from '@tanstack/react-router'
+import type {
+  CreateServerFileRoute,
+  ServerFileRoutesByPath,
+} from '@tanstack/react-start/server'
+
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TestingRouteImport } from './routes/testing'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as WorkspacesIndexRouteImport } from './routes/workspaces/index'
 
-const TestingRoute = TestingRouteImport.update({
-  id: '/testing',
-  path: '/testing',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
@@ -29,53 +29,49 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/dashboard/',
-  path: '/dashboard/',
+const WorkspacesIndexRoute = WorkspacesIndexRouteImport.update({
+  id: '/workspaces/',
+  path: '/workspaces/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
-  '/testing': typeof TestingRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/workspaces': typeof WorkspacesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
-  '/testing': typeof TestingRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/workspaces': typeof WorkspacesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
-  '/testing': typeof TestingRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  '/workspaces/': typeof WorkspacesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/pricing' | '/testing' | '/dashboard'
+  fullPaths: '/' | '/pricing' | '/workspaces'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pricing' | '/testing' | '/dashboard'
-  id: '__root__' | '/' | '/pricing' | '/testing' | '/dashboard/'
+  to: '/' | '/pricing' | '/workspaces'
+  id: '__root__' | '/' | '/pricing' | '/workspaces/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PricingRoute: typeof PricingRoute
-  TestingRoute: typeof TestingRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
+  WorkspacesIndexRoute: typeof WorkspacesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/testing': {
-      id: '/testing'
-      path: '/testing'
-      fullPath: '/testing'
-      preLoaderRoute: typeof TestingRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -85,28 +81,72 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardIndexRouteImport
+    '/workspaces/': {
+      id: '/workspaces/'
+      path: '/workspaces'
+      fullPath: '/workspaces'
+      preLoaderRoute: typeof WorkspacesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
+declare module './routes/index' {
+  const createFileRoute: CreateFileRoute<
+    '/',
+    FileRoutesByPath['/']['parentRoute'],
+    FileRoutesByPath['/']['id'],
+    FileRoutesByPath['/']['path'],
+    FileRoutesByPath['/']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/']['parentRoute'],
+    ServerFileRoutesByPath['/']['id'],
+    ServerFileRoutesByPath['/']['path'],
+    ServerFileRoutesByPath['/']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/pricing' {
+  const createFileRoute: CreateFileRoute<
+    '/pricing',
+    FileRoutesByPath['/pricing']['parentRoute'],
+    FileRoutesByPath['/pricing']['id'],
+    FileRoutesByPath['/pricing']['path'],
+    FileRoutesByPath['/pricing']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/pricing']['parentRoute'],
+    ServerFileRoutesByPath['/pricing']['id'],
+    ServerFileRoutesByPath['/pricing']['path'],
+    ServerFileRoutesByPath['/pricing']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/workspaces/index' {
+  const createFileRoute: CreateFileRoute<
+    '/workspaces/',
+    FileRoutesByPath['/workspaces/']['parentRoute'],
+    FileRoutesByPath['/workspaces/']['id'],
+    FileRoutesByPath['/workspaces/']['path'],
+    FileRoutesByPath['/workspaces/']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/workspaces/']['parentRoute'],
+    ServerFileRoutesByPath['/workspaces/']['id'],
+    ServerFileRoutesByPath['/workspaces/']['path'],
+    ServerFileRoutesByPath['/workspaces/']['fullPath'],
+    unknown
+  >
+}
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PricingRoute: PricingRoute,
-  TestingRoute: TestingRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
+  WorkspacesIndexRoute: WorkspacesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

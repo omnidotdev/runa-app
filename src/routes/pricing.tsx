@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 
 import {
@@ -128,13 +128,13 @@ const Pricing = () => {
                 <ul className="mb-8 flex-1 space-y-4">
                   {plan.features.map((feature, i) => (
                     // biome-ignore lint/suspicious/noArrayIndexKey: Allow for simplicity
-                    <li key={i} className="flex items-center gap-2">
+                    (<li key={i} className="flex items-center gap-2">
                       <Check
                         size={20}
                         className="flex-shrink-0 text-green-500"
                       />
                       <span className="text-muted-foreground">{feature}</span>
-                    </li>
+                    </li>)
                   ))}
                 </ul>
 
@@ -171,10 +171,10 @@ const Pricing = () => {
         </div>
       </div>
     </div>
-  );
+  )
 };
 
-export const Route = createFileRoute("/pricing")({
+export const Route = createFileRoute({
   head: () => ({
     meta: [...seo({ title: "Pricing" })],
   }),

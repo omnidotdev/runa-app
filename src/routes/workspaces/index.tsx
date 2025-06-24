@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import Board from "@/components/Board";
@@ -373,8 +373,8 @@ const initialProjects: { [key: string]: Project } = {
   },
 };
 
-const Dashboard = () => {
-  const navigate = useNavigate({ from: "/dashboard" });
+const Workspaces = () => {
+  const navigate = useNavigate();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -840,9 +840,9 @@ const Dashboard = () => {
   );
 };
 
-export const Route = createFileRoute("/dashboard/")({
+export const Route = createFileRoute({
   head: () => ({
-    meta: [...seo({ title: "Dashboard" })],
+    meta: [...seo({ title: "Workspaces" })],
   }),
-  component: Dashboard,
+  component: Workspaces,
 });

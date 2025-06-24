@@ -13,9 +13,10 @@ const knipConfig: KnipConfig = {
     config: ["package.json", "src/lib/graphql/codegen.config.ts"],
   },
   ignore: [
-    "src/components/ui/**",
     "src/generated/**",
+    // TODO: remove when remote data fetching is set up
     "src/lib/graphql/getSdk.ts",
+    // TODO: remove when remote data fetching is set up
     "src/lib/graphql/graphqlFetch.ts",
     "src/routeTree.gen.ts",
   ],

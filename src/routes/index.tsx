@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import {
   ChartNoAxesColumnIncreasing,
   List,
@@ -87,7 +87,7 @@ const Home = () => (
               Docs
             </Link> */}
 
-            <Link to="/dashboard" className={cn(buttonVariants())}>
+            <Link to="/workspaces" className={cn(buttonVariants())}>
               Sign In
             </Link>
           </div>
@@ -202,6 +202,6 @@ const Home = () => (
   </div>
 );
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute({
   component: Home,
 });
