@@ -1,7 +1,7 @@
 export const Route = createFileRoute({
-  component: RouteComponent,
+  component: ProjectsOverviewPage,
 });
 
-function RouteComponent() {
+function ProjectsOverviewPage() {
   return <div>Hello "/_auth/workspaces/$workspaceId/projects/"!</div>;
 }

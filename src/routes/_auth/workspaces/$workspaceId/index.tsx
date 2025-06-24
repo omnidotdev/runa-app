@@ -350,10 +350,10 @@ export const Route = createFileRoute({
     meta: loaderData ? [...seo({ title: loaderData.name })] : undefined,
   }),
   notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,
-  component: RouteComponent,
+  component: WorkspacePage,
 });
 
-function RouteComponent() {
+function WorkspacePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [projects, setProjects] = useState(initialProjects);
   const [currentProject, setCurrentProject] = useState("runa");

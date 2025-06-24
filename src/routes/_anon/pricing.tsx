@@ -81,10 +81,10 @@ export const Route = createFileRoute({
   head: () => ({
     meta: [...seo({ title: "Pricing" })],
   }),
-  component: Pricing,
+  component: PricingPage,
 });
 
-function Pricing() {
+function PricingPage() {
   return (
     <div className="size-full pt-8">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">

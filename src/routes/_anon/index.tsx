@@ -55,10 +55,10 @@ const features: Feature[] = [
 ];
 
 export const Route = createFileRoute({
-  component: Home,
+  component: HomePage,
 });
 
-function Home() {
+function HomePage() {
   return (
     <div className="relative size-full">
       {/* Background Image */}

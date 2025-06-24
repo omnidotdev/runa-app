@@ -5,12 +5,12 @@ export const Route = createFileRoute({
   head: () => ({
     meta: [...seo({ title: "Workspaces" })],
   }),
-  component: Workspaces,
+  component: WorkspacesOverviewPage,
   loader: async ({ context }) =>
     await context.queryClient.ensureQueryData(workspacesOptions),
 });
 
-function Workspaces() {
+function WorkspacesOverviewPage() {
   return (
     <div className="flex h-full items-center justify-center">
       TODO: Workspaces Overview
