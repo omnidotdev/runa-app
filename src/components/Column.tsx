@@ -45,7 +45,7 @@ const Column = ({
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
-          className="flex w-[320px] flex-shrink-0 flex-col rounded-md bg-neutral-50/80 dark:bg-neutral-950/20"
+          className="flex w-[320px] flex-shrink-0 flex-col rounded-md bg-base-50/80 shadow-sm dark:bg-base-950/80 dark:shadow-base-600/10"
         >
           <div className="mb-3 flex items-center justify-between px-3 pt-3">
             <div className="flex items-center gap-2">
@@ -92,7 +92,7 @@ const Column = ({
                   minHeight: "4px", // Ensures minimum height for drop target
                   ...(snapshot.isDraggingOver && projectColor
                     ? {
-                        backgroundColor: `${projectColor}20`,
+                        backgroundColor: `${projectColor}08`,
                       }
                     : {}),
                 }}

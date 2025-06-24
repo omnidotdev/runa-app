@@ -2,33 +2,33 @@ import { Plus, Trash2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 
 import type { Assignee } from "@/types";
 
 interface WorkspaceSettingsProps {
   team: Assignee[];
-  onClose: () => void;
-  onUpdate: (team: Assignee[]) => void;
 }
 
-const WorkspaceSettings = ({
-  team,
-  onClose,
-  onUpdate,
-}: WorkspaceSettingsProps) => {
+const WorkspaceSettings = ({ team }: WorkspaceSettingsProps) => {
   const [members, setMembers] = useState<Assignee[]>(team);
   const [newMemberName, setNewMemberName] = useState("");
   const [memberToDelete, setMemberToDelete] = useState<string | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const {
+    isOpen: isWorkspaceSettingsOpen,
+    setIsOpen: setIsWorkspaceSettingsOpen,
+  } = useDialogStore({ type: DialogType.WorkspaceSettings });
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") setIsWorkspaceSettingsOpen(false);
     };
 
     const handleClickOutside = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onClose();
+        setIsWorkspaceSettingsOpen(false);
       }
     };
 
@@ -39,7 +39,7 @@ const WorkspaceSettings = ({
       window.removeEventListener("keydown", handleEscape);
       window.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [onClose]);
+  }, [setIsWorkspaceSettingsOpen]);
 
   const handleAddMember = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,16 +52,18 @@ const WorkspaceSettings = ({
 
     const updatedMembers = [...members, newMember];
     setMembers(updatedMembers);
-    onUpdate(updatedMembers);
+    // onUpdate(updatedMembers);
     setNewMemberName("");
   };
 
   const handleRemoveMember = (memberId: string) => {
     const updatedMembers = members.filter((member) => member.id !== memberId);
     setMembers(updatedMembers);
-    onUpdate(updatedMembers);
+    // onUpdate(updatedMembers);
     setMemberToDelete(null);
   };
+
+  if (!isWorkspaceSettingsOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 dark:bg-black/70">
@@ -75,7 +77,7 @@ const WorkspaceSettings = ({
           </h2>
           <button
             type="button"
-            onClick={onClose}
+            onClick={() => setIsWorkspaceSettingsOpen(false)}
             className="text-base-500 hover:text-base-700 dark:text-base-400 dark:hover:text-base-300"
           >
             <X className="h-5 w-5" />

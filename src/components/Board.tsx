@@ -190,18 +190,18 @@ const Board = ({
     setSelectedTask(null);
   };
 
-  const boardStyle = project.color
-    ? {
-        backgroundColor: `${project.color}08`,
-      }
-    : {};
-
   return (
     <div
       ref={containerRef}
       className="custom-scrollbar h-full select-none overflow-x-auto"
       onMouseDown={handleMouseDown}
-      style={boardStyle}
+      style={
+        project.color
+          ? {
+              backgroundColor: `${project.color}12`,
+            }
+          : {}
+      }
     >
       <div className="h-full min-w-fit px-4 py-4">
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>

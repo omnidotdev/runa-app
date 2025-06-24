@@ -32,9 +32,3 @@ export interface Project {
   team: Assignee[];
   viewMode: "board" | "list";
 }
-
-export interface Workspace {
-  id: string;
-  name: string;
-  team?: Assignee[];
-}

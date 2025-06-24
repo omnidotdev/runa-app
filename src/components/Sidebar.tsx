@@ -1,3 +1,4 @@
+import { useNavigate, useParams } from "@tanstack/react-router";
 import {
   ChevronDown,
   ChevronRight,
@@ -14,24 +15,26 @@ import { useState } from "react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import ThemeToggle from "@/components/ThemeToggle";
 import WorkspaceSelector from "@/components/WorkspaceSelector";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import { Button } from "./ui/button";
+import WorkspaceSettings from "./WorkspaceSettings";
 
 import type { Project } from "@/generated/graphql";
 
 interface SidebarProps {
-  currentWorkspace: string;
   projects: Partial<Project | null>[] | undefined;
-  currentProject: string;
-  onOpenWorkspaceSettings: () => void;
-  onSignOut: () => void;
+  currentProject?: string;
 }
 
-const Sidebar = ({
-  currentWorkspace,
-  projects,
-  currentProject,
-  onOpenWorkspaceSettings,
-  onSignOut,
-}: SidebarProps) => {
+const Sidebar = ({ projects, currentProject }: SidebarProps) => {
+  const { workspaceId } = useParams({ strict: false });
+
+  const navigate = useNavigate();
+
+  const { setIsOpen: setIsWorkspaceSettingsOpen } = useDialogStore({
+    type: DialogType.WorkspaceSettings,
+  });
+
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
@@ -87,7 +90,7 @@ const Sidebar = ({
               <div
                 // onClick={() => onProjectSelect(`projects-${currentWorkspace}`)}
                 className={`flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm ${
-                  currentProject === `projects-${currentWorkspace}`
+                  currentProject === `projects-${workspaceId}`
                     ? "bg-base-50 text-base-700 dark:bg-base-700/50 dark:text-base-200"
                     : "text-base-600 hover:bg-base-50 dark:text-base-300 dark:hover:bg-base-700/50"
                 }`}
@@ -183,22 +186,26 @@ const Sidebar = ({
       </div>
 
       <div className="space-y-2 border-base-200 border-t p-4 dark:border-base-700">
-        <button
+        <Button
           type="button"
-          onClick={onOpenWorkspaceSettings}
-          className="flex w-full items-center gap-2 rounded-md border border-base-200 bg-white px-3 py-2 font-medium text-base-700 text-sm hover:bg-base-50 dark:border-base-700 dark:bg-base-800 dark:text-base-200 dark:hover:bg-base-700"
+          disabled={!workspaceId}
+          onClick={() => setIsWorkspaceSettingsOpen(true)}
+          variant="outline"
+          className="w-full"
         >
           <Users className="h-4 w-4" />
           Workspace Settings
-        </button>
-        <button
+        </Button>
+
+        <Button
           type="button"
-          onClick={onSignOut}
-          className="flex w-full items-center gap-2 rounded-md border border-base-200 bg-white px-3 py-2 font-medium text-red-600 text-sm hover:bg-base-50 dark:border-base-700 dark:bg-base-800 dark:text-red-400 dark:hover:bg-base-700"
+          onClick={() => navigate({ to: "/" })}
+          variant="outline"
+          className="w-full text-red-600 dark:text-red-400 dark:hover:bg-base-700"
         >
           <LogOut className="h-4 w-4" />
           Sign Out
-        </button>
+        </Button>
       </div>
 
       {projectToDelete && (
@@ -212,6 +219,11 @@ const Sidebar = ({
           onCancel={() => setProjectToDelete(null)}
         />
       )}
+
+      <WorkspaceSettings
+        // TODO
+        team={[]}
+      />
     </div>
   );
 };

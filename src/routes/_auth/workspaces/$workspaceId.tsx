@@ -1,5 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { notFound, useNavigate } from "@tanstack/react-router";
+import { notFound } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 
 import Board from "@/components/Board";
@@ -9,8 +8,6 @@ import NotFound from "@/components/layout/NotFound";
 import ProjectOverview from "@/components/ProjectOverview";
 import ProjectOverviewSettings from "@/components/ProjectOverviewSettings";
 import ProjectSettings from "@/components/ProjectSettings";
-import Sidebar from "@/components/Sidebar";
-import SidebarToggle from "@/components/SidebarToggle";
 import TaskDialog from "@/components/TaskDialog";
 import workspaceOptions from "@/lib/options/workspace.options";
 // import WorkspaceSettings from "@/components/WorkspaceSettings";
@@ -357,28 +354,10 @@ export const Route = createFileRoute({
 });
 
 function RouteComponent() {
-  const { workspaceId } = Route.useParams();
-
-  const navigate = useNavigate();
-
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions(workspaceId),
-    select: (data) => data.workspace,
-  });
-
-  // TODO: determine why this is still showing data as possibly being undefined
-  const { data: workspaces } = useSuspenseQuery({
-    ...workspacesOptions,
-    select: (data) => data?.workspaces?.nodes,
-  });
-
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [currentWorkspace, setCurrentWorkspace] = useState(workspace?.rowId);
   const [projects, setProjects] = useState(initialProjects);
   const [currentProject, setCurrentProject] = useState("runa");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isWorkspaceSettingsOpen, setIsWorkspaceSettingsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTask, setSelectedTask] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<{
@@ -457,98 +436,75 @@ function RouteComponent() {
         className="hidden"
       />
 
-      <div
-        className={`relative flex-shrink-0 ${isSidebarCollapsed ? "w-0" : "w-60"}`}
-      >
-        <div
-          className={`absolute inset-0 ${isSidebarCollapsed ? "pointer-events-none opacity-0" : "opacity-100"}`}
-        >
-          <Sidebar
-            currentWorkspace={currentWorkspace ?? "personal"}
-            projects={workspace?.projects.nodes}
-            currentProject={currentProject}
-            onOpenWorkspaceSettings={() => setIsWorkspaceSettingsOpen(true)}
-            onSignOut={() => navigate({ to: "/" })}
+      <div className="flex h-full flex-col">
+        {currentProjectData && (
+          <Header
+            project={currentProjectData}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onViewModeChange={
+              (viewMode) => console.warn("TODO: View Mode Change", viewMode)
+              // handleProjectUpdate(currentProject, { viewMode })
+            }
+            onOpenSettings={() => setIsSettingsOpen(true)}
           />
+        )}
+
+        <div className="flex-1">
+          {currentProjectData &&
+            (currentProject === "projects" ? (
+              <ProjectOverview
+                project={currentProjectData}
+                searchQuery={searchQuery}
+                expandedSections={expandedSections}
+                onToggleSection={toggleSection}
+                onTaskClick={setSelectedTask}
+                onProjectUpdate={(updatedColumns) => {
+                  setProjects({
+                    ...projects,
+                    [currentProject]: {
+                      ...currentProjectData,
+                      columns: updatedColumns,
+                    },
+                  });
+                }}
+              />
+            ) : currentProjectData.viewMode === "board" ? (
+              <div className="h-full">
+                <Board
+                  project={filterTasks(currentProjectData)}
+                  onProjectUpdate={(updatedColumns) => {
+                    setProjects({
+                      ...projects,
+                      [currentProject]: {
+                        ...currentProjectData,
+                        columns: updatedColumns,
+                      },
+                    });
+                  }}
+                  isProjectView={false}
+                />
+              </div>
+            ) : (
+              <ListView
+                project={filterTasks(currentProjectData)}
+                expandedSections={expandedSections}
+                onToggleSection={toggleSection}
+                onTaskClick={setSelectedTask}
+                searchQuery={searchQuery}
+                onProjectUpdate={(updatedColumns) => {
+                  setProjects({
+                    ...projects,
+                    [currentProject]: {
+                      ...currentProjectData,
+                      columns: updatedColumns,
+                    },
+                  });
+                }}
+              />
+            ))}
         </div>
       </div>
-
-      <SidebarToggle
-        isCollapsed={isSidebarCollapsed}
-        onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-      />
-
-      <main className="flex-1 overflow-hidden">
-        <div className="flex h-full flex-col">
-          {currentProjectData && (
-            <Header
-              project={currentProjectData}
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              onViewModeChange={
-                (viewMode) => console.warn("TODO: View Mode Change", viewMode)
-                // handleProjectUpdate(currentProject, { viewMode })
-              }
-              onOpenSettings={() => setIsSettingsOpen(true)}
-            />
-          )}
-
-          <div className="flex-1">
-            {currentProjectData &&
-              (currentProject === "projects" ? (
-                <ProjectOverview
-                  project={currentProjectData}
-                  searchQuery={searchQuery}
-                  expandedSections={expandedSections}
-                  onToggleSection={toggleSection}
-                  onTaskClick={setSelectedTask}
-                  onProjectUpdate={(updatedColumns) => {
-                    setProjects({
-                      ...projects,
-                      [currentProject]: {
-                        ...currentProjectData,
-                        columns: updatedColumns,
-                      },
-                    });
-                  }}
-                />
-              ) : currentProjectData.viewMode === "board" ? (
-                <div className="h-full">
-                  <Board
-                    project={filterTasks(currentProjectData)}
-                    onProjectUpdate={(updatedColumns) => {
-                      setProjects({
-                        ...projects,
-                        [currentProject]: {
-                          ...currentProjectData,
-                          columns: updatedColumns,
-                        },
-                      });
-                    }}
-                    isProjectView={false}
-                  />
-                </div>
-              ) : (
-                <ListView
-                  project={filterTasks(currentProjectData)}
-                  expandedSections={expandedSections}
-                  onToggleSection={toggleSection}
-                  onTaskClick={setSelectedTask}
-                  searchQuery={searchQuery}
-                  onProjectUpdate={(updatedColumns) => {
-                    setProjects({
-                      ...projects,
-                      [currentProject]: {
-                        ...currentProjectData,
-                        columns: updatedColumns,
-                      },
-                    });
-                  }}
-                />
-              ))}
-          </div>
-        </div>
-      </main>
 
       {isSettingsOpen &&
         (currentProject === "projects" ? (

@@ -15,19 +15,19 @@ import type {
 } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AnonRouteImport } from './routes/_anon'
-import { Route as WorkspacesIndexRouteImport } from './routes/workspaces/index'
 import { Route as AnonIndexRouteImport } from './routes/_anon/index'
-import { Route as WorkspacesWorkspaceIdRouteImport } from './routes/workspaces/$workspaceId'
 import { Route as AnonPricingRouteImport } from './routes/_anon/pricing'
+import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
+import { Route as AuthWorkspacesWorkspaceIdRouteImport } from './routes/_auth/workspaces/$workspaceId'
 
-const AnonRoute = AnonRouteImport.update({
-  id: '/_anon',
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WorkspacesIndexRoute = WorkspacesIndexRouteImport.update({
-  id: '/workspaces/',
-  path: '/workspaces/',
+const AnonRoute = AnonRouteImport.update({
+  id: '/_anon',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnonIndexRoute = AnonIndexRouteImport.update({
@@ -35,55 +35,62 @@ const AnonIndexRoute = AnonIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AnonRoute,
 } as any)
-const WorkspacesWorkspaceIdRoute = WorkspacesWorkspaceIdRouteImport.update({
-  id: '/workspaces/$workspaceId',
-  path: '/workspaces/$workspaceId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AnonPricingRoute = AnonPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
   getParentRoute: () => AnonRoute,
 } as any)
+const AuthWorkspacesIndexRoute = AuthWorkspacesIndexRouteImport.update({
+  id: '/workspaces/',
+  path: '/workspaces/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthWorkspacesWorkspaceIdRoute =
+  AuthWorkspacesWorkspaceIdRouteImport.update({
+    id: '/workspaces/$workspaceId',
+    path: '/workspaces/$workspaceId',
+    getParentRoute: () => AuthRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/pricing': typeof AnonPricingRoute
-  '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/': typeof AnonIndexRoute
-  '/workspaces': typeof WorkspacesIndexRoute
+  '/workspaces/$workspaceId': typeof AuthWorkspacesWorkspaceIdRoute
+  '/workspaces': typeof AuthWorkspacesIndexRoute
 }
 export interface FileRoutesByTo {
   '/pricing': typeof AnonPricingRoute
-  '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/': typeof AnonIndexRoute
-  '/workspaces': typeof WorkspacesIndexRoute
+  '/workspaces/$workspaceId': typeof AuthWorkspacesWorkspaceIdRoute
+  '/workspaces': typeof AuthWorkspacesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_anon': typeof AnonRouteWithChildren
+  '/_auth': typeof AuthRouteWithChildren
   '/_anon/pricing': typeof AnonPricingRoute
-  '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/_anon/': typeof AnonIndexRoute
-  '/workspaces/': typeof WorkspacesIndexRoute
+  '/_auth/workspaces/$workspaceId': typeof AuthWorkspacesWorkspaceIdRoute
+  '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/pricing' | '/workspaces/$workspaceId' | '/' | '/workspaces'
+  fullPaths: '/pricing' | '/' | '/workspaces/$workspaceId' | '/workspaces'
   fileRoutesByTo: FileRoutesByTo
-  to: '/pricing' | '/workspaces/$workspaceId' | '/' | '/workspaces'
+  to: '/pricing' | '/' | '/workspaces/$workspaceId' | '/workspaces'
   id:
     | '__root__'
     | '/_anon'
+    | '/_auth'
     | '/_anon/pricing'
-    | '/workspaces/$workspaceId'
     | '/_anon/'
-    | '/workspaces/'
+    | '/_auth/workspaces/$workspaceId'
+    | '/_auth/workspaces/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AnonRoute: typeof AnonRouteWithChildren
-  WorkspacesWorkspaceIdRoute: typeof WorkspacesWorkspaceIdRoute
-  WorkspacesIndexRoute: typeof WorkspacesIndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -95,19 +102,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnonRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_anon/pricing': {
       id: '/_anon/pricing'
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof AnonPricingRouteImport
       parentRoute: typeof AnonRoute
-    }
-    '/workspaces/$workspaceId': {
-      id: '/workspaces/$workspaceId'
-      path: '/workspaces/$workspaceId'
-      fullPath: '/workspaces/$workspaceId'
-      preLoaderRoute: typeof WorkspacesWorkspaceIdRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/_anon/': {
       id: '/_anon/'
@@ -116,12 +123,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnonIndexRouteImport
       parentRoute: typeof AnonRoute
     }
-    '/workspaces/': {
-      id: '/workspaces/'
+    '/_auth/workspaces/$workspaceId': {
+      id: '/_auth/workspaces/$workspaceId'
+      path: '/workspaces/$workspaceId'
+      fullPath: '/workspaces/$workspaceId'
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/workspaces/': {
+      id: '/_auth/workspaces/'
       path: '/workspaces'
       fullPath: '/workspaces'
-      preLoaderRoute: typeof WorkspacesIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthWorkspacesIndexRouteImport
+      parentRoute: typeof AuthRoute
     }
   }
 }
@@ -143,6 +157,23 @@ declare module './routes/_anon' {
     unknown
   >
 }
+declare module './routes/_auth' {
+  const createFileRoute: CreateFileRoute<
+    '/_auth',
+    FileRoutesByPath['/_auth']['parentRoute'],
+    FileRoutesByPath['/_auth']['id'],
+    FileRoutesByPath['/_auth']['path'],
+    FileRoutesByPath['/_auth']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/_auth']['parentRoute'],
+    ServerFileRoutesByPath['/_auth']['id'],
+    ServerFileRoutesByPath['/_auth']['path'],
+    ServerFileRoutesByPath['/_auth']['fullPath'],
+    unknown
+  >
+}
 declare module './routes/_anon/pricing' {
   const createFileRoute: CreateFileRoute<
     '/_anon/pricing',
@@ -157,23 +188,6 @@ declare module './routes/_anon/pricing' {
     ServerFileRoutesByPath['/_anon/pricing']['id'],
     ServerFileRoutesByPath['/_anon/pricing']['path'],
     ServerFileRoutesByPath['/_anon/pricing']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/workspaces/$workspaceId' {
-  const createFileRoute: CreateFileRoute<
-    '/workspaces/$workspaceId',
-    FileRoutesByPath['/workspaces/$workspaceId']['parentRoute'],
-    FileRoutesByPath['/workspaces/$workspaceId']['id'],
-    FileRoutesByPath['/workspaces/$workspaceId']['path'],
-    FileRoutesByPath['/workspaces/$workspaceId']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/workspaces/$workspaceId']['parentRoute'],
-    ServerFileRoutesByPath['/workspaces/$workspaceId']['id'],
-    ServerFileRoutesByPath['/workspaces/$workspaceId']['path'],
-    ServerFileRoutesByPath['/workspaces/$workspaceId']['fullPath'],
     unknown
   >
 }
@@ -194,20 +208,37 @@ declare module './routes/_anon/index' {
     unknown
   >
 }
-declare module './routes/workspaces/index' {
+declare module './routes/_auth/workspaces/$workspaceId' {
   const createFileRoute: CreateFileRoute<
-    '/workspaces/',
-    FileRoutesByPath['/workspaces/']['parentRoute'],
-    FileRoutesByPath['/workspaces/']['id'],
-    FileRoutesByPath['/workspaces/']['path'],
-    FileRoutesByPath['/workspaces/']['fullPath']
+    '/_auth/workspaces/$workspaceId',
+    FileRoutesByPath['/_auth/workspaces/$workspaceId']['parentRoute'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId']['id'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId']['path'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId']['fullPath']
   >
 
   const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/workspaces/']['parentRoute'],
-    ServerFileRoutesByPath['/workspaces/']['id'],
-    ServerFileRoutesByPath['/workspaces/']['path'],
-    ServerFileRoutesByPath['/workspaces/']['fullPath'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId']['id'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId']['path'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/_auth/workspaces/index' {
+  const createFileRoute: CreateFileRoute<
+    '/_auth/workspaces/',
+    FileRoutesByPath['/_auth/workspaces/']['parentRoute'],
+    FileRoutesByPath['/_auth/workspaces/']['id'],
+    FileRoutesByPath['/_auth/workspaces/']['path'],
+    FileRoutesByPath['/_auth/workspaces/']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/_auth/workspaces/']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/workspaces/']['id'],
+    ServerFileRoutesByPath['/_auth/workspaces/']['path'],
+    ServerFileRoutesByPath['/_auth/workspaces/']['fullPath'],
     unknown
   >
 }
@@ -224,10 +255,21 @@ const AnonRouteChildren: AnonRouteChildren = {
 
 const AnonRouteWithChildren = AnonRoute._addFileChildren(AnonRouteChildren)
 
+interface AuthRouteChildren {
+  AuthWorkspacesWorkspaceIdRoute: typeof AuthWorkspacesWorkspaceIdRoute
+  AuthWorkspacesIndexRoute: typeof AuthWorkspacesIndexRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthWorkspacesWorkspaceIdRoute: AuthWorkspacesWorkspaceIdRoute,
+  AuthWorkspacesIndexRoute: AuthWorkspacesIndexRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AnonRoute: AnonRouteWithChildren,
-  WorkspacesWorkspaceIdRoute: WorkspacesWorkspaceIdRoute,
-  WorkspacesIndexRoute: WorkspacesIndexRoute,
+  AuthRoute: AuthRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
