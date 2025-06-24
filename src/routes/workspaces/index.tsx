@@ -414,10 +414,6 @@ function Workspaces() {
     return { ...project, columns: filteredColumns };
   };
 
-  const workspaceProjects = Object.values(projects).filter(
-    (p) => p.workspaceId === currentWorkspace,
-  );
-
   const toggleSection = (columnId: string) => {
     setExpandedSections((prev) => ({
       ...prev,
@@ -450,11 +446,9 @@ function Workspaces() {
           className={`absolute inset-0 ${isSidebarCollapsed ? "pointer-events-none opacity-0" : "opacity-100"}`}
         >
           <Sidebar
-            workspaces={workspaces}
             currentWorkspace={currentWorkspace ?? "personal"}
-            projects={workspaceProjects}
+            projects={undefined}
             currentProject={currentProject}
-            onProjectSelect={setCurrentProject}
             onOpenWorkspaceSettings={() => setIsWorkspaceSettingsOpen(true)}
             onSignOut={() => navigate({ to: "/" })}
           />

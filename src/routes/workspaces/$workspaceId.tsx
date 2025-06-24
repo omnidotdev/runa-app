@@ -464,11 +464,9 @@ function RouteComponent() {
           className={`absolute inset-0 ${isSidebarCollapsed ? "pointer-events-none opacity-0" : "opacity-100"}`}
         >
           <Sidebar
-            workspaces={workspaces}
             currentWorkspace={currentWorkspace ?? "personal"}
             projects={workspace?.projects.nodes}
             currentProject={currentProject}
-            onProjectSelect={setCurrentProject}
             onOpenWorkspaceSettings={() => setIsWorkspaceSettingsOpen(true)}
             onSignOut={() => navigate({ to: "/" })}
           />

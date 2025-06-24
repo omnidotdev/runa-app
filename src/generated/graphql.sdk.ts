@@ -2783,6 +2783,13 @@ export type CreateWorkspaceMutationVariables = Exact<{
 
 export type CreateWorkspaceMutation = { __typename?: 'Mutation', createWorkspace?: { __typename?: 'CreateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string } | null } | null };
 
+export type DeleteWorkspaceMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteWorkspaceMutation = { __typename?: 'Mutation', deleteWorkspace?: { __typename?: 'DeleteWorkspacePayload', clientMutationId?: string | null } | null };
+
 export type TasksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2793,7 +2800,7 @@ export type WorkspaceQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string } | null> } } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string } | null> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2837,6 +2844,13 @@ export const CreateWorkspaceDocument = gql`
   }
 }
     `;
+export const DeleteWorkspaceDocument = gql`
+    mutation DeleteWorkspace($rowId: UUID!) {
+  deleteWorkspace(input: {rowId: $rowId}) {
+    clientMutationId
+  }
+}
+    `;
 export const TasksDocument = gql`
     query Tasks {
   tasks {
@@ -2866,6 +2880,7 @@ export const WorkspaceDocument = gql`
     name
     projects {
       nodes {
+        rowId
         name
       }
     }
@@ -2901,6 +2916,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     CreateWorkspace(variables: CreateWorkspaceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateWorkspaceMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateWorkspaceMutation>({ document: CreateWorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateWorkspace', 'mutation', variables);
+    },
+    DeleteWorkspace(variables: DeleteWorkspaceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DeleteWorkspaceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteWorkspaceMutation>({ document: DeleteWorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DeleteWorkspace', 'mutation', variables);
     },
     Tasks(variables?: TasksQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<TasksQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TasksQuery>({ document: TasksDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Tasks', 'query', variables);

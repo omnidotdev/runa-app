@@ -15,32 +15,20 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import ThemeToggle from "@/components/ThemeToggle";
 import WorkspaceSelector from "@/components/WorkspaceSelector";
 
-import type { Project, Workspace } from "@/types";
+import type { Project } from "@/generated/graphql";
 
 interface SidebarProps {
-  workspaces: Workspace[];
   currentWorkspace: string;
-  onWorkspaceCreate: (workspace: Workspace) => void;
-  onWorkspaceDelete: (workspaceId: string) => void;
-  projects: Project[];
+  projects: Partial<Project | null>[] | undefined;
   currentProject: string;
-  onProjectSelect: (projectId: string) => void;
-  onProjectCreate?: (project: Project) => void;
-  onProjectDelete?: (projectId: string) => void;
   onOpenWorkspaceSettings: () => void;
   onSignOut: () => void;
 }
 
 const Sidebar = ({
-  workspaces,
   currentWorkspace,
-  onWorkspaceCreate,
-  onWorkspaceDelete,
   projects,
   currentProject,
-  onProjectSelect,
-  onProjectCreate,
-  onProjectDelete,
   onOpenWorkspaceSettings,
   onSignOut,
 }: SidebarProps) => {
@@ -49,42 +37,6 @@ const Sidebar = ({
   const [newProjectName, setNewProjectName] = useState("");
   const [newProjectDescription, setNewProjectDescription] = useState("");
   const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
-
-  const handleCreateProject = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!newProjectName.trim()) return;
-
-    // @ts-ignore `viewMode` missing but wont be a concern once remote data fetching is implemented
-    const newProject: Project = {
-      id: newProjectName.toLowerCase().replace(/\s+/g, "-"),
-      name: newProjectName,
-      description: newProjectDescription.trim() || undefined,
-      workspaceId: currentWorkspace,
-      team: workspaces.find((w) => w.id === currentWorkspace)?.team || [],
-      columns: {
-        todo: {
-          id: "todo",
-          title: "To Do",
-          tasks: [],
-        },
-        "in-progress": {
-          id: "in-progress",
-          title: "In Progress",
-          tasks: [],
-        },
-        done: {
-          id: "done",
-          title: "Done",
-          tasks: [],
-        },
-      },
-    };
-
-    onProjectCreate?.(newProject);
-    setNewProjectName("");
-    setNewProjectDescription("");
-    setIsAddingProject(false);
-  };
 
   const handleProjectsHeaderClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -98,12 +50,7 @@ const Sidebar = ({
       <div className="flex flex-1 flex-col p-4">
         <div className="mb-4 flex items-center justify-between gap-2">
           <div className="flex-1">
-            <WorkspaceSelector
-              workspaces={workspaces}
-              currentWorkspace={currentWorkspace}
-              onWorkspaceCreate={onWorkspaceCreate}
-              onWorkspaceDelete={onWorkspaceDelete}
-            />
+            <WorkspaceSelector />
           </div>
 
           <ThemeToggle />
@@ -138,7 +85,7 @@ const Sidebar = ({
           {isProjectsOpen && (
             <div className="mt-1 ml-4">
               <div
-                onClick={() => onProjectSelect(`projects-${currentWorkspace}`)}
+                // onClick={() => onProjectSelect(`projects-${currentWorkspace}`)}
                 className={`flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm ${
                   currentProject === `projects-${currentWorkspace}`
                     ? "bg-gray-50 text-gray-700 dark:bg-gray-700/50 dark:text-gray-200"
@@ -152,7 +99,7 @@ const Sidebar = ({
 
               {isAddingProject && (
                 <form
-                  onSubmit={handleCreateProject}
+                  // onSubmit={handleCreateProject}
                   className="space-y-2 px-2 py-1"
                 >
                   <input
@@ -193,45 +140,43 @@ const Sidebar = ({
                 </form>
               )}
 
-              {projects
-                // .filter((project) => !project.id.startsWith("projects-"))
-                .map((project) => (
-                  <div
-                    key={project.id}
-                    className={`group flex items-center justify-between rounded px-2 py-1 text-sm ${
-                      currentProject === project.id
-                        ? "bg-gray-50 text-gray-700 dark:bg-gray-700/50 dark:text-gray-200"
-                        : "text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700/50"
-                    }`}
-                  >
-                    <div className="flex min-w-0 flex-1 items-center gap-2">
-                      {project.viewMode === "board" ? (
-                        <LayoutGrid
-                          className="h-3 w-3 flex-shrink-0"
-                          style={{ color: project.color || "currentColor" }}
-                        />
-                      ) : (
-                        <List
-                          className="h-3 w-3 flex-shrink-0"
-                          style={{ color: project.color || "currentColor" }}
-                        />
-                      )}
-                      <span
-                        className="cursor-pointer truncate"
-                        onClick={() => onProjectSelect(project.id)}
-                      >
-                        {project.name}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setProjectToDelete(project.id)}
-                      className="rounded-md p-1 opacity-0 transition-all hover:bg-gray-200 group-hover:opacity-100 dark:hover:bg-gray-600"
+              {projects?.map((project) => (
+                <div
+                  key={project?.rowId}
+                  className={`group flex items-center justify-between rounded px-2 py-1 text-sm ${
+                    currentProject === project?.rowId
+                      ? "bg-gray-50 text-gray-700 dark:bg-gray-700/50 dark:text-gray-200"
+                      : "text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700/50"
+                  }`}
+                >
+                  <div className="flex min-w-0 flex-1 items-center gap-2">
+                    {project?.viewMode === "board" ? (
+                      <LayoutGrid
+                        className="h-3 w-3 flex-shrink-0"
+                        style={{ color: project.color || "currentColor" }}
+                      />
+                    ) : (
+                      <List
+                        className="h-3 w-3 flex-shrink-0"
+                        style={{ color: project?.color || "currentColor" }}
+                      />
+                    )}
+                    <span
+                      className="cursor-pointer truncate"
+                      // onClick={() => onProjectSelect(project?.rowId)}
                     >
-                      <Trash2 className="h-3 w-3 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400" />
-                    </button>
+                      {project?.name}
+                    </span>
                   </div>
-                ))}
+                  <button
+                    type="button"
+                    onClick={() => setProjectToDelete(project?.rowId!)}
+                    className="rounded-md p-1 opacity-0 transition-all hover:bg-gray-200 group-hover:opacity-100 dark:hover:bg-gray-600"
+                  >
+                    <Trash2 className="h-3 w-3 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400" />
+                  </button>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -261,7 +206,7 @@ const Sidebar = ({
           title="Delete Project"
           message="Are you sure you want to delete this project? This action cannot be undone."
           onConfirm={() => {
-            onProjectDelete?.(projectToDelete);
+            // onProjectDelete?.(projectToDelete);
             setProjectToDelete(null);
           }}
           onCancel={() => setProjectToDelete(null)}

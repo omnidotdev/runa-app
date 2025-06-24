@@ -2782,6 +2782,13 @@ export type CreateWorkspaceMutationVariables = Exact<{
 
 export type CreateWorkspaceMutation = { __typename?: 'Mutation', createWorkspace?: { __typename?: 'CreateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string } | null } | null };
 
+export type DeleteWorkspaceMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteWorkspaceMutation = { __typename?: 'Mutation', deleteWorkspace?: { __typename?: 'DeleteWorkspacePayload', clientMutationId?: string | null } | null };
+
 export type TasksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2792,7 +2799,7 @@ export type WorkspaceQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string } | null> } } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string } | null> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2913,6 +2920,32 @@ useCreateWorkspaceMutation.getKey = () => ['CreateWorkspace'];
 
 useCreateWorkspaceMutation.fetcher = (variables: CreateWorkspaceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateWorkspaceMutation, CreateWorkspaceMutationVariables>(CreateWorkspaceDocument, variables, options);
 
+export const DeleteWorkspaceDocument = `
+    mutation DeleteWorkspace($rowId: UUID!) {
+  deleteWorkspace(input: {rowId: $rowId}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useDeleteWorkspaceMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteWorkspaceMutation, TError, DeleteWorkspaceMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteWorkspaceMutation, TError, DeleteWorkspaceMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteWorkspace'],
+    mutationFn: (variables?: DeleteWorkspaceMutationVariables) => graphqlFetch<DeleteWorkspaceMutation, DeleteWorkspaceMutationVariables>(DeleteWorkspaceDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteWorkspaceMutation.getKey = () => ['DeleteWorkspace'];
+
+
+useDeleteWorkspaceMutation.fetcher = (variables: DeleteWorkspaceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteWorkspaceMutation, DeleteWorkspaceMutationVariables>(DeleteWorkspaceDocument, variables, options);
+
 export const TasksDocument = `
     query Tasks {
   tasks {
@@ -2985,6 +3018,7 @@ export const WorkspaceDocument = `
     name
     projects {
       nodes {
+        rowId
         name
       }
     }
