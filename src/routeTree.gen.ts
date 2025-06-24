@@ -20,7 +20,10 @@ import { Route as AnonRouteImport } from './routes/_anon'
 import { Route as AnonIndexRouteImport } from './routes/_anon/index'
 import { Route as AnonPricingRouteImport } from './routes/_anon/pricing'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
-import { Route as AuthWorkspacesWorkspaceIdRouteImport } from './routes/_auth/workspaces/$workspaceId'
+import { Route as AuthWorkspacesWorkspaceIdIndexRouteImport } from './routes/_auth/workspaces/$workspaceId/index'
+import { Route as AuthWorkspacesWorkspaceIdProjectsIndexRouteImport } from './routes/_auth/workspaces/$workspaceId/projects/index'
+import { Route as AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRouteImport } from './routes/_auth/workspaces/$workspaceId/projects/$projectId/index'
+import { Route as AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRouteImport } from './routes/_auth/workspaces/$workspaceId/projects/$projectId/$taskId'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
@@ -45,24 +48,48 @@ const AuthWorkspacesIndexRoute = AuthWorkspacesIndexRouteImport.update({
   path: '/workspaces/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthWorkspacesWorkspaceIdRoute =
-  AuthWorkspacesWorkspaceIdRouteImport.update({
-    id: '/workspaces/$workspaceId',
-    path: '/workspaces/$workspaceId',
+const AuthWorkspacesWorkspaceIdIndexRoute =
+  AuthWorkspacesWorkspaceIdIndexRouteImport.update({
+    id: '/workspaces/$workspaceId/',
+    path: '/workspaces/$workspaceId/',
+    getParentRoute: () => AuthRoute,
+  } as any)
+const AuthWorkspacesWorkspaceIdProjectsIndexRoute =
+  AuthWorkspacesWorkspaceIdProjectsIndexRouteImport.update({
+    id: '/workspaces/$workspaceId/projects/',
+    path: '/workspaces/$workspaceId/projects/',
+    getParentRoute: () => AuthRoute,
+  } as any)
+const AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute =
+  AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRouteImport.update({
+    id: '/workspaces/$workspaceId/projects/$projectId/',
+    path: '/workspaces/$workspaceId/projects/$projectId/',
+    getParentRoute: () => AuthRoute,
+  } as any)
+const AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute =
+  AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRouteImport.update({
+    id: '/workspaces/$workspaceId/projects/$projectId/$taskId',
+    path: '/workspaces/$workspaceId/projects/$projectId/$taskId',
     getParentRoute: () => AuthRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/pricing': typeof AnonPricingRoute
   '/': typeof AnonIndexRoute
-  '/workspaces/$workspaceId': typeof AuthWorkspacesWorkspaceIdRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
+  '/workspaces/$workspaceId': typeof AuthWorkspacesWorkspaceIdIndexRoute
+  '/workspaces/$workspaceId/projects': typeof AuthWorkspacesWorkspaceIdProjectsIndexRoute
+  '/workspaces/$workspaceId/projects/$projectId/$taskId': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute
+  '/workspaces/$workspaceId/projects/$projectId': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/pricing': typeof AnonPricingRoute
   '/': typeof AnonIndexRoute
-  '/workspaces/$workspaceId': typeof AuthWorkspacesWorkspaceIdRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
+  '/workspaces/$workspaceId': typeof AuthWorkspacesWorkspaceIdIndexRoute
+  '/workspaces/$workspaceId/projects': typeof AuthWorkspacesWorkspaceIdProjectsIndexRoute
+  '/workspaces/$workspaceId/projects/$projectId/$taskId': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute
+  '/workspaces/$workspaceId/projects/$projectId': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,22 +97,42 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_anon/pricing': typeof AnonPricingRoute
   '/_anon/': typeof AnonIndexRoute
-  '/_auth/workspaces/$workspaceId': typeof AuthWorkspacesWorkspaceIdRoute
   '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
+  '/_auth/workspaces/$workspaceId/': typeof AuthWorkspacesWorkspaceIdIndexRoute
+  '/_auth/workspaces/$workspaceId/projects/': typeof AuthWorkspacesWorkspaceIdProjectsIndexRoute
+  '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute
+  '/_auth/workspaces/$workspaceId/projects/$projectId/': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/pricing' | '/' | '/workspaces/$workspaceId' | '/workspaces'
+  fullPaths:
+    | '/pricing'
+    | '/'
+    | '/workspaces'
+    | '/workspaces/$workspaceId'
+    | '/workspaces/$workspaceId/projects'
+    | '/workspaces/$workspaceId/projects/$projectId/$taskId'
+    | '/workspaces/$workspaceId/projects/$projectId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/pricing' | '/' | '/workspaces/$workspaceId' | '/workspaces'
+  to:
+    | '/pricing'
+    | '/'
+    | '/workspaces'
+    | '/workspaces/$workspaceId'
+    | '/workspaces/$workspaceId/projects'
+    | '/workspaces/$workspaceId/projects/$projectId/$taskId'
+    | '/workspaces/$workspaceId/projects/$projectId'
   id:
     | '__root__'
     | '/_anon'
     | '/_auth'
     | '/_anon/pricing'
     | '/_anon/'
-    | '/_auth/workspaces/$workspaceId'
     | '/_auth/workspaces/'
+    | '/_auth/workspaces/$workspaceId/'
+    | '/_auth/workspaces/$workspaceId/projects/'
+    | '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId'
+    | '/_auth/workspaces/$workspaceId/projects/$projectId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -123,18 +170,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnonIndexRouteImport
       parentRoute: typeof AnonRoute
     }
-    '/_auth/workspaces/$workspaceId': {
-      id: '/_auth/workspaces/$workspaceId'
-      path: '/workspaces/$workspaceId'
-      fullPath: '/workspaces/$workspaceId'
-      preLoaderRoute: typeof AuthWorkspacesWorkspaceIdRouteImport
-      parentRoute: typeof AuthRoute
-    }
     '/_auth/workspaces/': {
       id: '/_auth/workspaces/'
       path: '/workspaces'
       fullPath: '/workspaces'
       preLoaderRoute: typeof AuthWorkspacesIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/workspaces/$workspaceId/': {
+      id: '/_auth/workspaces/$workspaceId/'
+      path: '/workspaces/$workspaceId'
+      fullPath: '/workspaces/$workspaceId'
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceIdIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/workspaces/$workspaceId/projects/': {
+      id: '/_auth/workspaces/$workspaceId/projects/'
+      path: '/workspaces/$workspaceId/projects'
+      fullPath: '/workspaces/$workspaceId/projects'
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceIdProjectsIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId': {
+      id: '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId'
+      path: '/workspaces/$workspaceId/projects/$projectId/$taskId'
+      fullPath: '/workspaces/$workspaceId/projects/$projectId/$taskId'
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/workspaces/$workspaceId/projects/$projectId/': {
+      id: '/_auth/workspaces/$workspaceId/projects/$projectId/'
+      path: '/workspaces/$workspaceId/projects/$projectId'
+      fullPath: '/workspaces/$workspaceId/projects/$projectId'
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRouteImport
       parentRoute: typeof AuthRoute
     }
   }
@@ -208,23 +276,6 @@ declare module './routes/_anon/index' {
     unknown
   >
 }
-declare module './routes/_auth/workspaces/$workspaceId' {
-  const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/$workspaceId',
-    FileRoutesByPath['/_auth/workspaces/$workspaceId']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId']['id'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId']['path'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId']['fullPath'],
-    unknown
-  >
-}
 declare module './routes/_auth/workspaces/index' {
   const createFileRoute: CreateFileRoute<
     '/_auth/workspaces/',
@@ -242,6 +293,74 @@ declare module './routes/_auth/workspaces/index' {
     unknown
   >
 }
+declare module './routes/_auth/workspaces/$workspaceId/index' {
+  const createFileRoute: CreateFileRoute<
+    '/_auth/workspaces/$workspaceId/',
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/']['parentRoute'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/']['id'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/']['path'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/']['id'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/']['path'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/_auth/workspaces/$workspaceId/projects/index' {
+  const createFileRoute: CreateFileRoute<
+    '/_auth/workspaces/$workspaceId/projects/',
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['parentRoute'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['id'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['path'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['id'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['path'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/_auth/workspaces/$workspaceId/projects/$projectId/$taskId' {
+  const createFileRoute: CreateFileRoute<
+    '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId',
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['parentRoute'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['id'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['path'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['id'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['path'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/_auth/workspaces/$workspaceId/projects/$projectId/index' {
+  const createFileRoute: CreateFileRoute<
+    '/_auth/workspaces/$workspaceId/projects/$projectId/',
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['parentRoute'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['id'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['path'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['id'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['path'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['fullPath'],
+    unknown
+  >
+}
 
 interface AnonRouteChildren {
   AnonPricingRoute: typeof AnonPricingRoute
@@ -256,13 +375,22 @@ const AnonRouteChildren: AnonRouteChildren = {
 const AnonRouteWithChildren = AnonRoute._addFileChildren(AnonRouteChildren)
 
 interface AuthRouteChildren {
-  AuthWorkspacesWorkspaceIdRoute: typeof AuthWorkspacesWorkspaceIdRoute
   AuthWorkspacesIndexRoute: typeof AuthWorkspacesIndexRoute
+  AuthWorkspacesWorkspaceIdIndexRoute: typeof AuthWorkspacesWorkspaceIdIndexRoute
+  AuthWorkspacesWorkspaceIdProjectsIndexRoute: typeof AuthWorkspacesWorkspaceIdProjectsIndexRoute
+  AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute: typeof AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute
+  AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute: typeof AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthWorkspacesWorkspaceIdRoute: AuthWorkspacesWorkspaceIdRoute,
   AuthWorkspacesIndexRoute: AuthWorkspacesIndexRoute,
+  AuthWorkspacesWorkspaceIdIndexRoute: AuthWorkspacesWorkspaceIdIndexRoute,
+  AuthWorkspacesWorkspaceIdProjectsIndexRoute:
+    AuthWorkspacesWorkspaceIdProjectsIndexRoute,
+  AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute:
+    AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute,
+  AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute:
+    AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
