@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
 import { ChevronDown, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
+import Link from "@/components/core/Link";
+import { Button } from "@/components/ui/button";
 import { useCreateWorkspaceMutation } from "@/generated/graphql";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/utils/getQueryClient";
@@ -148,24 +149,31 @@ const WorkspaceSelector = ({
                 <div
                   key={workspace?.rowId}
                   // TODO: active styles. Waiting for `cn` from shadcn implementation so that styles are properly merged
-                  className="group relative w-full px-3 py-2 text-left text-gray-700 text-sm hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                  className="w-full"
                 >
                   <Link
                     to="/workspaces/$workspaceId"
                     params={{ workspaceId: workspace?.rowId! }}
+                    variant="ghost"
+                    className="group relative w-full justify-start rounded-none"
                   >
                     {workspace?.name}
+
+                    {workspaces.length > 1 &&
+                      workspace?.rowId === currentWorkspace && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setWorkspaceToDelete(workspace.rowId);
+                          }}
+                          className="-translate-y-1/2 absolute top-1/2 right-2 size-4 opacity-0 hover:text-red-500 group-hover:opacity-100 dark:hover:text-red-400"
+                        >
+                          <Plus className="h-3 w-3 rotate-45" />
+                        </Button>
+                      )}
                   </Link>
-                  {workspaces.length > 1 &&
-                    workspace?.rowId === currentWorkspace && (
-                      <button
-                        type="button"
-                        onClick={() => setWorkspaceToDelete(workspace.rowId)}
-                        className="group -translate-y-1/2 absolute top-1/2 right-2 rounded p-1 text-gray-500 opacity-0 hover:bg-gray-200 hover:text-red-500 group-hover:opacity-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-red-400"
-                      >
-                        <Plus className="h-3 w-3 rotate-45" />
-                      </button>
-                    )}
                 </div>
               ))}
               <div className="my-1 h-px bg-gray-200 dark:bg-gray-700" />

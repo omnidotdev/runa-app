@@ -86,12 +86,6 @@
   --color-fd-secondary-foreground: var(--foreground);
 }
 
-html .prose {
-  figure {
-    @apply bg-primary-50/30 dark:bg-primary-950/10 border-primary-200/40 dark:border-primary-900/40;
-  }
-}
-
 :root {
   --base-50: oklch(0.985 0.0013 286.84);
   --base-100: oklch(0.967 0.0027 286.38);
@@ -168,35 +162,6 @@ html .prose {
   --display-weight: 400;
   --text-family: var(--font-sans);
   --text-weight: 400;
-
-  .prose :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    @apply mt-0 mb-0;
-  }
-
-  .prose :where(h1):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    @apply mt-0 mb-0;
-  }
-
-  .prose :where(h2):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    @apply mt-0 mb-0;
-  }
-
-  .prose :where(h3):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    @apply mt-0 mb-0;
-  }
-
-  .prose :where(h4):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    @apply mt-0 mb-0;
-  }
-
-  .prose :where(hr):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    @apply mt-1 mb-1;
-  }
-
-  .prose
-    :where(table):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
-    @apply mt-0 mb-0;
-  }
 }
 
 .dark {

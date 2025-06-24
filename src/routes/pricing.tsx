@@ -1,6 +1,6 @@
-import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 
+import Link from "@/components/core/Link";
 import {
   AccordionItem,
   AccordionItemContent,
@@ -91,6 +91,7 @@ function Pricing() {
         <div className="mb-12">
           <Link
             to="/"
+            variant="ghost"
             className="inline-flex items-center gap-2 text-muted-foreground text-sm hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />

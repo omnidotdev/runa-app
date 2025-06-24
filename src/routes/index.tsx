@@ -1,5 +1,5 @@
-import { Link } from "@tanstack/react-router";
 import {
+  ArrowRightIcon,
   ChartNoAxesColumnIncreasingIcon,
   ListIcon,
   UsersIcon,
@@ -7,9 +7,9 @@ import {
 } from "lucide-react";
 import { match } from "ts-pattern";
 
+import Link from "@/components/core/Link";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -89,14 +89,12 @@ function Home() {
               {/* TODO */}
               {/* <Link
                   to="/docs"
-                  className={cn(buttonVariants({ variant: "link" }))}
+                  variant="link"
                 >
                   Docs
                 </Link> */}
 
-              <Link to="/workspaces" className={cn(buttonVariants())}>
-                Sign In
-              </Link>
+              <Link to="/workspaces">Sign In</Link>
             </div>
           </div>
         </div>
@@ -126,16 +124,15 @@ function Home() {
             <div className="flex flex-col gap-5 sm:flex-row">
               <Link
                 to="/workspaces"
-                className="group cursor-pointer rounded-lg bg-primary-600 px-8 py-4 font-medium text-base text-white shadow-md transition-all hover:bg-primary-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2"
+                className="group h-full px-6 py-4 has-[>svg]:px-6"
               >
                 Get Started{" "}
-                <span className="ml-1 inline-block transition-transform group-hover:translate-x-1">
-                  →
-                </span>
+                <ArrowRightIcon className="ml-1 inline-block transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 to="/pricing"
-                className="rounded-lg border border-gray-300 bg-white px-8 py-4 text-center font-medium text-base text-primary-600 shadow-sm hover:bg-gray-50 hover:shadow dark:border-gray-700 dark:bg-gray-800 dark:text-primary-400 dark:hover:bg-gray-700"
+                variant="outline"
+                className="group h-full px-8 py-4 text-primary dark:bg-gray-800 dark:text-primary-400 dark:hover:bg-gray-700"
               >
                 View Pricing
               </Link>
