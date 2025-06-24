@@ -2789,6 +2789,13 @@ export type DeleteWorkspaceMutationVariables = Exact<{
 
 export type DeleteWorkspaceMutation = { __typename?: 'Mutation', deleteWorkspace?: { __typename?: 'DeleteWorkspacePayload', clientMutationId?: string | null } | null };
 
+export type ProjectQueryVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null } | null };
+
 export type TasksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2945,6 +2952,58 @@ useDeleteWorkspaceMutation.getKey = () => ['DeleteWorkspace'];
 
 
 useDeleteWorkspaceMutation.fetcher = (variables: DeleteWorkspaceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteWorkspaceMutation, DeleteWorkspaceMutationVariables>(DeleteWorkspaceDocument, variables, options);
+
+export const ProjectDocument = `
+    query Project($rowId: UUID!) {
+  project(rowId: $rowId) {
+    rowId
+    name
+    description
+  }
+}
+    `;
+
+export const useProjectQuery = <
+      TData = ProjectQuery,
+      TError = unknown
+    >(
+      variables: ProjectQueryVariables,
+      options?: Omit<UseQueryOptions<ProjectQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ProjectQuery, TError, TData>(
+      {
+    queryKey: ['Project', variables],
+    queryFn: graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables),
+    ...options
+  }
+    )};
+
+useProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project', variables];
+
+export const useInfiniteProjectQuery = <
+      TData = InfiniteData<ProjectQuery>,
+      TError = unknown
+    >(
+      variables: ProjectQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ProjectQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ProjectQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Project.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
+
+
+useProjectQuery.fetcher = (variables: ProjectQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables, options);
 
 export const TasksDocument = `
     query Tasks {

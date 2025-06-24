@@ -3,5 +3,9 @@ export const Route = createFileRoute({
 });
 
 function ProjectsOverviewPage() {
-  return <div>Hello "/_auth/workspaces/$workspaceId/projects/"!</div>;
+  return (
+    <div className="flex h-full items-center justify-center">
+      TODO: Projects Overview
+    </div>
+  );
 }

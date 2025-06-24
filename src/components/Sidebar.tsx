@@ -16,6 +16,7 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import ThemeToggle from "@/components/ThemeToggle";
 import WorkspaceSelector from "@/components/WorkspaceSelector";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import Link from "./core/Link";
 import { Button } from "./ui/button";
 import WorkspaceSettings from "./WorkspaceSettings";
 
@@ -61,7 +62,7 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
 
         <div className="custom-scrollbar flex-1 overflow-y-auto">
           <div
-            className="flex cursor-pointer items-center justify-between rounded px-2 py-1 font-medium text-base-700 text-sm hover:bg-base-50 dark:text-base-200 dark:hover:bg-base-700/50"
+            className="flex cursor-pointer items-center justify-between rounded px-2 py-3 font-medium text-base-700 text-sm hover:bg-base-50 dark:text-base-200 dark:hover:bg-base-700/50"
             onClick={handleProjectsHeaderClick}
           >
             <div className="flex items-center gap-2">
@@ -86,17 +87,21 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
           </div>
 
           {isProjectsOpen && (
-            <div className="mt-1 ml-4">
-              <div
-                // onClick={() => onProjectSelect(`projects-${currentWorkspace}`)}
-                className={`flex cursor-pointer items-center gap-2 rounded px-2 py-1 text-sm ${
-                  currentProject === `projects-${workspaceId}`
-                    ? "bg-base-50 text-base-700 dark:bg-base-700/50 dark:text-base-200"
-                    : "text-base-600 hover:bg-base-50 dark:text-base-300 dark:hover:bg-base-700/50"
-                }`}
+            <div className="mt-1">
+              <Link
+                to="/workspaces/$workspaceId/projects"
+                params={{
+                  workspaceId: workspaceId!,
+                }}
+                variant="ghost"
+                activeOptions={{ exact: true }}
+                activeProps={{
+                  variant: "outline",
+                }}
+                className="w-full"
               >
-                <span>Overview</span>
-              </div>
+                Overview
+              </Link>
 
               <div className="my-2 border-base-200 border-t dark:border-base-700" />
 
@@ -144,13 +149,18 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
               )}
 
               {projects?.map((project) => (
-                <div
+                <Link
                   key={project?.rowId}
-                  className={`group flex items-center justify-between rounded px-2 py-1 text-sm ${
-                    currentProject === project?.rowId
-                      ? "bg-base-50 text-base-700 dark:bg-base-700/50 dark:text-base-200"
-                      : "text-base-600 hover:bg-base-50 dark:text-base-300 dark:hover:bg-base-700/50"
-                  }`}
+                  to="/workspaces/$workspaceId/projects/$projectId"
+                  params={{
+                    workspaceId: workspaceId!,
+                    projectId: project?.rowId!,
+                  }}
+                  variant="ghost"
+                  activeProps={{
+                    variant: "outline",
+                  }}
+                  className="group my-1 w-full justify-between"
                 >
                   <div className="flex min-w-0 flex-1 items-center gap-2">
                     {project?.viewMode === "board" ? (
@@ -164,21 +174,22 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
                         style={{ color: project?.color || "currentColor" }}
                       />
                     )}
-                    <span
-                      className="cursor-pointer truncate"
-                      // onClick={() => onProjectSelect(project?.rowId)}
-                    >
+                    <span className="cursor-pointer truncate">
                       {project?.name}
                     </span>
                   </div>
-                  <button
+                  <Button
                     type="button"
-                    onClick={() => setProjectToDelete(project?.rowId!)}
-                    className="rounded-md p-1 opacity-0 transition-all hover:bg-base-200 group-hover:opacity-100 dark:hover:bg-base-600"
+                    variant="ghost"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setProjectToDelete(project?.rowId!);
+                    }}
+                    className="-mr-3 size-4 p-1 opacity-0 hover:text-red-500 group-hover:opacity-100 dark:hover:text-red-400"
                   >
-                    <Trash2 className="h-3 w-3 text-base-500 hover:text-red-500 dark:text-base-400 dark:hover:text-red-400" />
-                  </button>
-                </div>
+                    <Trash2 className="size-3" />
+                  </Button>
+                </Link>
               ))}
             </div>
           )}
