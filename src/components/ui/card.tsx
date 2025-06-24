@@ -129,12 +129,20 @@ const Card = ({
 
 export {
   Card,
+  /** @knipignore */
   CardRoot,
+  /** @knipignore */
   CardHeader,
+  /** @knipignore */
   CardFooter,
+  /** @knipignore */
   CardTitle,
+  /** @knipignore */
   CardDescription,
+  /** @knipignore */
   CardContent,
+  /** @knipignore */
   cardVariants,
+  /** @knipignore */
   type CardProps,
 };

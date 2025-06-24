@@ -15,17 +15,11 @@ import type {
 } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TestingRouteImport } from './routes/testing'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkspacesIndexRouteImport } from './routes/workspaces/index'
 import { Route as WorkspacesWorkspaceIdRouteImport } from './routes/workspaces/$workspaceId'
 
-const TestingRoute = TestingRouteImport.update({
-  id: '/testing',
-  path: '/testing',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
@@ -50,14 +44,12 @@ const WorkspacesWorkspaceIdRoute = WorkspacesWorkspaceIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
-  '/testing': typeof TestingRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces': typeof WorkspacesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
-  '/testing': typeof TestingRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces': typeof WorkspacesIndexRoute
 }
@@ -65,25 +57,18 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/pricing': typeof PricingRoute
-  '/testing': typeof TestingRoute
   '/workspaces/$workspaceId': typeof WorkspacesWorkspaceIdRoute
   '/workspaces/': typeof WorkspacesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/pricing'
-    | '/testing'
-    | '/workspaces/$workspaceId'
-    | '/workspaces'
+  fullPaths: '/' | '/pricing' | '/workspaces/$workspaceId' | '/workspaces'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pricing' | '/testing' | '/workspaces/$workspaceId' | '/workspaces'
+  to: '/' | '/pricing' | '/workspaces/$workspaceId' | '/workspaces'
   id:
     | '__root__'
     | '/'
     | '/pricing'
-    | '/testing'
     | '/workspaces/$workspaceId'
     | '/workspaces/'
   fileRoutesById: FileRoutesById
@@ -91,7 +76,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PricingRoute: typeof PricingRoute
-  TestingRoute: typeof TestingRoute
   WorkspacesWorkspaceIdRoute: typeof WorkspacesWorkspaceIdRoute
   WorkspacesIndexRoute: typeof WorkspacesIndexRoute
 }
@@ -110,13 +94,6 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/testing': {
-      id: '/testing'
-      path: '/testing'
-      fullPath: '/testing'
-      preLoaderRoute: typeof TestingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/workspaces/$workspaceId': {
@@ -170,23 +147,6 @@ declare module './routes/pricing' {
     unknown
   >
 }
-declare module './routes/testing' {
-  const createFileRoute: CreateFileRoute<
-    '/testing',
-    FileRoutesByPath['/testing']['parentRoute'],
-    FileRoutesByPath['/testing']['id'],
-    FileRoutesByPath['/testing']['path'],
-    FileRoutesByPath['/testing']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/testing']['parentRoute'],
-    ServerFileRoutesByPath['/testing']['id'],
-    ServerFileRoutesByPath['/testing']['path'],
-    ServerFileRoutesByPath['/testing']['fullPath'],
-    unknown
-  >
-}
 declare module './routes/workspaces/$workspaceId' {
   const createFileRoute: CreateFileRoute<
     '/workspaces/$workspaceId',
@@ -225,7 +185,6 @@ declare module './routes/workspaces/index' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PricingRoute: PricingRoute,
-  TestingRoute: TestingRoute,
   WorkspacesWorkspaceIdRoute: WorkspacesWorkspaceIdRoute,
   WorkspacesIndexRoute: WorkspacesIndexRoute,
 }

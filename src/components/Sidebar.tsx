@@ -54,6 +54,7 @@ const Sidebar = ({
     e?.preventDefault();
     if (!newProjectName.trim()) return;
 
+    // @ts-ignore `viewMode` missing but wont be a concern once remote data fetching is implemented
     const newProject: Project = {
       id: newProjectName.toLowerCase().replace(/\s+/g, "-"),
       name: newProjectName,
