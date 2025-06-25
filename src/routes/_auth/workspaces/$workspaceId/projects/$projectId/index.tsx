@@ -181,61 +181,61 @@ function ProjectPage() {
       [key: string]: { bg: string; text: string; icon: string };
     } = {
       bug: {
-        bg: "bg-red-50 dark:bg-red-900/30",
-        text: "text-red-700 dark:text-red-400",
-        icon: "text-red-500",
+        bg: "bg-red-100 dark:bg-red-900/30",
+        text: "text-red-800 dark:text-red-400",
+        icon: "text-red-600",
       },
       feature: {
-        bg: "bg-primary-50 dark:bg-primary-900/30",
-        text: "text-primary-700 dark:text-primary-400",
-        icon: "text-primary-500",
+        bg: "bg-primary-100 dark:bg-primary-900/30",
+        text: "text-primary-800 dark:text-primary-400",
+        icon: "text-primary-600",
       },
       documentation: {
-        bg: "bg-purple-50 dark:bg-purple-900/30",
-        text: "text-purple-700 dark:text-purple-400",
-        icon: "text-purple-500",
+        bg: "bg-purple-100 dark:bg-purple-900/30",
+        text: "text-purple-800 dark:text-purple-400",
+        icon: "text-purple-600",
       },
       enhancement: {
-        bg: "bg-green-50 dark:bg-green-900/30",
-        text: "text-green-700 dark:text-green-400",
-        icon: "text-green-500",
+        bg: "bg-green-100 dark:bg-green-900/30",
+        text: "text-green-800 dark:text-green-400",
+        icon: "text-green-600",
       },
       design: {
-        bg: "bg-orange-50 dark:bg-orange-900/30",
-        text: "text-orange-700 dark:text-orange-400",
-        icon: "text-orange-500",
+        bg: "bg-orange-100 dark:bg-orange-900/30",
+        text: "text-orange-800 dark:text-orange-400",
+        icon: "text-orange-600",
       },
       performance: {
-        bg: "bg-yellow-50 dark:bg-yellow-900/30",
-        text: "text-yellow-700 dark:text-yellow-400",
-        icon: "text-yellow-500",
+        bg: "bg-yellow-100 dark:bg-yellow-900/30",
+        text: "text-yellow-800 dark:text-yellow-400",
+        icon: "text-yellow-600",
       },
       data: {
-        bg: "bg-cyan-50 dark:bg-cyan-900/30",
-        text: "text-cyan-700 dark:text-cyan-400",
-        icon: "text-cyan-500",
+        bg: "bg-cyan-100 dark:bg-cyan-900/30",
+        text: "text-cyan-800 dark:text-cyan-400",
+        icon: "text-cyan-600",
       },
       ui: {
-        bg: "bg-pink-50 dark:bg-pink-900/30",
-        text: "text-pink-700 dark:text-pink-400",
-        icon: "text-pink-500",
+        bg: "bg-pink-100 dark:bg-pink-900/30",
+        text: "text-pink-800 dark:text-pink-400",
+        icon: "text-pink-600",
       },
       content: {
-        bg: "bg-indigo-50 dark:bg-indigo-900/30",
-        text: "text-indigo-700 dark:text-indigo-400",
-        icon: "text-indigo-500",
+        bg: "bg-indigo-100 dark:bg-indigo-900/30",
+        text: "text-indigo-800 dark:text-indigo-400",
+        icon: "text-indigo-600",
       },
       seo: {
-        bg: "bg-teal-50 dark:bg-teal-900/30",
-        text: "text-teal-700 dark:text-teal-400",
-        icon: "text-teal-500",
+        bg: "bg-teal-100 dark:bg-teal-900/30",
+        text: "text-teal-800 dark:text-teal-400",
+        icon: "text-teal-600",
       },
     };
     return (
       labelColors[label] || {
-        bg: "bg-base-50 dark:bg-base-900/30",
-        text: "text-base-700 dark:text-base-400",
-        icon: "text-base-500",
+        bg: "bg-base-100 dark:bg-base-900/30",
+        text: "text-base-800 dark:text-base-400",
+        icon: "text-base-600",
       }
     );
   };
@@ -258,7 +258,7 @@ function ProjectPage() {
                 : "shadow-sm hover:shadow-md"
             }`}
           >
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               <div className="flex items-start gap-2">
                 <div className="flex-shrink-0">{getColumnIcon(columnId)}</div>
                 <div className="min-w-0 flex-1">
@@ -300,14 +300,14 @@ function ProjectPage() {
               </div>
 
               {!!task.labels?.length && (
-                <div className="-mx-3 -mb-3 mt-2 flex items-center bg-base-50/80 px-3 py-2 dark:bg-base-800/20">
+                <div className="-mx-3 -mb-3 flex items-center bg-base-50/80 px-3 py-3 dark:bg-base-800/20">
                   <div className="flex flex-wrap gap-1">
                     {task.labels.map((label: string) => {
                       const colors = getLabelColors(label);
                       return (
                         <div
                           key={label}
-                          className={`flex items-center gap-1 rounded-full px-1.5 py-0.5 ${colors.bg}`}
+                          className={`flex items-center gap-1 rounded-full px-2 py-1 ${colors.bg}`}
                         >
                           <TagIcon className={`h-3 w-3 ${colors.icon}`} />
                           <span
