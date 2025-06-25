@@ -274,28 +274,9 @@ function ProjectPage() {
                 </div>
               </div>
 
-              {task.labels && task.labels.length > 0 && (
-                <div className="mb-2 flex flex-wrap gap-1">
-                  {task.labels.map((label: string) => {
-                    const colors = getLabelColors(label);
-                    return (
-                      <div
-                        key={label}
-                        className={`flex items-center gap-1 rounded-full px-1.5 py-0.5 ${colors.bg}`}
-                      >
-                        <TagIcon className={`h-3 w-3 ${colors.icon}`} />
-                        <span className={`font-medium text-xs ${colors.text}`}>
-                          {label}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
-                  {task.assignees && task.assignees.length > 0 && (
+                  {!!task.assignees?.length && (
                     <div className="-space-x-2 flex">
                       {task.assignees.map((assignee: any) => (
                         <div
@@ -317,6 +298,29 @@ function ProjectPage() {
                   </div>
                 )}
               </div>
+
+              {!!task.labels?.length && (
+                <div className="-mx-3 -mb-3 mt-2 flex items-center bg-base-50/80 px-3 py-2 dark:bg-base-800/20">
+                  <div className="flex flex-wrap gap-1">
+                    {task.labels.map((label: string) => {
+                      const colors = getLabelColors(label);
+                      return (
+                        <div
+                          key={label}
+                          className={`flex items-center gap-1 rounded-full px-1.5 py-0.5 ${colors.bg}`}
+                        >
+                          <TagIcon className={`h-3 w-3 ${colors.icon}`} />
+                          <span
+                            className={`font-medium text-xs ${colors.text}`}
+                          >
+                            {label}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

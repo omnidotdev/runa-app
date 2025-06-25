@@ -161,7 +161,7 @@ const Task = ({ task, index, onClick, columnId, projectPrefix }: TaskProps) => {
                   </div>
                 )}
 
-                {task.labels && task.labels.length > 0 && (
+                {!!task.labels?.length && (
                   <div className="flex flex-wrap gap-1">
                     {task.labels.map((label) => {
                       const colors = getColorClasses(label);
