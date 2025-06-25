@@ -1,0 +1,20 @@
+query Tasks {
+  tasks {
+    nodes {
+      rowId
+      content
+      author {
+        rowId
+        name
+        avatarUrl
+      }
+      projectId
+      column {
+        rowId
+        title
+      }
+      priority
+      createdAt
+    }
+  }
+}
