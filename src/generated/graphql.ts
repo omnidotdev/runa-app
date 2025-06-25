@@ -3658,6 +3658,14 @@ export type WorkspaceUserPatch = {
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type UpdateProjectMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: ProjectPatch;
+}>;
+
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
+
 export type CreateTaskMutationVariables = Exact<{
   input: CreateTaskInput;
 }>;
@@ -3699,7 +3707,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string } | null> } } | null> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string } | null> } } | null> } } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -3721,6 +3729,34 @@ export type WorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string } | null> } | null };
 
 
+
+export const UpdateProjectDocument = `
+    mutation UpdateProject($rowId: UUID!, $patch: ProjectPatch!) {
+  updateProject(input: {rowId: $rowId, patch: $patch}) {
+    project {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useUpdateProjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateProjectMutation, TError, UpdateProjectMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateProjectMutation, TError, UpdateProjectMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateProject'],
+    mutationFn: (variables?: UpdateProjectMutationVariables) => graphqlFetch<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateProjectMutation.getKey = () => ['UpdateProject'];
+
+
+useUpdateProjectMutation.fetcher = (variables: UpdateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, variables, options);
 
 export const CreateTaskDocument = `
     mutation CreateTask($input: CreateTaskInput!) {
@@ -3868,6 +3904,7 @@ export const ProjectDocument = `
     description
     prefix
     color
+    viewMode
     columns {
       nodes {
         rowId

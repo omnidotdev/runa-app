@@ -1,13 +1,15 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound } from "@tanstack/react-router";
-import { ListIcon, SearchIcon, SettingsIcon } from "lucide-react";
+import { Grid2X2Icon, ListIcon, SearchIcon, SettingsIcon } from "lucide-react";
 
 import Board from "@/components/Board";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
+import { useUpdateProjectMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import getQueryClient from "@/utils/getQueryClient";
 import seo from "@/utils/seo";
 
 export const Route = createFileRoute({
@@ -34,9 +36,31 @@ export const Route = createFileRoute({
 function ProjectPage() {
   const { projectId } = Route.useParams();
 
+  const queryClient = getQueryClient();
+
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
     select: (data) => data?.project,
+  });
+
+  const { mutate: updateViewMode } = useUpdateProjectMutation({
+    onMutate: (variables) => {
+      const projectSnapshot = queryClient.getQueryData(
+        projectOptions(projectId).queryKey,
+      );
+
+      if (projectSnapshot) {
+        queryClient.setQueryData(projectOptions(projectId).queryKey, (old) => ({
+          project: {
+            ...old?.project!,
+            viewMode: variables.patch?.viewMode!,
+          },
+        }));
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(projectOptions(projectId));
+    },
   });
 
   return (
@@ -66,14 +90,30 @@ function ProjectPage() {
                 />
               </div>
               <Button
-                // onClick={() =>
-                //   onViewModeChange(project.viewMode === "board" ? "list" : "board")
-                // }
+                onClick={() =>
+                  updateViewMode({
+                    rowId: project?.rowId!,
+                    patch: {
+                      viewMode:
+                        project?.viewMode === "board" ? "list" : "board",
+                    },
+                  })
+                }
                 className="flex items-center gap-2 whitespace-nowrap rounded-md border border-base-200 bg-white px-3 py-2 font-medium text-base-700 text-sm hover:bg-base-50 dark:border-base-700 dark:bg-base-800 dark:text-base-200 dark:hover:bg-base-700"
               >
-                {/* TODO: make dynamic */}
-                <ListIcon className="h-4 w-4" />
-                List View
+                {project?.viewMode === "board" && (
+                  <div className="flex items-center gap-2">
+                    <ListIcon className="h-4 w-4" />
+                    List View
+                  </div>
+                )}
+
+                {project?.viewMode === "list" && (
+                  <div className="flex items-center gap-2">
+                    <Grid2X2Icon className="h-4 w-4" />
+                    Board View
+                  </div>
+                )}
               </Button>
               <Button
                 // onClick={onOpenSettings}
@@ -86,7 +126,7 @@ function ProjectPage() {
           </div>
         </div>
 
-        <Board />
+        {project?.viewMode === "board" ? <Board /> : "List View"}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ query Project($rowId: UUID!) {
     description
     prefix
     color
+    viewMode
     columns {
       nodes {
         rowId
