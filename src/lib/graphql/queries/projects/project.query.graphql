@@ -11,6 +11,9 @@ query Project($rowId: UUID!) {
         title
         tasks {
           totalCount
+          nodes {
+            rowId
+          }
         }
       }
     }
