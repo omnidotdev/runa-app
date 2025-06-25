@@ -207,5 +207,6 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
+  /** @knipignore */
   SelectItemIndicator,
 };

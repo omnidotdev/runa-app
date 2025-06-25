@@ -109,12 +109,12 @@ const Board = () => {
         return;
 
       // TODO: bulk update to properly handle index changes? Not sure tbh...
-      tasksCollection(projectId).update(draggableId, (draft) => {
+      projectTasksCollection.update(draggableId, (draft) => {
         draft.columnId = destination.droppableId;
         draft.columnIndex = destination.index;
       });
     },
-    [projectId, stopAutoScroll, handleMouseMove],
+    [projectTasksCollection, stopAutoScroll, handleMouseMove],
   );
 
   return (
