@@ -1,11 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { ChevronDown, Plus } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
-import Link from "@/components/core/Link";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectItemText,
+  SelectItemIndicator,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   useCreateWorkspaceMutation,
   useDeleteWorkspaceMutation,
@@ -20,15 +31,11 @@ const WorkspaceSelector = () => {
   const navigate = useNavigate();
 
   const queryClient = getQueryClient();
-
-  const [isOpen, setIsOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [newWorkspaceName, setNewWorkspaceName] = useState("");
   const [workspaceToDelete, setWorkspaceToDelete] = useState<string | null>(
     null,
   );
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const { data: workspaces } = useQuery({
     ...workspacesOptions,
@@ -46,33 +53,8 @@ const WorkspaceSelector = () => {
   });
 
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
-    // TODO: navigate to workspaces overview page when ready
-    onMutate: () => navigate({ to: "/", replace: true }),
+    onMutate: () => navigate({ to: "/workspaces", replace: true }),
   });
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-        if (isCreating) {
-          setIsCreating(false);
-          setNewWorkspaceName("");
-        }
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isCreating]);
-
-  useEffect(() => {
-    if (isCreating && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isCreating]);
 
   const handleCreateWorkspace = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -88,111 +70,103 @@ const WorkspaceSelector = () => {
 
     setNewWorkspaceName("");
     setIsCreating(false);
-    setIsOpen(false);
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between gap-2 rounded-lg bg-base-100 px-3 py-2 font-medium text-base-900 text-sm hover:bg-base-200 dark:bg-base-700 dark:text-base-100 dark:hover:bg-base-600"
+    <div>
+      <Select
+        value={String(currentWorkspace?.rowId)}
+        onValueChange={(value) => {
+          navigate({
+            to: "/workspaces/$workspaceId",
+            params: { workspaceId: value },
+          });
+        }}
       >
-        <span className="truncate">
-          {currentWorkspace?.name || "Select Workspace"}
-        </span>
-        <ChevronDown
-          className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
-        />
-      </button>
-
-      {isOpen && (
-        <div className="absolute top-full right-0 left-0 z-50 mt-1 rounded-lg border border-base-200 bg-white py-1 shadow-lg dark:border-base-700 dark:bg-base-800">
+        <SelectTrigger className="w-full">
+          <SelectValue>
+            {currentWorkspace?.name || "Select Workspace"}
+          </SelectValue>
+        </SelectTrigger>
+        <SelectContent>
           {isCreating ? (
             <form onSubmit={handleCreateWorkspace} className="p-2">
-              <input
-                ref={inputRef}
+              <Input
                 type="text"
                 value={newWorkspaceName}
                 onChange={(e) => setNewWorkspaceName(e.target.value)}
                 placeholder="Workspace name"
-                className="w-full rounded border border-base-200 bg-white px-2 py-1 text-base-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-100"
               />
               <div className="mt-2 flex justify-end gap-2">
-                <button
-                  type="button"
+                <Button
                   onClick={() => {
                     setIsCreating(false);
                     setNewWorkspaceName("");
                   }}
-                  className="px-2 py-1 text-base-600 text-xs hover:text-base-900 dark:text-base-400 dark:hover:text-base-100"
+                  size="xs"
+                  variant="ghost"
+                  className="text-xs"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+
+                <Button
                   type="submit"
                   disabled={!newWorkspaceName.trim()}
-                  className="rounded bg-primary-500 px-2 py-1 text-white text-xs hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
+                  size="xs"
+                  className="text-xs"
                 >
                   Create
-                </button>
+                </Button>
               </div>
             </form>
           ) : (
             <>
-              {workspaces?.map((workspace) => (
-                <div
-                  key={workspace?.rowId}
-                  // TODO: active styles. Waiting for `cn` from shadcn implementation so that styles are properly merged
-                  className="w-full"
-                >
-                  <Link
-                    to="/workspaces/$workspaceId"
-                    params={{ workspaceId: workspace?.rowId! }}
-                    variant="ghost"
-                    className="group relative w-full justify-start rounded-none"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {workspace?.name}
+              <SelectGroup className="flex flex-col gap-1">
+                {workspaces?.map((workspace) => (
+                  <SelectItem key={workspace?.rowId} value={workspace?.rowId!}>
+                    <SelectItemText>{workspace?.name}</SelectItemText>
 
                     {workspaces.length > 1 &&
                       workspace?.rowId === currentWorkspace?.rowId && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={(e) => {
+                        <SelectItemIndicator
+                          onPointerDown={(e) => {
                             e.preventDefault();
                             setWorkspaceToDelete(workspace?.rowId!);
                           }}
-                          className="-translate-y-1/2 absolute top-1/2 right-2 size-4 opacity-0 hover:text-red-500 group-hover:opacity-100 dark:hover:text-red-400"
+                          className="hover:text-red-500"
                         >
-                          <Plus className="h-3 w-3 rotate-45" />
-                        </Button>
+                          <Trash2 className="size-3 opacity-0 group-hover:opacity-100 dark:hover:text-red-400" />
+                        </SelectItemIndicator>
                       )}
-                  </Link>
-                </div>
-              ))}
-              <div className="my-1 h-px bg-base-200 dark:bg-base-700" />
-              <button
-                type="button"
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+
+              <SelectSeparator />
+
+              <Button
                 onClick={() => setIsCreating(true)}
-                className="flex w-full items-center gap-2 px-3 py-2 text-base-700 text-sm hover:bg-base-50 dark:text-base-300 dark:hover:bg-base-700"
+                variant="ghost"
+                className="w-full"
               >
                 <Plus className="h-4 w-4" />
                 New Workspace
-              </button>
+              </Button>
             </>
           )}
-        </div>
-      )}
+        </SelectContent>
+      </Select>
 
       {workspaceToDelete && (
         <ConfirmDialog
           title="Delete Workspace"
           message="Are you sure you want to delete this workspace? This will delete all projects and tasks within it."
           onConfirm={() => {
-            deleteWorkspace({ rowId: workspaceToDelete! });
-            setIsOpen(false);
+            deleteWorkspace({
+              rowId: workspaceToDelete,
+            });
+            setWorkspaceToDelete(null);
           }}
           onCancel={() => setWorkspaceToDelete(null)}
         />

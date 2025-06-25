@@ -125,25 +125,28 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
                     placeholder="Project description (optional)"
                     className="h-20 w-full resize-none rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-200"
                   />
-                  <div className="flex justify-end gap-2">
-                    <button
-                      type="button"
+                  <div className="mt-2 flex justify-end gap-2">
+                    <Button
                       onClick={() => {
                         setIsAddingProject(false);
                         setNewProjectName("");
                         setNewProjectDescription("");
                       }}
-                      className="px-2 py-1 text-base-600 text-xs hover:text-base-900 dark:text-base-400 dark:hover:text-base-100"
+                      size="xs"
+                      variant="ghost"
+                      className="text-xs"
                     >
                       Cancel
-                    </button>
-                    <button
+                    </Button>
+
+                    <Button
                       type="submit"
                       disabled={!newProjectName.trim()}
-                      className="rounded bg-primary-500 px-2 py-1 text-white text-xs hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
+                      size="xs"
+                      className="text-xs"
                     >
                       Create
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}
@@ -178,6 +181,7 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
                       {project?.name}
                     </span>
                   </div>
+
                   <Button
                     type="button"
                     variant="ghost"
