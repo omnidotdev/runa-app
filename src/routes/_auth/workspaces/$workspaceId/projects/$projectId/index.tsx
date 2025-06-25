@@ -16,7 +16,6 @@ import {
   PlusIcon,
   SearchIcon,
   SettingsIcon,
-  TagIcon,
 } from "lucide-react";
 
 import NotFound from "@/components/layout/NotFound";
@@ -309,7 +308,6 @@ function ProjectPage() {
                           key={label}
                           className={`flex items-center gap-1 rounded-full px-2 py-1 ${colors.bg}`}
                         >
-                          <TagIcon className={`h-3 w-3 ${colors.icon}`} />
                           <span
                             className={`font-medium text-xs ${colors.text}`}
                           >
