@@ -7,18 +7,13 @@ import {
   List,
   LogOut,
   Plus,
-  Trash2,
-  Users,
 } from "lucide-react";
 import { useState } from "react";
 
-import ConfirmDialog from "@/components/ConfirmDialog";
 import ThemeToggle from "@/components/ThemeToggle";
 import WorkspaceSelector from "@/components/WorkspaceSelector";
-import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import Link from "./core/Link";
 import { Button } from "./ui/button";
-import WorkspaceSettings from "./WorkspaceSettings";
 
 import type { Project } from "@/generated/graphql";
 
@@ -29,18 +24,12 @@ interface SidebarProps {
 
 const Sidebar = ({ projects, currentProject }: SidebarProps) => {
   const { workspaceId } = useParams({ strict: false });
-
   const navigate = useNavigate();
-
-  const { setIsOpen: setIsWorkspaceSettingsOpen } = useDialogStore({
-    type: DialogType.WorkspaceSettings,
-  });
 
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
   const [newProjectDescription, setNewProjectDescription] = useState("");
-  const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
 
   const handleProjectsHeaderClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -181,18 +170,6 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
                       {project?.name}
                     </span>
                   </div>
-
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setProjectToDelete(project?.rowId!);
-                    }}
-                    className="-mr-3 size-4 p-1 opacity-0 hover:text-red-500 group-hover:opacity-100 dark:hover:text-red-400"
-                  >
-                    <Trash2 className="size-3" />
-                  </Button>
                 </Link>
               ))}
             </div>
@@ -200,20 +177,19 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
         </div>
       </div>
 
-      <div className="space-y-2 border-base-200 border-t p-4 dark:border-base-700">
-        <Button
-          type="button"
-          disabled={!workspaceId}
-          onClick={() => setIsWorkspaceSettingsOpen(true)}
-          variant="outline"
-          className="w-full"
-        >
-          <Users className="h-4 w-4" />
-          Workspace Settings
-        </Button>
+      <div className="flex flex-col gap-2 border-base-200 border-t p-4 dark:border-base-700">
+        {workspaceId && (
+          <Link
+            to="/workspaces/$workspaceId/settings"
+            params={{ workspaceId: workspaceId! }}
+            variant="outline"
+            className="w-full"
+          >
+            Workspace Settings
+          </Link>
+        )}
 
         <Button
-          type="button"
           onClick={() => navigate({ to: "/" })}
           variant="outline"
           className="w-full text-red-600 dark:text-red-400 dark:hover:bg-base-700"
@@ -222,23 +198,6 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
           Sign Out
         </Button>
       </div>
-
-      {projectToDelete && (
-        <ConfirmDialog
-          title="Delete Project"
-          message="Are you sure you want to delete this project? This action cannot be undone."
-          onConfirm={() => {
-            // onProjectDelete?.(projectToDelete);
-            setProjectToDelete(null);
-          }}
-          onCancel={() => setProjectToDelete(null)}
-        />
-      )}
-
-      <WorkspaceSettings
-        // TODO
-        team={[]}
-      />
     </div>
   );
 };

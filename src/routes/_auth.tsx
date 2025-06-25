@@ -36,7 +36,7 @@ function AuthenticatedLayout() {
       <button
         type="button"
         onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        className={`-translate-y-1/2 absolute top-1/2 z-50 rounded-full border border-base-200 bg-white p-1.5 shadow-md hover:bg-base-100 dark:border-base-700 dark:bg-base-800 dark:hover:bg-base-700 ${
+        className={`-translate-y-1/2 absolute top-1/2 z-40 rounded-full border border-base-200 bg-white p-1.5 shadow-md hover:bg-base-100 dark:border-base-700 dark:bg-base-800 dark:hover:bg-base-700 ${
           isSidebarCollapsed ? "left-3" : "left-[224px]"
         }`}
         title={isSidebarCollapsed ? "Show sidebar" : "Hide sidebar"}

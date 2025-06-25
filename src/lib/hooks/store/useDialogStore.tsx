@@ -5,7 +5,8 @@ import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 
 export enum DialogType {
-  WorkspaceSettings = "workspace_settings",
+  DeleteTeamMember = "delete_team_member",
+  DeleteWorkspace = "delete_workspace",
 }
 
 interface DialogState {
