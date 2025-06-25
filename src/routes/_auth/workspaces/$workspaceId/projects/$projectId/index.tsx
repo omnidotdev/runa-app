@@ -85,6 +85,8 @@ const getPriorityIcon = (priority: string) => {
 function ProjectPage() {
   const { projectId } = Route.useParams();
 
+  const isClient = useIsClient();
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -176,6 +178,12 @@ function ProjectPage() {
     [projectId, stopAutoScroll, handleMouseMove],
   );
 
+  const projectTasksCollection = tasksCollection(projectId);
+
+  const { data: tasks } = useLiveQuery((q) =>
+    q.from({ projectTasksCollection }),
+  );
+
   return (
     <div className="flex size-full">
       <div className="flex size-full flex-col">
@@ -251,9 +259,15 @@ function ProjectPage() {
                             <h3 className="font-semibold text-base-800 dark:text-base-100">
                               {column?.title}
                             </h3>
-                            <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
-                              {column?.tasks?.totalCount}
-                            </span>
+                            {isClient && (
+                              <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
+                                {
+                                  tasks?.filter(
+                                    (t) => t.columnId === column?.rowId,
+                                  ).length
+                                }
+                              </span>
+                            )}
                           </div>
                           <Button variant="ghost" size="icon">
                             <PlusIcon className="h-4 w-4" />

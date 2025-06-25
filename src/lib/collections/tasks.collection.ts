@@ -20,6 +20,7 @@ const tasksCollection = (projectId: string) =>
 
         return (tasks?.nodes ?? []) as Task[];
       },
+      refetchInterval: 3000,
       onUpdate: async ({ transaction }) => {
         const { original, changes } = transaction.mutations[0];
 
