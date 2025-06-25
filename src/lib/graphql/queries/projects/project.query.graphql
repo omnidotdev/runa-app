@@ -4,11 +4,6 @@ query Project($rowId: UUID!) {
     name
     description
     prefix
-    tasks {
-      nodes {
-        rowId
-      }
-    }
     columns {
       nodes {
         rowId

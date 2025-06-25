@@ -2,10 +2,10 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { useTasksQuery } from "@/generated/graphql";
 
-const tasksOptions = (columnId: string) =>
+const tasksOptions = (projectId: string) =>
   queryOptions({
-    queryKey: useTasksQuery.getKey({ columnId }),
-    queryFn: useTasksQuery.fetcher({ columnId }),
+    queryKey: useTasksQuery.getKey({ projectId }),
+    queryFn: useTasksQuery.fetcher({ projectId }),
   });
 
 export default tasksOptions;

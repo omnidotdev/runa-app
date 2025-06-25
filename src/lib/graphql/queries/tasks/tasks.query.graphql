@@ -1,7 +1,9 @@
-query Tasks($columnId: UUID!) {
-  tasks(condition: { columnId: $columnId }) {
+query Tasks($projectId: UUID!) {
+  tasks(filter: { column: { projectId: { equalTo: $projectId } } }) {
     nodes {
       rowId
+      columnId
+      columnIndex
       content
       priority
       dueDate
