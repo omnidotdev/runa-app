@@ -27,6 +27,7 @@ import tasksCollection from "@/lib/collections/tasks.collection";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { cn } from "@/lib/utils";
 import seo from "@/utils/seo";
 
 import type { DropResult } from "@hello-pangea/dnd";
@@ -274,12 +275,25 @@ function ProjectPage() {
                           </Button>
                         </div>
                         <Droppable droppableId={column?.rowId!}>
-                          {(provided) => (
+                          {(provided, snapshot) => (
                             <Tasks
                               ref={provided.innerRef}
                               {...provided.droppableProps}
                               prefix={project?.prefix ?? "PROJ"}
                               columnId={column?.rowId!}
+                              className={
+                                // TODO: dynamic on project color
+                                snapshot.isDraggingOver
+                                  ? "bg-primary-50/50 dark:bg-base-800/50"
+                                  : ""
+                              }
+                              style={{
+                                backgroundColor: project?.color
+                                  ? snapshot.isDraggingOver
+                                    ? `${project?.color}33`
+                                    : `${project?.color}0D`
+                                  : undefined,
+                              }}
                             >
                               {provided.placeholder}
                             </Tasks>
@@ -305,7 +319,7 @@ interface TasksProps
   columnId: string;
 }
 
-function Tasks({ prefix, columnId, children, ...rest }: TasksProps) {
+function Tasks({ prefix, columnId, className, children, ...rest }: TasksProps) {
   const navigate = useNavigate();
 
   const isClient = useIsClient();
@@ -341,7 +355,7 @@ function Tasks({ prefix, columnId, children, ...rest }: TasksProps) {
   )?.title;
 
   return (
-    <div className="flex-1 p-2" {...rest}>
+    <div className={cn("flex-1 p-2", className)} {...rest}>
       {isClient &&
         tasks?.map((task, index) => {
           const displayId = `${prefix}-0`;

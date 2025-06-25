@@ -83,7 +83,7 @@ const WorkspaceSelector = () => {
           });
         }}
       >
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full max-w-40">
           <SelectValue>
             {currentWorkspace?.name || "Select Workspace"}
           </SelectValue>

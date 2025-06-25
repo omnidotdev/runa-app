@@ -4,6 +4,7 @@ query Project($rowId: UUID!) {
     name
     description
     prefix
+    color
     columns {
       nodes {
         rowId
