@@ -3,6 +3,7 @@ import { notFound } from "@tanstack/react-router";
 import { Grid2X2Icon, ListIcon, SearchIcon, SettingsIcon } from "lucide-react";
 
 import Board from "@/components/Board";
+import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import { useUpdateProjectMutation } from "@/generated/graphql";
@@ -126,7 +127,7 @@ function ProjectPage() {
           </div>
         </div>
 
-        {project?.viewMode === "board" ? <Board /> : "List View"}
+        {project?.viewMode === "board" ? <Board /> : <ListView />}
       </div>
     </div>
   );

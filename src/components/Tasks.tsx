@@ -13,6 +13,7 @@ import {
   ClockIcon,
   EyeIcon,
   MinusCircleIcon,
+  TagIcon,
 } from "lucide-react";
 import { useIsClient } from "usehooks-ts";
 
@@ -85,15 +86,7 @@ const Tasks = ({
       .where("@columnId", "=", columnId)
       .orderBy({ "@columnIndex": "asc" })
       // Unfortunately `select` is needed for the time being when using `orderBy`. See: https://github.com/orgs/TanStack/projects/5?pane=issue&itemId=115700338&issue=TanStack%7Cdb%7C177
-      .select(
-        "@rowId",
-        "@content",
-        "@columnIndex",
-        "@priority",
-        "@dueDate",
-        "@assignees",
-        "@labels",
-      ),
+      .select("@*"),
   );
 
   const columnTitle = project?.columns?.nodes?.find(
@@ -198,6 +191,7 @@ const Tasks = ({
                                     backgroundColor: `${label.color}99`,
                                   }}
                                 >
+                                  <TagIcon className="size-3 text-black" />
                                   <span className="font-medium text-black text-xs">
                                     {label.name}
                                   </span>
