@@ -2794,12 +2794,14 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, tasks: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string } | null> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null> } } | null };
 
-export type TasksQueryVariables = Exact<{ [key: string]: never; }>;
+export type TasksQueryVariables = Exact<{
+  columnId: Scalars['UUID']['input'];
+}>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, content: string, projectId: string, priority: string, createdAt?: Date | null, author?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null, column?: { __typename?: 'Column', rowId: string, title: string } | null } | null> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, content: string, priority: string, dueDate?: Date | null, labels?: any | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', name: string } | null } | null> } } | null> } | null };
 
 export type WorkspaceQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -2959,6 +2961,21 @@ export const ProjectDocument = `
     rowId
     name
     description
+    prefix
+    tasks {
+      nodes {
+        rowId
+      }
+    }
+    columns {
+      nodes {
+        rowId
+        title
+        tasks {
+          totalCount
+        }
+      }
+    }
   }
 }
     `;
@@ -3006,23 +3023,22 @@ useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project
 useProjectQuery.fetcher = (variables: ProjectQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables, options);
 
 export const TasksDocument = `
-    query Tasks {
-  tasks {
+    query Tasks($columnId: UUID!) {
+  tasks(condition: {columnId: $columnId}) {
     nodes {
       rowId
       content
-      author {
-        rowId
-        name
-        avatarUrl
-      }
-      projectId
-      column {
-        rowId
-        title
-      }
       priority
-      createdAt
+      dueDate
+      labels
+      assignees {
+        nodes {
+          rowId
+          user {
+            name
+          }
+        }
+      }
     }
   }
 }
@@ -3032,19 +3048,19 @@ export const useTasksQuery = <
       TData = TasksQuery,
       TError = unknown
     >(
-      variables?: TasksQueryVariables,
+      variables: TasksQueryVariables,
       options?: Omit<UseQueryOptions<TasksQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<TasksQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<TasksQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['Tasks'] : ['Tasks', variables],
+    queryKey: ['Tasks', variables],
     queryFn: graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables),
     ...options
   }
     )};
 
-useTasksQuery.getKey = (variables?: TasksQueryVariables) => variables === undefined ? ['Tasks'] : ['Tasks', variables];
+useTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks', variables];
 
 export const useInfiniteTasksQuery = <
       TData = InfiniteData<TasksQuery>,
@@ -3058,17 +3074,17 @@ export const useInfiniteTasksQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['Tasks.infinite'] : ['Tasks.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Tasks.infinite', variables],
       queryFn: (metaData) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteTasksQuery.getKey = (variables?: TasksQueryVariables) => variables === undefined ? ['Tasks.infinite'] : ['Tasks.infinite', variables];
+useInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks.infinite', variables];
 
 
-useTasksQuery.fetcher = (variables?: TasksQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables, options);
+useTasksQuery.fetcher = (variables: TasksQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables, options);
 
 export const WorkspaceDocument = `
     query Workspace($rowId: UUID!) {

@@ -198,8 +198,11 @@ export {
   SelectContent,
   SelectGroup,
   SelectItem,
+  /** @knipignore */
   SelectLabel,
+  /** @knipignore */
   SelectScrollDownButton,
+  /** @knipignore */
   SelectScrollUpButton,
   SelectSeparator,
   SelectTrigger,

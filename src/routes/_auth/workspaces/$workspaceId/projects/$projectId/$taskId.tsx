@@ -4,8 +4,8 @@ export const Route = createFileRoute({
 
 function TaskPage() {
   return (
-    <div>
-      Hello "/_auth/workspaces/$workspaceId/projects/$projectId/$taskId"!
+    <div className="flex h-full items-center justify-center">
+      TODO: Task Page
     </div>
   );
 }

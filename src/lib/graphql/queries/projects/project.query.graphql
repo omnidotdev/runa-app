@@ -3,5 +3,20 @@ query Project($rowId: UUID!) {
     rowId
     name
     description
+    prefix
+    tasks {
+      nodes {
+        rowId
+      }
+    }
+    columns {
+      nodes {
+        rowId
+        title
+        tasks {
+          totalCount
+        }
+      }
+    }
   }
 }

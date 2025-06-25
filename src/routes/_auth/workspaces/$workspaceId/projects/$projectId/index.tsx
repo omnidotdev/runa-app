@@ -1,6 +1,6 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { notFound } from "@tanstack/react-router";
+import { notFound, useNavigate } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
   AlertCircleIcon,
@@ -21,8 +21,11 @@ import {
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import projectOptions from "@/lib/options/project.options";
+import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import seo from "@/utils/seo";
+
+import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
 export const Route = createFileRoute({
   loader: async ({ params: { projectId, workspaceId }, context }) => {
@@ -35,6 +38,12 @@ export const Route = createFileRoute({
       throw notFound();
     }
 
+    await Promise.all(
+      project.columns?.nodes?.map((column) =>
+        context.queryClient.ensureQueryData(tasksOptions(column?.rowId!)),
+      ),
+    );
+
     return { name: project.name };
   },
   head: ({ loaderData }) => ({
@@ -44,6 +53,35 @@ export const Route = createFileRoute({
   component: ProjectPage,
 });
 
+const columnIcons = {
+  "to-do": <ClockIcon className="h-4 w-4 text-base-400 dark:text-base-500" />,
+  "in-progress": <AlertCircleIcon className="h-4 w-4 text-primary-500" />,
+  "awaiting-review": <EyeIcon className="h-4 w-4 text-purple-500" />,
+  done: <CheckCircle2Icon className="h-4 w-4 text-green-500" />,
+  backlog: <CircleIcon className="h-4 w-4 text-base-400 dark:text-base-500" />,
+};
+
+const getPriorityIcon = (priority: string) => {
+  const priorityConfig = {
+    high: {
+      icon: AlertTriangleIcon,
+      className: "text-red-500 dark:text-red-400",
+    },
+    medium: {
+      icon: CircleDotIcon,
+      className: "text-yellow-500 dark:text-yellow-400",
+    },
+    low: {
+      icon: MinusCircleIcon,
+      className: "text-green-500 dark:text-green-400",
+    },
+  };
+  const config = priorityConfig[priority as keyof typeof priorityConfig];
+  if (!config) return null;
+  const Icon = config.icon;
+  return <Icon className={`h-4 w-4 ${config.className} flex-shrink-0`} />;
+};
+
 function ProjectPage() {
   const { projectId } = Route.useParams();
 
@@ -51,280 +89,6 @@ function ProjectPage() {
     ...projectOptions(projectId),
     select: (data) => data?.project,
   });
-
-  // Placeholder tasks for each column
-  const placeholderTasks = {
-    backlog: [
-      {
-        id: "001",
-        content: "Set up project structure and initialize configuration files",
-        priority: "medium" as const,
-        assignees: [
-          { id: "user-1", name: "John Doe" },
-          { id: "user-2", name: "Sarah Wilson" },
-        ],
-        labels: ["feature", "documentation"],
-        dueDate: "2024-02-15",
-      },
-      {
-        id: "002",
-        content: "Define user requirements and create specifications document",
-        priority: "high" as const,
-        assignees: [{ id: "user-3", name: "Mike Chen" }],
-        labels: ["bug", "enhancement"],
-        dueDate: "2024-02-10",
-      },
-    ],
-    to_do: [
-      {
-        id: "003",
-        content: "Design database schema and create entity relationships",
-        priority: "high" as const,
-        assignees: [{ id: "user-4", name: "Emma Rodriguez" }],
-        labels: ["data", "design"],
-        dueDate: "2024-02-20",
-      },
-      {
-        id: "004",
-        content: "Create wireframes for main application screens",
-        priority: "medium" as const,
-        assignees: [{ id: "user-5", name: "Alex Thompson" }],
-        labels: ["ui", "design"],
-        dueDate: "2024-02-18",
-      },
-    ],
-    in_progress: [
-      {
-        id: "005",
-        content: "Implement user authentication and authorization system",
-        priority: "high" as const,
-        assignees: [
-          { id: "user-1", name: "John Doe" },
-          { id: "user-6", name: "Lisa Park" },
-        ],
-        labels: ["feature", "performance"],
-        dueDate: "2024-02-25",
-      },
-    ],
-    awaiting_review: [
-      {
-        id: "006",
-        content: "Document all API endpoints with usage examples",
-        priority: "low" as const,
-        assignees: [{ id: "user-7", name: "David Kim" }],
-        labels: ["documentation", "content"],
-        dueDate: "2024-02-12",
-      },
-    ],
-    done: [
-      {
-        id: "007",
-        content: "Setup development environment and toolchain",
-        priority: "medium" as const,
-        assignees: [{ id: "user-8", name: "Rachel Green" }],
-        labels: ["seo", "ui"],
-        dueDate: "2024-01-30",
-      },
-      {
-        id: "008",
-        content: "Complete initial project planning and timeline creation",
-        priority: "high" as const,
-        assignees: [
-          { id: "user-3", name: "Mike Chen" },
-          { id: "user-9", name: "Tom Wilson" },
-        ],
-        labels: ["enhancement", "data"],
-        dueDate: "2024-01-25",
-      },
-    ],
-  };
-
-  const getColumnIcon = (columnId: string) => {
-    const columnIcons = {
-      to_do: <ClockIcon className="h-4 w-4 text-base-400 dark:text-base-500" />,
-      backlog: (
-        <CircleIcon className="h-4 w-4 text-base-400 dark:text-base-500" />
-      ),
-      in_progress: <AlertCircleIcon className="h-4 w-4 text-primary-500" />,
-      awaiting_review: <EyeIcon className="h-4 w-4 text-purple-500" />,
-      done: (
-        <CheckCircle2Icon className="h-4 w-4 text-green-500 dark:text-green-400" />
-      ),
-    };
-    return columnIcons[columnId as keyof typeof columnIcons];
-  };
-
-  const getPriorityIcon = (priority: string) => {
-    const priorityConfig = {
-      high: {
-        icon: AlertTriangleIcon,
-        className: "text-red-500 dark:text-red-400",
-      },
-      medium: {
-        icon: CircleDotIcon,
-        className: "text-yellow-500 dark:text-yellow-400",
-      },
-      low: {
-        icon: MinusCircleIcon,
-        className: "text-green-500 dark:text-green-400",
-      },
-    };
-    const config = priorityConfig[priority as keyof typeof priorityConfig];
-    if (!config) return null;
-    const Icon = config.icon;
-    return <Icon className={`h-4 w-4 ${config.className} flex-shrink-0`} />;
-  };
-
-  const getLabelColors = (label: string) => {
-    const labelColors: {
-      [key: string]: { bg: string; text: string; icon: string };
-    } = {
-      bug: {
-        bg: "bg-red-100 dark:bg-red-900/30",
-        text: "text-red-800 dark:text-red-400",
-        icon: "text-red-600",
-      },
-      feature: {
-        bg: "bg-primary-100 dark:bg-primary-900/30",
-        text: "text-primary-800 dark:text-primary-400",
-        icon: "text-primary-600",
-      },
-      documentation: {
-        bg: "bg-purple-100 dark:bg-purple-900/30",
-        text: "text-purple-800 dark:text-purple-400",
-        icon: "text-purple-600",
-      },
-      enhancement: {
-        bg: "bg-green-100 dark:bg-green-900/30",
-        text: "text-green-800 dark:text-green-400",
-        icon: "text-green-600",
-      },
-      design: {
-        bg: "bg-orange-100 dark:bg-orange-900/30",
-        text: "text-orange-800 dark:text-orange-400",
-        icon: "text-orange-600",
-      },
-      performance: {
-        bg: "bg-yellow-100 dark:bg-yellow-900/30",
-        text: "text-yellow-800 dark:text-yellow-400",
-        icon: "text-yellow-600",
-      },
-      data: {
-        bg: "bg-cyan-100 dark:bg-cyan-900/30",
-        text: "text-cyan-800 dark:text-cyan-400",
-        icon: "text-cyan-600",
-      },
-      ui: {
-        bg: "bg-pink-100 dark:bg-pink-900/30",
-        text: "text-pink-800 dark:text-pink-400",
-        icon: "text-pink-600",
-      },
-      content: {
-        bg: "bg-indigo-100 dark:bg-indigo-900/30",
-        text: "text-indigo-800 dark:text-indigo-400",
-        icon: "text-indigo-600",
-      },
-      seo: {
-        bg: "bg-teal-100 dark:bg-teal-900/30",
-        text: "text-teal-800 dark:text-teal-400",
-        icon: "text-teal-600",
-      },
-    };
-    return (
-      labelColors[label] || {
-        bg: "bg-base-100 dark:bg-base-900/30",
-        text: "text-base-800 dark:text-base-400",
-        icon: "text-base-600",
-      }
-    );
-  };
-
-  const renderTask = (task: any, index: number, columnId: string) => {
-    const displayId = `PROJ-${task.id}`;
-    const PriorityIcon = getPriorityIcon(task.priority);
-
-    return (
-      <Draggable key={task.id} draggableId={task.id} index={index}>
-        {(provided, snapshot) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            onClick={() => {}}
-            className={`mb-2 cursor-pointer rounded-lg border border-base-200/50 bg-white p-3 dark:border-base-800/50 dark:bg-base-900 ${
-              snapshot.isDragging
-                ? "shadow-lg ring-2 ring-primary-500 ring-opacity-50"
-                : "shadow-sm hover:shadow-md"
-            }`}
-          >
-            <div className="flex flex-col gap-3">
-              <div className="flex items-start gap-2">
-                <div className="flex-shrink-0">{getColumnIcon(columnId)}</div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
-                      {displayId}
-                    </span>
-                    {PriorityIcon}
-                  </div>
-                  <p className="my-2 line-clamp-2 font-medium text-base-900 text-sm dark:text-base-100">
-                    {task.content}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  {!!task.assignees?.length && (
-                    <div className="-space-x-2 flex">
-                      {task.assignees.map((assignee: any) => (
-                        <div
-                          key={assignee.id}
-                          className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-800 dark:bg-base-600 dark:text-base-100"
-                          title={assignee.name}
-                        >
-                          {assignee.name[0].toUpperCase()}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {task.dueDate && (
-                  <div className="mr-1 flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
-                    <CalendarIcon className="h-3 w-3" />
-                    <span>{format(new Date(task.dueDate), "MMM d")}</span>
-                  </div>
-                )}
-              </div>
-
-              {!!task.labels?.length && (
-                <div className="-mx-3 -mb-3 flex items-center bg-base-50/80 px-3 py-3 dark:bg-base-800/20">
-                  <div className="flex flex-wrap gap-1">
-                    {task.labels.map((label: string) => {
-                      const colors = getLabelColors(label);
-                      return (
-                        <div
-                          key={label}
-                          className={`flex items-center gap-1 rounded-full px-2 py-1 ${colors.bg}`}
-                        >
-                          <span
-                            className={`font-medium text-xs ${colors.text}`}
-                          >
-                            {label}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </Draggable>
-    );
-  };
 
   return (
     <div className="flex size-full">
@@ -373,7 +137,6 @@ function ProjectPage() {
           </div>
         </div>
 
-        {/* Board Placeholder */}
         <div className="custom-scrollbar h-full select-none overflow-x-auto">
           <div className="h-full min-w-fit px-4 py-4">
             <DragDropContext onDragEnd={() => {}}>
@@ -388,167 +151,38 @@ function ProjectPage() {
                     {...provided.droppableProps}
                     className="flex h-full gap-3"
                   >
-                    {/* Backlog Column */}
-                    <div className="flex w-80 flex-col rounded-lg bg-base-50/80 shadow-sm dark:bg-base-800/30 dark:shadow-base-50/20">
-                      <div className="flex items-center justify-between border-base-200 border-b p-4 dark:border-base-700">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-base-800 dark:text-base-100">
-                            Backlog
-                          </h3>
-                          <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
-                            {placeholderTasks.backlog.length}
-                          </span>
-                        </div>
-                        <Button variant="ghost" size="icon">
-                          <PlusIcon className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <Droppable droppableId="backlog">
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className="flex-1 p-2"
-                            style={{ minHeight: "4px" }}
-                          >
-                            {placeholderTasks.backlog.map((task, index) =>
-                              renderTask(task, index, "backlog"),
-                            )}
-                            {provided.placeholder}
+                    {project?.columns?.nodes?.map((column) => (
+                      <div
+                        key={column?.rowId}
+                        className="no-scrollbar relative flex w-80 flex-col overflow-y-auto rounded-lg bg-base-50/80 shadow-sm dark:bg-base-800/30 dark:shadow-base-50/10"
+                      >
+                        <div className="sticky top-0 flex items-center justify-between border-base-200 border-b bg-base-50 p-3 dark:border-base-700 dark:bg-base-800">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold text-base-800 dark:text-base-100">
+                              {column?.title}
+                            </h3>
+                            <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
+                              {column?.tasks?.totalCount}
+                            </span>
                           </div>
-                        )}
-                      </Droppable>
-                    </div>
-
-                    {/* To Do Column */}
-                    <div className="flex w-80 flex-col rounded-lg bg-base-50/80 shadow-sm dark:bg-base-800/30 dark:shadow-base-50/20">
-                      <div className="flex items-center justify-between border-base-200 border-b p-4 dark:border-base-700">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-base-800 dark:text-base-100">
-                            To Do
-                          </h3>
-                          <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
-                            {placeholderTasks.to_do.length}
-                          </span>
+                          <Button variant="ghost" size="icon">
+                            <PlusIcon className="h-4 w-4" />
+                          </Button>
                         </div>
-                        <Button variant="ghost" size="icon">
-                          <PlusIcon className="h-4 w-4" />
-                        </Button>
+                        <Droppable droppableId={column?.rowId!}>
+                          {(provided) => (
+                            <Tasks
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
+                              prefix={project?.prefix ?? "PROJ"}
+                              columnId={column?.rowId!}
+                            >
+                              {provided.placeholder}
+                            </Tasks>
+                          )}
+                        </Droppable>
                       </div>
-                      <Droppable droppableId="to_do">
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className="flex-1 p-2"
-                            style={{ minHeight: "4px" }}
-                          >
-                            {placeholderTasks.to_do.map((task, index) =>
-                              renderTask(task, index, "to_do"),
-                            )}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </div>
-
-                    {/* In Progress Column */}
-                    <div className="flex w-80 flex-col rounded-lg bg-base-50/80 shadow-sm dark:bg-base-800/30 dark:shadow-base-50/20">
-                      <div className="flex items-center justify-between border-base-200 border-b p-4 dark:border-base-700">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-base-800 dark:text-base-100">
-                            In Progress
-                          </h3>
-                          <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
-                            {placeholderTasks.in_progress.length}
-                          </span>
-                        </div>
-                        <Button variant="ghost" size="icon">
-                          <PlusIcon className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <Droppable droppableId="in_progress">
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className="flex-1 p-2"
-                            style={{ minHeight: "4px" }}
-                          >
-                            {placeholderTasks.in_progress.map((task, index) =>
-                              renderTask(task, index, "in_progress"),
-                            )}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </div>
-
-                    {/* In Review Column */}
-                    <div className="flex w-80 flex-col rounded-lg bg-base-50/80 shadow-sm dark:bg-base-800/30 dark:shadow-base-50/20">
-                      <div className="flex items-center justify-between border-base-200 border-b p-4 dark:border-base-700">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-base-800 dark:text-base-100">
-                            Awaiting Review
-                          </h3>
-                          <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
-                            {placeholderTasks.awaiting_review.length}
-                          </span>
-                        </div>
-                        <Button variant="ghost" size="icon">
-                          <PlusIcon className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <Droppable droppableId="awaiting_review">
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className="flex-1 p-2"
-                            style={{ minHeight: "4px" }}
-                          >
-                            {placeholderTasks.awaiting_review.map(
-                              (task, index) =>
-                                renderTask(task, index, "awaiting_review"),
-                            )}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </div>
-
-                    {/* Done Column */}
-                    <div className="flex w-80 flex-col rounded-lg bg-base-50/80 shadow-sm dark:bg-base-800/30 dark:shadow-base-50/20">
-                      <div className="flex items-center justify-between border-base-200 border-b p-4 dark:border-base-700">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-base-800 dark:text-base-100">
-                            Done
-                          </h3>
-                          <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
-                            {placeholderTasks.done.length}
-                          </span>
-                        </div>
-                        <Button variant="ghost" size="icon">
-                          <PlusIcon className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <Droppable droppableId="done">
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className="flex-1 p-2"
-                            style={{ minHeight: "4px" }}
-                          >
-                            {placeholderTasks.done.map((task, index) =>
-                              renderTask(task, index, "done"),
-                            )}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    </div>
-
+                    ))}
                     {provided.placeholder}
                   </div>
                 )}
@@ -557,6 +191,149 @@ function ProjectPage() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+interface TasksProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  prefix: string;
+  columnId: string;
+}
+
+function Tasks({ prefix, columnId, children, ...rest }: TasksProps) {
+  const navigate = useNavigate();
+
+  const { workspaceId, projectId } = Route.useParams();
+
+  const { data: project } = useSuspenseQuery({
+    ...projectOptions(projectId),
+    select: (data) => data?.project,
+  });
+
+  const { data: tasks } = useSuspenseQuery({
+    ...tasksOptions(columnId),
+    select: (data) => data?.tasks,
+  });
+
+  const columnTitle = project?.columns?.nodes?.find(
+    (column) => column?.rowId === columnId,
+  )?.title;
+
+  return (
+    <div className="flex-1 p-2" {...rest}>
+      {tasks?.nodes?.map((task, index) => {
+        const taskIndex = project?.tasks?.nodes?.findIndex(
+          (t) => t?.rowId === task?.rowId,
+        );
+        const displayId = `${prefix}-${taskIndex === -1 ? 0 : taskIndex}`;
+        const PriorityIcon = getPriorityIcon(task?.priority!);
+
+        return (
+          <Draggable key={task?.rowId} draggableId={task?.rowId!} index={index}>
+            {(provided, snapshot) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                onClick={() =>
+                  navigate({
+                    to: "/workspaces/$workspaceId/projects/$projectId/$taskId",
+                    params: {
+                      workspaceId,
+                      projectId,
+                      taskId: task?.rowId!,
+                    },
+                  })
+                }
+                className={`mb-2 cursor-pointer rounded-lg border border-base-200/50 bg-white p-3 dark:border-base-800/50 dark:bg-base-900 ${
+                  snapshot.isDragging
+                    ? "shadow-lg ring-2 ring-primary-500 ring-opacity-50"
+                    : "shadow-sm hover:shadow-md"
+                }`}
+              >
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-start gap-2">
+                    {columnTitle && (
+                      <div className="flex-shrink-0">
+                        {
+                          columnIcons[
+                            columnTitle
+                              .toLowerCase()
+                              .replace(/ /g, "-") as keyof typeof columnIcons
+                          ]
+                        }
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
+                          {displayId}
+                        </span>
+                        {PriorityIcon}
+                      </div>
+                      <p className="my-2 line-clamp-2 font-medium text-base-900 text-sm dark:text-base-100">
+                        {task?.content}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      {!!task?.assignees?.nodes?.length && (
+                        <div className="-space-x-2 flex">
+                          {task.assignees.nodes?.map((assignee) => (
+                            <div
+                              key={assignee?.rowId}
+                              className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-800 dark:bg-base-600 dark:text-base-100"
+                              title={assignee?.user?.name}
+                            >
+                              {assignee?.user?.name[0].toUpperCase()}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {task?.dueDate && (
+                      <div className="mr-1 flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
+                        <CalendarIcon className="h-3 w-3" />
+                        <span>{format(new Date(task.dueDate), "MMM d")}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {!!task?.labels?.length && (
+                    <div className="-mx-3 -mb-3 flex items-center bg-base-50/80 px-3 py-3 dark:bg-base-800/20">
+                      <div className="flex flex-wrap gap-1">
+                        {task.labels.map(
+                          (label: { name: string; color: string }) => {
+                            return (
+                              <div
+                                key={label.name}
+                                className="flex items-center gap-1 rounded-full px-2 py-1"
+                                style={{
+                                  backgroundColor: `${label.color}99`,
+                                }}
+                              >
+                                <span className="font-medium text-black text-xs">
+                                  {label.name}
+                                </span>
+                              </div>
+                            );
+                          },
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </Draggable>
+        );
+      })}
+
+      {children}
     </div>
   );
 }

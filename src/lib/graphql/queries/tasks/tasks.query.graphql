@@ -1,20 +1,19 @@
-query Tasks {
-  tasks {
+query Tasks($columnId: UUID!) {
+  tasks(condition: { columnId: $columnId }) {
     nodes {
       rowId
       content
-      author {
-        rowId
-        name
-        avatarUrl
-      }
-      projectId
-      column {
-        rowId
-        title
-      }
       priority
-      createdAt
+      dueDate
+      labels
+      assignees {
+        nodes {
+          rowId
+          user {
+            name
+          }
+        }
+      }
     }
   }
 }

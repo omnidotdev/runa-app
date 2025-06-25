@@ -2795,12 +2795,14 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, tasks: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string } | null> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null> } } | null };
 
-export type TasksQueryVariables = Exact<{ [key: string]: never; }>;
+export type TasksQueryVariables = Exact<{
+  columnId: Scalars['UUID']['input'];
+}>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, content: string, projectId: string, priority: string, createdAt?: Date | null, author?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null, column?: { __typename?: 'Column', rowId: string, title: string } | null } | null> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, content: string, priority: string, dueDate?: Date | null, labels?: any | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', name: string } | null } | null> } } | null> } | null };
 
 export type WorkspaceQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -2864,27 +2866,41 @@ export const ProjectDocument = gql`
     rowId
     name
     description
+    prefix
+    tasks {
+      nodes {
+        rowId
+      }
+    }
+    columns {
+      nodes {
+        rowId
+        title
+        tasks {
+          totalCount
+        }
+      }
+    }
   }
 }
     `;
 export const TasksDocument = gql`
-    query Tasks {
-  tasks {
+    query Tasks($columnId: UUID!) {
+  tasks(condition: {columnId: $columnId}) {
     nodes {
       rowId
       content
-      author {
-        rowId
-        name
-        avatarUrl
-      }
-      projectId
-      column {
-        rowId
-        title
-      }
       priority
-      createdAt
+      dueDate
+      labels
+      assignees {
+        nodes {
+          rowId
+          user {
+            name
+          }
+        }
+      }
     }
   }
 }
@@ -2939,7 +2955,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     Project(variables: ProjectQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectQuery>({ document: ProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Project', 'query', variables);
     },
-    Tasks(variables?: TasksQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<TasksQuery> {
+    Tasks(variables: TasksQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<TasksQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TasksQuery>({ document: TasksDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Tasks', 'query', variables);
     },
     Workspace(variables: WorkspaceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<WorkspaceQuery> {
