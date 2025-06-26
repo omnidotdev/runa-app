@@ -2,12 +2,14 @@ import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import Tasks from "@/components/Tasks";
 import { Button } from "@/components/ui/button";
 import tasksCollection from "@/lib/collections/tasks.collection";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
+import CreateTaskDialog from "./CreateTask/CreateTaskDialog";
 
 import type { DropResult } from "@hello-pangea/dnd";
 
@@ -16,6 +18,11 @@ const Board = () => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
+  const { setIsOpen: setIsCreateTaskDialogOpen } = useDialogStore({
+    type: DialogType.CreateTask,
+  });
+
+  const [selectedColumnId, setSelectedColumnId] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -145,7 +152,14 @@ const Board = () => {
                           }
                         </span>
                       </div>
-                      <Button variant="ghost" size="icon">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setIsCreateTaskDialogOpen(true);
+                          setSelectedColumnId(column?.rowId!);
+                        }}
+                      >
                         <PlusIcon className="h-4 w-4" />
                       </Button>
                     </div>
@@ -168,6 +182,10 @@ const Board = () => {
                         </Tasks>
                       )}
                     </Droppable>
+
+                    {column?.rowId === selectedColumnId && (
+                      <CreateTaskDialog columnId={column?.rowId!} />
+                    )}
                   </div>
                 ))}
                 {provided.placeholder}
