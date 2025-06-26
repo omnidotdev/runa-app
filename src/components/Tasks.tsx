@@ -5,47 +5,22 @@ import { useNavigate, useParams } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
   AlertCircleIcon,
-  AlertTriangleIcon,
   CalendarIcon,
   CheckCircle2Icon,
-  CircleDotIcon,
   CircleIcon,
   ClockIcon,
   EyeIcon,
-  MinusCircleIcon,
   TagIcon,
 } from "lucide-react";
-import { match } from "ts-pattern";
 
+import { Badge } from "@/components/ui/badge";
 import tasksCollection from "@/lib/collections/tasks.collection";
 import projectOptions from "@/lib/options/project.options";
+import { getLabelClasses } from "@/lib/util/getLabelClasses";
+import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
-import { Badge } from "./ui/badge";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
-
-const getLabelClasses = (color: string) =>
-  match(color)
-    .with("orange", () => ({
-      bg: "bg-orange-50 dark:bg-orange-900/30",
-      text: "text-orange-700 dark:text-orange-400",
-      icon: "text-orange-500",
-    }))
-    .with("emerald", () => ({
-      bg: "bg-emerald-50 dark:bg-emerald-900/30",
-      text: "text-emerald-700 dark:text-emerald-400",
-      icon: "text-emerald-500",
-    }))
-    .with("teal", () => ({
-      bg: "bg-teal-50 dark:bg-teal-900/30",
-      text: "text-teal-700 dark:text-teal-400",
-      icon: "text-teal-500",
-    }))
-    .otherwise(() => ({
-      bg: "bg-gray-50 dark:bg-gray-900/30",
-      text: "text-gray-700 dark:text-gray-400",
-      icon: "text-gray-500",
-    }));
 
 const columnIcons = {
   "to-do": <ClockIcon className="h-4 w-4 text-base-400 dark:text-base-500" />,
@@ -53,27 +28,6 @@ const columnIcons = {
   "awaiting-review": <EyeIcon className="h-4 w-4 text-purple-500" />,
   done: <CheckCircle2Icon className="h-4 w-4 text-green-500" />,
   backlog: <CircleIcon className="h-4 w-4 text-base-400 dark:text-base-500" />,
-};
-
-const getPriorityIcon = (priority: string) => {
-  const priorityConfig = {
-    high: {
-      icon: AlertTriangleIcon,
-      className: "text-red-500 dark:text-red-400",
-    },
-    medium: {
-      icon: CircleDotIcon,
-      className: "text-yellow-500 dark:text-yellow-400",
-    },
-    low: {
-      icon: MinusCircleIcon,
-      className: "text-green-500 dark:text-green-400",
-    },
-  };
-  const config = priorityConfig[priority as keyof typeof priorityConfig];
-  if (!config) return null;
-  const Icon = config.icon;
-  return <Icon className={`h-4 w-4 ${config.className} flex-shrink-0`} />;
 };
 
 interface TasksProps
