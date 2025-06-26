@@ -15,6 +15,7 @@ import {
   MinusCircleIcon,
   TagIcon,
 } from "lucide-react";
+import { match } from "ts-pattern";
 
 import tasksCollection from "@/lib/collections/tasks.collection";
 import projectOptions from "@/lib/options/project.options";
@@ -22,6 +23,29 @@ import { cn } from "@/lib/utils";
 import { Badge } from "./ui/badge";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
+
+const getLabelClasses = (color: string) =>
+  match(color)
+    .with("orange", () => ({
+      bg: "bg-orange-50 dark:bg-orange-900/30",
+      text: "text-orange-700 dark:text-orange-400",
+      icon: "text-orange-500",
+    }))
+    .with("emerald", () => ({
+      bg: "bg-emerald-50 dark:bg-emerald-900/30",
+      text: "text-emerald-700 dark:text-emerald-400",
+      icon: "text-emerald-500",
+    }))
+    .with("teal", () => ({
+      bg: "bg-teal-50 dark:bg-teal-900/30",
+      text: "text-teal-700 dark:text-teal-400",
+      icon: "text-teal-500",
+    }))
+    .otherwise(() => ({
+      bg: "bg-gray-50 dark:bg-gray-900/30",
+      text: "text-gray-700 dark:text-gray-400",
+      icon: "text-gray-500",
+    }));
 
 const columnIcons = {
   "to-do": <ClockIcon className="h-4 w-4 text-base-400 dark:text-base-500" />,
@@ -183,16 +207,18 @@ const Tasks = ({
                       <div className="flex flex-wrap gap-1">
                         {task.labels.map(
                           (label: { name: string; color: string }) => {
+                            const colors = getLabelClasses(label.color);
+
                             return (
                               <Badge
                                 key={label.name}
                                 size="sm"
-                                style={{
-                                  backgroundColor: `${label.color}99`,
-                                }}
+                                className={cn(colors.bg, colors.text)}
                               >
-                                <TagIcon className="!size-2.5 text-black" />
-                                <span className="font-medium text-[10px] text-black">
+                                <TagIcon
+                                  className={cn("!size-2.5", colors.icon)}
+                                />
+                                <span className="font-medium text-[10px]">
                                   {label.name}
                                 </span>
                               </Badge>

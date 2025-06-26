@@ -76,7 +76,7 @@ const ProjectSettings = () => {
           </DialogCloseTrigger>
           <DialogTitle>Project Settings</DialogTitle>
           <form
-            className="flex flex-col gap-2 p-2"
+            className="flex flex-col gap-2"
             onSubmit={(e) => {
               e.preventDefault();
               e.stopPropagation();
