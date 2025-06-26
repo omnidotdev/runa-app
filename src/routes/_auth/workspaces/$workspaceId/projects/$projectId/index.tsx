@@ -14,6 +14,7 @@ import getQueryClient from "@/utils/getQueryClient";
 import seo from "@/utils/seo";
 
 export const Route = createFileRoute({
+  ssr: false,
   loader: async ({ params: { projectId, workspaceId }, context }) => {
     const [{ project }] = await Promise.all([
       context.queryClient.ensureQueryData(projectOptions(projectId)),

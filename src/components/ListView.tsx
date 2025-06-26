@@ -3,7 +3,6 @@ import { useLiveQuery } from "@tanstack/react-db";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useCallback } from "react";
-import { useIsClient } from "usehooks-ts";
 
 import TasksList from "@/components/TasksList";
 import {
@@ -20,8 +19,6 @@ const ListView = () => {
   const { projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
-
-  const isClient = useIsClient();
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
@@ -82,11 +79,9 @@ const ListView = () => {
                   <span className="font-medium text-base-900 text-sm dark:text-base-100">
                     {column?.title}
                   </span>
-                  {isClient && (
-                    <span className="text-base-500 text-sm dark:text-base-400">
-                      {columnTasks.length}
-                    </span>
-                  )}
+                  <span className="text-base-500 text-sm dark:text-base-400">
+                    {columnTasks.length}
+                  </span>
                 </div>
               </CollapsibleTrigger>
 

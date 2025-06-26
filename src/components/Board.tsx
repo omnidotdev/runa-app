@@ -4,7 +4,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
-import { useIsClient } from "usehooks-ts";
 
 import Tasks from "@/components/Tasks";
 import { Button } from "@/components/ui/button";
@@ -17,8 +16,6 @@ const Board = () => {
   const { projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
-
-  const isClient = useIsClient();
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -142,14 +139,12 @@ const Board = () => {
                         <h3 className="font-semibold text-base-800 dark:text-base-100">
                           {column?.title}
                         </h3>
-                        {isClient && (
-                          <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
-                            {
-                              tasks?.filter((t) => t.columnId === column?.rowId)
-                                .length
-                            }
-                          </span>
-                        )}
+                        <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
+                          {
+                            tasks?.filter((t) => t.columnId === column?.rowId)
+                              .length
+                          }
+                        </span>
                       </div>
                       <Button variant="ghost" size="icon">
                         <PlusIcon className="h-4 w-4" />
