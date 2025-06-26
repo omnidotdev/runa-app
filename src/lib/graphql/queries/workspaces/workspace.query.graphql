@@ -7,6 +7,7 @@ query Workspace($rowId: UUID!) {
         rowId
         name
         color
+        viewMode
       }
     }
   }

@@ -7,13 +7,14 @@ import {
   List,
   LogOut,
   Plus,
+  SettingsIcon,
 } from "lucide-react";
 import { useState } from "react";
 
+import Link from "@/components/core/Link";
 import ThemeToggle from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
 import WorkspaceSelector from "@/components/WorkspaceSelector";
-import Link from "./core/Link";
-import { Button } from "./ui/button";
 
 import type { Project } from "@/generated/graphql";
 
@@ -185,6 +186,7 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
             variant="outline"
             className="w-full"
           >
+            <SettingsIcon className="size-4" />
             Workspace Settings
           </Link>
         )}
@@ -194,7 +196,7 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
           variant="outline"
           className="w-full text-red-600 dark:text-red-400 dark:hover:bg-base-700"
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="size-4" />
           Sign Out
         </Button>
       </div>

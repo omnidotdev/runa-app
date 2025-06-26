@@ -6,6 +6,7 @@ import Board from "@/components/Board";
 import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
@@ -36,7 +37,7 @@ export const Route = createFileRoute({
 });
 
 function ProjectPage() {
-  const { projectId } = Route.useParams();
+  const { projectId, workspaceId } = Route.useParams();
 
   const queryClient = getQueryClient();
 
@@ -47,22 +48,18 @@ function ProjectPage() {
 
   const { mutate: updateViewMode } = useUpdateProjectMutation({
     onMutate: (variables) => {
-      const projectSnapshot = queryClient.getQueryData(
-        projectOptions(projectId).queryKey,
-      );
-
-      if (projectSnapshot) {
-        queryClient.setQueryData(projectOptions(projectId).queryKey, (old) => ({
-          project: {
-            ...old?.project!,
-            viewMode: variables.patch?.viewMode!,
-          },
-        }));
-      }
+      queryClient.setQueryData(projectOptions(projectId).queryKey, (old) => ({
+        project: {
+          ...old?.project!,
+          viewMode: variables.patch?.viewMode!,
+        },
+      }));
     },
-    onSettled: () => {
-      queryClient.invalidateQueries(projectOptions(projectId));
-    },
+    onSettled: async () =>
+      await Promise.all([
+        queryClient.invalidateQueries(projectOptions(projectId)),
+        queryClient.invalidateQueries(workspaceOptions(workspaceId)),
+      ]),
   });
 
   return (
@@ -83,12 +80,11 @@ function ProjectPage() {
             <div className="flex flex-wrap gap-2 sm:flex-nowrap">
               <div className="relative flex-1 sm:flex-none">
                 <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-base-400" />
-                <input
-                  type="text"
+                <Input
                   // value={searchQuery}
                   // onChange={(e) => onSearchChange(e.target.value)}
                   placeholder="Search tasks..."
-                  className="w-full rounded-md border border-base-200 bg-white py-2 pr-4 pl-9 text-base-900 text-sm placeholder-base-500 focus:outline-none focus:ring-2 focus:ring-primary-500 sm:w-64 dark:border-base-700 dark:bg-base-800 dark:text-base-100 dark:placeholder-base-400"
+                  className="pl-10"
                 />
               </div>
               <Button
@@ -101,7 +97,7 @@ function ProjectPage() {
                     },
                   })
                 }
-                className="flex items-center gap-2 whitespace-nowrap rounded-md border border-base-200 bg-white px-3 py-2 font-medium text-base-700 text-sm hover:bg-base-50 dark:border-base-700 dark:bg-base-800 dark:text-base-200 dark:hover:bg-base-700"
+                variant="outline"
               >
                 {project?.viewMode === "board" && (
                   <div className="flex items-center gap-2">
@@ -119,7 +115,7 @@ function ProjectPage() {
               </Button>
               <Button
                 // onClick={onOpenSettings}
-                className="flex items-center gap-2 whitespace-nowrap rounded-md border border-base-200 bg-white px-3 py-2 font-medium text-base-700 text-sm hover:bg-base-50 dark:border-base-700 dark:bg-base-800 dark:text-base-200 dark:hover:bg-base-700"
+                variant="outline"
               >
                 <SettingsIcon className="h-4 w-4" />
                 Settings
