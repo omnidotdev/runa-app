@@ -1,5 +1,4 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { useLiveQuery } from "@tanstack/react-db";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
@@ -26,10 +25,6 @@ const Board = () => {
   });
 
   const projectTasksCollection = tasksCollection(projectId);
-
-  const { data: tasks } = useLiveQuery((q) =>
-    q.from({ projectTasksCollection }),
-  );
 
   const startAutoScroll = useCallback((direction: "left" | "right") => {
     if (autoScrollIntervalRef.current) return;
@@ -122,7 +117,7 @@ const Board = () => {
         backgroundColor: project?.color ? `${project?.color}0D` : undefined,
       }}
     >
-      <div className="h-full min-w-fit px-4 py-4">
+      <div className="h-full min-w-fit p-4">
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <Droppable droppableId="board" direction="horizontal" type="column">
             {(provided) => (
@@ -144,8 +139,9 @@ const Board = () => {
                         </h3>
                         <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
                           {
-                            tasks?.filter((t) => t.columnId === column?.rowId)
-                              .length
+                            project?.columns?.nodes?.find(
+                              (c) => c?.rowId === column?.rowId,
+                            )?.tasks?.totalCount
                           }
                         </span>
                       </div>

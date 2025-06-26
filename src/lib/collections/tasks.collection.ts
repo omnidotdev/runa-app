@@ -2,6 +2,7 @@ import { queryCollectionOptions } from "@tanstack/db-collections";
 import { createCollection } from "@tanstack/react-db";
 
 import getSdk from "@/lib/graphql/getSdk";
+import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/utils/getQueryClient";
 
 import type { Task } from "@/generated/graphql.sdk";
@@ -28,6 +29,8 @@ const tasksCollection = (projectId: string) =>
           rowId: original.rowId!,
           patch: changes,
         });
+
+        queryClient.invalidateQueries(projectOptions(projectId));
       },
     }),
   );

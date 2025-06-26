@@ -1,5 +1,4 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { useLiveQuery } from "@tanstack/react-db";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useCallback } from "react";
@@ -27,10 +26,6 @@ const ListView = () => {
 
   const projectTasksCollection = tasksCollection(projectId);
 
-  const { data: tasks } = useLiveQuery((q) =>
-    q.from({ projectTasksCollection }),
-  );
-
   const onDragEnd = useCallback(
     (result: DropResult) => {
       const { destination, source, draggableId } = result;
@@ -56,22 +51,16 @@ const ListView = () => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div
-        className="custom-scrollbar h-full overflow-y-auto p-6"
+        className="custom-scrollbar h-full overflow-y-auto p-4"
         style={{
           backgroundColor: project?.color ? `${project?.color}10` : undefined,
         }}
       >
         {project?.columns?.nodes?.map((column) => {
-          const columnTasks = tasks?.filter(
-            (task) => task.columnId === column?.rowId,
-          );
-
-          if (!columnTasks?.length) return null;
-
           return (
             <CollapsibleRoot
               key={column?.rowId}
-              className="mb-6 rounded-lg bg-white shadow-sm last:mb-0 dark:bg-base-800"
+              className="mb-4 rounded-lg bg-white shadow-sm last:mb-0 dark:bg-base-800"
               defaultOpen
             >
               <CollapsibleTrigger className="flex w-full items-center gap-2 rounded-t-lg px-4 py-3 text-left">
@@ -80,7 +69,11 @@ const ListView = () => {
                     {column?.title}
                   </span>
                   <span className="text-base-500 text-sm dark:text-base-400">
-                    {columnTasks.length}
+                    {
+                      project?.columns?.nodes?.find(
+                        (c) => c?.rowId === column?.rowId,
+                      )?.tasks?.totalCount
+                    }
                   </span>
                 </div>
               </CollapsibleTrigger>
