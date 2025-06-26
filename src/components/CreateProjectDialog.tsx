@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +23,7 @@ const CreateProjectDialog = () => {
   const { workspaceId } = useParams({ strict: false });
   const queryClient = getQueryClient();
   const navigate = useNavigate();
+  const nameRef = useRef<HTMLInputElement>(null);
 
   const { data: currentWorkspace } = useQuery({
     ...workspaceOptions(workspaceId!),
@@ -75,6 +76,7 @@ const CreateProjectDialog = () => {
     <DialogRoot
       open={isCreateProjectOpen}
       onOpenChange={({ open }) => setIsCreateProjectOpen(open)}
+      initialFocusEl={() => nameRef.current}
     >
       <DialogBackdrop />
       <DialogPositioner>
@@ -89,6 +91,7 @@ const CreateProjectDialog = () => {
 
           <form onSubmit={handleCreateProject} className="flex flex-col gap-2">
             <Input
+              ref={nameRef}
               type="text"
               value={newProjectName}
               onChange={(e) => setNewProjectName(e.target.value)}

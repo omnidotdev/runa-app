@@ -11,19 +11,19 @@ import type { ComponentProps } from "react";
 
 const selectVariants = tv({
   slots: {
-    root: "",
+    root: "w-full",
     label:
       "text-muted-foreground text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
     control: "",
     trigger:
-      "flex w-fit cursor-pointer items-center justify-between gap-2 whitespace-nowrap rounded-md bg-base-100 px-3 py-2 text-foreground text-xs shadow-xs outline-none transition-all hover:bg-base-200 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[size=default]:h-9 data-[size=sm]:h-8 dark:bg-base-700 dark:aria-invalid:ring-destructive/40 dark:hover:bg-base-800 [&[data-state=open]>svg]:rotate-180 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      "flex w-full cursor-pointer items-center justify-between gap-2 whitespace-nowrap rounded-md bg-base-100 px-3 py-2 text-foreground text-xs shadow-xs outline-none transition-all hover:bg-base-200 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[size=default]:h-9 data-[size=sm]:h-8 dark:bg-base-700 dark:aria-invalid:ring-destructive/40 dark:hover:bg-base-800 [&[data-state=open]>svg]:rotate-180 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0",
     valueText: "line-clamp-1 flex items-center gap-2",
     indicator: "size-4 transition-transform",
     clearTrigger:
       "cursor-pointer opacity-70 hover:opacity-100 transition-opacity",
     positioner: "",
     content:
-      "no-scrollbar !max-h-80 overflow-auto data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-[var(--available-height)] min-w-[8rem] origin-[var(--transform-origin)] overflow-y-auto overflow-x-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=closed]:animate-out data-[state=open]:animate-in",
+      "no-scrollbar p-2 !max-h-80 overflow-auto data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-[var(--available-height)] min-w-[8rem] origin-[var(--transform-origin)] overflow-y-auto overflow-x-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=closed]:animate-out data-[state=open]:animate-in",
     itemGroup: "",
     itemGroupLabel: "px-2 py-1.5 text-muted-foreground text-xs font-semibold",
     item: "group relative flex w-full cursor-pointer select-none items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[state=checked]:bg-base-100 data-[state=checked]:text-foreground data-[state=checked]:hover:bg-base-200 data-[state=checked]:dark:bg-base-700 data-[state=checked]:dark:hover:bg-base-800 data-[state=unchecked]:hover:bg-accent data-[state=unchecked]:hover:text-accent-foreground data-[state=unchecked]:dark:hover:bg-accent/50",

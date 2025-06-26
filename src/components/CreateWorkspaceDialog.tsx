@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +20,7 @@ import getQueryClient from "@/utils/getQueryClient";
 const CreateWorkspaceDialog = () => {
   const queryClient = getQueryClient();
   const navigate = useNavigate();
+  const nameRef = useRef<HTMLInputElement>(null);
 
   const { isOpen: isCreateWorkspaceOpen, setIsOpen: setIsCreateWorkspaceOpen } =
     useDialogStore({
@@ -58,6 +59,7 @@ const CreateWorkspaceDialog = () => {
     <DialogRoot
       open={isCreateWorkspaceOpen}
       onOpenChange={({ open }) => setIsCreateWorkspaceOpen(open)}
+      initialFocusEl={() => nameRef.current}
     >
       <DialogBackdrop />
       <DialogPositioner>
@@ -68,6 +70,7 @@ const CreateWorkspaceDialog = () => {
 
           <form onSubmit={handleCreateWorkspace} className="p-2">
             <Input
+              ref={nameRef}
               type="text"
               value={newWorkspaceName}
               onChange={(e) => setNewWorkspaceName(e.target.value)}

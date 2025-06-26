@@ -1,5 +1,5 @@
 import { AlertTriangle } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +33,7 @@ const ConfirmDialog = ({
 }: ConfirmDialogProps) => {
   const { isOpen, setIsOpen } = useDialogStore({ type: dialogType });
   const [userInput, setUserInput] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleConfirm = () => {
     if (userInput === confirmation) {
@@ -43,7 +44,11 @@ const ConfirmDialog = ({
   };
 
   return (
-    <DialogRoot open={isOpen} onOpenChange={({ open }) => setIsOpen(open)}>
+    <DialogRoot
+      open={isOpen}
+      onOpenChange={({ open }) => setIsOpen(open)}
+      initialFocusEl={() => inputRef.current}
+    >
       <DialogBackdrop />
       <DialogPositioner>
         <DialogContent className="w-full max-w-md rounded-lg bg-background">
@@ -59,14 +64,12 @@ const ConfirmDialog = ({
 
           <div className="grid gap-2">
             <label className="text-foreground text-sm" htmlFor="confirmation">
-              Type{" "}
-              <strong className="pointer-events-none select-none text-destructive">
-                {confirmation}
-              </strong>{" "}
+              Type <strong className="text-destructive">{confirmation}</strong>{" "}
               to confirm deletion
             </label>
 
             <Input
+              ref={inputRef}
               id="confirmation"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}

@@ -20,6 +20,7 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import CreateWorkspaceDialog from "./CreateWorkspaceDialog";
 
+// TODO: Handle situation where there are no workspaces available, within the Route handlers.
 const WorkspaceSelector = () => {
   // NB: We control the select's open state manually to ensure it closes properly before opening the "Create Workspace" dialog from within the select content.
   const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -68,7 +69,7 @@ const WorkspaceSelector = () => {
           setIsSelectOpen(false);
         }}
       >
-        <SelectTrigger className="w-full max-w-40 flex-1">
+        <SelectTrigger className="flex w-full flex-1">
           <SelectValueText>
             {currentWorkspace?.name || "Select Workspace"}
           </SelectValueText>

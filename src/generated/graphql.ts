@@ -3665,6 +3665,13 @@ export type CreateProjectMutationVariables = Exact<{
 
 export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
 
+export type DeleteProjectMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject?: { __typename?: 'DeleteProjectPayload', clientMutationId?: string | null } | null };
+
 export type UpdateProjectMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
   patch: ProjectPatch;
@@ -3774,6 +3781,32 @@ useCreateProjectMutation.getKey = () => ['CreateProject'];
 
 
 useCreateProjectMutation.fetcher = (variables: CreateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, variables, options);
+
+export const DeleteProjectDocument = `
+    mutation DeleteProject($rowId: UUID!) {
+  deleteProject(input: {rowId: $rowId}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useDeleteProjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteProjectMutation, TError, DeleteProjectMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteProjectMutation, TError, DeleteProjectMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteProject'],
+    mutationFn: (variables?: DeleteProjectMutationVariables) => graphqlFetch<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteProjectMutation.getKey = () => ['DeleteProject'];
+
+
+useDeleteProjectMutation.fetcher = (variables: DeleteProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, variables, options);
 
 export const UpdateProjectDocument = `
     mutation UpdateProject($rowId: UUID!, $patch: ProjectPatch!) {
