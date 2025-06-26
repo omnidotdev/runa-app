@@ -2,11 +2,15 @@ import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useLiveQuery } from "@tanstack/react-db";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
-import { ChevronDown } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useIsClient } from "usehooks-ts";
 
 import TasksList from "@/components/TasksList";
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import tasksCollection from "@/lib/collections/tasks.collection";
 import projectOptions from "@/lib/options/project.options";
 
@@ -19,10 +23,6 @@ const ListView = () => {
 
   const isClient = useIsClient();
 
-  const [expandedSections, setExpandedSections] = useState<{
-    [key: string]: boolean;
-  }>({});
-
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
     select: (data) => data?.project,
@@ -33,13 +33,6 @@ const ListView = () => {
   const { data: tasks } = useLiveQuery((q) =>
     q.from({ projectTasksCollection }),
   );
-
-  const onToggleSection = useCallback((columnId: string) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [columnId]: !prev[columnId],
-    }));
-  }, []);
 
   const onDragEnd = useCallback(
     (result: DropResult) => {
@@ -78,34 +71,26 @@ const ListView = () => {
 
           if (!columnTasks?.length) return null;
 
-          const isExpanded = expandedSections[column?.rowId!] ?? true;
-
           return (
-            <div
+            <CollapsibleRoot
               key={column?.rowId}
               className="mb-6 rounded-lg bg-white shadow-sm last:mb-0 dark:bg-base-800"
+              defaultOpen
             >
-              <button
-                type="button"
-                onClick={() => onToggleSection(column?.rowId!)}
-                className="flex w-full items-center gap-2 rounded-t-lg px-4 py-3 text-left"
-              >
-                <ChevronDown
-                  className={`h-4 w-4 text-base-500 transition-transform dark:text-base-400 ${
-                    isExpanded ? "" : "-rotate-90"
-                  }`}
-                />
-                <span className="font-medium text-base-900 text-sm dark:text-base-100">
-                  {column?.title}
-                </span>
-                {isClient && (
-                  <span className="text-base-500 text-sm dark:text-base-400">
-                    {columnTasks.length}
+              <CollapsibleTrigger className="flex w-full items-center gap-2 rounded-t-lg px-4 py-3 text-left">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-base-900 text-sm dark:text-base-100">
+                    {column?.title}
                   </span>
-                )}
-              </button>
+                  {isClient && (
+                    <span className="text-base-500 text-sm dark:text-base-400">
+                      {columnTasks.length}
+                    </span>
+                  )}
+                </div>
+              </CollapsibleTrigger>
 
-              {isExpanded && (
+              <CollapsibleContent>
                 <Droppable droppableId={column?.rowId!}>
                   {(provided, snapshot) => (
                     <TasksList
@@ -132,8 +117,8 @@ const ListView = () => {
                     </TasksList>
                   )}
                 </Droppable>
-              )}
-            </div>
+              </CollapsibleContent>
+            </CollapsibleRoot>
           );
         })}
       </div>
