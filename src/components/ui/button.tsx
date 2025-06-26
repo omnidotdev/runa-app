@@ -20,7 +20,7 @@ const buttonVariants = tv({
         "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
       link: "text-primary underline-offset-4 hover:underline",
       destructive:
-        "bg-red-500 text-primary-foreground shadow-xs hover:bg-red-500/90",
+        "bg-red-500 text-destructive-foreground shadow-xs hover:bg-destructive/90",
     },
     size: {
       xs: "h-7 gap-1 rounded-sm px-2.5 has-[>svg]:px-2",

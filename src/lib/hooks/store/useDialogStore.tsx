@@ -8,6 +8,7 @@ export enum DialogType {
   DeleteTeamMember = "delete_team_member",
   DeleteWorkspace = "delete_workspace",
   CreateTask = "create_task",
+  CreateProject = "create_project",
 }
 
 interface DialogState {

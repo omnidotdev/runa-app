@@ -60,78 +60,76 @@ const WorkspaceSelector = () => {
   };
 
   return (
-    <div>
-      <Select
-        value={String(currentWorkspace?.rowId)}
-        onValueChange={(value) => {
-          navigate({
-            to: "/workspaces/$workspaceId",
-            params: { workspaceId: value },
-          });
-        }}
-      >
-        <SelectTrigger className="w-full max-w-40">
-          <SelectValue>
-            {currentWorkspace?.name || "Select Workspace"}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          {isCreating ? (
-            <form onSubmit={handleCreateWorkspace} className="p-2">
-              <Input
-                type="text"
-                value={newWorkspaceName}
-                onChange={(e) => setNewWorkspaceName(e.target.value)}
-                placeholder="Workspace name"
-              />
-              <div className="mt-2 flex justify-end gap-2">
-                <Button
-                  onClick={() => {
-                    setIsCreating(false);
-                    setNewWorkspaceName("");
-                  }}
-                  size="xs"
-                  variant="ghost"
-                  className="text-xs"
-                >
-                  Cancel
-                </Button>
-
-                <Button
-                  type="submit"
-                  disabled={!newWorkspaceName.trim()}
-                  size="xs"
-                  className="text-xs"
-                >
-                  Create
-                </Button>
-              </div>
-            </form>
-          ) : (
-            <>
-              <SelectGroup className="flex flex-col gap-1">
-                {workspaces?.map((workspace) => (
-                  <SelectItem key={workspace?.rowId} value={workspace?.rowId!}>
-                    <SelectItemText>{workspace?.name}</SelectItemText>
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-
-              <SelectSeparator />
+    <Select
+      value={String(currentWorkspace?.rowId)}
+      onValueChange={(value) => {
+        navigate({
+          to: "/workspaces/$workspaceId",
+          params: { workspaceId: value },
+        });
+      }}
+    >
+      <SelectTrigger className="w-full max-w-40 flex-1">
+        <SelectValue>
+          {currentWorkspace?.name || "Select Workspace"}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent>
+        {isCreating ? (
+          <form onSubmit={handleCreateWorkspace} className="p-2">
+            <Input
+              type="text"
+              value={newWorkspaceName}
+              onChange={(e) => setNewWorkspaceName(e.target.value)}
+              placeholder="Workspace name"
+            />
+            <div className="mt-2 flex justify-end gap-2">
+              <Button
+                onClick={() => {
+                  setIsCreating(false);
+                  setNewWorkspaceName("");
+                }}
+                size="xs"
+                variant="ghost"
+                className="text-xs"
+              >
+                Cancel
+              </Button>
 
               <Button
-                onClick={() => setIsCreating(true)}
-                variant="ghost"
-                className="w-full"
+                type="submit"
+                disabled={!newWorkspaceName.trim()}
+                size="xs"
+                className="text-xs"
               >
-                <Plus className="h-4 w-4" />
-                New Workspace
+                Create
               </Button>
-            </>
-          )}
-        </SelectContent>
-      </Select>
-    </div>
+            </div>
+          </form>
+        ) : (
+          <>
+            <SelectGroup className="flex flex-col gap-1">
+              {workspaces?.map((workspace) => (
+                <SelectItem key={workspace?.rowId} value={workspace?.rowId!}>
+                  <SelectItemText>{workspace?.name}</SelectItemText>
+                </SelectItem>
+              ))}
+            </SelectGroup>
+
+            <SelectSeparator />
+
+            <Button
+              onClick={() => setIsCreating(true)}
+              variant="ghost"
+              className="w-full"
+            >
+              <Plus className="h-4 w-4" />
+              New Workspace
+            </Button>
+          </>
+        )}
+      </SelectContent>
+    </Select>
   );
 };
 

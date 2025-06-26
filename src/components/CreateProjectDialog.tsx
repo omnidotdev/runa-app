@@ -1,0 +1,98 @@
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import workspaceOptions from "@/lib/options/workspace.options";
+
+const CreateProjectDialog = () => {
+  const { workspaceId } = useParams({ strict: false });
+
+  const { data: currentWorkspace } = useQuery({
+    ...workspaceOptions(workspaceId!),
+    enabled: !!workspaceId,
+    select: (data) => data?.workspace,
+  });
+
+  const { isOpen: isCreateProjectOpen, setIsOpen: setIsCreateProjectOpen } =
+    useDialogStore({
+      type: DialogType.CreateProject,
+    });
+
+  const [newProjectName, setNewProjectName] = useState("");
+  const [newProjectDescription, setNewProjectDescription] = useState("");
+
+  return (
+    <DialogRoot
+      open={isCreateProjectOpen}
+      onOpenChange={({ open }) => setIsCreateProjectOpen(open)}
+    >
+      <DialogBackdrop />
+      <DialogPositioner>
+        <DialogContent>
+          <DialogCloseTrigger />
+          <DialogTitle>Create Project</DialogTitle>
+          <DialogDescription>
+            Create a new project for the{" "}
+            <strong className="text-primary">{currentWorkspace?.name}</strong>{" "}
+            workspace.
+          </DialogDescription>
+
+          <form
+            // onSubmit={handleCreateProject}
+            className="flex flex-col gap-2"
+          >
+            <Input
+              type="text"
+              value={newProjectName}
+              onChange={(e) => setNewProjectName(e.target.value)}
+              placeholder="Project name"
+            />
+
+            <textarea
+              value={newProjectDescription}
+              onChange={(e) => setNewProjectDescription(e.target.value)}
+              placeholder="Project description (optional)"
+              className="field-sizing-content flex min-h-16 w-full rounded-md border border-input px-3 py-2 text-base shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:ring-destructive/40"
+            />
+
+            <div className="mt-2 flex justify-end gap-2">
+              <Button
+                onClick={() => {
+                  setNewProjectName("");
+                  setNewProjectDescription("");
+                  setIsCreateProjectOpen(false);
+                }}
+                variant="ghost"
+                className="text-xs"
+              >
+                Cancel
+              </Button>
+
+              <Button
+                type="submit"
+                disabled={!newProjectName.trim()}
+                className="text-xs"
+              >
+                Create
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </DialogPositioner>
+    </DialogRoot>
+  );
+};
+
+export default CreateProjectDialog;

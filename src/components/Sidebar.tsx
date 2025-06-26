@@ -1,146 +1,69 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
-import {
-  ChevronDown,
-  ChevronRight,
-  Folder,
-  LayoutGrid,
-  List,
-  LogOut,
-  Plus,
-  SettingsIcon,
-} from "lucide-react";
-import { useState } from "react";
+import { FolderOpen, LogOut, Plus } from "lucide-react";
 
+import CreateProjectDialog from "@/components/CreateProjectDialog";
 import Link from "@/components/core/Link";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import WorkspaceSelector from "@/components/WorkspaceSelector";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 
 import type { Project } from "@/generated/graphql";
 
 interface SidebarProps {
   projects: Partial<Project | null>[] | undefined;
-  currentProject?: string;
 }
 
-const Sidebar = ({ projects, currentProject }: SidebarProps) => {
+const Sidebar = ({ projects }: SidebarProps) => {
   const { workspaceId } = useParams({ strict: false });
   const navigate = useNavigate();
 
-  const [isProjectsOpen, setIsProjectsOpen] = useState(true);
-  const [isAddingProject, setIsAddingProject] = useState(false);
-  const [newProjectName, setNewProjectName] = useState("");
-  const [newProjectDescription, setNewProjectDescription] = useState("");
-
-  const handleProjectsHeaderClick = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.closest("button")) return;
-
-    setIsProjectsOpen(!isProjectsOpen);
-  };
+  const { setIsOpen: setIsCreateProjectOpen } = useDialogStore({
+    type: DialogType.CreateProject,
+  });
 
   return (
-    <div className="flex h-full flex-col border-base-200 border-r bg-white dark:border-base-700 dark:bg-base-800/40">
-      <div className="flex flex-1 flex-col p-4">
-        <div className="mb-4 flex items-center justify-between gap-2">
-          <div className="flex-1">
-            <WorkspaceSelector />
-          </div>
+    <>
+      <div className="grid h-full grid-rows-[auto_1fr_auto] border-r bg-background">
+        <div className="flex items-center justify-between gap-2 border-b p-4">
+          <WorkspaceSelector />
 
           <ThemeToggle />
         </div>
 
-        <div className="custom-scrollbar flex-1 overflow-y-auto">
-          <div
-            className="flex cursor-pointer items-center justify-between rounded px-2 py-3 font-medium text-base-700 text-sm hover:bg-base-50 dark:text-base-200 dark:hover:bg-base-700/50"
-            onClick={handleProjectsHeaderClick}
-          >
-            <div className="flex items-center gap-2">
-              {isProjectsOpen ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-              <Folder className="h-4 w-4" />
-              <span>Projects</span>
-            </div>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsAddingProject(true);
+        {workspaceId && (
+          <div className="flex flex-col overflow-hidden p-4">
+            <Link
+              to="/workspaces/$workspaceId/projects"
+              params={{
+                workspaceId: workspaceId!,
               }}
-              className="rounded-md p-1 hover:bg-base-100 dark:hover:bg-base-700"
+              variant="ghost"
+              activeOptions={{ exact: true }}
+              activeProps={{
+                variant: "outline",
+              }}
+              className="w-full justify-start"
             >
-              <Plus className="h-3 w-3 text-base-500 dark:text-base-400" />
-            </button>
-          </div>
+              <div className="flex items-center gap-2">
+                <FolderOpen className="text-base-500" />
+                <span>Projects</span>
+              </div>
 
-          {isProjectsOpen && (
-            <div className="mt-1">
-              <Link
-                to="/workspaces/$workspaceId/projects"
-                params={{
-                  workspaceId: workspaceId!,
+              <Button
+                variant="outline"
+                size="icon"
+                className="ml-auto size-6"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsCreateProjectOpen(true);
                 }}
-                variant="ghost"
-                activeOptions={{ exact: true }}
-                activeProps={{
-                  variant: "outline",
-                }}
-                className="w-full"
               >
-                Overview
-              </Link>
+                <Plus className="text-base-500" />
+              </Button>
+            </Link>
 
-              <div className="my-2 border-base-200 border-t dark:border-base-700" />
-
-              {isAddingProject && (
-                <form
-                  // onSubmit={handleCreateProject}
-                  className="space-y-2 px-2 py-1"
-                >
-                  <input
-                    type="text"
-                    value={newProjectName}
-                    onChange={(e) => setNewProjectName(e.target.value)}
-                    placeholder="Project name"
-                    className="w-full rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-200"
-                    // biome-ignore lint/a11y/noAutofocus: TODO
-                    autoFocus
-                  />
-                  <textarea
-                    value={newProjectDescription}
-                    onChange={(e) => setNewProjectDescription(e.target.value)}
-                    placeholder="Project description (optional)"
-                    className="h-20 w-full resize-none rounded border px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-base-600 dark:bg-base-700 dark:text-base-200"
-                  />
-                  <div className="mt-2 flex justify-end gap-2">
-                    <Button
-                      onClick={() => {
-                        setIsAddingProject(false);
-                        setNewProjectName("");
-                        setNewProjectDescription("");
-                      }}
-                      size="xs"
-                      variant="ghost"
-                      className="text-xs"
-                    >
-                      Cancel
-                    </Button>
-
-                    <Button
-                      type="submit"
-                      disabled={!newProjectName.trim()}
-                      size="xs"
-                      className="text-xs"
-                    >
-                      Create
-                    </Button>
-                  </div>
-                </form>
-              )}
-
+            <div className="mt-2 flex h-full flex-col gap-1 overflow-y-auto">
               {projects?.map((project) => (
                 <Link
                   key={project?.rowId}
@@ -150,57 +73,45 @@ const Sidebar = ({ projects, currentProject }: SidebarProps) => {
                     projectId: project?.rowId!,
                   }}
                   variant="ghost"
+                  size="sm"
                   activeProps={{
                     variant: "outline",
                   }}
-                  className="group my-1 w-full justify-between"
+                  className="justify-start"
                 >
-                  <div className="flex min-w-0 flex-1 items-center gap-2">
-                    {project?.viewMode === "board" ? (
-                      <LayoutGrid
-                        className="h-3 w-3 flex-shrink-0"
-                        style={{ color: project.color || "currentColor" }}
-                      />
-                    ) : (
-                      <List
-                        className="h-3 w-3 flex-shrink-0"
-                        style={{ color: project?.color || "currentColor" }}
-                      />
-                    )}
-                    <span className="cursor-pointer truncate">
-                      {project?.name}
-                    </span>
-                  </div>
+                  <span className="truncate">{project?.name}</span>
                 </Link>
               ))}
             </div>
+          </div>
+        )}
+
+        <div className="grid gap-2 border-t p-4">
+          {workspaceId && (
+            <Link
+              to="/workspaces/$workspaceId/settings"
+              params={{ workspaceId: workspaceId! }}
+              variant="outline"
+              className="w-full"
+            >
+              Workspace Settings
+            </Link>
           )}
+
+          <Button
+            // TODO
+            onClick={() => navigate({ to: "/" })}
+            variant="outline"
+            className="w-full text-red-600 dark:text-red-400"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign Out
+          </Button>
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 border-base-200 border-t p-4 dark:border-base-700">
-        {workspaceId && (
-          <Link
-            to="/workspaces/$workspaceId/settings"
-            params={{ workspaceId: workspaceId! }}
-            variant="outline"
-            className="w-full"
-          >
-            <SettingsIcon className="size-4" />
-            Workspace Settings
-          </Link>
-        )}
-
-        <Button
-          onClick={() => navigate({ to: "/" })}
-          variant="outline"
-          className="w-full text-red-600 dark:text-red-400 dark:hover:bg-base-700"
-        >
-          <LogOut className="size-4" />
-          Sign Out
-        </Button>
-      </div>
-    </div>
+      <CreateProjectDialog />
+    </>
   );
 };
 
