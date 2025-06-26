@@ -30,13 +30,19 @@ const CreateWorkspaceDialog = () => {
 
   const { mutateAsync: createNewWorkspace } = useCreateWorkspaceMutation({
     onSettled: () => queryClient.invalidateQueries(workspacesOptions),
+    onSuccess: ({ createWorkspace }) => {
+      navigate({
+        to: "/workspaces/$workspaceId",
+        params: { workspaceId: createWorkspace?.workspace?.rowId! },
+      });
+    },
   });
 
   const handleCreateWorkspace = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!newWorkspaceName.trim()) return;
 
-    const res = await createNewWorkspace({
+    await createNewWorkspace({
       input: {
         workspace: {
           name: newWorkspaceName,
@@ -46,16 +52,6 @@ const CreateWorkspaceDialog = () => {
 
     setNewWorkspaceName("");
     setIsCreateWorkspaceOpen(false);
-
-    // TODO: Handle in mutation settle?
-    const newWorkspaceId = res?.createWorkspace?.workspace?.rowId;
-
-    if (newWorkspaceId) {
-      navigate({
-        to: "/workspaces/$workspaceId",
-        params: { workspaceId: newWorkspaceId },
-      });
-    }
   };
 
   return (

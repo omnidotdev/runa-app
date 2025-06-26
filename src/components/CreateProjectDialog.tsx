@@ -41,7 +41,16 @@ const CreateProjectDialog = () => {
   const { mutateAsync: createNewProject } = useCreateProjectMutation({
     onSettled: () => {
       queryClient.invalidateQueries(projectsOptions);
-      // TODO: revalidate workspace to get projects to update in sidebar
+      queryClient.invalidateQueries(workspaceOptions(workspaceId!));
+    },
+    onSuccess: ({ createProject }) => {
+      navigate({
+        to: "/workspaces/$workspaceId/projects/$projectId",
+        params: {
+          workspaceId: workspaceId!,
+          projectId: createProject?.project?.rowId!,
+        },
+      });
     },
   });
 
@@ -49,7 +58,7 @@ const CreateProjectDialog = () => {
     e?.preventDefault();
     if (!newProjectName.trim()) return;
 
-    const res = await createNewProject({
+    await createNewProject({
       input: {
         project: {
           workspaceId: workspaceId!,
@@ -60,16 +69,6 @@ const CreateProjectDialog = () => {
 
     setNewProjectName("");
     setIsCreateProjectOpen(false);
-
-    // TODO: Handle in mutation settle?
-    const newProjectId = res?.createProject?.project?.rowId;
-
-    if (newProjectId) {
-      navigate({
-        to: "/workspaces/$workspaceId/projects/$projectId",
-        params: { workspaceId: workspaceId!, projectId: newProjectId },
-      });
-    }
   };
 
   return (

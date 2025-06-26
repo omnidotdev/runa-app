@@ -60,6 +60,7 @@ const WorkspaceSelector = () => {
             {currentWorkspace?.name || "Select Workspace"}
           </SelectValue>
         </SelectTrigger>
+        {/* TODO: handle overflow with maxH. Also will need to look into "New Workspace" button since its on the bottom of the list. */}
         <SelectContent>
           <SelectGroup className="flex flex-col gap-1">
             {workspaces?.map((workspace) => (
