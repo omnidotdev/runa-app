@@ -118,6 +118,9 @@ const Board = () => {
     <div
       ref={scrollContainerRef}
       className="custom-scrollbar h-full select-none overflow-x-auto"
+      style={{
+        backgroundColor: project?.color ? `${project?.color}0D` : undefined,
+      }}
     >
       <div className="h-full min-w-fit px-4 py-4">
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
@@ -134,7 +137,7 @@ const Board = () => {
                     className="no-scrollbar relative flex w-80 flex-col overflow-y-auto rounded-lg bg-base-50/80 shadow-sm dark:bg-base-800/30 dark:shadow-base-50/10"
                     style={{ minHeight: "4px" }}
                   >
-                    <div className="sticky top-0 flex items-center justify-between border-base-200 border-b bg-base-50 p-3 dark:border-base-700 dark:bg-base-800">
+                    <div className="sticky top-0 flex items-center justify-between border-base-200 border-b bg-base-50 p-3 dark:border-base-800 dark:bg-base-900">
                       <div className="flex items-center gap-2">
                         <h3 className="font-semibold text-base-800 dark:text-base-100">
                           {column?.title}
@@ -157,18 +160,12 @@ const Board = () => {
                           {...provided.droppableProps}
                           prefix={project?.prefix ?? "PROJ"}
                           columnId={column?.rowId!}
-                          className={
-                            // TODO: dynamic on project color
-                            snapshot.isDraggingOver
-                              ? "bg-primary-50/50 dark:bg-base-800/50"
-                              : ""
-                          }
+                          className="bg-primary-50/5 dark:bg-base-800/5"
                           style={{
-                            backgroundColor: project?.color
-                              ? snapshot.isDraggingOver
-                                ? `${project?.color}33`
-                                : `${project?.color}0D`
-                              : undefined,
+                            backgroundColor:
+                              project?.color && snapshot.isDraggingOver
+                                ? `${project?.color}0D`
+                                : undefined,
                           }}
                         >
                           {provided.placeholder}

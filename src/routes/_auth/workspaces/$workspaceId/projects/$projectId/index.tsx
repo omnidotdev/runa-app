@@ -84,6 +84,7 @@ function ProjectPage() {
                 <Input
                   // value={searchQuery}
                   // onChange={(e) => onSearchChange(e.target.value)}
+                  disabled
                   placeholder="Search tasks..."
                   className="pl-10"
                 />

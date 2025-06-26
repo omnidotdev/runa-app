@@ -93,19 +93,12 @@ const ListView = () => {
                       {...provided.droppableProps}
                       prefix={project?.prefix ?? "PROJ"}
                       columnId={column?.rowId!}
-                      className={
-                        snapshot.isDraggingOver
-                          ? project?.color
-                            ? `bg-opacity-10`
-                            : "bg-primary-50/50 dark:bg-base-800/50"
-                          : ""
-                      }
+                      className="bg-primary-50/5 dark:bg-base-800/5"
                       style={{
-                        backgroundColor: project?.color
-                          ? snapshot.isDraggingOver
-                            ? `${project?.color}33`
-                            : `${project?.color}0D`
-                          : undefined,
+                        backgroundColor:
+                          project?.color && snapshot.isDraggingOver
+                            ? `${project?.color}0D`
+                            : undefined,
                       }}
                     >
                       {provided.placeholder}
