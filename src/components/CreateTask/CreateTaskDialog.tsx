@@ -9,12 +9,14 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import {
   CalendarIcon,
+  CheckIcon,
+  PlusIcon,
   TagIcon,
   TypeIcon,
   UserPlusIcon,
   XIcon,
 } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,20 +27,47 @@ import {
   DialogRoot,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { labelColors } from "@/lib/constants/labelColors";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
 import { cn } from "@/lib/utils";
+import {
+  CheckboxControl,
+  CheckboxHiddenInput,
+  CheckboxIndicator,
+  CheckboxLabel,
+  CheckboxRoot,
+} from "../ui/checkbox";
+import {
+  PopoverContent,
+  PopoverPositioner,
+  PopoverRoot,
+  PopoverTrigger,
+} from "../ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectItemText,
+  SelectTrigger,
+} from "../ui/select";
 
 interface Props {
   columnId: string;
 }
 
 const CreateTaskDialog = ({ columnId }: Props) => {
-  const editorContainerRef = useRef<HTMLDivElement>(null);
-
   const { projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
+
+  const [newLabel, setNewLabel] = useState({
+    name: "",
+    color: "blue",
+  });
+
+  const editorContainerRef = useRef<HTMLDivElement>(null);
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
@@ -53,10 +82,29 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     column?.tasks?.nodes?.map((task) => task?.rowId),
   )?.length;
 
+  const projectLabels: { name: string; color: string; checked: boolean }[] =
+    project?.labels?.map((label: { name: string; color: string }) => ({
+      ...label,
+      checked: false,
+    }));
+
   const { Field, Subscribe, handleSubmit, reset } = useForm({
     defaultValues: {
       title: "",
       description: "",
+      labels: projectLabels,
+    },
+    onSubmit({ value, formApi }) {
+      const addedLabels = value.labels
+        .filter((l) => l.checked)
+        .map((label) => ({
+          name: label.name,
+          color: label.color,
+        }));
+
+      alert(JSON.stringify(addedLabels));
+      formApi.reset();
+      setIsOpen(false);
     },
   });
 
@@ -100,6 +148,8 @@ const CreateTaskDialog = ({ columnId }: Props) => {
         setIsOpen(open);
         reset();
       }}
+      // TODO: remove when state management with select and popover is resolved
+      closeOnInteractOutside={false}
     >
       <DialogBackdrop />
       <DialogPositioner>
@@ -141,10 +191,144 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                 Assign
               </Button>
 
-              <Button variant="outline">
-                <TagIcon className="size-4" />
-                Add labels
-              </Button>
+              <PopoverRoot>
+                <PopoverTrigger asChild>
+                  <Button variant="outline">
+                    <TagIcon className="size-4" />
+                    Add labels
+                  </Button>
+                </PopoverTrigger>
+
+                <PopoverPositioner>
+                  <PopoverContent className="flex min-w-80 flex-col gap-2">
+                    <Field name="labels" mode="array">
+                      {(field) => {
+                        return (
+                          <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-2 pb-2">
+                              {/* TODO: make sure that selection doesn't close popover. Happens if value is outside the bounds of the popover */}
+                              <Select
+                                value={newLabel.color}
+                                onValueChange={(value) => {
+                                  setNewLabel((prev) => ({
+                                    ...prev,
+                                    color: value,
+                                  }));
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <div
+                                    className={cn(
+                                      "size-4 rounded-full",
+                                      labelColors.find(
+                                        (l) =>
+                                          l.name.toLowerCase() ===
+                                          newLabel.color,
+                                      )?.classes,
+                                    )}
+                                  />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectGroup>
+                                    {labelColors.map((color) => (
+                                      <SelectItem
+                                        key={color.name}
+                                        value={color.name.toLowerCase()}
+                                      >
+                                        <SelectItemText>
+                                          {color.name}
+                                        </SelectItemText>
+
+                                        <div
+                                          className={cn(
+                                            "size-4 rounded-full",
+                                            color.classes,
+                                          )}
+                                        />
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                              <Input
+                                placeholder="Add new label..."
+                                value={newLabel.name}
+                                onChange={(e) =>
+                                  setNewLabel((prev) => ({
+                                    ...prev,
+                                    name: e.target.value,
+                                  }))
+                                }
+                              />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                disabled={!newLabel.name || !newLabel.color}
+                                onClick={() =>
+                                  field.pushValue({
+                                    name: newLabel.name,
+                                    color: newLabel.color,
+                                    checked: true,
+                                  })
+                                }
+                              >
+                                <PlusIcon className="size-4" />
+                              </Button>
+                            </div>
+
+                            {field.state.value.map((label, i) => {
+                              return (
+                                <Field key={label.name} name={`labels[${i}]`}>
+                                  {(subField) => {
+                                    return (
+                                      <CheckboxRoot
+                                        className="flex items-center justify-between"
+                                        defaultChecked={
+                                          subField.state.value.checked
+                                        }
+                                        onCheckedChange={({ checked }) =>
+                                          subField.handleChange({
+                                            ...subField.state.value,
+                                            checked: !!checked,
+                                          })
+                                        }
+                                      >
+                                        <CheckboxLabel className="ml-0">
+                                          <div className="flex items-center gap-2">
+                                            <div
+                                              className={cn(
+                                                "size-4 rounded-full",
+                                                labelColors.find(
+                                                  (l) =>
+                                                    l.name.toLowerCase() ===
+                                                    subField.state.value.color,
+                                                )?.classes,
+                                              )}
+                                            />
+                                            <p className="text-sm">
+                                              {subField.state.value.name}
+                                            </p>
+                                          </div>
+                                        </CheckboxLabel>
+                                        <CheckboxHiddenInput />
+                                        <CheckboxControl>
+                                          <CheckboxIndicator>
+                                            <CheckIcon className="size-4" />
+                                          </CheckboxIndicator>
+                                        </CheckboxControl>
+                                      </CheckboxRoot>
+                                    );
+                                  }}
+                                </Field>
+                              );
+                            })}
+                          </div>
+                        );
+                      }}
+                    </Field>
+                  </PopoverContent>
+                </PopoverPositioner>
+              </PopoverRoot>
 
               <Button variant="outline">
                 <CalendarIcon className="size-4" />
