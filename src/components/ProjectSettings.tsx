@@ -1,7 +1,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
-import { SettingsIcon, XIcon } from "lucide-react";
+import { SettingsIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -71,9 +71,7 @@ const ProjectSettings = () => {
       <DialogBackdrop />
       <DialogPositioner>
         <DialogContent>
-          <DialogCloseTrigger className="absolute top-4 right-4 rounded-full p-1">
-            <XIcon className="size-4" />
-          </DialogCloseTrigger>
+          <DialogCloseTrigger />
           <DialogTitle>Project Settings</DialogTitle>
           <form
             className="flex flex-col gap-2"

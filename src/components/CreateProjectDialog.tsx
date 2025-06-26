@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -13,11 +13,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useCreateProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import getQueryClient from "@/utils/getQueryClient";
 
 const CreateProjectDialog = () => {
   const { workspaceId } = useParams({ strict: false });
+  const queryClient = getQueryClient();
+  const navigate = useNavigate();
 
   const { data: currentWorkspace } = useQuery({
     ...workspaceOptions(workspaceId!),
@@ -32,6 +37,40 @@ const CreateProjectDialog = () => {
 
   const [newProjectName, setNewProjectName] = useState("");
   const [newProjectDescription, setNewProjectDescription] = useState("");
+
+  const { mutateAsync: createNewProject } = useCreateProjectMutation({
+    onSettled: () => {
+      queryClient.invalidateQueries(projectsOptions);
+      // TODO: revalidate workspace to get projects to update in sidebar
+    },
+  });
+
+  const handleCreateProject = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!newProjectName.trim()) return;
+
+    const res = await createNewProject({
+      input: {
+        project: {
+          workspaceId: workspaceId!,
+          name: newProjectName,
+        },
+      },
+    });
+
+    setNewProjectName("");
+    setIsCreateProjectOpen(false);
+
+    // TODO: Handle in mutation settle?
+    const newProjectId = res?.createProject?.project?.rowId;
+
+    if (newProjectId) {
+      navigate({
+        to: "/workspaces/$workspaceId/projects/$projectId",
+        params: { workspaceId: workspaceId!, projectId: newProjectId },
+      });
+    }
+  };
 
   return (
     <DialogRoot
@@ -49,10 +88,7 @@ const CreateProjectDialog = () => {
             workspace.
           </DialogDescription>
 
-          <form
-            // onSubmit={handleCreateProject}
-            className="flex flex-col gap-2"
-          >
+          <form onSubmit={handleCreateProject} className="flex flex-col gap-2">
             <Input
               type="text"
               value={newProjectName}
@@ -75,16 +111,11 @@ const CreateProjectDialog = () => {
                   setIsCreateProjectOpen(false);
                 }}
                 variant="ghost"
-                className="text-xs"
               >
                 Cancel
               </Button>
 
-              <Button
-                type="submit"
-                disabled={!newProjectName.trim()}
-                className="text-xs"
-              >
+              <Button type="submit" disabled={!newProjectName.trim()}>
                 Create
               </Button>
             </div>

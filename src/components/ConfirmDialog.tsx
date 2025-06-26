@@ -59,7 +59,10 @@ const ConfirmDialog = ({
 
           <div className="grid gap-2">
             <label className="text-foreground text-sm" htmlFor="confirmation">
-              Type <strong className="text-destructive">{confirmation}</strong>{" "}
+              Type{" "}
+              <strong className="pointer-events-none select-none text-destructive">
+                {confirmation}
+              </strong>{" "}
               to confirm deletion
             </label>
 

@@ -1,0 +1,8 @@
+query Projects {
+  projects {
+    nodes {
+      rowId
+      name
+    }
+  }
+}

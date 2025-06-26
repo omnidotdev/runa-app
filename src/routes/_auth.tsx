@@ -1,24 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
-import { Outlet, useParams } from "@tanstack/react-router";
+import { Outlet } from "@tanstack/react-router";
 import { PanelLeftCloseIcon, PanelLeftIcon } from "lucide-react";
 import { useState } from "react";
 
 import Sidebar from "@/components/Sidebar";
-import workspaceOptions from "@/lib/options/workspace.options";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute({
   component: AuthenticatedLayout,
 });
 
 function AuthenticatedLayout() {
-  const { workspaceId } = useParams({ strict: false });
-
-  const { data: workspace } = useQuery({
-    ...workspaceOptions(workspaceId!),
-    enabled: !!workspaceId,
-    select: (data) => data.workspace,
-  });
-
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
@@ -29,12 +20,12 @@ function AuthenticatedLayout() {
         <div
           className={`absolute inset-0 ${isSidebarCollapsed ? "pointer-events-none opacity-0" : "opacity-100"}`}
         >
-          <Sidebar projects={workspace?.projects.nodes} />
+          <Sidebar />
         </div>
       </div>
 
-      <button
-        type="button"
+      <Button
+        size="icon"
         onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         className={`-translate-y-1/2 absolute top-1/2 z-40 rounded-full border border-base-200 bg-white p-1.5 shadow-md hover:bg-base-100 dark:border-base-700 dark:bg-base-800 dark:hover:bg-base-700 ${
           isSidebarCollapsed ? "left-3" : "left-[224px]"
@@ -46,7 +37,7 @@ function AuthenticatedLayout() {
         ) : (
           <PanelLeftCloseIcon className="h-4 w-4 text-base-500 dark:text-base-400" />
         )}
-      </button>
+      </Button>
 
       <div className="flex-1 overflow-hidden">
         <Outlet />

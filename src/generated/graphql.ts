@@ -3658,6 +3658,13 @@ export type WorkspaceUserPatch = {
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type CreateProjectMutationVariables = Exact<{
+  input: CreateProjectInput;
+}>;
+
+
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
+
 export type UpdateProjectMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
   patch: ProjectPatch;
@@ -3709,6 +3716,11 @@ export type ProjectQueryVariables = Exact<{
 
 export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels?: any | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt?: Date | null } | null> } } | null> } } | null };
 
+export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string } | null> } | null };
+
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -3729,6 +3741,34 @@ export type WorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string } | null> } | null };
 
 
+
+export const CreateProjectDocument = `
+    mutation CreateProject($input: CreateProjectInput!) {
+  createProject(input: $input) {
+    project {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useCreateProjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateProjectMutation, TError, CreateProjectMutationVariables, TContext>) => {
+    
+    return useMutation<CreateProjectMutation, TError, CreateProjectMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateProject'],
+    mutationFn: (variables?: CreateProjectMutationVariables) => graphqlFetch<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateProjectMutation.getKey = () => ['CreateProject'];
+
+
+useCreateProjectMutation.fetcher = (variables: CreateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, variables, options);
 
 export const UpdateProjectDocument = `
     mutation UpdateProject($rowId: UUID!, $patch: ProjectPatch!) {
@@ -3964,6 +4004,59 @@ useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project
 
 
 useProjectQuery.fetcher = (variables: ProjectQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables, options);
+
+export const ProjectsDocument = `
+    query Projects {
+  projects {
+    nodes {
+      rowId
+      name
+    }
+  }
+}
+    `;
+
+export const useProjectsQuery = <
+      TData = ProjectsQuery,
+      TError = unknown
+    >(
+      variables?: ProjectsQueryVariables,
+      options?: Omit<UseQueryOptions<ProjectsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ProjectsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['Projects'] : ['Projects', variables],
+    queryFn: graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables),
+    ...options
+  }
+    )};
+
+useProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects'] : ['Projects', variables];
+
+export const useInfiniteProjectsQuery = <
+      TData = InfiniteData<ProjectsQuery>,
+      TError = unknown
+    >(
+      variables: ProjectsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ProjectsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ProjectsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteProjectsQuery.getKey = (variables?: ProjectsQueryVariables) => variables === undefined ? ['Projects.infinite'] : ['Projects.infinite', variables];
+
+
+useProjectsQuery.fetcher = (variables?: ProjectsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables, options);
 
 export const TasksDocument = `
     query Tasks($projectId: UUID!) {

@@ -3659,6 +3659,13 @@ export type WorkspaceUserPatch = {
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type CreateProjectMutationVariables = Exact<{
+  input: CreateProjectInput;
+}>;
+
+
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
+
 export type UpdateProjectMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
   patch: ProjectPatch;
@@ -3710,6 +3717,11 @@ export type ProjectQueryVariables = Exact<{
 
 export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels?: any | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt?: Date | null } | null> } } | null> } } | null };
 
+export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string } | null> } | null };
+
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -3730,6 +3742,15 @@ export type WorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string } | null> } | null };
 
 
+export const CreateProjectDocument = gql`
+    mutation CreateProject($input: CreateProjectInput!) {
+  createProject(input: $input) {
+    project {
+      rowId
+    }
+  }
+}
+    `;
 export const UpdateProjectDocument = gql`
     mutation UpdateProject($rowId: UUID!, $patch: ProjectPatch!) {
   updateProject(input: {rowId: $rowId, patch: $patch}) {
@@ -3808,6 +3829,16 @@ export const ProjectDocument = gql`
   }
 }
     `;
+export const ProjectsDocument = gql`
+    query Projects {
+  projects {
+    nodes {
+      rowId
+      name
+    }
+  }
+}
+    `;
 export const TasksDocument = gql`
     query Tasks($projectId: UUID!) {
   tasks(filter: {column: {projectId: {equalTo: $projectId}}}) {
@@ -3866,6 +3897,9 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    CreateProject(variables: CreateProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateProjectMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateProjectMutation>({ document: CreateProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateProject', 'mutation', variables);
+    },
     UpdateProject(variables: UpdateProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateProjectMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateProjectMutation>({ document: UpdateProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateProject', 'mutation', variables);
     },
@@ -3886,6 +3920,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Project(variables: ProjectQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectQuery>({ document: ProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Project', 'query', variables);
+    },
+    Projects(variables?: ProjectsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ProjectsQuery>({ document: ProjectsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Projects', 'query', variables);
     },
     Tasks(variables: TasksQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<TasksQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TasksQuery>({ document: TasksDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Tasks', 'query', variables);

@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { FolderOpen, LogOut, Plus } from "lucide-react";
 
@@ -7,15 +8,16 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import WorkspaceSelector from "@/components/WorkspaceSelector";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import workspaceOptions from "@/lib/options/workspace.options";
 
-import type { Project } from "@/generated/graphql";
-
-interface SidebarProps {
-  projects: Partial<Project | null>[] | undefined;
-}
-
-const Sidebar = ({ projects }: SidebarProps) => {
+const Sidebar = () => {
   const { workspaceId } = useParams({ strict: false });
+
+  const { data: workspace } = useQuery({
+    ...workspaceOptions(workspaceId!),
+    enabled: !!workspaceId,
+    select: (data) => data.workspace,
+  });
   const navigate = useNavigate();
 
   const { setIsOpen: setIsCreateProjectOpen } = useDialogStore({
@@ -31,62 +33,64 @@ const Sidebar = ({ projects }: SidebarProps) => {
           <ThemeToggle />
         </div>
 
-        {workspaceId && (
-          <div className="flex flex-col overflow-hidden p-4">
-            <Link
-              to="/workspaces/$workspaceId/projects"
-              params={{
-                workspaceId: workspaceId!,
-              }}
-              variant="ghost"
-              activeOptions={{ exact: true }}
-              activeProps={{
-                variant: "outline",
-              }}
-              className="w-full justify-start"
-            >
-              <div className="flex items-center gap-2">
-                <FolderOpen className="text-base-500" />
-                <span>Projects</span>
-              </div>
-
-              <Button
-                variant="outline"
-                size="icon"
-                className="ml-auto size-6"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsCreateProjectOpen(true);
+        <div className="flex flex-col overflow-hidden p-4">
+          {workspaceId && (
+            <>
+              <Link
+                to="/workspaces/$workspaceId/projects"
+                params={{
+                  workspaceId: workspaceId!,
                 }}
+                variant="ghost"
+                activeOptions={{ exact: true }}
+                activeProps={{
+                  variant: "outline",
+                }}
+                className="w-full justify-start"
               >
-                <Plus className="text-base-500" />
-              </Button>
-            </Link>
+                <div className="flex items-center gap-2">
+                  <FolderOpen className="text-base-500" />
+                  <span>Projects</span>
+                </div>
 
-            <div className="mt-2 flex h-full flex-col gap-1 overflow-y-auto">
-              {projects?.map((project) => (
-                <Link
-                  key={project?.rowId}
-                  to="/workspaces/$workspaceId/projects/$projectId"
-                  params={{
-                    workspaceId: workspaceId!,
-                    projectId: project?.rowId!,
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="ml-auto size-6"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsCreateProjectOpen(true);
                   }}
-                  variant="ghost"
-                  size="sm"
-                  activeProps={{
-                    variant: "outline",
-                  }}
-                  className="justify-start"
                 >
-                  <span className="truncate">{project?.name}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
+                  <Plus className="text-base-500" />
+                </Button>
+              </Link>
 
-        <div className="grid gap-2 border-t p-4">
+              <div className="mt-2 flex h-full flex-col gap-1 overflow-y-auto">
+                {workspace?.projects.nodes?.map((project) => (
+                  <Link
+                    key={project?.rowId}
+                    to="/workspaces/$workspaceId/projects/$projectId"
+                    params={{
+                      workspaceId: workspaceId!,
+                      projectId: project?.rowId!,
+                    }}
+                    variant="ghost"
+                    size="sm"
+                    activeProps={{
+                      variant: "outline",
+                    }}
+                    className="justify-start"
+                  >
+                    <span className="truncate">{project?.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className="grid items-end gap-2 border-t p-4">
           {workspaceId && (
             <Link
               to="/workspaces/$workspaceId/settings"

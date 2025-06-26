@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 import type { ComponentProps } from "react";
 
-// TODO: Add component to Thornberry registry
+// TODO: Add component to Thornberry registry with Ark UI.
 
 function SelectItemText({
   ...props
