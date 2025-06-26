@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon, TagIcon } from "lucide-react";
 
+import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import tasksCollection from "@/lib/collections/tasks.collection";
 import projectOptions from "@/lib/options/project.options";
@@ -103,15 +104,15 @@ const TasksList = ({
                     </div>
                     <div className="mt-3 flex flex-wrap items-center gap-1">
                       {!!task?.assignees?.nodes?.length && (
-                        <div className="-space-x-2 flex">
+                        <div className="-space-x-5.5 flex">
                           {task.assignees.nodes?.map((assignee) => (
-                            <div
+                            <Avatar
                               key={assignee?.rowId}
-                              className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-800 dark:bg-base-600 dark:text-base-100"
-                              title={assignee?.user?.name}
-                            >
-                              {assignee?.user?.name[0].toUpperCase()}
-                            </div>
+                              fallback={assignee?.user?.name?.charAt(0)}
+                              src={assignee?.user?.avatarUrl!}
+                              alt={assignee?.user?.name}
+                              className="size-6 rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
+                            />
                           ))}
                         </div>
                       )}

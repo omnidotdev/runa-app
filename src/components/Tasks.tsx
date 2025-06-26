@@ -13,6 +13,7 @@ import {
   TagIcon,
 } from "lucide-react";
 
+import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import tasksCollection from "@/lib/collections/tasks.collection";
 import projectOptions from "@/lib/options/project.options";
@@ -134,11 +135,11 @@ const Tasks = ({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
                       {!!task?.assignees?.nodes?.length && (
-                        <div className="-space-x-1.5 flex">
+                        <div className="-space-x-5.5 flex">
                           {task.assignees.nodes?.map((assignee) => (
-                            // TODO: fallback with initial
-                            <img
+                            <Avatar
                               key={assignee?.rowId}
+                              fallback={assignee?.user?.name?.charAt(0)}
                               src={assignee?.user?.avatarUrl!}
                               alt={assignee?.user?.name}
                               className="size-6 rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
