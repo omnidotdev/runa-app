@@ -32,7 +32,7 @@ const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => {
         </ThemeProvider>
 
         {/* Dev Tools - only included in development */}
-        <TanStackRouterDevtools />
+        <TanStackRouterDevtools position="top-right" />
         <ReactQueryDevtools />
         <Scripts />
       </body>

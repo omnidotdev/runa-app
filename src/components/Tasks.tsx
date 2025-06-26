@@ -171,7 +171,7 @@ const Tasks = ({
                   </div>
 
                   {!!task?.labels?.length && (
-                    <div className="-mx-3 -mb-3 flex items-center bg-base-50/80 px-3 py-3 dark:bg-base-800/20">
+                    <div className="-mx-3 -mb-3 flex items-center bg-base-50/80 px-3 py-3 dark:bg-base-800/40">
                       <div className="flex flex-wrap gap-1">
                         {task.labels.map(
                           (label: { name: string; color: string }) => {

@@ -1,10 +1,11 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound } from "@tanstack/react-router";
-import { Grid2X2Icon, ListIcon, SearchIcon, SettingsIcon } from "lucide-react";
+import { Grid2X2Icon, ListIcon, SearchIcon } from "lucide-react";
 
 import Board from "@/components/Board";
 import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
+import ProjectSettings from "@/components/ProjectSettings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUpdateProjectMutation } from "@/generated/graphql";
@@ -113,13 +114,8 @@ function ProjectPage() {
                   </div>
                 )}
               </Button>
-              <Button
-                // onClick={onOpenSettings}
-                variant="outline"
-              >
-                <SettingsIcon className="h-4 w-4" />
-                Settings
-              </Button>
+
+              <ProjectSettings />
             </div>
           </div>
         </div>
