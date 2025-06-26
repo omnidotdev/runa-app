@@ -160,7 +160,7 @@ const Tasks = ({
                   {!!task?.labels?.length && (
                     <div className="-mx-3 -mb-3 flex items-center bg-base-50/80 p-2.5 dark:bg-base-800/40">
                       <div className="flex flex-wrap gap-1">
-                        {task.labels.map(
+                        {JSON.parse(task.labels).map(
                           (label: { name: string; color: string }) => {
                             const colors = getLabelClasses(label.color);
 

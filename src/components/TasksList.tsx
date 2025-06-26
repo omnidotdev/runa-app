@@ -118,7 +118,7 @@ const TasksList = ({
                       )}
                       {!!task?.labels?.length && (
                         <div className="flex flex-wrap gap-1">
-                          {task.labels.map(
+                          {JSON.parse(task.labels).map(
                             (label: { name: string; color: string }) => {
                               const colors = getLabelClasses(label.color);
 
