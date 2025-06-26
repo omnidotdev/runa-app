@@ -19,6 +19,7 @@ import {
 import tasksCollection from "@/lib/collections/tasks.collection";
 import projectOptions from "@/lib/options/project.options";
 import { cn } from "@/lib/utils";
+import { Badge } from "./ui/badge";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
@@ -155,15 +156,15 @@ const Tasks = ({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
                       {!!task?.assignees?.nodes?.length && (
-                        <div className="-space-x-2 flex">
+                        <div className="-space-x-1.5 flex">
                           {task.assignees.nodes?.map((assignee) => (
-                            <div
+                            // TODO: fallback with initial
+                            <img
                               key={assignee?.rowId}
-                              className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-800 dark:bg-base-600 dark:text-base-100"
-                              title={assignee?.user?.name}
-                            >
-                              {assignee?.user?.name[0].toUpperCase()}
-                            </div>
+                              src={assignee?.user?.avatarUrl!}
+                              alt={assignee?.user?.name}
+                              className="size-6 rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
+                            />
                           ))}
                         </div>
                       )}
@@ -178,23 +179,23 @@ const Tasks = ({
                   </div>
 
                   {!!task?.labels?.length && (
-                    <div className="-mx-3 -mb-3 flex items-center bg-base-50/80 px-3 py-3 dark:bg-base-800/40">
+                    <div className="-mx-3 -mb-3 flex items-center bg-base-50/80 p-2.5 dark:bg-base-800/40">
                       <div className="flex flex-wrap gap-1">
                         {task.labels.map(
                           (label: { name: string; color: string }) => {
                             return (
-                              <div
+                              <Badge
                                 key={label.name}
-                                className="flex items-center gap-1 rounded-full px-2 py-1"
+                                size="sm"
                                 style={{
                                   backgroundColor: `${label.color}99`,
                                 }}
                               >
-                                <TagIcon className="size-3 text-black" />
-                                <span className="font-medium text-black text-xs">
+                                <TagIcon className="!size-2.5 text-black" />
+                                <span className="font-medium text-[10px] text-black">
                                   {label.name}
                                 </span>
-                              </div>
+                              </Badge>
                             );
                           },
                         )}

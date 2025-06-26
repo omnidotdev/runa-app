@@ -14,6 +14,7 @@ import {
 import tasksCollection from "@/lib/collections/tasks.collection";
 import projectOptions from "@/lib/options/project.options";
 import { cn } from "@/lib/utils";
+import { Badge } from "./ui/badge";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
@@ -145,18 +146,18 @@ const TasksList = ({
                           {task.labels.map(
                             (label: { name: string; color: string }) => {
                               return (
-                                <div
+                                <Badge
                                   key={label.name}
-                                  className="flex items-center gap-1 rounded-full px-1.5 py-0.5"
+                                  size="sm"
                                   style={{
                                     backgroundColor: `${label.color}99`,
                                   }}
                                 >
-                                  <TagIcon className="size-3 text-black" />
-                                  <span className="font-medium text-black text-xs">
+                                  <TagIcon className="!size-2.5 text-black" />
+                                  <span className="font-medium text-[10px] text-black">
                                     {label.name}
                                   </span>
-                                </div>
+                                </Badge>
                               );
                             },
                           )}
