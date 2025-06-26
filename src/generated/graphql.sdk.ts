@@ -3659,6 +3659,13 @@ export type WorkspaceUserPatch = {
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type CreateAssigneeMutationVariables = Exact<{
+  input: CreateAssigneeInput;
+}>;
+
+
+export type CreateAssigneeMutation = { __typename?: 'Mutation', createAssignee?: { __typename?: 'CreateAssigneePayload', assignee?: { __typename?: 'Assignee', rowId: string } | null } | null };
+
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
@@ -3754,6 +3761,15 @@ export type WorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string } | null> } | null };
 
 
+export const CreateAssigneeDocument = gql`
+    mutation CreateAssignee($input: CreateAssigneeInput!) {
+  createAssignee(input: $input) {
+    assignee {
+      rowId
+    }
+  }
+}
+    `;
 export const CreateProjectDocument = gql`
     mutation CreateProject($input: CreateProjectInput!) {
   createProject(input: $input) {
@@ -3927,6 +3943,9 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
+    CreateAssignee(variables: CreateAssigneeMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateAssigneeMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateAssigneeMutation>({ document: CreateAssigneeDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateAssignee', 'mutation', variables);
+    },
     CreateProject(variables: CreateProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateProjectMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateProjectMutation>({ document: CreateProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateProject', 'mutation', variables);
     },

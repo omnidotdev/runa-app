@@ -60,7 +60,7 @@ const WorkspaceSelector = () => {
           </SelectValueText>
         </SelectTrigger>
 
-        <SelectContent className="w-full max-w-40 items-center gap-2">
+        <SelectContent className="items-center gap-2">
           <SelectItemGroup className="flex min-w-36 flex-col gap-1">
             {collection.items.map((item) => (
               <SelectItem

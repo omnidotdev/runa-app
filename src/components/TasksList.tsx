@@ -102,7 +102,7 @@ const TasksList = ({
                         {task?.content}
                       </span>
                     </div>
-                    <div className="mt-3 flex flex-wrap items-center gap-1">
+                    <div className="-ml-2 mt-3 flex flex-wrap items-center gap-1">
                       {!!task?.assignees?.nodes?.length && (
                         <div className="-space-x-5.5 flex">
                           {task.assignees.nodes?.map((assignee) => (
@@ -111,7 +111,7 @@ const TasksList = ({
                               fallback={assignee?.user?.name?.charAt(0)}
                               src={assignee?.user?.avatarUrl!}
                               alt={assignee?.user?.name}
-                              className="size-6 rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
+                              className="size-6 rounded-full border-2 border-base-100 bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
                             />
                           ))}
                         </div>

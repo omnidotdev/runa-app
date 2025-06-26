@@ -49,11 +49,16 @@ import {
   SelectItemText,
   SelectTrigger,
 } from "@/components/ui/select";
+import {
+  useCreateAssigneeMutation,
+  useCreateTaskMutation,
+} from "@/generated/graphql";
 import { labelColors } from "@/lib/constants/labelColors";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
 import usersOptions from "@/lib/options/users.options";
 import { cn } from "@/lib/utils";
+import getQueryClient from "@/utils/getQueryClient";
 
 interface Props {
   columnId: string;
@@ -71,6 +76,8 @@ const CreateTaskDialog = ({ columnId }: Props) => {
 
   const titleRef = useRef<HTMLInputElement>(null);
   const editorContainerRef = useRef<HTMLDivElement>(null);
+
+  const queryClient = getQueryClient();
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
@@ -113,14 +120,21 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     })),
   });
 
-  const { Field, Subscribe, handleSubmit, reset } = useForm({
+  const { mutateAsync: addNewTask } = useCreateTaskMutation();
+  const { mutate: addNewAssignee } = useCreateAssigneeMutation();
+
+  const { Field, Subscribe, handleSubmit, reset, setFieldValue } = useForm({
     defaultValues: {
       title: "",
       description: "",
       labels: projectLabels,
-      assignees: users?.map((user) => user?.rowId!) ?? [],
+      assignees: [] as string[],
     },
-    onSubmit({ value, formApi }) {
+    onSubmit: async ({ value, formApi }) => {
+      // TODO: dynamic with auth
+      const authorId = "024bec7c-5822-4b34-f993-39cbc613e1c9";
+
+      // TODO: add any new labels to the project labels as well?
       const addedLabels = value.labels
         .filter((l) => l.checked)
         .map((label) => ({
@@ -128,7 +142,32 @@ const CreateTaskDialog = ({ columnId }: Props) => {
           color: label.color,
         }));
 
-      alert(JSON.stringify(addedLabels));
+      const { createTask } = await addNewTask({
+        input: {
+          task: {
+            content: value.title,
+            description: value.description,
+            columnId,
+            authorId,
+            labels: JSON.stringify(addedLabels),
+          },
+        },
+      });
+
+      if (createTask && value.assignees.length) {
+        for (const assignee of value.assignees) {
+          addNewAssignee({
+            input: {
+              assignee: {
+                userId: assignee,
+                taskId: createTask.task?.rowId!,
+              },
+            },
+          });
+        }
+      }
+
+      queryClient.invalidateQueries();
       formApi.reset();
       setIsOpen(false);
     },
@@ -159,6 +198,8 @@ const CreateTaskDialog = ({ columnId }: Props) => {
         spellcheck: "false",
       },
     },
+    // TODO: discuss. This saves the HTML in db, i.e. `<p>Testing <strong>bold</strong> text</p>` which we could later render. `getText` removes any rich text
+    onUpdate: ({ editor }) => setFieldValue("description", editor.getHTML()),
   });
 
   const handleContainerClick = () => {
@@ -211,41 +252,55 @@ const CreateTaskDialog = ({ columnId }: Props) => {
             </Field>
 
             <div className="flex gap-3">
-              {/* @ts-ignore TODO type issues */}
-              <Select collection={usersCollection} multiple>
-                <SelectTrigger
-                  showIcon={false}
-                  className={cn(
-                    buttonVariants({ variant: "outline" }),
-                    "[&[data-state=open]>svg]:rotate-0 [&_svg:not([class*='text-'])]:text-foreground",
-                  )}
-                >
-                  <UserPlusIcon className="size-4" />
-                  Assign
-                </SelectTrigger>
+              <Field name="assignees">
+                {(field) => {
+                  return (
+                    <Select
+                      // @ts-ignore TODO: fix type issue
+                      collection={usersCollection}
+                      multiple
+                      onValueChange={({ value }) =>
+                        value.length
+                          ? field.setValue(value)
+                          : field.clearValues()
+                      }
+                    >
+                      <SelectTrigger
+                        showIcon={false}
+                        className={cn(
+                          buttonVariants({ variant: "outline" }),
+                          "[&[data-state=open]>svg]:rotate-0 [&_svg:not([class*='text-'])]:text-foreground",
+                        )}
+                      >
+                        <UserPlusIcon className="size-4" />
+                        Assign
+                      </SelectTrigger>
 
-                <SelectContent className="max-h-80 overflow-auto">
-                  <SelectItemGroup>
-                    {usersCollection.items.map((item) => {
-                      return (
-                        <SelectItem
-                          key={item.value}
-                          item={item}
-                          className="flex items-center gap-2"
-                        >
-                          <Avatar
-                            src={item.user?.avatarUrl!}
-                            alt={item.user?.name}
-                            fallback={item.user?.name?.charAt(0)}
-                            className="size-6 rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
-                          />
-                          <SelectItemText>{item.label}</SelectItemText>
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectItemGroup>
-                </SelectContent>
-              </Select>
+                      <SelectContent className="max-h-80 overflow-auto">
+                        <SelectItemGroup className="flex flex-col gap-1">
+                          {usersCollection.items.map((item) => {
+                            return (
+                              <SelectItem
+                                key={item.value}
+                                item={item}
+                                className="flex items-center justify-start gap-1 px-1 py-0.5"
+                              >
+                                <Avatar
+                                  src={item.user?.avatarUrl!}
+                                  alt={item.user?.name}
+                                  fallback={item.user?.name?.charAt(0)}
+                                  className="size-6 rounded-full"
+                                />
+                                <SelectItemText>{item.label}</SelectItemText>
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectItemGroup>
+                      </SelectContent>
+                    </Select>
+                  );
+                }}
+              </Field>
 
               <PopoverRoot>
                 <PopoverTrigger asChild>

@@ -109,7 +109,7 @@ const Tasks = ({
                 <div className="flex flex-col gap-1">
                   <div className="flex items-start gap-2">
                     {columnTitle && (
-                      <div className="flex-shrink-0">
+                      <div className="mt-0.5 flex-shrink-0">
                         {
                           columnIcons[
                             columnTitle
@@ -119,7 +119,7 @@ const Tasks = ({
                         }
                       </div>
                     )}
-                    <div className="min-w-0 flex-1">
+                    <div className="mt-0.5 min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
                           {displayId}
@@ -130,10 +130,8 @@ const Tasks = ({
                         {task?.content}
                       </p>
                     </div>
-                  </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1">
+                    <div className="-mt-2.5 -mr-2 flex items-center gap-1">
                       {!!task?.assignees?.nodes?.length && (
                         <div className="-space-x-5.5 flex">
                           {task.assignees.nodes?.map((assignee) => (
@@ -142,47 +140,49 @@ const Tasks = ({
                               fallback={assignee?.user?.name?.charAt(0)}
                               src={assignee?.user?.avatarUrl!}
                               alt={assignee?.user?.name}
-                              className="size-6 rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
+                              className="size-6 rounded-full border-2 border-base-100 bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
                             />
                           ))}
                         </div>
                       )}
                     </div>
+                  </div>
+
+                  <div className="grid grid-cols-4">
+                    {!!task?.labels?.length && (
+                      <div className="-m-3 col-span-3 flex items-end p-2.5">
+                        <div className="flex flex-wrap gap-1">
+                          {JSON.parse(task.labels).map(
+                            (label: { name: string; color: string }) => {
+                              const colors = getLabelClasses(label.color);
+
+                              return (
+                                <Badge
+                                  key={label.name}
+                                  size="sm"
+                                  className={cn(colors.bg, colors.text)}
+                                >
+                                  <TagIcon
+                                    className={cn("!size-2.5", colors.icon)}
+                                  />
+                                  <span className="font-medium text-[10px]">
+                                    {label.name}
+                                  </span>
+                                </Badge>
+                              );
+                            },
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     {task?.dueDate && (
-                      <div className="mr-1 flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
+                      <div className="col-span-1 mr-1 flex items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
                         <CalendarIcon className="h-3 w-3" />
                         <span>{format(new Date(task.dueDate), "MMM d")}</span>
                       </div>
                     )}
                   </div>
-
-                  {!!task?.labels?.length && (
-                    <div className="-m-3 flex items-center p-2.5">
-                      <div className="flex flex-wrap gap-1">
-                        {JSON.parse(task.labels).map(
-                          (label: { name: string; color: string }) => {
-                            const colors = getLabelClasses(label.color);
-
-                            return (
-                              <Badge
-                                key={label.name}
-                                size="sm"
-                                className={cn(colors.bg, colors.text)}
-                              >
-                                <TagIcon
-                                  className={cn("!size-2.5", colors.icon)}
-                                />
-                                <span className="font-medium text-[10px]">
-                                  {label.name}
-                                </span>
-                              </Badge>
-                            );
-                          },
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             )}
