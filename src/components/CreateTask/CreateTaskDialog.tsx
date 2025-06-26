@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -14,11 +14,18 @@ import {
   TagIcon,
   TypeIcon,
   UserPlusIcon,
-  XIcon,
 } from "lucide-react";
 import { useRef, useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Avatar } from "@/components/ui/avatar";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  CheckboxControl,
+  CheckboxHiddenInput,
+  CheckboxIndicator,
+  CheckboxLabel,
+  CheckboxRoot,
+} from "@/components/ui/checkbox";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
@@ -27,31 +34,26 @@ import {
   DialogRoot,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { labelColors } from "@/lib/constants/labelColors";
-import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import projectOptions from "@/lib/options/project.options";
-import { cn } from "@/lib/utils";
-import {
-  CheckboxControl,
-  CheckboxHiddenInput,
-  CheckboxIndicator,
-  CheckboxLabel,
-  CheckboxRoot,
-} from "../ui/checkbox";
 import {
   PopoverContent,
   PopoverPositioner,
   PopoverRoot,
   PopoverTrigger,
-} from "../ui/popover";
+} from "@/components/ui/popover";
 import {
+  createListCollection,
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
+  SelectItemGroup,
   SelectItemText,
   SelectTrigger,
-} from "../ui/select";
+} from "@/components/ui/select";
+import { labelColors } from "@/lib/constants/labelColors";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import projectOptions from "@/lib/options/project.options";
+import usersOptions from "@/lib/options/users.options";
+import { cn } from "@/lib/utils";
 
 interface Props {
   columnId: string;
@@ -67,11 +69,17 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     color: "blue",
   });
 
+  const titleRef = useRef<HTMLInputElement>(null);
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
     select: (data) => data?.project,
+  });
+
+  const { data: users } = useQuery({
+    ...usersOptions,
+    select: (data) => data?.users?.nodes,
   });
 
   const { isOpen, setIsOpen } = useDialogStore({
@@ -88,11 +96,29 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       checked: false,
     }));
 
+  const usersCollection = createListCollection({
+    items:
+      users?.map((user) => ({
+        label: user?.name || "",
+        value: user?.rowId || "",
+        user: user,
+      })) || [],
+  });
+
+  const colorCollection = createListCollection({
+    items: labelColors.map((color) => ({
+      label: color.name,
+      value: color.name.toLowerCase(),
+      color: color,
+    })),
+  });
+
   const { Field, Subscribe, handleSubmit, reset } = useForm({
     defaultValues: {
       title: "",
       description: "",
       labels: projectLabels,
+      assignees: users?.map((user) => user?.rowId!) ?? [],
     },
     onSubmit({ value, formApi }) {
       const addedLabels = value.labels
@@ -148,15 +174,14 @@ const CreateTaskDialog = ({ columnId }: Props) => {
         setIsOpen(open);
         reset();
       }}
+      initialFocusEl={() => titleRef.current}
       // TODO: remove when state management with select and popover is resolved
       closeOnInteractOutside={false}
     >
       <DialogBackdrop />
       <DialogPositioner>
         <DialogContent>
-          <DialogCloseTrigger className="absolute top-4 right-4 rounded-full p-1">
-            <XIcon className="size-4" />
-          </DialogCloseTrigger>
+          <DialogCloseTrigger />
 
           <form
             className="flex flex-col gap-2"
@@ -175,9 +200,9 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                       : `PROJ-${totalTasks}`}
                   </span>
                   <Input
-                    className="border-none shadow-none focus-visible:ring-0"
+                    ref={titleRef}
+                    className="border-none shadow-none focus-visible:ring-0 dark:bg-transparent"
                     placeholder="Task Title"
-                    autoFocus
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
@@ -186,10 +211,41 @@ const CreateTaskDialog = ({ columnId }: Props) => {
             </Field>
 
             <div className="flex gap-3">
-              <Button variant="outline">
-                <UserPlusIcon className="size-4" />
-                Assign
-              </Button>
+              {/* @ts-ignore TODO type issues */}
+              <Select collection={usersCollection} multiple>
+                <SelectTrigger
+                  showIcon={false}
+                  className={cn(
+                    buttonVariants({ variant: "outline" }),
+                    "[&[data-state=open]>svg]:rotate-0 [&_svg:not([class*='text-'])]:text-foreground",
+                  )}
+                >
+                  <UserPlusIcon className="size-4" />
+                  Assign
+                </SelectTrigger>
+
+                <SelectContent className="max-h-80 overflow-auto">
+                  <SelectItemGroup>
+                    {usersCollection.items.map((item) => {
+                      return (
+                        <SelectItem
+                          key={item.value}
+                          item={item}
+                          className="flex items-center gap-2"
+                        >
+                          <Avatar
+                            src={item.user?.avatarUrl!}
+                            alt={item.user?.name}
+                            fallback={item.user?.name?.charAt(0)}
+                            className="size-6 rounded-full border-2 border-white bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
+                          />
+                          <SelectItemText>{item.label}</SelectItemText>
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectItemGroup>
+                </SelectContent>
+              </Select>
 
               <PopoverRoot>
                 <PopoverTrigger asChild>
@@ -208,11 +264,13 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                             <div className="flex items-center gap-2 pb-2">
                               {/* TODO: make sure that selection doesn't close popover. Happens if value is outside the bounds of the popover */}
                               <Select
-                                value={newLabel.color}
-                                onValueChange={(value) => {
+                                // @ts-ignore TODO: type issue
+                                collection={colorCollection}
+                                value={[newLabel.color]}
+                                onValueChange={(details) => {
                                   setNewLabel((prev) => ({
                                     ...prev,
-                                    color: value,
+                                    color: details.value[0] || "blue",
                                   }));
                                 }}
                               >
@@ -229,25 +287,22 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                                   />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectGroup>
-                                    {labelColors.map((color) => (
-                                      <SelectItem
-                                        key={color.name}
-                                        value={color.name.toLowerCase()}
-                                      >
+                                  <SelectItemGroup>
+                                    {colorCollection.items.map((item) => (
+                                      <SelectItem key={item.value} item={item}>
                                         <SelectItemText>
-                                          {color.name}
+                                          {item.label}
                                         </SelectItemText>
 
                                         <div
                                           className={cn(
                                             "size-4 rounded-full",
-                                            color.classes,
+                                            item.color.classes,
                                           )}
                                         />
                                       </SelectItem>
                                     ))}
-                                  </SelectGroup>
+                                  </SelectItemGroup>
                                 </SelectContent>
                               </Select>
                               <Input
@@ -330,7 +385,8 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                 </PopoverPositioner>
               </PopoverRoot>
 
-              <Button variant="outline">
+              {/* TODO: implement. */}
+              <Button disabled variant="outline">
                 <CalendarIcon className="size-4" />
                 Set due date
               </Button>

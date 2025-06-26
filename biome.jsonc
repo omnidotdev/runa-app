@@ -34,7 +34,7 @@
         "useKeyWithClickEvents": "off"
       },
       "correctness": {
-        "noUnusedImports": "error"
+        "noUnusedImports": { "fix": "safe", "level": "error" }
       },
       "nursery": {
         "useUniqueElementIds": "off",
@@ -43,7 +43,7 @@
           "fix": "safe",
           "options": {
             "attributes": ["className"],
-            "functions": ["cn, cva"]
+            "functions": ["cn, cva, tv"]
           }
         }
       },

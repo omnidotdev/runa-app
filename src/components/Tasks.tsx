@@ -106,7 +106,7 @@ const Tasks = ({
                     : "shadow-sm hover:shadow-md"
                 }`}
               >
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1">
                   <div className="flex items-start gap-2">
                     {columnTitle && (
                       <div className="flex-shrink-0">
@@ -158,7 +158,7 @@ const Tasks = ({
                   </div>
 
                   {!!task?.labels?.length && (
-                    <div className="-mx-3 -mb-3 flex items-center bg-base-50/80 p-2.5 dark:bg-base-800/40">
+                    <div className="-m-3 flex items-center p-2.5">
                       <div className="flex flex-wrap gap-1">
                         {JSON.parse(task.labels).map(
                           (label: { name: string; color: string }) => {

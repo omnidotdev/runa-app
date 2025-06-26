@@ -5,14 +5,15 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
+  createListCollection,
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
+  SelectItemGroup,
   SelectItemText,
   SelectSeparator,
   SelectTrigger,
-  SelectValue,
+  SelectValueText,
 } from "@/components/ui/select";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -41,34 +42,46 @@ const WorkspaceSelector = () => {
     type: DialogType.CreateWorkspace,
   });
 
+  const collection = createListCollection({
+    items:
+      workspaces?.map((workspace) => ({
+        label: workspace?.name || "",
+        value: workspace?.rowId || "",
+      })) ?? [],
+  });
+
   return (
     <>
       <Select
+        // @ts-ignore TODO type issues
+        collection={collection}
         open={isSelectOpen}
-        onOpenChange={setIsSelectOpen}
-        value={String(currentWorkspace?.rowId)}
-        onValueChange={(value) => {
-          navigate({
-            to: "/workspaces/$workspaceId/projects",
-            params: { workspaceId: value },
-          });
+        onOpenChange={({ open }) => setIsSelectOpen(open)}
+        value={currentWorkspace?.rowId ? [String(currentWorkspace.rowId)] : []}
+        onValueChange={(details) => {
+          if (details.value[0]) {
+            navigate({
+              to: "/workspaces/$workspaceId/projects",
+              params: { workspaceId: details.value[0] },
+            });
+          }
           setIsSelectOpen(false);
         }}
       >
         <SelectTrigger className="w-full max-w-40 flex-1">
-          <SelectValue>
+          <SelectValueText>
             {currentWorkspace?.name || "Select Workspace"}
-          </SelectValue>
+          </SelectValueText>
         </SelectTrigger>
         {/* TODO: handle overflow with maxH. Also will need to look into "New Workspace" button since its on the bottom of the list. */}
         <SelectContent>
-          <SelectGroup className="flex flex-col gap-1">
-            {workspaces?.map((workspace) => (
-              <SelectItem key={workspace?.rowId} value={workspace?.rowId!}>
-                <SelectItemText>{workspace?.name}</SelectItemText>
+          <SelectItemGroup className="flex flex-col gap-1">
+            {collection.items.map((item) => (
+              <SelectItem key={item.value} item={item}>
+                <SelectItemText>{item.label}</SelectItemText>
               </SelectItem>
             ))}
-          </SelectGroup>
+          </SelectItemGroup>
 
           <SelectSeparator />
 

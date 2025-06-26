@@ -19,7 +19,6 @@
   "dependencies": {
     "@ark-ui/react": "^5.15.1",
     "@hello-pangea/dnd": "^18.0.1",
-    "@radix-ui/react-select": "^2.2.5",
     "@tailwindcss/vite": "^4.1.10",
     "@tanstack/db-collections": "^0.0.15",
     "@tanstack/react-db": "^0.0.12",
