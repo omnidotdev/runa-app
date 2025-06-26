@@ -1,5 +1,6 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { useLiveQuery } from "@tanstack/react-db";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 
 import tasksCollection from "@/lib/collections/tasks.collection";
+import projectOptions from "@/lib/options/project.options";
 import { cn } from "@/lib/utils";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
@@ -56,6 +58,11 @@ const TasksList = ({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
+  const { data: project } = useSuspenseQuery({
+    ...projectOptions(projectId),
+    select: (data) => data?.project,
+  });
+
   const projectTasksCollection = tasksCollection(projectId);
 
   const { data: tasks } = useLiveQuery((q) =>
@@ -66,6 +73,13 @@ const TasksList = ({
       .select("@*"),
   );
 
+  const taskIndex = (taskId: string) =>
+    project?.columns?.nodes
+      ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task?.rowId))
+      // TODO: sort by createdAt or whatever we decide
+      .sort()
+      .indexOf(taskId);
+
   return (
     <div
       className={cn(
@@ -75,7 +89,7 @@ const TasksList = ({
       {...rest}
     >
       {tasks?.map((task, index) => {
-        const displayId = `${prefix}-0`;
+        const displayId = `${prefix}-${taskIndex(task?.rowId!) ? taskIndex(task?.rowId!) : 0}`;
         const PriorityIcon = getPriorityIcon(task?.priority!);
 
         return (

@@ -90,10 +90,17 @@ const Tasks = ({
     (column) => column?.rowId === columnId,
   )?.title;
 
+  const taskIndex = (taskId: string) =>
+    project?.columns?.nodes
+      ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task?.rowId))
+      // TODO: sort by createdAt or whatever we decide
+      .sort()
+      .indexOf(taskId);
+
   return (
     <div className={cn("flex-1 p-2", className)} {...rest}>
       {tasks?.map((task, index) => {
-        const displayId = `${prefix}-0`;
+        const displayId = `${prefix}-${taskIndex(task?.rowId!) ? taskIndex(task?.rowId!) : 0}`;
         const PriorityIcon = getPriorityIcon(task?.priority!);
 
         return (
