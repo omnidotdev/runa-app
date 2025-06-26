@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { FolderOpen, LogOut, Plus } from "lucide-react";
+import { Database, FolderOpen, LogOut, Plus } from "lucide-react";
 
 import CreateProjectDialog from "@/components/CreateProjectDialog";
 import Link from "@/components/core/Link";
@@ -24,6 +24,10 @@ const Sidebar = () => {
     type: DialogType.CreateProject,
   });
 
+  const { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
+    type: DialogType.CreateWorkspace,
+  });
+
   return (
     <>
       <div className="grid h-full grid-rows-[auto_1fr_auto] border-r bg-background">
@@ -34,6 +38,36 @@ const Sidebar = () => {
         </div>
 
         <div className="flex flex-col overflow-hidden p-4">
+          <Link
+            to="/workspaces"
+            params={{
+              workspaceId: workspaceId!,
+            }}
+            variant="ghost"
+            activeOptions={{ exact: true }}
+            activeProps={{
+              variant: "outline",
+            }}
+            className="mb-2 w-full justify-start"
+          >
+            <div className="flex items-center gap-2">
+              <Database className="text-base-500" />
+              <span>Workspaces</span>
+            </div>
+
+            <Button
+              variant="outline"
+              size="icon"
+              className="ml-auto size-6"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsCreateWorkspaceOpen(true);
+              }}
+            >
+              <Plus className="text-base-500" />
+            </Button>
+          </Link>
+
           {workspaceId && (
             <>
               <Link

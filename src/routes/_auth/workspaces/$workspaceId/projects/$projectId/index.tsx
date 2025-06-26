@@ -66,7 +66,7 @@ function ProjectPage() {
   return (
     <div className="flex size-full">
       <div className="flex size-full flex-col">
-        <div className="border-base-200 border-b px-6 py-4 dark:border-base-700">
+        <div className="border-b px-6 py-4">
           <div className="flex flex-col gap-4">
             <div>
               <h1 className="mb-1 font-bold text-2xl text-base-800 sm:mb-2 sm:text-3xl dark:text-base-100">

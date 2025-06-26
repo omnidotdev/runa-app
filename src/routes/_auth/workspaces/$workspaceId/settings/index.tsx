@@ -14,6 +14,7 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/utils/getQueryClient";
 
 import type { Assignee } from "@/types";
@@ -48,7 +49,10 @@ function SettingsPage() {
 
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
     onMutate: () => navigate({ to: "/workspaces", replace: true }),
-    onSettled: () => setIsDeleteWorkspaceOpen(false),
+    onSettled: () => {
+      setIsDeleteWorkspaceOpen(false);
+      queryClient.invalidateQueries(workspacesOptions);
+    },
   });
 
   const { mutate: deleteProject } = useDeleteProjectMutation({

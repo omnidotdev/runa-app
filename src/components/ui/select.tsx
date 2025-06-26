@@ -11,12 +11,12 @@ import type { ComponentProps } from "react";
 
 const selectVariants = tv({
   slots: {
-    root: "w-full",
+    root: "",
     label:
       "text-muted-foreground text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
     control: "",
     trigger:
-      "flex w-full cursor-pointer items-center justify-between gap-2 whitespace-nowrap rounded-md bg-base-100 px-3 py-2 text-foreground text-xs shadow-xs outline-none transition-all hover:bg-base-200 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[size=default]:h-9 data-[size=sm]:h-8 dark:bg-base-700 dark:aria-invalid:ring-destructive/40 dark:hover:bg-base-800 [&[data-state=open]>svg]:rotate-180 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      "flex w-fit cursor-pointer items-center justify-between gap-2 whitespace-nowrap rounded-md bg-base-100 px-3 py-2 text-foreground text-xs shadow-xs outline-none transition-all hover:bg-base-200 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[size=default]:h-9 data-[size=sm]:h-8 dark:bg-base-700 dark:aria-invalid:ring-destructive/40 dark:hover:bg-base-800 [&[data-state=open]>svg]:rotate-180 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0",
     valueText: "line-clamp-1 flex items-center gap-2",
     indicator: "size-4 transition-transform",
     clearTrigger:
