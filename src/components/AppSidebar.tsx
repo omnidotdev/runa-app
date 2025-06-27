@@ -290,6 +290,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         }}
         dialogType={DialogType.DeleteProject}
         confirmation={`permanently delete ${selectedProject?.name}`}
+        inputProps={{
+          className: "focus-visible:ring-red-500",
+        }}
       />
     </>
   );

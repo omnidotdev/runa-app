@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import useDialogStore from "@/lib/hooks/store/useDialogStore";
 
+import type { ComponentProps } from "react";
 import type { DialogType } from "@/lib/hooks/store/useDialogStore";
 
 interface ConfirmDialogProps {
@@ -22,6 +23,7 @@ interface ConfirmDialogProps {
   onConfirm: () => void;
   dialogType: DialogType;
   confirmation?: string;
+  inputProps?: ComponentProps<typeof Input>;
 }
 
 const ConfirmDialog = ({
@@ -30,6 +32,7 @@ const ConfirmDialog = ({
   onConfirm,
   dialogType,
   confirmation = "",
+  inputProps,
 }: ConfirmDialogProps) => {
   const { isOpen, setIsOpen } = useDialogStore({ type: dialogType });
   const [userInput, setUserInput] = useState("");
@@ -74,6 +77,7 @@ const ConfirmDialog = ({
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               placeholder={confirmation}
+              {...inputProps}
             />
           </div>
 
