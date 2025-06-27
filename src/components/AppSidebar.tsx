@@ -145,7 +145,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <PlusIcon /> <span className="sr-only">Add Workspace</span>
             </SidebarGroupAction>
 
-            <SidebarMenuButton asChild>
+            {/* TODO: look into hover when sidebar is collapsed. The hitbox for the link seems off */}
+            <SidebarMenuButton asChild tooltip="Settings">
               <Link
                 to="/workspaces/$workspaceId/settings"
                 params={{ workspaceId: workspaceId! }}
@@ -170,7 +171,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 {workspace?.projects.nodes.map((project) => (
                   <SidebarMenuItem key={project?.rowId}>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild tooltip={project?.name}>
                       <Link
                         key={project?.rowId}
                         to="/workspaces/$workspaceId/projects/$projectId"
