@@ -11,10 +11,13 @@ import {
 } from "@/components/ui/collapsible";
 import tasksCollection from "@/lib/collections/tasks.collection";
 import projectOptions from "@/lib/options/project.options";
+import { useTheme } from "@/providers/ThemeProvider";
 
 import type { DropResult } from "@hello-pangea/dnd";
 
 const ListView = () => {
+  const { theme } = useTheme();
+
   const { projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
@@ -53,7 +56,11 @@ const ListView = () => {
       <div
         className="custom-scrollbar h-full overflow-y-auto p-4"
         style={{
-          backgroundColor: project?.color ? `${project?.color}10` : undefined,
+          backgroundColor: project?.color
+            ? theme === "dark"
+              ? `${project?.color}05`
+              : `${project?.color}0D`
+            : undefined,
         }}
       >
         {project?.columns?.nodes?.map((column) => {
