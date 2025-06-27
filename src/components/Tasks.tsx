@@ -100,7 +100,7 @@ const Tasks = ({
                     },
                   })
                 }
-                className={`mb-2 cursor-pointer rounded-lg border border-base-200/50 bg-white p-3 dark:border-base-800/50 dark:bg-base-900 ${
+                className={`mb-2 cursor-pointer rounded-lg border border-base-200/50 bg-background p-3 dark:border-base-800/50 ${
                   snapshot.isDragging
                     ? "shadow-lg ring-2 ring-primary-500 ring-opacity-50"
                     : "shadow-sm hover:shadow-md"

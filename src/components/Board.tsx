@@ -136,7 +136,7 @@ const Board = () => {
                 {project?.columns?.nodes?.map((column) => (
                   <div
                     key={column?.rowId}
-                    className="no-scrollbar relative flex w-80 flex-col overflow-y-auto rounded-lg bg-base-50/80 shadow-sm dark:bg-base-800/15 dark:shadow-base-50/10"
+                    className="no-scrollbar relative flex w-80 flex-col overflow-y-auto rounded-lg bg-base-50/80 shadow-sm dark:bg-background/60 dark:shadow-base-900"
                     style={{ minHeight: "4px" }}
                   >
                     <div className="sticky top-0 z-10 flex items-center justify-between border-base-200 border-b bg-base-50 p-3 dark:border-base-800 dark:bg-base-900">
