@@ -106,7 +106,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <div className="group-data-[collapsible=icon]:hidden">
                       <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-medium">
-                          {workspace?.name}
+                          {workspace?.name ?? "Select Workspace"}
                         </span>
                       </div>
                     </div>
@@ -146,20 +146,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarGroupAction>
 
             {/* TODO: look into hover when sidebar is collapsed. The hitbox for the link seems off */}
-            <SidebarMenuButton asChild tooltip="Settings">
-              <Link
-                to="/workspaces/$workspaceId/settings"
-                params={{ workspaceId: workspaceId! }}
-                variant="ghost"
-                className="justify-start"
-                activeProps={{
-                  variant: "outline",
-                }}
-              >
-                <SettingsIcon />
-                Settings
-              </Link>
-            </SidebarMenuButton>
+            {workspaceId && (
+              <SidebarMenuButton asChild tooltip="Settings">
+                <Link
+                  to="/workspaces/$workspaceId/settings"
+                  params={{ workspaceId: workspaceId! }}
+                  variant="ghost"
+                  className="justify-start"
+                  activeProps={{
+                    variant: "outline",
+                  }}
+                >
+                  <SettingsIcon />
+                  Settings
+                </Link>
+              </SidebarMenuButton>
+            )}
           </SidebarGroup>
 
           {workspaceId && (
