@@ -187,12 +187,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         className="justify-start"
                       >
                         {project?.viewMode === "board" ? (
-                          <ListIcon
+                          <Grid2X2Icon
                             className="size-4"
                             style={{ color: project?.color ?? undefined }}
                           />
                         ) : (
-                          <Grid2X2Icon
+                          <ListIcon
                             className="size-4"
                             style={{ color: project?.color ?? undefined }}
                           />
