@@ -1,6 +1,7 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
+import { ChevronDownIcon } from "lucide-react";
 import { useCallback } from "react";
 
 import TasksList from "@/components/TasksList";
@@ -70,7 +71,7 @@ const ListView = () => {
               className="mb-4 rounded-lg bg-white shadow-sm last:mb-0 dark:bg-base-800"
               defaultOpen
             >
-              <CollapsibleTrigger className="flex w-full items-center gap-2 rounded-t-lg px-4 py-3 text-left">
+              <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 rounded-t-lg px-4 py-3 text-left">
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-base-900 text-sm dark:text-base-100">
                     {column?.title}
@@ -83,6 +84,7 @@ const ListView = () => {
                     }
                   </span>
                 </div>
+                <ChevronDownIcon className="size-4 transition-transform" />
               </CollapsibleTrigger>
 
               <CollapsibleContent>

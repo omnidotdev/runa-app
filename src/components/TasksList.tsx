@@ -91,18 +91,21 @@ const TasksList = ({
                     : ""
                 }`}
               >
-                <div className="flex min-w-0 flex-1 gap-2">
-                  <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
-                    {displayId}
-                  </span>
-                  {PriorityIcon}
-                  <div className="-mt-0.5 min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="truncate font-medium text-base-900 text-sm dark:text-base-100">
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <div className="flex items-start gap-2">
+                    <div className="mt-0.5 min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
+                          {displayId}
+                        </span>
+                        {PriorityIcon}
+                      </div>
+                      <p className="my-2 line-clamp-2 font-medium text-base-900 text-sm dark:text-base-100">
                         {task?.content}
-                      </span>
+                      </p>
                     </div>
-                    <div className="-ml-2 -mb-3 flex min-h-10 flex-wrap items-center gap-1">
+
+                    <div className="-mt-2.5 -mr-2 flex items-center gap-1">
                       {!!task?.assignees?.nodes?.length && (
                         <div className="-space-x-5.5 flex">
                           {task.assignees.nodes?.map((assignee) => (
@@ -116,7 +119,12 @@ const TasksList = ({
                           ))}
                         </div>
                       )}
-                      {!!task?.labels?.length && (
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-4">
+                    {!!task?.labels?.length && (
+                      <div className="-m-3 col-span-3 flex items-end p-2.5">
                         <div className="flex flex-wrap gap-1">
                           {JSON.parse(task.labels).map(
                             (label: { name: string; color: string }) => {
@@ -139,15 +147,16 @@ const TasksList = ({
                             },
                           )}
                         </div>
-                      )}
-                      {task?.dueDate && (
-                        <div className="ml-2 flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
-                          <CalendarIcon className="h-3 w-3" />
-                          {/* TODO: timezone handling */}
-                          <span>{format(new Date(task.dueDate), "MMM d")}</span>
-                        </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
+
+                    {task?.dueDate && (
+                      <div className="col-span-1 mr-1 flex items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
+                        <CalendarIcon className="h-3 w-3" />
+                        {/* TODO: timezone handling */}
+                        <span>{format(new Date(task.dueDate), "MMM d")}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
