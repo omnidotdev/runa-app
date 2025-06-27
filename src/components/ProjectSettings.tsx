@@ -61,7 +61,11 @@ const ProjectSettings = () => {
   });
 
   return (
-    <DialogRoot open={isOpen} onOpenChange={({ open }) => setIsOpen(open)}>
+    <DialogRoot
+      open={isOpen}
+      onOpenChange={({ open }) => setIsOpen(open)}
+      initialFocusEl={() => null}
+    >
       <DialogTrigger asChild>
         <Button variant="outline">
           <SettingsIcon className="h-4 w-4" />
