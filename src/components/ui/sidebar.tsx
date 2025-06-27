@@ -707,22 +707,31 @@ export {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupAction,
+  /** @knipignore */
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
+  /** @knipignore */
   SidebarInput,
+  /** @knipignore */
   SidebarInset,
   SidebarMenu,
   SidebarMenuAction,
+  /** @knipignore */
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  /** @knipignore */
   SidebarMenuSkeleton,
+  /** @knipignore */
   SidebarMenuSub,
+  /** @knipignore */
   SidebarMenuSubButton,
+  /** @knipignore */
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
+  /** @knipignore */
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,

@@ -184,7 +184,6 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       }),
       Placeholder.configure({
         placeholder: "Add a detailed description...",
-        showOnlyWhenEditable: true,
       }),
       TaskList,
       TaskItem.configure({
@@ -210,11 +209,13 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       open={isOpen}
       onOpenChange={({ open }) => {
         setIsOpen(open);
+        setNewLabel({
+          name: "",
+          color: "blue",
+        });
         form.reset();
       }}
       initialFocusEl={() => titleRef.current}
-      // TODO: remove when state management with select and popover is resolved
-      closeOnInteractOutside={false}
     >
       <DialogBackdrop />
       <DialogPositioner>

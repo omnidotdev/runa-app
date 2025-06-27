@@ -4,13 +4,13 @@ import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 
+import CreateTaskDialog from "@/components/CreateTask/CreateTaskDialog";
 import Tasks from "@/components/Tasks";
 import { Button } from "@/components/ui/button";
 import tasksCollection from "@/lib/collections/tasks.collection";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
 import { useTheme } from "@/providers/ThemeProvider";
-import CreateTaskDialog from "./CreateTask/CreateTaskDialog";
 
 import type { DropResult } from "@hello-pangea/dnd";
 

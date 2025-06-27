@@ -176,21 +176,33 @@ const MenuTriggerItem = ({
 );
 
 export {
+  /** @knipignore */
   MenuArrow,
+  /** @knipignore */
   MenuArrowTip,
   MenuContent,
   MenuItem,
+  /** @knipignore */
   MenuItemGroup,
+  /** @knipignore */
   MenuItemGroupLabel,
+  /** @knipignore */
   MenuCheckboxItem,
+  /** @knipignore */
   MenuRadioItem,
+  /** @knipignore */
   MenuRadioItemGroup,
+  /** @knipignore */
   MenuItemText,
+  /** @knipignore */
   MenuItemIndicator,
   MenuPositioner,
+  /** @knipignore */
   MenuProvider,
   MenuRoot,
+  /** @knipignore */
   MenuSeparator,
   MenuTrigger,
+  /** @knipignore */
   MenuTriggerItem,
 };
