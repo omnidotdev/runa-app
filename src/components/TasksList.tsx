@@ -85,7 +85,7 @@ const TasksList = ({
                     },
                   })
                 }
-                className={`flex cursor-pointer items-start bg-base-50/70 px-4 py-3 hover:bg-base-100/50 dark:bg-base-900/70 dark:hover:bg-base-900/80 ${
+                className={`flex cursor-pointer items-start bg-background px-4 py-3 hover:bg-base-50/50 dark:hover:bg-background/90 ${
                   snapshot.isDragging
                     ? "z-10 bg-white shadow-lg ring-2 ring-primary-500 ring-opacity-50 dark:bg-base-700"
                     : ""
@@ -102,7 +102,7 @@ const TasksList = ({
                         {task?.content}
                       </span>
                     </div>
-                    <div className="-ml-2 mt-3 flex flex-wrap items-center gap-1">
+                    <div className="-ml-2 -mb-3 flex min-h-10 flex-wrap items-center gap-1">
                       {!!task?.assignees?.nodes?.length && (
                         <div className="-space-x-5.5 flex">
                           {task.assignees.nodes?.map((assignee) => (
