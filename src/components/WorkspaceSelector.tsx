@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/select";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
-import CreateWorkspaceDialog from "./CreateWorkspaceDialog";
 
 // TODO: Handle situation where there are no workspaces available, within the Route handlers.
 const WorkspaceSelector = () => {
@@ -54,20 +53,16 @@ const WorkspaceSelector = () => {
           }
         }}
       >
-        <SelectTrigger className="w-full max-w-40">
+        <SelectTrigger className="w-full max-w-44">
           <SelectValueText className="overflow-hidden truncate text-ellipsis whitespace-nowrap">
             {currentWorkspace?.name || "Select Workspace"}
           </SelectValueText>
         </SelectTrigger>
 
         <SelectContent className="items-center gap-2">
-          <SelectItemGroup className="flex min-w-36 flex-col gap-1">
+          <SelectItemGroup className="flex flex-col gap-1">
             {collection.items.map((item) => (
-              <SelectItem
-                key={item.value}
-                item={item}
-                // className="w-full min-w-40"
-              >
+              <SelectItem key={item.value} item={item}>
                 <SelectItemText className="overflow-hidden truncate text-ellipsis whitespace-nowrap">
                   {item.label}
                 </SelectItemText>
@@ -76,8 +71,6 @@ const WorkspaceSelector = () => {
           </SelectItemGroup>
         </SelectContent>
       </Select>
-
-      <CreateWorkspaceDialog />
     </div>
   );
 };

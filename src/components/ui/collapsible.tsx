@@ -1,5 +1,4 @@
 import { Collapsible as ArkCollapsible } from "@ark-ui/react/collapsible";
-import { FiChevronDown } from "react-icons/fi";
 import { tv } from "tailwind-variants";
 
 import { cn } from "@/lib/utils";
@@ -34,7 +33,6 @@ const CollapsibleTrigger = ({
 }: ComponentProps<typeof ArkCollapsible.Trigger>) => (
   <ArkCollapsible.Trigger className={cn(trigger(), className)} {...rest}>
     {children}
-    <FiChevronDown className="h-4 w-4 transition-transform" />
   </ArkCollapsible.Trigger>
 );
 
