@@ -35,6 +35,7 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useDeleteProjectMutation } from "@/generated/graphql";
@@ -125,7 +126,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             params: { workspaceId: workspace?.rowId! },
                           });
                         }}
-                        className="gap-2 p-2"
+                        className="cursor-pointer gap-2 p-2"
                         value={workspace?.name!}
                       >
                         {workspace?.name}
@@ -220,7 +221,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <MenuContent className="w-48 rounded-lg bg-background">
                           <MenuItem
                             value="delete"
-                            className="flex items-center gap-2"
+                            className="flex cursor-pointer items-center gap-2"
                             onClick={() => {
                               setSelectedProject({
                                 rowId: project?.rowId!,
@@ -281,6 +282,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
+
+        <SidebarRail />
       </Sidebar>
 
       {/* Delete Project */}

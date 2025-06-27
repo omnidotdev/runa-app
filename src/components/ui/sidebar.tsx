@@ -19,6 +19,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useIsMobile from "@/lib/hooks/use-mobile";
+import { useSidebarResize } from "@/lib/hooks/use-sidebar-resize";
 import { cn } from "@/lib/utils";
 
 import type { VariantProps } from "class-variance-authority";
@@ -26,9 +27,13 @@ import type { VariantProps } from "class-variance-authority";
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
-const SIDEBAR_WIDTH_MOBILE = "24rem";
+const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
+
+//* new constants for sidebar resizing
+const MIN_SIDEBAR_WIDTH = "14rem";
+const MAX_SIDEBAR_WIDTH = "22rem";
 
 type SidebarContextProps = {
   state: "expanded" | "collapsed";
@@ -38,6 +43,12 @@ type SidebarContextProps = {
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
   toggleSidebar: () => void;
+  //* new properties for sidebar resizing
+  width: string;
+  setWidth: (width: string) => void;
+  //* new properties for tracking is dragging rail
+  isDraggingRail: boolean;
+  setIsDraggingRail: (isDraggingRail: boolean) => void;
 };
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
@@ -58,14 +69,21 @@ function SidebarProvider({
   className,
   style,
   children,
+  defaultWidth = SIDEBAR_WIDTH, //* new prop for default width
   ...props
 }: React.ComponentProps<"div"> & {
   defaultOpen?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  //* new prop for default width
+  defaultWidth?: string;
 }) {
   const isMobile = useIsMobile();
+  //* new state for sidebar width
+  const [width, setWidth] = React.useState(defaultWidth);
   const [openMobile, setOpenMobile] = React.useState(false);
+  //* new state for tracking is dragging rail
+  const [isDraggingRail, setIsDraggingRail] = React.useState(false);
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
@@ -88,10 +106,13 @@ function SidebarProvider({
   );
 
   // Helper to toggle the sidebar.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Boiler
   const toggleSidebar = React.useCallback(() => {
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
-  }, [isMobile, setOpen, setOpenMobile]);
+  }, [
+    isMobile,
+    setOpen,
+    // setOpenMobile
+  ]);
 
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
@@ -113,7 +134,6 @@ function SidebarProvider({
   // This makes it easier to style the sidebar with Tailwind classes.
   const state = open ? "expanded" : "collapsed";
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Boiler
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
       state,
@@ -123,8 +143,27 @@ function SidebarProvider({
       openMobile,
       setOpenMobile,
       toggleSidebar,
+      //* new context for sidebar resizing
+      width,
+      setWidth,
+      //* new context for tracking is dragging rail
+      isDraggingRail,
+      setIsDraggingRail,
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+    [
+      state,
+      open,
+      setOpen,
+      isMobile,
+      openMobile,
+      //* remove setOpenMobile from dependencies because setOpenMobile are state setters created by useState
+      // setOpenMobile,
+      toggleSidebar,
+      //* add width to dependencies
+      width,
+      //* add isDraggingRail to dependencies
+      isDraggingRail,
+    ],
   );
 
   return (
@@ -137,7 +176,8 @@ function SidebarProvider({
           data-slot="sidebar-wrapper"
           style={
             {
-              "--sidebar-width": SIDEBAR_WIDTH,
+              // * update '--sidebar-width' to use the new width state
+              "--sidebar-width": width,
               "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
               ...style,
             } as React.CSSProperties
@@ -167,7 +207,14 @@ function Sidebar({
   variant?: "sidebar" | "floating" | "inset";
   collapsible?: "offcanvas" | "icon" | "none";
 }) {
-  const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+  const {
+    isMobile,
+    state,
+    openMobile,
+    setOpenMobile,
+    //* new property for tracking is dragging rail
+    isDraggingRail,
+  } = useSidebar();
 
   if (collapsible === "none") {
     return (
@@ -217,6 +264,8 @@ function Sidebar({
       data-variant={variant}
       data-side={side}
       data-slot="sidebar"
+      //* add data-dragging attribute
+      data-dragging={isDraggingRail}
     >
       {/* This is what handles the sidebar gap on desktop */}
       <div
@@ -228,6 +277,8 @@ function Sidebar({
           variant === "floating" || variant === "inset"
             ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
             : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
+          //* set duration to 0 for all elements when dragging
+          "group-data-[dragging=true]_*:!duration-0 group-data-[dragging=true]:duration-0!",
         )}
       />
       <div
@@ -241,6 +292,8 @@ function Sidebar({
           variant === "floating" || variant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
             : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
+          //* set duration to 0 for all elements when dragging
+          "group-data-[dragging=true]_*:!duration-0 group-data-[dragging=true]:duration-0!",
           className,
         )}
         {...props}
@@ -270,7 +323,7 @@ function SidebarTrigger({
       data-slot="sidebar-trigger"
       variant="ghost"
       size="icon"
-      className={cn("sticky top-3 m-2 size-7", className)}
+      className={cn("sticky top-2 ml-2 size-8", className)}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
@@ -283,19 +336,47 @@ function SidebarTrigger({
   );
 }
 
-function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
-  const { toggleSidebar } = useSidebar();
+interface SidebarRailProps extends React.ComponentProps<"button"> {
+  enableDrag?: boolean;
+}
+
+function SidebarRail({
+  enableDrag = true,
+  className,
+  ...props
+}: SidebarRailProps) {
+  const { toggleSidebar, setWidth, state, width, setIsDraggingRail } =
+    useSidebar();
+
+  const { dragRef, handleMouseDown } = useSidebarResize({
+    direction: "right",
+    enableDrag,
+    onResize: setWidth,
+    onToggle: toggleSidebar,
+    currentWidth: width,
+    isCollapsed: state === "collapsed",
+    minResizeWidth: MIN_SIDEBAR_WIDTH,
+    maxResizeWidth: MAX_SIDEBAR_WIDTH,
+    setIsDraggingRail,
+    widthCookieName: "sidebar:width",
+    widthCookieMaxAge: 60 * 60 * 24 * 7, // 1 week
+    enableAutoCollapse: true,
+  });
 
   return (
     <button
+      //* updated ref to use combinedRef
+      ref={dragRef}
       data-sidebar="rail"
       data-slot="sidebar-rail"
       aria-label="Toggle Sidebar"
       tabIndex={-1}
-      onClick={toggleSidebar}
-      title="Toggle Sidebar"
+      // onClick={toggleSidebar}
+      //* replace onClick with onMouseDown
+      onMouseDown={handleMouseDown}
+      // title="Toggle Sidebar"
       className={cn(
-        "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=right]:left-0 sm:flex",
+        "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] group-data-[side=right]:left-0 sm:flex",
         "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
         "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
         "group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full",
@@ -416,7 +497,7 @@ function SidebarGroupAction({
       data-slot="sidebar-group-action"
       data-sidebar="group-action"
       className={cn(
-        "absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+        "absolute top-3.5 right-3 flex aspect-square w-5 cursor-pointer items-center justify-center rounded-md p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
         // Increases the hit area of the button on mobile.
         "after:-inset-2 after:absolute md:after:hidden",
         "group-data-[collapsible=icon]:hidden",
@@ -457,7 +538,10 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
     <li
       data-slot="sidebar-menu-item"
       data-sidebar="menu-item"
-      className={cn("group/menu-item relative list-none", className)}
+      className={cn(
+        "group/menu-item relative cursor-pointer list-none",
+        className,
+      )}
       {...props}
     />
   );
@@ -551,7 +635,7 @@ function SidebarMenuAction({
       data-slot="sidebar-menu-action"
       data-sidebar="menu-action"
       className={cn(
-        "absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0",
+        "absolute top-1.5 right-1 flex aspect-square w-5 cursor-pointer items-center justify-center rounded-md p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0",
         // Increases the hit area of the button on mobile.
         "after:-inset-2 after:absolute md:after:hidden",
         "peer-data-[size=sm]/menu-button:top-1",
@@ -676,9 +760,7 @@ export {
   /** @knipignore */
   SidebarMenuSubItem,
   SidebarProvider,
-  /** @knipignore */
   SidebarRail,
-  /** @knipignore */
   SidebarTrigger,
   useSidebar,
 };
