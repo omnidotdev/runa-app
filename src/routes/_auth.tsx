@@ -3,20 +3,23 @@ import { Outlet } from "@tanstack/react-router";
 import { AppSidebar } from "@/components/AppSidebar";
 import CreateProjectDialog from "@/components/CreateProjectDialog";
 import CreateWorkspaceDialog from "@/components/CreateWorkspaceDialog";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export const Route = createFileRoute({
+  ssr: false,
   component: AuthenticatedLayout,
 });
 
 function AuthenticatedLayout() {
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <div className="flex h-dvh w-full">
+        <AppSidebar variant="inset" />
 
-      <SidebarTrigger />
-
-      <Outlet />
+        <SidebarInset className="flex-1 overflow-hidden">
+          <Outlet />
+        </SidebarInset>
+      </div>
 
       <CreateProjectDialog />
       <CreateWorkspaceDialog />

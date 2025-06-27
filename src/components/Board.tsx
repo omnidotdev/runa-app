@@ -122,7 +122,7 @@ const Board = () => {
   return (
     <div
       ref={scrollContainerRef}
-      className="custom-scrollbar h-full select-none overflow-x-auto"
+      className="no-scrollbar h-full select-none overflow-x-auto"
       style={{
         backgroundColor: project?.color
           ? theme === "dark"

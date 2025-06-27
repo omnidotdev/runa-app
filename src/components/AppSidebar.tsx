@@ -1,18 +1,17 @@
-"use client";
-
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import {
-  ChevronsUpDown,
+  ChevronsUpDownIcon,
   Grid2X2Icon,
-  List,
-  LogOut,
-  Moon,
-  MoreHorizontal,
-  Plus,
-  Settings,
-  Sun,
-  Trash2,
+  ListIcon,
+  LogOutIcon,
+  MoonIcon,
+  MoreHorizontalIcon,
+  PanelLeftIcon,
+  PlusIcon,
+  SettingsIcon,
+  SunIcon,
+  Trash2Icon,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -36,7 +35,6 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useDeleteProjectMutation } from "@/generated/graphql";
@@ -75,7 +73,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     select: (data) => data.workspace,
   });
 
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpen, open } = useSidebar();
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     onSettled: () => {
@@ -96,31 +94,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     type: DialogType.DeleteProject,
   });
 
-  const navMain = [
-    {
-      title: "Theme Toggle",
-      url: "#",
-      icon: theme === "dark" ? Sun : Moon,
-      action: () => toggleTheme(),
-      tooltip: "Toggle Theme",
-    },
-    {
-      title: "Sign Out",
-      url: "#",
-      icon: LogOut,
-      tooltip: "Sign Out",
-    },
-  ];
-
   return (
     <>
-      <Sidebar collapsible="icon" {...props}>
+      <Sidebar collapsible="icon" className="relative" {...props}>
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
               <MenuRoot>
                 <MenuTrigger asChild>
-                  <SidebarMenuButton>
+                  <SidebarMenuButton className="bg-base-200 hover:bg-base-300 dark:bg-base-700 dark:hover:bg-base-800">
                     <div className="group-data-[collapsible=icon]:hidden">
                       <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-medium">
@@ -128,7 +110,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         </span>
                       </div>
                     </div>
-                    <ChevronsUpDown className="ml-auto" />
+                    <ChevronsUpDownIcon className="ml-auto" />
                   </SidebarMenuButton>
                 </MenuTrigger>
 
@@ -156,11 +138,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent className="flex flex-col gap-0">
-          <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+        <SidebarContent className="no-scrollbar flex flex-col gap-0">
+          <SidebarGroup>
             <SidebarGroupLabel>Workspace</SidebarGroupLabel>
             <SidebarGroupAction onClick={() => setIsCreateWorkspaceOpen(true)}>
-              <Plus /> <span className="sr-only">Add Workspace</span>
+              <PlusIcon /> <span className="sr-only">Add Workspace</span>
             </SidebarGroupAction>
 
             <SidebarMenuButton asChild>
@@ -173,17 +155,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   variant: "outline",
                 }}
               >
-                <Settings />
+                <SettingsIcon />
                 Settings
               </Link>
             </SidebarMenuButton>
           </SidebarGroup>
 
           {workspaceId && (
-            <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+            <SidebarGroup>
               <SidebarGroupLabel>Projects</SidebarGroupLabel>
               <SidebarGroupAction onClick={() => setIsCreateProjectOpen(true)}>
-                <Plus /> <span className="sr-only">Add Project</span>
+                <PlusIcon /> <span className="sr-only">Add Project</span>
               </SidebarGroupAction>
               <SidebarMenu>
                 {workspace?.projects.nodes.map((project) => (
@@ -204,9 +186,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         className="justify-start"
                       >
                         {project?.viewMode === "board" ? (
-                          <List className="h-4 w-4" />
+                          <ListIcon
+                            className="size-4"
+                            style={{ color: project?.color ?? undefined }}
+                          />
                         ) : (
-                          <Grid2X2Icon className="h-4 w-4" />
+                          <Grid2X2Icon
+                            className="size-4"
+                            style={{ color: project?.color ?? undefined }}
+                          />
                         )}
                         <span className="truncate">{project?.name}</span>
                       </Link>
@@ -220,7 +208,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     >
                       <MenuTrigger asChild>
                         <SidebarMenuAction showOnHover>
-                          <MoreHorizontal />
+                          <MoreHorizontalIcon />
                           <span className="sr-only">More</span>
                         </SidebarMenuAction>
                       </MenuTrigger>
@@ -238,7 +226,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               setIsDeleteProjectOpen(true);
                             }}
                           >
-                            <Trash2
+                            <Trash2Icon
                               size={14}
                               className="text-muted-foreground"
                             />
@@ -254,26 +242,42 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           )}
         </SidebarContent>
 
-        <SidebarFooter>
-          <SidebarMenu>
-            {navMain.map((item) => (
-              <SidebarMenuItem key={item?.title}>
-                <SidebarMenuButton
-                  tooltip={item?.tooltip}
-                  onClick={item.action}
-                  asChild
-                >
-                  <div>
-                    <item.icon />
-                    <span>{item?.title}</span>
-                  </div>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+        <SidebarFooter className="border-t">
+          <SidebarMenu className="gap-2">
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip="Expand Sidebar"
+                onClick={() => setOpen(!open)}
+                className="justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+              >
+                <PanelLeftIcon />
+                <span>Collapse Sidebar</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip="Toggle Theme"
+                onClick={() => toggleTheme()}
+                className="justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+              >
+                {theme === "dark" ? <MoonIcon /> : <SunIcon />}
+                <span>Toggle Theme</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip="Sign Out"
+                onClick={() => navigate({ to: "/" })}
+                className="justify-start border bg-background text-red-600 shadow-xs hover:bg-accent dark:border-input dark:bg-input/30 dark:text-red-400 dark:hover:bg-input/50"
+              >
+                <LogOutIcon />
+                <span>Sign Out</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
-
-        <SidebarRail />
       </Sidebar>
 
       {/* Delete Project */}
