@@ -96,6 +96,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     type: DialogType.DeleteProject,
   });
 
+  const navMain = [
+    {
+      title: "Theme Toggle",
+      url: "#",
+      icon: theme === "dark" ? Sun : Moon,
+      action: () => toggleTheme(),
+      tooltip: "Toggle Theme",
+    },
+    {
+      title: "Sign Out",
+      url: "#",
+      icon: LogOut,
+      tooltip: "Sign Out",
+    },
+  ];
+
   return (
     <>
       <Sidebar collapsible="icon" {...props}>
@@ -117,7 +133,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </MenuTrigger>
 
                 <MenuPositioner>
-                  <MenuContent className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg">
+                  <MenuContent className="no-scrollbar max-h-80 w-(--radix-dropdown-menu-trigger-width) min-w-56 overflow-auto rounded-lg">
                     {workspaces?.map((workspace) => (
                       <MenuItem
                         key={workspace?.rowId}
@@ -240,23 +256,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         <SidebarFooter>
           <SidebarMenu>
-            {/* TODO: Handle open transtions with labels */}
-            <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Toggle Theme" onClick={toggleTheme}>
-                <Moon className="hidden h-4 w-4 text-base-600 dark:block dark:text-base-300" />
-                <Sun className="h-4 w-4 text-base-600 dark:hidden dark:text-base-300" />
-                Theme Toggle
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Sign Out">
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {navMain.map((item) => (
+              <SidebarMenuItem key={item?.title}>
+                <SidebarMenuButton
+                  tooltip={item?.tooltip}
+                  onClick={item.action}
+                  asChild
+                >
+                  <div>
+                    <item.icon />
+                    <span>{item?.title}</span>
+                  </div>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
           </SidebarMenu>
         </SidebarFooter>
+
         <SidebarRail />
       </Sidebar>
 

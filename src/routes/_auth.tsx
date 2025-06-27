@@ -13,16 +13,13 @@ function AuthenticatedLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="flex h-dvh w-full">
-        <SidebarTrigger />
 
-        <div className="flex-1 overflow-hidden">
-          <Outlet />
-        </div>
-      </main>
+      <SidebarTrigger />
 
-      <CreateWorkspaceDialog />
+      <Outlet />
+
       <CreateProjectDialog />
+      <CreateWorkspaceDialog />
     </SidebarProvider>
   );
 }
