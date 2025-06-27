@@ -9,11 +9,14 @@ import { Button } from "@/components/ui/button";
 import tasksCollection from "@/lib/collections/tasks.collection";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
+import { useTheme } from "@/providers/ThemeProvider";
 import CreateTaskDialog from "./CreateTask/CreateTaskDialog";
 
 import type { DropResult } from "@hello-pangea/dnd";
 
 const Board = () => {
+  const { theme } = useTheme();
+
   const { projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
@@ -121,7 +124,11 @@ const Board = () => {
       ref={scrollContainerRef}
       className="custom-scrollbar h-full select-none overflow-x-auto"
       style={{
-        backgroundColor: project?.color ? `${project?.color}0D` : undefined,
+        backgroundColor: project?.color
+          ? theme === "dark"
+            ? `${project?.color}05`
+            : `${project?.color}0D`
+          : undefined,
       }}
     >
       <div className="h-full min-w-fit p-4">
