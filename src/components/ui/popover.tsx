@@ -95,6 +95,7 @@ export {
   PopoverArrow,
   /** @knipignore */
   PopoverArrowTip,
+  /** @knipignore */
   PopoverCloseTrigger,
   /** @knipignore */
   PopoverProvider,

@@ -143,6 +143,7 @@ const TasksList = ({
                       {task?.dueDate && (
                         <div className="ml-2 flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
                           <CalendarIcon className="h-3 w-3" />
+                          {/* TODO: timezone handling */}
                           <span>{format(new Date(task.dueDate), "MMM d")}</span>
                         </div>
                       )}

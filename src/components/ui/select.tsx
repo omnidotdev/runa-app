@@ -235,6 +235,7 @@ export {
   SelectItemText,
   /** @knipignore */
   SelectItemIndicator,
+  /** @knipignore */
   SelectSeparator,
   /** @knipignore */
   SelectHiddenSelect,

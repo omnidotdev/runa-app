@@ -1,4 +1,3 @@
-import { useForm } from "@tanstack/react-form";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import Link from "@tiptap/extension-link";
@@ -8,7 +7,6 @@ import TaskList from "@tiptap/extension-task-list";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import {
-  CalendarIcon,
   CheckIcon,
   PlusIcon,
   TagIcon,
@@ -55,10 +53,12 @@ import {
 } from "@/generated/graphql";
 import { labelColors } from "@/lib/constants/labelColors";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import usersOptions from "@/lib/options/users.options";
 import { cn } from "@/lib/utils";
 import getQueryClient from "@/utils/getQueryClient";
+import CreateTaskDatePicker from "./CreateTaskDatePicker";
 
 interface Props {
   columnId: string;
@@ -123,12 +123,13 @@ const CreateTaskDialog = ({ columnId }: Props) => {
   const { mutateAsync: addNewTask } = useCreateTaskMutation();
   const { mutate: addNewAssignee } = useCreateAssigneeMutation();
 
-  const { Field, Subscribe, handleSubmit, reset, setFieldValue } = useForm({
+  const form = useForm({
     defaultValues: {
       title: "",
       description: "",
       labels: projectLabels,
       assignees: [] as string[],
+      dueDate: "",
     },
     onSubmit: async ({ value, formApi }) => {
       // TODO: dynamic with auth
@@ -150,6 +151,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
             columnId,
             authorId,
             labels: JSON.stringify(addedLabels),
+            dueDate: value.dueDate.length ? new Date(value.dueDate) : undefined,
           },
         },
       });
@@ -199,21 +201,16 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       },
     },
     // TODO: discuss. This saves the HTML in db, i.e. `<p>Testing <strong>bold</strong> text</p>` which we could later render. `getText` removes any rich text
-    onUpdate: ({ editor }) => setFieldValue("description", editor.getHTML()),
+    onUpdate: ({ editor }) =>
+      form.setFieldValue("description", editor.getHTML()),
   });
-
-  const handleContainerClick = () => {
-    if (editor) {
-      editor.commands.focus();
-    }
-  };
 
   return (
     <DialogRoot
       open={isOpen}
       onOpenChange={({ open }) => {
         setIsOpen(open);
-        reset();
+        form.reset();
       }}
       initialFocusEl={() => titleRef.current}
       // TODO: remove when state management with select and popover is resolved
@@ -229,10 +226,10 @@ const CreateTaskDialog = ({ columnId }: Props) => {
             onSubmit={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              handleSubmit();
+              form.handleSubmit();
             }}
           >
-            <Field name="title">
+            <form.Field name="title">
               {(field) => (
                 <div className="-mt-3 flex items-center gap-2 border-b py-1 pr-8">
                   <span className="mt-0.5 text-nowrap font-medium font-mono text-base-400 text-xs dark:text-base-500">
@@ -249,10 +246,10 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                   />
                 </div>
               )}
-            </Field>
+            </form.Field>
 
             <div className="flex gap-3">
-              <Field name="assignees">
+              <form.Field name="assignees">
                 {(field) => {
                   return (
                     <Select
@@ -300,7 +297,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                     </Select>
                   );
                 }}
-              </Field>
+              </form.Field>
 
               <PopoverRoot>
                 <PopoverTrigger asChild>
@@ -312,7 +309,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
 
                 <PopoverPositioner>
                   <PopoverContent className="flex min-w-80 flex-col gap-2">
-                    <Field name="labels" mode="array">
+                    <form.Field name="labels" mode="array">
                       {(field) => {
                         return (
                           <div className="flex flex-col gap-2">
@@ -388,7 +385,10 @@ const CreateTaskDialog = ({ columnId }: Props) => {
 
                             {field.state.value.map((label, i) => {
                               return (
-                                <Field key={label.name} name={`labels[${i}]`}>
+                                <form.Field
+                                  key={label.name}
+                                  name={`labels[${i}]`}
+                                >
                                   {(subField) => {
                                     return (
                                       <CheckboxRoot
@@ -429,22 +429,18 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                                       </CheckboxRoot>
                                     );
                                   }}
-                                </Field>
+                                </form.Field>
                               );
                             })}
                           </div>
                         );
                       }}
-                    </Field>
+                    </form.Field>
                   </PopoverContent>
                 </PopoverPositioner>
               </PopoverRoot>
 
-              {/* TODO: implement. */}
-              <Button disabled variant="outline">
-                <CalendarIcon className="size-4" />
-                Set due date
-              </Button>
+              <CreateTaskDatePicker form={form} />
             </div>
 
             <div className="prose prose-sm dark:prose-invert w-full max-w-none">
@@ -456,7 +452,11 @@ const CreateTaskDialog = ({ columnId }: Props) => {
               </div>
               <div
                 ref={editorContainerRef}
-                onClick={handleContainerClick}
+                onClick={() => {
+                  if (editor) {
+                    editor.commands.focus();
+                  }
+                }}
                 className="prose prose-sm dark:prose-invert relative max-w-none"
               >
                 <EditorContent
@@ -476,7 +476,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                 <Button variant="outline">Cancel</Button>
               </DialogCloseTrigger>
 
-              <Subscribe
+              <form.Subscribe
                 selector={(state) => [
                   state.canSubmit,
                   state.isSubmitting,
@@ -491,7 +491,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                     Create Task
                   </Button>
                 )}
-              </Subscribe>
+              </form.Subscribe>
             </div>
           </form>
         </DialogContent>

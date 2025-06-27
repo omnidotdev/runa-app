@@ -179,6 +179,7 @@ const Tasks = ({
                     {task?.dueDate && (
                       <div className="col-span-1 mr-1 flex items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
                         <CalendarIcon className="h-3 w-3" />
+                        {/* TODO: timezone handling */}
                         <span>{format(new Date(task.dueDate), "MMM d")}</span>
                       </div>
                     )}
