@@ -4516,6 +4516,13 @@ export type CreateAssigneeMutationVariables = Exact<{
 
 export type CreateAssigneeMutation = { __typename?: 'Mutation', createAssignee?: { __typename?: 'CreateAssigneePayload', assignee?: { __typename?: 'Assignee', rowId: string } | null } | null };
 
+export type CreateColumnMutationVariables = Exact<{
+  input: CreateColumnInput;
+}>;
+
+
+export type CreateColumnMutation = { __typename?: 'Mutation', createColumn?: { __typename?: 'CreateColumnPayload', column?: { __typename?: 'Column', rowId: string } | null } | null };
+
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
@@ -4647,6 +4654,34 @@ useCreateAssigneeMutation.getKey = () => ['CreateAssignee'];
 
 
 useCreateAssigneeMutation.fetcher = (variables: CreateAssigneeMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateAssigneeMutation, CreateAssigneeMutationVariables>(CreateAssigneeDocument, variables, options);
+
+export const CreateColumnDocument = `
+    mutation CreateColumn($input: CreateColumnInput!) {
+  createColumn(input: $input) {
+    column {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useCreateColumnMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateColumnMutation, TError, CreateColumnMutationVariables, TContext>) => {
+    
+    return useMutation<CreateColumnMutation, TError, CreateColumnMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateColumn'],
+    mutationFn: (variables?: CreateColumnMutationVariables) => graphqlFetch<CreateColumnMutation, CreateColumnMutationVariables>(CreateColumnDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateColumnMutation.getKey = () => ['CreateColumn'];
+
+
+useCreateColumnMutation.fetcher = (variables: CreateColumnMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateColumnMutation, CreateColumnMutationVariables>(CreateColumnDocument, variables, options);
 
 export const CreateProjectDocument = `
     mutation CreateProject($input: CreateProjectInput!) {

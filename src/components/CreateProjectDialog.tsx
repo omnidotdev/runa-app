@@ -13,11 +13,22 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useCreateProjectMutation } from "@/generated/graphql";
+import {
+  useCreateColumnMutation,
+  useCreateProjectMutation,
+} from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import getQueryClient from "@/utils/getQueryClient";
+
+const DEFAULT_COLUMNS = [
+  "Backlog",
+  "To Do",
+  "In Progress",
+  "Awaiting Review",
+  "Done",
+];
 
 const CreateProjectDialog = () => {
   const { workspaceId } = useParams({ strict: false });
@@ -39,12 +50,27 @@ const CreateProjectDialog = () => {
   const [newProjectName, setNewProjectName] = useState("");
   const [newProjectDescription, setNewProjectDescription] = useState("");
 
+  const { mutateAsync: createColumn } = useCreateColumnMutation();
+
   const { mutateAsync: createNewProject } = useCreateProjectMutation({
     onSettled: () => {
       queryClient.invalidateQueries(projectsOptions);
       queryClient.invalidateQueries(workspaceOptions(workspaceId!));
     },
-    onSuccess: ({ createProject }) => {
+    onSuccess: async ({ createProject }) => {
+      await Promise.all(
+        DEFAULT_COLUMNS.map((column) =>
+          createColumn({
+            input: {
+              column: {
+                title: column,
+                projectId: createProject?.project?.rowId!,
+              },
+            },
+          }),
+        ),
+      );
+
       navigate({
         to: "/workspaces/$workspaceId/projects/$projectId",
         params: {

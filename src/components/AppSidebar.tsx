@@ -292,6 +292,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         description={`This will delete the project "${selectedProject?.name}" from ${workspace?.name} workspace. This action cannot be undone.`}
         onConfirm={() => {
           deleteProject({ rowId: selectedProject?.rowId! });
+          navigate({
+            to: "/workspaces/$workspaceId/projects",
+            params: { workspaceId: workspaceId! },
+          });
         }}
         dialogType={DialogType.DeleteProject}
         confirmation={`permanently delete ${selectedProject?.name}`}
