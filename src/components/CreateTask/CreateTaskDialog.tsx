@@ -178,6 +178,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
         form.reset();
       }}
       initialFocusEl={() => titleRef.current}
+      unmountOnExit
     >
       <DialogBackdrop />
       <DialogPositioner>
