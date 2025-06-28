@@ -51,89 +51,6 @@ export const Route = createFileRoute({
   component: TaskPage,
 });
 
-// Mock data - replace with actual queries
-const mockTask = {
-  id: "PROJ-123",
-  title: "Implement user authentication system",
-  description: `<p>We need to implement a comprehensive user authentication system that includes:</p>
-  <ul>
-    <li>Login and registration forms</li>
-    <li>Password reset functionality</li>
-    <li>Email verification</li>
-    <li>Two-factor authentication</li>
-  </ul>
-  <p>This should integrate with our existing database schema and follow security best practices.</p>`,
-  status: "in-progress",
-  priority: "high",
-  createdAt: "2024-01-15T10:30:00Z",
-  updatedAt: "2024-01-16T14:22:00Z",
-  dueDate: "2024-01-25T17:00:00Z",
-  assignees: [
-    {
-      id: "1",
-      name: "John Doe",
-      email: "john@example.com",
-      avatar: null,
-    },
-    {
-      id: "2",
-      name: "Jane Smith",
-      email: "jane@example.com",
-      avatar: null,
-    },
-  ],
-  labels: [
-    { name: "Frontend", color: "blue" },
-    { name: "Backend", color: "green" },
-    { name: "Security", color: "red" },
-  ],
-  author: {
-    id: "3",
-    name: "Bob Wilson",
-    email: "bob@example.com",
-    avatar: null,
-  },
-};
-
-const mockComments = [
-  {
-    id: "1",
-    content:
-      "I've started working on the login form component. Should have the basic structure ready by EOD.",
-    author: {
-      id: "1",
-      name: "John Doe",
-      email: "john@example.com",
-      avatar: null,
-    },
-    createdAt: "2024-01-16T09:15:00Z",
-  },
-  {
-    id: "2",
-    content:
-      "Great! I'll work on the backend API endpoints in parallel. Let's sync up tomorrow to make sure we're aligned on the data structure.",
-    author: {
-      id: "2",
-      name: "Jane Smith",
-      email: "jane@example.com",
-      avatar: null,
-    },
-    createdAt: "2024-01-16T10:30:00Z",
-  },
-  {
-    id: "3",
-    content:
-      "Don't forget to implement proper input validation and rate limiting for the login attempts.",
-    author: {
-      id: "3",
-      name: "Bob Wilson",
-      email: "bob@example.com",
-      avatar: null,
-    },
-    createdAt: "2024-01-16T14:22:00Z",
-  },
-];
-
 const StatusBadge = ({ status }: { status: string }) => {
   const statusConfig = {
     "To Do": {
@@ -216,32 +133,6 @@ const PriorityBadge = ({ priority }: { priority: string }) => {
   );
 };
 
-const CommentCard = ({ comment }: { comment: any }) => {
-  return (
-    <div className="flex gap-4">
-      <Avatar
-        fallback={comment.author.name.charAt(0)}
-        src={comment.author.avatar}
-        alt={comment.author.name}
-        size="md"
-      />
-      <div className="flex-1 space-y-3">
-        <div className="flex items-center gap-3">
-          <span className="font-medium text-base text-base-900 dark:text-base-100">
-            {comment.author.name}
-          </span>
-          <span className="text-base-500 text-sm dark:text-base-400">
-            {format(new Date(comment.createdAt), "MMM d, yyyy 'at' h:mm a")}
-          </span>
-        </div>
-        <div className="rounded-lg border bg-base-50 p-4 text-base text-base-700 leading-relaxed dark:border-base-700 dark:bg-base-800/50 dark:text-base-300">
-          {comment.content}
-        </div>
-      </div>
-    </div>
-  );
-};
-
 function TaskPage() {
   const { workspaceId, projectId, taskId } = Route.useParams();
 
@@ -284,7 +175,7 @@ function TaskPage() {
                 </h1>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-base-400 text-sm dark:text-base-500">
-                    {mockTask.id}
+                    PROJ-123
                   </span>
                   <StatusBadge status={task?.column?.title!} />
                   <PriorityBadge priority={task?.priority!} />
@@ -328,12 +219,35 @@ function TaskPage() {
                     Comments
                   </h2>
                   <Badge variant="subtle" size="sm">
-                    {mockComments.length}
+                    {task?.posts?.totalCount ?? 0}
                   </Badge>
                 </CardHeader>
                 <CardContent className="space-y-8">
-                  {mockComments.map((comment) => (
-                    <CommentCard key={comment.id} comment={comment} />
+                  {task?.posts?.nodes?.map((comment) => (
+                    <div key={comment?.rowId} className="flex gap-4">
+                      <Avatar
+                        fallback={comment?.author?.name.charAt(0)}
+                        src={comment?.author?.avatarUrl ?? undefined}
+                        alt={comment?.author?.name}
+                        size="md"
+                      />
+                      <div className="flex-1 space-y-3">
+                        <div className="flex items-center gap-3">
+                          <span className="font-medium text-base text-base-900 dark:text-base-100">
+                            {comment?.author?.name}
+                          </span>
+                          <span className="text-base-500 text-sm dark:text-base-400">
+                            {format(
+                              new Date(comment?.createdAt!),
+                              "MMM d, yyyy 'at' h:mm a",
+                            )}
+                          </span>
+                        </div>
+                        <div className="rounded-lg border bg-base-50 p-4 text-base text-base-700 leading-relaxed dark:border-base-700 dark:bg-base-800/50 dark:text-base-300">
+                          {comment?.description}
+                        </div>
+                      </div>
+                    </div>
                   ))}
 
                   {/* Add comment */}

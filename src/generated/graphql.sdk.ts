@@ -4599,7 +4599,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt?: Date | null, updatedAt?: Date | null, dueDate?: Date | null, labels?: any | null, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null } | null> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt?: Date | null, updatedAt?: Date | null, dueDate?: Date | null, labels?: any | null, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null } | null> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null } | null> } } | null };
 
 export type TasksQueryVariables = Exact<{
   columnId: Scalars['UUID']['input'];
@@ -4762,6 +4762,19 @@ export const TaskDocument = gql`
     updatedAt
     dueDate
     labels
+    posts {
+      totalCount
+      nodes {
+        rowId
+        title
+        description
+        createdAt
+        author {
+          name
+          avatarUrl
+        }
+      }
+    }
     column {
       title
     }

@@ -10,6 +10,19 @@ query Task($rowId: UUID!) {
     updatedAt
     dueDate
     labels
+    posts {
+      totalCount
+      nodes {
+        rowId
+        title
+        description
+        createdAt
+        author {
+          name
+          avatarUrl
+        }
+      }
+    }
     column {
       title
     }
