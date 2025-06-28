@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { notFound, useNavigate, useParams } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { notFound } from "@tanstack/react-router";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -44,9 +44,10 @@ export const Route = createFileRoute({
 });
 
 function SettingsPage() {
-  const { workspaceId } = useParams({ strict: false });
+  const { workspaceId } = Route.useParams();
+  const navigate = Route.useNavigate();
+
   const queryClient = getQueryClient();
-  const navigate = useNavigate();
 
   // TODO: Replace with actual members fetching logic.
   const [members, setMembers] = useState<Assignee[]>([]);
@@ -56,9 +57,8 @@ function SettingsPage() {
     name: string;
   }>();
 
-  const { data: currentWorkspace } = useQuery({
-    ...workspaceOptions(workspaceId!),
-    enabled: !!workspaceId,
+  const { data: currentWorkspace } = useSuspenseQuery({
+    ...workspaceOptions(workspaceId),
     select: (data) => data?.workspace,
   });
 
@@ -103,7 +103,7 @@ function SettingsPage() {
       <Link
         to="/workspaces/$workspaceId"
         className="inset-0 flex w-fit justify-start"
-        params={{ workspaceId: workspaceId! }}
+        params={{ workspaceId: workspaceId }}
         variant="ghost"
       >
         <ArrowLeft className="mr-1 size-4" />
@@ -230,6 +230,9 @@ function SettingsPage() {
         }}
         dialogType={DialogType.DeleteWorkspace}
         confirmation={`permanently delete ${currentWorkspace?.name}`}
+        inputProps={{
+          className: "focus-visible:ring-red-500",
+        }}
       />
 
       {/* Delete Team Member */}
@@ -242,6 +245,9 @@ function SettingsPage() {
         }}
         dialogType={DialogType.DeleteTeamMember}
         confirmation={selectedMember?.name}
+        inputProps={{
+          className: "focus-visible:ring-red-500",
+        }}
       />
 
       {/* Delete Project */}
@@ -253,6 +259,9 @@ function SettingsPage() {
         }}
         dialogType={DialogType.DeleteProject}
         confirmation={`permanently delete ${selectedProject?.name}`}
+        inputProps={{
+          className: "focus-visible:ring-red-500",
+        }}
       />
 
       <CreateMemberDialog
