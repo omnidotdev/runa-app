@@ -163,7 +163,10 @@ function PricingPage() {
             Frequently Asked Questions
           </h2>
 
-          <AccordionRoot multiple className="mx-auto mt-8 grid max-w-3xl">
+          <AccordionRoot
+            multiple
+            className="mx-auto mt-8 grid max-w-3xl bg-background"
+          >
             {faqItems.map((item) => (
               <AccordionItem key={item.question} value={item.question}>
                 <AccordionItemTrigger className="text-lg">
