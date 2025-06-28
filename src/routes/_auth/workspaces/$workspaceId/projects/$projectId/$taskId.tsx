@@ -12,6 +12,7 @@ import {
   ClockIcon,
   EditIcon,
   EyeIcon,
+  InfoIcon,
   MessageSquareIcon,
   MinusCircleIcon,
   MoreHorizontalIcon,
@@ -154,7 +155,7 @@ function TaskPage() {
   return (
     <div className="flex h-full">
       {/* Main content */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1">
         <div className="h-full p-12">
           {/* Header */}
           <div className="mb-10 flex items-center justify-between">
@@ -366,9 +367,12 @@ function TaskPage() {
               {/* Metadata */}
               <CardRoot className="border-0 p-0 dark:shadow-base-500/10">
                 <CardHeader className="rounded-t-xl bg-base-50 p-3 dark:bg-base-800">
-                  <h3 className="font-medium text-base text-base-900 dark:text-base-100">
-                    Details
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <InfoIcon className="size-4 text-base-500 dark:text-base-400" />
+                    <h3 className="font-medium text-base text-base-900 dark:text-base-100">
+                      Details
+                    </h3>
+                  </div>
                 </CardHeader>
                 <CardContent className="mt-4 space-y-5">
                   <div className="flex items-center justify-between text-sm">
