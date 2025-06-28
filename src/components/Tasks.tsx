@@ -153,6 +153,7 @@ const Tasks = ({
                     {!!task?.labels?.length && (
                       <div className="-m-3 col-span-3 flex items-end p-2.5">
                         <div className="flex flex-wrap gap-1">
+                          {/* TODO: remove need for `JSON.parse` used just from seed script stringifying JSON to get dynamic labels */}
                           {JSON.parse(task.labels).map(
                             (label: { name: string; color: string }) => {
                               const colors = getLabelClasses(label.color);

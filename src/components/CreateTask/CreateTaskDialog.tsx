@@ -1,17 +1,12 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
-import Link from "@tiptap/extension-link";
-import Placeholder from "@tiptap/extension-placeholder";
-import TaskItem from "@tiptap/extension-task-item";
-import TaskList from "@tiptap/extension-task-list";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
 import { TagIcon, TypeIcon } from "lucide-react";
 import { useRef } from "react";
 
 import CreateTaskAssignees from "@/components/CreateTask/CreateTaskAssignees";
 import CreateTaskDatePicker from "@/components/CreateTask/CreateTaskDatePicker";
 import CreateTaskLabels from "@/components/CreateTask/CreateTaskLabels";
+import RichTextEditor from "@/components/core/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -35,7 +30,6 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
-import { cn } from "@/lib/utils";
 import getQueryClient from "@/utils/getQueryClient";
 
 interface Props {
@@ -48,7 +42,6 @@ const CreateTaskDialog = ({ columnId }: Props) => {
   });
 
   const titleRef = useRef<HTMLInputElement>(null);
-  const editorContainerRef = useRef<HTMLDivElement>(null);
 
   const queryClient = getQueryClient();
 
@@ -141,35 +134,6 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     },
   });
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        heading: {
-          levels: [1, 2],
-        },
-      }),
-      Placeholder.configure({
-        placeholder: "Add a detailed description...",
-      }),
-      TaskList,
-      TaskItem.configure({
-        nested: true,
-      }),
-      Link.configure({
-        openOnClick: false,
-      }),
-    ],
-    editorProps: {
-      attributes: {
-        class: "focus:outline-none prose-sm",
-        spellcheck: "false",
-      },
-    },
-    // TODO: discuss. This saves the HTML in db, i.e. `<p>Testing <strong>bold</strong> text</p>` which we could later render. `getText` removes any rich text
-    onUpdate: ({ editor }) =>
-      form.setFieldValue("description", editor.getHTML()),
-  });
-
   return (
     <DialogRoot
       open={isOpen}
@@ -240,25 +204,12 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                   Description
                 </h3>
               </div>
-              <div
-                ref={editorContainerRef}
-                onClick={() => {
-                  if (editor) {
-                    editor.commands.focus();
-                  }
-                }}
-                className="prose prose-sm dark:prose-invert relative max-w-none"
-              >
-                <EditorContent
-                  editor={editor}
-                  className={cn(
-                    "pointer-events-auto min-h-[120px] rounded-md border border-base-300 border-dashed bg-transparent p-3 text-base-600 dark:border-base-600 dark:text-base-300 dark:hover:border-base-500",
-                    editor?.isFocused
-                      ? "border-2 border-primary-500/20 bg-primary-50/50 dark:border-primary-500/10 dark:bg-primary-900/5"
-                      : "hover:border-base-400 dark:hover:border-base-500",
-                  )}
-                />
-              </div>
+              <RichTextEditor
+                // TODO: discuss. This saves the HTML in db, i.e. `<p>Testing <strong>bold</strong> text</p>` which we could later render. `getText` removes any rich text
+                onUpdate={({ editor }) =>
+                  form.setFieldValue("description", editor.getHTML())
+                }
+              />
             </div>
 
             <div className="flex justify-end gap-2">

@@ -24,6 +24,7 @@ import {
 import { useState } from "react";
 
 import Link from "@/components/core/Link";
+import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -197,23 +198,24 @@ function TaskPage() {
             {/* Main content column */}
             <div className="space-y-10 lg:col-span-2">
               {/* Description */}
-              <CardRoot>
-                <CardHeader className="flex flex-row items-center gap-2 pb-6">
+              <CardRoot className="border-0 p-0 dark:shadow-base-500/10">
+                <CardHeader className="flex flex-row items-center gap-2 rounded-t-xl bg-base-50 p-3 dark:bg-base-800">
                   <TypeIcon className="size-4 text-base-500 dark:text-base-400" />
                   <h2 className="font-semibold text-base-900 text-lg dark:text-base-100">
                     Description
                   </h2>
                 </CardHeader>
-                <CardContent className="pb-10">
-                  <div className="prose prose-base dark:prose-invert max-w-none leading-relaxed">
-                    {task?.description}
-                  </div>
+                <CardContent className="rounded-b-xl border-x border-b border-dashed p-0">
+                  <RichTextEditor
+                    defaultContent={task?.description}
+                    className="border-0"
+                  />
                 </CardContent>
               </CardRoot>
 
               {/* Comments */}
-              <CardRoot>
-                <CardHeader className="flex flex-row items-center gap-2 pb-6">
+              <CardRoot className="border-0 p-0 dark:shadow-base-500/10">
+                <CardHeader className="flex flex-row items-center gap-2 rounded-t-xl bg-base-50 p-3 dark:bg-base-800">
                   <MessageSquareIcon className="size-4 text-base-500 dark:text-base-400" />
                   <h2 className="font-semibold text-base-900 text-lg dark:text-base-100">
                     Comments
@@ -222,7 +224,7 @@ function TaskPage() {
                     {task?.posts?.totalCount ?? 0}
                   </Badge>
                 </CardHeader>
-                <CardContent className="space-y-8">
+                <CardContent className="mt-4 space-y-8">
                   {task?.posts?.nodes?.map((comment) => (
                     <div key={comment?.rowId} className="flex gap-4">
                       <Avatar
@@ -289,8 +291,8 @@ function TaskPage() {
             {/* Sidebar */}
             <div className="space-y-8">
               {/* Assignees */}
-              <CardRoot>
-                <CardHeader className="flex flex-row items-center justify-between p-3">
+              <CardRoot className="border-0 p-0 dark:shadow-base-500/10">
+                <CardHeader className="flex flex-row items-center justify-between rounded-t-xl bg-base-50 p-3 dark:bg-base-800">
                   <div className="flex items-center gap-2">
                     <UserIcon className="size-4 text-base-500 dark:text-base-400" />
                     <h3 className="font-medium text-base text-base-900 dark:text-base-100">
@@ -301,7 +303,7 @@ function TaskPage() {
                     <PlusIcon className="size-3" />
                   </Button>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="mt-4 space-y-4">
                   {task?.assignees?.nodes?.map((assignee) => (
                     <div
                       key={assignee?.rowId}
@@ -324,8 +326,8 @@ function TaskPage() {
               </CardRoot>
 
               {/* Labels */}
-              <CardRoot>
-                <CardHeader className="flex flex-row items-center justify-between p-3">
+              <CardRoot className="border-0 p-0 dark:shadow-base-500/10">
+                <CardHeader className="flex flex-row items-center justify-between rounded-t-xl bg-base-50 p-3 dark:bg-base-800">
                   <div className="flex items-center gap-2">
                     <TagIcon className="size-4 text-base-500 dark:text-base-400" />
                     <h3 className="font-medium text-base text-base-900 dark:text-base-100">
@@ -336,8 +338,9 @@ function TaskPage() {
                     <PlusIcon className="size-3" />
                   </Button>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="mt-4">
                   <div className="flex flex-wrap gap-2">
+                    {/* TODO: remove need for `JSON.parse` used just from seed script stringifying JSON to get dynamic labels */}
                     {JSON.parse(task?.labels).map(
                       (label: { name: string; color: string }) => {
                         const colors = getLabelClasses(label.color);
@@ -361,13 +364,13 @@ function TaskPage() {
               </CardRoot>
 
               {/* Metadata */}
-              <CardRoot>
-                <CardHeader className="pb-4">
+              <CardRoot className="border-0 p-0 dark:shadow-base-500/10">
+                <CardHeader className="rounded-t-xl bg-base-50 p-3 dark:bg-base-800">
                   <h3 className="font-medium text-base text-base-900 dark:text-base-100">
                     Details
                   </h3>
                 </CardHeader>
-                <CardContent className="space-y-5">
+                <CardContent className="mt-4 space-y-5">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-base-500 dark:text-base-400">
                       Created
