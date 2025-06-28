@@ -146,22 +146,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <PlusIcon /> <span className="sr-only">Add Workspace</span>
             </SidebarGroupAction>
 
-            {/* TODO: look into hover when sidebar is collapsed. The hitbox for the link seems off */}
             {workspaceId && (
-              <SidebarMenuButton asChild tooltip="Settings">
-                <Link
-                  to="/workspaces/$workspaceId/settings"
-                  params={{ workspaceId: workspaceId! }}
-                  variant="ghost"
-                  className="justify-start"
-                  activeProps={{
-                    variant: "outline",
-                  }}
-                >
-                  <SettingsIcon />
-                  Settings
-                </Link>
-              </SidebarMenuButton>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="Settings">
+                    <Link
+                      to="/workspaces/$workspaceId/settings"
+                      params={{ workspaceId: workspaceId! }}
+                      variant="ghost"
+                      size="sm"
+                      className="justify-start"
+                      activeProps={{
+                        variant: "outline",
+                      }}
+                    >
+                      <SettingsIcon />
+                      <span className="truncate">Settings</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
             )}
           </SidebarGroup>
 
