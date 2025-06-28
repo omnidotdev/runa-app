@@ -1,7 +1,6 @@
 import { Draggable } from "@hello-pangea/dnd";
-import { useLiveQuery } from "@tanstack/react-db";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
   AlertCircleIcon,
@@ -15,8 +14,8 @@ import {
 
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import tasksCollection from "@/lib/collections/tasks.collection";
 import projectOptions from "@/lib/options/project.options";
+import tasksOptions from "@/lib/options/tasks.options";
 import { getLabelClasses } from "@/lib/util/getLabelClasses";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
@@ -50,21 +49,19 @@ const Tasks = ({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
+  const { search } = useSearch({
+    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  });
+
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
     select: (data) => data?.project,
   });
 
-  const projectTasksCollection = tasksCollection(projectId);
-
-  const { data: tasks } = useLiveQuery((q) =>
-    q
-      .from({ projectTasksCollection })
-      .where("@columnId", "=", columnId)
-      .orderBy({ "@columnIndex": "asc" })
-      // Unfortunately `select` is needed for the time being when using `orderBy`. See: https://github.com/orgs/TanStack/projects/5?pane=issue&itemId=115700338&issue=TanStack%7Cdb%7C177
-      .select("@*"),
-  );
+  const { data: tasks } = useSuspenseQuery({
+    ...tasksOptions(columnId, search),
+    select: (data) => data?.tasks?.nodes,
+  });
 
   const columnTitle = project?.columns?.nodes?.find(
     (column) => column?.rowId === columnId,
@@ -72,9 +69,13 @@ const Tasks = ({
 
   const taskIndex = (taskId: string) =>
     project?.columns?.nodes
-      ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task?.rowId))
-      // TODO: sort by createdAt or whatever we decide
-      .sort()
+      ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
+      .sort(
+        (a, b) =>
+          new Date(a?.createdAt!).getTime()! -
+          new Date(b?.createdAt!).getTime()!,
+      )
+      .map((task) => task?.rowId)
       .indexOf(taskId);
 
   return (

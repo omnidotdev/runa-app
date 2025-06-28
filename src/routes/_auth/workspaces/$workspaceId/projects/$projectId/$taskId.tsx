@@ -1,4 +1,5 @@
 export const Route = createFileRoute({
+  ssr: false,
   component: TaskPage,
 });
 

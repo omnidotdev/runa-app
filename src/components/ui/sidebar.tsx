@@ -349,8 +349,6 @@ function SidebarRail({
     useSidebar();
 
   const { dragRef, handleMouseDown } = useSidebarResize({
-    direction: "right",
-    enableDrag,
     onResize: setWidth,
     onToggle: toggleSidebar,
     currentWidth: width,
@@ -359,22 +357,17 @@ function SidebarRail({
     maxResizeWidth: MAX_SIDEBAR_WIDTH,
     setIsDraggingRail,
     widthCookieName: "sidebar:width",
-    widthCookieMaxAge: 60 * 60 * 24 * 7, // 1 week
     enableAutoCollapse: false,
   });
 
   return (
     <button
-      //* updated ref to use combinedRef
       ref={dragRef}
       data-sidebar="rail"
       data-slot="sidebar-rail"
       aria-label="Toggle Sidebar"
       tabIndex={-1}
-      // onClick={toggleSidebar}
-      //* replace onClick with onMouseDown
       onMouseDown={handleMouseDown}
-      // title="Toggle Sidebar"
       className={cn(
         "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] group-data-[side=right]:left-0 sm:flex",
         "in-data-[side=left]:cursor-e-resize in-data-[side=right]:cursor-e-resize",
@@ -761,6 +754,7 @@ export {
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
+  /** @knipignore */
   SidebarTrigger,
   useSidebar,
 };

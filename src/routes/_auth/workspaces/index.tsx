@@ -2,6 +2,7 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import seo from "@/utils/seo";
 
 export const Route = createFileRoute({
+  ssr: false,
   head: () => ({
     meta: [...seo({ title: "Workspaces" })],
   }),

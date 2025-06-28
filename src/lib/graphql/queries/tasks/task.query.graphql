@@ -1,0 +1,20 @@
+query Task($rowId: UUID!) {
+  task(rowId: $rowId) {
+    rowId
+    columnId
+    columnIndex
+    content
+    priority
+    dueDate
+    labels
+    assignees {
+      nodes {
+        rowId
+        user {
+          name
+          avatarUrl
+        }
+      }
+    }
+  }
+}

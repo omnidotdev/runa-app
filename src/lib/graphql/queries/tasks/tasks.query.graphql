@@ -1,5 +1,10 @@
-query Tasks($projectId: UUID!) {
-  tasks(filter: { column: { projectId: { equalTo: $projectId } } }) {
+query Tasks($columnId: UUID!, $search: String = "") {
+  tasks(
+    filter: {
+      columnId: { equalTo: $columnId }
+      content: { includesInsensitive: $search }
+    }
+  ) {
     nodes {
       rowId
       columnId

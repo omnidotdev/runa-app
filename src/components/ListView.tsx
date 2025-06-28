@@ -10,9 +10,12 @@ import {
   CollapsibleRoot,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import tasksCollection from "@/lib/collections/tasks.collection";
+import { useUpdateTaskMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
+import taskOptions from "@/lib/options/task.options";
+import tasksOptions from "@/lib/options/tasks.options";
 import { useTheme } from "@/providers/ThemeProvider";
+import getQueryClient from "@/utils/getQueryClient";
 
 import type { DropResult } from "@hello-pangea/dnd";
 
@@ -23,12 +26,51 @@ const ListView = () => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
+  const queryClient = getQueryClient();
+
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
     select: (data) => data?.project,
   });
 
-  const projectTasksCollection = tasksCollection(projectId);
+  const { mutate: updateTask } = useUpdateTaskMutation({
+    onMutate: async (variables) => {
+      const { task } = await queryClient.ensureQueryData(
+        taskOptions(variables.rowId),
+      );
+
+      queryClient.setQueryData(
+        tasksOptions(task?.columnId!).queryKey,
+        (old) => ({
+          tasks: {
+            ...old?.tasks!,
+            nodes: old?.tasks?.nodes?.filter(
+              (task) => task?.rowId !== variables.rowId,
+            )!,
+          },
+        }),
+      );
+
+      // TODO: figure out why this is causing issue
+      // queryClient.setQueryData(
+      //   tasksOptions(variables.patch.columnId!).queryKey,
+      //   (old) => ({
+      //     tasks: {
+      //       ...old?.tasks!,
+      //       nodes: [
+      //         ...old?.tasks?.nodes!,
+      //         {
+      //           ...task!,
+      //           columnId: variables.patch.columnId!,
+      //           columnIndex: variables.patch.columnIndex!,
+      //         },
+      //       ],
+      //     },
+      //   }),
+      // );
+    },
+    onSettled: () => queryClient.invalidateQueries(),
+  });
 
   const onDragEnd = useCallback(
     (result: DropResult) => {
@@ -43,13 +85,15 @@ const ListView = () => {
       )
         return;
 
-      // Update task with new column and index
-      projectTasksCollection.update(draggableId, (draft) => {
-        draft.columnId = destination.droppableId;
-        draft.columnIndex = destination.index;
+      updateTask({
+        rowId: draggableId,
+        patch: {
+          columnId: destination.droppableId,
+          columnIndex: destination.index,
+        },
       });
     },
-    [projectTasksCollection],
+    [updateTask],
   );
 
   return (

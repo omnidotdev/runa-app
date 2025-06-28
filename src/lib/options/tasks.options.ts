@@ -2,10 +2,12 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { useTasksQuery } from "@/generated/graphql";
 
-const tasksOptions = (projectId: string) =>
+const tasksOptions = (columnId: string, search?: string) =>
   queryOptions({
-    queryKey: useTasksQuery.getKey({ projectId }),
-    queryFn: useTasksQuery.fetcher({ projectId }),
+    queryKey: useTasksQuery.getKey({ columnId, search }),
+    queryFn: useTasksQuery.fetcher({ columnId, search }),
+    // TODO: discuss proper refetch interval
+    refetchInterval: 3000,
   });
 
 export default tasksOptions;

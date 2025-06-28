@@ -7,10 +7,13 @@ import { useCallback, useRef, useState } from "react";
 import CreateTaskDialog from "@/components/CreateTask/CreateTaskDialog";
 import Tasks from "@/components/Tasks";
 import { Button } from "@/components/ui/button";
-import tasksCollection from "@/lib/collections/tasks.collection";
+import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
+import taskOptions from "@/lib/options/task.options";
+import tasksOptions from "@/lib/options/tasks.options";
 import { useTheme } from "@/providers/ThemeProvider";
+import getQueryClient from "@/utils/getQueryClient";
 
 import type { DropResult } from "@hello-pangea/dnd";
 
@@ -29,12 +32,51 @@ const Board = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  const queryClient = getQueryClient();
+
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
     select: (data) => data?.project,
   });
 
-  const projectTasksCollection = tasksCollection(projectId);
+  const { mutate: updateTask } = useUpdateTaskMutation({
+    onMutate: async (variables) => {
+      const { task } = await queryClient.ensureQueryData(
+        taskOptions(variables.rowId),
+      );
+
+      queryClient.setQueryData(
+        tasksOptions(task?.columnId!).queryKey,
+        (old) => ({
+          tasks: {
+            ...old?.tasks!,
+            nodes: old?.tasks?.nodes?.filter(
+              (task) => task?.rowId !== variables.rowId,
+            )!,
+          },
+        }),
+      );
+
+      // TODO: figure out why this is causing issue
+      // queryClient.setQueryData(
+      //   tasksOptions(variables.patch.columnId!).queryKey,
+      //   (old) => ({
+      //     tasks: {
+      //       ...old?.tasks!,
+      //       nodes: [
+      //         ...old?.tasks?.nodes!,
+      //         {
+      //           ...task!,
+      //           columnId: variables.patch.columnId!,
+      //           columnIndex: variables.patch.columnIndex!,
+      //         },
+      //       ],
+      //     },
+      //   }),
+      // );
+    },
+    onSettled: () => queryClient.invalidateQueries(),
+  });
 
   const startAutoScroll = useCallback((direction: "left" | "right") => {
     if (autoScrollIntervalRef.current) return;
@@ -110,13 +152,15 @@ const Board = () => {
       )
         return;
 
-      // TODO: bulk update to properly handle index changes? Not sure tbh...
-      projectTasksCollection.update(draggableId, (draft) => {
-        draft.columnId = destination.droppableId;
-        draft.columnIndex = destination.index;
+      updateTask({
+        rowId: draggableId,
+        patch: {
+          columnId: destination.droppableId,
+          columnIndex: destination.index,
+        },
       });
     },
-    [projectTasksCollection, stopAutoScroll, handleMouseMove],
+    [updateTask, stopAutoScroll, handleMouseMove],
   );
 
   return (

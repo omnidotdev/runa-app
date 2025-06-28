@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface UseSidebarResizeProps {
+interface UseSidebarResizeProps {
   /**
    * Direction of the resize handle
    * - 'left': Handle is on left side (for right-positioned panels)
@@ -225,6 +225,7 @@ export function useSidebarResize({
   const persistWidth = React.useCallback(
     (width: string) => {
       if (widthCookieName) {
+        // biome-ignore lint/suspicious/noDocumentCookie: allow
         document.cookie = `${widthCookieName}=${width}; path=/; max-age=${widthCookieMaxAge}`;
       }
     },

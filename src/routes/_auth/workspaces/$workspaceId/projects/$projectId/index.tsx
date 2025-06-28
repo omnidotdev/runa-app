@@ -1,6 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { notFound } from "@tanstack/react-router";
+import { notFound, stripSearchParams } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { Grid2X2Icon, ListIcon, SearchIcon } from "lucide-react";
+import { useDebounceCallback } from "usehooks-ts";
+import * as z from "zod/v4";
 
 import Board from "@/components/Board";
 import ListView from "@/components/ListView";
@@ -12,23 +15,44 @@ import { useUpdateProjectMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import getQueryClient from "@/utils/getQueryClient";
 import seo from "@/utils/seo";
+
+import type { ChangeEvent } from "react";
+
+const projectSearchSchema = z.object({
+  search: z.string().default(""),
+});
 
 export const Route = createFileRoute({
   ssr: false,
-  loader: async ({ params: { projectId, workspaceId }, context }) => {
+  loaderDeps: ({ search: { search } }) => ({ search }),
+  loader: async ({
+    deps: { search },
+    params: { projectId, workspaceId },
+    context,
+  }) => {
     const [{ project }] = await Promise.all([
       context.queryClient.ensureQueryData(projectOptions(projectId)),
       context.queryClient.ensureQueryData(workspaceOptions(workspaceId)),
-      context.queryClient.ensureQueryData(tasksOptions(projectId)),
     ]);
 
     if (!project) {
       throw notFound();
     }
 
+    const columnIds = project.columns?.nodes?.map((col) => col?.rowId);
+
+    await Promise.all(
+      columnIds.map((colId) =>
+        context.queryClient.ensureQueryData(tasksOptions(colId!, search)),
+      ),
+    );
+
     return { name: project.name };
+  },
+  validateSearch: zodValidator(projectSearchSchema),
+  search: {
+    middlewares: [stripSearchParams({ search: "" })],
   },
   head: ({ loaderData }) => ({
     meta: loaderData ? [...seo({ title: loaderData.name })] : undefined,
@@ -39,8 +63,23 @@ export const Route = createFileRoute({
 
 function ProjectPage() {
   const { projectId, workspaceId } = Route.useParams();
+  const { search } = Route.useSearch();
 
-  const queryClient = getQueryClient();
+  const navigate = Route.useNavigate();
+
+  const { queryClient } = Route.useRouteContext();
+
+  const handleSearch = useDebounceCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          search: e.target.value.length ? e.target.value : "",
+        }),
+      });
+    },
+    300,
+  );
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
@@ -82,9 +121,8 @@ function ProjectPage() {
               <div className="relative flex-1 sm:flex-none">
                 <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-base-400" />
                 <Input
-                  // value={searchQuery}
-                  // onChange={(e) => onSearchChange(e.target.value)}
-                  disabled
+                  defaultValue={search}
+                  onChange={handleSearch}
                   placeholder="Search tasks..."
                   className="pl-10"
                 />

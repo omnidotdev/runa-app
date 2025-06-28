@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { notFound, useNavigate, useParams } from "@tanstack/react-router";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import CreateMemberDialog from "@/components/CreateMemberDialog";
 import Link from "@/components/core/Link";
+import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import {
   useDeleteProjectMutation,
@@ -16,10 +17,29 @@ import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/utils/getQueryClient";
+import seo from "@/utils/seo";
 
 import type { Assignee } from "@/types";
 
 export const Route = createFileRoute({
+  ssr: false,
+  loader: async ({ params: { workspaceId }, context }) => {
+    const { workspace } = await context.queryClient.ensureQueryData(
+      workspaceOptions(workspaceId),
+    );
+
+    if (!workspace) {
+      throw notFound();
+    }
+
+    return { name: workspace.name };
+  },
+  head: ({ loaderData }) => ({
+    meta: loaderData
+      ? [...seo({ title: `${loaderData.name} Settings` })]
+      : undefined,
+  }),
+  notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,
   component: SettingsPage,
 });
 
