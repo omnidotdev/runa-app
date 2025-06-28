@@ -36,8 +36,6 @@
     "@tiptap/extension-task-list": "^2.22.3",
     "@tiptap/react": "^2.22.3",
     "@tiptap/starter-kit": "^2.22.3",
-    "@tiptap/suggestion": "^2.22.3",
-    "chrono-node": "^2.8.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
