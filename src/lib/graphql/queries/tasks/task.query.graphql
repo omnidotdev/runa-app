@@ -4,9 +4,19 @@ query Task($rowId: UUID!) {
     columnId
     columnIndex
     content
+    description
     priority
+    createdAt
+    updatedAt
     dueDate
     labels
+    column {
+      title
+    }
+    author {
+      name
+      avatarUrl
+    }
     assignees {
       nodes {
         rowId

@@ -1,12 +1,17 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
+  AlertCircleIcon,
   AlertTriangleIcon,
   ArrowLeftIcon,
   CalendarIcon,
   CheckCircle2Icon,
   CircleDotIcon,
+  CircleIcon,
   ClockIcon,
   EditIcon,
+  EyeIcon,
   MessageSquareIcon,
   MinusCircleIcon,
   MoreHorizontalIcon,
@@ -18,15 +23,31 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+import Link from "@/components/core/Link";
+import NotFound from "@/components/layout/NotFound";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import taskOptions from "@/lib/options/task.options";
+import { getLabelClasses } from "@/lib/util/getLabelClasses";
 import { cn } from "@/lib/utils";
+import seo from "@/utils/seo";
 
 export const Route = createFileRoute({
   ssr: false,
+  loader: async ({ params: { taskId }, context: { queryClient } }) => {
+    const { task } = await queryClient.ensureQueryData(taskOptions(taskId));
+
+    if (!task) {
+      throw notFound();
+    }
+  },
+  head: () => ({
+    meta: [...seo({ title: "Task" })],
+  }),
+  notFoundComponent: () => <NotFound>Task Not Found</NotFound>,
   component: TaskPage,
 });
 
@@ -115,32 +136,32 @@ const mockComments = [
 
 const StatusBadge = ({ status }: { status: string }) => {
   const statusConfig = {
-    "to-do": {
+    "To Do": {
       icon: ClockIcon,
       label: "To Do",
       className:
         "bg-base-100 text-base-600 border-base-300 dark:bg-base-800 dark:text-base-300 dark:border-base-600",
     },
-    "in-progress": {
-      icon: AlertTriangleIcon,
+    "In Progress": {
+      icon: AlertCircleIcon,
       label: "In Progress",
       className:
         "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800",
     },
-    "awaiting-review": {
-      icon: CheckCircle2Icon,
+    "Awaiting Review": {
+      icon: EyeIcon,
       label: "Awaiting Review",
       className:
         "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800",
     },
-    done: {
+    Done: {
       icon: CheckCircle2Icon,
       label: "Done",
       className:
         "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800",
     },
-    backlog: {
-      icon: CircleDotIcon,
+    Backlog: {
+      icon: CircleIcon,
       label: "Backlog",
       className:
         "bg-base-100 text-base-600 border-base-300 dark:bg-base-800 dark:text-base-300 dark:border-base-600",
@@ -195,30 +216,6 @@ const PriorityBadge = ({ priority }: { priority: string }) => {
   );
 };
 
-const LabelBadge = ({ label }: { label: { name: string; color: string } }) => {
-  const colorClasses = {
-    blue: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800",
-    green:
-      "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800",
-    red: "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800",
-    yellow:
-      "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800",
-    purple:
-      "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800",
-    gray: "bg-base-50 text-base-700 border-base-200 dark:bg-base-900/20 dark:text-base-300 dark:border-base-800",
-  };
-
-  const colorClass =
-    colorClasses[label.color as keyof typeof colorClasses] || colorClasses.gray;
-
-  return (
-    <Badge className={cn("gap-1", colorClass)} variant="outline" size="sm">
-      <TagIcon className="size-2.5" />
-      {label.name}
-    </Badge>
-  );
-};
-
 const CommentCard = ({ comment }: { comment: any }) => {
   return (
     <div className="flex gap-4">
@@ -248,6 +245,11 @@ const CommentCard = ({ comment }: { comment: any }) => {
 function TaskPage() {
   const { workspaceId, projectId, taskId } = Route.useParams();
 
+  const { data: task } = useSuspenseQuery({
+    ...taskOptions(taskId),
+    select: (data) => data?.task,
+  });
+
   const [newComment, setNewComment] = useState("");
 
   const handleAddComment = () => {
@@ -265,19 +267,27 @@ function TaskPage() {
           {/* Header */}
           <div className="mb-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon">
+              <Link
+                to="/workspaces/$workspaceId/projects/$projectId"
+                params={{
+                  workspaceId,
+                  projectId,
+                }}
+                variant="ghost"
+                size="icon"
+              >
                 <ArrowLeftIcon className="size-4" />
-              </Button>
+              </Link>
               <div className="flex flex-col gap-2">
                 <h1 className="mt-1 font-bold text-2xl text-base-900 dark:text-base-100">
-                  {mockTask.title}
+                  {task?.content}
                 </h1>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-base-400 text-sm dark:text-base-500">
                     {mockTask.id}
                   </span>
-                  <StatusBadge status={mockTask.status} />
-                  <PriorityBadge priority={mockTask.priority} />
+                  <StatusBadge status={task?.column?.title!} />
+                  <PriorityBadge priority={task?.priority!} />
                 </div>
               </div>
             </div>
@@ -305,7 +315,7 @@ function TaskPage() {
                 </CardHeader>
                 <CardContent className="pb-10">
                   <div className="prose prose-base dark:prose-invert max-w-none leading-relaxed">
-                    {mockTask.description}
+                    {task?.description}
                   </div>
                 </CardContent>
               </CardRoot>
@@ -378,20 +388,20 @@ function TaskPage() {
                   </Button>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {mockTask.assignees.map((assignee) => (
-                    <div key={assignee.id} className="flex items-center gap-2">
+                  {task?.assignees?.nodes?.map((assignee) => (
+                    <div
+                      key={assignee?.rowId}
+                      className="flex items-center gap-2"
+                    >
                       <Avatar
-                        fallback={assignee.name.charAt(0)}
-                        src={undefined}
-                        alt={assignee.name}
+                        fallback={assignee?.user?.name.charAt(0)}
+                        src={assignee?.user?.avatarUrl ?? undefined}
+                        alt={assignee?.user?.name}
                         size="xs"
                       />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-medium text-base-900 text-sm dark:text-base-100">
-                          {assignee.name}
-                        </p>
-                        <p className="truncate text-base-500 text-xs dark:text-base-400">
-                          {assignee.email}
+                          {assignee?.user?.name}
                         </p>
                       </div>
                     </div>
@@ -414,9 +424,24 @@ function TaskPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
-                    {mockTask.labels.map((label) => (
-                      <LabelBadge key={label.name} label={label} />
-                    ))}
+                    {JSON.parse(task?.labels).map(
+                      (label: { name: string; color: string }) => {
+                        const colors = getLabelClasses(label.color);
+
+                        return (
+                          <Badge
+                            key={label.name}
+                            size="sm"
+                            className={cn(colors.bg, colors.text)}
+                          >
+                            <TagIcon className={cn("!size-2.5", colors.icon)} />
+                            <span className="font-medium text-[10px]">
+                              {label.name}
+                            </span>
+                          </Badge>
+                        );
+                      },
+                    )}
                   </div>
                 </CardContent>
               </CardRoot>
@@ -434,7 +459,7 @@ function TaskPage() {
                       Created
                     </span>
                     <span className="text-base-900 dark:text-base-100">
-                      {format(new Date(mockTask.createdAt), "MMM d, yyyy")}
+                      {format(new Date(task?.createdAt!), "MMM d, yyyy")}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
@@ -442,17 +467,19 @@ function TaskPage() {
                       Updated
                     </span>
                     <span className="text-base-900 dark:text-base-100">
-                      {format(new Date(mockTask.updatedAt), "MMM d, yyyy")}
+                      {format(new Date(task?.updatedAt!), "MMM d, yyyy")}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-base-500 dark:text-base-400">
                       Due Date
                     </span>
-                    <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
-                      <CalendarIcon className="size-3" />
-                      {format(new Date(mockTask.dueDate), "MMM d, yyyy")}
-                    </div>
+                    {task?.dueDate && (
+                      <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
+                        <CalendarIcon className="size-3" />
+                        {format(new Date(task.dueDate), "MMM d, yyyy")}
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-base-500 dark:text-base-400">
@@ -460,13 +487,13 @@ function TaskPage() {
                     </span>
                     <div className="flex items-center gap-2">
                       <Avatar
-                        fallback={mockTask.author.name.charAt(0)}
-                        src={undefined}
-                        alt={mockTask.author.name}
+                        fallback={task?.author?.name.charAt(0)}
+                        src={task?.author?.avatarUrl ?? undefined}
+                        alt={task?.author?.name}
                         size="xs"
                       />
                       <span className="text-base-900 dark:text-base-100">
-                        {mockTask.author.name}
+                        {task?.author?.name}
                       </span>
                     </div>
                   </div>
