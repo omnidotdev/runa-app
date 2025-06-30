@@ -120,7 +120,7 @@ const ListView = () => {
                   <span className="font-medium text-base-900 text-sm dark:text-base-100">
                     {column?.title}
                   </span>
-                  <span className="text-base-500 text-sm dark:text-base-400">
+                  <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
                     {
                       project?.columns?.nodes?.find(
                         (c) => c?.rowId === column?.rowId,

@@ -1,4 +1,5 @@
 import { Moon, Sun } from "lucide-react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import { useTheme } from "@/providers/ThemeProvider";
 
@@ -7,6 +8,8 @@ const ThemeToggle = () => {
 
   const toggleTheme = () =>
     theme === "dark" ? setTheme("light") : setTheme("dark");
+
+  useHotkeys("ctrl+k", toggleTheme, [toggleTheme]);
 
   return (
     <button

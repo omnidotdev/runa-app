@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import {
   ChevronsUpDownIcon,
+  Command,
   Grid2X2Icon,
   ListIcon,
   LogOutIcon,
@@ -14,6 +15,7 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import Link from "@/components/core/Link";
 import {
@@ -60,6 +62,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const toggleTheme = () =>
     theme === "dark" ? setTheme("light") : setTheme("dark");
+  useHotkeys("meta+k", toggleTheme, [toggleTheme]);
 
   const { data: workspaces } = useQuery({
     ...workspacesOptions,
@@ -256,10 +259,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenuButton
                 tooltip="Expand Sidebar"
                 onClick={() => setOpen(!open)}
-                className="justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+                className="flex justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
               >
                 <PanelLeftIcon />
-                <span>Collapse Sidebar</span>
+                <span className="flex w-full justify-between">
+                  Collapse Sidebar
+                  <span className="ml-auto flex items-center gap-0.5 text-muted-foreground text-xs tracking-widest">
+                    <Command size={12} />
+                    <span>b</span>
+                  </span>
+                </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
 
@@ -270,7 +279,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 className="justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
               >
                 {theme === "dark" ? <MoonIcon /> : <SunIcon />}
-                <span>Toggle Theme</span>
+                <span className="flex w-full justify-between">
+                  Toggle Theme
+                  <span className="ml-auto flex items-center gap-0.5 text-muted-foreground text-xs tracking-widest">
+                    <Command size={12} />
+                    <span>k</span>
+                  </span>
+                </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
 

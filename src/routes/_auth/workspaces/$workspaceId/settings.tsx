@@ -1,6 +1,7 @@
+import { useForm } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound } from "@tanstack/react-router";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Edit, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
@@ -8,9 +9,11 @@ import CreateMemberDialog from "@/components/CreateMemberDialog";
 import Link from "@/components/core/Link";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   useDeleteProjectMutation,
   useDeleteWorkspaceMutation,
+  useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectsOptions from "@/lib/options/projects.options";
@@ -53,8 +56,9 @@ function SettingsPage() {
     rowId: string;
     name: string;
   }>();
+  const [editWorkspace, setEditWorkspace] = useState(false);
 
-  const { data: currentWorkspace } = useSuspenseQuery({
+  const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions(workspaceId),
     select: (data) => data?.workspace,
   });
@@ -97,6 +101,29 @@ function SettingsPage() {
       type: DialogType.CreateProject,
     });
 
+  const { mutate: updateProject } = useUpdateWorkspaceMutation({
+    onSettled: () => {
+      reset();
+      setEditWorkspace(false);
+
+      return queryClient.invalidateQueries();
+    },
+  });
+
+  const { Field, Subscribe, handleSubmit, reset } = useForm({
+    defaultValues: {
+      name: workspace?.name || "",
+    },
+    onSubmit: ({ value }) => {
+      updateProject({
+        rowId: workspaceId,
+        patch: {
+          name: value.name,
+        },
+      });
+    },
+  });
+
   return (
     <div className="relative h-full p-6">
       <Link
@@ -111,6 +138,77 @@ function SettingsPage() {
 
       <div className="flex flex-col gap-6 p-8">
         <h1 className="text-2xl">Workspace Settings</h1>
+
+        <div className="flex flex-col gap-3 rounded-lg">
+          <form
+            className="flex flex-col gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleSubmit();
+            }}
+          >
+            <Field name="name">
+              {(field) => (
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center justify-between">
+                    <label
+                      htmlFor="name"
+                      className="mb-1 block font-medium text-base-700 text-sm dark:text-base-300"
+                    >
+                      Workspace Name
+                    </label>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Edit workspace name"
+                      onClick={() => setEditWorkspace((prev) => !prev)}
+                    >
+                      <Edit size={14} />
+                    </Button>
+                  </div>
+                  <Input
+                    id="name"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Runa"
+                    className="disabled:opacity-100"
+                    disabled={!editWorkspace}
+                  />
+                </div>
+              )}
+            </Field>
+
+            {editWorkspace && (
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setEditWorkspace(false)}
+                >
+                  Cancel
+                </Button>
+
+                <Subscribe
+                  selector={(state) => [
+                    state.canSubmit,
+                    state.isSubmitting,
+                    state.isDirty,
+                  ]}
+                >
+                  {([canSubmit, isSubmitting, isDirty]) => (
+                    <Button
+                      type="submit"
+                      disabled={!canSubmit || isSubmitting || !isDirty}
+                    >
+                      Save Changes
+                    </Button>
+                  )}
+                </Subscribe>
+              </div>
+            )}
+          </form>
+        </div>
 
         <div className="flex flex-col gap-4 rounded-lg border p-4 shadow-sm">
           <div className="flex items-center justify-between gap-4">
@@ -171,9 +269,9 @@ function SettingsPage() {
             </Button>
           </div>
 
-          {!!currentWorkspace?.projects.nodes.length && (
+          {!!workspace?.projects.nodes.length && (
             <div className="grid gap-2">
-              {currentWorkspace?.projects.nodes.map((project) => (
+              {workspace?.projects.nodes.map((project) => (
                 <div
                   key={project?.rowId}
                   className="flex items-center justify-between rounded-lg border bg-accent p-3"
@@ -223,12 +321,12 @@ function SettingsPage() {
       {/* Delete Workspace */}
       <ConfirmDialog
         title="Danger Zone"
-        description={`This will permanently delete ${currentWorkspace?.name} and all associated data. This action cannot be undone.`}
+        description={`This will permanently delete ${workspace?.name} and all associated data. This action cannot be undone.`}
         onConfirm={() => {
-          deleteWorkspace({ rowId: currentWorkspace?.rowId! });
+          deleteWorkspace({ rowId: workspace?.rowId! });
         }}
         dialogType={DialogType.DeleteWorkspace}
-        confirmation={`permanently delete ${currentWorkspace?.name}`}
+        confirmation={`permanently delete ${workspace?.name}`}
         inputProps={{
           className: "focus-visible:ring-red-500",
         }}
@@ -237,7 +335,7 @@ function SettingsPage() {
       {/* Delete Team Member */}
       <ConfirmDialog
         title="Danger Zone"
-        description={`This will delete ${selectedMember?.name} from ${currentWorkspace?.name} workspace. This action cannot be undone.`}
+        description={`This will delete ${selectedMember?.name} from ${workspace?.name} workspace. This action cannot be undone.`}
         onConfirm={() => {
           // TODO
           handleRemoveMember(selectedMember?.id!);
@@ -252,7 +350,7 @@ function SettingsPage() {
       {/* Delete Project */}
       <ConfirmDialog
         title="Danger Zone"
-        description={`This will delete the project "${selectedProject?.name}" from ${currentWorkspace?.name} workspace. This action cannot be undone.`}
+        description={`This will delete the project "${selectedProject?.name}" from ${workspace?.name} workspace. This action cannot be undone.`}
         onConfirm={() => {
           deleteProject({ rowId: selectedProject?.rowId! });
         }}

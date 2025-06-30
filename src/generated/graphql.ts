@@ -4581,6 +4581,14 @@ export type DeleteWorkspaceMutationVariables = Exact<{
 
 export type DeleteWorkspaceMutation = { __typename?: 'Mutation', deleteWorkspace?: { __typename?: 'DeleteWorkspacePayload', clientMutationId?: string | null } | null };
 
+export type UpdateWorkspaceMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: WorkspacePatch;
+}>;
+
+
+export type UpdateWorkspaceMutation = { __typename?: 'Mutation', updateWorkspace?: { __typename?: 'UpdateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string } | null } | null };
+
 export type ProjectQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
@@ -4902,6 +4910,34 @@ useDeleteWorkspaceMutation.getKey = () => ['DeleteWorkspace'];
 
 
 useDeleteWorkspaceMutation.fetcher = (variables: DeleteWorkspaceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteWorkspaceMutation, DeleteWorkspaceMutationVariables>(DeleteWorkspaceDocument, variables, options);
+
+export const UpdateWorkspaceDocument = `
+    mutation UpdateWorkspace($rowId: UUID!, $patch: WorkspacePatch!) {
+  updateWorkspace(input: {rowId: $rowId, patch: $patch}) {
+    workspace {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useUpdateWorkspaceMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateWorkspaceMutation, TError, UpdateWorkspaceMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateWorkspaceMutation, TError, UpdateWorkspaceMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateWorkspace'],
+    mutationFn: (variables?: UpdateWorkspaceMutationVariables) => graphqlFetch<UpdateWorkspaceMutation, UpdateWorkspaceMutationVariables>(UpdateWorkspaceDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateWorkspaceMutation.getKey = () => ['UpdateWorkspace'];
+
+
+useUpdateWorkspaceMutation.fetcher = (variables: UpdateWorkspaceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateWorkspaceMutation, UpdateWorkspaceMutationVariables>(UpdateWorkspaceDocument, variables, options);
 
 export const ProjectDocument = `
     query Project($rowId: UUID!) {
