@@ -63,31 +63,31 @@ const StatusBadge = ({ status }: { status: string }) => {
       icon: ClockIcon,
       label: "To Do",
       className:
-        "bg-base-100 text-base-600 border-base-300 dark:bg-base-800 dark:text-base-300 dark:border-base-600",
+        "bg-base-100 text-base-600 dark:bg-base-800 dark:text-base-300",
     },
     "In Progress": {
       icon: AlertCircleIcon,
       label: "In Progress",
       className:
-        "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800",
+        "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300",
     },
     "Awaiting Review": {
       icon: EyeIcon,
       label: "Awaiting Review",
       className:
-        "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800",
+        "bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300",
     },
     Done: {
       icon: CheckCircle2Icon,
       label: "Done",
       className:
-        "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800",
+        "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300",
     },
     Backlog: {
       icon: CircleIcon,
       label: "Backlog",
       className:
-        "bg-base-100 text-base-600 border-base-300 dark:bg-base-800 dark:text-base-300 dark:border-base-600",
+        "bg-base-100 text-base-600 dark:bg-base-800 dark:text-base-300",
     },
   };
 
@@ -98,7 +98,7 @@ const StatusBadge = ({ status }: { status: string }) => {
 
   return (
     <Badge className={cn("gap-1.5", config.className)} variant="outline">
-      <Icon className="size-3" />
+      <Icon className="!size-2.5" />
       {config.label}
     </Badge>
   );
@@ -109,20 +109,19 @@ const PriorityBadge = ({ priority }: { priority: string }) => {
     high: {
       icon: AlertTriangleIcon,
       label: "High",
-      className:
-        "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800",
+      className: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300",
     },
     medium: {
       icon: CircleDotIcon,
       label: "Medium",
       className:
-        "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800",
+        "bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300",
     },
     low: {
       icon: MinusCircleIcon,
       label: "Low",
       className:
-        "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800",
+        "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300",
     },
   };
 
@@ -133,7 +132,7 @@ const PriorityBadge = ({ priority }: { priority: string }) => {
 
   return (
     <Badge className={cn("gap-1.5", config.className)} variant="outline">
-      <Icon className="size-3" />
+      <Icon className="!size-2.5" />
       {config.label}
     </Badge>
   );
