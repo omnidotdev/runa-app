@@ -272,6 +272,7 @@ function TaskPage() {
                         src={comment?.author?.avatarUrl ?? undefined}
                         alt={comment?.author?.name}
                         size="md"
+                        className="rounded-full border-2 border-base-100 dark:border-base-900"
                       />
                       <div className="flex-1 space-y-3">
                         <div className="flex items-center gap-3">
@@ -301,6 +302,7 @@ function TaskPage() {
                       src={undefined}
                       alt="Your avatar"
                       size="sm"
+                      className="rounded-full border-2 border-base-100 dark:border-base-900"
                     />
                     <div className="flex-1 space-y-3">
                       <RichTextEditor
@@ -353,6 +355,7 @@ function TaskPage() {
                         src={assignee?.user?.avatarUrl ?? undefined}
                         alt={assignee?.user?.name}
                         size="xs"
+                        className="rounded-full border-2 border-base-100 dark:border-base-900"
                       />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-medium text-base-900 text-sm dark:text-base-100">
@@ -447,6 +450,7 @@ function TaskPage() {
                         src={task?.author?.avatarUrl ?? undefined}
                         alt={task?.author?.name}
                         size="xs"
+                        className="rounded-full border-2 border-base-100 dark:border-base-900"
                       />
                       <span className="text-base-900 dark:text-base-100">
                         {task?.author?.name}
