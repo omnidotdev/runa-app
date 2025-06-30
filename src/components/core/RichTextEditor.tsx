@@ -14,12 +14,14 @@ import type { ComponentProps } from "react";
 interface Props extends Omit<ComponentProps<typeof EditorContent>, "editor"> {
   onUpdate?: (props: EditorEvents["update"]) => void;
   defaultContent?: string;
+  editable?: boolean;
 }
 
 const RichTextEditor = ({
   onUpdate,
   defaultContent,
   className,
+  editable = true,
   ...rest
 }: Props) => {
   const editorContainerRef = useRef<HTMLDivElement>(null);
@@ -42,6 +44,7 @@ const RichTextEditor = ({
         openOnClick: false,
       }),
     ],
+    editable,
     editorProps: {
       attributes: {
         class: "focus:outline-none prose-sm",

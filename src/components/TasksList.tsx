@@ -4,6 +4,7 @@ import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon, TagIcon } from "lucide-react";
 
+import RichTextEditor from "@/components/core/RichTextEditor";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import projectOptions from "@/lib/options/project.options";
@@ -87,7 +88,7 @@ const TasksList = ({
                     },
                   })
                 }
-                className={`flex cursor-pointer items-start bg-background px-4 py-3 hover:bg-base-50/50 dark:hover:bg-background/90 ${
+                className={`group flex cursor-pointer items-start bg-background px-4 py-3 hover:bg-base-50/50 dark:hover:bg-background/90 ${
                   snapshot.isDragging
                     ? "z-10 bg-white shadow-lg ring-2 ring-primary-500 ring-opacity-50 dark:bg-base-700"
                     : ""
@@ -102,9 +103,11 @@ const TasksList = ({
                         </span>
                         {PriorityIcon}
                       </div>
-                      <p className="my-2 line-clamp-2 font-medium text-base-900 text-sm dark:text-base-100">
-                        {task?.content}
-                      </p>
+                      <RichTextEditor
+                        defaultContent={task?.content}
+                        className="min-h-0 border-0 bg-transparent p-0 py-2 text-sm"
+                        editable={false}
+                      />
                     </div>
 
                     <div className="-mt-2.5 -mr-2 flex items-center gap-1">

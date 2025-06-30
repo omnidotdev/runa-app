@@ -10,12 +10,10 @@ import {
   CircleDotIcon,
   CircleIcon,
   ClockIcon,
-  EditIcon,
   EyeIcon,
   InfoIcon,
   MessageSquareIcon,
   MinusCircleIcon,
-  MoreHorizontalIcon,
   PlusIcon,
   SendIcon,
   TagIcon,
@@ -23,6 +21,7 @@ import {
   UserIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { useDebounceCallback } from "usehooks-ts";
 
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
@@ -32,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useUpdateTaskMutation } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
 import { getLabelClasses } from "@/lib/util/getLabelClasses";
 import { cn } from "@/lib/utils";
@@ -143,6 +143,10 @@ function TaskPage() {
     select: (data) => data?.task,
   });
 
+  const { mutate: updateTask } = useUpdateTaskMutation();
+
+  const handleTaskUpdate = useDebounceCallback(updateTask, 300);
+
   const [newComment, setNewComment] = useState("");
 
   const handleAddComment = () => {
@@ -172,9 +176,18 @@ function TaskPage() {
                 <ArrowLeftIcon className="size-4" />
               </Link>
               <div className="flex flex-col gap-2">
-                <h1 className="mt-1 font-bold text-2xl text-base-900 dark:text-base-100">
-                  {task?.content}
-                </h1>
+                <RichTextEditor
+                  defaultContent={task?.content}
+                  className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
+                  onUpdate={({ editor }) =>
+                    handleTaskUpdate({
+                      rowId: taskId,
+                      patch: {
+                        content: editor.getHTML(),
+                      },
+                    })
+                  }
+                />
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-base-400 text-sm dark:text-base-500">
                     PROJ-123
@@ -183,15 +196,6 @@ function TaskPage() {
                   <PriorityBadge priority={task?.priority!} />
                 </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
-                <EditIcon className="size-4" />
-                Edit
-              </Button>
-              <Button variant="ghost" size="icon">
-                <MoreHorizontalIcon className="size-4" />
-              </Button>
             </div>
           </div>
 
@@ -210,6 +214,14 @@ function TaskPage() {
                   <RichTextEditor
                     defaultContent={task?.description}
                     className="border-0"
+                    onUpdate={({ editor }) =>
+                      handleTaskUpdate({
+                        rowId: taskId,
+                        patch: {
+                          description: editor.getHTML(),
+                        },
+                      })
+                    }
                   />
                 </CardContent>
               </CardRoot>
