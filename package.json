@@ -19,7 +19,6 @@
   "dependencies": {
     "@ark-ui/react": "^5.15.4",
     "@hello-pangea/dnd": "^18.0.1",
-    "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.1.10",
     "@tanstack/react-form": "^1.12.3",

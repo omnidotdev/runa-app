@@ -7,10 +7,9 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Sheet,
   SheetContent,
   SheetDescription,
-  SheetHeader,
+  SheetRoot,
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
@@ -229,7 +228,10 @@ function Sidebar({
 
   if (isMobile) {
     return (
-      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+      <SheetRoot
+        open={openMobile}
+        onOpenChange={({ open }) => setOpenMobile(open)}
+      >
         <SheetContent
           data-sidebar="sidebar"
           data-slot="sidebar"
@@ -242,13 +244,13 @@ function Sidebar({
           }
           side={side}
         >
-          <SheetHeader className="sr-only">
+          <div className="sr-only">
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
-          </SheetHeader>
+          </div>
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
-      </Sheet>
+      </SheetRoot>
     );
   }
 
