@@ -4,24 +4,31 @@ import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
 import type { EditorEvents } from "@tiptap/react";
-import type { ComponentProps } from "react";
+import type { ComponentProps, RefObject } from "react";
+
+export interface EditorApi {
+  clearContent: () => void;
+}
 
 interface Props extends Omit<ComponentProps<typeof EditorContent>, "editor"> {
+  editorApi?: RefObject<EditorApi | null>;
   onUpdate?: (props: EditorEvents["update"]) => void;
   defaultContent?: string;
   editable?: boolean;
 }
 
 const RichTextEditor = ({
+  editorApi,
   onUpdate,
   defaultContent,
   className,
   editable = true,
+  placeholder,
   ...rest
 }: Props) => {
   const editorContainerRef = useRef<HTMLDivElement>(null);
@@ -34,7 +41,7 @@ const RichTextEditor = ({
         },
       }),
       Placeholder.configure({
-        placeholder: "Add a detailed description...",
+        placeholder,
       }),
       TaskList,
       TaskItem.configure({
@@ -55,6 +62,15 @@ const RichTextEditor = ({
     // TODO: discuss. This saves the HTML in db, i.e. `<p>Testing <strong>bold</strong> text</p>` which we could later render. `getText` removes any rich text
     onUpdate,
   });
+
+  useEffect(() => {
+    if (editor && editorApi) {
+      // Assign methods the the ref's current property
+      editorApi.current = {
+        clearContent: () => editor.commands.clearContent(),
+      };
+    }
+  }, [editor, editorApi]);
 
   return (
     <div

@@ -211,6 +211,13 @@
   .font-text {
     font-weight: var(--text-weight);
   }
+  .tiptap p.is-empty::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: var(--color-muted-foreground);
+    pointer-events: none;
+    height: 0;
+  }
 }
 
 @layer utilities {

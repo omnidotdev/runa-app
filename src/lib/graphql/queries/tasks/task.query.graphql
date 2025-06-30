@@ -10,7 +10,7 @@ query Task($rowId: UUID!) {
     updatedAt
     dueDate
     labels
-    posts {
+    posts(orderBy: CREATED_AT_ASC) {
       totalCount
       nodes {
         rowId

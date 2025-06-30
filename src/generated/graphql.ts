@@ -4523,6 +4523,13 @@ export type CreateColumnMutationVariables = Exact<{
 
 export type CreateColumnMutation = { __typename?: 'Mutation', createColumn?: { __typename?: 'CreateColumnPayload', column?: { __typename?: 'Column', rowId: string } | null } | null };
 
+export type CreatePostMutationVariables = Exact<{
+  input: CreatePostInput;
+}>;
+
+
+export type CreatePostMutation = { __typename?: 'Mutation', createPost?: { __typename?: 'CreatePostPayload', post?: { __typename?: 'Post', rowId: string } | null } | null };
+
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
@@ -4690,6 +4697,34 @@ useCreateColumnMutation.getKey = () => ['CreateColumn'];
 
 
 useCreateColumnMutation.fetcher = (variables: CreateColumnMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateColumnMutation, CreateColumnMutationVariables>(CreateColumnDocument, variables, options);
+
+export const CreatePostDocument = `
+    mutation CreatePost($input: CreatePostInput!) {
+  createPost(input: $input) {
+    post {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useCreatePostMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreatePostMutation, TError, CreatePostMutationVariables, TContext>) => {
+    
+    return useMutation<CreatePostMutation, TError, CreatePostMutationVariables, TContext>(
+      {
+    mutationKey: ['CreatePost'],
+    mutationFn: (variables?: CreatePostMutationVariables) => graphqlFetch<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreatePostMutation.getKey = () => ['CreatePost'];
+
+
+useCreatePostMutation.fetcher = (variables: CreatePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument, variables, options);
 
 export const CreateProjectDocument = `
     mutation CreateProject($input: CreateProjectInput!) {
@@ -5074,7 +5109,7 @@ export const TaskDocument = `
     updatedAt
     dueDate
     labels
-    posts {
+    posts(orderBy: CREATED_AT_ASC) {
       totalCount
       nodes {
         rowId

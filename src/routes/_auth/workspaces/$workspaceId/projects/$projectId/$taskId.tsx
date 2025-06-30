@@ -20,7 +20,7 @@ import {
   TypeIcon,
   UserIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
 import Link from "@/components/core/Link";
@@ -30,12 +30,16 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useUpdateTaskMutation } from "@/generated/graphql";
+import {
+  useCreatePostMutation,
+  useUpdateTaskMutation,
+} from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
 import { getLabelClasses } from "@/lib/util/getLabelClasses";
 import { cn } from "@/lib/utils";
 import seo from "@/utils/seo";
+
+import type { EditorApi } from "@/components/core/RichTextEditor";
 
 export const Route = createFileRoute({
   ssr: false,
@@ -138,21 +142,43 @@ const PriorityBadge = ({ priority }: { priority: string }) => {
 function TaskPage() {
   const { workspaceId, projectId, taskId } = Route.useParams();
 
+  const commentEditorApiRef = useRef<EditorApi | null>(null);
+
   const { data: task } = useSuspenseQuery({
     ...taskOptions(taskId),
     select: (data) => data?.task,
   });
 
   const { mutate: updateTask } = useUpdateTaskMutation();
+  const { mutate: addComment } = useCreatePostMutation({
+    meta: {
+      invalidates: [taskOptions(taskId).queryKey],
+    },
+  });
 
   const handleTaskUpdate = useDebounceCallback(updateTask, 300);
 
   const [newComment, setNewComment] = useState("");
 
   const handleAddComment = () => {
+    // TODO: dynamic with auth
+    const authorId = "024bec7c-5822-4b34-f993-39cbc613e1c9";
+
     if (newComment.trim()) {
-      // TODO: Implement comment creation
+      addComment({
+        input: {
+          post: {
+            taskId,
+            authorId,
+            description: newComment,
+          },
+        },
+      });
       setNewComment("");
+
+      if (commentEditorApiRef.current) {
+        commentEditorApiRef.current.clearContent();
+      }
     }
   };
 
@@ -227,7 +253,7 @@ function TaskPage() {
               </CardRoot>
 
               {/* Comments */}
-              <CardRoot className="border-0 p-0 dark:shadow-base-500/10">
+              <CardRoot className="mb-8 border-0 p-0 dark:shadow-base-500/10">
                 <CardHeader className="flex flex-row items-center gap-2 rounded-t-xl bg-base-50 p-3 dark:bg-base-800">
                   <MessageSquareIcon className="size-4 text-base-500 dark:text-base-400" />
                   <h2 className="font-semibold text-base-900 text-lg dark:text-base-100">
@@ -237,6 +263,7 @@ function TaskPage() {
                     {task?.posts?.totalCount ?? 0}
                   </Badge>
                 </CardHeader>
+                {/* TODO: discuss different mutations for existing comments. Use Linear as ref possibly? */}
                 <CardContent className="mt-4 space-y-8">
                   {task?.posts?.nodes?.map((comment) => (
                     <div key={comment?.rowId} className="flex gap-4">
@@ -258,9 +285,11 @@ function TaskPage() {
                             )}
                           </span>
                         </div>
-                        <div className="rounded-lg border bg-base-50 p-4 text-base text-base-700 leading-relaxed dark:border-base-700 dark:bg-base-800/50 dark:text-base-300">
-                          {comment?.description}
-                        </div>
+                        <RichTextEditor
+                          defaultContent={comment?.description!}
+                          className="min-h-0 border-0 p-0 py-2 text-sm leading-relaxed dark:bg-background"
+                          editable={false}
+                        />
                       </div>
                     </div>
                   ))}
@@ -274,16 +303,13 @@ function TaskPage() {
                       size="sm"
                     />
                     <div className="flex-1 space-y-3">
-                      <Input
-                        placeholder="Write a comment..."
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            handleAddComment();
-                          }
-                        }}
+                      <RichTextEditor
+                        editorApi={commentEditorApiRef}
+                        className="min-h-0 border-solid p-2 text-sm dark:bg-background"
+                        onUpdate={({ editor }) =>
+                          setNewComment(editor.getHTML())
+                        }
+                        placeholder="Add a comment..."
                       />
                       <div className="flex justify-end">
                         <Button
