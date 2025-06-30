@@ -19,6 +19,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
+import getQueryClient from "@/utils/getQueryClient";
 import seo from "@/utils/seo";
 
 import type { Assignee } from "@/types";
@@ -48,6 +49,7 @@ export const Route = createFileRoute({
 function SettingsPage() {
   const { workspaceId } = Route.useParams();
   const navigate = Route.useNavigate();
+  const queryClient = getQueryClient();
 
   // TODO: Replace with actual members fetching logic.
   const [members, setMembers] = useState<Assignee[]>([]);

@@ -265,6 +265,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <span className="flex w-full justify-between">
                   Collapse Sidebar
                   <span className="ml-auto flex items-center gap-0.5 text-muted-foreground text-xs tracking-widest">
+                    {/* TODO: handle ctrl v command */}
                     <Command size={12} />
                     <span>b</span>
                   </span>
@@ -282,6 +283,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <span className="flex w-full justify-between">
                   Toggle Theme
                   <span className="ml-auto flex items-center gap-0.5 text-muted-foreground text-xs tracking-widest">
+                    {/* TODO: handle ctrl v command */}
                     <Command size={12} />
                     <span>k</span>
                   </span>
