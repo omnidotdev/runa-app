@@ -387,13 +387,10 @@ function TaskPage() {
                         return (
                           <Badge
                             key={label.name}
-                            size="sm"
                             className={cn(colors.bg, colors.text)}
                           >
-                            <TagIcon className={cn("!size-2.5", colors.icon)} />
-                            <span className="font-medium text-[10px]">
-                              {label.name}
-                            </span>
+                            <TagIcon className={cn("!size-3", colors.icon)} />
+                            <span className="font-medium">{label.name}</span>
                           </Badge>
                         );
                       },

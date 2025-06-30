@@ -7,7 +7,6 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import SidebarProvider from "@/providers/SidebarProvider";
 
 export const Route = createFileRoute({
-  ssr: false,
   component: AuthenticatedLayout,
 });
 
