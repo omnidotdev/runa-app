@@ -11,7 +11,7 @@ export const Route = createFileRoute({
   component: AuthenticatedLayout,
 });
 
-async function AuthenticatedLayout() {
+function AuthenticatedLayout() {
   return (
     <SidebarProvider>
       <div className="flex h-dvh w-full">
