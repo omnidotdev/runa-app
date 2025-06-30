@@ -1,3 +1,4 @@
+import { Portal } from "@ark-ui/react/portal";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
@@ -13,9 +14,9 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
-  Tooltip,
   TooltipContent,
-  TooltipProvider,
+  TooltipPositioner,
+  TooltipRoot,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useIsMobile from "@/lib/hooks/use-mobile";
@@ -168,29 +169,24 @@ function SidebarProvider({
 
   return (
     <SidebarContext.Provider value={contextValue}>
-      <TooltipProvider
-        // @ts-ignore
-        value="sidebar-tooltip"
+      <div
+        data-slot="sidebar-wrapper"
+        style={
+          {
+            // * update '--sidebar-width' to use the new width state
+            "--sidebar-width": width,
+            "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+            ...style,
+          } as React.CSSProperties
+        }
+        className={cn(
+          "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
+          className,
+        )}
+        {...props}
       >
-        <div
-          data-slot="sidebar-wrapper"
-          style={
-            {
-              // * update '--sidebar-width' to use the new width state
-              "--sidebar-width": width,
-              "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
-              ...style,
-            } as React.CSSProperties
-          }
-          className={cn(
-            "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
-            className,
-          )}
-          {...props}
-        >
-          {children}
-        </div>
-      </TooltipProvider>
+        {children}
+      </div>
     </SidebarContext.Provider>
   );
 }
@@ -607,15 +603,19 @@ function SidebarMenuButton({
   }
 
   return (
-    <Tooltip>
+    <TooltipRoot
+      positioning={{ placement: "right" }}
+      closeDelay={0}
+      openDelay={0}
+      disabled={isMobile || state === "expanded"}
+    >
       <TooltipTrigger asChild>{button}</TooltipTrigger>
-      <TooltipContent
-        side="right"
-        align="center"
-        hidden={state !== "collapsed" || isMobile}
-        {...tooltip}
-      />
-    </Tooltip>
+      <Portal>
+        <TooltipPositioner>
+          <TooltipContent {...tooltip} />
+        </TooltipPositioner>
+      </Portal>
+    </TooltipRoot>
   );
 }
 
