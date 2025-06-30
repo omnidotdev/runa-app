@@ -1,7 +1,19 @@
 import {
   isServer,
+  MutationCache,
+  matchQuery,
   QueryClient as ReactQueryClient,
 } from "@tanstack/react-query";
+
+import type { QueryKey } from "@tanstack/react-query";
+
+declare module "@tanstack/react-query" {
+  interface Register {
+    mutationMeta: {
+      invalidates?: Array<QueryKey>;
+    };
+  }
+}
 
 let browserQueryClient: ReactQueryClient | undefined;
 
@@ -18,6 +30,18 @@ const makeQueryClient = () => {
         refetchOnWindowFocus: false,
       },
     },
+    mutationCache: new MutationCache({
+      onSettled: (_data, _error, _variables, _context, mutation) => {
+        queryClient.invalidateQueries({
+          predicate: (query) =>
+            // invalidate all matching tags at once
+            // or nothing if no meta is provided
+            mutation.meta?.invalidates?.some((queryKey) =>
+              matchQuery({ queryKey }, query),
+            ) ?? false,
+        });
+      },
+    }),
   });
 
   return queryClient;

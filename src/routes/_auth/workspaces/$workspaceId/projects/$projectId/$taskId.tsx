@@ -304,7 +304,7 @@ function TaskPage() {
                     <PlusIcon className="size-3" />
                   </Button>
                 </CardHeader>
-                <CardContent className="mt-4 space-y-4">
+                <CardContent className="space-y-4 p-4">
                   {task?.assignees?.nodes?.map((assignee) => (
                     <div
                       key={assignee?.rowId}
@@ -339,7 +339,7 @@ function TaskPage() {
                     <PlusIcon className="size-3" />
                   </Button>
                 </CardHeader>
-                <CardContent className="mt-4">
+                <CardContent className="p-4">
                   <div className="flex flex-wrap gap-2">
                     {/* TODO: remove need for `JSON.parse` used just from seed script stringifying JSON to get dynamic labels */}
                     {JSON.parse(task?.labels).map(
@@ -374,7 +374,7 @@ function TaskPage() {
                     </h3>
                   </div>
                 </CardHeader>
-                <CardContent className="mt-4 space-y-5">
+                <CardContent className="space-y-5 p-4">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-base-500 dark:text-base-400">
                       Created

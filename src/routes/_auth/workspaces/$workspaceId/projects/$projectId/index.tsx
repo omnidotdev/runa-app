@@ -87,6 +87,12 @@ function ProjectPage() {
   });
 
   const { mutate: updateViewMode } = useUpdateProjectMutation({
+    meta: {
+      invalidates: [
+        projectOptions(projectId).queryKey,
+        workspaceOptions(workspaceId).queryKey,
+      ],
+    },
     onMutate: (variables) => {
       queryClient.setQueryData(projectOptions(projectId).queryKey, (old) => ({
         project: {
@@ -95,11 +101,6 @@ function ProjectPage() {
         },
       }));
     },
-    onSettled: async () =>
-      await Promise.all([
-        queryClient.invalidateQueries(projectOptions(projectId)),
-        queryClient.invalidateQueries(workspaceOptions(workspaceId)),
-      ]),
   });
 
   return (

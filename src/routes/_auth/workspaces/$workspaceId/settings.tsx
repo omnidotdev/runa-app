@@ -16,7 +16,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
-import getQueryClient from "@/utils/getQueryClient";
 import seo from "@/utils/seo";
 
 import type { Assignee } from "@/types";
@@ -47,8 +46,6 @@ function SettingsPage() {
   const { workspaceId } = Route.useParams();
   const navigate = Route.useNavigate();
 
-  const queryClient = getQueryClient();
-
   // TODO: Replace with actual members fetching logic.
   const [members, setMembers] = useState<Assignee[]>([]);
   const [selectedMember, setSelectedMember] = useState<Assignee>();
@@ -68,17 +65,19 @@ function SettingsPage() {
   };
 
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
-    onMutate: () => navigate({ to: "/workspaces", replace: true }),
-    onSettled: () => {
-      setIsDeleteWorkspaceOpen(false);
-      queryClient.invalidateQueries(workspacesOptions);
+    meta: {
+      invalidates: [workspacesOptions.queryKey],
     },
+    onMutate: () => navigate({ to: "/workspaces", replace: true }),
+    onSettled: () => setIsDeleteWorkspaceOpen(false),
   });
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
-    onSettled: () => {
-      queryClient.invalidateQueries(projectsOptions);
-      queryClient.invalidateQueries(workspaceOptions(workspaceId!));
+    meta: {
+      invalidates: [
+        projectsOptions.queryKey,
+        workspaceOptions(workspaceId!).queryKey,
+      ],
     },
   });
 

@@ -15,10 +15,8 @@ import { Input } from "@/components/ui/input";
 import { useCreateWorkspaceMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
-import getQueryClient from "@/utils/getQueryClient";
 
 const CreateWorkspaceDialog = () => {
-  const queryClient = getQueryClient();
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
 
@@ -30,7 +28,9 @@ const CreateWorkspaceDialog = () => {
   const [newWorkspaceName, setNewWorkspaceName] = useState("");
 
   const { mutateAsync: createNewWorkspace } = useCreateWorkspaceMutation({
-    onSettled: () => queryClient.invalidateQueries(workspacesOptions),
+    meta: {
+      invalidates: [workspacesOptions.queryKey],
+    },
     onSuccess: ({ createWorkspace }) => {
       navigate({
         to: "/workspaces/$workspaceId",

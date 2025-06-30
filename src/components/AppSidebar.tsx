@@ -44,7 +44,6 @@ import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import { useTheme } from "@/providers/ThemeProvider";
-import getQueryClient from "@/utils/getQueryClient";
 import ConfirmDialog from "./ConfirmDialog";
 
 import type * as React from "react";
@@ -52,7 +51,6 @@ import type * as React from "react";
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { workspaceId } = useParams({ strict: false });
   const navigate = useNavigate();
-  const queryClient = getQueryClient();
   const [selectedProject, setSelectedProject] = useState<{
     rowId: string;
     name: string;
@@ -77,9 +75,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isMobile, setOpen, open } = useSidebar();
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
-    onSettled: () => {
-      queryClient.invalidateQueries(projectsOptions);
-      queryClient.invalidateQueries(workspaceOptions(workspaceId!));
+    meta: {
+      invalidates: [
+        projectsOptions.queryKey,
+        workspaceOptions(workspaceId!).queryKey,
+      ],
     },
   });
 

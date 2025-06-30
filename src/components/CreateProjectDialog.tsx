@@ -20,7 +20,6 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import getQueryClient from "@/utils/getQueryClient";
 
 const DEFAULT_COLUMNS = [
   "Backlog",
@@ -32,7 +31,6 @@ const DEFAULT_COLUMNS = [
 
 const CreateProjectDialog = () => {
   const { workspaceId } = useParams({ strict: false });
-  const queryClient = getQueryClient();
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
 
@@ -53,9 +51,11 @@ const CreateProjectDialog = () => {
   const { mutateAsync: createColumn } = useCreateColumnMutation();
 
   const { mutateAsync: createNewProject } = useCreateProjectMutation({
-    onSettled: () => {
-      queryClient.invalidateQueries(projectsOptions);
-      queryClient.invalidateQueries(workspaceOptions(workspaceId!));
+    meta: {
+      invalidates: [
+        projectsOptions.queryKey,
+        workspaceOptions(workspaceId!).queryKey,
+      ],
     },
     onSuccess: async ({ createProject }) => {
       await Promise.all(
