@@ -56,7 +56,6 @@ const CreateTaskAssignees = withForm({
               }
             >
               <SelectTrigger
-                showIcon={false}
                 className={cn(
                   buttonVariants({ variant: "outline" }),
                   "[&[data-state=open]>svg]:rotate-0 [&_svg:not([class*='text-'])]:text-foreground",

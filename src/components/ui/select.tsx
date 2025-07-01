@@ -16,7 +16,7 @@ const selectVariants = tv({
       "text-muted-foreground text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
     control: "",
     trigger:
-      "flex w-fit cursor-pointer items-center justify-between gap-2 whitespace-nowrap rounded-md bg-base-100 px-3 py-2 text-foreground text-xs shadow-xs outline-none transition-all hover:bg-base-200 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[size=default]:h-9 data-[size=sm]:h-8 dark:bg-base-700 dark:aria-invalid:ring-destructive/40 dark:hover:bg-base-800 [&[data-state=open]>svg]:rotate-180 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      "flex w-fit cursor-pointer items-center justify-between gap-2 whitespace-nowrap rounded-md bg-base-100 px-3 py-2 text-foreground text-xs shadow-xs outline-none transition-all hover:bg-base-200 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[size=default]:h-9 data-[size=sm]:h-8 dark:bg-base-700 dark:aria-invalid:ring-destructive/40 dark:hover:bg-base-800 [&[data-state=open]>svg]:rotate-180 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
     valueText: "line-clamp-1 flex items-center gap-2",
     indicator: "size-4 transition-transform",
     clearTrigger:
@@ -87,28 +87,19 @@ const SelectControl = ({
   <ArkSelect.Control className={cn(control(), className)} {...rest} />
 );
 
+// TODO: edit in thornberry to get rid of React.Children.only error when using `asChild` prop
 const SelectTrigger = ({
   className,
   size = "default",
-  showIcon = true,
-  children,
   ...rest
 }: ComponentProps<typeof ArkSelect.Trigger> & {
   size?: "sm" | "default";
-  showIcon?: boolean;
 }) => (
   <ArkSelect.Trigger
     data-size={size}
     className={cn(trigger({ size }), className)}
     {...rest}
-  >
-    {children}
-    {showIcon && (
-      <ArkSelect.Indicator className={cn(indicator())}>
-        <ChevronDownIcon />
-      </ArkSelect.Indicator>
-    )}
-  </ArkSelect.Trigger>
+  />
 );
 
 const SelectValueText = ({

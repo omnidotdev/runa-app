@@ -10,6 +10,7 @@ import {
   CircleDotIcon,
   CircleIcon,
   ClockIcon,
+  EditIcon,
   EyeIcon,
   InfoIcon,
   MessageSquareIcon,
@@ -38,6 +39,15 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  createListCollection,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectItemGroup,
+  SelectItemText,
+  SelectTrigger,
+} from "@/components/ui/select";
 import {
   useCreateAssigneeMutation,
   useCreatePostMutation,
@@ -174,6 +184,22 @@ function TaskPage() {
       // TODO: This assumes that label names are unique per project, validate this
       checked: task?.labels?.includes(label.name) || false,
     }));
+
+  const columnCollection = createListCollection({
+    items:
+      project?.columns?.nodes?.map((column) => ({
+        label: column?.title ?? "",
+        value: column?.rowId ?? "",
+      })) ?? [],
+  });
+
+  const priorityCollection = createListCollection({
+    items: [
+      { label: "Low", value: "low" },
+      { label: "Medium", value: "medium" },
+      { label: "High", value: "high" },
+    ],
+  });
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
@@ -336,8 +362,61 @@ function TaskPage() {
                   <span className="font-mono text-base-400 text-sm dark:text-base-500">
                     PROJ-123
                   </span>
-                  <StatusBadge status={task?.column?.title!} />
-                  <PriorityBadge priority={task?.priority!} />
+                  <Select
+                    // @ts-ignore TODO: type issue
+                    collection={columnCollection}
+                    defaultValue={[task?.columnId!]}
+                    onValueChange={({ value }) =>
+                      updateTask({
+                        rowId: taskId,
+                        patch: {
+                          columnId: value[0],
+                        },
+                      })
+                    }
+                  >
+                    <SelectTrigger className="size-fit bg-transparent p-0 data-[size=default]:h-fit dark:bg-transparent">
+                      <StatusBadge status={task?.column?.title!} />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      <SelectItemGroup className="space-y-1">
+                        {columnCollection.items.map((column) => (
+                          <SelectItem key={column.value} item={column}>
+                            <SelectItemText>{column.label}</SelectItemText>
+                          </SelectItem>
+                        ))}
+                      </SelectItemGroup>
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    // @ts-ignore TODO: type issue
+                    collection={priorityCollection}
+                    defaultValue={[task?.priority!]}
+                    onValueChange={({ value }) =>
+                      updateTask({
+                        rowId: taskId,
+                        patch: {
+                          priority: value[0],
+                        },
+                      })
+                    }
+                  >
+                    <SelectTrigger className="size-fit bg-transparent p-0 data-[size=default]:h-fit dark:bg-transparent">
+                      <PriorityBadge priority={task?.priority!} />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      <SelectItemGroup className="space-y-1">
+                        {priorityCollection.items.map((column) => (
+                          <SelectItem key={column.value} item={column}>
+                            <SelectItemText>{column.label}</SelectItemText>
+                          </SelectItem>
+                        ))}
+                      </SelectItemGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
@@ -632,9 +711,14 @@ function TaskPage() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-base-500 dark:text-base-400">
+                    {/* TODO: functionality */}
+                    <Button
+                      variant="ghost"
+                      className="group h-fit py-0 font-normal text-base-500 hover:bg-transparent has-[>svg]:px-0 dark:text-base-400"
+                    >
                       Due Date
-                    </span>
+                      <EditIcon className="size-3.5" />
+                    </Button>
                     {task?.dueDate && (
                       <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
                         <CalendarIcon className="size-3" />
