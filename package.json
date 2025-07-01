@@ -11,7 +11,7 @@
     "graphql:generate": "NODE_PATH=src/ dotenv -e .env.development -- graphql-codegen --config src/lib/graphql/codegen.config.ts",
     "graphql:generate:watch": "bun graphql:generate -w",
     "prepare": "husky",
-    "knip": "knip-bun --cache --tags=-knipignore"
+    "knip": "knip-bun --tags=-knipignore"
   },
   "overrides": {
     "yallist": "^4.0.0"

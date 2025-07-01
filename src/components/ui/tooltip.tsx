@@ -58,10 +58,13 @@ const TooltipArrowTip = ({
 );
 
 export {
+  /** @knipignore */
   TooltipArrow,
+  /** @knipignore */
   TooltipArrowTip,
   TooltipContent,
   TooltipPositioner,
+  /** @knipignore */
   TooltipProvider,
   TooltipRoot,
   TooltipTrigger,
