@@ -8,8 +8,8 @@ import {
   AccordionRoot,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
-import seo from "@/utils/seo";
 
 const faqItems = [
   {

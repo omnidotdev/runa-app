@@ -2,7 +2,7 @@ import { notFound } from "@tanstack/react-router";
 
 import NotFound from "@/components/layout/NotFound";
 import workspaceOptions from "@/lib/options/workspace.options";
-import seo from "@/utils/seo";
+import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
   loader: async ({ params: { workspaceId }, context }) => {

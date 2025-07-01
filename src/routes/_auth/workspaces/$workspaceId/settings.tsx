@@ -25,8 +25,8 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
-import getQueryClient from "@/utils/getQueryClient";
-import seo from "@/utils/seo";
+import getQueryClient from "@/lib/util/getQueryClient";
+import seo from "@/lib/util/seo";
 
 import type { Assignee } from "@/types";
 
@@ -86,8 +86,8 @@ function SettingsPage() {
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
       invalidates: [
-        projectsOptions.queryKey,
-        workspaceOptions(workspaceId!).queryKey,
+        projectsOptions(workspaceId).queryKey,
+        workspaceOptions(workspaceId).queryKey,
       ],
     },
   });

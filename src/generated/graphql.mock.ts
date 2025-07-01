@@ -318,6 +318,7 @@ export const mockProjectQuery = (resolver: GraphQLResponseResolver<Types.Project
  * @example
  * mockProjectsQuery(
  *   ({ query, variables }) => {
+ *     const { workspaceId, search } = variables;
  *     return HttpResponse.json({
  *       data: { projects }
  *     })

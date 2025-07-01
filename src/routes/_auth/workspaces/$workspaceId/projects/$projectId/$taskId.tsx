@@ -58,8 +58,8 @@ import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import { getLabelClasses } from "@/lib/util/getLabelClasses";
+import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
-import seo from "@/utils/seo";
 
 import type { EditorApi } from "@/components/core/RichTextEditor";
 

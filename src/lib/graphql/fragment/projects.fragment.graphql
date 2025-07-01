@@ -1,0 +1,20 @@
+fragment Project on Project {
+  rowId
+  name
+  description
+  status
+  color
+  columns {
+    nodes {
+      allTasks: tasks {
+        totalCount
+      }
+
+      completedTasks: tasks(
+        filter: { column: { title: { equalTo: "Done" } } }
+      ) {
+        totalCount
+      }
+    }
+  }
+}

@@ -30,7 +30,7 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
-import getQueryClient from "@/utils/getQueryClient";
+import getQueryClient from "@/lib/util/getQueryClient";
 
 interface Props {
   columnId: string;

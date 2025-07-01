@@ -1,5 +1,5 @@
 import workspacesOptions from "@/lib/options/workspaces.options";
-import seo from "@/utils/seo";
+import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
   ssr: false,

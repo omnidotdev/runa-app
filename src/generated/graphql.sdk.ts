@@ -1991,6 +1991,7 @@ export type Project = Node & {
   name: Scalars['String']['output'];
   prefix?: Maybe<Scalars['String']['output']>;
   rowId: Scalars['UUID']['output'];
+  status: ProjectStatus;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
   viewMode: Scalars['String']['output'];
   /** Reads a single `Workspace` that is related to this `Project`. */
@@ -2041,6 +2042,8 @@ export type ProjectCondition = {
   prefix?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: InputMaybe<ProjectStatus>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `viewMode` field. */
@@ -2081,6 +2084,7 @@ export type ProjectDistinctCountAggregateFilter = {
   name?: InputMaybe<BigIntFilter>;
   prefix?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
+  status?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
   viewMode?: InputMaybe<BigIntFilter>;
   workspaceId?: InputMaybe<BigIntFilter>;
@@ -2102,6 +2106,8 @@ export type ProjectDistinctCountAggregates = {
   prefix?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of status across the matching connection */
+  status?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of viewMode across the matching connection */
@@ -2145,6 +2151,8 @@ export type ProjectFilter = {
   prefix?: InputMaybe<StringFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `status` field. */
+  status?: InputMaybe<ProjectStatusFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `viewMode` field. */
@@ -2165,6 +2173,7 @@ export enum ProjectGroupBy {
   Labels = 'LABELS',
   Name = 'NAME',
   Prefix = 'PREFIX',
+  Status = 'STATUS',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
@@ -2241,6 +2250,7 @@ export type ProjectInput = {
   name: Scalars['String']['input'];
   prefix?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  status?: InputMaybe<ProjectStatus>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
   workspaceId: Scalars['UUID']['input'];
@@ -2277,6 +2287,8 @@ export enum ProjectOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   ViewModeAsc = 'VIEW_MODE_ASC',
@@ -2294,9 +2306,42 @@ export type ProjectPatch = {
   name?: InputMaybe<Scalars['String']['input']>;
   prefix?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  status?: InputMaybe<ProjectStatus>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export enum ProjectStatus {
+  Completed = 'completed',
+  InProgress = 'in_progress',
+  Planned = 'planned'
+}
+
+/** A filter to be used against ProjectStatus fields. All fields are combined with a logical ‘and.’ */
+export type ProjectStatusFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<ProjectStatus>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<ProjectStatus>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<ProjectStatus>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<ProjectStatus>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<ProjectStatus>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<ProjectStatus>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<ProjectStatus>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<ProjectStatus>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<ProjectStatus>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<ProjectStatus>>;
 };
 
 /** A filter to be used against many `Column` object types. All fields are combined with a logical ‘and.’ */
@@ -4261,6 +4306,8 @@ export enum WorkspaceOrderBy {
   ProjectsDistinctCountPrefixDesc = 'PROJECTS_DISTINCT_COUNT_PREFIX_DESC',
   ProjectsDistinctCountRowIdAsc = 'PROJECTS_DISTINCT_COUNT_ROW_ID_ASC',
   ProjectsDistinctCountRowIdDesc = 'PROJECTS_DISTINCT_COUNT_ROW_ID_DESC',
+  ProjectsDistinctCountStatusAsc = 'PROJECTS_DISTINCT_COUNT_STATUS_ASC',
+  ProjectsDistinctCountStatusDesc = 'PROJECTS_DISTINCT_COUNT_STATUS_DESC',
   ProjectsDistinctCountUpdatedAtAsc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_ASC',
   ProjectsDistinctCountUpdatedAtDesc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_DESC',
   ProjectsDistinctCountViewModeAsc = 'PROJECTS_DISTINCT_COUNT_VIEW_MODE_ASC',
@@ -4510,6 +4557,8 @@ export type WorkspaceUserPatch = {
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, status: ProjectStatus, color?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } } | null> } };
+
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
 }>;
@@ -4611,10 +4660,13 @@ export type ProjectQueryVariables = Exact<{
 
 export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels?: any | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt?: Date | null } | null> } } | null> } } | null };
 
-export type ProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+export type ProjectsQueryVariables = Exact<{
+  workspaceId: Scalars['UUID']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+}>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string } | null> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, status: ProjectStatus, color?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } } | null> } } | null> } | null };
 
 export type TaskQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -4648,7 +4700,25 @@ export type WorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string } | null> } | null };
 
-
+export const ProjectFragmentDoc = gql`
+    fragment Project on Project {
+  rowId
+  name
+  description
+  status
+  color
+  columns {
+    nodes {
+      allTasks: tasks {
+        totalCount
+      }
+      completedTasks: tasks(filter: {column: {title: {equalTo: "Done"}}}) {
+        totalCount
+      }
+    }
+  }
+}
+    `;
 export const CreateAssigneeDocument = gql`
     mutation CreateAssignee($input: CreateAssigneeInput!) {
   createAssignee(input: $input) {
@@ -4789,15 +4859,17 @@ export const ProjectDocument = gql`
 }
     `;
 export const ProjectsDocument = gql`
-    query Projects {
-  projects {
+    query Projects($workspaceId: UUID!, $search: String = "") {
+  projects(
+    condition: {workspaceId: $workspaceId}
+    filter: {name: {includesInsensitive: $search}}
+  ) {
     nodes {
-      rowId
-      name
+      ...Project
     }
   }
 }
-    `;
+    ${ProjectFragmentDoc}`;
 export const TaskDocument = gql`
     query Task($rowId: UUID!) {
   task(rowId: $rowId) {
@@ -4957,7 +5029,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     Project(variables: ProjectQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectQuery>({ document: ProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Project', 'query', variables);
     },
-    Projects(variables?: ProjectsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectsQuery> {
+    Projects(variables: ProjectsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectsQuery>({ document: ProjectsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Projects', 'query', variables);
     },
     Task(variables: TaskQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<TaskQuery> {

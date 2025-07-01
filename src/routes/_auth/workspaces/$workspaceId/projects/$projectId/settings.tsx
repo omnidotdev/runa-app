@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
-import getQueryClient from "@/utils/getQueryClient";
-import seo from "@/utils/seo";
+import getQueryClient from "@/lib/util/getQueryClient";
+import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
   loader: async ({ params: { projectId }, context }) => {

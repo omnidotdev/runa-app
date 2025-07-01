@@ -53,7 +53,7 @@ const CreateProjectDialog = () => {
   const { mutateAsync: createNewProject } = useCreateProjectMutation({
     meta: {
       invalidates: [
-        projectsOptions.queryKey,
+        projectsOptions(workspaceId!).queryKey,
         workspaceOptions(workspaceId!).queryKey,
       ],
     },

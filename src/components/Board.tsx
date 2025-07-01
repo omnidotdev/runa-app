@@ -18,8 +18,8 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import tasksOptions from "@/lib/options/tasks.options";
+import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
-import getQueryClient from "@/utils/getQueryClient";
 
 import type { DropResult } from "@hello-pangea/dnd";
 
@@ -176,7 +176,7 @@ const Board = () => {
       style={{
         backgroundColor: project?.color
           ? theme === "dark"
-            ? `${project?.color}1A`
+            ? `${project?.color}12`
             : `${project?.color}0D`
           : undefined,
       }}

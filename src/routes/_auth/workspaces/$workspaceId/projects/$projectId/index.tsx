@@ -28,7 +28,7 @@ import { useUpdateProjectMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import seo from "@/utils/seo";
+import seo from "@/lib/util/seo";
 
 import type { ChangeEvent } from "react";
 

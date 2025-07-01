@@ -51,8 +51,8 @@ import projectOptions from "@/lib/options/project.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
+import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
-import getQueryClient from "@/utils/getQueryClient";
 import ConfirmDialog from "./ConfirmDialog";
 
 import type * as React from "react";
@@ -88,7 +88,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
       invalidates: [
-        projectsOptions.queryKey,
+        projectsOptions(workspaceId!).queryKey,
         workspaceOptions(workspaceId!).queryKey,
       ],
     },

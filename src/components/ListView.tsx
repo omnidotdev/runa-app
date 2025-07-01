@@ -14,8 +14,8 @@ import { useUpdateTaskMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import tasksOptions from "@/lib/options/tasks.options";
+import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
-import getQueryClient from "@/utils/getQueryClient";
 
 import type { DropResult } from "@hello-pangea/dnd";
 

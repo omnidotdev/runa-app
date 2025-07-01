@@ -8,9 +8,9 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
+import seo from "@/lib/util/seo";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import appCss from "@/styles/globals.css?url";
-import seo from "@/utils/seo";
 
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";

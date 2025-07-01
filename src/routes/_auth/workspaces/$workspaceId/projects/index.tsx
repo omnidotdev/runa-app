@@ -1,13 +1,16 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { stripSearchParams } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-adapter";
 import {
   ChevronDownIcon,
   Grid2X2Icon,
   ListIcon,
   Plus,
   SearchIcon,
-  Users,
 } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
+import * as z from "zod/v4";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,92 +25,66 @@ import {
   TooltipRoot,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ProjectStatus } from "@/generated/graphql";
+import projectsOptions from "@/lib/options/projects.options";
 
 import type { ChangeEvent } from "react";
+import type { ProjectFragment } from "@/generated/graphql";
 
-// Mock data for projects
-const mockProjects = [
-  {
-    id: "1",
-    name: "Website Redesign",
-    description: "Complete overhaul of the company website with modern design",
-    status: "In Progress",
-    assignees: ["Alice", "Bob"],
-    tasksCount: 12,
-    completedTasks: 7,
-  },
-  {
-    id: "2",
-    name: "Mobile App Development",
-    description: "Native mobile app for iOS and Android platforms",
-    status: "Planned",
-    assignees: ["Charlie", "Diana", "Eve"],
-    tasksCount: 25,
-    completedTasks: 0,
-  },
-  {
-    id: "3",
-    name: "Database Migration",
-    description: "Migrate legacy database to new cloud infrastructure",
-    status: "Completed",
-    assignees: ["Frank"],
-    tasksCount: 8,
-    completedTasks: 8,
-  },
-  {
-    id: "4",
-    name: "User Research Study",
-    description: "Conduct user interviews and usability testing",
-    status: "In Progress",
-    assignees: ["Grace", "Henry"],
-    tasksCount: 6,
-    completedTasks: 3,
-  },
-  {
-    id: "5",
-    name: "API Documentation",
-    description: "Create comprehensive API documentation for developers",
-    status: "Planned",
-    assignees: ["Ivan"],
-    tasksCount: 4,
-    completedTasks: 0,
-  },
-  {
-    id: "6",
-    name: "Security Audit",
-    description: "Full security audit and penetration testing",
-    status: "Completed",
-    assignees: ["Julia", "Kevin"],
-    tasksCount: 15,
-    completedTasks: 15,
-  },
-];
+const projectsSearchSchema = z.object({
+  search: z.string().default(""),
+});
 
 export const Route = createFileRoute({
+  validateSearch: zodValidator(projectsSearchSchema),
+  search: {
+    middlewares: [stripSearchParams({ search: "" })],
+  },
+  loaderDeps: ({ search: { search } }) => ({ search }),
+  loader: async ({
+    deps: { search },
+    params: { workspaceId },
+    context: { queryClient },
+  }) => {
+    await queryClient.ensureQueryData(projectsOptions(workspaceId, search));
+  },
   component: ProjectsOverviewPage,
 });
 
 function ProjectsOverviewPage() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const { workspaceId } = Route.useParams();
+  const { search } = Route.useSearch();
+  const navigate = Route.useNavigate();
+
+  const { data: projects } = useSuspenseQuery({
+    ...projectsOptions(workspaceId, search),
+    select: (data) => data?.projects?.nodes,
+  });
+
   const [viewMode, setViewMode] = useState<"board" | "list">("board");
 
   const handleSearch = useDebounceCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setSearchTerm(e.target.value);
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          search: e.target.value.length ? e.target.value : "",
+        }),
+      });
     },
     300,
   );
 
-  const filteredProjects = mockProjects.filter(
-    (project) =>
-      project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
   const projectsByStatus = {
-    Planned: filteredProjects.filter((p) => p.status === "Planned"),
-    "In Progress": filteredProjects.filter((p) => p.status === "In Progress"),
-    Completed: filteredProjects.filter((p) => p.status === "Completed"),
+    Planned: projects?.filter(
+      (p) => p?.status === ProjectStatus.Planned,
+    ) as ProjectFragment[],
+    "In Progress": projects?.filter(
+      (p) => p?.status === ProjectStatus.InProgress,
+    ) as ProjectFragment[],
+    Completed: projects?.filter(
+      (p) => p?.status === ProjectStatus.Completed,
+    ) as ProjectFragment[],
   };
 
   return (
@@ -127,6 +104,7 @@ function ProjectsOverviewPage() {
               <div className="relative flex-1 sm:flex-none">
                 <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-base-400" />
                 <Input
+                  defaultValue={search}
                   onChange={handleSearch}
                   placeholder="Search projects..."
                   className="pl-10"
@@ -152,9 +130,16 @@ function ProjectsOverviewPage() {
                 </TooltipPositioner>
               </TooltipRoot>
 
-              <Button variant="outline" size="icon">
-                <Plus className="size-4" />
-              </Button>
+              <TooltipRoot>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <Plus className="size-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipPositioner>
+                  <TooltipContent>Create Project</TooltipContent>
+                </TooltipPositioner>
+              </TooltipRoot>
             </div>
           </div>
         </div>
@@ -162,7 +147,7 @@ function ProjectsOverviewPage() {
         {viewMode === "board" ? (
           <ProjectsBoard projectsByStatus={projectsByStatus} />
         ) : (
-          <ProjectsList projects={filteredProjects} />
+          <ProjectsList projects={projects as ProjectFragment[]} />
         )}
       </div>
     </div>
@@ -173,9 +158,9 @@ function ProjectsBoard({
   projectsByStatus,
 }: {
   projectsByStatus: {
-    Planned: typeof mockProjects;
-    "In Progress": typeof mockProjects;
-    Completed: typeof mockProjects;
+    Planned: ProjectFragment[];
+    "In Progress": ProjectFragment[];
+    Completed: ProjectFragment[];
   };
 }) {
   return (
@@ -185,26 +170,27 @@ function ProjectsBoard({
           {Object.entries(projectsByStatus).map(([status, projects]) => (
             <div
               key={status}
-              className="no-scrollbar relative flex w-80 flex-col overflow-y-auto rounded-lg bg-base-50/80 shadow-sm dark:bg-background/60 dark:shadow-base-900"
-              style={{ minHeight: "4px" }}
+              className="relative flex h-full w-80 flex-col gap-2 bg-inherit"
             >
-              <div className="sticky top-0 z-10 flex items-center justify-between border-base-200 border-b bg-base-50 p-3 dark:border-base-800 dark:bg-base-900">
+              <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2 shadow-sm">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-base-800 dark:text-base-100">
+                  <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
                     {status}
                   </h3>
-                  <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
+                  <span className="px-2 py-0.5 text-foreground text-xs">
                     {projects.length}
                   </span>
                 </div>
-                <Button variant="ghost" size="icon">
-                  <Plus className="h-4 w-4" />
+                <Button variant="ghost" size="xs" className="size-5">
+                  <Plus className="size-4" />
                 </Button>
               </div>
-              <div className="flex flex-1 flex-col gap-3 p-3">
-                {projects.map((project) => (
-                  <ProjectCard key={project.id} project={project} />
-                ))}
+              <div className="no-scrollbar flex h-full overflow-y-auto">
+                <div className="flex flex-1 flex-col gap-3">
+                  {projects.map((project) => (
+                    <ProjectCard key={project.rowId} project={project} />
+                  ))}
+                </div>
               </div>
             </div>
           ))}
@@ -214,11 +200,13 @@ function ProjectsBoard({
   );
 }
 
-function ProjectsList({ projects }: { projects: typeof mockProjects }) {
+function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
   const projectsByStatus = {
-    Planned: projects.filter((p) => p.status === "Planned"),
-    "In Progress": projects.filter((p) => p.status === "In Progress"),
-    Completed: projects.filter((p) => p.status === "Completed"),
+    Planned: projects.filter((p) => p.status === ProjectStatus.Planned),
+    "In Progress": projects.filter(
+      (p) => p.status === ProjectStatus.InProgress,
+    ),
+    Completed: projects.filter((p) => p.status === ProjectStatus.Completed),
   };
 
   return (
@@ -244,7 +232,7 @@ function ProjectsList({ projects }: { projects: typeof mockProjects }) {
           <CollapsibleContent>
             <div className="border-t">
               {statusProjects.map((project) => (
-                <ProjectListItem key={project.id} project={project} />
+                <ProjectListItem key={project.rowId} project={project} />
               ))}
             </div>
           </CollapsibleContent>
@@ -254,10 +242,17 @@ function ProjectsList({ projects }: { projects: typeof mockProjects }) {
   );
 }
 
-function ProjectCard({ project }: { project: (typeof mockProjects)[0] }) {
-  const progressPercentage = Math.round(
-    (project.completedTasks / project.tasksCount) * 100,
+function ProjectCard({ project }: { project: ProjectFragment }) {
+  const completedTasks = project.columns?.nodes?.reduce(
+    (acc, col) => acc + (col?.completedTasks.totalCount || 0),
+    0,
   );
+  const totalTasks = project.columns?.nodes?.reduce(
+    (acc, col) => acc + (col?.allTasks.totalCount || 0),
+    0,
+  );
+  const progressPercentage =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
     <div className="rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
@@ -265,10 +260,6 @@ function ProjectCard({ project }: { project: (typeof mockProjects)[0] }) {
         <h3 className="font-medium text-base-900 dark:text-base-100">
           {project.name}
         </h3>
-        <div className="flex items-center gap-1 text-base-500 text-sm dark:text-base-400">
-          <Users className="size-4" />
-          <span>{project.assignees.length}</span>
-        </div>
       </div>
 
       <p className="mb-3 text-base-600 text-sm dark:text-base-400">
@@ -278,13 +269,16 @@ function ProjectCard({ project }: { project: (typeof mockProjects)[0] }) {
       <div>
         <div className="mb-1 flex justify-end text-sm">
           <span className="text-base-900 dark:text-base-100">
-            {project.completedTasks}/{project.tasksCount} tasks
+            {completedTasks}/{totalTasks} tasks
           </span>
         </div>
         <div className="h-2 w-full rounded-full bg-base-200 dark:bg-base-700">
           <div
             className="h-2 rounded-full bg-primary transition-all"
-            style={{ width: `${progressPercentage}%` }}
+            style={{
+              width: `${progressPercentage}%`,
+              backgroundColor: project?.color ?? undefined,
+            }}
           />
         </div>
       </div>
@@ -292,10 +286,17 @@ function ProjectCard({ project }: { project: (typeof mockProjects)[0] }) {
   );
 }
 
-function ProjectListItem({ project }: { project: (typeof mockProjects)[0] }) {
-  const progressPercentage = Math.round(
-    (project.completedTasks / project.tasksCount) * 100,
+function ProjectListItem({ project }: { project: ProjectFragment }) {
+  const completedTasks = project.columns?.nodes?.reduce(
+    (acc, col) => acc + (col?.completedTasks.totalCount || 0),
+    0,
   );
+  const totalTasks = project.columns?.nodes?.reduce(
+    (acc, col) => acc + (col?.allTasks.totalCount || 0),
+    0,
+  );
+  const progressPercentage =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
     <div className="border-base-200 border-b bg-card p-4 last:border-b-0 dark:border-base-700">
@@ -305,10 +306,6 @@ function ProjectListItem({ project }: { project: (typeof mockProjects)[0] }) {
             <h3 className="font-medium text-base-900 text-lg dark:text-base-100">
               {project.name}
             </h3>
-            <div className="flex items-center gap-1 text-base-500 text-sm dark:text-base-400">
-              <Users className="size-4" />
-              <span>{project.assignees.length}</span>
-            </div>
           </div>
 
           <p className="mb-3 text-base-600 dark:text-base-400">
@@ -319,7 +316,7 @@ function ProjectListItem({ project }: { project: (typeof mockProjects)[0] }) {
             <div className="w-32">
               <div className="mb-1 flex justify-between text-sm">
                 <span className="text-base-600 dark:text-base-400">
-                  {project.completedTasks}/{project.tasksCount} tasks
+                  {completedTasks}/{totalTasks} tasks
                 </span>
                 <span className="text-base-900 dark:text-base-100">
                   {progressPercentage}%
@@ -328,7 +325,10 @@ function ProjectListItem({ project }: { project: (typeof mockProjects)[0] }) {
               <div className="h-2 w-full rounded-full bg-base-200 dark:bg-base-700">
                 <div
                   className="h-2 rounded-full bg-primary transition-all"
-                  style={{ width: `${progressPercentage}%` }}
+                  style={{
+                    width: `${progressPercentage}%`,
+                    backgroundColor: project?.color ?? undefined,
+                  }}
                 />
               </div>
             </div>
