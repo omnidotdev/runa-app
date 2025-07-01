@@ -80,7 +80,7 @@ const Tasks = ({
       .indexOf(taskId);
 
   return (
-    <div className={cn("flex-1 p-2", className)} {...rest}>
+    <div className={cn("flex-1", className)} {...rest}>
       {tasks?.map((task, index) => {
         const displayId = `${prefix}-${taskIndex(task?.rowId!) ? taskIndex(task?.rowId!) : 0}`;
         const PriorityIcon = getPriorityIcon(task?.priority!);
@@ -104,10 +104,8 @@ const Tasks = ({
                     });
                   }
                 }}
-                className={`mb-2 cursor-pointer rounded-lg border border-base-200/50 bg-background p-3 dark:border-base-800/50 ${
-                  snapshot.isDragging
-                    ? "shadow-lg ring-2 ring-primary-500 ring-opacity-50"
-                    : "shadow-sm hover:shadow-md"
+                className={`mb-2 cursor-pointer rounded-lg border bg-background p-3 ${
+                  snapshot.isDragging ? "scale-95" : ""
                 }`}
               >
                 <div className="flex flex-col gap-1">
@@ -130,10 +128,11 @@ const Tasks = ({
                         </span>
                         {PriorityIcon}
                       </div>
-                      <div className="py-2">
+
+                      <div className="py-4">
                         <RichTextEditor
                           defaultContent={task?.content}
-                          className="min-h-0 border-0 p-0 text-sm dark:bg-background"
+                          className="-mx-5 min-h-0 border-0 p-0 text-xs dark:bg-background"
                           skeletonClassName="h-5 p-0"
                           editable={false}
                         />
@@ -149,7 +148,7 @@ const Tasks = ({
                               fallback={assignee?.user?.name?.charAt(0)}
                               src={assignee?.user?.avatarUrl!}
                               alt={assignee?.user?.name}
-                              className="size-6 rounded-full border-2 border-base-100 bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
+                              className="size-6 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
                             />
                           ))}
                         </div>
@@ -170,7 +169,12 @@ const Tasks = ({
                                 <Badge
                                   key={label.name}
                                   size="sm"
-                                  className={cn(colors.bg, colors.text)}
+                                  variant="outline"
+                                  className={cn(
+                                    "border-border/50",
+                                    colors.bg,
+                                    colors.text,
+                                  )}
                                 >
                                   <TagIcon
                                     className={cn("!size-2.5", colors.icon)}

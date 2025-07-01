@@ -107,7 +107,7 @@ const ListView = ({ shouldForceClose }: Props) => {
         style={{
           backgroundColor: project?.color
             ? theme === "dark"
-              ? `${project?.color}05`
+              ? `${project?.color}1A`
               : `${project?.color}0D`
             : undefined,
         }}
@@ -122,10 +122,11 @@ const ListView = ({ shouldForceClose }: Props) => {
             >
               <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 rounded-t-lg px-4 py-3 text-left">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-base-900 text-sm dark:text-base-100">
+                  <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
                     {column?.title}
-                  </span>
-                  <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
+                  </h3>
+
+                  <span className="px-2 py-0.5 text-foreground text-xs">
                     {
                       project?.columns?.nodes?.find(
                         (c) => c?.rowId === column?.rowId,
@@ -144,7 +145,7 @@ const ListView = ({ shouldForceClose }: Props) => {
                       {...provided.droppableProps}
                       prefix={project?.prefix ?? "PROJ"}
                       columnId={column?.rowId!}
-                      className="border-t bg-primary-50/5 dark:bg-base-800/5"
+                      className="border-t"
                       style={{
                         backgroundColor:
                           project?.color && snapshot.isDraggingOver

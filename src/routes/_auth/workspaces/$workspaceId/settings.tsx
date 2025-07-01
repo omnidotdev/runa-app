@@ -233,13 +233,21 @@ function SettingsPage() {
           <div className="flex items-center justify-between gap-4">
             <h3 className="font-medium text-sm">Team Members</h3>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsCreateMemberOpen(true)}
-            >
-              <Plus size={12} />
-            </Button>
+            <TooltipRoot>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Add team member"
+                  onClick={() => setIsCreateMemberOpen(true)}
+                >
+                  <Plus />
+                </Button>
+              </TooltipTrigger>
+              <TooltipPositioner>
+                <TooltipContent>Add team member</TooltipContent>
+              </TooltipPositioner>
+            </TooltipRoot>
           </div>
 
           {members.length > 0 && (
@@ -259,7 +267,7 @@ function SettingsPage() {
                     </span>
                   </div>
 
-                  <Button
+                  {/* <Button
                     variant="ghost"
                     onClick={() => {
                       setIsDeleteTeamMemberOpen(true);
@@ -268,7 +276,27 @@ function SettingsPage() {
                     className="p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
                   >
                     <Trash2 className="h-4 w-4" />
-                  </Button>
+                  </Button> */}
+
+                  <TooltipRoot>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="remove member"
+                        onClick={() => {
+                          setIsDeleteTeamMemberOpen(true);
+                          setSelectedMember(member);
+                        }}
+                        className="p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
+                      >
+                        <Trash2 />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipPositioner>
+                      <TooltipContent>Remove team member</TooltipContent>
+                    </TooltipPositioner>
+                  </TooltipRoot>
                 </div>
               ))}
             </div>

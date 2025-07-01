@@ -7,6 +7,12 @@ import { useCallback, useRef, useState } from "react";
 import Tasks from "@/components/Tasks";
 import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
 import { Button } from "@/components/ui/button";
+import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
@@ -170,7 +176,7 @@ const Board = () => {
       style={{
         backgroundColor: project?.color
           ? theme === "dark"
-            ? `${project?.color}05`
+            ? `${project?.color}1A`
             : `${project?.color}0D`
           : undefined,
       }}
@@ -187,15 +193,15 @@ const Board = () => {
                 {project?.columns?.nodes?.map((column) => (
                   <div
                     key={column?.rowId}
-                    className="no-scrollbar relative flex w-80 flex-col overflow-y-auto rounded-lg bg-base-50/80 shadow-sm dark:bg-background/60 dark:shadow-base-900"
-                    style={{ minHeight: "4px" }}
+                    className="relative flex h-full w-80 flex-col gap-2 bg-inherit"
                   >
-                    <div className="sticky top-0 z-10 flex items-center justify-between border-base-200 border-b bg-base-50 p-3 dark:border-base-800 dark:bg-base-900">
+                    <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2 shadow-sm">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-base-800 dark:text-base-100">
+                        <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
                           {column?.title}
                         </h3>
-                        <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
+
+                        <span className="px-2 py-0.5 text-foreground text-xs">
                           {
                             project?.columns?.nodes?.find(
                               (c) => c?.rowId === column?.rowId,
@@ -203,36 +209,50 @@ const Board = () => {
                           }
                         </span>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          setIsCreateTaskDialogOpen(true);
-                          setSelectedColumnId(column?.rowId!);
-                        }}
+
+                      <TooltipRoot
+                        positioning={{ placement: "top", strategy: "fixed" }}
                       >
-                        <PlusIcon className="h-4 w-4" />
-                      </Button>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="xs"
+                            className="size-5"
+                            onClick={() => {
+                              setIsCreateTaskDialogOpen(true);
+                              setSelectedColumnId(column?.rowId!);
+                            }}
+                            aria-label="Add Task"
+                          >
+                            <PlusIcon className="size-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipPositioner>
+                          <TooltipContent>Add Task</TooltipContent>
+                        </TooltipPositioner>
+                      </TooltipRoot>
                     </div>
-                    <Droppable droppableId={column?.rowId!}>
-                      {(provided, snapshot) => (
-                        <Tasks
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                          prefix={project?.prefix ?? "PROJ"}
-                          columnId={column?.rowId!}
-                          className="bg-primary-50/5 dark:bg-base-800/5"
-                          style={{
-                            backgroundColor:
-                              project?.color && snapshot.isDraggingOver
-                                ? `${project?.color}0D`
-                                : undefined,
-                          }}
-                        >
-                          {provided.placeholder}
-                        </Tasks>
-                      )}
-                    </Droppable>
+
+                    <div className="no-scrollbar flex h-full overflow-y-auto">
+                      <Droppable droppableId={column?.rowId!}>
+                        {(provided, snapshot) => (
+                          <Tasks
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            prefix={project?.prefix ?? "PROJ"}
+                            columnId={column?.rowId!}
+                            style={{
+                              backgroundColor:
+                                project?.color && snapshot.isDraggingOver
+                                  ? `${project?.color}0D`
+                                  : undefined,
+                            }}
+                          >
+                            {provided.placeholder}
+                          </Tasks>
+                        )}
+                      </Droppable>
+                    </div>
 
                     {column?.rowId === selectedColumnId && (
                       <CreateTaskDialog columnId={column?.rowId!} />

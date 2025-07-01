@@ -178,10 +178,6 @@ function ProjectPage() {
                 </TooltipPositioner>
               </TooltipRoot>
 
-              {/* <div className="relative">
-                <ProjectSettings />
-              </div> */}
-
               {project?.viewMode === "list" && (
                 <TooltipRoot>
                   <TooltipTrigger asChild>

@@ -90,11 +90,13 @@ const TasksList = ({
                     });
                   }
                 }}
-                className={`group flex cursor-pointer items-start bg-background px-4 py-3 hover:bg-base-50/50 dark:hover:bg-background/90 ${
+                className={cn(
+                  "group flex cursor-pointer items-start bg-background px-4 py-3 hover:bg-base-50/50 dark:hover:bg-background/90",
                   snapshot.isDragging
                     ? "z-10 bg-white shadow-lg ring-2 ring-primary-500 ring-opacity-50 dark:bg-base-700"
-                    : ""
-                }`}
+                    : "",
+                  index === tasks.length - 1 ? "rounded-b-lg" : "",
+                )}
               >
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
                   <div className="flex items-start gap-2">

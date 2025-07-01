@@ -7,15 +7,15 @@ import {
 const priorityConfig = {
   high: {
     icon: AlertTriangleIcon,
-    className: "text-red-500 dark:text-red-400",
+    className: "text-red-700 dark:text-red-600",
   },
   medium: {
     icon: CircleDotIcon,
-    className: "text-yellow-500 dark:text-yellow-400",
+    className: "text-yellow-700 dark:text-yellow-600",
   },
   low: {
     icon: MinusCircleIcon,
-    className: "text-green-500 dark:text-green-400",
+    className: "text-green-700 dark:text-green-600",
   },
 };
 
