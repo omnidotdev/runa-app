@@ -4,8 +4,8 @@ import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 
-import CreateTaskDialog from "@/components/CreateTask/CreateTaskDialog";
 import Tasks from "@/components/Tasks";
+import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
 import { Button } from "@/components/ui/button";
 import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";

@@ -3,10 +3,10 @@ import { useParams } from "@tanstack/react-router";
 import { TagIcon, TypeIcon } from "lucide-react";
 import { useRef } from "react";
 
-import CreateTaskAssignees from "@/components/CreateTask/CreateTaskAssignees";
-import CreateTaskDatePicker from "@/components/CreateTask/CreateTaskDatePicker";
-import CreateTaskLabels from "@/components/CreateTask/CreateTaskLabels";
 import RichTextEditor from "@/components/core/RichTextEditor";
+import CreateTaskAssignees from "@/components/tasks/CreateTaskAssignees";
+import CreateTaskDatePicker from "@/components/tasks/CreateTaskDatePicker";
+import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -189,7 +189,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
 
                 <PopoverPositioner>
                   <PopoverContent className="flex min-w-80 flex-col gap-2">
-                    <CreateTaskLabels form={form} />
+                    <TaskLabelsForm form={form} />
                   </PopoverContent>
                 </PopoverPositioner>
               </PopoverRoot>

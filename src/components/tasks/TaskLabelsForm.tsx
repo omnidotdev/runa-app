@@ -23,7 +23,7 @@ import { labelColors } from "@/lib/constants/labelColors";
 import { withForm } from "@/lib/hooks/useForm";
 import { cn } from "@/lib/utils";
 
-const CreateTaskLabels = withForm({
+const TaskLabelsForm = withForm({
   defaultValues: {
     title: "",
     description: "",
@@ -55,7 +55,6 @@ const CreateTaskLabels = withForm({
           return (
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 pb-2">
-                {/* TODO: make sure that selection doesn't close popover. Happens if value is outside the bounds of the popover */}
                 <Select
                   // @ts-ignore TODO: type issue
                   collection={colorCollection}
@@ -172,4 +171,4 @@ const CreateTaskLabels = withForm({
   },
 });
 
-export default CreateTaskLabels;
+export default TaskLabelsForm;

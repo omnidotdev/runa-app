@@ -23,10 +23,10 @@ import {
 import { useRef, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
-import CreateTaskLabels from "@/components/CreateTask/CreateTaskLabels";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
+import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -449,7 +449,7 @@ function TaskPage() {
 
                       <PopoverPositioner>
                         <PopoverContent className="flex min-w-80 flex-col gap-2">
-                          <CreateTaskLabels form={updateLabelsForm} />
+                          <TaskLabelsForm form={updateLabelsForm} />
 
                           <updateLabelsForm.Subscribe
                             selector={(state) => [
