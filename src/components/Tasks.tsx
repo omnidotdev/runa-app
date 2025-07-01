@@ -92,16 +92,18 @@ const Tasks = ({
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
-                onClick={() =>
-                  navigate({
-                    to: "/workspaces/$workspaceId/projects/$projectId/$taskId",
-                    params: {
-                      workspaceId,
-                      projectId,
-                      taskId: task?.rowId!,
-                    },
-                  })
-                }
+                onClick={() => {
+                  if (!snapshot.isDragging) {
+                    navigate({
+                      to: "/workspaces/$workspaceId/projects/$projectId/$taskId",
+                      params: {
+                        workspaceId,
+                        projectId,
+                        taskId: task?.rowId!,
+                      },
+                    });
+                  }
+                }}
                 className={`mb-2 cursor-pointer rounded-lg border border-base-200/50 bg-background p-3 dark:border-base-800/50 ${
                   snapshot.isDragging
                     ? "shadow-lg ring-2 ring-primary-500 ring-opacity-50"

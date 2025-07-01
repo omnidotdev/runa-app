@@ -6,6 +6,7 @@ import {
   Grid2X2Icon,
   ListIcon,
   LogOutIcon,
+  MenuIcon,
   MoonIcon,
   MoreHorizontalIcon,
   PanelLeftIcon,
@@ -180,7 +181,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             {workspaceId && (
               <SidebarMenu className="gap-2">
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Settings">
+                  <SidebarMenuButton asChild tooltip="Workspace Settings">
                     <Link
                       to="/workspaces/$workspaceId/settings"
                       params={{ workspaceId: workspaceId! }}
@@ -211,6 +212,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </div>
 
               <SidebarMenu className="gap-2">
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="Projects Overview">
+                    <Link
+                      to="/workspaces/$workspaceId/projects"
+                      params={{ workspaceId: workspaceId! }}
+                      variant="ghost"
+                      activeOptions={{
+                        exact: true,
+                      }}
+                      activeProps={{
+                        variant: "outline",
+                      }}
+                      className="w-full justify-start border border-transparent"
+                    >
+                      <MenuIcon className="size-4" />
+                      <span className="w-full truncate">Overview</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
                 {workspace?.projects.nodes.map((project) => (
                   <SidebarMenuItem key={project?.rowId}>
                     <SidebarMenuButton asChild tooltip={project?.name}>

@@ -78,16 +78,18 @@ const TasksList = ({
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
-                onClick={() =>
-                  navigate({
-                    to: "/workspaces/$workspaceId/projects/$projectId/$taskId",
-                    params: {
-                      workspaceId,
-                      projectId,
-                      taskId: task?.rowId!,
-                    },
-                  })
-                }
+                onClick={() => {
+                  if (!snapshot.isDragging) {
+                    navigate({
+                      to: "/workspaces/$workspaceId/projects/$projectId/$taskId",
+                      params: {
+                        workspaceId,
+                        projectId,
+                        taskId: task?.rowId!,
+                      },
+                    });
+                  }
+                }}
                 className={`group flex cursor-pointer items-start bg-background px-4 py-3 hover:bg-base-50/50 dark:hover:bg-background/90 ${
                   snapshot.isDragging
                     ? "z-10 bg-white shadow-lg ring-2 ring-primary-500 ring-opacity-50 dark:bg-base-700"
