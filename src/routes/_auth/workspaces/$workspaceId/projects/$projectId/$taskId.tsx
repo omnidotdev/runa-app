@@ -27,6 +27,7 @@ import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
 import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
+import UpdateAssignees from "@/components/tasks/UpdateAssignees";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,7 +39,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  useCreateAssigneeMutation,
   useCreatePostMutation,
+  useDeleteAssigneeMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
@@ -161,6 +164,10 @@ function TaskPage() {
     select: (data) => data?.project,
   });
 
+  const defaultAssignees = task?.assignees?.nodes?.map(
+    (assignee) => assignee?.user?.rowId!,
+  );
+
   const defaultLabels: { name: string; color: string; checked: boolean }[] =
     project?.labels?.map((label: { name: string; color: string }) => ({
       ...label,
@@ -179,6 +186,22 @@ function TaskPage() {
   const { mutate: addComment } = useCreatePostMutation({
     meta: {
       invalidates: [taskOptions(taskId).queryKey],
+    },
+  });
+  const { mutate: addNewAssignee } = useCreateAssigneeMutation({
+    meta: {
+      invalidates: [
+        taskOptions(taskId).queryKey,
+        projectOptions(projectId).queryKey,
+      ],
+    },
+  });
+  const { mutate: removeAssignee } = useDeleteAssigneeMutation({
+    meta: {
+      invalidates: [
+        taskOptions(taskId).queryKey,
+        projectOptions(projectId).queryKey,
+      ],
     },
   });
 
@@ -231,6 +254,48 @@ function TaskPage() {
           labels: JSON.stringify(taskLabels),
         },
       });
+    },
+  });
+
+  const updateAssigneesForm = useForm({
+    defaultValues: {
+      title: "",
+      description: "",
+      labels: [] as {
+        name: string;
+        color: string;
+        checked: boolean;
+      }[],
+      assignees: defaultAssignees ?? [],
+      dueDate: "",
+    },
+    onSubmit: ({ value: { assignees } }) => {
+      for (const assignee of assignees) {
+        // Add any new assignees
+        if (!defaultAssignees?.includes(assignee)) {
+          addNewAssignee({
+            input: {
+              assignee: {
+                taskId,
+                userId: assignee,
+              },
+            },
+          });
+        }
+      }
+
+      if (defaultAssignees?.length) {
+        for (const assignee of defaultAssignees) {
+          // remove any assignees that are no longer assigned
+          if (!assignees.includes(assignee)) {
+            removeAssignee({
+              rowId: task?.assignees?.nodes?.find(
+                (a) => a?.user?.rowId === assignee,
+              )?.rowId!,
+            });
+          }
+        }
+      }
     },
   });
 
@@ -395,9 +460,50 @@ function TaskPage() {
                       Assignees
                     </h3>
                   </div>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontalIcon className="size-3" />
-                  </Button>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      updateAssigneesForm.handleSubmit();
+                    }}
+                  >
+                    <PopoverRoot
+                      positioning={{ placement: "bottom-end", gutter: -2 }}
+                    >
+                      <PopoverTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreHorizontalIcon className="size-3" />
+                        </Button>
+                      </PopoverTrigger>
+
+                      <PopoverPositioner>
+                        <PopoverContent className="flex min-w-80 flex-col gap-2">
+                          <UpdateAssignees form={updateAssigneesForm} />
+
+                          <updateAssigneesForm.Subscribe
+                            selector={(state) => [
+                              state.canSubmit,
+                              state.isSubmitting,
+                              state.isDirty,
+                            ]}
+                          >
+                            {([canSubmit, isSubmitting, isDirty]) => (
+                              <Button
+                                type="submit"
+                                disabled={
+                                  !canSubmit || isSubmitting || !isDirty
+                                }
+                                size="sm"
+                                className="mt-4"
+                              >
+                                Update Assignees
+                              </Button>
+                            )}
+                          </updateAssigneesForm.Subscribe>
+                        </PopoverContent>
+                      </PopoverPositioner>
+                    </PopoverRoot>
+                  </form>
                 </CardHeader>
                 <CardContent className="space-y-4 p-4">
                   {task?.assignees?.nodes?.map((assignee) => (

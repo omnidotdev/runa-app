@@ -4516,6 +4516,13 @@ export type CreateAssigneeMutationVariables = Exact<{
 
 export type CreateAssigneeMutation = { __typename?: 'Mutation', createAssignee?: { __typename?: 'CreateAssigneePayload', assignee?: { __typename?: 'Assignee', rowId: string } | null } | null };
 
+export type DeleteAssigneeMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteAssigneeMutation = { __typename?: 'Mutation', deleteAssignee?: { __typename?: 'DeleteAssigneePayload', assignee?: { __typename?: 'Assignee', rowId: string } | null } | null };
+
 export type CreateColumnMutationVariables = Exact<{
   input: CreateColumnInput;
 }>;
@@ -4613,7 +4620,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt?: Date | null, updatedAt?: Date | null, dueDate?: Date | null, labels?: any | null, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null } | null> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null } | null> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt?: Date | null, updatedAt?: Date | null, dueDate?: Date | null, labels?: any | null, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null } | null> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null } | null> } } | null };
 
 export type TasksQueryVariables = Exact<{
   columnId: Scalars['UUID']['input'];
@@ -4669,6 +4676,34 @@ useCreateAssigneeMutation.getKey = () => ['CreateAssignee'];
 
 
 useCreateAssigneeMutation.fetcher = (variables: CreateAssigneeMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateAssigneeMutation, CreateAssigneeMutationVariables>(CreateAssigneeDocument, variables, options);
+
+export const DeleteAssigneeDocument = `
+    mutation DeleteAssignee($rowId: UUID!) {
+  deleteAssignee(input: {rowId: $rowId}) {
+    assignee {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useDeleteAssigneeMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteAssigneeMutation, TError, DeleteAssigneeMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteAssigneeMutation, TError, DeleteAssigneeMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteAssignee'],
+    mutationFn: (variables?: DeleteAssigneeMutationVariables) => graphqlFetch<DeleteAssigneeMutation, DeleteAssigneeMutationVariables>(DeleteAssigneeDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteAssigneeMutation.getKey = () => ['DeleteAssignee'];
+
+
+useDeleteAssigneeMutation.fetcher = (variables: DeleteAssigneeMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteAssigneeMutation, DeleteAssigneeMutationVariables>(DeleteAssigneeDocument, variables, options);
 
 export const CreateColumnDocument = `
     mutation CreateColumn($input: CreateColumnInput!) {
@@ -5133,6 +5168,7 @@ export const TaskDocument = `
       nodes {
         rowId
         user {
+          rowId
           name
           avatarUrl
         }
