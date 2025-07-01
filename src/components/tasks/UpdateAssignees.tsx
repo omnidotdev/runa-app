@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { CheckIcon } from "lucide-react";
 
+import { Avatar } from "@/components/ui/avatar";
 import {
   CheckboxControl,
   CheckboxHiddenInput,
@@ -11,7 +12,8 @@ import {
 import { createListCollection } from "@/components/ui/select";
 import { withForm } from "@/lib/hooks/useForm";
 import usersOptions from "@/lib/options/users.options";
-import { Avatar } from "../ui/avatar";
+
+// TODO: update structure. Use combobox to search for assignees and show currently assigned only with `XIcon` to remove
 
 const UpdateAssignees = withForm({
   defaultValues: {

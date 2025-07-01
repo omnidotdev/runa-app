@@ -119,7 +119,7 @@ const StatusBadge = ({ status }: { status: string }) => {
 
   return (
     <Badge className={cn("gap-1.5", config.className)} variant="outline">
-      <Icon className="!size-2.5" />
+      <Icon className="!size-3" />
       {config.label}
     </Badge>
   );
@@ -153,7 +153,7 @@ const PriorityBadge = ({ priority }: { priority: string }) => {
 
   return (
     <Badge className={cn("gap-1.5", config.className)} variant="outline">
-      <Icon className="!size-2.5" />
+      <Icon className="!size-3" />
       {config.label}
     </Badge>
   );
@@ -325,6 +325,15 @@ function TaskPage() {
     },
   });
 
+  const taskIndex = project?.columns?.nodes
+    ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
+    .sort(
+      (a, b) =>
+        new Date(a?.createdAt!).getTime()! - new Date(b?.createdAt!).getTime()!,
+    )
+    .map((task) => task?.rowId)
+    .indexOf(taskId);
+
   return (
     <div className="flex h-full">
       {/* Main content */}
@@ -360,7 +369,7 @@ function TaskPage() {
                 />
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-base-400 text-sm dark:text-base-500">
-                    PROJ-123
+                    {`${project?.prefix ? project.prefix : "PROJ"}-${taskIndex}`}
                   </span>
                   <Select
                     // @ts-ignore TODO: type issue
@@ -550,7 +559,7 @@ function TaskPage() {
                       positioning={{ placement: "bottom-end", gutter: -2 }}
                     >
                       <PopoverTrigger asChild>
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" className="size-6">
                           <MoreHorizontalIcon className="size-3" />
                         </Button>
                       </PopoverTrigger>
@@ -573,7 +582,6 @@ function TaskPage() {
                                   !canSubmit || isSubmitting || !isDirty
                                 }
                                 size="sm"
-                                className="mt-4"
                               >
                                 Update Assignees
                               </Button>
@@ -627,7 +635,7 @@ function TaskPage() {
                       positioning={{ placement: "bottom-end", gutter: -2 }}
                     >
                       <PopoverTrigger asChild>
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" className="size-6">
                           <MoreHorizontalIcon className="size-3" />
                         </Button>
                       </PopoverTrigger>
