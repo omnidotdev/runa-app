@@ -41,12 +41,17 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useDeleteProjectMutation } from "@/generated/graphql";
+import {
+  useDeleteProjectMutation,
+  useUpdateProjectMutation,
+} from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import projectOptions from "@/lib/options/project.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import { useTheme } from "@/providers/ThemeProvider";
+import getQueryClient from "@/utils/getQueryClient";
 import ConfirmDialog from "./ConfirmDialog";
 
 import type * as React from "react";
@@ -58,6 +63,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     rowId: string;
     name: string;
   }>();
+  const queryClient = getQueryClient();
 
   const { theme, setTheme } = useTheme();
 
@@ -84,6 +90,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         projectsOptions.queryKey,
         workspaceOptions(workspaceId!).queryKey,
       ],
+    },
+  });
+
+  const { mutate: updateViewMode } = useUpdateProjectMutation({
+    meta: {
+      invalidates: [workspaceOptions(workspaceId!).queryKey],
+    },
+    onMutate: (variables) => {
+      queryClient.setQueryData(
+        projectOptions(variables.rowId).queryKey,
+        (old) => ({
+          project: {
+            ...old?.project!,
+            viewMode: variables.patch?.viewMode!,
+          },
+        }),
+      );
     },
   });
 
@@ -232,7 +255,53 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       </MenuTrigger>
 
                       <MenuPositioner>
-                        <MenuContent className="w-48 rounded-lg bg-sidebar">
+                        {/* TODO: Map these out */}
+                        <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
+                          <MenuItem
+                            value="settings"
+                            className="flex cursor-pointer items-center gap-2"
+                            onClick={() => {
+                              navigate({
+                                to: "/workspaces/$workspaceId/projects/$projectId/settings",
+                                params: {
+                                  workspaceId: workspaceId!,
+                                  projectId: project?.rowId!,
+                                },
+                              });
+                            }}
+                          >
+                            <Settings2 />
+                            <span>Settings</span>
+                          </MenuItem>
+
+                          <MenuItem
+                            value="viewMode"
+                            className="flex cursor-pointer items-center gap-2"
+                            onClick={() =>
+                              updateViewMode({
+                                rowId: project?.rowId!,
+                                patch: {
+                                  viewMode:
+                                    project?.viewMode === "board"
+                                      ? "list"
+                                      : "board",
+                                },
+                              })
+                            }
+                          >
+                            {project?.viewMode === "list" ? (
+                              <Grid2X2Icon />
+                            ) : (
+                              <ListIcon />
+                            )}
+                            <span>
+                              {" "}
+                              {project?.viewMode === "list"
+                                ? "Board View"
+                                : "list View"}
+                            </span>
+                          </MenuItem>
+
                           <MenuItem
                             value="delete"
                             className="flex cursor-pointer items-center gap-2"
@@ -245,7 +314,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               setIsDeleteProjectOpen(true);
                             }}
                           >
-                            <Trash2Icon size={14} />
+                            <Trash2Icon />
                             <span>Delete Project</span>
                           </MenuItem>
                         </MenuContent>

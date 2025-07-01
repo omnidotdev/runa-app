@@ -19,7 +19,11 @@ import getQueryClient from "@/utils/getQueryClient";
 
 import type { DropResult } from "@hello-pangea/dnd";
 
-const ListView = () => {
+interface Props {
+  shouldForceClose?: boolean;
+}
+
+const ListView = ({ shouldForceClose }: Props) => {
   const { theme } = useTheme();
 
   const { projectId } = useParams({
@@ -114,6 +118,7 @@ const ListView = () => {
               key={column?.rowId}
               className="mb-4 rounded-lg bg-white shadow-sm last:mb-0 dark:bg-base-800"
               defaultOpen
+              open={shouldForceClose ? false : undefined}
             >
               <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 rounded-t-lg px-4 py-3 text-left">
                 <div className="flex items-center gap-2">
@@ -139,7 +144,7 @@ const ListView = () => {
                       {...provided.droppableProps}
                       prefix={project?.prefix ?? "PROJ"}
                       columnId={column?.rowId!}
-                      className="bg-primary-50/5 dark:bg-base-800/5"
+                      className="border-t bg-primary-50/5 dark:bg-base-800/5"
                       style={{
                         backgroundColor:
                           project?.color && snapshot.isDraggingOver

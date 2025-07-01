@@ -1,16 +1,29 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
-import { Grid2X2Icon, ListIcon, SearchIcon } from "lucide-react";
+import {
+  Grid2X2Icon,
+  ListCollapse,
+  ListIcon,
+  SearchIcon,
+  Settings2,
+} from "lucide-react";
+import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
 
 import Board from "@/components/Board";
+import Link from "@/components/core/Link";
 import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
-import ProjectSettings from "@/components/ProjectSettings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
@@ -63,10 +76,18 @@ export const Route = createFileRoute({
 function ProjectPage() {
   const { projectId, workspaceId } = Route.useParams();
   const { search } = Route.useSearch();
+  const [shouldForceClose, setShouldForceClose] = useState(false);
 
   const navigate = Route.useNavigate();
 
   const { queryClient } = Route.useRouteContext();
+
+  const handleForceClose = () => {
+    setShouldForceClose(true);
+    setTimeout(() => {
+      setShouldForceClose(false);
+    }, 100);
+  };
 
   const handleSearch = useDebounceCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -127,39 +148,84 @@ function ProjectPage() {
                   className="pl-10"
                 />
               </div>
-              <Button
-                onClick={() =>
-                  updateViewMode({
-                    rowId: project?.rowId!,
-                    patch: {
-                      viewMode:
-                        project?.viewMode === "board" ? "list" : "board",
-                    },
-                  })
-                }
-                variant="outline"
-              >
-                {project?.viewMode === "board" && (
-                  <div className="flex items-center gap-2">
-                    <ListIcon className="h-4 w-4" />
-                    List View
-                  </div>
-                )}
 
-                {project?.viewMode === "list" && (
-                  <div className="flex items-center gap-2">
-                    <Grid2X2Icon className="h-4 w-4" />
-                    Board View
-                  </div>
-                )}
-              </Button>
+              <TooltipRoot>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() =>
+                      updateViewMode({
+                        rowId: project?.rowId!,
+                        patch: {
+                          viewMode:
+                            project?.viewMode === "board" ? "list" : "board",
+                        },
+                      })
+                    }
+                  >
+                    {project?.viewMode === "list" ? (
+                      <Grid2X2Icon />
+                    ) : (
+                      <ListIcon />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipPositioner>
+                  <TooltipContent>
+                    {project?.viewMode === "list" ? "Board View" : "list View"}
+                  </TooltipContent>
+                </TooltipPositioner>
+              </TooltipRoot>
 
-              <ProjectSettings />
+              {/* <div className="relative">
+                <ProjectSettings />
+              </div> */}
+
+              {project?.viewMode === "list" && (
+                <TooltipRoot>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleForceClose}
+                    >
+                      <ListCollapse />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipPositioner>
+                    <TooltipContent>Collapse List</TooltipContent>
+                  </TooltipPositioner>
+                </TooltipRoot>
+              )}
+
+              <TooltipRoot>
+                <TooltipTrigger asChild>
+                  <Link
+                    to="/workspaces/$workspaceId/projects/$projectId/settings"
+                    params={{
+                      workspaceId: workspaceId!,
+                      projectId: projectId!,
+                    }}
+                    variant="outline"
+                    size="icon"
+                  >
+                    <Settings2 />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipPositioner>
+                  <TooltipContent>Project Settings</TooltipContent>
+                </TooltipPositioner>
+              </TooltipRoot>
             </div>
           </div>
         </div>
 
-        {project?.viewMode === "board" ? <Board /> : <ListView />}
+        {project?.viewMode === "board" ? (
+          <Board />
+        ) : (
+          <ListView shouldForceClose={shouldForceClose} />
+        )}
       </div>
     </div>
   );

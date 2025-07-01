@@ -11,6 +11,12 @@ import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   useDeleteProjectMutation,
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
@@ -133,7 +139,7 @@ function SettingsPage() {
         params={{ workspaceId: workspaceId }}
         variant="ghost"
       >
-        <ArrowLeft className="mr-1 size-4" />
+        <ArrowLeft />
         Back to Workspace
       </Link>
 
@@ -141,6 +147,28 @@ function SettingsPage() {
         <h1 className="text-2xl">Workspace Settings</h1>
 
         <div className="flex flex-col gap-3 rounded-lg">
+          <div className="flex items-center justify-between">
+            <h2 className="block font-medium text-base-700 text-sm dark:text-base-300">
+              Project Details
+            </h2>
+
+            <TooltipRoot>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Edit workspace details"
+                  onClick={() => setEditWorkspace((prev) => !prev)}
+                >
+                  <Edit />
+                </Button>
+              </TooltipTrigger>
+              <TooltipPositioner>
+                <TooltipContent>Edit workspace details</TooltipContent>
+              </TooltipPositioner>
+            </TooltipRoot>
+          </div>
+
           <form
             className="flex flex-col gap-2"
             onSubmit={(e) => {
@@ -151,23 +179,13 @@ function SettingsPage() {
           >
             <Field name="name">
               {(field) => (
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    <label
-                      htmlFor="name"
-                      className="mb-1 block font-medium text-base-700 text-sm dark:text-base-300"
-                    >
-                      Workspace Name
-                    </label>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label="Edit workspace name"
-                      onClick={() => setEditWorkspace((prev) => !prev)}
-                    >
-                      <Edit size={14} />
-                    </Button>
-                  </div>
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="mb-1 block font-medium text-base-700 text-sm dark:text-base-300"
+                  >
+                    Name
+                  </label>
                   <Input
                     id="name"
                     value={field.state.value}
