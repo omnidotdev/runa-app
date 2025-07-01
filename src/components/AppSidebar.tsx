@@ -10,7 +10,7 @@ import {
   MoreHorizontalIcon,
   PanelLeftIcon,
   PlusIcon,
-  SettingsIcon,
+  Settings2,
   SunIcon,
   Trash2Icon,
 } from "lucide-react";
@@ -101,7 +101,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <>
-      <Sidebar collapsible="icon" className="relative" {...props}>
+      <Sidebar collapsible="icon" {...props}>
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -145,10 +145,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Workspace</SidebarGroupLabel>
-            <SidebarGroupAction onClick={() => setIsCreateWorkspaceOpen(true)}>
-              <PlusIcon /> <span className="sr-only">Add Workspace</span>
-            </SidebarGroupAction>
+            <div className="flex items-center justify-between">
+              <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+              <SidebarGroupAction
+                onClick={() => setIsCreateWorkspaceOpen(true)}
+              >
+                <PlusIcon /> <span className="sr-only">Add Workspace</span>
+              </SidebarGroupAction>
+            </div>
 
             {workspaceId && (
               <SidebarMenu className="gap-2">
@@ -159,12 +163,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       params={{ workspaceId: workspaceId! }}
                       variant="ghost"
                       activeProps={{
-                        // NB: changing to secondary variant because outline variant produces a border shift on the icon.
-                        variant: "secondary",
+                        variant: "outline",
                       }}
-                      className="w-full justify-start"
+                      className="w-full justify-start border border-transparent"
                     >
-                      <SettingsIcon className="size-4" />
+                      <Settings2 className="size-4" />
                       <span className="w-full truncate">Settings</span>
                     </Link>
                   </SidebarMenuButton>
@@ -175,10 +178,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
           {workspaceId && (
             <SidebarGroup>
-              <SidebarGroupLabel>Projects</SidebarGroupLabel>
-              <SidebarGroupAction onClick={() => setIsCreateProjectOpen(true)}>
-                <PlusIcon /> <span className="sr-only">Add Project</span>
-              </SidebarGroupAction>
+              <div className="flex items-center justify-between">
+                <SidebarGroupLabel>Projects</SidebarGroupLabel>
+                <SidebarGroupAction
+                  onClick={() => setIsCreateProjectOpen(true)}
+                >
+                  <PlusIcon /> <span className="sr-only">Add Project</span>
+                </SidebarGroupAction>
+              </div>
 
               <SidebarMenu className="gap-2">
                 {workspace?.projects.nodes.map((project) => (
@@ -194,7 +201,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         activeProps={{
                           variant: "outline",
                         }}
-                        // NB: border added to prevent layout shift when changing variants
                         className="justify-start border border-transparent"
                       >
                         {project?.viewMode === "board" ? (
@@ -226,10 +232,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       </MenuTrigger>
 
                       <MenuPositioner>
-                        <MenuContent className="w-48 rounded-lg bg-background">
+                        <MenuContent className="w-48 rounded-lg bg-sidebar">
                           <MenuItem
                             value="delete"
                             className="flex cursor-pointer items-center gap-2"
+                            variant="destructive"
                             onClick={() => {
                               setSelectedProject({
                                 rowId: project?.rowId!,
@@ -238,10 +245,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               setIsDeleteProjectOpen(true);
                             }}
                           >
-                            <Trash2Icon
-                              size={14}
-                              className="text-muted-foreground"
-                            />
+                            <Trash2Icon size={14} />
                             <span>Delete Project</span>
                           </MenuItem>
                         </MenuContent>
@@ -296,7 +300,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenuButton
                 tooltip="Sign Out"
                 onClick={() => navigate({ to: "/" })}
-                className="justify-start border bg-background text-red-600 shadow-xs hover:bg-accent dark:border-input dark:bg-input/30 dark:text-red-400 dark:hover:bg-input/50"
+                className="hover: justify-start border bg-background text-red-600 shadow-xs hover:bg-accent hover:text-red-600 dark:border-input dark:bg-input/30 dark:text-red-400 dark:hover:bg-input/50 dark:hover:text-red-400"
               >
                 <LogOutIcon />
                 <span>Sign Out</span>
