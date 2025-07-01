@@ -26,6 +26,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ProjectStatus } from "@/generated/graphql";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectsOptions from "@/lib/options/projects.options";
 
 import type { ChangeEvent } from "react";
@@ -61,7 +62,13 @@ function ProjectsOverviewPage() {
     select: (data) => data?.projects?.nodes,
   });
 
+  // TODO: handle viewMode for workspace
   const [viewMode, setViewMode] = useState<"board" | "list">("board");
+
+  const { isOpen: isCreateProjectOpen, setIsOpen: setIsCreateProjectOpen } =
+    useDialogStore({
+      type: DialogType.CreateProject,
+    });
 
   const handleSearch = useDebounceCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -132,7 +139,11 @@ function ProjectsOverviewPage() {
 
               <TooltipRoot>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setIsCreateProjectOpen(true)}
+                  >
                     <Plus className="size-4" />
                   </Button>
                 </TooltipTrigger>
