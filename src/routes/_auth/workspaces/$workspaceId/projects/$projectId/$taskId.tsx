@@ -10,7 +10,6 @@ import {
   CircleDotIcon,
   CircleIcon,
   ClockIcon,
-  EditIcon,
   EyeIcon,
   InfoIcon,
   MessageSquareIcon,
@@ -29,6 +28,7 @@ import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
 import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
 import UpdateAssignees from "@/components/tasks/UpdateAssignees";
+import UpdateDueDate from "@/components/tasks/UpdateDueDate";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -711,19 +711,14 @@ function TaskPage() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    {/* TODO: functionality */}
-                    <Button
-                      variant="ghost"
-                      className="group h-fit py-0 font-normal text-base-500 hover:bg-transparent has-[>svg]:px-0 dark:text-base-400"
-                    >
-                      Due Date
-                      <EditIcon className="size-3.5" />
-                    </Button>
-                    {task?.dueDate && (
+                    <UpdateDueDate />
+                    {task?.dueDate ? (
                       <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
                         <CalendarIcon className="size-3" />
                         {format(new Date(task.dueDate), "MMM d, yyyy")}
                       </div>
+                    ) : (
+                      <div>--</div>
                     )}
                   </div>
                   <div className="flex items-center justify-between text-sm">
