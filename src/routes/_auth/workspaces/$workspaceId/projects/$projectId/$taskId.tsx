@@ -51,7 +51,6 @@ import seo from "@/utils/seo";
 import type { EditorApi } from "@/components/core/RichTextEditor";
 
 export const Route = createFileRoute({
-  ssr: false,
   loader: async ({ params: { taskId }, context: { queryClient } }) => {
     const { task } = await queryClient.ensureQueryData(taskOptions(taskId));
 
@@ -258,6 +257,7 @@ function TaskPage() {
                 <RichTextEditor
                   defaultContent={task?.content}
                   className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
+                  skeletonClassName="h-[33px]"
                   onUpdate={({ editor }) =>
                     handleTaskUpdate({
                       rowId: taskId,
@@ -289,10 +289,11 @@ function TaskPage() {
                     Description
                   </h2>
                 </CardHeader>
-                <CardContent className="rounded-b-xl border-x border-b border-dashed p-0">
+                <CardContent className="p-0">
                   <RichTextEditor
                     defaultContent={task?.description}
                     className="border-0"
+                    skeletonClassName="h-[120px]"
                     onUpdate={({ editor }) =>
                       handleTaskUpdate({
                         rowId: taskId,
@@ -342,6 +343,7 @@ function TaskPage() {
                         <RichTextEditor
                           defaultContent={comment?.description!}
                           className="min-h-0 border-0 p-0 py-2 text-sm leading-relaxed dark:bg-background"
+                          skeletonClassName="h-[38.75px]"
                           editable={false}
                         />
                       </div>

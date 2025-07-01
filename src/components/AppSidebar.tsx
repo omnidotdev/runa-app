@@ -192,10 +192,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         }}
                         variant="ghost"
                         activeProps={{
-                          // NB: changing to secondary variant because outline variant produces a border shift on the icon.
-                          variant: "secondary",
+                          variant: "outline",
                         }}
-                        className="justify-start"
+                        // NB: border added to prevent layout shift when changing variants
+                        className="justify-start border border-transparent"
                       >
                         {project?.viewMode === "board" ? (
                           <Grid2X2Icon

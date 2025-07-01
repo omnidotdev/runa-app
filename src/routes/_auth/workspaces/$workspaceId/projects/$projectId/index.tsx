@@ -24,7 +24,6 @@ const projectSearchSchema = z.object({
 });
 
 export const Route = createFileRoute({
-  ssr: false,
   loaderDeps: ({ search: { search } }) => ({ search }),
   loader: async ({
     deps: { search },

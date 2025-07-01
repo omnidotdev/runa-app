@@ -128,11 +128,14 @@ const Tasks = ({
                         </span>
                         {PriorityIcon}
                       </div>
-                      <RichTextEditor
-                        defaultContent={task?.content}
-                        className="min-h-0 border-0 p-0 py-2 text-sm dark:bg-background"
-                        editable={false}
-                      />
+                      <div className="py-2">
+                        <RichTextEditor
+                          defaultContent={task?.content}
+                          className="min-h-0 border-0 p-0 text-sm dark:bg-background"
+                          skeletonClassName="h-5 p-0"
+                          editable={false}
+                        />
+                      </div>
                     </div>
 
                     <div className="-mt-2.5 -mr-2 flex items-center gap-1">

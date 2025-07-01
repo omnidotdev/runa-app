@@ -25,7 +25,6 @@ import seo from "@/utils/seo";
 import type { Assignee } from "@/types";
 
 export const Route = createFileRoute({
-  ssr: false,
   loader: async ({ params: { workspaceId }, context }) => {
     const { workspace } = await context.queryClient.ensureQueryData(
       workspaceOptions(workspaceId),
@@ -312,7 +311,7 @@ function SettingsPage() {
 
           <Button
             variant="destructive"
-            className="w-fit"
+            className="w-fit text-background"
             onClick={() => setIsDeleteWorkspaceOpen(true)}
           >
             Delete Workspace

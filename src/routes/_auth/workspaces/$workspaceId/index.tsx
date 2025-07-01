@@ -5,7 +5,6 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import seo from "@/utils/seo";
 
 export const Route = createFileRoute({
-  ssr: false,
   loader: async ({ params: { workspaceId }, context }) => {
     const { workspace } = await context.queryClient.ensureQueryData(
       workspaceOptions(workspaceId),

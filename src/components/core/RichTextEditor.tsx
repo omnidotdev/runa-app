@@ -6,6 +6,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useRef } from "react";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 import type { EditorEvents } from "@tiptap/react";
@@ -20,6 +21,7 @@ interface Props extends Omit<ComponentProps<typeof EditorContent>, "editor"> {
   onUpdate?: (props: EditorEvents["update"]) => void;
   defaultContent?: string;
   editable?: boolean;
+  skeletonClassName?: string;
 }
 
 const RichTextEditor = ({
@@ -29,6 +31,7 @@ const RichTextEditor = ({
   className,
   editable = true,
   placeholder,
+  skeletonClassName,
   ...rest
 }: Props) => {
   const editorContainerRef = useRef<HTMLDivElement>(null);
@@ -61,6 +64,7 @@ const RichTextEditor = ({
     content: defaultContent,
     // TODO: discuss. This saves the HTML in db, i.e. `<p>Testing <strong>bold</strong> text</p>` which we could later render. `getText` removes any rich text
     onUpdate,
+    immediatelyRender: false,
   });
 
   useEffect(() => {
@@ -82,17 +86,23 @@ const RichTextEditor = ({
       }}
       className="prose prose-sm dark:prose-invert relative max-w-none"
     >
-      <EditorContent
-        editor={editor}
-        className={cn(
-          "pointer-events-auto min-h-[120px] rounded-md border border-base-300 border-dashed bg-transparent p-3 text-base-600 dark:border-base-600 dark:text-base-300 dark:hover:border-base-500",
-          editor?.isFocused
-            ? "border-2 border-primary-500/20 bg-primary-50/50 dark:border-primary-500/10 dark:bg-primary-900/5"
-            : "hover:border-base-400 dark:hover:border-base-500",
-          className,
-        )}
-        {...rest}
-      />
+      {editor ? (
+        <EditorContent
+          editor={editor}
+          className={cn(
+            "pointer-events-auto min-h-[120px] rounded-md border border-base-300 border-dashed bg-transparent p-3 text-base-600 dark:border-base-600 dark:text-base-300 dark:hover:border-base-500",
+            editor?.isFocused
+              ? "border-2 border-primary-500/20 bg-primary-50/50 dark:border-primary-500/10 dark:bg-primary-900/5"
+              : "hover:border-base-400 dark:hover:border-base-500",
+            className,
+          )}
+          {...rest}
+        />
+      ) : (
+        <Skeleton
+          className={cn("pointer-events-auto rounded-md", skeletonClassName)}
+        />
+      )}
     </div>
   );
 };
