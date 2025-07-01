@@ -14,7 +14,7 @@ import {
   InfoIcon,
   MessageSquareIcon,
   MinusCircleIcon,
-  PlusIcon,
+  MoreHorizontalIcon,
   SendIcon,
   TagIcon,
   TypeIcon,
@@ -23,6 +23,7 @@ import {
 import { useRef, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
+import CreateTaskLabels from "@/components/CreateTask/CreateTaskLabels";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
@@ -31,9 +32,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import {
+  PopoverContent,
+  PopoverPositioner,
+  PopoverRoot,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
   useCreatePostMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
+import useForm from "@/lib/hooks/useForm";
+import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import { getLabelClasses } from "@/lib/util/getLabelClasses";
 import { cn } from "@/lib/utils";
@@ -148,7 +157,26 @@ function TaskPage() {
     select: (data) => data?.task,
   });
 
-  const { mutate: updateTask } = useUpdateTaskMutation();
+  const { data: project } = useSuspenseQuery({
+    ...projectOptions(projectId),
+    select: (data) => data?.project,
+  });
+
+  const defaultLabels: { name: string; color: string; checked: boolean }[] =
+    project?.labels?.map((label: { name: string; color: string }) => ({
+      ...label,
+      // TODO: This assumes that label names are unique per project, validate this
+      checked: task?.labels?.includes(label.name) || false,
+    }));
+
+  const { mutate: updateTask } = useUpdateTaskMutation({
+    meta: {
+      invalidates: [
+        taskOptions(taskId).queryKey,
+        projectOptions(projectId).queryKey,
+      ],
+    },
+  });
   const { mutate: addComment } = useCreatePostMutation({
     meta: {
       invalidates: [taskOptions(taskId).queryKey],
@@ -180,6 +208,32 @@ function TaskPage() {
       }
     }
   };
+
+  const updateLabelsForm = useForm({
+    defaultValues: {
+      title: "",
+      description: "",
+      labels: defaultLabels,
+      assignees: [] as string[],
+      dueDate: "",
+    },
+    onSubmit: ({ value }) => {
+      // TODO: update project labels if new label is created
+      const taskLabels = value.labels
+        .filter((l) => l.checked)
+        .map((label) => ({
+          name: label.name,
+          color: label.color,
+        }));
+
+      updateTask({
+        rowId: taskId,
+        patch: {
+          labels: JSON.stringify(taskLabels),
+        },
+      });
+    },
+  });
 
   return (
     <div className="flex h-full">
@@ -340,7 +394,7 @@ function TaskPage() {
                     </h3>
                   </div>
                   <Button variant="ghost" size="icon">
-                    <PlusIcon className="size-3" />
+                    <MoreHorizontalIcon className="size-3" />
                   </Button>
                 </CardHeader>
                 <CardContent className="space-y-4 p-4">
@@ -375,9 +429,50 @@ function TaskPage() {
                       Labels
                     </h3>
                   </div>
-                  <Button variant="ghost" size="icon">
-                    <PlusIcon className="size-3" />
-                  </Button>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      updateLabelsForm.handleSubmit();
+                    }}
+                  >
+                    <PopoverRoot
+                      positioning={{ placement: "bottom-end", gutter: -2 }}
+                    >
+                      <PopoverTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreHorizontalIcon className="size-3" />
+                        </Button>
+                      </PopoverTrigger>
+
+                      <PopoverPositioner>
+                        <PopoverContent className="flex min-w-80 flex-col gap-2">
+                          <CreateTaskLabels form={updateLabelsForm} />
+
+                          <updateLabelsForm.Subscribe
+                            selector={(state) => [
+                              state.canSubmit,
+                              state.isSubmitting,
+                              state.isDirty,
+                            ]}
+                          >
+                            {([canSubmit, isSubmitting, isDirty]) => (
+                              <Button
+                                type="submit"
+                                disabled={
+                                  !canSubmit || isSubmitting || !isDirty
+                                }
+                                size="sm"
+                                className="mt-4"
+                              >
+                                Update Labels
+                              </Button>
+                            )}
+                          </updateLabelsForm.Subscribe>
+                        </PopoverContent>
+                      </PopoverPositioner>
+                    </PopoverRoot>
+                  </form>
                 </CardHeader>
                 <CardContent className="p-4">
                   <div className="flex flex-wrap gap-2">
