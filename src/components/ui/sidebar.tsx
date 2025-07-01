@@ -1,5 +1,5 @@
+import { ark } from "@ark-ui/react/factory";
 import { Portal } from "@ark-ui/react/portal";
-import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 import * as React from "react";
@@ -70,7 +70,7 @@ function SidebarProvider({
   style,
   children,
   defaultWidth = SIDEBAR_WIDTH, //* new prop for default width
-  ...props
+  ...rest
 }: React.ComponentProps<"div"> & {
   defaultOpen?: boolean;
   open?: boolean;
@@ -182,7 +182,7 @@ function SidebarProvider({
           "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
           className,
         )}
-        {...props}
+        {...rest}
       >
         {children}
       </div>
@@ -196,7 +196,7 @@ function Sidebar({
   collapsible = "offcanvas",
   className,
   children,
-  ...props
+  ...rest
 }: React.ComponentProps<"div"> & {
   side?: "left" | "right";
   variant?: "sidebar" | "floating" | "inset";
@@ -219,7 +219,7 @@ function Sidebar({
           "flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground",
           className,
         )}
-        {...props}
+        {...rest}
       >
         {children}
       </div>
@@ -294,7 +294,7 @@ function Sidebar({
           "group-data-[dragging=true]_*:!duration-0 group-data-[dragging=true]:duration-0!",
           className,
         )}
-        {...props}
+        {...rest}
       >
         <div
           data-sidebar="sidebar"
@@ -311,7 +311,7 @@ function Sidebar({
 function SidebarTrigger({
   className,
   onClick,
-  ...props
+  ...rest
 }: React.ComponentProps<typeof Button>) {
   const { toggleSidebar } = useSidebar();
 
@@ -326,7 +326,7 @@ function SidebarTrigger({
         onClick?.(event);
         toggleSidebar();
       }}
-      {...props}
+      {...rest}
     >
       <PanelLeftIcon />
       <span className="sr-only">Toggle Sidebar</span>
@@ -341,7 +341,7 @@ interface SidebarRailProps extends React.ComponentProps<"button"> {
 function SidebarRail({
   enableDrag = true,
   className,
-  ...props
+  ...rest
 }: SidebarRailProps) {
   const {
     toggleSidebar,
@@ -361,6 +361,9 @@ function SidebarRail({
     maxResizeWidth: MAX_SIDEBAR_WIDTH,
     setIsDraggingRail,
     widthCookieName: "sidebar:width",
+    enableAutoCollapse: true,
+    autoCollapseThreshold: 1.3,
+    expandThreshold: 0.2,
   });
 
   return (
@@ -382,12 +385,12 @@ function SidebarRail({
 
         className,
       )}
-      {...props}
+      {...rest}
     />
   );
 }
 
-function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
+function SidebarInset({ className, ...rest }: React.ComponentProps<"main">) {
   return (
     <main
       data-slot="sidebar-inset"
@@ -396,102 +399,99 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
         "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm",
         className,
       )}
-      {...props}
+      {...rest}
     />
   );
 }
 
 function SidebarInput({
   className,
-  ...props
+  ...rest
 }: React.ComponentProps<typeof Input>) {
   return (
     <Input
       data-slot="sidebar-input"
       data-sidebar="input"
       className={cn("h-8 w-full bg-background shadow-none", className)}
-      {...props}
+      {...rest}
     />
   );
 }
 
-function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
+function SidebarHeader({ className, ...rest }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sidebar-header"
       data-sidebar="header"
       className={cn("flex flex-col gap-2 p-2", className)}
-      {...props}
+      {...rest}
     />
   );
 }
 
-function SidebarFooter({ className, ...props }: React.ComponentProps<"div">) {
+function SidebarFooter({ className, ...rest }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sidebar-footer"
       data-sidebar="footer"
       className={cn("flex flex-col gap-2 p-2", className)}
-      {...props}
+      {...rest}
     />
   );
 }
 
-function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
+function SidebarContent({ className, ...rest }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sidebar-content"
       data-sidebar="content"
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+        "flex min-h-0 flex-1 flex-col gap-0 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
         className,
       )}
-      {...props}
+      {...rest}
     />
   );
 }
 
-function SidebarGroup({ className, ...props }: React.ComponentProps<"div">) {
+function SidebarGroup({ className, ...rest }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sidebar-group"
       data-sidebar="group"
-      className={cn("relative flex w-full min-w-0 flex-col p-2", className)}
-      {...props}
+      className={cn(
+        "relative flex w-full min-w-0 flex-col px-2 pt-2",
+        className,
+      )}
+      {...rest}
     />
   );
 }
 
 function SidebarGroupLabel({
   className,
-  asChild = false,
-  ...props
-}: React.ComponentProps<"div"> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot : "div";
-
+  ...rest
+}: React.ComponentProps<typeof ark.div>) {
   return (
-    <Comp
+    <ark.div
       data-slot="sidebar-group-label"
       data-sidebar="group-label"
       className={cn(
-        "flex h-8 shrink-0 items-center rounded-md px-2 font-medium text-sidebar-foreground/70 text-xs outline-hidden ring-sidebar-ring transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
-        "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
+        "flex h-8 shrink-0 items-center rounded-md font-medium text-sidebar-foreground/70 text-xs outline-hidden ring-sidebar-ring transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+        "group-data-[collapsible=icon]:hidden group-data-[collapsible=icon]:opacity-0",
         className,
       )}
-      {...props}
+      {...rest}
     />
   );
 }
 
 function SidebarGroupAction({
   className,
-  asChild = false,
-  ...props
-}: React.ComponentProps<"button"> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot : "button";
-
+  ...rest
+}: React.ComponentProps<typeof ark.button>) {
   return (
-    <Comp
+    <ark.button
       data-slot="sidebar-group-action"
       data-sidebar="group-action"
       className={cn(
@@ -501,37 +501,37 @@ function SidebarGroupAction({
         "group-data-[collapsible=icon]:hidden",
         className,
       )}
-      {...props}
+      {...rest}
     />
   );
 }
 
 function SidebarGroupContent({
   className,
-  ...props
+  ...rest
 }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sidebar-group-content"
       data-sidebar="group-content"
       className={cn("w-full text-sm", className)}
-      {...props}
+      {...rest}
     />
   );
 }
 
-function SidebarMenu({ className, ...props }: React.ComponentProps<"ul">) {
+function SidebarMenu({ className, ...rest }: React.ComponentProps<"ul">) {
   return (
     <ul
       data-slot="sidebar-menu"
       data-sidebar="menu"
       className={cn("flex w-full min-w-0 flex-col gap-1", className)}
-      {...props}
+      {...rest}
     />
   );
 }
 
-function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
+function SidebarMenuItem({ className, ...rest }: React.ComponentProps<"li">) {
   return (
     <li
       data-slot="sidebar-menu-item"
@@ -540,7 +540,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
         "group/menu-item relative cursor-pointer list-none",
         className,
       )}
-      {...props}
+      {...rest}
     />
   );
 }
@@ -568,29 +568,26 @@ const sidebarMenuButtonVariants = cva(
 );
 
 function SidebarMenuButton({
-  asChild = false,
   isActive = false,
   variant = "default",
   size = "default",
   tooltip,
   className,
-  ...props
-}: React.ComponentProps<"button"> & {
-  asChild?: boolean;
+  ...rest
+}: React.ComponentProps<typeof ark.button> & {
   isActive?: boolean;
   tooltip?: string | React.ComponentProps<typeof TooltipContent>;
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
-  const Comp = asChild ? Slot : "button";
   const { isMobile, state } = useSidebar();
 
   const button = (
-    <Comp
+    <ark.button
       data-slot="sidebar-menu-button"
       data-sidebar="menu-button"
       data-size={size}
       data-active={isActive}
       className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
-      {...props}
+      {...rest}
     />
   );
 
@@ -623,17 +620,13 @@ function SidebarMenuButton({
 
 function SidebarMenuAction({
   className,
-  asChild = false,
   showOnHover = false,
-  ...props
-}: React.ComponentProps<"button"> & {
-  asChild?: boolean;
+  ...rest
+}: React.ComponentProps<typeof ark.button> & {
   showOnHover?: boolean;
 }) {
-  const Comp = asChild ? Slot : "button";
-
   return (
-    <Comp
+    <ark.button
       data-slot="sidebar-menu-action"
       data-sidebar="menu-action"
       className={cn(
@@ -648,15 +641,12 @@ function SidebarMenuAction({
           "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0",
         className,
       )}
-      {...props}
+      {...rest}
     />
   );
 }
 
-function SidebarMenuBadge({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+function SidebarMenuBadge({ className, ...rest }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sidebar-menu-badge"
@@ -670,12 +660,31 @@ function SidebarMenuBadge({
         "group-data-[collapsible=icon]:hidden",
         className,
       )}
-      {...props}
+      {...rest}
     />
   );
 }
 
-function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
+// NB: Could extend on this with the hotkey hook for further advanced functionality
+function SidebarMenuShotcut({
+  className,
+  ...rest
+}: React.ComponentProps<"span">) {
+  return (
+    <span
+      data-slot="sidebar-menu-shortcut"
+      data-sidebar="menu-shortcut"
+      className={cn(
+        "ml-auto flex items-center gap-0.5 text-muted-foreground text-xs tracking-widest",
+        // "group-data-[collapsible=icon]:hidden",
+        className,
+      )}
+      {...rest}
+    />
+  );
+}
+
+function SidebarMenuSub({ className, ...rest }: React.ComponentProps<"ul">) {
   return (
     <ul
       data-slot="sidebar-menu-sub"
@@ -685,40 +694,36 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
         "group-data-[collapsible=icon]:hidden",
         className,
       )}
-      {...props}
+      {...rest}
     />
   );
 }
 
 function SidebarMenuSubItem({
   className,
-  ...props
+  ...rest
 }: React.ComponentProps<"li">) {
   return (
     <li
       data-slot="sidebar-menu-sub-item"
       data-sidebar="menu-sub-item"
       className={cn("group/menu-sub-item relative", className)}
-      {...props}
+      {...rest}
     />
   );
 }
 
 function SidebarMenuSubButton({
-  asChild = false,
   size = "md",
   isActive = false,
   className,
-  ...props
-}: React.ComponentProps<"a"> & {
-  asChild?: boolean;
+  ...rest
+}: React.ComponentProps<typeof ark.a> & {
   size?: "sm" | "md";
   isActive?: boolean;
 }) {
-  const Comp = asChild ? Slot : "a";
-
   return (
-    <Comp
+    <ark.a
       data-slot="sidebar-menu-sub-button"
       data-sidebar="menu-sub-button"
       data-size={size}
@@ -731,7 +736,7 @@ function SidebarMenuSubButton({
         "group-data-[collapsible=icon]:hidden",
         className,
       )}
-      {...props}
+      {...rest}
     />
   );
 }
@@ -756,14 +761,15 @@ export {
   SidebarMenuButton,
   SidebarMenuItem,
   /** @knipignore */
-  SidebarMenuSub,
+  type SidebarMenuSub,
   /** @knipignore */
-  SidebarMenuSubButton,
+  type SidebarMenuSubButton,
   /** @knipignore */
-  SidebarMenuSubItem,
+  type SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
   /** @knipignore */
   SidebarTrigger,
   useSidebar,
+  SidebarMenuShotcut,
 };

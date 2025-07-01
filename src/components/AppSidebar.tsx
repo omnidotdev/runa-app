@@ -37,6 +37,7 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuShotcut,
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
@@ -142,7 +143,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenu>
         </SidebarHeader>
 
-        <SidebarContent className="no-scrollbar flex flex-col gap-0">
+        <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel>Workspace</SidebarGroupLabel>
             <SidebarGroupAction onClick={() => setIsCreateWorkspaceOpen(true)}>
@@ -150,21 +151,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarGroupAction>
 
             {workspaceId && (
-              <SidebarMenu>
+              <SidebarMenu className="gap-2">
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Settings">
                     <Link
                       to="/workspaces/$workspaceId/settings"
                       params={{ workspaceId: workspaceId! }}
                       variant="ghost"
-                      size="sm"
-                      className="justify-start"
                       activeProps={{
-                        variant: "outline",
+                        // NB: changing to secondary variant because outline variant produces a border shift on the icon.
+                        variant: "secondary",
                       }}
+                      className="w-full justify-start"
                     >
-                      <SettingsIcon />
-                      <span className="truncate">Settings</span>
+                      <SettingsIcon className="size-4" />
+                      <span className="w-full truncate">Settings</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -178,21 +179,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarGroupAction onClick={() => setIsCreateProjectOpen(true)}>
                 <PlusIcon /> <span className="sr-only">Add Project</span>
               </SidebarGroupAction>
-              <SidebarMenu>
+
+              <SidebarMenu className="gap-2">
                 {workspace?.projects.nodes.map((project) => (
                   <SidebarMenuItem key={project?.rowId}>
                     <SidebarMenuButton asChild tooltip={project?.name}>
                       <Link
-                        key={project?.rowId}
                         to="/workspaces/$workspaceId/projects/$projectId"
                         params={{
                           workspaceId: workspaceId!,
                           projectId: project?.rowId!,
                         }}
                         variant="ghost"
-                        size="sm"
                         activeProps={{
-                          variant: "outline",
+                          // NB: changing to secondary variant because outline variant produces a border shift on the icon.
+                          variant: "secondary",
                         }}
                         className="justify-start"
                       >
@@ -254,7 +255,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarContent>
 
         <SidebarFooter className="border-t">
-          <SidebarMenu className="gap-2">
+          <SidebarMenu className="mt-1 gap-2">
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip="Expand Sidebar"
@@ -264,11 +265,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <PanelLeftIcon />
                 <span className="flex w-full justify-between">
                   Collapse Sidebar
-                  <span className="ml-auto flex items-center gap-0.5 text-muted-foreground text-xs tracking-widest">
+                  <SidebarMenuShotcut>
                     {/* TODO: handle ctrl v command */}
                     <Command size={12} />
                     <span>B</span>
-                  </span>
+                  </SidebarMenuShotcut>
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -282,11 +283,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 {theme === "dark" ? <MoonIcon /> : <SunIcon />}
                 <span className="flex w-full justify-between">
                   Toggle Theme
-                  <span className="ml-auto flex items-center gap-0.5 text-muted-foreground text-xs tracking-widest">
+                  <SidebarMenuShotcut>
                     {/* TODO: handle ctrl v command */}
                     <Command size={12} />
                     <span>K</span>
-                  </span>
+                  </SidebarMenuShotcut>
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
