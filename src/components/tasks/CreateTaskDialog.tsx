@@ -189,7 +189,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                 </PopoverTrigger>
 
                 <PopoverPositioner>
-                  <PopoverContent className="flex min-w-80 flex-col gap-2">
+                  <PopoverContent className="flex min-w-80 flex-col gap-2 p-0 pb-2">
                     <TaskLabelsForm form={form} />
                   </PopoverContent>
                 </PopoverPositioner>

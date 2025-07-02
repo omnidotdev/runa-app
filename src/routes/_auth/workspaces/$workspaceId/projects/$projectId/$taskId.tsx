@@ -267,7 +267,7 @@ function TaskPage() {
       assignees: [] as string[],
       dueDate: "",
     },
-    onSubmit: ({ value }) => {
+    onSubmit: ({ value, formApi }) => {
       const allLabels = value.labels.map((label) => ({
         name: label.name,
         color: label.color,
@@ -293,6 +293,8 @@ function TaskPage() {
           labels: allLabels,
         },
       });
+
+      formApi.reset();
     },
   });
 
@@ -516,6 +518,13 @@ function TaskPage() {
                     </div>
                   ))}
 
+                  {!task?.posts?.nodes?.length && (
+                    <p className="place-self-center pt-4 text-muted-foreground">
+                      No comments found. Add a comment to start the
+                      conversation.
+                    </p>
+                  )}
+
                   {/* Add comment */}
                   <div className="flex gap-4 border-t pt-8">
                     <Avatar
@@ -654,7 +663,7 @@ function TaskPage() {
                       </PopoverTrigger>
 
                       <PopoverPositioner>
-                        <PopoverContent className="flex min-w-80 flex-col gap-2">
+                        <PopoverContent className="flex min-w-80 flex-col gap-2 p-0">
                           <TaskLabelsForm form={updateLabelsForm} />
 
                           <updateLabelsForm.Subscribe
@@ -670,8 +679,7 @@ function TaskPage() {
                                 disabled={
                                   !canSubmit || isSubmitting || !isDirty
                                 }
-                                size="sm"
-                                className="mt-4"
+                                className="mt-1 rounded-t-none disabled:bg-muted disabled:text-muted-foreground"
                               >
                                 Update Labels
                               </Button>

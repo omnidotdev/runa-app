@@ -1,7 +1,6 @@
-import { CheckIcon, PlusIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
   CheckboxControl,
   CheckboxHiddenInput,
@@ -22,6 +21,7 @@ import {
 import { labelColors } from "@/lib/constants/labelColors";
 import { withForm } from "@/lib/hooks/useForm";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 const TaskLabelsForm = withForm({
   defaultValues: {
@@ -54,69 +54,95 @@ const TaskLabelsForm = withForm({
         {(field) => {
           return (
             <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 pb-2">
-                <Select
-                  // @ts-ignore TODO: type issue
-                  collection={colorCollection}
-                  value={[newLabel.color]}
-                  onValueChange={(details) => {
-                    setNewLabel((prev) => ({
-                      ...prev,
-                      color: details.value[0] || "blue",
-                    }));
-                  }}
-                >
-                  <SelectTrigger>
-                    <div
-                      className={cn(
-                        "size-4 rounded-full",
-                        labelColors.find(
-                          (l) => l.name.toLowerCase() === newLabel.color,
-                        )?.classes,
-                      )}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItemGroup>
-                      {colorCollection.items.map((item) => (
-                        <SelectItem key={item.value} item={item}>
-                          <SelectItemText>{item.label}</SelectItemText>
+              <div className="flex items-center gap-2">
+                <div className="relative flex w-full border-b py-1">
+                  <Select
+                    // @ts-ignore TODO: type issue
+                    collection={colorCollection}
+                    value={[newLabel.color]}
+                    onValueChange={(details) => {
+                      setNewLabel((prev) => ({
+                        ...prev,
+                        color: details.value[0] || "blue",
+                      }));
+                    }}
+                  >
+                    <SelectTrigger className="!bg-background px-0 pl-3">
+                      <div
+                        className={cn(
+                          "size-4 rounded-full",
+                          labelColors.find(
+                            (l) => l.name.toLowerCase() === newLabel.color,
+                          )?.classes,
+                        )}
+                      />
+                      <ChevronDownIcon className="size-3" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItemGroup>
+                        {colorCollection.items.map((item) => (
+                          <SelectItem key={item.value} item={item}>
+                            <SelectItemText>{item.label}</SelectItemText>
 
-                          <div
-                            className={cn(
-                              "size-4 rounded-full",
-                              item.color.classes,
-                            )}
-                          />
-                        </SelectItem>
-                      ))}
-                    </SelectItemGroup>
-                  </SelectContent>
-                </Select>
-                <Input
-                  placeholder="Add new label..."
-                  value={newLabel.name}
-                  onChange={(e) =>
-                    setNewLabel((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  disabled={!newLabel.name || !newLabel.color}
-                  onClick={() =>
-                    field.pushValue({
-                      name: newLabel.name,
-                      color: newLabel.color,
-                      checked: true,
-                    })
-                  }
-                >
-                  <PlusIcon className="size-4" />
-                </Button>
+                            <div
+                              className={cn(
+                                "size-4 rounded-full",
+                                item.color.classes,
+                              )}
+                            />
+                          </SelectItem>
+                        ))}
+                      </SelectItemGroup>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    className="border-0 focus-visible:ring-0"
+                    placeholder="Add new label..."
+                    value={newLabel.name}
+                    onChange={(e) =>
+                      setNewLabel((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
+                    }
+                    onKeyDown={(e) => {
+                      if (
+                        e.key === "Enter" &&
+                        newLabel.name &&
+                        newLabel.color
+                      ) {
+                        e.preventDefault();
+
+                        field.pushValue({
+                          name: newLabel.name,
+                          color: newLabel.color,
+                          checked: true,
+                        });
+
+                        setNewLabel({
+                          name: "",
+                          color: "blue",
+                        });
+                      }
+                    }}
+                  />
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    disabled={!newLabel.name || !newLabel.color}
+                    className="absolute right-1"
+                    onClick={() =>
+                      field.pushValue({
+                        name: newLabel.name,
+                        color: newLabel.color,
+                        checked: true,
+                      })
+                    }
+                  >
+                    <PlusIcon className="size-4" />
+                  </Button>
+                </div>
               </div>
 
               {field.state.value.map((label, i) => {
@@ -125,7 +151,7 @@ const TaskLabelsForm = withForm({
                     {(subField) => {
                       return (
                         <CheckboxRoot
-                          className="flex items-center justify-between"
+                          className="flex items-center justify-between px-2"
                           defaultChecked={subField.state.value.checked}
                           onCheckedChange={({ checked }) =>
                             subField.handleChange({
