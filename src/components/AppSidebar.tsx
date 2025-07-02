@@ -352,17 +352,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </div>
 
                 {/* Mobile projects menu */}
-                {!open && (
+                {!open && !!workspace?.projects?.nodes?.length && (
                   <MenuRoot
                     positioning={{
                       strategy: "fixed",
                       placement: "right-start",
                     }}
                   >
-                    <MenuTrigger
-                      className="transition-all"
-                      disabled={!workspace?.projects?.nodes?.length}
-                    >
+                    <MenuTrigger className="transition-all">
                       <SidebarMenuButton tooltip="Project List" asChild>
                         <FolderOpen className="size-4" />
                       </SidebarMenuButton>
