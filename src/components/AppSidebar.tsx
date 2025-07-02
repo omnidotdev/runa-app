@@ -369,7 +369,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   >
                     <SidebarMenuButton
                       ref={menuButtonRef}
-                      tooltip="Project list"
+                      tooltip={isProjectsMenuOpen ? undefined : "Project list"}
                       onClick={() => setIsProjectsMenuOpen(!isProjectsMenuOpen)}
                     >
                       <FolderOpen className="size-4" />

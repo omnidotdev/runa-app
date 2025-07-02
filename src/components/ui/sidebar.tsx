@@ -640,7 +640,12 @@ function SidebarMenuButton({
   return (
     <Tooltip
       tooltip={tooltip}
-      positioning={{ placement: "right" }}
+      positioning={{
+        placement: "right",
+        offset: {
+          mainAxis: 8,
+        },
+      }}
       closeDelay={0}
       openDelay={100}
       disabled={isMobile || state === "expanded"}
