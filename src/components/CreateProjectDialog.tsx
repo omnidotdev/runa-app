@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,7 @@ import {
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
+import useForm from "@/lib/hooks/useForm";
 import workspaceOptions from "@/lib/options/workspace.options";
 
 import type { ProjectStatus } from "@/generated/graphql";
@@ -54,12 +55,9 @@ const CreateProjectDialog = ({ status }: Props) => {
       type: DialogType.CreateProject,
     });
 
-  const [newProjectName, setNewProjectName] = useState("");
-  const [newProjectDescription, setNewProjectDescription] = useState("");
-
   const { mutateAsync: createColumn } = useCreateColumnMutation();
 
-  const { mutateAsync: createNewProject } = useCreateProjectMutation({
+  const { mutate: createNewProject } = useCreateProjectMutation({
     meta: {
       invalidates: [["Projects"], workspaceOptions(workspaceId!).queryKey],
     },
@@ -88,24 +86,29 @@ const CreateProjectDialog = ({ status }: Props) => {
     },
   });
 
-  const handleCreateProject = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!newProjectName.trim()) return;
-
-    await createNewProject({
-      input: {
-        project: {
-          workspaceId: workspaceId!,
-          name: newProjectName,
-          status,
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      description: "",
+      status: status ?? undefined,
+    },
+    onSubmit: async ({ value, formApi }) => {
+      createNewProject({
+        input: {
+          project: {
+            workspaceId: workspaceId!,
+            name: value.name,
+            description: value.description,
+            status: value.status,
+          },
         },
-      },
-    });
+      });
 
-    setNewProjectName("");
-    setIsCreateProjectOpen(false);
-    setStatus(null);
-  };
+      setIsCreateProjectOpen(false);
+      setStatus(null);
+      formApi.reset();
+    },
+  });
 
   return (
     <DialogRoot
@@ -130,37 +133,64 @@ const CreateProjectDialog = ({ status }: Props) => {
             workspace.
           </DialogDescription>
 
-          <form onSubmit={handleCreateProject} className="flex flex-col gap-2">
-            <Input
-              ref={nameRef}
-              type="text"
-              value={newProjectName}
-              onChange={(e) => setNewProjectName(e.target.value)}
-              placeholder="Project name"
-            />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+            className="flex flex-col gap-2"
+          >
+            <form.Field name="name">
+              {(field) => (
+                <Input
+                  ref={nameRef}
+                  type="text"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Project Name"
+                />
+              )}
+            </form.Field>
 
-            <textarea
-              value={newProjectDescription}
-              onChange={(e) => setNewProjectDescription(e.target.value)}
-              placeholder="Project description (optional)"
-              className="field-sizing-content flex min-h-16 w-full rounded-md border border-input px-3 py-2 text-base shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:ring-destructive/40"
-            />
+            <form.Field name="description">
+              {(field) => (
+                <textarea
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Project Description (optional)"
+                  className="field-sizing-content flex min-h-16 w-full rounded-md border border-input px-3 py-2 text-base shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:ring-destructive/40"
+                />
+              )}
+            </form.Field>
 
             <div className="mt-2 flex justify-end gap-2">
               <Button
                 onClick={() => {
-                  setNewProjectName("");
-                  setNewProjectDescription("");
                   setIsCreateProjectOpen(false);
+                  form.reset();
                 }}
                 variant="ghost"
               >
                 Cancel
               </Button>
 
-              <Button type="submit" disabled={!newProjectName.trim()}>
-                Create
-              </Button>
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isSubmitting,
+                  state.isDirty,
+                ]}
+              >
+                {([canSubmit, isSubmitting, isDirty]) => (
+                  <Button
+                    type="submit"
+                    disabled={!canSubmit || isSubmitting || !isDirty}
+                  >
+                    Create
+                  </Button>
+                )}
+              </form.Subscribe>
             </div>
           </form>
         </DialogContent>

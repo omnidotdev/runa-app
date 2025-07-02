@@ -328,7 +328,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               <span>
                                 {project?.viewMode === "list"
                                   ? "Board View"
-                                  : "list View"}
+                                  : "List View"}
                               </span>
                             </MenuItem>
 

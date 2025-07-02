@@ -138,7 +138,7 @@ function ProjectPage() {
               </div>
               <Tooltip
                 tooltip={
-                  project?.viewMode === "list" ? "Board View" : "list View"
+                  project?.viewMode === "list" ? "Board View" : "List View"
                 }
               >
                 <Button
