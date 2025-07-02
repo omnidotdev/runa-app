@@ -6,15 +6,21 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { createServerFn } from "@tanstack/react-start";
+import { getCookie } from "@tanstack/react-start/server";
 
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
-import { getThemeServerFn } from "@/lib/server/theme";
 import seo from "@/lib/util/seo";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import appCss from "@/styles/globals.css?url";
 
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
+import type { Theme } from "@/providers/ThemeProvider";
+
+const getThemeServerFn = createServerFn().handler(async () => {
+  return (getCookie("ui-theme") || "light") as Theme;
+});
 
 const RootDocument = ({ children }: Readonly<{ children: ReactNode }>) => {
   const theme = Route.useLoaderData();
