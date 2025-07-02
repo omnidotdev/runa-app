@@ -309,7 +309,7 @@ function ProjectsBoard({
                       ref={provided.innerRef}
                       {...provided.droppableProps}
                       className={cn(
-                        "flex flex-1 flex-col gap-3 rounded-xl bg-background/40 p-2",
+                        "flex flex-1 flex-col gap-3 rounded-xl bg-background/60 p-2 dark:bg-background/20",
                         snapshot.isDraggingOver &&
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}

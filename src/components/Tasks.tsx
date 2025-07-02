@@ -84,7 +84,13 @@ const Tasks = ({
       .indexOf(taskId);
 
   return (
-    <div className={cn("flex-1", className)} {...rest}>
+    <div
+      className={cn(
+        "flex-1 rounded-xl bg-background/60 p-2 dark:bg-background/20",
+        className,
+      )}
+      {...rest}
+    >
       {tasks
         ?.filter((task) => task?.rowId !== draggableId)
         .map((task, index) => {

@@ -108,7 +108,7 @@ const ListView = ({ shouldForceClose }: Props) => {
         style={{
           backgroundColor: project?.color
             ? theme === "dark"
-              ? `${project?.color}1A`
+              ? `${project?.color}12`
               : `${project?.color}0D`
             : undefined,
         }}

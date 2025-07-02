@@ -189,7 +189,7 @@ const Board = () => {
                 {project?.columns?.nodes?.map((column) => (
                   <div
                     key={column?.rowId}
-                    className="relative flex h-full w-80 flex-col gap-2 bg-inherit"
+                    className="relative flex h-full w-[340px] flex-col gap-2 bg-inherit"
                   >
                     <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2 shadow-sm">
                       <div className="flex items-center gap-2">
