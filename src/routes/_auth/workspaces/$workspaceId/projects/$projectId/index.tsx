@@ -190,7 +190,7 @@ function ProjectPage() {
                     </Button>
                   </TooltipTrigger>
                   <TooltipPositioner>
-                    <TooltipContent>Collapse List</TooltipContent>
+                    <TooltipContent>Collapse Lists</TooltipContent>
                   </TooltipPositioner>
                 </TooltipRoot>
               )}

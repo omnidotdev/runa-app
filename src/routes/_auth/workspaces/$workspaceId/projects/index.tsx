@@ -65,10 +65,9 @@ function ProjectsOverviewPage() {
   // TODO: handle viewMode for workspace
   const [viewMode, setViewMode] = useState<"board" | "list">("board");
 
-  const { isOpen: isCreateProjectOpen, setIsOpen: setIsCreateProjectOpen } =
-    useDialogStore({
-      type: DialogType.CreateProject,
-    });
+  const { setIsOpen: setIsCreateProjectOpen } = useDialogStore({
+    type: DialogType.CreateProject,
+  });
 
   const handleSearch = useDebounceCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -175,13 +174,13 @@ function ProjectsBoard({
   };
 }) {
   return (
-    <div className="no-scrollbar h-full select-none overflow-x-auto">
+    <div className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/20">
       <div className="h-full min-w-fit p-4">
         <div className="flex h-full gap-3">
           {Object.entries(projectsByStatus).map(([status, projects]) => (
             <div
               key={status}
-              className="relative flex h-full w-80 flex-col gap-2 bg-inherit"
+              className="relative flex h-full w-80 flex-col gap-2 rounded-xl bg-background/50 px-2 pt-2"
             >
               <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2 shadow-sm">
                 <div className="flex items-center gap-2">
@@ -254,6 +253,9 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
 }
 
 function ProjectCard({ project }: { project: ProjectFragment }) {
+  const { workspaceId } = Route.useParams();
+  const navigate = Route.useNavigate();
+
   const completedTasks = project.columns?.nodes?.reduce(
     (acc, col) => acc + (col?.completedTasks.totalCount || 0),
     0,
@@ -266,7 +268,18 @@ function ProjectCard({ project }: { project: ProjectFragment }) {
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
-    <div className="rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
+    <div
+      onClick={() =>
+        navigate({
+          to: "/workspaces/$workspaceId/projects/$projectId",
+          params: {
+            workspaceId,
+            projectId: project.rowId,
+          },
+        })
+      }
+      className="cursor-pointer rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
+    >
       <div className="mb-3 flex items-start justify-between">
         <h3 className="font-medium text-base-900 dark:text-base-100">
           {project.name}
