@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import {
-  ChevronsUpDownIcon,
+  ChevronsUpDown,
   Command,
+  FolderOpen,
   Grid2X2Icon,
   ListIcon,
   LogOutIcon,
@@ -64,7 +65,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     name: string;
   }>();
   const queryClient = getQueryClient();
-
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () =>
@@ -127,15 +127,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuItem>
               <MenuRoot>
                 <MenuTrigger asChild>
-                  <SidebarMenuButton className="bg-base-200 hover:bg-base-300 dark:bg-base-700 dark:hover:bg-base-800">
-                    <div className="group-data-[collapsible=icon]:hidden">
-                      <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-medium">
-                          {workspace?.name ?? "Select Workspace"}
-                        </span>
+                  <SidebarMenuButton
+                    size="lg"
+                    className="bg-base-200 hover:bg-base-300 dark:bg-base-700 dark:hover:bg-base-800"
+                  >
+                    {workspace ? (
+                      <div className="flex aspect-square size-6 items-center justify-center rounded-md bg-primary text-primary-foreground transition-all group-data-[collapsible=icon]:size-8 dark:bg-primary-400">
+                        {workspace?.name[0]}
                       </div>
-                    </div>
-                    <ChevronsUpDownIcon className="ml-auto" />
+                    ) : (
+                      <div className="flex aspect-square size-6 items-center justify-center rounded-md transition-all group-data-[collapsible=icon]:size-8 dark:bg-primary-400">
+                        <ChevronsUpDown className="size-4" />
+                      </div>
+                    )}
+                    <span className="truncate font-medium group-data-[collapsible=icon]:hidden">
+                      {workspace?.name ?? "Select Workspace"}
+                    </span>
+                    {workspace && (
+                      <ChevronsUpDown className="ml-auto group-data-[collapsible=icon]:hidden" />
+                    )}
                   </SidebarMenuButton>
                 </MenuTrigger>
 
@@ -228,117 +238,168 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
 
-                {workspace?.projects.nodes.map((project) => (
-                  <SidebarMenuItem key={project?.rowId}>
-                    <SidebarMenuButton asChild tooltip={project?.name}>
-                      <Link
-                        to="/workspaces/$workspaceId/projects/$projectId"
-                        params={{
-                          workspaceId: workspaceId!,
-                          projectId: project?.rowId!,
+                <div className="-mt-1 flex flex-col gap-1 group-data-[collapsible=icon]:hidden">
+                  {workspace?.projects.nodes.map((project) => (
+                    <SidebarMenuItem key={project?.rowId}>
+                      <SidebarMenuButton asChild tooltip={project?.name}>
+                        <Link
+                          to="/workspaces/$workspaceId/projects/$projectId"
+                          params={{
+                            workspaceId: workspaceId!,
+                            projectId: project?.rowId!,
+                          }}
+                          variant="ghost"
+                          activeProps={{
+                            variant: "outline",
+                          }}
+                          className="justify-start border border-transparent"
+                        >
+                          {project?.viewMode === "board" ? (
+                            <Grid2X2Icon
+                              className="size-4"
+                              style={{ color: project?.color ?? undefined }}
+                            />
+                          ) : (
+                            <ListIcon
+                              className="size-4"
+                              style={{ color: project?.color ?? undefined }}
+                            />
+                          )}
+                          <span className="truncate">{project?.name}</span>
+                        </Link>
+                      </SidebarMenuButton>
+
+                      <MenuRoot
+                        positioning={{
+                          strategy: "fixed",
+                          placement: isMobile ? "bottom-end" : "right-start",
                         }}
-                        variant="ghost"
-                        activeProps={{
-                          variant: "outline",
-                        }}
-                        className="justify-start border border-transparent"
                       >
-                        {project?.viewMode === "board" ? (
-                          <Grid2X2Icon
-                            className="size-4"
-                            style={{ color: project?.color ?? undefined }}
-                          />
-                        ) : (
-                          <ListIcon
-                            className="size-4"
-                            style={{ color: project?.color ?? undefined }}
-                          />
-                        )}
-                        <span className="truncate">{project?.name}</span>
-                      </Link>
-                    </SidebarMenuButton>
+                        <MenuTrigger asChild>
+                          <SidebarMenuAction showOnHover>
+                            <MoreHorizontalIcon />
+                            <span className="sr-only">More</span>
+                          </SidebarMenuAction>
+                        </MenuTrigger>
 
-                    <MenuRoot
-                      positioning={{
-                        strategy: "fixed",
-                        placement: isMobile ? "bottom-end" : "right-start",
-                      }}
-                    >
-                      <MenuTrigger asChild>
-                        <SidebarMenuAction showOnHover>
-                          <MoreHorizontalIcon />
-                          <span className="sr-only">More</span>
-                        </SidebarMenuAction>
-                      </MenuTrigger>
+                        <MenuPositioner>
+                          {/* TODO: Map these out */}
+                          <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
+                            <MenuItem
+                              value="settings"
+                              className="flex cursor-pointer items-center gap-2"
+                              onClick={() => {
+                                navigate({
+                                  to: "/workspaces/$workspaceId/projects/$projectId/settings",
+                                  params: {
+                                    workspaceId: workspaceId!,
+                                    projectId: project?.rowId!,
+                                  },
+                                });
+                              }}
+                            >
+                              <Settings2 />
+                              <span>Settings</span>
+                            </MenuItem>
 
-                      <MenuPositioner>
-                        {/* TODO: Map these out */}
-                        <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
+                            <MenuItem
+                              value="viewMode"
+                              className="flex cursor-pointer items-center gap-2"
+                              onClick={() =>
+                                updateViewMode({
+                                  rowId: project?.rowId!,
+                                  patch: {
+                                    viewMode:
+                                      project?.viewMode === "board"
+                                        ? "list"
+                                        : "board",
+                                  },
+                                })
+                              }
+                            >
+                              {project?.viewMode === "list" ? (
+                                <Grid2X2Icon />
+                              ) : (
+                                <ListIcon />
+                              )}
+                              <span>
+                                {project?.viewMode === "list"
+                                  ? "Board View"
+                                  : "list View"}
+                              </span>
+                            </MenuItem>
+
+                            <MenuItem
+                              value="delete"
+                              className="flex cursor-pointer items-center gap-2"
+                              variant="destructive"
+                              onClick={() => {
+                                setSelectedProject({
+                                  rowId: project?.rowId!,
+                                  name: project?.name!,
+                                });
+                                setIsDeleteProjectOpen(true);
+                              }}
+                            >
+                              <Trash2Icon />
+                              <span>Delete Project</span>
+                            </MenuItem>
+                          </MenuContent>
+                        </MenuPositioner>
+                      </MenuRoot>
+                    </SidebarMenuItem>
+                  ))}
+                </div>
+
+                {/* Mobile projects menu */}
+                {!open && (
+                  <MenuRoot
+                    positioning={{
+                      strategy: "fixed",
+                      placement: "right-start",
+                    }}
+                  >
+                    <MenuTrigger className="transition-all">
+                      <SidebarMenuButton tooltip="Project list">
+                        <FolderOpen className="size-4" />
+                      </SidebarMenuButton>
+                    </MenuTrigger>
+
+                    <MenuPositioner>
+                      <MenuContent className="flex w-full flex-col gap-0.5 rounded-lg">
+                        {workspace?.projects.nodes.map((project) => (
                           <MenuItem
-                            value="settings"
-                            className="flex cursor-pointer items-center gap-2"
-                            onClick={() => {
+                            key={project?.rowId}
+                            value={project?.name!}
+                            className="flex cursor-pointer items-center gap-1"
+                            onSelect={() =>
                               navigate({
-                                to: "/workspaces/$workspaceId/projects/$projectId/settings",
+                                to: "/workspaces/$workspaceId/projects/$projectId",
                                 params: {
                                   workspaceId: workspaceId!,
                                   projectId: project?.rowId!,
                                 },
-                              });
-                            }}
-                          >
-                            <Settings2 />
-                            <span>Settings</span>
-                          </MenuItem>
-
-                          <MenuItem
-                            value="viewMode"
-                            className="flex cursor-pointer items-center gap-2"
-                            onClick={() =>
-                              updateViewMode({
-                                rowId: project?.rowId!,
-                                patch: {
-                                  viewMode:
-                                    project?.viewMode === "board"
-                                      ? "list"
-                                      : "board",
-                                },
                               })
                             }
                           >
-                            {project?.viewMode === "list" ? (
-                              <Grid2X2Icon />
+                            {project?.viewMode === "board" ? (
+                              <Grid2X2Icon
+                                className="size-4"
+                                style={{ color: project?.color ?? undefined }}
+                              />
                             ) : (
-                              <ListIcon />
+                              <ListIcon
+                                className="size-3"
+                                style={{ color: project?.color ?? undefined }}
+                              />
                             )}
-                            <span>
-                              {" "}
-                              {project?.viewMode === "list"
-                                ? "Board View"
-                                : "list View"}
-                            </span>
+                            <span className="truncate">{project?.name}</span>
                           </MenuItem>
-
-                          <MenuItem
-                            value="delete"
-                            className="flex cursor-pointer items-center gap-2"
-                            variant="destructive"
-                            onClick={() => {
-                              setSelectedProject({
-                                rowId: project?.rowId!,
-                                name: project?.name!,
-                              });
-                              setIsDeleteProjectOpen(true);
-                            }}
-                          >
-                            <Trash2Icon />
-                            <span>Delete Project</span>
-                          </MenuItem>
-                        </MenuContent>
-                      </MenuPositioner>
-                    </MenuRoot>
-                  </SidebarMenuItem>
-                ))}
+                        ))}
+                      </MenuContent>
+                    </MenuPositioner>
+                  </MenuRoot>
+                )}
               </SidebarMenu>
             </SidebarGroup>
           )}

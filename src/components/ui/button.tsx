@@ -1,6 +1,13 @@
 import { ark } from "@ark-ui/react";
+import { Portal } from "@ark-ui/react/portal";
 import { tv } from "tailwind-variants";
 
+import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 import type { ComponentProps } from "react";
@@ -36,17 +43,49 @@ const buttonVariants = tv({
   },
 });
 
+interface Props
+  extends ComponentProps<typeof ark.button>,
+    VariantProps<typeof buttonVariants> {
+  tooltip?: string | ComponentProps<typeof TooltipContent>;
+  placement?: "top" | "right" | "bottom" | "left";
+}
+
 const Button = ({
   className,
   variant,
   size,
+  tooltip,
+  placement = "top",
   ...rest
-}: ComponentProps<typeof ark.button> & VariantProps<typeof buttonVariants>) => (
-  <ark.button
-    type="button"
-    className={cn(buttonVariants({ variant, size }), className)}
-    {...rest}
-  />
-);
+}: Props) => {
+  const button = (
+    <ark.button
+      type="button"
+      className={cn(buttonVariants({ variant, size }), className)}
+      {...rest}
+    />
+  );
+
+  if (!tooltip) {
+    return button;
+  }
+
+  if (typeof tooltip === "string") {
+    tooltip = {
+      children: tooltip,
+    };
+  }
+
+  return (
+    <TooltipRoot positioning={{ placement }} closeDelay={0} openDelay={100}>
+      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <Portal>
+        <TooltipPositioner>
+          <TooltipContent {...tooltip} />
+        </TooltipPositioner>
+      </Portal>
+    </TooltipRoot>
+  );
+};
 
 export { Button, buttonVariants };

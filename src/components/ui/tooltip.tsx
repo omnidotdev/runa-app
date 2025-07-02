@@ -69,7 +69,12 @@ const Tooltip = ({ tooltip, children, ...rest }: Props) => {
 
   return (
     <TooltipRoot
-      positioning={{ placement: "top" }}
+      positioning={{
+        placement: "top",
+        offset: {
+          mainAxis: 4,
+        },
+      }}
       closeDelay={0}
       openDelay={100}
       {...rest}
