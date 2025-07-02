@@ -48,7 +48,6 @@ import {
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
-import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/lib/util/getQueryClient";
@@ -87,10 +86,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
-      invalidates: [
-        projectsOptions(workspaceId!).queryKey,
-        workspaceOptions(workspaceId!).queryKey,
-      ],
+      invalidates: [["Projects"], workspaceOptions(workspaceId!).queryKey],
     },
   });
 

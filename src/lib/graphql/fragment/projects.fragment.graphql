@@ -4,6 +4,7 @@ fragment Project on Project {
   description
   status
   color
+  prefix
   columns {
     nodes {
       allTasks: tasks {

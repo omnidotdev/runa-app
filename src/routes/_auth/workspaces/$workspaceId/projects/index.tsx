@@ -3,16 +3,21 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import {
+  AlertCircleIcon,
+  ArchiveIcon,
   ChevronDownIcon,
   Grid2X2Icon,
   ListIcon,
   Plus,
+  RocketIcon,
   SearchIcon,
 } from "lucide-react";
 import { useCallback, useState } from "react";
+import { match } from "ts-pattern";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
 
+import CreateProjectDialog from "@/components/CreateProjectDialog";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +30,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { ProjectStatus, useUpdateProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import seo from "@/lib/util/seo";
@@ -232,6 +238,19 @@ function ProjectsOverviewPage() {
   );
 }
 
+const getStatusIcon = (status: ProjectStatus) =>
+  match(status)
+    .with(ProjectStatus.Planned, () => (
+      <RocketIcon className="size-4 text-purple-500" />
+    ))
+    .with(ProjectStatus.InProgress, () => (
+      <AlertCircleIcon className="size-4 text-primary-500" />
+    ))
+    .with(ProjectStatus.Completed, () => (
+      <ArchiveIcon className="size-4 text-green-500" />
+    ))
+    .exhaustive();
+
 function ProjectsBoard({
   projectsByStatus,
 }: {
@@ -242,6 +261,11 @@ function ProjectsBoard({
   };
 }) {
   const { draggableId } = useDragStore();
+
+  const { setStatus } = useProjectStore();
+  const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
+    type: DialogType.CreateProject,
+  });
 
   return (
     <div className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/20">
@@ -266,7 +290,15 @@ function ProjectsBoard({
                     {projects.length}
                   </span>
                 </div>
-                <Button variant="ghost" size="xs" className="size-5">
+                <Button
+                  variant="ghost"
+                  size="xs"
+                  className="size-5"
+                  onClick={() => {
+                    setStatus(status as ProjectStatus);
+                    setIsCreateProjectDialogOpen(true);
+                  }}
+                >
                   <Plus className="size-4" />
                 </Button>
               </div>
@@ -296,7 +328,10 @@ function ProjectsBoard({
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                               >
-                                <ProjectCard project={project} />
+                                <ProjectCard
+                                  project={project}
+                                  status={status as ProjectStatus}
+                                />
                               </div>
                             )}
                           </Draggable>
@@ -306,6 +341,8 @@ function ProjectsBoard({
                   )}
                 </Droppable>
               </div>
+
+              <CreateProjectDialog status={status as ProjectStatus} />
             </div>
           ))}
         </div>
@@ -384,7 +421,10 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
                                 : "hover:bg-base-50/50 dark:hover:bg-background/90",
                             )}
                           >
-                            <ProjectListItem project={project} />
+                            <ProjectListItem
+                              project={project}
+                              status={status as ProjectStatus}
+                            />
                           </div>
                         )}
                       </Draggable>
@@ -400,7 +440,13 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
   );
 }
 
-function ProjectCard({ project }: { project: ProjectFragment }) {
+function ProjectCard({
+  project,
+  status,
+}: {
+  project: ProjectFragment;
+  status: ProjectStatus;
+}) {
   const { workspaceId } = Route.useParams();
   const navigate = Route.useNavigate();
 
@@ -428,13 +474,16 @@ function ProjectCard({ project }: { project: ProjectFragment }) {
       }
       className="cursor-pointer rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
     >
-      <div className="mb-3 flex items-start justify-between">
-        <h3 className="font-medium text-base-900 dark:text-base-100">
-          {project.name}
-        </h3>
+      <div className="mb-3 flex items-center gap-2">
+        {getStatusIcon(status)}
+        <p className="text-base-600 text-sm dark:text-base-400">
+          #{project.prefix ?? "PROJ"}
+        </p>
       </div>
 
-      <p className="mb-3 text-base-600 text-sm dark:text-base-400">
+      <p className="mb-1 font-medium text-sm">{project.name}</p>
+
+      <p className="mb-2 text-muted-foreground text-sm">
         {project.description}
       </p>
 
@@ -458,7 +507,13 @@ function ProjectCard({ project }: { project: ProjectFragment }) {
   );
 }
 
-function ProjectListItem({ project }: { project: ProjectFragment }) {
+function ProjectListItem({
+  project,
+  status,
+}: {
+  project: ProjectFragment;
+  status: ProjectStatus;
+}) {
   const navigate = Route.useNavigate();
   const { workspaceId } = Route.useParams();
 
@@ -488,13 +543,16 @@ function ProjectListItem({ project }: { project: ProjectFragment }) {
     >
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <div className="mb-2 flex items-start justify-between">
-            <h3 className="font-medium text-base-900 dark:text-base-100">
-              {project.name}
-            </h3>
+          <div className="mb-3 flex items-center gap-2">
+            {getStatusIcon(status)}
+            <p className="text-base-600 text-sm dark:text-base-400">
+              #{project.prefix ?? "PROJ"}
+            </p>
           </div>
 
-          <p className="mb-3 text-base-600 text-sm dark:text-base-400">
+          <p className="mb-1 font-medium text-sm">{project.name}</p>
+
+          <p className="mb-2 text-muted-foreground text-sm">
             {project.description}
           </p>
 

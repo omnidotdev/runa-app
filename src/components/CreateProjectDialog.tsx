@@ -18,8 +18,10 @@ import {
   useCreateProjectMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import projectsOptions from "@/lib/options/projects.options";
+import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import workspaceOptions from "@/lib/options/workspace.options";
+
+import type { ProjectStatus } from "@/generated/graphql";
 
 const DEFAULT_COLUMNS = [
   "Backlog",
@@ -29,10 +31,17 @@ const DEFAULT_COLUMNS = [
   "Done",
 ];
 
-const CreateProjectDialog = () => {
+interface Props {
+  status?: ProjectStatus;
+}
+
+const CreateProjectDialog = ({ status }: Props) => {
   const { workspaceId } = useParams({ strict: false });
+
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
+
+  const { setStatus } = useProjectStore();
 
   const { data: currentWorkspace } = useQuery({
     ...workspaceOptions(workspaceId!),
@@ -52,10 +61,7 @@ const CreateProjectDialog = () => {
 
   const { mutateAsync: createNewProject } = useCreateProjectMutation({
     meta: {
-      invalidates: [
-        projectsOptions(workspaceId!).queryKey,
-        workspaceOptions(workspaceId!).queryKey,
-      ],
+      invalidates: [["Projects"], workspaceOptions(workspaceId!).queryKey],
     },
     onSuccess: async ({ createProject }) => {
       await Promise.all(
@@ -90,18 +96,26 @@ const CreateProjectDialog = () => {
         project: {
           workspaceId: workspaceId!,
           name: newProjectName,
+          status,
         },
       },
     });
 
     setNewProjectName("");
     setIsCreateProjectOpen(false);
+    setStatus(null);
   };
 
   return (
     <DialogRoot
       open={isCreateProjectOpen}
-      onOpenChange={({ open }) => setIsCreateProjectOpen(open)}
+      onOpenChange={({ open }) => {
+        setIsCreateProjectOpen(open);
+
+        if (!open) {
+          setStatus(null);
+        }
+      }}
       initialFocusEl={() => nameRef.current}
     >
       <DialogBackdrop />

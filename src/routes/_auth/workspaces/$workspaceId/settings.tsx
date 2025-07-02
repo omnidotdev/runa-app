@@ -17,7 +17,6 @@ import {
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/lib/util/getQueryClient";
@@ -80,10 +79,7 @@ function SettingsPage() {
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
-      invalidates: [
-        projectsOptions(workspaceId).queryKey,
-        workspaceOptions(workspaceId).queryKey,
-      ],
+      invalidates: [["Projects"], workspaceOptions(workspaceId).queryKey],
     },
   });
 

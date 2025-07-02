@@ -4,6 +4,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import CreateProjectDialog from "@/components/CreateProjectDialog";
 import CreateWorkspaceDialog from "@/components/CreateWorkspaceDialog";
 import { SidebarInset } from "@/components/ui/sidebar";
+import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import SidebarProvider from "@/providers/SidebarProvider";
@@ -24,6 +25,8 @@ export const Route = createFileRoute({
 });
 
 function AuthenticatedLayout() {
+  const { status } = useProjectStore();
+
   return (
     <SidebarProvider>
       <div className="flex h-dvh w-full">
@@ -34,7 +37,7 @@ function AuthenticatedLayout() {
         </SidebarInset>
       </div>
 
-      <CreateProjectDialog />
+      <CreateProjectDialog status={status ?? undefined} />
       <CreateWorkspaceDialog />
     </SidebarProvider>
   );
