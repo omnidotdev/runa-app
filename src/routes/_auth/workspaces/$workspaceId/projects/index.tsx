@@ -1,3 +1,4 @@
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { stripSearchParams } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
@@ -8,7 +9,7 @@ import {
   Plus,
   SearchIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
 
@@ -25,10 +26,12 @@ import {
   TooltipRoot,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ProjectStatus } from "@/generated/graphql";
+import { ProjectStatus, useUpdateProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectsOptions from "@/lib/options/projects.options";
+import { cn } from "@/lib/utils";
 
+import type { DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
 import type { ProjectFragment } from "@/generated/graphql";
 
@@ -62,6 +65,12 @@ function ProjectsOverviewPage() {
     select: (data) => data?.projects?.nodes,
   });
 
+  const { mutate: updateProject } = useUpdateProjectMutation({
+    meta: {
+      invalidates: [projectsOptions(workspaceId, search).queryKey],
+    },
+  });
+
   // TODO: handle viewMode for workspace
   const [viewMode, setViewMode] = useState<"board" | "list">("board");
 
@@ -82,16 +91,39 @@ function ProjectsOverviewPage() {
   );
 
   const projectsByStatus = {
-    Planned: projects?.filter(
+    [ProjectStatus.Planned]: projects?.filter(
       (p) => p?.status === ProjectStatus.Planned,
     ) as ProjectFragment[],
-    "In Progress": projects?.filter(
+    [ProjectStatus.InProgress]: projects?.filter(
       (p) => p?.status === ProjectStatus.InProgress,
     ) as ProjectFragment[],
-    Completed: projects?.filter(
+    [ProjectStatus.Completed]: projects?.filter(
       (p) => p?.status === ProjectStatus.Completed,
     ) as ProjectFragment[],
   };
+
+  const onDragEnd = useCallback(
+    (result: DropResult) => {
+      const { destination, source, draggableId } = result;
+
+      // Exit early if dropped outside a droppable area or in the same position
+      if (!destination) return;
+
+      if (
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
+      )
+        return;
+
+      updateProject({
+        rowId: draggableId,
+        patch: {
+          status: destination.droppableId as ProjectStatus,
+        },
+      });
+    },
+    [updateProject],
+  );
 
   return (
     <div className="flex size-full">
@@ -154,11 +186,13 @@ function ProjectsOverviewPage() {
           </div>
         </div>
 
-        {viewMode === "board" ? (
-          <ProjectsBoard projectsByStatus={projectsByStatus} />
-        ) : (
-          <ProjectsList projects={projects as ProjectFragment[]} />
-        )}
+        <DragDropContext onDragEnd={onDragEnd}>
+          {viewMode === "board" ? (
+            <ProjectsBoard projectsByStatus={projectsByStatus} />
+          ) : (
+            <ProjectsList projects={projects as ProjectFragment[]} />
+          )}
+        </DragDropContext>
       </div>
     </div>
   );
@@ -168,9 +202,9 @@ function ProjectsBoard({
   projectsByStatus,
 }: {
   projectsByStatus: {
-    Planned: ProjectFragment[];
-    "In Progress": ProjectFragment[];
-    Completed: ProjectFragment[];
+    [ProjectStatus.Planned]: ProjectFragment[];
+    [ProjectStatus.InProgress]: ProjectFragment[];
+    [ProjectStatus.Completed]: ProjectFragment[];
   };
 }) {
   return (
@@ -180,12 +214,17 @@ function ProjectsBoard({
           {Object.entries(projectsByStatus).map(([status, projects]) => (
             <div
               key={status}
-              className="relative flex h-full w-80 flex-col gap-2 rounded-xl bg-background/50 px-2 pt-2"
+              className="relative flex h-full w-80 flex-col gap-2 bg-inherit"
             >
               <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2 shadow-sm">
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
-                    {status}
+                    {status
+                      .split("_")
+                      .map(
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1),
+                      )
+                      .join(" ")}
                   </h3>
                   <span className="px-2 py-0.5 text-foreground text-xs">
                     {projects.length}
@@ -196,11 +235,38 @@ function ProjectsBoard({
                 </Button>
               </div>
               <div className="no-scrollbar flex h-full overflow-y-auto">
-                <div className="flex flex-1 flex-col gap-3">
-                  {projects.map((project) => (
-                    <ProjectCard key={project.rowId} project={project} />
-                  ))}
-                </div>
+                <Droppable droppableId={status}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className={cn(
+                        "flex flex-1 flex-col gap-3 rounded-xl bg-background/40 p-2",
+                        snapshot.isDraggingOver &&
+                          "bg-primary-100/40 dark:bg-primary-950/40",
+                      )}
+                    >
+                      {projects.map((project, index) => (
+                        <Draggable
+                          key={project.rowId}
+                          draggableId={project.rowId!}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <ProjectCard project={project} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
               </div>
             </div>
           ))}
@@ -212,15 +278,19 @@ function ProjectsBoard({
 
 function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
   const projectsByStatus = {
-    Planned: projects.filter((p) => p.status === ProjectStatus.Planned),
-    "In Progress": projects.filter(
+    [ProjectStatus.Planned]: projects.filter(
+      (p) => p.status === ProjectStatus.Planned,
+    ),
+    [ProjectStatus.InProgress]: projects.filter(
       (p) => p.status === ProjectStatus.InProgress,
     ),
-    Completed: projects.filter((p) => p.status === ProjectStatus.Completed),
+    [ProjectStatus.Completed]: projects.filter(
+      (p) => p.status === ProjectStatus.Completed,
+    ),
   };
 
   return (
-    <div className="custom-scrollbar h-full overflow-y-auto p-4">
+    <div className="custom-scrollbar h-full overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/20">
       {Object.entries(projectsByStatus).map(([status, statusProjects]) => (
         <CollapsibleRoot
           key={status}
@@ -230,7 +300,10 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
           <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 rounded-t-lg px-4 py-3 text-left">
             <div className="flex items-center gap-2">
               <span className="font-medium text-base-900 text-sm dark:text-base-100">
-                {status}
+                {status
+                  .split("_")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ")}
               </span>
               <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
                 {statusProjects.length}
@@ -240,11 +313,38 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
           </CollapsibleTrigger>
 
           <CollapsibleContent>
-            <div className="border-t">
-              {statusProjects.map((project) => (
-                <ProjectListItem key={project.rowId} project={project} />
-              ))}
-            </div>
+            <Droppable droppableId={status}>
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className={cn(
+                    "flex flex-1 flex-col gap-3 rounded-xl bg-background/40 p-2",
+                    snapshot.isDraggingOver &&
+                      "bg-primary-100/40 dark:bg-primary-950/40",
+                  )}
+                >
+                  {statusProjects.map((project, index) => (
+                    <Draggable
+                      key={project.rowId}
+                      draggableId={project.rowId}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <ProjectListItem project={project} />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
           </CollapsibleContent>
         </CollapsibleRoot>
       ))}
