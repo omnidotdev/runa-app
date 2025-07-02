@@ -16,7 +16,7 @@ import {
   SunIcon,
   Trash2Icon,
 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import Link from "@/components/core/Link";
@@ -66,6 +66,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }>();
   const queryClient = getQueryClient();
   const { theme, setTheme } = useTheme();
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  const [isProjectsMenuOpen, setIsProjectsMenuOpen] = useState(false);
 
   const toggleTheme = () =>
     theme === "dark" ? setTheme("light") : setTheme("dark");
@@ -353,17 +356,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
                 {/* Mobile projects menu */}
                 {!open && !!workspace?.projects?.nodes?.length && (
+                  // TODO: Introduce MenuTrigger while making sure the tooltip and menu is positioned correctly, and also make sure the tooltip shows when tabbing.
                   <MenuRoot
                     positioning={{
                       strategy: "fixed",
                       placement: "right-start",
+                      getAnchorRect: () =>
+                        menuButtonRef.current?.getBoundingClientRect() ?? null,
                     }}
+                    open={isProjectsMenuOpen}
+                    onOpenChange={({ open }) => setIsProjectsMenuOpen(!open)}
                   >
-                    <MenuTrigger className="transition-all">
-                      <SidebarMenuButton tooltip="Project List" asChild>
-                        <FolderOpen className="size-4" />
-                      </SidebarMenuButton>
-                    </MenuTrigger>
+                    <SidebarMenuButton
+                      ref={menuButtonRef}
+                      tooltip="Project list"
+                      onClick={() => setIsProjectsMenuOpen(!isProjectsMenuOpen)}
+                    >
+                      <FolderOpen className="size-4" />
+                    </SidebarMenuButton>
 
                     <MenuPositioner>
                       <MenuContent className="flex w-full flex-col gap-0.5 rounded-lg">

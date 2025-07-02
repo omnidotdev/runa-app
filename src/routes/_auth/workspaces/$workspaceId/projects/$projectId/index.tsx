@@ -136,7 +136,6 @@ function ProjectPage() {
                   className="pl-10"
                 />
               </div>
-
               <Tooltip
                 tooltip={
                   project?.viewMode === "list" ? "Board View" : "list View"
@@ -162,7 +161,6 @@ function ProjectPage() {
                   )}
                 </Button>
               </Tooltip>
-
               {project?.viewMode === "list" && (
                 <Tooltip tooltip="Collapse List">
                   <Button
@@ -174,7 +172,6 @@ function ProjectPage() {
                   </Button>
                 </Tooltip>
               )}
-
               <Tooltip tooltip="Project Settings">
                 <Link
                   to="/workspaces/$workspaceId/projects/$projectId/settings"
