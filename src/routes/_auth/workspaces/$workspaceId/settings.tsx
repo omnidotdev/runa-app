@@ -10,12 +10,7 @@ import Link from "@/components/core/Link";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  TooltipContent,
-  TooltipPositioner,
-  TooltipRoot,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 import {
   useDeleteProjectMutation,
   useDeleteWorkspaceMutation,
@@ -152,21 +147,16 @@ function SettingsPage() {
               Project Details
             </h2>
 
-            <TooltipRoot>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Edit workspace details"
-                  onClick={() => setEditWorkspace((prev) => !prev)}
-                >
-                  <Edit />
-                </Button>
-              </TooltipTrigger>
-              <TooltipPositioner>
-                <TooltipContent>Edit workspace details</TooltipContent>
-              </TooltipPositioner>
-            </TooltipRoot>
+            <Tooltip tooltip="Edit workspace details">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Edit workspace details"
+                onClick={() => setEditWorkspace((prev) => !prev)}
+              >
+                <Edit />
+              </Button>
+            </Tooltip>
           </div>
 
           <form
@@ -233,21 +223,16 @@ function SettingsPage() {
           <div className="flex items-center justify-between gap-4">
             <h3 className="font-medium text-sm">Team Members</h3>
 
-            <TooltipRoot>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Add team member"
-                  onClick={() => setIsCreateMemberOpen(true)}
-                >
-                  <Plus />
-                </Button>
-              </TooltipTrigger>
-              <TooltipPositioner>
-                <TooltipContent>Add team member</TooltipContent>
-              </TooltipPositioner>
-            </TooltipRoot>
+            <Tooltip tooltip="Add team member">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Add team member"
+                onClick={() => setIsCreateMemberOpen(true)}
+              >
+                <Plus />
+              </Button>
+            </Tooltip>
           </div>
 
           {members.length > 0 && (
@@ -267,36 +252,20 @@ function SettingsPage() {
                     </span>
                   </div>
 
-                  {/* <Button
-                    variant="ghost"
-                    onClick={() => {
-                      setIsDeleteTeamMemberOpen(true);
-                      setSelectedMember(member);
-                    }}
-                    className="p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button> */}
-
-                  <TooltipRoot>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        aria-label="remove member"
-                        onClick={() => {
-                          setIsDeleteTeamMemberOpen(true);
-                          setSelectedMember(member);
-                        }}
-                        className="p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
-                      >
-                        <Trash2 />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipPositioner>
-                      <TooltipContent>Remove team member</TooltipContent>
-                    </TooltipPositioner>
-                  </TooltipRoot>
+                  <Tooltip tooltip="Remove team member">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Remove team member"
+                      onClick={() => {
+                        setIsDeleteTeamMemberOpen(true);
+                        setSelectedMember(member);
+                      }}
+                      className="p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
+                    >
+                      <Trash2 />
+                    </Button>
+                  </Tooltip>
                 </div>
               ))}
             </div>
@@ -307,13 +276,16 @@ function SettingsPage() {
           <div className="flex items-center justify-between gap-4">
             <h3 className="font-medium text-sm">Projects</h3>
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsCreateProjectOpen(true)}
-            >
-              <Plus size={12} />
-            </Button>
+            <Tooltip tooltip="Add project">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Add project"
+                onClick={() => setIsCreateProjectOpen(true)}
+              >
+                <Plus size={12} />
+              </Button>
+            </Tooltip>
           </div>
 
           {!!workspace?.projects.nodes.length && (
@@ -333,19 +305,23 @@ function SettingsPage() {
                     </span>
                   </div>
 
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      setIsDeleteProjectOpen(true);
-                      setSelectedProject({
-                        rowId: project?.rowId!,
-                        name: project?.name!,
-                      });
-                    }}
-                    className="p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <Tooltip tooltip="Delete project">
+                    <Button
+                      variant="ghost"
+                      aria-label="Delete project"
+                      size="icon"
+                      onClick={() => {
+                        setIsDeleteProjectOpen(true);
+                        setSelectedProject({
+                          rowId: project?.rowId!,
+                          name: project?.name!,
+                        });
+                      }}
+                      className="p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </Tooltip>
                 </div>
               ))}
             </div>

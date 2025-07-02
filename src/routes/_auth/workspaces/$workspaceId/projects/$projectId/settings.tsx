@@ -8,12 +8,7 @@ import Link from "@/components/core/Link";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  TooltipContent,
-  TooltipPositioner,
-  TooltipRoot,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
@@ -98,21 +93,16 @@ function RouteComponent() {
               Project Details
             </h2>
 
-            <TooltipRoot>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Edit project details"
-                  onClick={() => setEditProject((prev) => !prev)}
-                >
-                  <Edit />
-                </Button>
-              </TooltipTrigger>
-              <TooltipPositioner>
-                <TooltipContent>Edit project details</TooltipContent>
-              </TooltipPositioner>
-            </TooltipRoot>
+            <Tooltip tooltip="Edit project details">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Edit project details"
+                onClick={() => setEditProject((prev) => !prev)}
+              >
+                <Edit />
+              </Button>
+            </Tooltip>
           </div>
 
           <form

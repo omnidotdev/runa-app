@@ -1,7 +1,8 @@
 import { ark } from "@ark-ui/react/factory";
 import { Portal } from "@ark-ui/react/portal";
+import { TooltipContext } from "@ark-ui/react/tooltip";
 import { cva } from "class-variance-authority";
-import { PanelLeftIcon } from "lucide-react";
+import { Command, PanelLeftIcon } from "lucide-react";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
+  Tooltip,
   TooltipContent,
   TooltipPositioner,
   TooltipRoot,
@@ -343,14 +345,8 @@ function SidebarRail({
   className,
   ...rest
 }: SidebarRailProps) {
-  const {
-    toggleSidebar,
-    setWidth,
-    state,
-    width,
-    setIsDraggingRail,
-    isDraggingRail,
-  } = useSidebar();
+  const { toggleSidebar, setWidth, state, width, setIsDraggingRail } =
+    useSidebar();
 
   const { dragRef, handleMouseDown } = useSidebarResize({
     onResize: setWidth,
@@ -366,27 +362,67 @@ function SidebarRail({
     expandThreshold: 0.2,
   });
 
-  return (
-    <button
-      ref={dragRef}
-      data-sidebar="rail"
-      data-slot="sidebar-rail"
-      aria-label="Toggle Sidebar"
-      tabIndex={-1}
-      onMouseDown={handleMouseDown}
-      className={cn(
-        "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] group-data-[side=right]:left-0 sm:flex",
-        "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
-        "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
-        "group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full",
-        "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2",
-        "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2",
-        isDraggingRail ? "cursor-ew-resize" : "",
+  const anchorRect = React.useRef<DOMRect | null>(null);
+  const getAnchorRect = React.useCallback(() => anchorRect.current, []);
 
-        className,
-      )}
-      {...rest}
-    />
+  const isCollapsed = state === "collapsed";
+
+  return (
+    <TooltipRoot
+      positioning={{
+        placement: "right",
+        getAnchorRect,
+      }}
+      closeDelay={0}
+      openDelay={300}
+    >
+      <TooltipContext>
+        {(tootlip) => (
+          <TooltipTrigger
+            asChild
+            onPointerMove={(e) => {
+              anchorRect.current = new DOMRect(e.clientX, e.clientY, 1, 1);
+              tootlip.reposition();
+            }}
+          >
+            <button
+              ref={dragRef}
+              data-sidebar="rail"
+              data-slot="sidebar-rail"
+              aria-label="Toggle Sidebar"
+              tabIndex={-1}
+              onMouseDown={handleMouseDown}
+              className={cn(
+                "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] group-data-[side=right]:left-0 sm:flex",
+                "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
+                "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
+                "group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full",
+                "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2",
+                "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2",
+                "[[data-side=left][data-state=expanded]_&]:cursor-col-resize",
+                className,
+              )}
+              {...rest}
+            />
+          </TooltipTrigger>
+        )}
+      </TooltipContext>
+
+      <Portal>
+        <TooltipPositioner>
+          <TooltipContent className="flex w-full flex-col gap-1 border bg-background text-foreground">
+            <span>Drag to resize</span>
+            <div className="inline-flex">
+              Click to {isCollapsed ? "expand" : "collapse"}{" "}
+              <div className="ml-2 flex items-center gap-0.5">
+                <Command size={12} />
+                <span>B</span>
+              </div>
+            </div>
+          </TooltipContent>
+        </TooltipPositioner>
+      </Portal>
+    </TooltipRoot>
   );
 }
 
@@ -446,7 +482,7 @@ function SidebarContent({ className, ...rest }: React.ComponentProps<"div">) {
       data-slot="sidebar-content"
       data-sidebar="content"
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-0 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+        "mb-2 flex min-h-0 flex-1 flex-col gap-0 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
         className,
       )}
       {...rest}
@@ -602,19 +638,13 @@ function SidebarMenuButton({
   }
 
   return (
-    <TooltipRoot
+    <Tooltip
+      tooltip={tooltip}
       positioning={{ placement: "right" }}
-      closeDelay={0}
-      openDelay={0}
       disabled={isMobile || state === "expanded"}
     >
-      <TooltipTrigger asChild>{button}</TooltipTrigger>
-      <Portal>
-        <TooltipPositioner>
-          <TooltipContent {...tooltip} />
-        </TooltipPositioner>
-      </Portal>
-    </TooltipRoot>
+      {button}
+    </Tooltip>
   );
 }
 

@@ -7,12 +7,7 @@ import { useCallback, useRef, useState } from "react";
 import Tasks from "@/components/Tasks";
 import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
 import { Button } from "@/components/ui/button";
-import {
-  TooltipContent,
-  TooltipPositioner,
-  TooltipRoot,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
@@ -210,27 +205,20 @@ const Board = () => {
                         </span>
                       </div>
 
-                      <TooltipRoot
-                        positioning={{ placement: "top", strategy: "fixed" }}
-                      >
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="xs"
-                            className="size-5"
-                            onClick={() => {
-                              setIsCreateTaskDialogOpen(true);
-                              setSelectedColumnId(column?.rowId!);
-                            }}
-                            aria-label="Add Task"
-                          >
-                            <PlusIcon className="size-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipPositioner>
-                          <TooltipContent>Add Task</TooltipContent>
-                        </TooltipPositioner>
-                      </TooltipRoot>
+                      <Tooltip tooltip="Add Task">
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          className="size-5"
+                          onClick={() => {
+                            setIsCreateTaskDialogOpen(true);
+                            setSelectedColumnId(column?.rowId!);
+                          }}
+                          aria-label="Add Task"
+                        >
+                          <PlusIcon className="size-4" />
+                        </Button>
+                      </Tooltip>
                     </div>
 
                     <div className="no-scrollbar flex h-full overflow-y-auto">

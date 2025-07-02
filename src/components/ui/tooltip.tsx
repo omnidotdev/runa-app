@@ -1,3 +1,4 @@
+import { Portal } from "@ark-ui/react/portal";
 import { Tooltip as ArkTooltip } from "@ark-ui/react/tooltip";
 import { tv } from "tailwind-variants";
 
@@ -57,6 +58,32 @@ const TooltipArrowTip = ({
   <ArkTooltip.ArrowTip className={cn(arrowTip(), className)} {...rest} />
 );
 
+interface Props extends ComponentProps<typeof TooltipRoot> {
+  children?: React.ReactNode;
+  tooltip?: string | ComponentProps<typeof TooltipContent>;
+}
+
+const Tooltip = ({ tooltip, children, ...rest }: Props) => {
+  const tooltipProps =
+    typeof tooltip === "string" ? { children: tooltip } : tooltip;
+
+  return (
+    <TooltipRoot
+      positioning={{ placement: "top" }}
+      closeDelay={0}
+      openDelay={100}
+      {...rest}
+    >
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <Portal>
+        <TooltipPositioner>
+          <TooltipContent {...tooltipProps} />
+        </TooltipPositioner>
+      </Portal>
+    </TooltipRoot>
+  );
+};
+
 export {
   /** @knipignore */
   TooltipArrow,
@@ -68,4 +95,5 @@ export {
   TooltipProvider,
   TooltipRoot,
   TooltipTrigger,
+  Tooltip,
 };

@@ -21,12 +21,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
-import {
-  TooltipContent,
-  TooltipPositioner,
-  TooltipRoot,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 import { ProjectStatus, useUpdateProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
@@ -198,39 +193,29 @@ function ProjectsOverviewPage() {
                 />
               </div>
 
-              <TooltipRoot>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() =>
-                      setViewMode(viewMode === "board" ? "list" : "board")
-                    }
-                  >
-                    {viewMode === "list" ? <Grid2X2Icon /> : <ListIcon />}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipPositioner>
-                  <TooltipContent>
-                    {viewMode === "list" ? "Board View" : "List View"}
-                  </TooltipContent>
-                </TooltipPositioner>
-              </TooltipRoot>
+              <Tooltip
+                tooltip={viewMode === "list" ? "Board View" : "List View"}
+              >
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() =>
+                    setViewMode(viewMode === "board" ? "list" : "board")
+                  }
+                >
+                  {viewMode === "list" ? <Grid2X2Icon /> : <ListIcon />}
+                </Button>
+              </Tooltip>
 
-              <TooltipRoot>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setIsCreateProjectOpen(true)}
-                  >
-                    <Plus className="size-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipPositioner>
-                  <TooltipContent>Create Project</TooltipContent>
-                </TooltipPositioner>
-              </TooltipRoot>
+              <Tooltip tooltip="Create Project">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setIsCreateProjectOpen(true)}
+                >
+                  <Plus className="size-4" />
+                </Button>
+              </Tooltip>
             </div>
           </div>
         </div>

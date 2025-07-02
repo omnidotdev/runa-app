@@ -18,12 +18,7 @@ import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  TooltipContent,
-  TooltipPositioner,
-  TooltipRoot,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
@@ -149,70 +144,57 @@ function ProjectPage() {
                 />
               </div>
 
-              <TooltipRoot>
-                <TooltipTrigger asChild>
+              <Tooltip
+                tooltip={
+                  project?.viewMode === "list" ? "Board View" : "list View"
+                }
+              >
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() =>
+                    updateViewMode({
+                      rowId: project?.rowId!,
+                      patch: {
+                        viewMode:
+                          project?.viewMode === "board" ? "list" : "board",
+                      },
+                    })
+                  }
+                >
+                  {project?.viewMode === "list" ? (
+                    <Grid2X2Icon />
+                  ) : (
+                    <ListIcon />
+                  )}
+                </Button>
+              </Tooltip>
+
+              {project?.viewMode === "list" && (
+                <Tooltip tooltip="Collapse List">
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() =>
-                      updateViewMode({
-                        rowId: project?.rowId!,
-                        patch: {
-                          viewMode:
-                            project?.viewMode === "board" ? "list" : "board",
-                        },
-                      })
-                    }
+                    onClick={handleForceClose}
                   >
-                    {project?.viewMode === "list" ? (
-                      <Grid2X2Icon />
-                    ) : (
-                      <ListIcon />
-                    )}
+                    <ListCollapse />
                   </Button>
-                </TooltipTrigger>
-                <TooltipPositioner>
-                  <TooltipContent>
-                    {project?.viewMode === "list" ? "Board View" : "list View"}
-                  </TooltipContent>
-                </TooltipPositioner>
-              </TooltipRoot>
-
-              {project?.viewMode === "list" && (
-                <TooltipRoot>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={handleForceClose}
-                    >
-                      <ListCollapse />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipPositioner>
-                    <TooltipContent>Collapse Lists</TooltipContent>
-                  </TooltipPositioner>
-                </TooltipRoot>
+                </Tooltip>
               )}
 
-              <TooltipRoot>
-                <TooltipTrigger asChild>
-                  <Link
-                    to="/workspaces/$workspaceId/projects/$projectId/settings"
-                    params={{
-                      workspaceId: workspaceId!,
-                      projectId: projectId!,
-                    }}
-                    variant="outline"
-                    size="icon"
-                  >
-                    <Settings2 />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipPositioner>
-                  <TooltipContent>Project Settings</TooltipContent>
-                </TooltipPositioner>
-              </TooltipRoot>
+              <Tooltip tooltip="Project Settings">
+                <Link
+                  to="/workspaces/$workspaceId/projects/$projectId/settings"
+                  params={{
+                    workspaceId: workspaceId!,
+                    projectId: projectId!,
+                  }}
+                  variant="outline"
+                  size="icon"
+                >
+                  <Settings2 />
+                </Link>
+              </Tooltip>
             </div>
           </div>
         </div>
