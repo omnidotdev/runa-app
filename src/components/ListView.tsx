@@ -13,6 +13,7 @@ import {
 import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import projectOptions from "@/lib/options/project.options";
+import projectsOptions from "@/lib/options/projects.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -26,7 +27,7 @@ interface Props {
 const ListView = ({ shouldForceClose }: Props) => {
   const { theme } = useTheme();
 
-  const { projectId } = useParams({
+  const { workspaceId, projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -45,7 +46,10 @@ const ListView = ({ shouldForceClose }: Props) => {
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
-      invalidates: [tasksOptions(projectId, search).queryKey],
+      invalidates: [
+        tasksOptions(projectId, search).queryKey,
+        projectsOptions(workspaceId, search).queryKey,
+      ],
     },
     onMutate: async (variables) => {
       await queryClient.cancelQueries(tasksOptions(projectId, search));

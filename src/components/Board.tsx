@@ -12,6 +12,7 @@ import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import projectOptions from "@/lib/options/project.options";
+import projectsOptions from "@/lib/options/projects.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -21,7 +22,7 @@ import type { DropResult } from "@hello-pangea/dnd";
 const Board = () => {
   const { theme } = useTheme();
 
-  const { projectId } = useParams({
+  const { workspaceId, projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -48,7 +49,10 @@ const Board = () => {
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
-      invalidates: [tasksOptions(projectId, search).queryKey],
+      invalidates: [
+        tasksOptions(projectId, search).queryKey,
+        projectsOptions(workspaceId, search).queryKey,
+      ],
     },
     onMutate: async (variables) => {
       await queryClient.cancelQueries(tasksOptions(projectId, search));

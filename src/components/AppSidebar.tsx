@@ -259,12 +259,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         >
                           {project?.viewMode === "board" ? (
                             <Grid2X2Icon
-                              className="size-4"
+                              className="size-4 text-primary-500"
                               style={{ color: project?.color ?? undefined }}
                             />
                           ) : (
                             <ListIcon
-                              className="size-4"
+                              className="size-4 text-primary-500"
                               style={{ color: project?.color ?? undefined }}
                             />
                           )}
@@ -394,12 +394,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                           >
                             {project?.viewMode === "board" ? (
                               <Grid2X2Icon
-                                className="size-4"
+                                className="size-4 text-primary-500"
                                 style={{ color: project?.color ?? undefined }}
                               />
                             ) : (
                               <ListIcon
-                                className="size-3"
+                                className="size-3 text-primary-500"
                                 style={{ color: project?.color ?? undefined }}
                               />
                             )}
