@@ -62,7 +62,7 @@ const TasksList = ({
   return (
     <div
       className={cn(
-        "divide-y divide-base-200 rounded-b-lg dark:divide-base-700",
+        "divide-y divide-base-200 overflow-hidden rounded-b-lg dark:divide-base-700",
         className,
       )}
       {...rest}
@@ -91,11 +91,10 @@ const TasksList = ({
                   }
                 }}
                 className={cn(
-                  "group flex cursor-pointer items-start bg-background px-4 py-3 hover:bg-base-50/50 dark:hover:bg-background/90",
+                  "group flex cursor-pointer items-start bg-background px-4 py-3",
                   snapshot.isDragging
-                    ? "z-10 bg-white shadow-lg ring-2 ring-primary-500 ring-opacity-50 dark:bg-base-700"
-                    : "",
-                  index === tasks.length - 1 ? "rounded-b-lg" : "",
+                    ? "z-10 shadow-lg"
+                    : "hover:bg-base-50/50 dark:hover:bg-background/90",
                 )}
               >
                 <div className="flex min-w-0 flex-1 flex-col gap-1">

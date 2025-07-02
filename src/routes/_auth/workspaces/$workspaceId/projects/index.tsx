@@ -1,6 +1,6 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { stripSearchParams } from "@tanstack/react-router";
+import { notFound, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import {
   ChevronDownIcon,
@@ -13,6 +13,7 @@ import { useCallback, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
 
+import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import {
   CollapsibleContent,
@@ -28,7 +29,10 @@ import {
 } from "@/components/ui/tooltip";
 import { ProjectStatus, useUpdateProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useDragStore from "@/lib/hooks/store/useDragStore";
 import projectsOptions from "@/lib/options/projects.options";
+import workspaceOptions from "@/lib/options/workspace.options";
+import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 
 import type { DropResult } from "@hello-pangea/dnd";
@@ -50,8 +54,23 @@ export const Route = createFileRoute({
     params: { workspaceId },
     context: { queryClient },
   }) => {
-    await queryClient.ensureQueryData(projectsOptions(workspaceId, search));
+    const [{ workspace }] = await Promise.all([
+      queryClient.ensureQueryData(workspaceOptions(workspaceId)),
+      queryClient.ensureQueryData(projectsOptions(workspaceId, search)),
+    ]);
+
+    if (!workspace) {
+      throw notFound();
+    }
+
+    return { name: workspace.name };
   },
+  head: ({ loaderData }) => ({
+    meta: loaderData
+      ? [...seo({ title: `${loaderData.name} Projects` })]
+      : undefined,
+  }),
+  notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,
   component: ProjectsOverviewPage,
 });
 
@@ -59,15 +78,43 @@ function ProjectsOverviewPage() {
   const { workspaceId } = Route.useParams();
   const { search } = Route.useSearch();
   const navigate = Route.useNavigate();
+  const { queryClient } = Route.useRouteContext();
 
   const { data: projects } = useSuspenseQuery({
     ...projectsOptions(workspaceId, search),
     select: (data) => data?.projects?.nodes,
   });
 
+  const { setDraggableId } = useDragStore();
+
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
       invalidates: [projectsOptions(workspaceId, search).queryKey],
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries(projectsOptions(workspaceId, search));
+
+      queryClient.setQueryData(
+        projectsOptions(workspaceId, search).queryKey,
+        // @ts-ignore TODO: type properly
+        (old) => ({
+          projects: {
+            ...old?.projects!,
+            nodes: old?.projects?.nodes?.map((project) => {
+              if (project?.rowId === variables.rowId) {
+                return {
+                  ...project!,
+                  status: variables.patch.status,
+                };
+              }
+
+              return project;
+            }),
+          },
+        }),
+      );
+
+      setDraggableId(null);
     },
   });
 
@@ -115,6 +162,8 @@ function ProjectsOverviewPage() {
       )
         return;
 
+      setDraggableId(draggableId);
+
       updateProject({
         rowId: draggableId,
         patch: {
@@ -122,7 +171,7 @@ function ProjectsOverviewPage() {
         },
       });
     },
-    [updateProject],
+    [updateProject, setDraggableId],
   );
 
   return (
@@ -207,6 +256,8 @@ function ProjectsBoard({
     [ProjectStatus.Completed]: ProjectFragment[];
   };
 }) {
+  const { draggableId } = useDragStore();
+
   return (
     <div className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/20">
       <div className="h-full min-w-fit p-4">
@@ -246,23 +297,25 @@ function ProjectsBoard({
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
                     >
-                      {projects.map((project, index) => (
-                        <Draggable
-                          key={project.rowId}
-                          draggableId={project.rowId!}
-                          index={index}
-                        >
-                          {(provided) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <ProjectCard project={project} />
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
+                      {projects
+                        .filter((project) => project.rowId !== draggableId)
+                        .map((project, index) => (
+                          <Draggable
+                            key={project.rowId}
+                            draggableId={project.rowId}
+                            index={index}
+                          >
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <ProjectCard project={project} />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
                       {provided.placeholder}
                     </div>
                   )}
@@ -288,6 +341,8 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
       (p) => p.status === ProjectStatus.Completed,
     ),
   };
+
+  const { draggableId } = useDragStore();
 
   return (
     <div className="custom-scrollbar h-full overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/20">
@@ -319,28 +374,36 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   className={cn(
-                    "flex flex-1 flex-col gap-3 rounded-xl bg-background/40 p-2",
+                    "flex flex-1 flex-col divide-y divide-base-200 overflow-hidden rounded-b-lg bg-background/40 dark:divide-base-700",
                     snapshot.isDraggingOver &&
                       "bg-primary-100/40 dark:bg-primary-950/40",
                   )}
                 >
-                  {statusProjects.map((project, index) => (
-                    <Draggable
-                      key={project.rowId}
-                      draggableId={project.rowId}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <ProjectListItem project={project} />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
+                  {statusProjects
+                    .filter((project) => project.rowId !== draggableId)
+                    .map((project, index) => (
+                      <Draggable
+                        key={project.rowId}
+                        draggableId={project.rowId}
+                        index={index}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={cn(
+                              "group cursor-pointer bg-background",
+                              snapshot.isDragging
+                                ? "z-10 shadow-lg"
+                                : "hover:bg-base-50/50 dark:hover:bg-background/90",
+                            )}
+                          >
+                            <ProjectListItem project={project} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
                   {provided.placeholder}
                 </div>
               )}
@@ -411,6 +474,9 @@ function ProjectCard({ project }: { project: ProjectFragment }) {
 }
 
 function ProjectListItem({ project }: { project: ProjectFragment }) {
+  const navigate = Route.useNavigate();
+  const { workspaceId } = Route.useParams();
+
   const completedTasks = project.columns?.nodes?.reduce(
     (acc, col) => acc + (col?.completedTasks.totalCount || 0),
     0,
@@ -423,16 +489,27 @@ function ProjectListItem({ project }: { project: ProjectFragment }) {
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
-    <div className="border-base-200 border-b bg-card p-4 last:border-b-0 dark:border-base-700">
+    <div
+      className="cursor-pointer border-base-200 border-b bg-card p-4 last:border-b-0 dark:border-base-700"
+      onClick={() =>
+        navigate({
+          to: "/workspaces/$workspaceId/projects/$projectId",
+          params: {
+            workspaceId,
+            projectId: project.rowId,
+          },
+        })
+      }
+    >
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="mb-2 flex items-start justify-between">
-            <h3 className="font-medium text-base-900 text-lg dark:text-base-100">
+            <h3 className="font-medium text-base-900 dark:text-base-100">
               {project.name}
             </h3>
           </div>
 
-          <p className="mb-3 text-base-600 dark:text-base-400">
+          <p className="mb-3 text-base-600 text-sm dark:text-base-400">
             {project.description}
           </p>
 
