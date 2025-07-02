@@ -17,7 +17,6 @@ import { match } from "ts-pattern";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
 
-import CreateProjectDialog from "@/components/CreateProjectDialog";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import {
@@ -376,8 +375,6 @@ function ProjectsBoard({
                   )}
                 </Droppable>
               </div>
-
-              <CreateProjectDialog status={status as ProjectStatus} />
             </div>
           ))}
         </div>
