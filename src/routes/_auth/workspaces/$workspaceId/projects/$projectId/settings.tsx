@@ -4,14 +4,12 @@ import { notFound } from "@tanstack/react-router";
 import { ArrowLeft, Edit } from "lucide-react";
 import { useState } from "react";
 
-import CreateProjectDialog from "@/components/CreateProjectDialog";
 import Link from "@/components/core/Link";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
-import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import seo from "@/lib/util/seo";
@@ -34,16 +32,14 @@ export const Route = createFileRoute({
       : undefined,
   }),
   notFoundComponent: () => <NotFound>Project Not Found</NotFound>,
-  component: ProjectSettingsPage,
+  component: RouteComponent,
 });
 
-function ProjectSettingsPage() {
+function RouteComponent() {
   const { workspaceId, projectId } = Route.useParams();
   const [editProject, setEditProject] = useState(false);
 
   const queryClient = getQueryClient();
-
-  const { status } = useProjectStore();
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
@@ -211,8 +207,6 @@ function ProjectSettingsPage() {
           </form>
         </div>
       </div>
-
-      <CreateProjectDialog status={status ?? undefined} />
     </div>
   );
 }

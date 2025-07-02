@@ -6,7 +6,6 @@ import { useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import CreateMemberDialog from "@/components/CreateMemberDialog";
-import CreateProjectDialog from "@/components/CreateProjectDialog";
 import Link from "@/components/core/Link";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,6 @@ import {
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/lib/util/getQueryClient";
@@ -51,8 +49,6 @@ function SettingsPage() {
   const { workspaceId } = Route.useParams();
   const navigate = Route.useNavigate();
   const queryClient = getQueryClient();
-
-  const { status } = useProjectStore();
 
   // TODO: Replace with actual members fetching logic.
   const [members, setMembers] = useState<Assignee[]>([]);
@@ -389,8 +385,6 @@ function SettingsPage() {
         members={members}
         setMembers={setMembers}
       />
-
-      <CreateProjectDialog status={status ?? undefined} />
     </div>
   );
 }

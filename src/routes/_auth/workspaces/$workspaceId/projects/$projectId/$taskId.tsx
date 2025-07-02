@@ -23,7 +23,6 @@ import {
 import { useRef, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
-import CreateProjectDialog from "@/components/CreateProjectDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
@@ -55,7 +54,6 @@ import {
   useDeleteAssigneeMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
-import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
@@ -163,8 +161,6 @@ const PriorityBadge = ({ priority }: { priority: string }) => {
 
 function TaskPage() {
   const { workspaceId, projectId, taskId } = Route.useParams();
-
-  const { status } = useProjectStore();
 
   const commentEditorApiRef = useRef<EditorApi | null>(null);
 
@@ -756,8 +752,6 @@ function TaskPage() {
           </div>
         </div>
       </div>
-
-      <CreateProjectDialog status={status ?? undefined} />
     </div>
   );
 }

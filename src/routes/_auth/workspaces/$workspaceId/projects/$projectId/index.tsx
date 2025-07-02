@@ -13,7 +13,6 @@ import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
 
 import Board from "@/components/Board";
-import CreateProjectDialog from "@/components/CreateProjectDialog";
 import Link from "@/components/core/Link";
 import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
@@ -21,7 +20,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
-import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -71,8 +69,6 @@ function ProjectPage() {
   const navigate = Route.useNavigate();
 
   const { queryClient } = Route.useRouteContext();
-
-  const { status } = useProjectStore();
 
   const handleForceClose = () => {
     setShouldForceClose(true);
@@ -202,8 +198,6 @@ function ProjectPage() {
           <ListView shouldForceClose={shouldForceClose} />
         )}
       </div>
-
-      <CreateProjectDialog status={status ?? undefined} />
     </div>
   );
 }
