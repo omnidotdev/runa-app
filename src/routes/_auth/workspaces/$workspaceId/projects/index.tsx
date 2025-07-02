@@ -396,7 +396,7 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                   className={cn(
-                    "flex flex-1 flex-col divide-y divide-base-200 overflow-hidden rounded-b-lg bg-background/40 dark:divide-base-700",
+                    "flex min-h-px flex-1 flex-col divide-y divide-base-200 overflow-hidden rounded-b-lg bg-background/40 dark:divide-base-700",
                     snapshot.isDraggingOver &&
                       "bg-primary-100/40 dark:bg-primary-950/40",
                   )}
