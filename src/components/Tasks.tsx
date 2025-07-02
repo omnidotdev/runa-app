@@ -147,7 +147,7 @@ const Tasks = ({
                           <RichTextEditor
                             defaultContent={task?.content}
                             className="-mx-5 min-h-0 border-0 p-0 text-xs dark:bg-background"
-                            skeletonClassName="h-4 p-0"
+                            skeletonClassName="-mx-5 h-4 p-0"
                             editable={false}
                           />
                         </div>
