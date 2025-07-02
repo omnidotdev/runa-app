@@ -2,8 +2,9 @@ import { ark } from "@ark-ui/react/factory";
 import { Portal } from "@ark-ui/react/portal";
 import { TooltipContext } from "@ark-ui/react/tooltip";
 import { cva } from "class-variance-authority";
-import { Command, PanelLeftIcon } from "lucide-react";
+import { PanelLeftIcon } from "lucide-react";
 import * as React from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +32,6 @@ const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
 const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
-const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
 //* new constants for sidebar resizing
 const MIN_SIDEBAR_WIDTH = "14rem";
@@ -117,20 +117,7 @@ function SidebarProvider({
   ]);
 
   // Adds a keyboard shortcut to toggle the sidebar.
-  React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (
-        event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
-        (event.metaKey || event.ctrlKey)
-      ) {
-        event.preventDefault();
-        toggleSidebar();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [toggleSidebar]);
+  useHotkeys("b", toggleSidebar, [toggleSidebar]);
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
@@ -415,8 +402,7 @@ function SidebarRail({
             <div className="inline-flex">
               Click to {isCollapsed ? "expand" : "collapse"}{" "}
               <div className="ml-2 flex items-center gap-0.5">
-                <Command size={12} />
-                <span>B</span>
+                <SidebarMenuShotcut>B</SidebarMenuShotcut>
               </div>
             </div>
           </TooltipContent>
@@ -482,7 +468,7 @@ function SidebarContent({ className, ...rest }: React.ComponentProps<"div">) {
       data-slot="sidebar-content"
       data-sidebar="content"
       className={cn(
-        "mb-2 flex min-h-0 flex-1 flex-col gap-0 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+        "no-scrollbar mb-2 flex min-h-0 flex-1 flex-col gap-0 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
         className,
       )}
       {...rest}
@@ -712,7 +698,7 @@ function SidebarMenuShotcut({
       data-slot="sidebar-menu-shortcut"
       data-sidebar="menu-shortcut"
       className={cn(
-        "ml-auto flex items-center gap-0.5 text-muted-foreground text-xs tracking-widest",
+        "ml-auto flex size-4 items-center justify-center gap-0.5 rounded-md border bg-base-100 p-0.5 font-medium text-[11px] text-muted-foreground tracking-widest dark:bg-base-700",
         // "group-data-[collapsible=icon]:hidden",
         className,
       )}
@@ -799,7 +785,9 @@ export {
   SidebarMenuItem,
   /** @knipignore */
   SidebarMenuSub,
+  /** @knipignore */
   SidebarMenuSubButton,
+  /** @knipignore */
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,

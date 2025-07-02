@@ -9,7 +9,7 @@ const ThemeToggle = () => {
   const toggleTheme = () =>
     theme === "dark" ? setTheme("light") : setTheme("dark");
 
-  useHotkeys("ctrl+k", toggleTheme, [toggleTheme]);
+  useHotkeys("t", toggleTheme, [toggleTheme]);
 
   return (
     <button

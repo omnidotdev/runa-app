@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import {
   ChevronsUpDown,
-  Command,
   FolderOpen,
   Grid2X2Icon,
   ListIcon,
@@ -72,7 +71,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const toggleTheme = () =>
     theme === "dark" ? setTheme("light") : setTheme("dark");
-  useHotkeys("meta+k", toggleTheme, [toggleTheme]);
+  useHotkeys("t", toggleTheme, [toggleTheme]);
 
   const { data: workspaces } = useQuery({
     ...workspacesOptions,
@@ -135,7 +134,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     className="bg-base-200 hover:bg-base-300 dark:bg-base-700 dark:hover:bg-base-800"
                   >
                     {workspace ? (
-                      <div className="flex aspect-square size-6 items-center justify-center rounded-md bg-primary text-primary-foreground transition-all group-data-[collapsible=icon]:size-8 dark:bg-primary-400">
+                      <div className="flex aspect-square size-4 items-center justify-center rounded-md bg-primary text-primary-foreground text-xs transition-all group-data-[collapsible=icon]:size-8 dark:bg-primary-400">
                         {workspace?.name[0]}
                       </div>
                     ) : (
@@ -424,13 +423,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 className="flex justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
               >
                 <PanelLeftIcon />
-                <span className="flex w-full justify-between">
+                <span className="flex w-full items-center justify-between">
                   Collapse Sidebar
-                  <SidebarMenuShotcut>
-                    {/* TODO: handle ctrl v command */}
-                    <Command size={12} />
-                    <span>B</span>
-                  </SidebarMenuShotcut>
+                  <SidebarMenuShotcut>B</SidebarMenuShotcut>
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -442,13 +437,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 className="justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
               >
                 {theme === "dark" ? <MoonIcon /> : <SunIcon />}
-                <span className="flex w-full justify-between">
+                <span className="flex w-full items-center justify-between">
                   Toggle Theme
-                  <SidebarMenuShotcut>
-                    {/* TODO: handle ctrl v command */}
-                    <Command size={12} />
-                    <span>K</span>
-                  </SidebarMenuShotcut>
+                  <SidebarMenuShotcut>T</SidebarMenuShotcut>
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
