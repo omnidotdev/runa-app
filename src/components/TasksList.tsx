@@ -7,6 +7,7 @@ import { CalendarIcon, TagIcon } from "lucide-react";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import useDragStore from "@/lib/hooks/store/useDragStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import { getLabelClasses } from "@/lib/util/getLabelClasses";
@@ -38,14 +39,17 @@ const TasksList = ({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
+  const { draggableId } = useDragStore();
+
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
     select: (data) => data?.project,
   });
 
   const { data: tasks } = useSuspenseQuery({
-    ...tasksOptions(columnId, search),
-    select: (data) => data?.tasks?.nodes,
+    ...tasksOptions(projectId, search),
+    select: (data) =>
+      data?.tasks?.nodes?.filter((task) => task?.columnId === columnId),
   });
 
   const taskIndex = (taskId: string) =>
@@ -67,115 +71,121 @@ const TasksList = ({
       )}
       {...rest}
     >
-      {tasks?.map((task, index) => {
-        const displayId = `${prefix}-${taskIndex(task?.rowId!) ? taskIndex(task?.rowId!) : 0}`;
-        const PriorityIcon = getPriorityIcon(task?.priority!);
+      {tasks
+        ?.filter((task) => task?.rowId !== draggableId)
+        .map((task, index) => {
+          const displayId = `${prefix}-${taskIndex(task?.rowId!) ? taskIndex(task?.rowId!) : 0}`;
+          const PriorityIcon = getPriorityIcon(task?.priority!);
 
-        return (
-          <Draggable key={task?.rowId} draggableId={task?.rowId!} index={index}>
-            {(provided, snapshot) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                onClick={() => {
-                  if (!snapshot.isDragging) {
-                    navigate({
-                      to: "/workspaces/$workspaceId/projects/$projectId/$taskId",
-                      params: {
-                        workspaceId,
-                        projectId,
-                        taskId: task?.rowId!,
-                      },
-                    });
-                  }
-                }}
-                className={cn(
-                  "group flex cursor-pointer items-start bg-background px-4 py-3",
-                  snapshot.isDragging
-                    ? "z-10 shadow-lg"
-                    : "hover:bg-base-50/50 dark:hover:bg-background/90",
-                )}
-              >
-                <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <div className="flex items-start gap-2">
-                    <div className="mt-0.5 min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
-                          {displayId}
-                        </span>
-                        {PriorityIcon}
+          return (
+            <Draggable
+              key={task?.rowId}
+              draggableId={task?.rowId!}
+              index={index}
+            >
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  onClick={() => {
+                    if (!snapshot.isDragging) {
+                      navigate({
+                        to: "/workspaces/$workspaceId/projects/$projectId/$taskId",
+                        params: {
+                          workspaceId,
+                          projectId,
+                          taskId: task?.rowId!,
+                        },
+                      });
+                    }
+                  }}
+                  className={cn(
+                    "group flex cursor-pointer items-start bg-background px-4 py-3",
+                    snapshot.isDragging
+                      ? "z-10 shadow-lg"
+                      : "hover:bg-base-50/50 dark:hover:bg-background/90",
+                  )}
+                >
+                  <div className="flex min-w-0 flex-1 flex-col gap-1">
+                    <div className="flex items-start gap-2">
+                      <div className="mt-0.5 min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
+                            {displayId}
+                          </span>
+                          {PriorityIcon}
+                        </div>
+                        <div className="py-4">
+                          <RichTextEditor
+                            defaultContent={task?.content}
+                            className="min-h-0 border-0 p-0 text-xs dark:bg-background"
+                            skeletonClassName="h-4 p-0 w-80"
+                            editable={false}
+                          />
+                        </div>
                       </div>
-                      <div className="py-4">
-                        <RichTextEditor
-                          defaultContent={task?.content}
-                          className="min-h-0 border-0 p-0 text-xs dark:bg-background"
-                          skeletonClassName="h-4 p-0 w-80"
-                          editable={false}
-                        />
+
+                      <div className="-mt-2.5 -mr-2 flex items-center gap-1">
+                        {!!task?.assignees?.nodes?.length && (
+                          <div className="-space-x-5.5 flex">
+                            {task.assignees.nodes?.map((assignee) => (
+                              <Avatar
+                                key={assignee?.rowId}
+                                fallback={assignee?.user?.name?.charAt(0)}
+                                src={assignee?.user?.avatarUrl!}
+                                alt={assignee?.user?.name}
+                                className="size-6 rounded-full border-2 border-base-100 bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
+                              />
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    <div className="-mt-2.5 -mr-2 flex items-center gap-1">
-                      {!!task?.assignees?.nodes?.length && (
-                        <div className="-space-x-5.5 flex">
-                          {task.assignees.nodes?.map((assignee) => (
-                            <Avatar
-                              key={assignee?.rowId}
-                              fallback={assignee?.user?.name?.charAt(0)}
-                              src={assignee?.user?.avatarUrl!}
-                              alt={assignee?.user?.name}
-                              className="size-6 rounded-full border-2 border-base-100 bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
-                            />
-                          ))}
+                    <div className="grid grid-cols-4">
+                      {!!task?.labels?.length && (
+                        <div className="-m-3 col-span-3 flex items-end p-2.5">
+                          <div className="flex flex-wrap gap-1">
+                            {/* TODO: remove need for `JSON.parse` used just from seed script stringifying JSON to get dynamic labels */}
+                            {JSON.parse(task.labels).map(
+                              (label: { name: string; color: string }) => {
+                                const colors = getLabelClasses(label.color);
+
+                                return (
+                                  <Badge
+                                    key={label.name}
+                                    size="sm"
+                                    className={cn(colors.bg, colors.text)}
+                                  >
+                                    <TagIcon
+                                      className={cn("!size-2.5", colors.icon)}
+                                    />
+                                    <span className="font-medium text-[10px]">
+                                      {label.name}
+                                    </span>
+                                  </Badge>
+                                );
+                              },
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {task?.dueDate && (
+                        <div className="col-span-1 mr-1 flex items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
+                          <CalendarIcon className="h-3 w-3" />
+                          {/* TODO: timezone handling */}
+                          <span>{format(new Date(task.dueDate), "MMM d")}</span>
                         </div>
                       )}
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-4">
-                    {!!task?.labels?.length && (
-                      <div className="-m-3 col-span-3 flex items-end p-2.5">
-                        <div className="flex flex-wrap gap-1">
-                          {/* TODO: remove need for `JSON.parse` used just from seed script stringifying JSON to get dynamic labels */}
-                          {JSON.parse(task.labels).map(
-                            (label: { name: string; color: string }) => {
-                              const colors = getLabelClasses(label.color);
-
-                              return (
-                                <Badge
-                                  key={label.name}
-                                  size="sm"
-                                  className={cn(colors.bg, colors.text)}
-                                >
-                                  <TagIcon
-                                    className={cn("!size-2.5", colors.icon)}
-                                  />
-                                  <span className="font-medium text-[10px]">
-                                    {label.name}
-                                  </span>
-                                </Badge>
-                              );
-                            },
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {task?.dueDate && (
-                      <div className="col-span-1 mr-1 flex items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
-                        <CalendarIcon className="h-3 w-3" />
-                        {/* TODO: timezone handling */}
-                        <span>{format(new Date(task.dueDate), "MMM d")}</span>
-                      </div>
-                    )}
-                  </div>
                 </div>
-              </div>
-            )}
-          </Draggable>
-        );
-      })}
+              )}
+            </Draggable>
+          );
+        })}
       {children}
     </div>
   );

@@ -98,6 +98,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
             task: {
               content: value.title,
               description: value.description,
+              projectId,
               columnId,
               authorId,
               labels: JSON.stringify(taskLabels),

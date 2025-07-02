@@ -584,6 +584,8 @@ export enum ColumnOrderBy {
   TasksDistinctCountLabelsDesc = 'TASKS_DISTINCT_COUNT_LABELS_DESC',
   TasksDistinctCountPriorityAsc = 'TASKS_DISTINCT_COUNT_PRIORITY_ASC',
   TasksDistinctCountPriorityDesc = 'TASKS_DISTINCT_COUNT_PRIORITY_DESC',
+  TasksDistinctCountProjectIdAsc = 'TASKS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  TasksDistinctCountProjectIdDesc = 'TASKS_DISTINCT_COUNT_PROJECT_ID_DESC',
   TasksDistinctCountRowIdAsc = 'TASKS_DISTINCT_COUNT_ROW_ID_ASC',
   TasksDistinctCountRowIdDesc = 'TASKS_DISTINCT_COUNT_ROW_ID_DESC',
   TasksDistinctCountUpdatedAtAsc = 'TASKS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -1992,6 +1994,8 @@ export type Project = Node & {
   prefix?: Maybe<Scalars['String']['output']>;
   rowId: Scalars['UUID']['output'];
   status: ProjectStatus;
+  /** Reads and enables pagination through a set of `Task`. */
+  tasks: TaskConnection;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
   viewMode: Scalars['String']['output'];
   /** Reads a single `Workspace` that is related to this `Project`. */
@@ -2009,6 +2013,18 @@ export type ProjectColumnsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ColumnOrderBy>>;
+};
+
+
+export type ProjectTasksArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskCondition>;
+  filter?: InputMaybe<TaskFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskOrderBy>>;
 };
 
 export type ProjectAggregates = {
@@ -2153,6 +2169,10 @@ export type ProjectFilter = {
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `status` field. */
   status?: InputMaybe<ProjectStatusFilter>;
+  /** Filter by the object’s `tasks` relation. */
+  tasks?: InputMaybe<ProjectToManyTaskFilter>;
+  /** Some related `tasks` exist. */
+  tasksExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `viewMode` field. */
@@ -2289,6 +2309,48 @@ export enum ProjectOrderBy {
   RowIdDesc = 'ROW_ID_DESC',
   StatusAsc = 'STATUS_ASC',
   StatusDesc = 'STATUS_DESC',
+  TasksAverageColumnIndexAsc = 'TASKS_AVERAGE_COLUMN_INDEX_ASC',
+  TasksAverageColumnIndexDesc = 'TASKS_AVERAGE_COLUMN_INDEX_DESC',
+  TasksCountAsc = 'TASKS_COUNT_ASC',
+  TasksCountDesc = 'TASKS_COUNT_DESC',
+  TasksDistinctCountAuthorIdAsc = 'TASKS_DISTINCT_COUNT_AUTHOR_ID_ASC',
+  TasksDistinctCountAuthorIdDesc = 'TASKS_DISTINCT_COUNT_AUTHOR_ID_DESC',
+  TasksDistinctCountColumnIdAsc = 'TASKS_DISTINCT_COUNT_COLUMN_ID_ASC',
+  TasksDistinctCountColumnIdDesc = 'TASKS_DISTINCT_COUNT_COLUMN_ID_DESC',
+  TasksDistinctCountColumnIndexAsc = 'TASKS_DISTINCT_COUNT_COLUMN_INDEX_ASC',
+  TasksDistinctCountColumnIndexDesc = 'TASKS_DISTINCT_COUNT_COLUMN_INDEX_DESC',
+  TasksDistinctCountContentAsc = 'TASKS_DISTINCT_COUNT_CONTENT_ASC',
+  TasksDistinctCountContentDesc = 'TASKS_DISTINCT_COUNT_CONTENT_DESC',
+  TasksDistinctCountCreatedAtAsc = 'TASKS_DISTINCT_COUNT_CREATED_AT_ASC',
+  TasksDistinctCountCreatedAtDesc = 'TASKS_DISTINCT_COUNT_CREATED_AT_DESC',
+  TasksDistinctCountDescriptionAsc = 'TASKS_DISTINCT_COUNT_DESCRIPTION_ASC',
+  TasksDistinctCountDescriptionDesc = 'TASKS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  TasksDistinctCountDueDateAsc = 'TASKS_DISTINCT_COUNT_DUE_DATE_ASC',
+  TasksDistinctCountDueDateDesc = 'TASKS_DISTINCT_COUNT_DUE_DATE_DESC',
+  TasksDistinctCountLabelsAsc = 'TASKS_DISTINCT_COUNT_LABELS_ASC',
+  TasksDistinctCountLabelsDesc = 'TASKS_DISTINCT_COUNT_LABELS_DESC',
+  TasksDistinctCountPriorityAsc = 'TASKS_DISTINCT_COUNT_PRIORITY_ASC',
+  TasksDistinctCountPriorityDesc = 'TASKS_DISTINCT_COUNT_PRIORITY_DESC',
+  TasksDistinctCountProjectIdAsc = 'TASKS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  TasksDistinctCountProjectIdDesc = 'TASKS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  TasksDistinctCountRowIdAsc = 'TASKS_DISTINCT_COUNT_ROW_ID_ASC',
+  TasksDistinctCountRowIdDesc = 'TASKS_DISTINCT_COUNT_ROW_ID_DESC',
+  TasksDistinctCountUpdatedAtAsc = 'TASKS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  TasksDistinctCountUpdatedAtDesc = 'TASKS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  TasksMaxColumnIndexAsc = 'TASKS_MAX_COLUMN_INDEX_ASC',
+  TasksMaxColumnIndexDesc = 'TASKS_MAX_COLUMN_INDEX_DESC',
+  TasksMinColumnIndexAsc = 'TASKS_MIN_COLUMN_INDEX_ASC',
+  TasksMinColumnIndexDesc = 'TASKS_MIN_COLUMN_INDEX_DESC',
+  TasksStddevPopulationColumnIndexAsc = 'TASKS_STDDEV_POPULATION_COLUMN_INDEX_ASC',
+  TasksStddevPopulationColumnIndexDesc = 'TASKS_STDDEV_POPULATION_COLUMN_INDEX_DESC',
+  TasksStddevSampleColumnIndexAsc = 'TASKS_STDDEV_SAMPLE_COLUMN_INDEX_ASC',
+  TasksStddevSampleColumnIndexDesc = 'TASKS_STDDEV_SAMPLE_COLUMN_INDEX_DESC',
+  TasksSumColumnIndexAsc = 'TASKS_SUM_COLUMN_INDEX_ASC',
+  TasksSumColumnIndexDesc = 'TASKS_SUM_COLUMN_INDEX_DESC',
+  TasksVariancePopulationColumnIndexAsc = 'TASKS_VARIANCE_POPULATION_COLUMN_INDEX_ASC',
+  TasksVariancePopulationColumnIndexDesc = 'TASKS_VARIANCE_POPULATION_COLUMN_INDEX_DESC',
+  TasksVarianceSampleColumnIndexAsc = 'TASKS_VARIANCE_SAMPLE_COLUMN_INDEX_ASC',
+  TasksVarianceSampleColumnIndexDesc = 'TASKS_VARIANCE_SAMPLE_COLUMN_INDEX_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   ViewModeAsc = 'VIEW_MODE_ASC',
@@ -2354,6 +2416,18 @@ export type ProjectToManyColumnFilter = {
   none?: InputMaybe<ColumnFilter>;
   /** Some related `Column` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<ColumnFilter>;
+};
+
+/** A filter to be used against many `Task` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyTaskFilter = {
+  /** Aggregates across related `Task` match the filter criteria. */
+  aggregates?: InputMaybe<TaskAggregatesFilter>;
+  /** Every related `Task` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<TaskFilter>;
+  /** No related `Task` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<TaskFilter>;
+  /** Some related `Task` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<TaskFilter>;
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -2732,6 +2806,9 @@ export type Task = Node & {
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
   priority: Scalars['String']['output'];
+  /** Reads a single `Project` that is related to this `Task`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
   rowId: Scalars['UUID']['output'];
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
 };
@@ -2837,6 +2914,8 @@ export type TaskCondition = {
   labels?: InputMaybe<Scalars['JSON']['input']>;
   /** Checks for equality with the object’s `priority` field. */
   priority?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -2877,6 +2956,7 @@ export type TaskDistinctCountAggregateFilter = {
   dueDate?: InputMaybe<BigIntFilter>;
   labels?: InputMaybe<BigIntFilter>;
   priority?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
 };
@@ -2901,6 +2981,8 @@ export type TaskDistinctCountAggregates = {
   labels?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of priority across the matching connection */
   priority?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -2954,6 +3036,10 @@ export type TaskFilter = {
   postsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `priority` field. */
   priority?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -2975,6 +3061,7 @@ export enum TaskGroupBy {
   DueDateTruncatedToHour = 'DUE_DATE_TRUNCATED_TO_HOUR',
   Labels = 'LABELS',
   Priority = 'PRIORITY',
+  ProjectId = 'PROJECT_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
@@ -3069,6 +3156,7 @@ export type TaskInput = {
   dueDate?: InputMaybe<Scalars['Datetime']['input']>;
   labels?: InputMaybe<Scalars['JSON']['input']>;
   priority?: InputMaybe<Scalars['String']['input']>;
+  projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -3146,6 +3234,8 @@ export enum TaskOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   PriorityAsc = 'PRIORITY_ASC',
   PriorityDesc = 'PRIORITY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -3163,6 +3253,7 @@ export type TaskPatch = {
   dueDate?: InputMaybe<Scalars['Datetime']['input']>;
   labels?: InputMaybe<Scalars['JSON']['input']>;
   priority?: InputMaybe<Scalars['String']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -3970,6 +4061,8 @@ export enum UserOrderBy {
   AuthoredTasksDistinctCountLabelsDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_LABELS_DESC',
   AuthoredTasksDistinctCountPriorityAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_PRIORITY_ASC',
   AuthoredTasksDistinctCountPriorityDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_PRIORITY_DESC',
+  AuthoredTasksDistinctCountProjectIdAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  AuthoredTasksDistinctCountProjectIdDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_PROJECT_ID_DESC',
   AuthoredTasksDistinctCountRowIdAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_ROW_ID_ASC',
   AuthoredTasksDistinctCountRowIdDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_ROW_ID_DESC',
   AuthoredTasksDistinctCountUpdatedAtAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -4676,12 +4769,12 @@ export type TaskQueryVariables = Exact<{
 export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt?: Date | null, updatedAt?: Date | null, dueDate?: Date | null, labels?: any | null, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null } | null> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null } | null> } } | null };
 
 export type TasksQueryVariables = Exact<{
-  columnId: Scalars['UUID']['input'];
+  projectId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, labels?: any | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null } | null> } } | null> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, labels?: any | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null } | null> } } | null> } | null };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4917,12 +5010,13 @@ export const TaskDocument = gql`
 }
     `;
 export const TasksDocument = gql`
-    query Tasks($columnId: UUID!, $search: String = "") {
+    query Tasks($projectId: UUID!, $search: String = "") {
   tasks(
-    filter: {columnId: {equalTo: $columnId}, content: {includesInsensitive: $search}}
+    filter: {projectId: {equalTo: $projectId}, content: {includesInsensitive: $search}}
   ) {
     nodes {
       rowId
+      projectId
       columnId
       columnIndex
       content

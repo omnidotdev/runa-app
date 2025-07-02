@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useSearch } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 
@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useDragStore from "@/lib/hooks/store/useDragStore";
 import projectOptions from "@/lib/options/project.options";
-import taskOptions from "@/lib/options/task.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -25,6 +25,10 @@ const Board = () => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
+  const { search } = useSearch({
+    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  });
+
   const { setIsOpen: setIsCreateTaskDialogOpen } = useDialogStore({
     type: DialogType.CreateTask,
   });
@@ -32,6 +36,8 @@ const Board = () => {
   const [selectedColumnId, setSelectedColumnId] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const { setDraggableId } = useDragStore();
 
   const queryClient = getQueryClient();
 
@@ -41,42 +47,35 @@ const Board = () => {
   });
 
   const { mutate: updateTask } = useUpdateTaskMutation({
+    meta: {
+      invalidates: [tasksOptions(projectId, search).queryKey],
+    },
     onMutate: async (variables) => {
-      const { task } = await queryClient.ensureQueryData(
-        taskOptions(variables.rowId),
-      );
+      await queryClient.cancelQueries(tasksOptions(projectId, search));
 
       queryClient.setQueryData(
-        tasksOptions(task?.columnId!).queryKey,
+        tasksOptions(projectId, search).queryKey,
+        // @ts-ignore TODO: type properly
         (old) => ({
           tasks: {
             ...old?.tasks!,
-            nodes: old?.tasks?.nodes?.filter(
-              (task) => task?.rowId !== variables.rowId,
-            )!,
+            nodes: old?.tasks?.nodes?.map((task) => {
+              if (task?.rowId === variables.rowId) {
+                return {
+                  ...task!,
+                  columnId: variables.patch.columnId,
+                  columnIndex: variables.patch.columnIndex,
+                };
+              }
+
+              return task;
+            }),
           },
         }),
       );
 
-      // TODO: figure out why this is causing issue
-      // queryClient.setQueryData(
-      //   tasksOptions(variables.patch.columnId!).queryKey,
-      //   (old) => ({
-      //     tasks: {
-      //       ...old?.tasks!,
-      //       nodes: [
-      //         ...old?.tasks?.nodes!,
-      //         {
-      //           ...task!,
-      //           columnId: variables.patch.columnId!,
-      //           columnIndex: variables.patch.columnIndex!,
-      //         },
-      //       ],
-      //     },
-      //   }),
-      // );
+      setDraggableId(null);
     },
-    onSettled: () => queryClient.invalidateQueries(),
   });
 
   const startAutoScroll = useCallback((direction: "left" | "right") => {
@@ -153,6 +152,8 @@ const Board = () => {
       )
         return;
 
+      setDraggableId(draggableId);
+
       updateTask({
         rowId: draggableId,
         patch: {
@@ -161,7 +162,7 @@ const Board = () => {
         },
       });
     },
-    [updateTask, stopAutoScroll, handleMouseMove],
+    [updateTask, stopAutoScroll, handleMouseMove, setDraggableId],
   );
 
   return (

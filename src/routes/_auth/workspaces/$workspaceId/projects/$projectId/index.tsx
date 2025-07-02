@@ -41,19 +41,12 @@ export const Route = createFileRoute({
     const [{ project }] = await Promise.all([
       context.queryClient.ensureQueryData(projectOptions(projectId)),
       context.queryClient.ensureQueryData(workspaceOptions(workspaceId)),
+      context.queryClient.ensureQueryData(tasksOptions(projectId, search)),
     ]);
 
     if (!project) {
       throw notFound();
     }
-
-    const columnIds = project.columns?.nodes?.map((col) => col?.rowId);
-
-    await Promise.all(
-      columnIds.map((colId) =>
-        context.queryClient.ensureQueryData(tasksOptions(colId!, search)),
-      ),
-    );
 
     return { name: project.name };
   },
