@@ -13,6 +13,7 @@ import {
   SearchIcon,
 } from "lucide-react";
 import { useCallback } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { match } from "ts-pattern";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
@@ -25,6 +26,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
+import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
   ProjectStatus,
@@ -112,6 +114,18 @@ function ProjectsOverviewPage() {
       );
     },
   });
+
+  useHotkeys(
+    "v",
+    () =>
+      updateViewMode({
+        rowId: workspaceId,
+        patch: {
+          viewMode: workspace?.viewMode === "board" ? "list" : "board",
+        },
+      }),
+    [updateViewMode, workspace?.viewMode, workspaceId],
+  );
 
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
@@ -222,9 +236,20 @@ function ProjectsOverviewPage() {
               </div>
 
               <Tooltip
-                tooltip={
-                  workspace?.viewMode === "list" ? "Board View" : "List View"
-                }
+                positioning={{ placement: "bottom" }}
+                tooltip={{
+                  className: "bg-background text-foreground border",
+                  children: (
+                    <div className="inline-flex">
+                      {workspace?.viewMode === "list"
+                        ? "Board View"
+                        : "List View"}
+                      <div className="ml-2 flex items-center gap-0.5">
+                        <SidebarMenuShotcut>V</SidebarMenuShotcut>
+                      </div>
+                    </div>
+                  ),
+                }}
               >
                 <Button
                   variant="outline"
@@ -247,7 +272,20 @@ function ProjectsOverviewPage() {
                 </Button>
               </Tooltip>
 
-              <Tooltip tooltip="Create Project">
+              <Tooltip
+                positioning={{ placement: "bottom" }}
+                tooltip={{
+                  className: "bg-background text-foreground border",
+                  children: (
+                    <div className="inline-flex">
+                      Create Project
+                      <div className="ml-2 flex items-center gap-0.5">
+                        <SidebarMenuShotcut>P</SidebarMenuShotcut>
+                      </div>
+                    </div>
+                  ),
+                }}
+              >
                 <Button
                   variant="outline"
                   size="icon"

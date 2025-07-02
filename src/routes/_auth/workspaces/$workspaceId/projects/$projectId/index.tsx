@@ -9,6 +9,7 @@ import {
   Settings2,
 } from "lucide-react";
 import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
 
@@ -18,6 +19,7 @@ import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
@@ -111,6 +113,18 @@ function ProjectPage() {
     },
   });
 
+  useHotkeys(
+    "v",
+    () =>
+      updateViewMode({
+        rowId: projectId,
+        patch: {
+          viewMode: project?.viewMode === "board" ? "list" : "board",
+        },
+      }),
+    [updateViewMode, project?.viewMode, projectId],
+  );
+
   return (
     <div className="flex size-full">
       <div className="flex size-full flex-col">
@@ -137,9 +151,20 @@ function ProjectPage() {
                 />
               </div>
               <Tooltip
-                tooltip={
-                  project?.viewMode === "list" ? "Board View" : "List View"
-                }
+                positioning={{ placement: "bottom" }}
+                tooltip={{
+                  className: "bg-background text-foreground border",
+                  children: (
+                    <div className="inline-flex">
+                      {project?.viewMode === "list"
+                        ? "Board View"
+                        : "List View"}
+                      <div className="ml-2 flex items-center gap-0.5">
+                        <SidebarMenuShotcut>V</SidebarMenuShotcut>
+                      </div>
+                    </div>
+                  ),
+                }}
               >
                 <Button
                   variant="outline"
@@ -172,7 +197,13 @@ function ProjectPage() {
                   </Button>
                 </Tooltip>
               )}
-              <Tooltip tooltip="Project Settings">
+              <Tooltip
+                positioning={{ placement: "bottom" }}
+                tooltip={{
+                  className: "bg-background text-foreground border",
+                  children: "Project Settings",
+                }}
+              >
                 <Link
                   to="/workspaces/$workspaceId/projects/$projectId/settings"
                   params={{

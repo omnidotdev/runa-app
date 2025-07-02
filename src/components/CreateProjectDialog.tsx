@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useRef } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -54,6 +55,11 @@ const CreateProjectDialog = ({ status }: Props) => {
     useDialogStore({
       type: DialogType.CreateProject,
     });
+
+  useHotkeys("p", () => setIsCreateProjectOpen(!isCreateProjectOpen), [
+    setIsCreateProjectOpen,
+    isCreateProjectOpen,
+  ]);
 
   const { mutateAsync: createColumn } = useCreateColumnMutation();
 

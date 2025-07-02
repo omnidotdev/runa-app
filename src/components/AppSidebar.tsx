@@ -53,6 +53,7 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
 import ConfirmDialog from "./ConfirmDialog";
+import { Tooltip } from "./ui/tooltip";
 
 import type * as React from "react";
 
@@ -179,11 +180,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroup>
             <div className="flex items-center justify-between">
               <SidebarGroupLabel>Workspace</SidebarGroupLabel>
-              <SidebarGroupAction
-                onClick={() => setIsCreateWorkspaceOpen(true)}
+              <Tooltip
+                positioning={{ placement: "right" }}
+                tooltip={{
+                  className: "bg-background text-foreground border",
+                  children: (
+                    <div className="inline-flex">
+                      Create Workspace
+                      <div className="ml-2 flex items-center gap-0.5">
+                        <SidebarMenuShotcut>W</SidebarMenuShotcut>
+                      </div>
+                    </div>
+                  ),
+                }}
               >
-                <PlusIcon /> <span className="sr-only">Add Workspace</span>
-              </SidebarGroupAction>
+                <SidebarGroupAction
+                  onClick={() => setIsCreateWorkspaceOpen(true)}
+                >
+                  <PlusIcon /> <span className="sr-only">Add Workspace</span>
+                </SidebarGroupAction>
+              </Tooltip>
             </div>
 
             {workspaceId && (
@@ -212,11 +228,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarGroup>
               <div className="flex items-center justify-between">
                 <SidebarGroupLabel>Projects</SidebarGroupLabel>
-                <SidebarGroupAction
-                  onClick={() => setIsCreateProjectOpen(true)}
+                <Tooltip
+                  positioning={{ placement: "right" }}
+                  tooltip={{
+                    className: "bg-background text-foreground border",
+                    children: (
+                      <div className="inline-flex">
+                        Create Project
+                        <div className="ml-2 flex items-center gap-0.5">
+                          <SidebarMenuShotcut>P</SidebarMenuShotcut>
+                        </div>
+                      </div>
+                    ),
+                  }}
                 >
-                  <PlusIcon /> <span className="sr-only">Add Project</span>
-                </SidebarGroupAction>
+                  <SidebarGroupAction
+                    onClick={() => setIsCreateProjectOpen(true)}
+                  >
+                    <PlusIcon /> <span className="sr-only">Add Project</span>
+                  </SidebarGroupAction>
+                </Tooltip>
               </div>
 
               <SidebarMenu className="gap-2">

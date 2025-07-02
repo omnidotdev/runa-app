@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +25,11 @@ const CreateWorkspaceDialog = () => {
     useDialogStore({
       type: DialogType.CreateWorkspace,
     });
+
+  useHotkeys("w", () => setIsCreateWorkspaceOpen(!isCreateWorkspaceOpen), [
+    setIsCreateWorkspaceOpen,
+    isCreateWorkspaceOpen,
+  ]);
 
   const [newWorkspaceName, setNewWorkspaceName] = useState("");
 
