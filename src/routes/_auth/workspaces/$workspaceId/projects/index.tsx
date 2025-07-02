@@ -85,6 +85,8 @@ function ProjectsOverviewPage() {
   const navigate = Route.useNavigate();
   const { queryClient } = Route.useRouteContext();
 
+  const { status } = useProjectStore();
+
   const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions(workspaceId),
     select: (data) => data?.workspace,
@@ -269,6 +271,8 @@ function ProjectsOverviewPage() {
           )}
         </DragDropContext>
       </div>
+
+      <CreateProjectDialog status={status ?? undefined} />
     </div>
   );
 }
@@ -376,8 +380,6 @@ function ProjectsBoard({
                   )}
                 </Droppable>
               </div>
-
-              <CreateProjectDialog status={status as ProjectStatus} />
             </div>
           ))}
         </div>
