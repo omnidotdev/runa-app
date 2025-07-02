@@ -52,6 +52,7 @@ import {
   useCreateAssigneeMutation,
   useCreatePostMutation,
   useDeleteAssigneeMutation,
+  useUpdateProjectMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
@@ -201,6 +202,7 @@ function TaskPage() {
     ],
   });
 
+  const { mutate: updateProject } = useUpdateProjectMutation();
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
       invalidates: [
@@ -266,7 +268,11 @@ function TaskPage() {
       dueDate: "",
     },
     onSubmit: ({ value }) => {
-      // TODO: update project labels if new label is created
+      const allLabels = value.labels.map((label) => ({
+        name: label.name,
+        color: label.color,
+      }));
+
       const taskLabels = value.labels
         .filter((l) => l.checked)
         .map((label) => ({
@@ -278,6 +284,13 @@ function TaskPage() {
         rowId: taskId,
         patch: {
           labels: JSON.stringify(taskLabels),
+        },
+      });
+
+      updateProject({
+        rowId: projectId,
+        patch: {
+          labels: allLabels,
         },
       });
     },

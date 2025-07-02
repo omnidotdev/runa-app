@@ -62,7 +62,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     project?.labels?.map((label: { name: string; color: string }) => ({
       ...label,
       checked: false,
-    }));
+    })) ?? [];
 
   const { mutateAsync: addNewTask } = useCreateTaskMutation();
   const { mutate: addNewAssignee } = useCreateAssigneeMutation();
