@@ -4173,6 +4173,7 @@ export type Workspace = Node & {
   projects: ProjectConnection;
   rowId: Scalars['UUID']['output'];
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  viewMode: Scalars['String']['output'];
   /** Reads and enables pagination through a set of `WorkspaceUser`. */
   workspaceUsers: WorkspaceUserConnection;
 };
@@ -4221,6 +4222,8 @@ export type WorkspaceCondition = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `viewMode` field. */
+  viewMode?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** A connection to a list of `Workspace` values. */
@@ -4257,6 +4260,8 @@ export type WorkspaceDistinctCountAggregates = {
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of viewMode across the matching connection */
+  viewMode?: Maybe<Scalars['BigInt']['output']>;
 };
 
 /** A `Workspace` edge in the connection. */
@@ -4288,6 +4293,8 @@ export type WorkspaceFilter = {
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `viewMode` field. */
+  viewMode?: InputMaybe<StringFilter>;
   /** Filter by the object’s `workspaceUsers` relation. */
   workspaceUsers?: InputMaybe<WorkspaceToManyWorkspaceUserFilter>;
   /** Some related `workspaceUsers` exist. */
@@ -4302,7 +4309,8 @@ export enum WorkspaceGroupBy {
   Name = 'NAME',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  ViewMode = 'VIEW_MODE'
 }
 
 export type WorkspaceHavingAverageInput = {
@@ -4371,6 +4379,7 @@ export type WorkspaceInput = {
   name: Scalars['String']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  viewMode?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Methods to use when ordering `Workspace`. */
@@ -4410,6 +4419,8 @@ export enum WorkspaceOrderBy {
   RowIdDesc = 'ROW_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
+  ViewModeAsc = 'VIEW_MODE_ASC',
+  ViewModeDesc = 'VIEW_MODE_DESC',
   WorkspaceUsersCountAsc = 'WORKSPACE_USERS_COUNT_ASC',
   WorkspaceUsersCountDesc = 'WORKSPACE_USERS_COUNT_DESC',
   WorkspaceUsersDistinctCountCreatedAtAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -4426,6 +4437,7 @@ export type WorkspacePatch = {
   name?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  viewMode?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** A filter to be used against many `Project` object types. All fields are combined with a logical ‘and.’ */
@@ -4785,7 +4797,7 @@ export type WorkspaceQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, color?: string | null, viewMode: string } | null> } } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, viewMode: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, color?: string | null, viewMode: string } | null> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5515,6 +5527,7 @@ export const WorkspaceDocument = `
   workspace(rowId: $rowId) {
     rowId
     name
+    viewMode
     projects {
       nodes {
         rowId

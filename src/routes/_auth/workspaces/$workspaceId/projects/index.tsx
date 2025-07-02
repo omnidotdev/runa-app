@@ -12,7 +12,7 @@ import {
   RocketIcon,
   SearchIcon,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { match } from "ts-pattern";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
@@ -27,7 +27,11 @@ import {
 } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import { Tooltip } from "@/components/ui/tooltip";
-import { ProjectStatus, useUpdateProjectMutation } from "@/generated/graphql";
+import {
+  ProjectStatus,
+  useUpdateProjectMutation,
+  useUpdateWorkspaceMutation,
+} from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
@@ -81,12 +85,34 @@ function ProjectsOverviewPage() {
   const navigate = Route.useNavigate();
   const { queryClient } = Route.useRouteContext();
 
+  const { data: workspace } = useSuspenseQuery({
+    ...workspaceOptions(workspaceId),
+    select: (data) => data?.workspace,
+  });
+
   const { data: projects } = useSuspenseQuery({
     ...projectsOptions(workspaceId, search),
     select: (data) => data?.projects?.nodes,
   });
 
   const { setDraggableId } = useDragStore();
+
+  const { mutate: updateViewMode } = useUpdateWorkspaceMutation({
+    meta: {
+      invalidates: [workspaceOptions(workspaceId).queryKey],
+    },
+    onMutate: (variables) => {
+      queryClient.setQueryData(
+        workspaceOptions(workspaceId).queryKey,
+        (old) => ({
+          workspace: {
+            ...old?.workspace!,
+            viewMode: variables?.patch?.viewMode!,
+          },
+        }),
+      );
+    },
+  });
 
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
@@ -118,9 +144,6 @@ function ProjectsOverviewPage() {
       setDraggableId(null);
     },
   });
-
-  // TODO: handle viewMode for workspace
-  const [viewMode, setViewMode] = useState<"board" | "list">("board");
 
   const { setIsOpen: setIsCreateProjectOpen } = useDialogStore({
     type: DialogType.CreateProject,
@@ -200,16 +223,28 @@ function ProjectsOverviewPage() {
               </div>
 
               <Tooltip
-                tooltip={viewMode === "list" ? "Board View" : "List View"}
+                tooltip={
+                  workspace?.viewMode === "list" ? "Board View" : "List View"
+                }
               >
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={() =>
-                    setViewMode(viewMode === "board" ? "list" : "board")
+                    updateViewMode({
+                      rowId: workspaceId,
+                      patch: {
+                        viewMode:
+                          workspace?.viewMode === "board" ? "list" : "board",
+                      },
+                    })
                   }
                 >
-                  {viewMode === "list" ? <Grid2X2Icon /> : <ListIcon />}
+                  {workspace?.viewMode === "list" ? (
+                    <Grid2X2Icon />
+                  ) : (
+                    <ListIcon />
+                  )}
                 </Button>
               </Tooltip>
 
@@ -227,7 +262,7 @@ function ProjectsOverviewPage() {
         </div>
 
         <DragDropContext onDragEnd={onDragEnd}>
-          {viewMode === "board" ? (
+          {workspace?.viewMode === "board" ? (
             <ProjectsBoard projectsByStatus={projectsByStatus} />
           ) : (
             <ProjectsList projects={projects as ProjectFragment[]} />
