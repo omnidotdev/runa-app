@@ -33,6 +33,7 @@ import {
   useUpdateProjectMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
@@ -116,7 +117,7 @@ function ProjectsOverviewPage() {
   });
 
   useHotkeys(
-    "v",
+    Hotkeys.ToggleViewMode,
     () =>
       updateViewMode({
         rowId: workspaceId,

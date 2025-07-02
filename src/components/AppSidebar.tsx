@@ -46,6 +46,7 @@ import {
   useDeleteProjectMutation,
   useUpdateProjectMutation,
 } from "@/generated/graphql";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -72,7 +73,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const toggleTheme = () =>
     theme === "dark" ? setTheme("light") : setTheme("dark");
-  useHotkeys("t", toggleTheme, [toggleTheme]);
+  useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
 
   const { data: workspaces } = useQuery({
     ...workspacesOptions,

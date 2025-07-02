@@ -18,6 +18,7 @@ import {
   useCreateColumnMutation,
   useCreateProjectMutation,
 } from "@/generated/graphql";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useForm from "@/lib/hooks/useForm";
@@ -56,10 +57,11 @@ const CreateProjectDialog = ({ status }: Props) => {
       type: DialogType.CreateProject,
     });
 
-  useHotkeys("p", () => setIsCreateProjectOpen(!isCreateProjectOpen), [
-    setIsCreateProjectOpen,
-    isCreateProjectOpen,
-  ]);
+  useHotkeys(
+    Hotkeys.CreateProject,
+    () => setIsCreateProjectOpen(!isCreateProjectOpen),
+    [setIsCreateProjectOpen, isCreateProjectOpen],
+  );
 
   const { mutateAsync: createColumn } = useCreateColumnMutation();
 

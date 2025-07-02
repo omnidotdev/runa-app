@@ -21,6 +21,7 @@ import {
   TooltipRoot,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useIsMobile from "@/lib/hooks/use-mobile";
 import { useSidebarResize } from "@/lib/hooks/use-sidebar-resize";
 import { cn } from "@/lib/utils";
@@ -117,7 +118,7 @@ function SidebarProvider({
   ]);
 
   // Adds a keyboard shortcut to toggle the sidebar.
-  useHotkeys("b", toggleSidebar, [toggleSidebar]);
+  useHotkeys(Hotkeys.ToggleSidebar, toggleSidebar, [toggleSidebar]);
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.

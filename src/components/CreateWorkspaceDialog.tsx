@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useCreateWorkspaceMutation } from "@/generated/graphql";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
 
@@ -26,10 +27,11 @@ const CreateWorkspaceDialog = () => {
       type: DialogType.CreateWorkspace,
     });
 
-  useHotkeys("w", () => setIsCreateWorkspaceOpen(!isCreateWorkspaceOpen), [
-    setIsCreateWorkspaceOpen,
-    isCreateWorkspaceOpen,
-  ]);
+  useHotkeys(
+    Hotkeys.CreateWorkspace,
+    () => setIsCreateWorkspaceOpen(!isCreateWorkspaceOpen),
+    [setIsCreateWorkspaceOpen, isCreateWorkspaceOpen],
+  );
 
   const [newWorkspaceName, setNewWorkspaceName] = useState("");
 

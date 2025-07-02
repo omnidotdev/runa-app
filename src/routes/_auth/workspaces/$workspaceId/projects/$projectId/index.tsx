@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -114,7 +115,7 @@ function ProjectPage() {
   });
 
   useHotkeys(
-    "v",
+    Hotkeys.ToggleViewMode,
     () =>
       updateViewMode({
         rowId: projectId,
