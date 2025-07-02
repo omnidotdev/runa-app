@@ -359,8 +359,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       placement: "right-start",
                     }}
                   >
-                    <MenuTrigger className="transition-all">
-                      <SidebarMenuButton tooltip="Project list">
+                    <MenuTrigger
+                      className="transition-all"
+                      disabled={!workspace?.projects?.nodes?.length}
+                    >
+                      <SidebarMenuButton tooltip="Project List" asChild>
                         <FolderOpen className="size-4" />
                       </SidebarMenuButton>
                     </MenuTrigger>

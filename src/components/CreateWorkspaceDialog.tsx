@@ -33,7 +33,7 @@ const CreateWorkspaceDialog = () => {
     },
     onSuccess: ({ createWorkspace }) => {
       navigate({
-        to: "/workspaces/$workspaceId",
+        to: "/workspaces/$workspaceId/projects",
         params: { workspaceId: createWorkspace?.workspace?.rowId! },
       });
     },
