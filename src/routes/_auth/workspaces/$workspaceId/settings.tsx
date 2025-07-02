@@ -125,13 +125,13 @@ function SettingsPage() {
   return (
     <div className="relative h-full p-6">
       <Link
-        to="/workspaces/$workspaceId"
+        to="/workspaces/$workspaceId/projects"
         className="inset-0 flex w-fit justify-start"
         params={{ workspaceId: workspaceId }}
         variant="ghost"
       >
         <ArrowLeft />
-        Back to Workspace
+        Projects Overview
       </Link>
 
       <div className="flex flex-col gap-6 p-8">
@@ -140,7 +140,7 @@ function SettingsPage() {
         <div className="flex flex-col gap-3 rounded-lg">
           <div className="flex items-center justify-between">
             <h2 className="block font-medium text-base-700 text-sm dark:text-base-300">
-              Project Details
+              Workspace Details
             </h2>
 
             <Tooltip tooltip="Edit workspace details">
