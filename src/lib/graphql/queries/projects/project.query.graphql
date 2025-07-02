@@ -7,7 +7,7 @@ query Project($rowId: UUID!) {
     color
     viewMode
     labels
-    columns {
+    columns(orderBy: INDEX_ASC) {
       nodes {
         rowId
         title

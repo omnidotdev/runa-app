@@ -24,11 +24,11 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import type { ProjectStatus } from "@/generated/graphql";
 
 const DEFAULT_COLUMNS = [
-  "Backlog",
-  "To Do",
-  "In Progress",
-  "Awaiting Review",
-  "Done",
+  { title: "Backlog", index: 0 },
+  { title: "To Do", index: 1 },
+  { title: "In Progress", index: 2 },
+  { title: "Awaiting Review", index: 3 },
+  { title: "Done", index: 4 },
 ];
 
 interface Props {
@@ -69,7 +69,8 @@ const CreateProjectDialog = ({ status }: Props) => {
           createColumn({
             input: {
               column: {
-                title: column,
+                title: column.title,
+                index: column.index,
                 projectId: createProject?.project?.rowId!,
               },
             },

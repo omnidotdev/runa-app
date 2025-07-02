@@ -337,6 +337,7 @@ export type Column = Node & {
   createdAt?: Maybe<Scalars['Datetime']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+  index: Scalars['Int']['output'];
   /** Reads a single `Project` that is related to this `Column`. */
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
@@ -361,23 +362,67 @@ export type ColumnTasksArgs = {
 
 export type ColumnAggregates = {
   __typename?: 'ColumnAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<ColumnAverageAggregates>;
   /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
   distinctCount?: Maybe<ColumnDistinctCountAggregates>;
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<ColumnMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<ColumnMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<ColumnStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<ColumnStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<ColumnSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<ColumnVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<ColumnVarianceSampleAggregates>;
 };
 
 /** A filter to be used against aggregates of `Column` object types. */
 export type ColumnAggregatesFilter = {
+  /** Mean average aggregate over matching `Column` objects. */
+  average?: InputMaybe<ColumnAverageAggregateFilter>;
   /** Distinct count aggregate over matching `Column` objects. */
   distinctCount?: InputMaybe<ColumnDistinctCountAggregateFilter>;
   /** A filter that must pass for the relevant `Column` object to be included within the aggregate. */
   filter?: InputMaybe<ColumnFilter>;
+  /** Maximum aggregate over matching `Column` objects. */
+  max?: InputMaybe<ColumnMaxAggregateFilter>;
+  /** Minimum aggregate over matching `Column` objects. */
+  min?: InputMaybe<ColumnMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `Column` objects. */
+  stddevPopulation?: InputMaybe<ColumnStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `Column` objects. */
+  stddevSample?: InputMaybe<ColumnStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `Column` objects. */
+  sum?: InputMaybe<ColumnSumAggregateFilter>;
+  /** Population variance aggregate over matching `Column` objects. */
+  variancePopulation?: InputMaybe<ColumnVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `Column` objects. */
+  varianceSample?: InputMaybe<ColumnVarianceSampleAggregateFilter>;
+};
+
+export type ColumnAverageAggregateFilter = {
+  index?: InputMaybe<BigFloatFilter>;
+};
+
+export type ColumnAverageAggregates = {
+  __typename?: 'ColumnAverageAggregates';
+  /** Mean average of index across the matching connection */
+  index?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** A condition to be used against `Column` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type ColumnCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `index` field. */
+  index?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -414,6 +459,7 @@ export type ColumnConnectionGroupedAggregatesArgs = {
 
 export type ColumnDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
+  index?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   title?: InputMaybe<BigIntFilter>;
@@ -424,6 +470,8 @@ export type ColumnDistinctCountAggregates = {
   __typename?: 'ColumnDistinctCountAggregates';
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of index across the matching connection */
+  index?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -449,6 +497,8 @@ export type ColumnFilter = {
   and?: InputMaybe<Array<ColumnFilter>>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `index` field. */
+  index?: InputMaybe<IntFilter>;
   /** Negates the expression. */
   not?: InputMaybe<ColumnFilter>;
   /** Checks for any expressions in this list. */
@@ -474,6 +524,7 @@ export enum ColumnGroupBy {
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Index = 'INDEX',
   ProjectId = 'PROJECT_ID',
   Title = 'TITLE',
   UpdatedAt = 'UPDATED_AT',
@@ -483,11 +534,13 @@ export enum ColumnGroupBy {
 
 export type ColumnHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -508,52 +561,82 @@ export type ColumnHavingInput = {
 
 export type ColumnHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 /** An input for mutations affecting `Column` */
 export type ColumnInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  index?: InputMaybe<Scalars['Int']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
+export type ColumnMaxAggregateFilter = {
+  index?: InputMaybe<IntFilter>;
+};
+
+export type ColumnMaxAggregates = {
+  __typename?: 'ColumnMaxAggregates';
+  /** Maximum of index across the matching connection */
+  index?: Maybe<Scalars['Int']['output']>;
+};
+
+export type ColumnMinAggregateFilter = {
+  index?: InputMaybe<IntFilter>;
+};
+
+export type ColumnMinAggregates = {
+  __typename?: 'ColumnMinAggregates';
+  /** Minimum of index across the matching connection */
+  index?: Maybe<Scalars['Int']['output']>;
+};
+
 /** Methods to use when ordering `Column`. */
 export enum ColumnOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
+  IndexAsc = 'INDEX_ASC',
+  IndexDesc = 'INDEX_DESC',
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
@@ -612,10 +695,41 @@ export enum ColumnOrderBy {
 /** Represents an update to a `Column`. Fields that are set will be updated. */
 export type ColumnPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  index?: InputMaybe<Scalars['Int']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type ColumnStddevPopulationAggregateFilter = {
+  index?: InputMaybe<BigFloatFilter>;
+};
+
+export type ColumnStddevPopulationAggregates = {
+  __typename?: 'ColumnStddevPopulationAggregates';
+  /** Population standard deviation of index across the matching connection */
+  index?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ColumnStddevSampleAggregateFilter = {
+  index?: InputMaybe<BigFloatFilter>;
+};
+
+export type ColumnStddevSampleAggregates = {
+  __typename?: 'ColumnStddevSampleAggregates';
+  /** Sample standard deviation of index across the matching connection */
+  index?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ColumnSumAggregateFilter = {
+  index?: InputMaybe<BigIntFilter>;
+};
+
+export type ColumnSumAggregates = {
+  __typename?: 'ColumnSumAggregates';
+  /** Sum of index across the matching connection */
+  index: Scalars['BigInt']['output'];
 };
 
 /** A filter to be used against many `Task` object types. All fields are combined with a logical ‘and.’ */
@@ -628,6 +742,26 @@ export type ColumnToManyTaskFilter = {
   none?: InputMaybe<TaskFilter>;
   /** Some related `Task` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<TaskFilter>;
+};
+
+export type ColumnVariancePopulationAggregateFilter = {
+  index?: InputMaybe<BigFloatFilter>;
+};
+
+export type ColumnVariancePopulationAggregates = {
+  __typename?: 'ColumnVariancePopulationAggregates';
+  /** Population variance of index across the matching connection */
+  index?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ColumnVarianceSampleAggregateFilter = {
+  index?: InputMaybe<BigFloatFilter>;
+};
+
+export type ColumnVarianceSampleAggregates = {
+  __typename?: 'ColumnVarianceSampleAggregates';
+  /** Sample variance of index across the matching connection */
+  index?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** All input for the create `Assignee` mutation. */
@@ -2279,10 +2413,14 @@ export type ProjectInput = {
 export enum ProjectOrderBy {
   ColorAsc = 'COLOR_ASC',
   ColorDesc = 'COLOR_DESC',
+  ColumnsAverageIndexAsc = 'COLUMNS_AVERAGE_INDEX_ASC',
+  ColumnsAverageIndexDesc = 'COLUMNS_AVERAGE_INDEX_DESC',
   ColumnsCountAsc = 'COLUMNS_COUNT_ASC',
   ColumnsCountDesc = 'COLUMNS_COUNT_DESC',
   ColumnsDistinctCountCreatedAtAsc = 'COLUMNS_DISTINCT_COUNT_CREATED_AT_ASC',
   ColumnsDistinctCountCreatedAtDesc = 'COLUMNS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ColumnsDistinctCountIndexAsc = 'COLUMNS_DISTINCT_COUNT_INDEX_ASC',
+  ColumnsDistinctCountIndexDesc = 'COLUMNS_DISTINCT_COUNT_INDEX_DESC',
   ColumnsDistinctCountProjectIdAsc = 'COLUMNS_DISTINCT_COUNT_PROJECT_ID_ASC',
   ColumnsDistinctCountProjectIdDesc = 'COLUMNS_DISTINCT_COUNT_PROJECT_ID_DESC',
   ColumnsDistinctCountRowIdAsc = 'COLUMNS_DISTINCT_COUNT_ROW_ID_ASC',
@@ -2291,6 +2429,20 @@ export enum ProjectOrderBy {
   ColumnsDistinctCountTitleDesc = 'COLUMNS_DISTINCT_COUNT_TITLE_DESC',
   ColumnsDistinctCountUpdatedAtAsc = 'COLUMNS_DISTINCT_COUNT_UPDATED_AT_ASC',
   ColumnsDistinctCountUpdatedAtDesc = 'COLUMNS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  ColumnsMaxIndexAsc = 'COLUMNS_MAX_INDEX_ASC',
+  ColumnsMaxIndexDesc = 'COLUMNS_MAX_INDEX_DESC',
+  ColumnsMinIndexAsc = 'COLUMNS_MIN_INDEX_ASC',
+  ColumnsMinIndexDesc = 'COLUMNS_MIN_INDEX_DESC',
+  ColumnsStddevPopulationIndexAsc = 'COLUMNS_STDDEV_POPULATION_INDEX_ASC',
+  ColumnsStddevPopulationIndexDesc = 'COLUMNS_STDDEV_POPULATION_INDEX_DESC',
+  ColumnsStddevSampleIndexAsc = 'COLUMNS_STDDEV_SAMPLE_INDEX_ASC',
+  ColumnsStddevSampleIndexDesc = 'COLUMNS_STDDEV_SAMPLE_INDEX_DESC',
+  ColumnsSumIndexAsc = 'COLUMNS_SUM_INDEX_ASC',
+  ColumnsSumIndexDesc = 'COLUMNS_SUM_INDEX_DESC',
+  ColumnsVariancePopulationIndexAsc = 'COLUMNS_VARIANCE_POPULATION_INDEX_ASC',
+  ColumnsVariancePopulationIndexDesc = 'COLUMNS_VARIANCE_POPULATION_INDEX_DESC',
+  ColumnsVarianceSampleIndexAsc = 'COLUMNS_VARIANCE_SAMPLE_INDEX_ASC',
+  ColumnsVarianceSampleIndexDesc = 'COLUMNS_VARIANCE_SAMPLE_INDEX_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
@@ -5195,7 +5347,7 @@ export const ProjectDocument = `
     color
     viewMode
     labels
-    columns {
+    columns(orderBy: INDEX_ASC) {
       nodes {
         rowId
         title
