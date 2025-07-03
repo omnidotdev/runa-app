@@ -363,17 +363,32 @@ function ProjectsBoard({
                     {projects.length}
                   </span>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="xs"
-                  className="size-5"
-                  onClick={() => {
-                    setStatus(status as ProjectStatus);
-                    setIsCreateProjectDialogOpen(true);
+                <Tooltip
+                  positioning={{ placement: "top", gutter: 11 }}
+                  tooltip={{
+                    className: "bg-background text-foreground border",
+                    children: (
+                      <div className="inline-flex">
+                        Create Project
+                        <div className="ml-2 flex items-center gap-0.5">
+                          <SidebarMenuShotcut>P</SidebarMenuShotcut>
+                        </div>
+                      </div>
+                    ),
                   }}
                 >
-                  <Plus className="size-4" />
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="size-5"
+                    onClick={() => {
+                      setStatus(status as ProjectStatus);
+                      setIsCreateProjectDialogOpen(true);
+                    }}
+                  >
+                    <Plus className="size-4" />
+                  </Button>
+                </Tooltip>
               </div>
               <div className="no-scrollbar flex h-full overflow-y-auto">
                 <Droppable droppableId={status}>

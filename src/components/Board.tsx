@@ -2,15 +2,16 @@ import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useSearch } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 
 import Tasks from "@/components/Tasks";
-import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
 import { Button } from "@/components/ui/button";
+import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import projectsOptions from "@/lib/options/projects.options";
 import tasksOptions from "@/lib/options/tasks.options";
@@ -34,7 +35,8 @@ const Board = () => {
     type: DialogType.CreateTask,
   });
 
-  const [selectedColumnId, setSelectedColumnId] = useState<string | null>(null);
+  const { setColumnId } = useTaskStore();
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -210,16 +212,28 @@ const Board = () => {
                         </span>
                       </div>
 
-                      <Tooltip tooltip="Add Task">
+                      <Tooltip
+                        positioning={{ placement: "top", gutter: 11 }}
+                        tooltip={{
+                          className: "bg-background text-foreground border",
+                          children: (
+                            <div className="inline-flex">
+                              Add Task
+                              <div className="ml-2 flex items-center gap-0.5">
+                                <SidebarMenuShotcut>C</SidebarMenuShotcut>
+                              </div>
+                            </div>
+                          ),
+                        }}
+                      >
                         <Button
                           variant="ghost"
                           size="xs"
                           className="size-5"
                           onClick={() => {
+                            setColumnId(column?.rowId!);
                             setIsCreateTaskDialogOpen(true);
-                            setSelectedColumnId(column?.rowId!);
                           }}
-                          aria-label="Add Task"
                         >
                           <PlusIcon className="size-4" />
                         </Button>
@@ -246,10 +260,6 @@ const Board = () => {
                         )}
                       </Droppable>
                     </div>
-
-                    {column?.rowId === selectedColumnId && (
-                      <CreateTaskDialog columnId={column?.rowId!} />
-                    )}
                   </div>
                 ))}
                 {provided.placeholder}

@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { TagIcon, TypeIcon } from "lucide-react";
 import { useRef } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import RichTextEditor from "@/components/core/RichTextEditor";
 import CreateTaskAssignees from "@/components/tasks/CreateTaskAssignees";
@@ -27,13 +28,14 @@ import {
   useCreateTaskMutation,
   useUpdateProjectMutation,
 } from "@/generated/graphql";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 
 interface Props {
-  columnId: string;
+  columnId?: string;
 }
 
 const CreateTaskDialog = ({ columnId }: Props) => {
@@ -50,9 +52,15 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     select: (data) => data?.project,
   });
 
+  const defaultColumnId = project?.columns?.nodes?.find(
+    (column) => column?.index === 0,
+  )?.rowId;
+
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreateTask,
   });
+
+  useHotkeys(Hotkeys.CreateTask, () => setIsOpen(!isOpen), [setIsOpen, isOpen]);
 
   const totalTasks = project?.columns?.nodes?.flatMap((column) =>
     column?.tasks?.nodes?.map((task) => task?.rowId),
@@ -99,7 +107,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
               content: value.title,
               description: value.description,
               projectId,
-              columnId,
+              columnId: columnId ?? defaultColumnId!,
               authorId,
               labels: JSON.stringify(taskLabels),
               dueDate: value.dueDate.length

@@ -17,12 +17,14 @@ import Board from "@/components/Board";
 import Link from "@/components/core/Link";
 import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
+import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
+import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -72,6 +74,8 @@ function ProjectPage() {
   const navigate = Route.useNavigate();
 
   const { queryClient } = Route.useRouteContext();
+
+  const { columnId } = useTaskStore();
 
   const handleForceClose = () => {
     setShouldForceClose(true);
@@ -233,6 +237,8 @@ function ProjectPage() {
           <ListView shouldForceClose={shouldForceClose} />
         )}
       </div>
+
+      <CreateTaskDialog columnId={columnId ?? undefined} />
     </div>
   );
 }
