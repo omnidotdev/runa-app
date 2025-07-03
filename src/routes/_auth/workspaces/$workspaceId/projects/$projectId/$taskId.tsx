@@ -353,7 +353,7 @@ function TaskPage() {
     <div className="flex h-full">
       {/* Main content */}
       <div className="flex-1 overflow-auto">
-        <div className="h-full p-12">
+        <div className="p-12">
           {/* Header */}
           <div className="mb-10 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -446,7 +446,7 @@ function TaskPage() {
             </div>
           </div>
 
-          <div className="grid h-full grid-cols-1 gap-12 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
             {/* Main content column */}
             <div className="space-y-10 lg:col-span-2">
               {/* Description */}

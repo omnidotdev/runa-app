@@ -188,7 +188,13 @@ function ProjectPage() {
                 </Button>
               </Tooltip>
               {project?.viewMode === "list" && (
-                <Tooltip tooltip="Collapse List">
+                <Tooltip
+                  positioning={{ placement: "bottom" }}
+                  tooltip={{
+                    className: "bg-background text-foreground border",
+                    children: "Collapse List",
+                  }}
+                >
                   <Button
                     variant="outline"
                     size="icon"

@@ -56,8 +56,6 @@ import { useTheme } from "@/providers/ThemeProvider";
 import ConfirmDialog from "./ConfirmDialog";
 import { Tooltip } from "./ui/tooltip";
 
-import type * as React from "react";
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { workspaceId } = useParams({ strict: false });
   const navigate = useNavigate();
@@ -68,8 +66,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const queryClient = getQueryClient();
   const { theme, setTheme } = useTheme();
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
-
-  const [isProjectsMenuOpen, setIsProjectsMenuOpen] = useState(false);
 
   const toggleTheme = () =>
     theme === "dark" ? setTheme("light") : setTheme("dark");
@@ -387,7 +383,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
                 {/* Mobile projects menu */}
                 {!open && !!workspace?.projects?.nodes?.length && (
-                  // TODO: Introduce MenuTrigger while making sure the tooltip and menu is positioned correctly, and also make sure the tooltip shows when tabbing.
                   <MenuRoot
                     positioning={{
                       strategy: "fixed",
@@ -395,15 +390,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       getAnchorRect: () =>
                         menuButtonRef.current?.getBoundingClientRect() ?? null,
                     }}
-                    open={isProjectsMenuOpen}
-                    onOpenChange={({ open }) => setIsProjectsMenuOpen(!open)}
                   >
-                    <SidebarMenuButton
-                      ref={menuButtonRef}
-                      tooltip={isProjectsMenuOpen ? undefined : "Project list"}
-                      onClick={() => setIsProjectsMenuOpen(!isProjectsMenuOpen)}
-                    >
-                      <FolderOpen className="size-4" />
+                    <SidebarMenuButton tooltip="Project List" asChild>
+                      <MenuTrigger ref={menuButtonRef}>
+                        <FolderOpen className="size-4" />
+                      </MenuTrigger>
                     </SidebarMenuButton>
 
                     <MenuPositioner>
