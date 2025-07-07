@@ -4,7 +4,7 @@ import { useParams, useSearch } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
 
-import Tasks from "@/components/Tasks";
+import Tasks, { columnIcons } from "@/components/Tasks";
 import { Button } from "@/components/ui/button";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -199,7 +199,16 @@ const Board = () => {
                   >
                     <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2 shadow-sm">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
+                        <div className=" flex-shrink-0">
+                          {
+                            columnIcons[
+                              column?.title
+                                .toLowerCase()
+                                .replace(/ /g, "-") as keyof typeof columnIcons
+                            ]
+                          }
+                        </div>
+                        <h3 className="text-base-800 text-sm dark:text-base-100">
                           {column?.title}
                         </h3>
 

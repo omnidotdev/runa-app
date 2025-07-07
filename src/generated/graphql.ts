@@ -4937,7 +4937,7 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, labels?: any | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null } | null> } } | null> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, labels?: any | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null } | null> } } | null> } | null };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4950,6 +4950,13 @@ export type WorkspaceQueryVariables = Exact<{
 
 
 export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, viewMode: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, color?: string | null, viewMode: string } | null> } } | null };
+
+export type WorkspaceUsersQueryVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', user?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null } | null> } | null };
 
 export type WorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5569,6 +5576,7 @@ export const TasksDocument = `
         nodes {
           rowId
           user {
+            rowId
             name
             avatarUrl
           }
@@ -5734,6 +5742,62 @@ useInfiniteWorkspaceQuery.getKey = (variables: WorkspaceQueryVariables) => ['Wor
 
 
 useWorkspaceQuery.fetcher = (variables: WorkspaceQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceQuery, WorkspaceQueryVariables>(WorkspaceDocument, variables, options);
+
+export const WorkspaceUsersDocument = `
+    query WorkspaceUsers($rowId: UUID!) {
+  workspaceUsers(condition: {workspaceId: $rowId}) {
+    nodes {
+      user {
+        name
+        avatarUrl
+        rowId
+      }
+    }
+  }
+}
+    `;
+
+export const useWorkspaceUsersQuery = <
+      TData = WorkspaceUsersQuery,
+      TError = unknown
+    >(
+      variables: WorkspaceUsersQueryVariables,
+      options?: Omit<UseQueryOptions<WorkspaceUsersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<WorkspaceUsersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<WorkspaceUsersQuery, TError, TData>(
+      {
+    queryKey: ['WorkspaceUsers', variables],
+    queryFn: graphqlFetch<WorkspaceUsersQuery, WorkspaceUsersQueryVariables>(WorkspaceUsersDocument, variables),
+    ...options
+  }
+    )};
+
+useWorkspaceUsersQuery.getKey = (variables: WorkspaceUsersQueryVariables) => ['WorkspaceUsers', variables];
+
+export const useInfiniteWorkspaceUsersQuery = <
+      TData = InfiniteData<WorkspaceUsersQuery>,
+      TError = unknown
+    >(
+      variables: WorkspaceUsersQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<WorkspaceUsersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<WorkspaceUsersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<WorkspaceUsersQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['WorkspaceUsers.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<WorkspaceUsersQuery, WorkspaceUsersQueryVariables>(WorkspaceUsersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteWorkspaceUsersQuery.getKey = (variables: WorkspaceUsersQueryVariables) => ['WorkspaceUsers.infinite', variables];
+
+
+useWorkspaceUsersQuery.fetcher = (variables: WorkspaceUsersQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceUsersQuery, WorkspaceUsersQueryVariables>(WorkspaceUsersDocument, variables, options);
 
 export const WorkspacesDocument = `
     query Workspaces {

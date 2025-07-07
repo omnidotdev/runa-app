@@ -9,22 +9,20 @@ import {
   CircleIcon,
   ClockIcon,
   EyeIcon,
-  TagIcon,
 } from "lucide-react";
 
 import RichTextEditor from "@/components/core/RichTextEditor";
-import { Avatar } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
-import { getLabelClasses } from "@/lib/util/getLabelClasses";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
+import Assignees from "./Assignees";
+import Labels from "./Labels";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
-const columnIcons = {
+export const columnIcons = {
   "to-do": <ClockIcon className="h-4 w-4 text-base-400 dark:text-base-500" />,
   "in-progress": <AlertCircleIcon className="h-4 w-4 text-primary-500" />,
   "awaiting-review": <EyeIcon className="h-4 w-4 text-purple-500" />,
@@ -155,17 +153,12 @@ const Tasks = ({
 
                       <div className="-mt-2.5 -mr-2 flex items-center gap-1">
                         {!!task?.assignees?.nodes?.length && (
-                          <div className="-space-x-5.5 flex">
-                            {task.assignees.nodes?.map((assignee) => (
-                              <Avatar
-                                key={assignee?.rowId}
-                                fallback={assignee?.user?.name?.charAt(0)}
-                                src={assignee?.user?.avatarUrl!}
-                                alt={assignee?.user?.name}
-                                className="size-6 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
-                              />
-                            ))}
-                          </div>
+                          <Assignees
+                            assignees={task?.assignees.nodes.map(
+                              (assignee) => assignee?.user?.rowId!,
+                            )}
+                            className="-space-x-5.5 flex"
+                          />
                         )}
                       </div>
                     </div>
@@ -173,34 +166,10 @@ const Tasks = ({
                     <div className="grid grid-cols-4">
                       {!!task?.labels?.length && (
                         <div className="-m-3 col-span-3 flex items-end p-2.5">
-                          <div className="flex flex-wrap gap-1">
-                            {/* TODO: remove need for `JSON.parse` used just from seed script stringifying JSON to get dynamic labels */}
-                            {JSON.parse(task.labels).map(
-                              (label: { name: string; color: string }) => {
-                                const colors = getLabelClasses(label.color);
-
-                                return (
-                                  <Badge
-                                    key={label.name}
-                                    size="sm"
-                                    variant="outline"
-                                    className={cn(
-                                      "border-border/50",
-                                      colors.bg,
-                                      colors.text,
-                                    )}
-                                  >
-                                    <TagIcon
-                                      className={cn("!size-2.5", colors.icon)}
-                                    />
-                                    <span className="font-medium text-[10px]">
-                                      {label.name}
-                                    </span>
-                                  </Badge>
-                                );
-                              },
-                            )}
-                          </div>
+                          <Labels
+                            labels={JSON.parse(task.labels)}
+                            className="flex flex-wrap gap-1"
+                          />
                         </div>
                       )}
 

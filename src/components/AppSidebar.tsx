@@ -4,9 +4,9 @@ import {
   ChevronsUpDown,
   FolderOpen,
   Grid2X2Icon,
+  Layers,
   ListIcon,
   LogOutIcon,
-  MenuIcon,
   MoonIcon,
   MoreHorizontalIcon,
   PanelLeftIcon,
@@ -52,9 +52,12 @@ import projectOptions from "@/lib/options/project.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/lib/util/getQueryClient";
+import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
 import ConfirmDialog from "./ConfirmDialog";
 import { Tooltip } from "./ui/tooltip";
+
+import type * as React from "react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { workspaceId } = useParams({ strict: false });
@@ -69,6 +72,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const toggleTheme = () =>
     theme === "dark" ? setTheme("light") : setTheme("dark");
+
   useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
 
   const { data: workspaces } = useQuery({
@@ -131,18 +135,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     size="lg"
                     className="bg-base-200 hover:bg-base-300 dark:bg-base-700 dark:hover:bg-base-800"
                   >
-                    {workspace ? (
-                      <div className="flex aspect-square size-4 items-center justify-center rounded-md bg-primary text-primary-foreground text-xs transition-all group-data-[collapsible=icon]:size-8 dark:bg-primary-400">
-                        {workspace?.name[0]}
-                      </div>
-                    ) : (
-                      <div className="flex aspect-square size-6 items-center justify-center rounded-md transition-all group-data-[collapsible=icon]:size-8 dark:bg-primary-400">
+                    <div
+                      className={cn(
+                        "flex aspect-square size-6 items-center justify-center rounded-md transition-all group-data-[collapsible=icon]:size-8",
+                        workspace
+                          ? "bg-primary text-primary-foreground dark:bg-primary-400"
+                          : "dark:bg-primary-400",
+                      )}
+                    >
+                      {workspace ? (
+                        workspace.name[0]
+                      ) : (
                         <ChevronsUpDown className="size-4" />
-                      </div>
-                    )}
+                      )}
+                    </div>
+
                     <span className="truncate font-medium group-data-[collapsible=icon]:hidden">
                       {workspace?.name ?? "Select Workspace"}
                     </span>
+
                     {workspace && (
                       <ChevronsUpDown className="ml-auto group-data-[collapsible=icon]:hidden" />
                     )}
@@ -262,7 +273,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       }}
                       className="w-full justify-start border border-transparent"
                     >
-                      <MenuIcon className="size-4" />
+                      <Layers className="size-4" />
                       <span className="w-full truncate">Overview</span>
                     </Link>
                   </SidebarMenuButton>
@@ -313,7 +324,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         </MenuTrigger>
 
                         <MenuPositioner>
-                          {/* TODO: Map these out */}
                           <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
                             <MenuItem
                               value="settings"
@@ -357,6 +367,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                   ? "Board View"
                                   : "List View"}
                               </span>
+
+                              <SidebarMenuShotcut>V</SidebarMenuShotcut>
                             </MenuItem>
 
                             <MenuItem
@@ -398,7 +410,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     </SidebarMenuButton>
 
                     <MenuPositioner>
-                      <MenuContent className="flex w-full flex-col gap-0.5 rounded-lg">
+                      <MenuContent className="flex w-full min-w-56 flex-col gap-0.5 rounded-lg">
                         {workspace?.projects.nodes.map((project) => (
                           <MenuItem
                             key={project?.rowId}

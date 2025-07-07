@@ -44,7 +44,6 @@ const CreateTaskDatePicker = withForm({
         {(field) => (
           <DatePickerRoot
             positioning={{ sameWidth: true }}
-            className="mb-8"
             value={
               field.state.value.length ? [parseDate(field.state.value)] : []
             }

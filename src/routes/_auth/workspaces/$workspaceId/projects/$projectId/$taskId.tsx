@@ -25,6 +25,7 @@ import { useDebounceCallback } from "usehooks-ts";
 
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
+import Labels from "@/components/Labels";
 import NotFound from "@/components/layout/NotFound";
 import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
 import UpdateAssignees from "@/components/tasks/UpdateAssignees";
@@ -58,7 +59,6 @@ import {
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
-import { getLabelClasses } from "@/lib/util/getLabelClasses";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 
@@ -663,7 +663,7 @@ function TaskPage() {
                       </PopoverTrigger>
 
                       <PopoverPositioner>
-                        <PopoverContent className="flex min-w-80 flex-col gap-2 p-0">
+                        <PopoverContent className="flex min-w-80 flex-col p-0">
                           <TaskLabelsForm form={updateLabelsForm} />
 
                           <updateLabelsForm.Subscribe
@@ -679,7 +679,7 @@ function TaskPage() {
                                 disabled={
                                   !canSubmit || isSubmitting || !isDirty
                                 }
-                                className="mt-1 rounded-t-none disabled:bg-muted disabled:text-muted-foreground"
+                                className="rounded-t-none disabled:bg-muted disabled:text-muted-foreground"
                               >
                                 Update Labels
                               </Button>
@@ -691,24 +691,10 @@ function TaskPage() {
                   </form>
                 </CardHeader>
                 <CardContent className="p-4">
-                  <div className="flex flex-wrap gap-2">
-                    {/* TODO: remove need for `JSON.parse` used just from seed script stringifying JSON to get dynamic labels */}
-                    {JSON.parse(task?.labels).map(
-                      (label: { name: string; color: string }) => {
-                        const colors = getLabelClasses(label.color);
-
-                        return (
-                          <Badge
-                            key={label.name}
-                            className={cn(colors.bg, colors.text)}
-                          >
-                            <TagIcon className={cn("!size-3", colors.icon)} />
-                            <span className="font-medium">{label.name}</span>
-                          </Badge>
-                        );
-                      },
-                    )}
-                  </div>
+                  <Labels
+                    labels={JSON.parse(task?.labels)}
+                    className="flex flex-wrap gap-2"
+                  />
                 </CardContent>
               </CardRoot>
 

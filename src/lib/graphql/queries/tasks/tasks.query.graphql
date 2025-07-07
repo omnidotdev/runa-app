@@ -18,6 +18,7 @@ query Tasks($projectId: UUID!, $search: String = "") {
         nodes {
           rowId
           user {
+            rowId
             name
             avatarUrl
           }

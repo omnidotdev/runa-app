@@ -53,9 +53,9 @@ const TaskLabelsForm = withForm({
       <form.Field name="labels" mode="array">
         {(field) => {
           return (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <div className="relative flex w-full border-b py-1">
+                <div className="relative flex w-full border-b">
                   <Select
                     // @ts-ignore TODO: type issue
                     collection={colorCollection}
@@ -67,7 +67,7 @@ const TaskLabelsForm = withForm({
                       }));
                     }}
                   >
-                    <SelectTrigger className="!bg-background px-0 pl-3">
+                    <SelectTrigger className="!bg-background shadow-none">
                       <div
                         className={cn(
                           "size-4 rounded-full",
@@ -96,7 +96,7 @@ const TaskLabelsForm = withForm({
                     </SelectContent>
                   </Select>
                   <Input
-                    className="border-0 focus-visible:ring-0"
+                    className="rounded-none border-0 border-l shadow-none focus-visible:ring-0"
                     placeholder="Add new label..."
                     value={newLabel.name}
                     onChange={(e) =>
@@ -145,50 +145,52 @@ const TaskLabelsForm = withForm({
                 </div>
               </div>
 
-              {field.state.value.map((label, i) => {
-                return (
-                  <form.Field key={label.name} name={`labels[${i}]`}>
-                    {(subField) => {
-                      return (
-                        <CheckboxRoot
-                          className="flex items-center justify-between px-2"
-                          defaultChecked={subField.state.value.checked}
-                          onCheckedChange={({ checked }) =>
-                            subField.handleChange({
-                              ...subField.state.value,
-                              checked: !!checked,
-                            })
-                          }
-                        >
-                          <CheckboxLabel className="ml-0">
-                            <div className="flex items-center gap-2">
-                              <div
-                                className={cn(
-                                  "size-4 rounded-full",
-                                  labelColors.find(
-                                    (l) =>
-                                      l.name.toLowerCase() ===
-                                      subField.state.value.color,
-                                  )?.classes,
-                                )}
-                              />
-                              <p className="text-sm">
-                                {subField.state.value.name}
-                              </p>
-                            </div>
-                          </CheckboxLabel>
-                          <CheckboxHiddenInput />
-                          <CheckboxControl>
-                            <CheckboxIndicator>
-                              <CheckIcon className="size-4" />
-                            </CheckboxIndicator>
-                          </CheckboxControl>
-                        </CheckboxRoot>
-                      );
-                    }}
-                  </form.Field>
-                );
-              })}
+              <div className="flex flex-col divide-y border-b">
+                {field.state.value.map((label, i) => {
+                  return (
+                    <form.Field key={label.name} name={`labels[${i}]`}>
+                      {(subField) => {
+                        return (
+                          <CheckboxRoot
+                            className="flex items-center justify-between p-2"
+                            defaultChecked={subField.state.value.checked}
+                            onCheckedChange={({ checked }) =>
+                              subField.handleChange({
+                                ...subField.state.value,
+                                checked: !!checked,
+                              })
+                            }
+                          >
+                            <CheckboxLabel className="ml-0">
+                              <div className="flex items-center gap-2">
+                                <div
+                                  className={cn(
+                                    "size-4 rounded-full",
+                                    labelColors.find(
+                                      (l) =>
+                                        l.name.toLowerCase() ===
+                                        subField.state.value.color,
+                                    )?.classes,
+                                  )}
+                                />
+                                <p className="text-sm">
+                                  {subField.state.value.name}
+                                </p>
+                              </div>
+                            </CheckboxLabel>
+                            <CheckboxHiddenInput />
+                            <CheckboxControl>
+                              <CheckboxIndicator>
+                                <CheckIcon className="size-4" />
+                              </CheckboxIndicator>
+                            </CheckboxControl>
+                          </CheckboxRoot>
+                        );
+                      }}
+                    </form.Field>
+                  );
+                })}
+              </div>
             </div>
           );
         }}

@@ -4,7 +4,9 @@ import { TagIcon, TypeIcon } from "lucide-react";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
+import Labels from "@/components/Labels";
 import CreateTaskAssignees from "@/components/tasks/CreateTaskAssignees";
 import CreateTaskDatePicker from "@/components/tasks/CreateTaskDatePicker";
 import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
@@ -155,7 +157,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     >
       <DialogBackdrop />
       <DialogPositioner>
-        <DialogContent>
+        <DialogContent className="">
           <DialogCloseTrigger />
 
           <form
@@ -185,7 +187,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
               )}
             </form.Field>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 py-2">
               <CreateTaskAssignees form={form} />
 
               <PopoverRoot>
@@ -197,7 +199,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                 </PopoverTrigger>
 
                 <PopoverPositioner>
-                  <PopoverContent className="flex min-w-80 flex-col gap-2 p-0 pb-2">
+                  <PopoverContent className="flex min-w-80 flex-col gap-2 p-0">
                     <TaskLabelsForm form={form} />
                   </PopoverContent>
                 </PopoverPositioner>
@@ -213,11 +215,36 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                   Description
                 </h3>
               </div>
+
               <RichTextEditor
                 onUpdate={({ editor }) =>
                   form.setFieldValue("description", editor.getHTML())
                 }
               />
+            </div>
+
+            <div className="py-1">
+              <form.Subscribe
+                selector={(state) => ({
+                  labels: state.values.labels,
+                  assignees: state.values.assignees,
+                })}
+              >
+                {({ labels, assignees }) => (
+                  <div className="flex flex-col gap-2">
+                    <Assignees
+                      assignees={assignees}
+                      showUsername={true}
+                      className="-ml-2 flex flex-wrap gap-1"
+                    />
+
+                    <Labels
+                      labels={labels.filter((l) => l.checked)}
+                      className="flex flex-wrap gap-1"
+                    />
+                  </div>
+                )}
+              </form.Subscribe>
             </div>
 
             <div className="flex justify-end gap-2">

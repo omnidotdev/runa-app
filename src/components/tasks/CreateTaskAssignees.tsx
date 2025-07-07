@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
 import { UserPlusIcon } from "lucide-react";
 
 import { Avatar } from "@/components/ui/avatar";
@@ -13,7 +14,7 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { withForm } from "@/lib/hooks/useForm";
-import usersOptions from "@/lib/options/users.options";
+import workspacesUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 
 const CreateTaskAssignees = withForm({
@@ -29,9 +30,13 @@ const CreateTaskAssignees = withForm({
     dueDate: "",
   },
   render: ({ form }) => {
+    const { workspaceId } = useParams({ strict: false });
+
     const { data: users } = useQuery({
-      ...usersOptions,
-      select: (data) => data?.users?.nodes,
+      ...workspacesUsersOptions(workspaceId!),
+      enabled: !!workspaceId,
+      select: (data) =>
+        data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
     });
 
     const usersCollection = createListCollection({

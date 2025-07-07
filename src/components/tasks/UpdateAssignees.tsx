@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
 import { CheckIcon } from "lucide-react";
 
 import { Avatar } from "@/components/ui/avatar";
@@ -11,7 +12,7 @@ import {
 } from "@/components/ui/checkbox";
 import { createListCollection } from "@/components/ui/select";
 import { withForm } from "@/lib/hooks/useForm";
-import usersOptions from "@/lib/options/users.options";
+import workspacesUsersOptions from "@/lib/options/workspaceUsers.options";
 
 // TODO: update structure. Use combobox to search for assignees and show currently assigned only with `XIcon` to remove
 
@@ -28,9 +29,13 @@ const UpdateAssignees = withForm({
     dueDate: "",
   },
   render: ({ form }) => {
+    const { workspaceId } = useParams({ strict: false });
+
     const { data: users } = useQuery({
-      ...usersOptions,
-      select: (data) => data?.users?.nodes,
+      ...workspacesUsersOptions(workspaceId!),
+      enabled: !!workspaceId,
+      select: (data) =>
+        data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
     });
 
     const usersCollection = createListCollection({
