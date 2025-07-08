@@ -1,13 +1,10 @@
 import { useFilter, useListCollection } from "@ark-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { TrashIcon } from "lucide-react";
-import { useEffect } from "react";
 
 import { Avatar } from "@/components/ui/avatar";
-import { withForm } from "@/lib/hooks/useForm";
-import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 import {
   ComboboxContent,
   ComboboxControl,
@@ -16,7 +13,9 @@ import {
   ComboboxPositioner,
   ComboboxRoot,
   ComboboxTrigger,
-} from "../ui/combobox";
+} from "@/components/ui/combobox";
+import { withForm } from "@/lib/hooks/useForm";
+import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 
 interface WorkspaceUser {
   label: string;
@@ -47,37 +46,28 @@ const UpdateAssignees = withForm({
     dueDate: "",
   },
   render: ({ form }) => {
-    const { workspaceId } = useParams({ strict: false });
+    const { workspaceId } = useParams({
+      from: "/_auth/workspaces/$workspaceId/projects/$projectId/$taskId",
+    });
 
     const { contains } = useFilter({ sensitivity: "base" });
 
-    const { data: users } = useQuery({
-      ...workspaceUsersOptions(workspaceId!),
-      enabled: !!workspaceId,
+    const { data: users } = useSuspenseQuery({
+      ...workspaceUsersOptions(workspaceId),
       select: (data) =>
         data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
     });
 
-    const {
-      collection: usersCollection,
-      filter,
-      set,
-    } = useListCollection<WorkspaceUser>({
-      initialItems: [],
-      filter: contains,
-    });
-
-    useEffect(() => {
-      if (users) {
-        set(
-          users.map((user) => ({
+    const { collection: usersCollection, filter } =
+      useListCollection<WorkspaceUser>({
+        initialItems:
+          users?.map((user) => ({
             label: user?.name || "",
             value: user?.rowId || "",
             user: user,
-          })),
-        );
-      }
-    }, [users, set]);
+          })) ?? [],
+        filter: contains,
+      });
 
     return (
       <form.Field name="assignees" mode="array">

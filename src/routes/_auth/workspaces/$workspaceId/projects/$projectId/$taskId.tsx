@@ -59,14 +59,21 @@ import {
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
+import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 
 import type { EditorApi } from "@/components/core/RichTextEditor";
 
 export const Route = createFileRoute({
-  loader: async ({ params: { taskId }, context: { queryClient } }) => {
-    const { task } = await queryClient.ensureQueryData(taskOptions(taskId));
+  loader: async ({
+    params: { workspaceId, taskId },
+    context: { queryClient },
+  }) => {
+    const [{ task }] = await Promise.all([
+      queryClient.ensureQueryData(taskOptions(taskId)),
+      queryClient.ensureQueryData(workspaceUsersOptions(workspaceId)),
+    ]);
 
     if (!task) {
       throw notFound();
