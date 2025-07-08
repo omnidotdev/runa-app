@@ -1,8 +1,11 @@
-query Workspaces {
-  workspaces {
+query Workspaces($limit: Int) {
+  workspaces(orderBy: WORKSPACE_USERS_COUNT_DESC, first: $limit) {
     nodes {
       rowId
       name
+      workspaceUsers {
+        totalCount
+      }
     }
   }
 }

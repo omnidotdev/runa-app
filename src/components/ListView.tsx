@@ -137,61 +137,63 @@ const ListView = ({ shouldForceClose }: Props) => {
               defaultOpen
               open={shouldForceClose ? false : undefined}
             >
-              <CollapsibleTrigger>
-                <div className="flex items-center gap-2">
-                  <div className="flex-shrink-0">
-                    {
-                      columnIcons[
-                        column?.title
-                          .toLowerCase()
-                          .replace(/ /g, "-") as keyof typeof columnIcons
-                      ]
-                    }
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-shrink-0">
+                      {
+                        columnIcons[
+                          column?.title
+                            .toLowerCase()
+                            .replace(/ /g, "-") as keyof typeof columnIcons
+                        ]
+                      }
+                    </div>
+
+                    <h3 className="text-base-800 text-sm dark:text-base-100">
+                      {column?.title}
+                    </h3>
+
+                    <span className="px-2 py-0.5 text-foreground text-xs">
+                      {
+                        project?.columns?.nodes?.find(
+                          (c) => c?.rowId === column?.rowId,
+                        )?.tasks?.totalCount
+                      }
+                    </span>
                   </div>
 
-                  <h3 className="text-base-800 text-sm dark:text-base-100">
-                    {column?.title}
-                  </h3>
-
-                  <span className="px-2 py-0.5 text-foreground text-xs">
-                    {
-                      project?.columns?.nodes?.find(
-                        (c) => c?.rowId === column?.rowId,
-                      )?.tasks?.totalCount
-                    }
-                  </span>
-                </div>
-
-                <div className="ml-auto flex gap-2">
-                  <Tooltip
-                    positioning={{ placement: "top", gutter: 11 }}
-                    tooltip={{
-                      className: "bg-background text-foreground border",
-                      children: (
-                        <div className="inline-flex">
-                          Add Task
-                          <div className="ml-2 flex items-center gap-0.5">
-                            <SidebarMenuShotcut>C</SidebarMenuShotcut>
+                  <div className="ml-auto flex gap-2">
+                    <Tooltip
+                      positioning={{ placement: "top", gutter: 11 }}
+                      tooltip={{
+                        className: "bg-background text-foreground border",
+                        children: (
+                          <div className="inline-flex">
+                            Add Task
+                            <div className="ml-2 flex items-center gap-0.5">
+                              <SidebarMenuShotcut>C</SidebarMenuShotcut>
+                            </div>
                           </div>
-                        </div>
-                      ),
-                    }}
-                  >
-                    <Button
-                      variant="ghost"
-                      size="xs"
-                      className="size-5"
-                      onClick={() => {
-                        setColumnId(column?.rowId!);
-                        setIsCreateTaskDialogOpen(true);
+                        ),
                       }}
                     >
-                      <PlusIcon className="size-4" />
-                    </Button>
-                  </Tooltip>
-                </div>
+                      <Button
+                        variant="ghost"
+                        size="xs"
+                        className="size-5"
+                        onClick={() => {
+                          setColumnId(column?.rowId!);
+                          setIsCreateTaskDialogOpen(true);
+                        }}
+                      >
+                        <PlusIcon className="size-4" />
+                      </Button>
+                    </Tooltip>
+                  </div>
 
-                <ChevronDownIcon className="ml-2 size-4 text-base-400 transition-transform" />
+                  <ChevronDownIcon className="ml-2 size-4 text-base-400 transition-transform" />
+                </div>
               </CollapsibleTrigger>
 
               <CollapsibleContent className="border-t">

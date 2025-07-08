@@ -71,7 +71,7 @@ function SettingsPage() {
 
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
     meta: {
-      invalidates: [workspacesOptions.queryKey],
+      invalidates: [workspacesOptions().queryKey],
     },
     onMutate: () => navigate({ to: "/workspaces", replace: true }),
     onSettled: () => setIsDeleteWorkspaceOpen(false),

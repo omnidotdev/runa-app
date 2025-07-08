@@ -76,7 +76,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
 
   const { data: workspaces } = useQuery({
-    ...workspacesOptions,
+    ...workspacesOptions(),
     select: (data) => data.workspaces?.nodes,
   });
 
@@ -161,7 +161,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                 </MenuTrigger>
 
                 <MenuPositioner>
-                  <MenuContent className="no-scrollbar max-h-80 w-(--radix-dropdown-menu-trigger-width) min-w-56 overflow-auto rounded-lg">
+                  <MenuContent className="no-scrollbar max-h-80 min-w-56 overflow-auto rounded-lg focus:outline-none">
                     {workspaces?.map((workspace) => (
                       <MenuItem
                         key={workspace?.rowId}

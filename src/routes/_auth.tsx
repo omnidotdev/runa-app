@@ -15,9 +15,9 @@ export const Route = createFileRoute({
     const { workspaceId } = params as unknown as { workspaceId?: string };
 
     await Promise.all([
-      queryClient.prefetchQuery(workspacesOptions),
+      queryClient.ensureQueryData(workspacesOptions()),
       ...(workspaceId
-        ? [queryClient.prefetchQuery(workspaceOptions(workspaceId))]
+        ? [queryClient.ensureQueryData(workspaceOptions(workspaceId))]
         : []),
     ]);
   },

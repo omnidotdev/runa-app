@@ -4954,10 +4954,12 @@ export type WorkspaceUsersQueryVariables = Exact<{
 
 export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', user?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null } | null> } | null };
 
-export type WorkspacesQueryVariables = Exact<{ [key: string]: never; }>;
+export type WorkspacesQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']['input']>;
+}>;
 
 
-export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string } | null> } | null };
+export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } } | null> } | null };
 
 export const ProjectFragmentDoc = gql`
     fragment Project on Project {
@@ -5236,11 +5238,14 @@ export const WorkspaceUsersDocument = gql`
 }
     `;
 export const WorkspacesDocument = gql`
-    query Workspaces {
-  workspaces {
+    query Workspaces($limit: Int) {
+  workspaces(orderBy: WORKSPACE_USERS_COUNT_DESC, first: $limit) {
     nodes {
       rowId
       name
+      workspaceUsers {
+        totalCount
+      }
     }
   }
 }

@@ -39,7 +39,7 @@ const CreateWorkspaceDialog = () => {
 
   const { mutateAsync: createNewWorkspace } = useCreateWorkspaceMutation({
     meta: {
-      invalidates: [workspacesOptions.queryKey],
+      invalidates: [workspacesOptions().queryKey],
     },
     onSuccess: ({ createWorkspace }) => {
       navigate({
