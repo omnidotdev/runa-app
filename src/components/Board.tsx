@@ -198,9 +198,9 @@ const Board = () => {
                     key={column?.rowId}
                     className="relative flex h-full w-[340px] flex-col gap-2 bg-inherit"
                   >
-                    <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2 shadow-sm">
+                    <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2">
                       <div className="flex items-center gap-2">
-                        <div className=" flex-shrink-0">
+                        <div className="flex-shrink-0">
                           {
                             columnIcons[
                               column?.title
@@ -209,6 +209,7 @@ const Board = () => {
                             ]
                           }
                         </div>
+
                         <h3 className="text-base-800 text-sm dark:text-base-100">
                           {column?.title}
                         </h3>
