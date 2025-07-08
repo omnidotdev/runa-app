@@ -65,7 +65,7 @@ const TasksList = ({
   return (
     <div
       className={cn(
-        "divide-y divide-base-200 overflow-hidden rounded-b-lg dark:divide-base-700",
+        "divide-y divide-base-200 overflow-hidden dark:divide-base-700",
         className,
       )}
       {...rest}
@@ -103,10 +103,8 @@ const TasksList = ({
                       }
                     }}
                     className={cn(
-                      "group flex cursor-pointer flex-col gap-2 rounded-md bg-background px-4 py-3 transition-colors",
-                      snapshot.isDragging
-                        ? "z-10 shadow-lg"
-                        : "hover:bg-base-50/50 dark:hover:bg-background/90",
+                      "group flex cursor-pointer flex-col gap-2 bg-background px-4 py-3 transition-colors last:rounded-b-lg",
+                      snapshot.isDragging ? "z-10 rounded-md border" : "",
                     )}
                   >
                     {/* Row 1: Metadata (ID, Priority, Due Date) */}

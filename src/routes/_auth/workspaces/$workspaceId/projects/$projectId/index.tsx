@@ -15,6 +15,7 @@ import * as z from "zod/v4";
 
 import Board from "@/components/Board";
 import Link from "@/components/core/Link";
+import Filter from "@/components/Filter";
 import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
 import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
@@ -193,6 +194,7 @@ function ProjectPage() {
                   )}
                 </Button>
               </Tooltip>
+
               {project?.viewMode === "list" && (
                 <Tooltip
                   positioning={{ placement: "bottom" }}
@@ -210,6 +212,7 @@ function ProjectPage() {
                   </Button>
                 </Tooltip>
               )}
+
               <Tooltip
                 positioning={{ placement: "bottom" }}
                 tooltip={{
@@ -229,6 +232,8 @@ function ProjectPage() {
                   <Settings2 />
                 </Link>
               </Tooltip>
+
+              <Filter />
             </div>
           </div>
         </div>
