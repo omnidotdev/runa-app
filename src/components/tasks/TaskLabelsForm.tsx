@@ -34,6 +34,7 @@ const TaskLabelsForm = withForm({
     }[],
     assignees: [] as string[],
     dueDate: "",
+    columnId: "",
   },
   render: ({ form }) => {
     const [newLabel, setNewLabel] = useState({

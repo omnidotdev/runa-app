@@ -35,6 +35,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
+import TaskColumnForm from "./TaskColumnForm";
 
 interface Props {
   columnId?: string;
@@ -85,6 +86,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       labels: projectLabels,
       assignees: [] as string[],
       dueDate: "",
+      columnId: columnId ?? defaultColumnId ?? "",
     },
     onSubmit: async ({ value, formApi }) => {
       // TODO: dynamic with auth
@@ -109,7 +111,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
               content: value.title,
               description: value.description,
               projectId,
-              columnId: columnId ?? defaultColumnId!,
+              columnId: value.columnId,
               authorId,
               labels: JSON.stringify(taskLabels),
               dueDate: value.dueDate.length
@@ -157,7 +159,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     >
       <DialogBackdrop />
       <DialogPositioner>
-        <DialogContent className="">
+        <DialogContent className="w-fit">
           <DialogCloseTrigger />
 
           <form
@@ -206,6 +208,8 @@ const CreateTaskDialog = ({ columnId }: Props) => {
               </PopoverRoot>
 
               <CreateTaskDatePicker form={form} />
+
+              <TaskColumnForm form={form} />
             </div>
 
             <div className="prose prose-sm dark:prose-invert w-full max-w-none">

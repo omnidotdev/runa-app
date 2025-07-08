@@ -28,6 +28,7 @@ const CreateTaskAssignees = withForm({
     }[],
     assignees: [] as string[],
     dueDate: "",
+    columnId: "",
   },
   render: ({ form }) => {
     const { workspaceId } = useParams({ strict: false });
