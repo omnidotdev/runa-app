@@ -4,7 +4,7 @@ import { tv } from "tailwind-variants";
 
 import { cn } from "@/lib/utils";
 
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 const tooltipVariants = tv({
   slots: {
@@ -59,7 +59,7 @@ const TooltipArrowTip = ({
 );
 
 interface Props extends ComponentProps<typeof TooltipRoot> {
-  children?: React.ReactNode;
+  children?: ReactNode;
   tooltip?: string | ComponentProps<typeof TooltipContent>;
 }
 

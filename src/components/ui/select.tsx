@@ -5,7 +5,7 @@ import { tv } from "tailwind-variants";
 
 import { cn } from "@/lib/utils";
 
-import type { ComponentProps } from "react";
+import type { ComponentProps, HTMLAttributes } from "react";
 
 // TODO: Add component to Thornberry registry.
 
@@ -194,7 +194,7 @@ const SelectItemIndicator = ({
 const SelectSeparator = ({
   className,
   ...rest
-}: React.HTMLAttributes<HTMLDivElement>) => (
+}: HTMLAttributes<HTMLDivElement>) => (
   <div className={cn(separator(), className)} {...rest} />
 );
 

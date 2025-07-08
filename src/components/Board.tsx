@@ -19,6 +19,7 @@ import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
 
 import type { DropResult } from "@hello-pangea/dnd";
+import type { MouseEvent } from "react";
 
 const Board = () => {
   const { theme } = useTheme();
@@ -103,7 +104,7 @@ const Board = () => {
   }, []);
 
   const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
+    (e: MouseEvent) => {
       if (!scrollContainerRef.current) return;
 
       const container = scrollContainerRef.current;

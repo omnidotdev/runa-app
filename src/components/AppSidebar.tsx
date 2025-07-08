@@ -57,9 +57,9 @@ import { useTheme } from "@/providers/ThemeProvider";
 import ConfirmDialog from "./ConfirmDialog";
 import { Tooltip } from "./ui/tooltip";
 
-import type * as React from "react";
+import type { ComponentProps } from "react";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const { workspaceId } = useParams({ strict: false });
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<{

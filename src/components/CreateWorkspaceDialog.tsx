@@ -18,6 +18,8 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
 
+import type { FormEvent } from "react";
+
 const CreateWorkspaceDialog = () => {
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
@@ -47,7 +49,7 @@ const CreateWorkspaceDialog = () => {
     },
   });
 
-  const handleCreateWorkspace = async (e?: React.FormEvent) => {
+  const handleCreateWorkspace = async (e?: FormEvent) => {
     e?.preventDefault();
     if (!newWorkspaceName.trim()) return;
 

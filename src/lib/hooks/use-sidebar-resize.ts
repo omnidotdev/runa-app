@@ -1,4 +1,4 @@
-import React from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 interface UseSidebarResizeProps {
   /**
@@ -142,38 +142,32 @@ export function useSidebarResize({
   isNested = false,
 }: UseSidebarResizeProps) {
   // Refs for tracking drag state
-  const dragRef = React.useRef<HTMLButtonElement>(null);
-  const startWidth = React.useRef(0);
-  const startX = React.useRef(0);
-  const isDragging = React.useRef(false);
-  const isInteractingWithRail = React.useRef(false);
-  const lastWidth = React.useRef(0);
-  const lastLoggedWidth = React.useRef(0);
-  const dragStartPoint = React.useRef(0);
-  const lastDragDirection = React.useRef<"expand" | "collapse" | null>(null);
-  const lastTogglePoint = React.useRef(0);
-  const lastToggleWidth = React.useRef(0);
-  const toggleCooldown = React.useRef(false);
-  const lastToggleTime = React.useRef(0);
-  const dragDistanceFromToggle = React.useRef(0);
-  const dragOffset = React.useRef(0);
-  const railRect = React.useRef<DOMRect | null>(null);
+  const dragRef = useRef<HTMLButtonElement>(null);
+  const startWidth = useRef(0);
+  const startX = useRef(0);
+  const isDragging = useRef(false);
+  const isInteractingWithRail = useRef(false);
+  const lastWidth = useRef(0);
+  const lastLoggedWidth = useRef(0);
+  const dragStartPoint = useRef(0);
+  const lastDragDirection = useRef<"expand" | "collapse" | null>(null);
+  const lastTogglePoint = useRef(0);
+  const lastToggleWidth = useRef(0);
+  const toggleCooldown = useRef(false);
+  const lastToggleTime = useRef(0);
+  const dragDistanceFromToggle = useRef(0);
+  const dragOffset = useRef(0);
+  const railRect = useRef<DOMRect | null>(null);
 
   // Refs for auto-collapse threshold
-  const autoCollapseThresholdPx = React.useRef(0);
+  const autoCollapseThresholdPx = useRef(0);
 
   // Memoize min/max width calculations for performance
-  const minWidthPx = React.useMemo(
-    () => toPx(minResizeWidth),
-    [minResizeWidth],
-  );
-  const maxWidthPx = React.useMemo(
-    () => toPx(maxResizeWidth),
-    [maxResizeWidth],
-  );
+  const minWidthPx = useMemo(() => toPx(minResizeWidth), [minResizeWidth]);
+  const maxWidthPx = useMemo(() => toPx(maxResizeWidth), [maxResizeWidth]);
 
   // Helper function to determine if width is increasing based on direction and mouse movement
-  const isIncreasingWidth = React.useCallback(
+  const isIncreasingWidth = useCallback(
     (currentX: number, referenceX: number): boolean => {
       return direction === "left"
         ? currentX < referenceX // For left-positioned handle, moving left increases width
@@ -183,7 +177,7 @@ export function useSidebarResize({
   );
 
   // Helper function to calculate width based on mouse position and direction
-  const calculateWidth = React.useCallback(
+  const calculateWidth = useCallback(
     (
       e: MouseEvent,
       initialX: number,
@@ -215,14 +209,14 @@ export function useSidebarResize({
   );
 
   // Update auto-collapse threshold when dependencies change
-  React.useEffect(() => {
+  useEffect(() => {
     autoCollapseThresholdPx.current = enableAutoCollapse
       ? minWidthPx * autoCollapseThreshold
       : 0;
   }, [minWidthPx, enableAutoCollapse, autoCollapseThreshold]);
 
   // Persist width to cookie if cookie name is provided
-  const persistWidth = React.useCallback(
+  const persistWidth = useCallback(
     (width: string) => {
       if (widthCookieName) {
         // biome-ignore lint/suspicious/noDocumentCookie: allow
@@ -233,8 +227,8 @@ export function useSidebarResize({
   );
 
   // Handle mouse down on resize handle
-  const handleMouseDown = React.useCallback(
-    (e: React.MouseEvent) => {
+  const handleMouseDown = useCallback(
+    (e: MouseEvent) => {
       isInteractingWithRail.current = true;
 
       if (!enableDrag) {
@@ -271,7 +265,7 @@ export function useSidebarResize({
   );
 
   // Handle mouse movement and resizing
-  React.useEffect(() => {
+  useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isInteractingWithRail.current) return;
 

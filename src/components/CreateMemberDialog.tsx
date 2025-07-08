@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 
+import type { FormEvent } from "react";
 import type { Assignee } from "@/types";
 
 interface Props {
@@ -40,7 +41,7 @@ const CreateMemberDialog = ({ members, setMembers }: Props) => {
     select: (data) => data?.workspace,
   });
 
-  const handleAddMember = (e: React.FormEvent) => {
+  const handleAddMember = (e: FormEvent) => {
     e.preventDefault();
     if (!newMemberName.trim()) return;
 
