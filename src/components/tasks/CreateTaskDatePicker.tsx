@@ -107,9 +107,13 @@ const CreateTaskDatePicker = withForm({
                               // biome-ignore lint/suspicious/noArrayIndexKey: simple index
                               <DatePickerTableRow key={id}>
                                 {week.map((day, id) => (
-                                  // biome-ignore lint/suspicious/noArrayIndexKey: simple index
-                                  <DatePickerTableCell key={id} value={day}>
-                                    <DatePickerTableCellTrigger>
+                                  <DatePickerTableCell
+                                    // biome-ignore lint/suspicious/noArrayIndexKey: simple index
+                                    key={id}
+                                    value={day}
+                                    className="size-8 border"
+                                  >
+                                    <DatePickerTableCellTrigger className="hover:bg-primary-50 data-[outside-range]:opacity-40 hover:data-[outside-range]:bg-transparent dark:hover:bg-primary-950">
                                       {day.day}
                                     </DatePickerTableCellTrigger>
                                   </DatePickerTableCell>

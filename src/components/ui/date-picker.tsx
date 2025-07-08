@@ -25,7 +25,8 @@ const datePickerVariants = tv({
     table: "-m-1 w-full border-separate border-spacing-1",
     tableHeader: "h-10 font-semibold text-sm",
     tableCell: "text-center",
-    tableCellTrigger: "h-full w-fu cursor-pointer",
+    tableCellTrigger:
+      "size-full flex cursor-pointer items-center justify-center",
   },
 });
 
