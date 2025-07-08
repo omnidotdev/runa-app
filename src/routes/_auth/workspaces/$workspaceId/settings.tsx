@@ -5,24 +5,24 @@ import { ArrowLeft, Edit, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
-import CreateMemberDialog from "@/components/CreateMemberDialog";
 import Link from "@/components/core/Link";
 import NotFound from "@/components/layout/NotFound";
+import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
   useDeleteProjectMutation,
   useDeleteWorkspaceMutation,
+  useDeleteWorkspaceUserMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
+import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import seo from "@/lib/util/seo";
-
-import type { Assignee } from "@/types";
 
 export const Route = createFileRoute({
   loader: async ({ params: { workspaceId }, context: { queryClient } }) => {
@@ -50,24 +50,38 @@ function SettingsPage() {
   const navigate = Route.useNavigate();
   const queryClient = getQueryClient();
 
-  // TODO: Replace with actual members fetching logic.
-  const [members, setMembers] = useState<Assignee[]>([]);
-  const [selectedMember, setSelectedMember] = useState<Assignee>();
+  const [selectedMember, setSelectedMember] = useState<{
+    name: string;
+    avatarUrl?: string | null;
+    rowId: string;
+  }>();
   const [selectedProject, setSelectedProject] = useState<{
     rowId: string;
     name: string;
   }>();
   const [editWorkspace, setEditWorkspace] = useState(false);
 
+  const { mutate: deleteMember } = useDeleteWorkspaceUserMutation({
+    meta: {
+      invalidates: [workspaceUsersOptions({ rowId: workspaceId }).queryKey],
+    },
+  });
+
+  const { data: members } = useSuspenseQuery({
+    ...workspaceUsersOptions({ rowId: workspaceId }),
+    select: (data) => data?.workspaceUsers?.nodes,
+  });
+
   const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId }),
     select: (data) => data?.workspace,
   });
 
-  const handleRemoveMember = (memberId: string) => {
-    const updatedMembers = members.filter((member) => member.id !== memberId);
-    setMembers(updatedMembers);
-  };
+  // TODO
+  // const handleRemoveMember = (memberId: string) => {
+  //   const updatedMembers = members.filter((member) => member.id !== memberId);
+  //   setMembers(updatedMembers);
+  // };
 
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
     meta: {
@@ -234,20 +248,23 @@ function SettingsPage() {
             </Tooltip>
           </div>
 
-          {members.length > 0 && (
+          {!!members?.length && (
             <div className="grid gap-2">
               {members.map((member) => (
                 <div
-                  key={member.id}
+                  key={member?.user?.rowId}
                   className="flex items-center justify-between rounded-lg border bg-accent p-3"
                 >
                   <div className="flex items-center gap-3 ">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full border bg-background font-medium text-sm uppercase shadow">
-                      {member.name[0]}
-                    </div>
+                    <Avatar
+                      fallback={member?.user?.name?.charAt(0)}
+                      src={member?.user?.avatarUrl!}
+                      alt={member?.user?.name}
+                      className="size-8 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
+                    />
 
                     <span className="text-foreground text-sm">
-                      {member.name}
+                      {member?.user?.name}
                     </span>
                   </div>
 
@@ -258,7 +275,7 @@ function SettingsPage() {
                       aria-label="Remove team member"
                       onClick={() => {
                         setIsDeleteTeamMemberOpen(true);
-                        setSelectedMember(member);
+                        setSelectedMember(member?.user!);
                       }}
                       className="p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
                     >
@@ -358,10 +375,9 @@ function SettingsPage() {
       <ConfirmDialog
         title="Danger Zone"
         description={`This will delete ${selectedMember?.name} from ${workspace?.name} workspace. This action cannot be undone.`}
-        onConfirm={() => {
-          // TODO
-          handleRemoveMember(selectedMember?.id!);
-        }}
+        onConfirm={() =>
+          deleteMember({ userId: selectedMember?.rowId!, workspaceId })
+        }
         dialogType={DialogType.DeleteTeamMember}
         confirmation={selectedMember?.name}
         inputProps={{
@@ -383,11 +399,11 @@ function SettingsPage() {
         }}
       />
 
-      <CreateMemberDialog
-        // TODO: Hook up to actual members data
+      {/* TODO: update to `InviteMember` and connect with email invitations */}
+      {/* <CreateMemberDialog
         members={members}
         setMembers={setMembers}
-      />
+      /> */}
     </div>
   );
 }

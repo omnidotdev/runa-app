@@ -4901,6 +4901,14 @@ export type DeleteWorkspaceMutationVariables = Exact<{
 
 export type DeleteWorkspaceMutation = { __typename?: 'Mutation', deleteWorkspace?: { __typename?: 'DeleteWorkspacePayload', clientMutationId?: string | null } | null };
 
+export type DeleteWorkspaceUserMutationVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  workspaceId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteWorkspaceUserMutation = { __typename?: 'Mutation', deleteWorkspaceUser?: { __typename?: 'DeleteWorkspaceUserPayload', clientMutationId?: string | null } | null };
+
 export type UpdateWorkspaceMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
   patch: WorkspacePatch;
@@ -5312,6 +5320,32 @@ useDeleteWorkspaceMutation.getKey = () => ['DeleteWorkspace'];
 
 
 useDeleteWorkspaceMutation.fetcher = (variables: DeleteWorkspaceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteWorkspaceMutation, DeleteWorkspaceMutationVariables>(DeleteWorkspaceDocument, variables, options);
+
+export const DeleteWorkspaceUserDocument = `
+    mutation DeleteWorkspaceUser($userId: UUID!, $workspaceId: UUID!) {
+  deleteWorkspaceUser(input: {userId: $userId, workspaceId: $workspaceId}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useDeleteWorkspaceUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteWorkspaceUserMutation, TError, DeleteWorkspaceUserMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteWorkspaceUserMutation, TError, DeleteWorkspaceUserMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteWorkspaceUser'],
+    mutationFn: (variables?: DeleteWorkspaceUserMutationVariables) => graphqlFetch<DeleteWorkspaceUserMutation, DeleteWorkspaceUserMutationVariables>(DeleteWorkspaceUserDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteWorkspaceUserMutation.getKey = () => ['DeleteWorkspaceUser'];
+
+
+useDeleteWorkspaceUserMutation.fetcher = (variables: DeleteWorkspaceUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteWorkspaceUserMutation, DeleteWorkspaceUserMutationVariables>(DeleteWorkspaceUserDocument, variables, options);
 
 export const UpdateWorkspaceDocument = `
     mutation UpdateWorkspace($rowId: UUID!, $patch: WorkspacePatch!) {
