@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 
 import { Avatar } from "@/components/ui/avatar";
-import workspacesUsersOptions from "@/lib/options/workspaceUsers.options";
+import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 
 interface Props extends React.ComponentProps<"div"> {
   assignees?: string[];
@@ -13,7 +13,7 @@ const Assignees = ({ assignees, showUsername = false, ...rest }: Props) => {
   const { workspaceId } = useParams({ strict: false });
 
   const { data: workspaceUsers } = useQuery({
-    ...workspacesUsersOptions(workspaceId!),
+    ...workspaceUsersOptions(workspaceId!),
     enabled: !!workspaceId,
     select: (data) => data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
   });

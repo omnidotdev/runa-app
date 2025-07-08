@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/checkbox";
 import { createListCollection } from "@/components/ui/select";
 import { withForm } from "@/lib/hooks/useForm";
-import workspacesUsersOptions from "@/lib/options/workspaceUsers.options";
+import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 
 // TODO: update structure. Use combobox to search for assignees and show currently assigned only with `XIcon` to remove
 
@@ -32,7 +32,7 @@ const UpdateAssignees = withForm({
     const { workspaceId } = useParams({ strict: false });
 
     const { data: users } = useQuery({
-      ...workspacesUsersOptions(workspaceId!),
+      ...workspaceUsersOptions(workspaceId!),
       enabled: !!workspaceId,
       select: (data) =>
         data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
