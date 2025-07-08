@@ -63,6 +63,7 @@ const AvatarRoot = ({
   <ArkAvatar.Root className={cn(root({ size }), className)} {...rest} />
 );
 
+// TODO: fix `React.Children.only` issue with `asChild`
 const AvatarFallback = ({
   className,
   size,

@@ -1,18 +1,36 @@
+import { useFilter, useListCollection } from "@ark-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
-import { CheckIcon } from "lucide-react";
+import { TrashIcon } from "lucide-react";
+import { useEffect } from "react";
 
 import { Avatar } from "@/components/ui/avatar";
-import {
-  CheckboxControl,
-  CheckboxHiddenInput,
-  CheckboxIndicator,
-  CheckboxLabel,
-  CheckboxRoot,
-} from "@/components/ui/checkbox";
-import { createListCollection } from "@/components/ui/select";
 import { withForm } from "@/lib/hooks/useForm";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
+import { Button } from "../ui/button";
+import {
+  ComboboxContent,
+  ComboboxControl,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxPositioner,
+  ComboboxRoot,
+  ComboboxTrigger,
+} from "../ui/combobox";
+
+interface WorkspaceUser {
+  label: string;
+  value: string;
+  user:
+    | {
+        __typename?: "User";
+        name: string;
+        avatarUrl?: string | null;
+        rowId: string;
+      }
+    | null
+    | undefined;
+}
 
 // TODO: update structure. Use combobox to search for assignees and show currently assigned only with `XIcon` to remove
 
@@ -31,6 +49,8 @@ const UpdateAssignees = withForm({
   render: ({ form }) => {
     const { workspaceId } = useParams({ strict: false });
 
+    const { contains } = useFilter({ sensitivity: "base" });
+
     const { data: users } = useQuery({
       ...workspaceUsersOptions(workspaceId!),
       enabled: !!workspaceId,
@@ -38,55 +58,97 @@ const UpdateAssignees = withForm({
         data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
     });
 
-    const usersCollection = createListCollection({
-      items:
-        users?.map((user) => ({
-          label: user?.name || "",
-          value: user?.rowId || "",
-          user: user,
-        })) || [],
+    const {
+      collection: usersCollection,
+      filter,
+      set,
+    } = useListCollection<WorkspaceUser>({
+      initialItems: [],
+      filter: contains,
     });
+
+    useEffect(() => {
+      if (users) {
+        set(
+          users.map((user) => ({
+            label: user?.name || "",
+            value: user?.rowId || "",
+            user: user,
+          })),
+        );
+      }
+    }, [users, set]);
 
     return (
       <form.Field name="assignees" mode="array">
         {(field) => {
           return (
-            <div className="no-scrollbar flex max-h-40 flex-col overflow-auto">
-              {usersCollection.items.map((assignee) => (
-                <CheckboxRoot
-                  key={assignee?.value}
-                  className="flex items-center justify-between"
-                  defaultChecked={field.state.value.includes(assignee?.value)}
-                  onCheckedChange={({ checked }) => {
-                    checked
-                      ? field.insertValue(
-                          field.state.value.length,
-                          assignee?.value,
-                        )
-                      : field.removeValue(
-                          field.state.value.indexOf(assignee?.value),
-                        );
-                  }}
-                >
-                  <CheckboxLabel className="ml-0">
-                    <div className="flex items-center gap-2">
-                      <Avatar
-                        src={assignee?.user?.avatarUrl!}
-                        alt={assignee?.user?.name}
-                        fallback={assignee?.user?.name?.charAt(0)}
-                        className="size-6 rounded-full"
-                      />
-                      <p className="text-sm">{assignee?.user?.name}</p>
-                    </div>
-                  </CheckboxLabel>
-                  <CheckboxHiddenInput />
-                  <CheckboxControl>
-                    <CheckboxIndicator>
-                      <CheckIcon className="size-4" />
-                    </CheckboxIndicator>
-                  </CheckboxControl>
-                </CheckboxRoot>
-              ))}
+            <div className="flex flex-col">
+              <ComboboxRoot
+                // @ts-ignore TODO type issue
+                collection={usersCollection}
+                value={field.state.value}
+                onInputValueChange={({ inputValue }) => filter(inputValue)}
+                onValueChange={({ value }) => field.setValue(value)}
+                multiple
+              >
+                <ComboboxControl>
+                  <ComboboxInput
+                    className="rounded-none border-x-0 border-t-0 focus-visible:ring-0"
+                    placeholder="Search for a user..."
+                  />
+                  <ComboboxTrigger />
+                </ComboboxControl>
+
+                <ComboboxPositioner>
+                  <ComboboxContent>
+                    {usersCollection.items.map((user) => (
+                      <ComboboxItem key={user.value} item={user}>
+                        {user.label}
+                      </ComboboxItem>
+                    ))}
+                  </ComboboxContent>
+                </ComboboxPositioner>
+              </ComboboxRoot>
+              <div className="flex flex-col gap-1 p-1">
+                {field.state.value.length ? (
+                  field.state.value.map((assignee, index) => {
+                    const workspaceUser = usersCollection.items.find(
+                      (u) => u.user?.rowId === assignee,
+                    );
+
+                    return (
+                      <div
+                        key={assignee}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-0">
+                          <Avatar
+                            fallback={
+                              workspaceUser?.user?.name?.charAt(0) ?? "U"
+                            }
+                            src={workspaceUser?.user?.avatarUrl!}
+                            alt={workspaceUser?.user?.name}
+                            className="size-6 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
+                          />
+
+                          <p className="text-xs">{workspaceUser?.user?.name}</p>
+                        </div>
+
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => field.removeValue(index)}
+                        >
+                          <TrashIcon className="size-3" />
+                        </Button>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="place-self-center p-2 text-sm">No Assignees</p>
+                )}
+              </div>
             </div>
           );
         }}

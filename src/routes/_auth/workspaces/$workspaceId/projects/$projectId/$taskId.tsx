@@ -579,6 +579,11 @@ function TaskPage() {
                   >
                     <PopoverRoot
                       positioning={{ placement: "bottom-end", gutter: -2 }}
+                      onOpenChange={({ open }) => {
+                        if (!open) {
+                          updateAssigneesForm.reset();
+                        }
+                      }}
                     >
                       <PopoverTrigger asChild>
                         <Button variant="ghost" className="size-6">
@@ -587,7 +592,7 @@ function TaskPage() {
                       </PopoverTrigger>
 
                       <PopoverPositioner>
-                        <PopoverContent className="flex min-w-80 flex-col gap-2">
+                        <PopoverContent className="flex min-w-80 flex-col overflow-hidden p-0">
                           <UpdateAssignees form={updateAssigneesForm} />
 
                           <updateAssigneesForm.Subscribe
@@ -604,6 +609,7 @@ function TaskPage() {
                                   !canSubmit || isSubmitting || !isDirty
                                 }
                                 size="sm"
+                                className="rounded-t-none"
                               >
                                 Update Assignees
                               </Button>
@@ -615,25 +621,29 @@ function TaskPage() {
                   </form>
                 </CardHeader>
                 <CardContent className="space-y-4 p-4">
-                  {task?.assignees?.nodes?.map((assignee) => (
-                    <div
-                      key={assignee?.rowId}
-                      className="flex items-center gap-2"
-                    >
-                      <Avatar
-                        fallback={assignee?.user?.name.charAt(0)}
-                        src={assignee?.user?.avatarUrl ?? undefined}
-                        alt={assignee?.user?.name}
-                        size="xs"
-                        className="rounded-full border-2 border-base-100 dark:border-base-900"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate font-medium text-base-900 text-sm dark:text-base-100">
-                          {assignee?.user?.name}
-                        </p>
+                  {task?.assignees?.nodes?.length ? (
+                    task?.assignees?.nodes?.map((assignee) => (
+                      <div
+                        key={assignee?.rowId}
+                        className="flex items-center gap-2"
+                      >
+                        <Avatar
+                          fallback={assignee?.user?.name.charAt(0)}
+                          src={assignee?.user?.avatarUrl ?? undefined}
+                          alt={assignee?.user?.name}
+                          size="xs"
+                          className="rounded-full border-2 border-base-100 dark:border-base-900"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-medium text-base-900 text-sm dark:text-base-100">
+                            {assignee?.user?.name}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p className="place-self-center text-sm">No Assignees</p>
+                  )}
                 </CardContent>
               </CardRoot>
 
