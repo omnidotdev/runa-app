@@ -25,8 +25,8 @@ import seo from "@/lib/util/seo";
 import type { Assignee } from "@/types";
 
 export const Route = createFileRoute({
-  loader: async ({ params: { workspaceId }, context }) => {
-    const { workspace } = await context.queryClient.ensureQueryData(
+  loader: async ({ params: { workspaceId }, context: { queryClient } }) => {
+    const { workspace } = await queryClient.ensureQueryData(
       workspaceOptions({ rowId: workspaceId }),
     );
 

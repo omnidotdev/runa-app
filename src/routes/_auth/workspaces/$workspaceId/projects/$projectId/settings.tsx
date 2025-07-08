@@ -15,8 +15,8 @@ import getQueryClient from "@/lib/util/getQueryClient";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
-  loader: async ({ params: { projectId }, context }) => {
-    const { project } = await context.queryClient.ensureQueryData(
+  loader: async ({ params: { projectId }, context: { queryClient } }) => {
+    const { project } = await queryClient.ensureQueryData(
       projectOptions({ rowId: projectId }),
     );
 

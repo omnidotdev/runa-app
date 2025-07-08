@@ -13,8 +13,8 @@ export const Route = createFileRoute({
     meta: [...seo({ title: "Workspaces" })],
   }),
   component: WorkspacesOverviewPage,
-  loader: async ({ context }) =>
-    await context.queryClient.ensureQueryData(workspacesOptions({ limit: 4 })),
+  loader: async ({ context: { queryClient } }) =>
+    await queryClient.ensureQueryData(workspacesOptions({ limit: 4 })),
 });
 
 function WorkspacesOverviewPage() {
