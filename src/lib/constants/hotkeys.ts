@@ -5,4 +5,5 @@ export enum Hotkeys {
   CreateTask = "c",
   CreateProject = "p",
   CreateWorkspace = "w",
+  ToggleFilter = "f",
 }

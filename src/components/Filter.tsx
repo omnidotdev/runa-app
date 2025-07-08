@@ -8,6 +8,7 @@ import {
   UserPlusIcon,
 } from "lucide-react";
 import { useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +26,7 @@ import {
 } from "@/components/ui/popover";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import { labelColors } from "@/lib/constants/labelColors";
 import projectOptions from "@/lib/options/project.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
@@ -38,9 +40,12 @@ const Filter = () => {
   const { workspaceId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
-  //   const { workspaceId } = useParams({ strict: false });
 
   const popoverButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  // TODO: Hook up filters with board and list view
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions(projectId),
@@ -58,9 +63,9 @@ const Filter = () => {
       checked: false,
     })) ?? [];
 
-  // TODO: Hook up filters with board and list view
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  useHotkeys(Hotkeys.ToggleFilter, () => setIsFilterOpen(!isFilterOpen), [
+    isFilterOpen,
+  ]);
 
   return (
     <PopoverRoot
@@ -70,6 +75,8 @@ const Filter = () => {
         getAnchorRect: () =>
           popoverButtonRef.current?.getBoundingClientRect() ?? null,
       }}
+      open={isFilterOpen}
+      onOpenChange={({ open }) => setIsFilterOpen(open)}
     >
       <Tooltip
         positioning={{ placement: "bottom" }}
