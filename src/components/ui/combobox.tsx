@@ -146,16 +146,22 @@ const ComboboxItemGroupLabel = ({
 
 export {
   ComboboxRoot,
+  /** @knipignore */
   ComboboxLabel,
   ComboboxControl,
   ComboboxInput,
   ComboboxTrigger,
+  /** @knipignore */
   ComboboxClearTrigger,
   ComboboxPositioner,
   ComboboxContent,
   ComboboxItem,
+  /** @knipignore */
   ComboboxItemGroup,
+  /** @knipignore */
   ComboboxItemGroupLabel,
+  /** @knipignore */
   ComboboxProvider,
+  /** @knipignore */
   ComboboxContext,
 };

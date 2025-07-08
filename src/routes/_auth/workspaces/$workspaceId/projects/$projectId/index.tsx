@@ -28,6 +28,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import seo from "@/lib/util/seo";
 
 import type { ChangeEvent } from "react";
@@ -41,12 +42,13 @@ export const Route = createFileRoute({
   loader: async ({
     deps: { search },
     params: { projectId, workspaceId },
-    context,
+    context: { queryClient },
   }) => {
     const [{ project }] = await Promise.all([
-      context.queryClient.ensureQueryData(projectOptions(projectId)),
-      context.queryClient.ensureQueryData(workspaceOptions(workspaceId)),
-      context.queryClient.ensureQueryData(tasksOptions(projectId, search)),
+      queryClient.ensureQueryData(projectOptions(projectId)),
+      queryClient.ensureQueryData(workspaceOptions(workspaceId)),
+      queryClient.ensureQueryData(workspaceUsersOptions(workspaceId)),
+      queryClient.ensureQueryData(tasksOptions(projectId, search)),
     ]);
 
     if (!project) {

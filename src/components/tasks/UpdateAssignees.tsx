@@ -40,6 +40,7 @@ const UpdateAssignees = withForm({
     }[],
     assignees: [] as string[],
     dueDate: "",
+    columnId: "",
   },
   render: ({ form }) => {
     const { workspaceId } = useParams({

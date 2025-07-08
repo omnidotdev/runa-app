@@ -273,6 +273,7 @@ function TaskPage() {
       labels: defaultLabels,
       assignees: [] as string[],
       dueDate: "",
+      columnId: "",
     },
     onSubmit: ({ value, formApi }) => {
       const allLabels = value.labels.map((label) => ({
@@ -316,6 +317,7 @@ function TaskPage() {
       }[],
       assignees: defaultAssignees ?? [],
       dueDate: "",
+      columnId: "",
     },
     onSubmit: ({ value: { assignees } }) => {
       for (const assignee of assignees) {

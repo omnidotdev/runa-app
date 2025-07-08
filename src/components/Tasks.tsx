@@ -144,8 +144,8 @@ const Tasks = ({
                         <div className="py-4">
                           <RichTextEditor
                             defaultContent={task?.content}
-                            className="-mx-5 min-h-0 border-0 p-0 text-xs dark:bg-background"
-                            skeletonClassName="-mx-5 h-4 p-0"
+                            className="-mx-5 min-h-0 w-fit border-0 p-0 text-xs dark:bg-background"
+                            skeletonClassName="-mx-5 h-4 p-0 w-40"
                             editable={false}
                           />
                         </div>
