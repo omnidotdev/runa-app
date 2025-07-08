@@ -15,7 +15,7 @@ const Assignees = ({ assignees, showUsername = false, ...rest }: Props) => {
   const { workspaceId } = useParams({ strict: false });
 
   const { data: workspaceUsers } = useQuery({
-    ...workspaceUsersOptions(workspaceId!),
+    ...workspaceUsersOptions({ rowId: workspaceId! }),
     enabled: !!workspaceId,
     select: (data) => data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
   });

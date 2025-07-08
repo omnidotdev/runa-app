@@ -27,7 +27,7 @@ import type { Assignee } from "@/types";
 export const Route = createFileRoute({
   loader: async ({ params: { workspaceId }, context }) => {
     const { workspace } = await context.queryClient.ensureQueryData(
-      workspaceOptions(workspaceId),
+      workspaceOptions({ rowId: workspaceId }),
     );
 
     if (!workspace) {
@@ -60,7 +60,7 @@ function SettingsPage() {
   const [editWorkspace, setEditWorkspace] = useState(false);
 
   const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions(workspaceId),
+    ...workspaceOptions({ rowId: workspaceId }),
     select: (data) => data?.workspace,
   });
 
@@ -79,7 +79,10 @@ function SettingsPage() {
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
-      invalidates: [["Projects"], workspaceOptions(workspaceId).queryKey],
+      invalidates: [
+        ["Projects"],
+        workspaceOptions({ rowId: workspaceId }).queryKey,
+      ],
     },
   });
 

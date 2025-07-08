@@ -41,12 +41,12 @@ const TasksList = ({
   const { draggableId } = useDragStore();
 
   const { data: project } = useSuspenseQuery({
-    ...projectOptions(projectId),
+    ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
 
   const { data: tasks } = useSuspenseQuery({
-    ...tasksOptions(projectId, search),
+    ...tasksOptions({ projectId, search }),
     select: (data) =>
       data?.tasks?.nodes?.filter((task) => task?.columnId === columnId),
   });

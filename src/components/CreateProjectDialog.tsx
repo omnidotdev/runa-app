@@ -47,7 +47,7 @@ const CreateProjectDialog = ({ status }: Props) => {
   const { setStatus } = useProjectStore();
 
   const { data: currentWorkspace } = useQuery({
-    ...workspaceOptions(workspaceId!),
+    ...workspaceOptions({ rowId: workspaceId! }),
     enabled: !!workspaceId,
     select: (data) => data?.workspace,
   });
@@ -67,7 +67,10 @@ const CreateProjectDialog = ({ status }: Props) => {
 
   const { mutate: createNewProject } = useCreateProjectMutation({
     meta: {
-      invalidates: [["Projects"], workspaceOptions(workspaceId!).queryKey],
+      invalidates: [
+        ["Projects"],
+        workspaceOptions({ rowId: workspaceId! }).queryKey,
+      ],
     },
     onSuccess: async ({ createProject }) => {
       await Promise.all(

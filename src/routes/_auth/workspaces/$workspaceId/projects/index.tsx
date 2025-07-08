@@ -62,8 +62,8 @@ export const Route = createFileRoute({
     context: { queryClient },
   }) => {
     const [{ workspace }] = await Promise.all([
-      queryClient.ensureQueryData(workspaceOptions(workspaceId)),
-      queryClient.ensureQueryData(projectsOptions(workspaceId, search)),
+      queryClient.ensureQueryData(workspaceOptions({ rowId: workspaceId })),
+      queryClient.ensureQueryData(projectsOptions({ workspaceId, search })),
     ]);
 
     if (!workspace) {
@@ -88,12 +88,12 @@ function ProjectsOverviewPage() {
   const { queryClient } = Route.useRouteContext();
 
   const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions(workspaceId),
+    ...workspaceOptions({ rowId: workspaceId }),
     select: (data) => data?.workspace,
   });
 
   const { data: projects } = useSuspenseQuery({
-    ...projectsOptions(workspaceId, search),
+    ...projectsOptions({ workspaceId, search }),
     select: (data) => data?.projects?.nodes,
   });
 
@@ -101,11 +101,11 @@ function ProjectsOverviewPage() {
 
   const { mutate: updateViewMode } = useUpdateWorkspaceMutation({
     meta: {
-      invalidates: [workspaceOptions(workspaceId).queryKey],
+      invalidates: [workspaceOptions({ rowId: workspaceId }).queryKey],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(
-        workspaceOptions(workspaceId).queryKey,
+        workspaceOptions({ rowId: workspaceId }).queryKey,
         (old) => ({
           workspace: {
             ...old?.workspace!,
@@ -130,13 +130,13 @@ function ProjectsOverviewPage() {
 
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
-      invalidates: [projectsOptions(workspaceId, search).queryKey],
+      invalidates: [projectsOptions({ workspaceId, search }).queryKey],
     },
     onMutate: async (variables) => {
-      await queryClient.cancelQueries(projectsOptions(workspaceId, search));
+      await queryClient.cancelQueries(projectsOptions({ workspaceId, search }));
 
       queryClient.setQueryData(
-        projectsOptions(workspaceId, search).queryKey,
+        projectsOptions({ workspaceId, search }).queryKey,
         // @ts-ignore TODO: type properly
         (old) => ({
           projects: {

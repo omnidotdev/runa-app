@@ -36,7 +36,7 @@ const TaskColumnForm = withForm({
     });
 
     const { data: project } = useQuery({
-      ...projectOptions(projectId),
+      ...projectOptions({ rowId: projectId }),
       select: (data) => data?.project,
     });
 

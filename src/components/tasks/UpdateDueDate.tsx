@@ -37,15 +37,15 @@ const UpdateDueDate = () => {
   });
 
   const { data: task } = useSuspenseQuery({
-    ...taskOptions(taskId),
+    ...taskOptions({ rowId: taskId }),
     select: (data) => data?.task,
   });
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
       invalidates: [
-        taskOptions(taskId).queryKey,
-        projectOptions(projectId).queryKey,
+        taskOptions({ rowId: taskId }).queryKey,
+        projectOptions({ rowId: projectId }).queryKey,
       ],
     },
   });

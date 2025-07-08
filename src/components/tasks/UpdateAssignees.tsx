@@ -50,7 +50,7 @@ const UpdateAssignees = withForm({
     const { contains } = useFilter({ sensitivity: "base" });
 
     const { data: users } = useSuspenseQuery({
-      ...workspaceUsersOptions(workspaceId),
+      ...workspaceUsersOptions({ rowId: workspaceId }),
       select: (data) => data?.workspaceUsers?.nodes.map((user) => user?.user!),
     });
 

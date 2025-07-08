@@ -48,12 +48,12 @@ const Filter = () => {
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
   const { data: project } = useSuspenseQuery({
-    ...projectOptions(projectId),
+    ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
 
   const { data: users } = useSuspenseQuery({
-    ...workspaceUsersOptions(workspaceId),
+    ...workspaceUsersOptions({ rowId: workspaceId }),
     select: (data) => data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
   });
 

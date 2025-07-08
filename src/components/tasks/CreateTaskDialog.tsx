@@ -52,7 +52,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
   const queryClient = getQueryClient();
 
   const { data: project } = useSuspenseQuery({
-    ...projectOptions(projectId),
+    ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
 

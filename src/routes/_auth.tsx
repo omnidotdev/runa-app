@@ -17,7 +17,11 @@ export const Route = createFileRoute({
     await Promise.all([
       queryClient.ensureQueryData(workspacesOptions()),
       ...(workspaceId
-        ? [queryClient.ensureQueryData(workspaceOptions(workspaceId))]
+        ? [
+            queryClient.ensureQueryData(
+              workspaceOptions({ rowId: workspaceId }),
+            ),
+          ]
         : []),
     ]);
   },

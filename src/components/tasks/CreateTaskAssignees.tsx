@@ -34,7 +34,7 @@ const CreateTaskAssignees = withForm({
     const { workspaceId } = useParams({ strict: false });
 
     const { data: users } = useQuery({
-      ...workspaceUsersOptions(workspaceId!),
+      ...workspaceUsersOptions({ rowId: workspaceId! }),
       enabled: !!workspaceId,
       select: (data) =>
         data?.workspaceUsers?.nodes.flatMap((user) => user?.user),

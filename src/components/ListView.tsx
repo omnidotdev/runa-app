@@ -50,7 +50,7 @@ const ListView = ({ shouldForceClose }: Props) => {
   const queryClient = getQueryClient();
 
   const { data: project } = useSuspenseQuery({
-    ...projectOptions(projectId),
+    ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
 
@@ -59,15 +59,15 @@ const ListView = ({ shouldForceClose }: Props) => {
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
       invalidates: [
-        tasksOptions(projectId, search).queryKey,
-        projectsOptions(workspaceId, search).queryKey,
+        tasksOptions({ projectId, search }).queryKey,
+        projectsOptions({ workspaceId, search }).queryKey,
       ],
     },
     onMutate: async (variables) => {
-      await queryClient.cancelQueries(tasksOptions(projectId, search));
+      await queryClient.cancelQueries(tasksOptions({ projectId, search }));
 
       queryClient.setQueryData(
-        tasksOptions(projectId, search).queryKey,
+        tasksOptions({ projectId, search }).queryKey,
         // @ts-ignore TODO: type properly
         (old) => ({
           tasks: {

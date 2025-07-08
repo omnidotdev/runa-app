@@ -71,8 +71,10 @@ export const Route = createFileRoute({
     context: { queryClient },
   }) => {
     const [{ task }] = await Promise.all([
-      queryClient.ensureQueryData(taskOptions(taskId)),
-      queryClient.ensureQueryData(workspaceUsersOptions(workspaceId)),
+      queryClient.ensureQueryData(taskOptions({ rowId: taskId })),
+      queryClient.ensureQueryData(
+        workspaceUsersOptions({ rowId: workspaceId }),
+      ),
     ]);
 
     if (!task) {
@@ -173,12 +175,12 @@ function TaskPage() {
   const commentEditorApiRef = useRef<EditorApi | null>(null);
 
   const { data: task } = useSuspenseQuery({
-    ...taskOptions(taskId),
+    ...taskOptions({ rowId: taskId }),
     select: (data) => data?.task,
   });
 
   const { data: project } = useSuspenseQuery({
-    ...projectOptions(projectId),
+    ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
 
@@ -213,29 +215,29 @@ function TaskPage() {
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
       invalidates: [
-        taskOptions(taskId).queryKey,
-        projectOptions(projectId).queryKey,
+        taskOptions({ rowId: taskId }).queryKey,
+        projectOptions({ rowId: projectId }).queryKey,
       ],
     },
   });
   const { mutate: addComment } = useCreatePostMutation({
     meta: {
-      invalidates: [taskOptions(taskId).queryKey],
+      invalidates: [taskOptions({ rowId: taskId }).queryKey],
     },
   });
   const { mutate: addNewAssignee } = useCreateAssigneeMutation({
     meta: {
       invalidates: [
-        taskOptions(taskId).queryKey,
-        projectOptions(projectId).queryKey,
+        taskOptions({ rowId: taskId }).queryKey,
+        projectOptions({ rowId: projectId }).queryKey,
       ],
     },
   });
   const { mutate: removeAssignee } = useDeleteAssigneeMutation({
     meta: {
       invalidates: [
-        taskOptions(taskId).queryKey,
-        projectOptions(projectId).queryKey,
+        taskOptions({ rowId: taskId }).queryKey,
+        projectOptions({ rowId: projectId }).queryKey,
       ],
     },
   });

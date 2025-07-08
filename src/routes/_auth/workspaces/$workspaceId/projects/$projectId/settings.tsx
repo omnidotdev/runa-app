@@ -17,7 +17,7 @@ import seo from "@/lib/util/seo";
 export const Route = createFileRoute({
   loader: async ({ params: { projectId }, context }) => {
     const { project } = await context.queryClient.ensureQueryData(
-      projectOptions(projectId),
+      projectOptions({ rowId: projectId }),
     );
 
     if (!project) {
@@ -42,7 +42,7 @@ function RouteComponent() {
   const queryClient = getQueryClient();
 
   const { data: project } = useSuspenseQuery({
-    ...projectOptions(projectId),
+    ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
 

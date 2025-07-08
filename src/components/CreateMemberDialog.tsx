@@ -36,7 +36,7 @@ const CreateMemberDialog = ({ members, setMembers }: Props) => {
     });
 
   const { data: currentWorkspace } = useQuery({
-    ...workspaceOptions(workspaceId!),
+    ...workspaceOptions({ rowId: workspaceId! }),
     enabled: !!workspaceId,
     select: (data) => data?.workspace,
   });

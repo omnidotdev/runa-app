@@ -81,7 +81,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   });
 
   const { data: workspace } = useQuery({
-    ...workspaceOptions(workspaceId!),
+    ...workspaceOptions({ rowId: workspaceId! }),
     enabled: !!workspaceId,
     select: (data) => data.workspace,
   });
@@ -90,17 +90,20 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
-      invalidates: [["Projects"], workspaceOptions(workspaceId!).queryKey],
+      invalidates: [
+        ["Projects"],
+        workspaceOptions({ rowId: workspaceId! }).queryKey,
+      ],
     },
   });
 
   const { mutate: updateViewMode } = useUpdateProjectMutation({
     meta: {
-      invalidates: [workspaceOptions(workspaceId!).queryKey],
+      invalidates: [workspaceOptions({ rowId: workspaceId! }).queryKey],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(
-        projectOptions(variables.rowId).queryKey,
+        projectOptions({ rowId: variables.rowId }).queryKey,
         (old) => ({
           project: {
             ...old?.project!,

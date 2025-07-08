@@ -2,7 +2,12 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { useTasksQuery } from "@/generated/graphql";
 
-const tasksOptions = (projectId: string, search?: string) =>
+interface Options {
+  projectId: string;
+  search?: string;
+}
+
+const tasksOptions = ({ projectId, search }: Options) =>
   queryOptions({
     queryKey: useTasksQuery.getKey({ projectId, search }),
     queryFn: useTasksQuery.fetcher({ projectId, search }),

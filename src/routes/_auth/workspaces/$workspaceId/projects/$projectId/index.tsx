@@ -46,10 +46,12 @@ export const Route = createFileRoute({
     context: { queryClient },
   }) => {
     const [{ project }] = await Promise.all([
-      queryClient.ensureQueryData(projectOptions(projectId)),
-      queryClient.ensureQueryData(workspaceOptions(workspaceId)),
-      queryClient.ensureQueryData(workspaceUsersOptions(workspaceId)),
-      queryClient.ensureQueryData(tasksOptions(projectId, search)),
+      queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
+      queryClient.ensureQueryData(workspaceOptions({ rowId: workspaceId })),
+      queryClient.ensureQueryData(
+        workspaceUsersOptions({ rowId: workspaceId }),
+      ),
+      queryClient.ensureQueryData(tasksOptions({ projectId, search })),
     ]);
 
     if (!project) {
@@ -100,24 +102,27 @@ function ProjectPage() {
   );
 
   const { data: project } = useSuspenseQuery({
-    ...projectOptions(projectId),
+    ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
 
   const { mutate: updateViewMode } = useUpdateProjectMutation({
     meta: {
       invalidates: [
-        projectOptions(projectId).queryKey,
-        workspaceOptions(workspaceId).queryKey,
+        projectOptions({ rowId: projectId }).queryKey,
+        workspaceOptions({ rowId: workspaceId }).queryKey,
       ],
     },
     onMutate: (variables) => {
-      queryClient.setQueryData(projectOptions(projectId).queryKey, (old) => ({
-        project: {
-          ...old?.project!,
-          viewMode: variables.patch?.viewMode!,
-        },
-      }));
+      queryClient.setQueryData(
+        projectOptions({ rowId: projectId }).queryKey,
+        (old) => ({
+          project: {
+            ...old?.project!,
+            viewMode: variables.patch?.viewMode!,
+          },
+        }),
+      );
     },
   });
 
