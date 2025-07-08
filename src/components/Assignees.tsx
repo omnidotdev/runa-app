@@ -4,7 +4,9 @@ import { useParams } from "@tanstack/react-router";
 import { Avatar } from "@/components/ui/avatar";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 
-interface Props extends React.ComponentProps<"div"> {
+import type { ComponentProps } from "react";
+
+interface Props extends ComponentProps<"div"> {
   assignees?: string[];
   showUsername?: boolean;
 }
@@ -18,15 +20,15 @@ const Assignees = ({ assignees, showUsername = false, ...rest }: Props) => {
     select: (data) => data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
   });
 
-  const unassignedUsers = workspaceUsers?.filter((user) =>
-    assignees?.includes(user?.rowId || ""),
+  const assignedUsers = workspaceUsers?.filter((user) =>
+    assignees?.includes(user?.rowId!),
   );
 
   if (!assignees?.length) return null;
 
   return (
     <div {...rest}>
-      {unassignedUsers?.map((user) => (
+      {assignedUsers?.map((user) => (
         <div key={user?.rowId} className="flex items-center gap-0">
           <Avatar
             fallback={user?.name?.charAt(0)}

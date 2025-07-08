@@ -1,9 +1,0 @@
-query Users {
-  users {
-    nodes {
-      rowId
-      name
-      avatarUrl
-    }
-  }
-}

@@ -4,7 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { getLabelClasses } from "@/lib/util/getLabelClasses";
 import { cn } from "@/lib/utils";
 
-interface Props extends React.ComponentProps<"div"> {
+import type { ComponentProps } from "react";
+
+interface Props extends ComponentProps<"div"> {
   labels: { name: string; color: string }[];
 }
 
