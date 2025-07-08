@@ -1,5 +1,6 @@
 import { Combobox as ArkCombobox } from "@ark-ui/react/combobox";
-import { FiCheck, FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { ChevronsUpDownIcon } from "lucide-react";
+import { FiCheck } from "react-icons/fi";
 import { tv } from "tailwind-variants";
 
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ const comboboxVariants = tv({
     control: "relative flex items-center",
     input:
       "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-    trigger: "absolute top-1.5 right-1.5 bottom-1 h-fit w-7",
+    trigger: "absolute top-1.5 right-1.5 bottom-1 size-7",
     clearTrigger:
       "absolute top-0 right-10 flex h-full items-center justify-center pr-2 text-muted-foreground hover:text-foreground disabled:pointer-events-none",
     positioner: "z-50 w-full min-w-[8rem]",
@@ -80,10 +81,7 @@ const ComboboxTrigger = ({
 }: ComponentProps<typeof ArkCombobox.Trigger>) => (
   <ArkCombobox.Trigger asChild {...rest}>
     <Button variant="ghost" size="icon" className={cn(trigger(), className)}>
-      <div className="flex flex-col">
-        <FiChevronUp className="-mb-0.5 h-2 w-4" />
-        <FiChevronDown className="-mt-0.5 h-2 w-4" />
-      </div>
+      <ChevronsUpDownIcon />
     </Button>
   </ArkCombobox.Trigger>
 );

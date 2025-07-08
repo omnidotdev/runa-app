@@ -4,6 +4,7 @@ import {
   ChevronsUpDown,
   FolderOpen,
   Grid2X2Icon,
+  InboxIcon,
   Layers,
   ListIcon,
   LogOutIcon,
@@ -185,6 +186,24 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         </SidebarHeader>
 
         <SidebarContent>
+          <SidebarMenu className="px-2">
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip="Inbox">
+                <Link
+                  to="/inbox"
+                  variant="ghost"
+                  activeProps={{
+                    variant: "outline",
+                  }}
+                  className="w-full justify-start border border-transparent"
+                >
+                  <InboxIcon className="size-4" />
+                  <span className="w-full truncate">Inbox</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+
           <SidebarGroup>
             <div className="flex items-center justify-between">
               <SidebarGroupLabel>Workspace</SidebarGroupLabel>
@@ -433,7 +452,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                               />
                             ) : (
                               <ListIcon
-                                className="size-3 text-primary-500"
+                                className="size-4 text-primary-500"
                                 style={{ color: project?.color ?? undefined }}
                               />
                             )}

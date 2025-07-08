@@ -18,6 +18,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AnonRouteImport } from './routes/_anon'
 import { Route as AnonIndexRouteImport } from './routes/_anon/index'
+import { Route as AuthInboxRouteImport } from './routes/_auth/inbox'
 import { Route as AnonPricingRouteImport } from './routes/_anon/pricing'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
 import { Route as AuthWorkspacesWorkspaceIdSettingsRouteImport } from './routes/_auth/workspaces/$workspaceId/settings'
@@ -38,6 +39,11 @@ const AnonIndexRoute = AnonIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AnonRoute,
+} as any)
+const AuthInboxRoute = AuthInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AnonPricingRoute = AnonPricingRouteImport.update({
   id: '/pricing',
@@ -82,6 +88,7 @@ const AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute =
 
 export interface FileRoutesByFullPath {
   '/pricing': typeof AnonPricingRoute
+  '/inbox': typeof AuthInboxRoute
   '/': typeof AnonIndexRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceId/settings': typeof AuthWorkspacesWorkspaceIdSettingsRoute
@@ -92,6 +99,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/pricing': typeof AnonPricingRoute
+  '/inbox': typeof AuthInboxRoute
   '/': typeof AnonIndexRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceId/settings': typeof AuthWorkspacesWorkspaceIdSettingsRoute
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/_anon': typeof AnonRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
   '/_anon/pricing': typeof AnonPricingRoute
+  '/_auth/inbox': typeof AuthInboxRoute
   '/_anon/': typeof AnonIndexRoute
   '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
   '/_auth/workspaces/$workspaceId/settings': typeof AuthWorkspacesWorkspaceIdSettingsRoute
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/pricing'
+    | '/inbox'
     | '/'
     | '/workspaces'
     | '/workspaces/$workspaceId/settings'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/pricing'
+    | '/inbox'
     | '/'
     | '/workspaces'
     | '/workspaces/$workspaceId/settings'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/_anon'
     | '/_auth'
     | '/_anon/pricing'
+    | '/_auth/inbox'
     | '/_anon/'
     | '/_auth/workspaces/'
     | '/_auth/workspaces/$workspaceId/settings'
@@ -175,6 +187,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/pricing'
       preLoaderRoute: typeof AnonPricingRouteImport
       parentRoute: typeof AnonRoute
+    }
+    '/_auth/inbox': {
+      id: '/_auth/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof AuthInboxRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_anon/': {
       id: '/_anon/'
@@ -276,6 +295,23 @@ declare module './routes/_anon/pricing' {
     ServerFileRoutesByPath['/_anon/pricing']['id'],
     ServerFileRoutesByPath['/_anon/pricing']['path'],
     ServerFileRoutesByPath['/_anon/pricing']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/_auth/inbox' {
+  const createFileRoute: CreateFileRoute<
+    '/_auth/inbox',
+    FileRoutesByPath['/_auth/inbox']['parentRoute'],
+    FileRoutesByPath['/_auth/inbox']['id'],
+    FileRoutesByPath['/_auth/inbox']['path'],
+    FileRoutesByPath['/_auth/inbox']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/_auth/inbox']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/inbox']['id'],
+    ServerFileRoutesByPath['/_auth/inbox']['path'],
+    ServerFileRoutesByPath['/_auth/inbox']['fullPath'],
     unknown
   >
 }
@@ -412,6 +448,7 @@ const AnonRouteChildren: AnonRouteChildren = {
 const AnonRouteWithChildren = AnonRoute._addFileChildren(AnonRouteChildren)
 
 interface AuthRouteChildren {
+  AuthInboxRoute: typeof AuthInboxRoute
   AuthWorkspacesIndexRoute: typeof AuthWorkspacesIndexRoute
   AuthWorkspacesWorkspaceIdSettingsRoute: typeof AuthWorkspacesWorkspaceIdSettingsRoute
   AuthWorkspacesWorkspaceIdProjectsIndexRoute: typeof AuthWorkspacesWorkspaceIdProjectsIndexRoute
@@ -421,6 +458,7 @@ interface AuthRouteChildren {
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthInboxRoute: AuthInboxRoute,
   AuthWorkspacesIndexRoute: AuthWorkspacesIndexRoute,
   AuthWorkspacesWorkspaceIdSettingsRoute:
     AuthWorkspacesWorkspaceIdSettingsRoute,
