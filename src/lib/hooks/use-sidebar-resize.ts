@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
+import type { MouseEvent } from "react";
+
 interface UseSidebarResizeProps {
   /**
    * Direction of the resize handle
