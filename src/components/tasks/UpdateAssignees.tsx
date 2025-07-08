@@ -20,15 +20,11 @@ import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 interface WorkspaceUser {
   label: string;
   value: string;
-  user:
-    | {
-        __typename?: "User";
-        name: string;
-        avatarUrl?: string | null;
-        rowId: string;
-      }
-    | null
-    | undefined;
+  user: {
+    name: string;
+    avatarUrl?: string | null;
+    rowId: string;
+  };
 }
 
 // TODO: update structure. Use combobox to search for assignees and show currently assigned only with `XIcon` to remove
@@ -54,16 +50,15 @@ const UpdateAssignees = withForm({
 
     const { data: users } = useSuspenseQuery({
       ...workspaceUsersOptions(workspaceId),
-      select: (data) =>
-        data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
+      select: (data) => data?.workspaceUsers?.nodes.map((user) => user?.user!),
     });
 
     const { collection: usersCollection, filter } =
       useListCollection<WorkspaceUser>({
         initialItems:
           users?.map((user) => ({
-            label: user?.name || "",
-            value: user?.rowId || "",
+            label: user?.name,
+            value: user?.rowId,
             user: user,
           })) ?? [],
         filter: contains,
