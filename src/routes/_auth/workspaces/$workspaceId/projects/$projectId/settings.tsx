@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import projectOptions from "@/lib/options/project.options";
-import getQueryClient from "@/lib/util/getQueryClient";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
@@ -37,9 +36,9 @@ export const Route = createFileRoute({
 
 function RouteComponent() {
   const { workspaceId, projectId } = Route.useParams();
-  const [editProject, setEditProject] = useState(false);
+  const { queryClient } = Route.useRouteContext();
 
-  const queryClient = getQueryClient();
+  const [editProject, setEditProject] = useState(false);
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),

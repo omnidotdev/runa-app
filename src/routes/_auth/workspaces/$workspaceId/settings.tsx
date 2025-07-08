@@ -21,7 +21,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
-import getQueryClient from "@/lib/util/getQueryClient";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
@@ -48,7 +47,7 @@ export const Route = createFileRoute({
 function SettingsPage() {
   const { workspaceId } = Route.useParams();
   const navigate = Route.useNavigate();
-  const queryClient = getQueryClient();
+  const { queryClient } = Route.useRouteContext();
 
   const [selectedMember, setSelectedMember] = useState<{
     name: string;
