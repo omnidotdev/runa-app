@@ -32,6 +32,7 @@ import {
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
@@ -58,6 +59,8 @@ const CreateTaskDialog = ({ columnId }: Props) => {
   const defaultColumnId = project?.columns?.nodes?.find(
     (column) => column?.index === 0,
   )?.rowId;
+
+  const { setColumnId } = useTaskStore();
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.CreateTask,
@@ -144,6 +147,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       queryClient.invalidateQueries();
       formApi.reset();
       setIsOpen(false);
+      setColumnId(null);
     },
   });
 
@@ -153,6 +157,10 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       onOpenChange={({ open }) => {
         setIsOpen(open);
         form.reset();
+
+        if (!open) {
+          setColumnId(null);
+        }
       }}
       initialFocusEl={() => titleRef.current}
       unmountOnExit

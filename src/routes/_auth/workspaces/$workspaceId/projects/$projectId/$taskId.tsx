@@ -381,7 +381,7 @@ function TaskPage() {
                 <RichTextEditor
                   defaultContent={task?.content}
                   className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
-                  skeletonClassName="h-[33px]"
+                  skeletonClassName="h-8"
                   onUpdate={({ editor }) =>
                     handleTaskUpdate({
                       rowId: taskId,
