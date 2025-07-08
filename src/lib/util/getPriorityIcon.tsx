@@ -4,6 +4,8 @@ import {
   MinusCircleIcon,
 } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
 const priorityConfig = {
   high: {
     icon: AlertTriangleIcon,
@@ -23,5 +25,5 @@ export const getPriorityIcon = (priority: string) => {
   const config = priorityConfig[priority as keyof typeof priorityConfig];
   if (!config) return null;
   const Icon = config.icon;
-  return <Icon className={`h-4 w-4 ${config.className} flex-shrink-0`} />;
+  return <Icon className={cn("size-4 flex-shrink-0", config.className)} />;
 };

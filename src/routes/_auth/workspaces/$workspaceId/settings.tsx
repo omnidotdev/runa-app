@@ -22,6 +22,7 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import seo from "@/lib/util/seo";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute({
   loader: async ({ params: { workspaceId }, context: { queryClient } }) => {
@@ -311,7 +312,15 @@ function SettingsPage() {
                   className="flex items-center justify-between rounded-lg border bg-accent p-3"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full border bg-background font-medium text-sm uppercase shadow">
+                    <div
+                      className={cn(
+                        "flex size-8 items-center justify-center rounded-full border bg-background font-medium text-sm uppercase shadow",
+                        project?.color && "text-background",
+                      )}
+                      style={{
+                        backgroundColor: project?.color ?? undefined,
+                      }}
+                    >
                       {project?.name[0]}
                     </div>
 
