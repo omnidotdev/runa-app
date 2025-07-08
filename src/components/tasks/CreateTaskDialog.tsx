@@ -159,7 +159,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     >
       <DialogBackdrop />
       <DialogPositioner>
-        <DialogContent className="w-fit">
+        <DialogContent className="max-w-fit">
           <DialogCloseTrigger />
 
           <form
