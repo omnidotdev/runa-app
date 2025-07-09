@@ -12,16 +12,18 @@ import {
   UserIcon,
 } from "lucide-react";
 
+import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
+import Labels from "@/components/Labels";
+import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskFiltersStore from "@/lib/hooks/store/useFilterStore";
+import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
-import Assignees from "./Assignees";
-import Labels from "./Labels";
-import { AvatarFallback, AvatarRoot } from "./ui/avatar";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
@@ -57,6 +59,21 @@ const Tasks = ({
   });
 
   const { draggableId } = useDragStore();
+  const { setTaskId } = useTaskStore();
+  const { isOpen: isUpdateAssigneesDialogOpen } = useDialogStore({
+    type: DialogType.UpdateAssignees,
+  });
+  const { isOpen: isUpdateDueDateDialogOpen } = useDialogStore({
+    type: DialogType.UpdateDueDate,
+  });
+  const { isOpen: isUpdateTaskLabelsDialogOpen } = useDialogStore({
+    type: DialogType.UpdateTaskLabels,
+  });
+
+  const isUpdateDialogOpen =
+    isUpdateAssigneesDialogOpen ||
+    isUpdateDueDateDialogOpen ||
+    isUpdateTaskLabelsDialogOpen;
 
   const {
     // selectedLabels,
@@ -75,7 +92,7 @@ const Tasks = ({
       assignees: selectedUsers.length ? selectedUsers : undefined,
     }),
     select: (data) =>
-      data?.tasks?.nodes?.filter((task) => task?.columnId === columnId),
+      data?.tasks?.nodes?.filter((task) => task.columnId === columnId),
   });
 
   const columnTitle = project?.columns?.nodes?.find(
@@ -87,8 +104,7 @@ const Tasks = ({
       ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
       .sort(
         (a, b) =>
-          new Date(a?.createdAt!).getTime()! -
-          new Date(b?.createdAt!).getTime()!,
+          new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime(),
       )
       .map((task) => task?.rowId)
       .indexOf(taskId);
@@ -102,17 +118,13 @@ const Tasks = ({
       {...rest}
     >
       {tasks
-        ?.filter((task) => task?.rowId !== draggableId)
+        ?.filter((task) => task.rowId !== draggableId)
         .map((task, index) => {
-          const displayId = `${prefix}-${taskIndex(task?.rowId!) ? taskIndex(task?.rowId!) : 0}`;
-          const PriorityIcon = getPriorityIcon(task?.priority!);
+          const displayId = `${prefix}-${taskIndex(task.rowId) ? taskIndex(task.rowId) : 0}`;
+          const PriorityIcon = getPriorityIcon(task.priority);
 
           return (
-            <Draggable
-              key={task?.rowId}
-              draggableId={task?.rowId!}
-              index={index}
-            >
+            <Draggable key={task.rowId} draggableId={task.rowId} index={index}>
               {(provided, snapshot) => (
                 // TODO: due date dialog on hover + hotkey
                 // TODO: assignee dialog on hover + hotkey
@@ -122,6 +134,8 @@ const Tasks = ({
                   ref={provided.innerRef}
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}
+                  onMouseEnter={() => setTaskId(task.rowId)}
+                  onMouseLeave={() => !isUpdateDialogOpen && setTaskId(null)}
                   onClick={() => {
                     if (!snapshot.isDragging) {
                       navigate({
@@ -129,7 +143,7 @@ const Tasks = ({
                         params: {
                           workspaceId,
                           projectId,
-                          taskId: task?.rowId!,
+                          taskId: task.rowId,
                         },
                       });
                     }
@@ -172,7 +186,7 @@ const Tasks = ({
                         {task.assignees.nodes.length ? (
                           <Assignees
                             assignees={task?.assignees.nodes.map(
-                              (assignee) => assignee?.user?.rowId!,
+                              (assignee) => assignee.user?.rowId!,
                             )}
                             className="-space-x-5.5 flex"
                           />

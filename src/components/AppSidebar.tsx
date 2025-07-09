@@ -18,6 +18,7 @@ import {
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "@/components/core/Link";
 import {
   MenuContent,
@@ -42,6 +43,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Tooltip } from "@/components/ui/tooltip";
 import {
   useDeleteProjectMutation,
   useUpdateProjectMutation,
@@ -54,8 +56,6 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
-import ConfirmDialog from "./ConfirmDialog";
-import { Tooltip } from "./ui/tooltip";
 
 import type { ComponentProps } from "react";
 
@@ -416,15 +416,15 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                       <MenuContent className="flex w-full min-w-56 flex-col gap-0.5 rounded-lg">
                         {workspace?.projects.nodes.map((project) => (
                           <MenuItem
-                            key={project?.rowId}
-                            value={project?.name!}
+                            key={project.rowId}
+                            value={project.name}
                             className="flex cursor-pointer items-center gap-1"
                             onSelect={() =>
                               navigate({
                                 to: "/workspaces/$workspaceId/projects/$projectId",
                                 params: {
                                   workspaceId: workspaceId!,
-                                  projectId: project?.rowId!,
+                                  projectId: project.rowId,
                                 },
                               })
                             }

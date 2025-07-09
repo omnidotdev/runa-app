@@ -32,7 +32,7 @@ const Assignees = ({ assignees, showUsername = false, ...rest }: Props) => {
         <div key={user?.rowId} className="flex items-center gap-0">
           <Avatar
             fallback={user?.name?.charAt(0)}
-            src={user?.avatarUrl!}
+            src={user?.avatarUrl ?? undefined}
             alt={user?.name}
             className="size-6 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
           />

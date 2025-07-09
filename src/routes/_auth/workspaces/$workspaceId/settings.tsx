@@ -252,7 +252,7 @@ function SettingsPage() {
                   <div className="flex items-center gap-3 ">
                     <Avatar
                       fallback={member.user?.name?.charAt(0)}
-                      src={member.user?.avatarUrl!}
+                      src={member.user?.avatarUrl ?? undefined}
                       alt={member.user?.name}
                       className="size-8 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
                     />

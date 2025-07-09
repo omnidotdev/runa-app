@@ -12,6 +12,7 @@ import {
   CollapsibleRoot,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -22,7 +23,6 @@ import projectsOptions from "@/lib/options/projects.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
-import { SidebarMenuShotcut } from "./ui/sidebar";
 
 import type { DropResult } from "@hello-pangea/dnd";
 

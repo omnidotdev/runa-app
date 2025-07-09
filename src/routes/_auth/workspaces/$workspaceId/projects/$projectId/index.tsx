@@ -19,6 +19,9 @@ import Filter from "@/components/Filter";
 import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
 import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
+import UpdateAssigneesDialog from "@/components/UpdateAssigneesDialog";
+import UpdateDueDateDialog from "@/components/UpdateDueDateDialog";
+import UpdateTaskLabelsDialog from "@/components/UpdateTaskLabelsDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
@@ -80,7 +83,7 @@ function ProjectPage() {
 
   const { queryClient } = Route.useRouteContext();
 
-  const { columnId } = useTaskStore();
+  const { taskId, columnId } = useTaskStore();
 
   const handleForceClose = () => {
     setShouldForceClose(true);
@@ -251,6 +254,10 @@ function ProjectPage() {
       </div>
 
       <CreateTaskDialog columnId={columnId ?? undefined} />
+
+      {taskId && <UpdateAssigneesDialog />}
+      {taskId && <UpdateDueDateDialog />}
+      {taskId && <UpdateTaskLabelsDialog />}
     </div>
   );
 }

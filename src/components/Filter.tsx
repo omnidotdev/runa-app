@@ -10,6 +10,7 @@ import {
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   CheckboxControl,
@@ -32,13 +33,9 @@ import useTaskFiltersStore from "@/lib/hooks/store/useFilterStore";
 import projectOptions from "@/lib/options/project.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
-import { Avatar } from "./ui/avatar";
 
 const Filter = () => {
-  const { projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
-  });
-  const { workspaceId } = useParams({
+  const { workspaceId, projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -187,7 +184,7 @@ const Filter = () => {
                     >
                       <CheckboxLabel className="-ml-2 flex h-8 items-center gap-2">
                         <Avatar
-                          src={user?.avatarUrl!}
+                          src={user?.avatarUrl ?? undefined}
                           alt={user?.name}
                           fallback={user?.name?.charAt(0)}
                           className="size-6 rounded-full"

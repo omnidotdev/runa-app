@@ -4,15 +4,15 @@ import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon, UserIcon } from "lucide-react";
 
+import Assignees from "@/components/Assignees";
+import RichTextEditor from "@/components/core/RichTextEditor";
+import Labels from "@/components/Labels";
+import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
-import Assignees from "./Assignees";
-import RichTextEditor from "./core/RichTextEditor";
-import Labels from "./Labels";
-import { AvatarFallback, AvatarRoot } from "./ui/avatar";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 

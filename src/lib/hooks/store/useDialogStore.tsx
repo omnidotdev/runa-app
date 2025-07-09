@@ -12,6 +12,9 @@ export enum DialogType {
   CreateWorkspace = "create_workspace",
   DeleteProject = "delete_project",
   CreateMember = "create_member",
+  UpdateAssignees = "update_assignees",
+  UpdateDueDate = "update_due_date",
+  UpdateTaskLabels = "update_task_labels",
 }
 
 interface DialogState {

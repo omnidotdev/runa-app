@@ -36,9 +36,9 @@ function WorkspacesOverviewPage() {
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
           {recentWorkspaces?.map((workspace) => (
             <Link
-              key={workspace?.rowId}
+              key={workspace.rowId}
               to="/workspaces/$workspaceId/projects"
-              params={{ workspaceId: workspace?.rowId! }}
+              params={{ workspaceId: workspace.rowId }}
               variant="ghost"
               className="h-fit overflow-hidden p-0 transition-transform hover:scale-[1.02] hover:bg-transparent"
             >

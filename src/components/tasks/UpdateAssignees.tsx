@@ -49,16 +49,16 @@ const UpdateAssignees = withForm({
 
     const { data: users } = useSuspenseQuery({
       ...workspaceUsersOptions({ rowId: workspaceId }),
-      select: (data) => data?.workspaceUsers?.nodes.map((user) => user.user!),
+      select: (data) => data?.workspaceUsers?.nodes.map((user) => user.user),
     });
 
     const { collection: usersCollection, filter } =
       useListCollection<WorkspaceUser>({
         initialItems:
           users?.map((user) => ({
-            label: user?.name,
-            value: user?.rowId,
-            user: user,
+            label: user?.name!,
+            value: user?.rowId!,
+            user: user!,
           })) ?? [],
         filter: contains,
       });
@@ -111,7 +111,7 @@ const UpdateAssignees = withForm({
                             fallback={
                               workspaceUser?.user?.name?.charAt(0) ?? "U"
                             }
-                            src={workspaceUser?.user?.avatarUrl!}
+                            src={workspaceUser?.user?.avatarUrl ?? undefined}
                             alt={workspaceUser?.user?.name}
                             className="size-6 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
                           />

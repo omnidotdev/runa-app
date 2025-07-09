@@ -18,7 +18,11 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 
 import type { FormEvent } from "react";
-import type { Assignee } from "@/types";
+
+interface Assignee {
+  id: string;
+  name: string;
+}
 
 interface Props {
   members: Assignee[];

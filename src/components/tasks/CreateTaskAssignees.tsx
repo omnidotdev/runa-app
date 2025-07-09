@@ -81,7 +81,7 @@ const CreateTaskAssignees = withForm({
                         className="flex items-center justify-start gap-1 px-1 py-0.5"
                       >
                         <Avatar
-                          src={item.user?.avatarUrl!}
+                          src={item.user?.avatarUrl ?? undefined}
                           alt={item.user?.name}
                           fallback={item.user?.name?.charAt(0)}
                           className="size-6 rounded-full"

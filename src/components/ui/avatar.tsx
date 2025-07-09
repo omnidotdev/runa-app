@@ -123,9 +123,7 @@ const Avatar = ({
 
 export {
   Avatar,
-  /** @knipignore */
   AvatarRoot,
-  /** @knipignore */
   AvatarFallback,
   /** @knipignore */
   AvatarImage,
