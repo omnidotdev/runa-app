@@ -2,16 +2,17 @@ import { Draggable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, UserIcon } from "lucide-react";
 
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
+import Assignees from "./Assignees";
 import RichTextEditor from "./core/RichTextEditor";
 import Labels from "./Labels";
-import { Avatar } from "./ui/avatar";
+import { AvatarFallback, AvatarRoot } from "./ui/avatar";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
@@ -85,6 +86,10 @@ const TasksList = ({
                 index={index}
               >
                 {(provided, snapshot) => (
+                  // TODO: due date dialog on hover + hotkey
+                  // TODO: assignee dialog on hover + hotkey
+                  // TODO: labels dialog on hover + hotkey
+                  // Thoughts for the above: set `taskId` in global store during `onMouseEnter`, use in dialogs for updates
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
@@ -106,7 +111,6 @@ const TasksList = ({
                       snapshot.isDragging ? "z-10 rounded-md border" : "",
                     )}
                   >
-                    {/* Row 1: Metadata (ID, Priority, Due Date) */}
                     <div className="flex items-center">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-base-400 text-xs dark:text-base-500">
@@ -124,21 +128,29 @@ const TasksList = ({
                         />
                       </div>
 
-                      {!!task.assignees.nodes.length && (
-                        <div className="-space-x-5.5 -mx-2 ml-auto flex h-8 items-center">
-                          {task.assignees.nodes.map((assignee) => (
-                            <Avatar
-                              key={assignee?.rowId}
-                              fallback={assignee?.user?.name?.[0]}
-                              src={assignee?.user?.avatarUrl ?? ""}
-                              alt={assignee?.user?.name}
-                              className="size-6 rounded-full border-2 border-base-100 bg-base-200 font-medium text-base-900 text-xs dark:border-base-900 dark:bg-base-600 dark:text-base-100"
-                            />
-                          ))}
-                        </div>
-                      )}
+                      {/* TODO: show tooltip for hotkey when ready */}
+                      <div className="-mt-2.5 -mr-2 ml-auto flex items-center gap-1">
+                        {task.assignees.nodes.length ? (
+                          <Assignees
+                            assignees={task.assignees.nodes.map(
+                              (assignee) => assignee.user?.rowId!,
+                            )}
+                            className="-space-x-5.5 flex"
+                          />
+                        ) : (
+                          <AvatarRoot
+                            aria-label="No Assignees"
+                            className="mr-2 size-5.5"
+                          >
+                            <AvatarFallback className="border border-muted-foreground border-dashed bg-transparent p-1 text-muted-foreground">
+                              <UserIcon />
+                            </AvatarFallback>
+                          </AvatarRoot>
+                        )}
+                      </div>
                     </div>
 
+                    {/* TODO: show tooltip for hotkey when ready */}
                     <div className="hidden items-center justify-between sm:flex">
                       {!!task.labels.length && (
                         <Labels
@@ -151,6 +163,7 @@ const TasksList = ({
                         />
                       )}
 
+                      {/* TODO: show tooltip for hotkey when ready */}
                       {task?.dueDate && (
                         <div className="flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
                           <CalendarIcon className="h-3 w-3" />

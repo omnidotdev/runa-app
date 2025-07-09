@@ -9,6 +9,7 @@ import {
   CircleIcon,
   ClockIcon,
   EyeIcon,
+  UserIcon,
 } from "lucide-react";
 
 import RichTextEditor from "@/components/core/RichTextEditor";
@@ -19,6 +20,7 @@ import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
 import Assignees from "./Assignees";
 import Labels from "./Labels";
+import { AvatarFallback, AvatarRoot } from "./ui/avatar";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
@@ -97,6 +99,10 @@ const Tasks = ({
           return (
             <Draggable key={task.rowId} draggableId={task.rowId} index={index}>
               {(provided, snapshot) => (
+                // TODO: due date dialog on hover + hotkey
+                // TODO: assignee dialog on hover + hotkey
+                // TODO: labels dialog on hover + hotkey
+                // Thoughts for the above: set `taskId` in global store during `onMouseEnter`, use in dialogs for updates
                 <div
                   ref={provided.innerRef}
                   {...provided.draggableProps}
@@ -146,19 +152,30 @@ const Tasks = ({
                         </div>
                       </div>
 
+                      {/* TODO: show tooltip for hotkey when ready */}
                       <div className="-mt-2.5 -mr-2 flex items-center gap-1">
-                        {!!task.assignees.nodes.length && (
+                        {task.assignees.nodes.length ? (
                           <Assignees
                             assignees={task.assignees.nodes.map(
                               (assignee) => assignee.user?.rowId!,
                             )}
                             className="-space-x-5.5 flex"
                           />
+                        ) : (
+                          <AvatarRoot
+                            aria-label="No Assignees"
+                            className="mt-2.5 mr-2 size-5.5"
+                          >
+                            <AvatarFallback className="border border-muted-foreground border-dashed bg-transparent p-1 text-muted-foreground">
+                              <UserIcon />
+                            </AvatarFallback>
+                          </AvatarRoot>
                         )}
                       </div>
                     </div>
 
                     <div className="grid grid-cols-4">
+                      {/* TODO: show tooltip for hotkey when ready */}
                       {!!task.labels.length && (
                         <div className="-m-3 col-span-3 flex items-end p-2.5">
                           <Labels
@@ -168,6 +185,7 @@ const Tasks = ({
                         </div>
                       )}
 
+                      {/* TODO: show tooltip for hotkey when ready */}
                       {task?.dueDate && (
                         <div className="col-span-1 mr-1 flex items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
                           <CalendarIcon className="h-3 w-3" />
