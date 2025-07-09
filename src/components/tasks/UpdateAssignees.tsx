@@ -1,5 +1,5 @@
 import { useFilter, useListCollection } from "@ark-ui/react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { TrashIcon } from "lucide-react";
 
@@ -16,6 +16,12 @@ import {
 } from "@/components/ui/combobox";
 import { withForm } from "@/lib/hooks/useForm";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
+
+import type { ComponentProps } from "react";
+
+type AdditionalProps = {
+  comboboxInputProps?: ComponentProps<typeof ComboboxInput>;
+};
 
 interface WorkspaceUser {
   label: string;
@@ -40,15 +46,17 @@ const UpdateAssignees = withForm({
     dueDate: "",
     columnId: "",
   },
-  render: ({ form }) => {
+  props: {} as AdditionalProps,
+  render: ({ form, comboboxInputProps }) => {
     const { workspaceId } = useParams({
-      from: "/_auth/workspaces/$workspaceId/projects/$projectId/$taskId",
+      strict: false,
     });
 
     const { contains } = useFilter({ sensitivity: "base" });
 
-    const { data: users } = useSuspenseQuery({
-      ...workspaceUsersOptions({ rowId: workspaceId }),
+    const { data: users } = useQuery({
+      ...workspaceUsersOptions({ rowId: workspaceId! }),
+      enabled: !!workspaceId,
       select: (data) => data?.workspaceUsers?.nodes.map((user) => user.user),
     });
 
@@ -80,6 +88,7 @@ const UpdateAssignees = withForm({
                   <ComboboxInput
                     className="rounded-none border-x-0 border-t-0 focus-visible:ring-0"
                     placeholder="Search for a user..."
+                    {...comboboxInputProps}
                   />
                   <ComboboxTrigger />
                 </ComboboxControl>
