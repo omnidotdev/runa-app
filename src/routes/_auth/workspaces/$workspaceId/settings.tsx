@@ -251,9 +251,9 @@ function SettingsPage() {
                 >
                   <div className="flex items-center gap-3 ">
                     <Avatar
-                      fallback={member?.user?.name?.charAt(0)}
-                      src={member?.user?.avatarUrl!}
-                      alt={member?.user?.name}
+                      fallback={member.user?.name?.charAt(0)}
+                      src={member.user?.avatarUrl!}
+                      alt={member.user?.name}
                       className="size-8 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
                     />
 
@@ -269,7 +269,7 @@ function SettingsPage() {
                       aria-label="Remove team member"
                       onClick={() => {
                         setIsDeleteTeamMemberOpen(true);
-                        setSelectedMember(member?.user!);
+                        setSelectedMember(member.user!);
                       }}
                       className="p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
                     >
@@ -331,8 +331,8 @@ function SettingsPage() {
                       onClick={() => {
                         setIsDeleteProjectOpen(true);
                         setSelectedProject({
-                          rowId: project?.rowId!,
-                          name: project?.name!,
+                          rowId: project.rowId,
+                          name: project.name,
                         });
                       }}
                       className="p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"

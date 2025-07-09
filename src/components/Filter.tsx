@@ -181,7 +181,7 @@ const Filter = () => {
                           if (checked) {
                             return [...prev, user?.name];
                           } else {
-                            return prev.filter((l) => l !== user?.name);
+                            return prev.filter((l) => l !== user.name);
                           }
                         })
                       }

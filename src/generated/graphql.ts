@@ -79,11 +79,11 @@ export type AssigneeConnection = {
   /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
   aggregates?: Maybe<AssigneeAggregates>;
   /** A list of edges which contains the `Assignee` and cursor to aid in pagination. */
-  edges: Array<Maybe<AssigneeEdge>>;
+  edges: Array<AssigneeEdge>;
   /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
   groupedAggregates?: Maybe<Array<AssigneeAggregates>>;
   /** A list of `Assignee` objects. */
-  nodes: Array<Maybe<Assignee>>;
+  nodes: Array<Assignee>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Assignee` you could get from the connection. */
@@ -128,7 +128,7 @@ export type AssigneeEdge = {
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']['output']>;
   /** The `Assignee` at the end of the edge. */
-  node?: Maybe<Assignee>;
+  node: Assignee;
 };
 
 /** A filter to be used against `Assignee` object types. All fields are combined with a logical ‘and.’ */
@@ -439,11 +439,11 @@ export type ColumnConnection = {
   /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
   aggregates?: Maybe<ColumnAggregates>;
   /** A list of edges which contains the `Column` and cursor to aid in pagination. */
-  edges: Array<Maybe<ColumnEdge>>;
+  edges: Array<ColumnEdge>;
   /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
   groupedAggregates?: Maybe<Array<ColumnAggregates>>;
   /** A list of `Column` objects. */
-  nodes: Array<Maybe<Column>>;
+  nodes: Array<Column>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Column` you could get from the connection. */
@@ -488,7 +488,7 @@ export type ColumnEdge = {
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']['output']>;
   /** The `Column` at the end of the edge. */
-  node?: Maybe<Column>;
+  node: Column;
 };
 
 /** A filter to be used against `Column` object types. All fields are combined with a logical ‘and.’ */
@@ -1913,11 +1913,11 @@ export type PostConnection = {
   /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
   aggregates?: Maybe<PostAggregates>;
   /** A list of edges which contains the `Post` and cursor to aid in pagination. */
-  edges: Array<Maybe<PostEdge>>;
+  edges: Array<PostEdge>;
   /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
   groupedAggregates?: Maybe<Array<PostAggregates>>;
   /** A list of `Post` objects. */
-  nodes: Array<Maybe<Post>>;
+  nodes: Array<Post>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Post` you could get from the connection. */
@@ -1965,7 +1965,7 @@ export type PostEdge = {
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']['output']>;
   /** The `Post` at the end of the edge. */
-  node?: Maybe<Post>;
+  node: Post;
 };
 
 /** A filter to be used against `Post` object types. All fields are combined with a logical ‘and.’ */
@@ -2207,11 +2207,11 @@ export type ProjectConnection = {
   /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
   aggregates?: Maybe<ProjectAggregates>;
   /** A list of edges which contains the `Project` and cursor to aid in pagination. */
-  edges: Array<Maybe<ProjectEdge>>;
+  edges: Array<ProjectEdge>;
   /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
   groupedAggregates?: Maybe<Array<ProjectAggregates>>;
   /** A list of `Project` objects. */
-  nodes: Array<Maybe<Project>>;
+  nodes: Array<Project>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Project` you could get from the connection. */
@@ -2271,7 +2271,7 @@ export type ProjectEdge = {
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']['output']>;
   /** The `Project` at the end of the edge. */
-  node?: Maybe<Project>;
+  node: Project;
 };
 
 /** A filter to be used against `Project` object types. All fields are combined with a logical ‘and.’ */
@@ -3079,11 +3079,11 @@ export type TaskConnection = {
   /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
   aggregates?: Maybe<TaskAggregates>;
   /** A list of edges which contains the `Task` and cursor to aid in pagination. */
-  edges: Array<Maybe<TaskEdge>>;
+  edges: Array<TaskEdge>;
   /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
   groupedAggregates?: Maybe<Array<TaskAggregates>>;
   /** A list of `Task` objects. */
-  nodes: Array<Maybe<Task>>;
+  nodes: Array<Task>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Task` you could get from the connection. */
@@ -3146,7 +3146,7 @@ export type TaskEdge = {
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']['output']>;
   /** The `Task` at the end of the edge. */
-  node?: Maybe<Task>;
+  node: Task;
 };
 
 /** A filter to be used against `Task` object types. All fields are combined with a logical ‘and.’ */
@@ -3995,11 +3995,11 @@ export type UserConnection = {
   /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
   aggregates?: Maybe<UserAggregates>;
   /** A list of edges which contains the `User` and cursor to aid in pagination. */
-  edges: Array<Maybe<UserEdge>>;
+  edges: Array<UserEdge>;
   /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
   groupedAggregates?: Maybe<Array<UserAggregates>>;
   /** A list of `User` objects. */
-  nodes: Array<Maybe<User>>;
+  nodes: Array<User>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `User` you could get from the connection. */
@@ -4035,7 +4035,7 @@ export type UserEdge = {
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']['output']>;
   /** The `User` at the end of the edge. */
-  node?: Maybe<User>;
+  node: User;
 };
 
 /** A filter to be used against `User` object types. All fields are combined with a logical ‘and.’ */
@@ -4384,11 +4384,11 @@ export type WorkspaceConnection = {
   /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
   aggregates?: Maybe<WorkspaceAggregates>;
   /** A list of edges which contains the `Workspace` and cursor to aid in pagination. */
-  edges: Array<Maybe<WorkspaceEdge>>;
+  edges: Array<WorkspaceEdge>;
   /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
   groupedAggregates?: Maybe<Array<WorkspaceAggregates>>;
   /** A list of `Workspace` objects. */
-  nodes: Array<Maybe<Workspace>>;
+  nodes: Array<Workspace>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `Workspace` you could get from the connection. */
@@ -4422,7 +4422,7 @@ export type WorkspaceEdge = {
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']['output']>;
   /** The `Workspace` at the end of the edge. */
-  node?: Maybe<Workspace>;
+  node: Workspace;
 };
 
 /** A filter to be used against `Workspace` object types. All fields are combined with a logical ‘and.’ */
@@ -4663,11 +4663,11 @@ export type WorkspaceUserConnection = {
   /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
   aggregates?: Maybe<WorkspaceUserAggregates>;
   /** A list of edges which contains the `WorkspaceUser` and cursor to aid in pagination. */
-  edges: Array<Maybe<WorkspaceUserEdge>>;
+  edges: Array<WorkspaceUserEdge>;
   /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
   groupedAggregates?: Maybe<Array<WorkspaceUserAggregates>>;
   /** A list of `WorkspaceUser` objects. */
-  nodes: Array<Maybe<WorkspaceUser>>;
+  nodes: Array<WorkspaceUser>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** The count of *all* `WorkspaceUser` you could get from the connection. */
@@ -4703,7 +4703,7 @@ export type WorkspaceUserEdge = {
   /** A cursor for use in pagination. */
   cursor?: Maybe<Scalars['Cursor']['output']>;
   /** The `WorkspaceUser` at the end of the edge. */
-  node?: Maybe<WorkspaceUser>;
+  node: WorkspaceUser;
 };
 
 /** A filter to be used against `WorkspaceUser` object types. All fields are combined with a logical ‘and.’ */
@@ -4813,7 +4813,7 @@ export type WorkspaceUserPatch = {
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } } | null> } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } };
 
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
@@ -4922,7 +4922,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels?: any | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt?: Date | null } | null> } } | null> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels?: any | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt?: Date | null }> } }> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
@@ -4930,14 +4930,14 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } } | null> } } | null> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } | null };
 
 export type TaskQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt?: Date | null, updatedAt?: Date | null, dueDate?: Date | null, labels?: any | null, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null } | null> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null } | null> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt?: Date | null, updatedAt?: Date | null, dueDate?: Date | null, labels?: any | null, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null }> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -4945,28 +4945,28 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, labels?: any | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null } | null> } } | null> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, labels?: any | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
 
 export type WorkspaceQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, viewMode: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, color?: string | null, viewMode: string } | null> } } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, viewMode: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, color?: string | null, viewMode: string }> } } | null };
 
 export type WorkspaceUsersQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', user?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null } | null> } | null };
+export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', user?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null }> } | null };
 
 export type WorkspacesQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } } | null> } | null };
+export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } }> } | null };
 
 
 export const ProjectFragmentDoc = `

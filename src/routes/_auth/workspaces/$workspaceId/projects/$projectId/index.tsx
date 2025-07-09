@@ -228,8 +228,8 @@ function ProjectPage() {
                 <Link
                   to="/workspaces/$workspaceId/projects/$projectId/settings"
                   params={{
-                    workspaceId: workspaceId!,
-                    projectId: projectId!,
+                    workspaceId,
+                    projectId,
                   }}
                   variant="outline"
                   size="icon"

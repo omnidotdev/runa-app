@@ -183,7 +183,7 @@ const ListView = ({ shouldForceClose }: Props) => {
                         size="xs"
                         className="size-5"
                         onClick={() => {
-                          setColumnId(column?.rowId!);
+                          setColumnId(column.rowId);
                           setIsCreateTaskDialogOpen(true);
                         }}
                       >
@@ -197,13 +197,13 @@ const ListView = ({ shouldForceClose }: Props) => {
               </CollapsibleTrigger>
 
               <CollapsibleContent className="border-t">
-                <Droppable droppableId={column?.rowId!}>
+                <Droppable droppableId={column.rowId}>
                   {(provided, snapshot) => (
                     <TasksList
                       ref={provided.innerRef}
                       {...provided.droppableProps}
                       prefix={project?.prefix ?? "PROJ"}
-                      columnId={column?.rowId!}
+                      columnId={column.rowId}
                       // className="border-t"
                       style={{
                         backgroundColor:

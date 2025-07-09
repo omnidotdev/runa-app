@@ -56,10 +56,9 @@ const TasksList = ({
       ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
       .sort(
         (a, b) =>
-          new Date(a?.createdAt!).getTime()! -
-          new Date(b?.createdAt!).getTime()!,
+          new Date(a?.createdAt!).getTime() - new Date(b?.createdAt!).getTime(),
       )
-      .map((task) => task?.rowId)
+      .map((task) => task.rowId)
       .indexOf(taskId);
 
   return (
@@ -74,15 +73,15 @@ const TasksList = ({
         <p className="ml-2 p-2 text-muted-foreground text-xs">No tasks</p>
       ) : (
         tasks
-          ?.filter((task) => task?.rowId !== draggableId)
+          ?.filter((task) => task.rowId !== draggableId)
           .map((task, index) => {
-            const displayId = `${prefix}-${taskIndex(task?.rowId!) ? taskIndex(task?.rowId!) : 0}`;
-            const PriorityIcon = getPriorityIcon(task?.priority!);
+            const displayId = `${prefix}-${taskIndex(task.rowId) ? taskIndex(task.rowId) : 0}`;
+            const PriorityIcon = getPriorityIcon(task.priority);
 
             return (
               <Draggable
-                key={task?.rowId}
-                draggableId={task?.rowId!}
+                key={task.rowId}
+                draggableId={task.rowId}
                 index={index}
               >
                 {(provided, snapshot) => (
@@ -97,7 +96,7 @@ const TasksList = ({
                           params: {
                             workspaceId,
                             projectId,
-                            taskId: task?.rowId!,
+                            taskId: task.rowId,
                           },
                         });
                       }
@@ -125,7 +124,7 @@ const TasksList = ({
                         />
                       </div>
 
-                      {!!task?.assignees?.nodes?.length && (
+                      {!!task.assignees.nodes.length && (
                         <div className="-space-x-5.5 -mx-2 ml-auto flex h-8 items-center">
                           {task.assignees.nodes.map((assignee) => (
                             <Avatar
@@ -141,7 +140,7 @@ const TasksList = ({
                     </div>
 
                     <div className="hidden items-center justify-between sm:flex">
-                      {!!task?.labels?.length && (
+                      {!!task.labels.length && (
                         <Labels
                           labels={
                             typeof task.labels === "string"

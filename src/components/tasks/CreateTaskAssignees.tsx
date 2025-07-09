@@ -37,7 +37,7 @@ const CreateTaskAssignees = withForm({
       ...workspaceUsersOptions({ rowId: workspaceId! }),
       enabled: !!workspaceId,
       select: (data) =>
-        data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
+        data?.workspaceUsers?.nodes.flatMap((user) => user.user),
     });
 
     const usersCollection = createListCollection({

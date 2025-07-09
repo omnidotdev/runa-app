@@ -171,13 +171,13 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                         onClick={() => {
                           navigate({
                             to: "/workspaces/$workspaceId/projects",
-                            params: { workspaceId: workspace?.rowId! },
+                            params: { workspaceId: workspace.rowId },
                           });
                         }}
                         className="cursor-pointer gap-2 p-2"
-                        value={workspace?.name!}
+                        value={workspace.name}
                       >
-                        {workspace?.name}
+                        {workspace.name}
                       </MenuItem>
                     ))}
                   </MenuContent>
@@ -219,7 +219,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                   <SidebarMenuButton asChild tooltip="Workspace Settings">
                     <Link
                       to="/workspaces/$workspaceId/settings"
-                      params={{ workspaceId: workspaceId! }}
+                      params={{ workspaceId: workspaceId }}
                       variant="ghost"
                       activeProps={{
                         variant: "outline",
@@ -266,7 +266,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                   <SidebarMenuButton asChild tooltip="Projects Overview">
                     <Link
                       to="/workspaces/$workspaceId/projects"
-                      params={{ workspaceId: workspaceId! }}
+                      params={{ workspaceId: workspaceId }}
                       variant="ghost"
                       activeOptions={{
                         exact: true,
@@ -289,8 +289,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                         <Link
                           to="/workspaces/$workspaceId/projects/$projectId"
                           params={{
-                            workspaceId: workspaceId!,
-                            projectId: project?.rowId!,
+                            workspaceId: workspaceId,
+                            projectId: project.rowId,
                           }}
                           variant="ghost"
                           activeProps={{
@@ -335,8 +335,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                                 navigate({
                                   to: "/workspaces/$workspaceId/projects/$projectId/settings",
                                   params: {
-                                    workspaceId: workspaceId!,
-                                    projectId: project?.rowId!,
+                                    workspaceId: workspaceId,
+                                    projectId: project.rowId,
                                   },
                                 });
                               }}
@@ -350,7 +350,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                               className="flex cursor-pointer items-center gap-2"
                               onClick={() =>
                                 updateViewMode({
-                                  rowId: project?.rowId!,
+                                  rowId: project.rowId,
                                   patch: {
                                     viewMode:
                                       project?.viewMode === "board"
@@ -380,8 +380,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                               variant="destructive"
                               onClick={() => {
                                 setSelectedProject({
-                                  rowId: project?.rowId!,
-                                  name: project?.name!,
+                                  rowId: project.rowId,
+                                  name: project.name,
                                 });
                                 setIsDeleteProjectOpen(true);
                               }}

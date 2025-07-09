@@ -38,7 +38,7 @@ function WorkspacesOverviewPage() {
             <Link
               key={workspace?.rowId}
               to="/workspaces/$workspaceId/projects"
-              params={{ workspaceId: workspace?.rowId! }}
+              params={{ workspaceId: workspace?.rowId }}
               variant="ghost"
               className="h-fit overflow-hidden p-0 transition-transform hover:scale-[1.02] hover:bg-transparent"
             >

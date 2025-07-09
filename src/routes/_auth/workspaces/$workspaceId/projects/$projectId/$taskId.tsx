@@ -185,7 +185,7 @@ function TaskPage() {
   });
 
   const defaultAssignees = task?.assignees?.nodes?.map(
-    (assignee) => assignee?.user?.rowId!,
+    (assignee) => assignee.user?.rowId!,
   );
 
   const defaultLabels: { name: string; color: string; checked: boolean }[] =
@@ -355,9 +355,9 @@ function TaskPage() {
     ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
     .sort(
       (a, b) =>
-        new Date(a?.createdAt!).getTime()! - new Date(b?.createdAt!).getTime()!,
+        new Date(a?.createdAt!).getTime() - new Date(b?.createdAt!).getTime(),
     )
-    .map((task) => task?.rowId)
+    .map((task) => task.rowId)
     .indexOf(taskId);
 
   return (
@@ -514,13 +514,13 @@ function TaskPage() {
                           </span>
                           <span className="text-base-500 text-sm dark:text-base-400">
                             {format(
-                              new Date(comment?.createdAt!),
+                              new Date(comment.createdAt!),
                               "MMM d, yyyy 'at' h:mm a",
                             )}
                           </span>
                         </div>
                         <RichTextEditor
-                          defaultContent={comment?.description!}
+                          defaultContent={comment.description!}
                           className="min-h-0 border-0 p-0 py-2 text-sm leading-relaxed dark:bg-background"
                           skeletonClassName="h-[38.75px]"
                           editable={false}

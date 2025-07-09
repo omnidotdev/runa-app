@@ -75,10 +75,9 @@ const Tasks = ({
       ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
       .sort(
         (a, b) =>
-          new Date(a?.createdAt!).getTime()! -
-          new Date(b?.createdAt!).getTime()!,
+          new Date(a?.createdAt!).getTime() - new Date(b?.createdAt!).getTime(),
       )
-      .map((task) => task?.rowId)
+      .map((task) => task.rowId)
       .indexOf(taskId);
 
   return (
@@ -90,17 +89,13 @@ const Tasks = ({
       {...rest}
     >
       {tasks
-        ?.filter((task) => task?.rowId !== draggableId)
+        ?.filter((task) => task.rowId !== draggableId)
         .map((task, index) => {
-          const displayId = `${prefix}-${taskIndex(task?.rowId!) ? taskIndex(task?.rowId!) : 0}`;
-          const PriorityIcon = getPriorityIcon(task?.priority!);
+          const displayId = `${prefix}-${taskIndex(task.rowId) ? taskIndex(task.rowId) : 0}`;
+          const PriorityIcon = getPriorityIcon(task.priority);
 
           return (
-            <Draggable
-              key={task?.rowId}
-              draggableId={task?.rowId!}
-              index={index}
-            >
+            <Draggable key={task.rowId} draggableId={task.rowId} index={index}>
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
@@ -113,7 +108,7 @@ const Tasks = ({
                         params: {
                           workspaceId,
                           projectId,
-                          taskId: task?.rowId!,
+                          taskId: task.rowId,
                         },
                       });
                     }
@@ -152,10 +147,10 @@ const Tasks = ({
                       </div>
 
                       <div className="-mt-2.5 -mr-2 flex items-center gap-1">
-                        {!!task?.assignees?.nodes?.length && (
+                        {!!task.assignees.nodes.length && (
                           <Assignees
-                            assignees={task?.assignees.nodes.map(
-                              (assignee) => assignee?.user?.rowId!,
+                            assignees={task.assignees.nodes.map(
+                              (assignee) => assignee.user?.rowId!,
                             )}
                             className="-space-x-5.5 flex"
                           />
@@ -164,7 +159,7 @@ const Tasks = ({
                     </div>
 
                     <div className="grid grid-cols-4">
-                      {!!task?.labels?.length && (
+                      {!!task.labels.length && (
                         <div className="-m-3 col-span-3 flex items-end p-2.5">
                           <Labels
                             labels={JSON.parse(task.labels)}
