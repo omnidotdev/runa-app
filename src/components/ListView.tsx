@@ -154,7 +154,7 @@ const ListView = ({ shouldForceClose }: Props) => {
                       {column?.title}
                     </h3>
 
-                    <span className="px-2 py-0.5 text-foreground text-xs">
+                    <span className="flex size-7 items-center justify-center rounded-full bg-muted text-foreground text-xs tabular-nums">
                       {
                         project?.columns?.nodes?.find(
                           (c) => c?.rowId === column?.rowId,
@@ -182,7 +182,8 @@ const ListView = ({ shouldForceClose }: Props) => {
                         variant="ghost"
                         size="xs"
                         className="size-5"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault();
                           setColumnId(column.rowId);
                           setIsCreateTaskDialogOpen(true);
                         }}
@@ -204,7 +205,6 @@ const ListView = ({ shouldForceClose }: Props) => {
                       {...provided.droppableProps}
                       prefix={project?.prefix ?? "PROJ"}
                       columnId={column.rowId}
-                      // className="border-t"
                       style={{
                         backgroundColor:
                           project?.color && snapshot.isDraggingOver

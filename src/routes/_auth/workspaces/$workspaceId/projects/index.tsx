@@ -9,6 +9,7 @@ import {
   Grid2X2Icon,
   ListIcon,
   Plus,
+  PlusIcon,
   RocketIcon,
   SearchIcon,
 } from "lucide-react";
@@ -359,7 +360,7 @@ function ProjectsBoard({
                       )
                       .join(" ")}
                   </h3>
-                  <span className="px-2 py-0.5 text-foreground text-xs">
+                  <span className="flex size-7 items-center justify-center rounded-full bg-muted text-foreground text-xs tabular-nums">
                     {projects.length}
                   </span>
                 </div>
@@ -439,6 +440,12 @@ function ProjectsBoard({
 }
 
 function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
+  const { setStatus } = useProjectStore();
+
+  const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
+    type: DialogType.CreateProject,
+  });
+
   const projectsByStatus = {
     [ProjectStatus.Planned]: projects.filter(
       (p) => p.status === ProjectStatus.Planned,
@@ -458,25 +465,58 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
       {Object.entries(projectsByStatus).map(([status, statusProjects]) => (
         <CollapsibleRoot
           key={status}
-          className="mb-4 rounded-lg bg-white shadow-sm last:mb-0 dark:bg-base-800"
+          className="mb-4 rounded-lg border bg-background last:mb-0"
           defaultOpen
         >
-          <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 rounded-t-lg px-4 py-3 text-left">
-            <div className="flex items-center gap-2">
-              <span className="font-medium text-base-900 text-sm dark:text-base-100">
-                {status
-                  .split("_")
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(" ")}
-              </span>
-              <span className="rounded-full bg-base-200 px-2 py-1 text-base-600 text-xs dark:bg-base-700 dark:text-base-300">
-                {statusProjects.length}
-              </span>
+          <CollapsibleTrigger asChild>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="flex-shrink-0">
+                  {status
+                    .split("_")
+                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")}
+                </span>
+                <span className="flex size-7 items-center justify-center rounded-full bg-muted text-foreground text-xs tabular-nums">
+                  {statusProjects.length}
+                </span>
+              </div>
+
+              <div className="ml-auto flex gap-2">
+                <Tooltip
+                  positioning={{ placement: "top", gutter: 11 }}
+                  tooltip={{
+                    className: "bg-background text-foreground border",
+                    children: (
+                      <div className="inline-flex">
+                        Add Project
+                        <div className="ml-2 flex items-center gap-0.5">
+                          <SidebarMenuShotcut>P</SidebarMenuShotcut>
+                        </div>
+                      </div>
+                    ),
+                  }}
+                >
+                  <Button
+                    variant="ghost"
+                    size="xs"
+                    className="size-5"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setStatus(status as ProjectStatus);
+                      setIsCreateProjectDialogOpen(true);
+                    }}
+                  >
+                    <PlusIcon className="size-4" />
+                  </Button>
+                </Tooltip>
+              </div>
+
+              <ChevronDownIcon className="ml-2 size-4 transition-transform" />
             </div>
-            <ChevronDownIcon className="size-4 transition-transform" />
           </CollapsibleTrigger>
 
-          <CollapsibleContent>
+          <CollapsibleContent className="border-t">
             <Droppable droppableId={status}>
               {(provided, snapshot) => (
                 <div
@@ -488,34 +528,40 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
                       "bg-primary-100/40 dark:bg-primary-950/40",
                   )}
                 >
-                  {statusProjects
-                    .filter((project) => project.rowId !== draggableId)
-                    .map((project, index) => (
-                      <Draggable
-                        key={project.rowId}
-                        draggableId={project.rowId}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={cn(
-                              "group cursor-pointer bg-background",
-                              snapshot.isDragging
-                                ? "z-10 shadow-lg"
-                                : "hover:bg-base-50/50 dark:hover:bg-background/90",
-                            )}
-                          >
-                            <ProjectListItem
-                              project={project}
-                              status={status as ProjectStatus}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
+                  {statusProjects.length === 0 ? (
+                    <p className="ml-2 p-2 text-muted-foreground text-xs">
+                      No projects
+                    </p>
+                  ) : (
+                    statusProjects
+                      .filter((project) => project.rowId !== draggableId)
+                      .map((project, index) => (
+                        <Draggable
+                          key={project.rowId}
+                          draggableId={project.rowId}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={cn(
+                                "group cursor-pointer bg-background",
+                                snapshot.isDragging
+                                  ? "z-10 shadow-lg"
+                                  : "hover:bg-base-50/50 dark:hover:bg-background/90",
+                              )}
+                            >
+                              <ProjectListItem
+                                project={project}
+                                status={status as ProjectStatus}
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))
+                  )}
                   {provided.placeholder}
                 </div>
               )}
