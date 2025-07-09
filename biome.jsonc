@@ -56,7 +56,6 @@
         }
       },
       "suspicious": {
-        // TODO: remove to allow for error
         "noArrayIndexKey": "warn",
         "noConsole": {
           "level": "error",

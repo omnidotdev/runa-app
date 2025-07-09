@@ -77,12 +77,6 @@ function SettingsPage() {
     select: (data) => data?.workspace,
   });
 
-  // TODO
-  // const handleRemoveMember = (memberId: string) => {
-  //   const updatedMembers = members.filter((member) => member.id !== memberId);
-  //   setMembers(updatedMembers);
-  // };
-
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
     meta: {
       invalidates: [workspacesOptions().queryKey],

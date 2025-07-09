@@ -62,7 +62,6 @@ const RichTextEditor = ({
       },
     },
     content: defaultContent,
-    // TODO: discuss. This saves the HTML in db, i.e. `<p>Testing <strong>bold</strong> text</p>` which we could later render. `getText` removes any rich text
     onUpdate,
     immediatelyRender: false,
   });

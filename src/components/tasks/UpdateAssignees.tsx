@@ -27,8 +27,6 @@ interface WorkspaceUser {
   };
 }
 
-// TODO: update structure. Use combobox to search for assignees and show currently assigned only with `XIcon` to remove
-
 const UpdateAssignees = withForm({
   defaultValues: {
     title: "",
