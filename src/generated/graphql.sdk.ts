@@ -4943,7 +4943,7 @@ export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', ro
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
-  assignees?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
+  assignees?: InputMaybe<TaskToManyAssigneeFilter>;
 }>;
 
 
@@ -5196,9 +5196,9 @@ export const TaskDocument = gql`
 }
     `;
 export const TasksDocument = gql`
-    query Tasks($projectId: UUID!, $search: String = "", $assignees: [UUID!]) {
+    query Tasks($projectId: UUID!, $search: String = "", $assignees: TaskToManyAssigneeFilter) {
   tasks(
-    filter: {projectId: {equalTo: $projectId}, content: {includesInsensitive: $search}, assignees: {some: {user: {rowId: {in: $assignees}}}}}
+    filter: {projectId: {equalTo: $projectId}, content: {includesInsensitive: $search}, assignees: $assignees}
   ) {
     nodes {
       rowId

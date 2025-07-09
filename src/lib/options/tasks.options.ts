@@ -2,10 +2,12 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { useTasksQuery } from "@/generated/graphql";
 
+import type { InputMaybe, TaskToManyAssigneeFilter } from "@/generated/graphql";
+
 interface Options {
   projectId: string;
   search?: string;
-  assignees?: string[];
+  assignees?: InputMaybe<TaskToManyAssigneeFilter> | undefined;
 }
 
 const tasksOptions = ({ projectId, search, assignees }: Options) =>

@@ -96,7 +96,9 @@ const Tasks = ({
     ...tasksOptions({
       projectId: projectId,
       search: search,
-      assignees: selectedUsers.length ? selectedUsers : undefined,
+      assignees: selectedUsers.length
+        ? { some: { user: { rowId: { in: selectedUsers } } } }
+        : undefined,
     }),
     select: (data) =>
       data?.tasks?.nodes?.filter((task) => task.columnId === columnId),
