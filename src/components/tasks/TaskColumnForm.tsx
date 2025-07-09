@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 
 import { columnIcons } from "@/components/Tasks";
@@ -35,7 +35,7 @@ const TaskColumnForm = withForm({
       from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
     });
 
-    const { data: project } = useQuery({
+    const { data: project } = useSuspenseQuery({
       ...projectOptions({ rowId: projectId }),
       select: (data) => data?.project,
     });

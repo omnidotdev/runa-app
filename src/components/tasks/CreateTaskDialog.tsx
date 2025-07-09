@@ -56,9 +56,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     select: (data) => data?.project,
   });
 
-  const defaultColumnId = project?.columns?.nodes?.find(
-    (column) => column?.index === 0,
-  )?.rowId;
+  const defaultColumnId = project?.columns?.nodes?.[0].rowId!;
 
   const { setColumnId } = useTaskStore();
 
@@ -89,7 +87,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       labels: projectLabels,
       assignees: [] as string[],
       dueDate: "",
-      columnId: columnId ?? defaultColumnId ?? "",
+      columnId: columnId ?? defaultColumnId,
     },
     onSubmit: async ({ value, formApi }) => {
       // TODO: dynamic with auth
