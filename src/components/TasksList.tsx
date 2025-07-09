@@ -8,7 +8,16 @@ import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import Labels from "@/components/Labels";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
+import { SidebarMenuShotcut } from "@/components/ui/sidebar";
+import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
@@ -40,6 +49,21 @@ const TasksList = ({
   });
 
   const { draggableId } = useDragStore();
+  const { setTaskId } = useTaskStore();
+  const { isOpen: isUpdateAssigneesDialogOpen } = useDialogStore({
+    type: DialogType.UpdateAssignees,
+  });
+  const { isOpen: isUpdateDueDateDialogOpen } = useDialogStore({
+    type: DialogType.UpdateDueDate,
+  });
+  const { isOpen: isUpdateTaskLabelsDialogOpen } = useDialogStore({
+    type: DialogType.UpdateTaskLabels,
+  });
+
+  const isUpdateDialogOpen =
+    isUpdateAssigneesDialogOpen ||
+    isUpdateDueDateDialogOpen ||
+    isUpdateTaskLabelsDialogOpen;
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
@@ -94,6 +118,8 @@ const TasksList = ({
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
+                    onMouseEnter={() => setTaskId(task.rowId)}
+                    onMouseLeave={() => !isUpdateDialogOpen && setTaskId(null)}
                     onClick={() => {
                       if (!snapshot.isDragging) {
                         navigate({
@@ -128,47 +154,100 @@ const TasksList = ({
                         />
                       </div>
 
-                      {/* TODO: show tooltip for hotkey when ready */}
-                      <div className="-mt-2.5 -mr-2 ml-auto flex items-center gap-1">
-                        {task.assignees.nodes.length ? (
-                          <Assignees
-                            assignees={task.assignees.nodes.map(
-                              (assignee) => assignee.user?.rowId!,
+                      <TooltipRoot
+                        positioning={{
+                          placement: "bottom-end",
+                          gutter: -4,
+                        }}
+                      >
+                        <TooltipTrigger asChild>
+                          <div className="-mt-2.5 -mr-2 ml-auto flex items-center gap-1">
+                            {task.assignees.nodes.length ? (
+                              <Assignees
+                                assignees={task.assignees.nodes.map(
+                                  (assignee) => assignee.user?.rowId!,
+                                )}
+                                className="-space-x-5.5 flex"
+                              />
+                            ) : (
+                              <AvatarRoot
+                                aria-label="No Assignees"
+                                className="mr-2 size-5.5"
+                              >
+                                <AvatarFallback className="border border-muted-foreground border-dashed bg-transparent p-1 text-muted-foreground">
+                                  <UserIcon />
+                                </AvatarFallback>
+                              </AvatarRoot>
                             )}
-                            className="-space-x-5.5 flex"
-                          />
-                        ) : (
-                          <AvatarRoot
-                            aria-label="No Assignees"
-                            className="mr-2 size-5.5"
-                          >
-                            <AvatarFallback className="border border-muted-foreground border-dashed bg-transparent p-1 text-muted-foreground">
-                              <UserIcon />
-                            </AvatarFallback>
-                          </AvatarRoot>
-                        )}
-                      </div>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipPositioner>
+                          <TooltipContent className="border bg-background text-foreground">
+                            <div className="inline-flex">
+                              Update Assignees
+                              <div className="ml-2 flex items-center gap-0.5">
+                                <SidebarMenuShotcut>A</SidebarMenuShotcut>
+                              </div>
+                            </div>
+                          </TooltipContent>
+                        </TooltipPositioner>
+                      </TooltipRoot>
                     </div>
 
-                    {/* TODO: show tooltip for hotkey when ready */}
                     <div className="hidden items-center justify-between sm:flex">
                       {!!task.labels.length && (
-                        <Labels
-                          labels={
-                            typeof task.labels === "string"
-                              ? JSON.parse(task.labels)
-                              : task.labels
-                          }
-                          className="flex flex-wrap gap-1"
-                        />
+                        <TooltipRoot
+                          positioning={{
+                            placement: "top-start",
+                            shift: -6,
+                          }}
+                        >
+                          <TooltipTrigger asChild>
+                            <Labels
+                              labels={JSON.parse(task.labels)}
+                              className="flex flex-wrap gap-1"
+                            />
+                          </TooltipTrigger>
+                          <TooltipPositioner>
+                            <TooltipContent className="border bg-background text-foreground">
+                              <div className="inline-flex">
+                                Update Labels
+                                <div className="ml-2 flex items-center gap-0.5">
+                                  <SidebarMenuShotcut>L</SidebarMenuShotcut>
+                                </div>
+                              </div>
+                            </TooltipContent>
+                          </TooltipPositioner>
+                        </TooltipRoot>
                       )}
 
-                      {/* TODO: show tooltip for hotkey when ready */}
                       {task?.dueDate && (
-                        <div className="flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
-                          <CalendarIcon className="h-3 w-3" />
-                          <span>{format(new Date(task.dueDate), "MMM d")}</span>
-                        </div>
+                        <TooltipRoot
+                          positioning={{
+                            placement: "top-end",
+                            shift: -12,
+                          }}
+                        >
+                          <TooltipTrigger asChild>
+                            <div className="flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
+                              <CalendarIcon className="h-3 w-3" />
+                              <span>
+                                {format(new Date(task.dueDate), "MMM d")}
+                              </span>
+                            </div>
+                          </TooltipTrigger>
+
+                          <TooltipPositioner>
+                            <TooltipContent className="border bg-background text-foreground">
+                              <div className="inline-flex">
+                                Update Due Date
+                                <div className="ml-2 flex items-center gap-0.5">
+                                  <SidebarMenuShotcut>D</SidebarMenuShotcut>
+                                </div>
+                              </div>
+                            </TooltipContent>
+                          </TooltipPositioner>
+                        </TooltipRoot>
                       )}
                     </div>
                   </div>
