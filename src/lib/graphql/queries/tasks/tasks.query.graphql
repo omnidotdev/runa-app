@@ -1,8 +1,9 @@
-query Tasks($projectId: UUID!, $search: String = "") {
+query Tasks($projectId: UUID!, $search: String = "", $assignees: [UUID!]) {
   tasks(
     filter: {
       projectId: { equalTo: $projectId }
       content: { includesInsensitive: $search }
+      assignees: { some: { user: { rowId: { in: $assignees } } } }
     }
   ) {
     nodes {

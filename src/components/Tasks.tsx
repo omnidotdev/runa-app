@@ -14,6 +14,7 @@ import {
 
 import RichTextEditor from "@/components/core/RichTextEditor";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import useTaskFiltersStore from "@/lib/hooks/store/useFilterStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
@@ -57,13 +58,22 @@ const Tasks = ({
 
   const { draggableId } = useDragStore();
 
+  const {
+    // selectedLabels,
+    selectedUsers,
+  } = useTaskFiltersStore();
+
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
 
   const { data: tasks } = useSuspenseQuery({
-    ...tasksOptions({ projectId, search }),
+    ...tasksOptions({
+      projectId: projectId,
+      search: search,
+      assignees: selectedUsers.length ? selectedUsers : undefined,
+    }),
     select: (data) =>
       data?.tasks?.nodes?.filter((task) => task?.columnId === columnId),
   });
@@ -77,9 +87,10 @@ const Tasks = ({
       ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
       .sort(
         (a, b) =>
-          new Date(a?.createdAt!).getTime() - new Date(b?.createdAt!).getTime(),
+          new Date(a?.createdAt!).getTime()! -
+          new Date(b?.createdAt!).getTime()!,
       )
-      .map((task) => task.rowId)
+      .map((task) => task?.rowId)
       .indexOf(taskId);
 
   return (
@@ -91,13 +102,17 @@ const Tasks = ({
       {...rest}
     >
       {tasks
-        ?.filter((task) => task.rowId !== draggableId)
+        ?.filter((task) => task?.rowId !== draggableId)
         .map((task, index) => {
-          const displayId = `${prefix}-${taskIndex(task.rowId) ? taskIndex(task.rowId) : 0}`;
-          const PriorityIcon = getPriorityIcon(task.priority);
+          const displayId = `${prefix}-${taskIndex(task?.rowId!) ? taskIndex(task?.rowId!) : 0}`;
+          const PriorityIcon = getPriorityIcon(task?.priority!);
 
           return (
-            <Draggable key={task.rowId} draggableId={task.rowId} index={index}>
+            <Draggable
+              key={task?.rowId}
+              draggableId={task?.rowId!}
+              index={index}
+            >
               {(provided, snapshot) => (
                 // TODO: due date dialog on hover + hotkey
                 // TODO: assignee dialog on hover + hotkey
@@ -114,7 +129,7 @@ const Tasks = ({
                         params: {
                           workspaceId,
                           projectId,
-                          taskId: task.rowId,
+                          taskId: task?.rowId!,
                         },
                       });
                     }
@@ -156,8 +171,8 @@ const Tasks = ({
                       <div className="-mt-2.5 -mr-2 flex items-center gap-1">
                         {task.assignees.nodes.length ? (
                           <Assignees
-                            assignees={task.assignees.nodes.map(
-                              (assignee) => assignee.user?.rowId!,
+                            assignees={task?.assignees.nodes.map(
+                              (assignee) => assignee?.user?.rowId!,
                             )}
                             className="-space-x-5.5 flex"
                           />

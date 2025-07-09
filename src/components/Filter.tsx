@@ -28,6 +28,7 @@ import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { labelColors } from "@/lib/constants/labelColors";
+import useTaskFiltersStore from "@/lib/hooks/store/useFilterStore";
 import projectOptions from "@/lib/options/project.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
@@ -43,9 +44,9 @@ const Filter = () => {
 
   const popoverButtonRef = useRef<HTMLButtonElement | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  // TODO: Hook up filters with board and list view
-  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+
+  const { selectedLabels, selectedUsers, setSelectedLabels, setSelectedUsers } =
+    useTaskFiltersStore();
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
@@ -121,15 +122,15 @@ const Filter = () => {
                       key={label.name}
                       className="group flex cursor-pointer items-center justify-between p-0.5"
                       checked={selectedLabels.includes(label.name)}
-                      onCheckedChange={({ checked }) =>
-                        setSelectedLabels((prev) => {
-                          if (checked) {
-                            return [...prev, label.name];
-                          } else {
-                            return prev.filter((l) => l !== label.name);
-                          }
-                        })
-                      }
+                      onCheckedChange={({ checked }) => {
+                        const current =
+                          useTaskFiltersStore.getState().selectedLabels;
+                        setSelectedLabels(
+                          checked
+                            ? [...current, label.name]
+                            : current.filter((l) => l !== label.name),
+                        );
+                      }}
                     >
                       <CheckboxLabel className="ml-0 flex items-center gap-2">
                         <div
@@ -171,20 +172,18 @@ const Filter = () => {
                 <PopoverContent className="flex w-48 flex-col p-2">
                   {users?.map((user) => (
                     <CheckboxRoot
-                      key={user?.name}
+                      key={user?.rowId}
                       className="group flex cursor-pointer items-center justify-between p-0.5"
-                      checked={selectedUsers.includes(user?.name ?? "")}
-                      onCheckedChange={({ checked }) =>
-                        setSelectedUsers((prev) => {
-                          if (!user?.name) return prev;
-
-                          if (checked) {
-                            return [...prev, user?.name];
-                          } else {
-                            return prev.filter((l) => l !== user.name);
-                          }
-                        })
-                      }
+                      checked={selectedUsers.includes(user?.rowId ?? "")}
+                      onCheckedChange={({ checked }) => {
+                        const current =
+                          useTaskFiltersStore.getState().selectedUsers;
+                        setSelectedUsers(
+                          checked
+                            ? [...current, user?.rowId!]
+                            : current.filter((u) => u !== user?.rowId!),
+                        );
+                      }}
                     >
                       <CheckboxLabel className="-ml-2 flex h-8 items-center gap-2">
                         <Avatar
@@ -199,7 +198,7 @@ const Filter = () => {
                       <CheckboxControl
                         className={cn(
                           "hidden group-hover:flex",
-                          selectedUsers.includes(user?.name ?? "")
+                          selectedUsers.includes(user?.rowId ?? "")
                             ? "flex"
                             : "",
                         )}

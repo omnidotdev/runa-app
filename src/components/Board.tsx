@@ -242,7 +242,7 @@ const Board = () => {
                           size="xs"
                           className="size-5"
                           onClick={() => {
-                            setColumnId(column.rowId);
+                            setColumnId(column?.rowId!);
                             setIsCreateTaskDialogOpen(true);
                           }}
                         >
@@ -252,13 +252,13 @@ const Board = () => {
                     </div>
 
                     <div className="no-scrollbar flex h-full overflow-y-auto">
-                      <Droppable droppableId={column.rowId}>
+                      <Droppable droppableId={column?.rowId!}>
                         {(provided, snapshot) => (
                           <Tasks
                             ref={provided.innerRef}
                             {...provided.droppableProps}
                             prefix={project.prefix ?? "PROJ"}
-                            columnId={column.rowId}
+                            columnId={column?.rowId!}
                             style={{
                               backgroundColor:
                                 project?.color && snapshot.isDraggingOver
