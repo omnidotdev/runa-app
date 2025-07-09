@@ -24,6 +24,13 @@ import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
+import { SidebarMenuShotcut } from "./ui/sidebar";
+import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
@@ -126,10 +133,6 @@ const Tasks = ({
           return (
             <Draggable key={task.rowId} draggableId={task.rowId} index={index}>
               {(provided, snapshot) => (
-                // TODO: due date dialog on hover + hotkey
-                // TODO: assignee dialog on hover + hotkey
-                // TODO: labels dialog on hover + hotkey
-                // Thoughts for the above: set `taskId` in global store during `onMouseEnter`, use in dialogs for updates
                 <div
                   ref={provided.innerRef}
                   {...provided.draggableProps}
@@ -181,46 +184,103 @@ const Tasks = ({
                         </div>
                       </div>
 
-                      {/* TODO: show tooltip for hotkey when ready */}
-                      <div className="-mt-2.5 -mr-2 flex items-center gap-1">
-                        {task.assignees.nodes.length ? (
-                          <Assignees
-                            assignees={task?.assignees.nodes.map(
-                              (assignee) => assignee.user?.rowId!,
+                      <TooltipRoot
+                        positioning={{
+                          placement: "bottom-end",
+                          gutter: -4,
+                        }}
+                      >
+                        <TooltipTrigger asChild>
+                          <div className="-mt-2.5 -mr-2 flex items-center gap-1">
+                            {task.assignees.nodes.length ? (
+                              <Assignees
+                                assignees={task?.assignees.nodes.map(
+                                  (assignee) => assignee.user?.rowId!,
+                                )}
+                                className="-space-x-5.5 flex"
+                              />
+                            ) : (
+                              <AvatarRoot
+                                aria-label="No Assignees"
+                                className="mt-2.5 mr-2 size-5.5"
+                              >
+                                <AvatarFallback className="border border-muted-foreground border-dashed bg-transparent p-1 text-muted-foreground">
+                                  <UserIcon />
+                                </AvatarFallback>
+                              </AvatarRoot>
                             )}
-                            className="-space-x-5.5 flex"
-                          />
-                        ) : (
-                          <AvatarRoot
-                            aria-label="No Assignees"
-                            className="mt-2.5 mr-2 size-5.5"
-                          >
-                            <AvatarFallback className="border border-muted-foreground border-dashed bg-transparent p-1 text-muted-foreground">
-                              <UserIcon />
-                            </AvatarFallback>
-                          </AvatarRoot>
-                        )}
-                      </div>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipPositioner>
+                          <TooltipContent className="border bg-background text-foreground">
+                            <div className="inline-flex">
+                              Update Assignees
+                              <div className="ml-2 flex items-center gap-0.5">
+                                <SidebarMenuShotcut>A</SidebarMenuShotcut>
+                              </div>
+                            </div>
+                          </TooltipContent>
+                        </TooltipPositioner>
+                      </TooltipRoot>
                     </div>
 
                     <div className="grid grid-cols-4">
-                      {/* TODO: show tooltip for hotkey when ready */}
-                      {!!task.labels.length && (
-                        <div className="-m-3 col-span-3 flex items-end p-2.5">
-                          <Labels
-                            labels={JSON.parse(task.labels)}
-                            className="flex flex-wrap gap-1"
-                          />
-                        </div>
-                      )}
+                      <div className="-m-3 col-span-3 flex items-end p-2.5">
+                        {!!task.labels.length && (
+                          <TooltipRoot
+                            positioning={{
+                              placement: "top-start",
+                              shift: -6,
+                            }}
+                          >
+                            <TooltipTrigger asChild>
+                              <Labels
+                                labels={JSON.parse(task.labels)}
+                                className="flex flex-wrap gap-1"
+                              />
+                            </TooltipTrigger>
+                            <TooltipPositioner>
+                              <TooltipContent className="border bg-background text-foreground">
+                                <div className="inline-flex">
+                                  Update Labels
+                                  <div className="ml-2 flex items-center gap-0.5">
+                                    <SidebarMenuShotcut>L</SidebarMenuShotcut>
+                                  </div>
+                                </div>
+                              </TooltipContent>
+                            </TooltipPositioner>
+                          </TooltipRoot>
+                        )}
+                      </div>
 
-                      {/* TODO: show tooltip for hotkey when ready */}
                       {task?.dueDate && (
-                        <div className="col-span-1 mr-1 flex items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
-                          <CalendarIcon className="h-3 w-3" />
-                          {/* TODO: timezone handling */}
-                          <span>{format(new Date(task.dueDate), "MMM d")}</span>
-                        </div>
+                        <TooltipRoot
+                          positioning={{
+                            placement: "top-end",
+                            shift: -12,
+                          }}
+                        >
+                          <TooltipTrigger asChild>
+                            <div className="col-span-1 mr-1 flex items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
+                              <CalendarIcon className="h-3 w-3" />
+                              {/* TODO: timezone handling */}
+                              <span>
+                                {format(new Date(task.dueDate), "MMM d")}
+                              </span>
+                            </div>
+                          </TooltipTrigger>
+
+                          <TooltipPositioner>
+                            <TooltipContent className="border bg-background text-foreground">
+                              <div className="inline-flex">
+                                Update Due Date
+                                <div className="ml-2 flex items-center gap-0.5">
+                                  <SidebarMenuShotcut>D</SidebarMenuShotcut>
+                                </div>
+                              </div>
+                            </TooltipContent>
+                          </TooltipPositioner>
+                        </TooltipRoot>
                       )}
                     </div>
                   </div>
