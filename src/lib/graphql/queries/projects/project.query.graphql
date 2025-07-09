@@ -6,7 +6,13 @@ query Project($rowId: UUID!) {
     prefix
     color
     viewMode
-    labels
+    labels {
+      nodes {
+        name
+        color
+        rowId
+      }
+    }
     columns(orderBy: INDEX_ASC) {
       nodes {
         rowId

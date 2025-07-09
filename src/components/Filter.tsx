@@ -55,11 +55,11 @@ const Filter = () => {
     select: (data) => data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
   });
 
-  const projectLabels: { name: string; color: string; checked: boolean }[] =
-    project?.labels?.map((label: { name: string; color: string }) => ({
-      ...label,
-      checked: false,
-    })) ?? [];
+  // const projectLabels: { name: string; color: string; checked: boolean }[] =
+  //   project?.labels?.map((label: { name: string; color: string }) => ({
+  //     ...label,
+  //     checked: false,
+  //   })) ?? [];
 
   useHotkeys(Hotkeys.ToggleFilter, () => setIsFilterOpen(!isFilterOpen), [
     isFilterOpen,

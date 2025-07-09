@@ -25,6 +25,7 @@ const CreateTaskAssignees = withForm({
       name: string;
       color: string;
       checked: boolean;
+      rowId: string;
     }[],
     assignees: [] as string[],
     dueDate: "",

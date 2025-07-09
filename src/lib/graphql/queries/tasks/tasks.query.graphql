@@ -18,7 +18,13 @@ query Tasks(
       content
       priority
       dueDate
-      labels
+      taskLabels {
+        nodes {
+          label {
+            ...Label
+          }
+        }
+      }
       assignees {
         nodes {
           rowId

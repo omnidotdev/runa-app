@@ -27,7 +27,6 @@ import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import Labels from "@/components/Labels";
 import NotFound from "@/components/layout/NotFound";
-import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
 import UpdateAssignees from "@/components/tasks/UpdateAssignees";
 import UpdateDueDate from "@/components/tasks/UpdateDueDate";
 import { Avatar } from "@/components/ui/avatar";
@@ -53,7 +52,6 @@ import {
   useCreateAssigneeMutation,
   useCreatePostMutation,
   useDeleteAssigneeMutation,
-  useUpdateProjectMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
@@ -188,13 +186,6 @@ function TaskPage() {
     (assignee) => assignee.user?.rowId!,
   );
 
-  const defaultLabels: { name: string; color: string; checked: boolean }[] =
-    project?.labels?.map((label: { name: string; color: string }) => ({
-      ...label,
-      // TODO: This assumes that label names are unique per project, validate this
-      checked: task?.labels?.includes(label.name) || false,
-    }));
-
   const columnCollection = createListCollection({
     items:
       project?.columns?.nodes?.map((column) => ({
@@ -211,7 +202,7 @@ function TaskPage() {
     ],
   });
 
-  const { mutate: updateProject } = useUpdateProjectMutation();
+  // const { mutate: updateProject } = useUpdateProjectMutation();
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
       invalidates: [
@@ -272,37 +263,37 @@ function TaskPage() {
     defaultValues: {
       title: "",
       description: "",
-      labels: defaultLabels,
+      // labels: ,
       assignees: [] as string[],
       dueDate: "",
       columnId: "",
     },
     onSubmit: ({ value, formApi }) => {
-      const allLabels = value.labels.map((label) => ({
-        name: label.name,
-        color: label.color,
-      }));
+      // const allLabels = value.labels.map((label) => ({
+      //   name: label.name,
+      //   color: label.color,
+      // }));
 
-      const taskLabels = value.labels
-        .filter((l) => l.checked)
-        .map((label) => ({
-          name: label.name,
-          color: label.color,
-        }));
+      // const taskLabels = value.labels
+      //   .filter((l) => l.checked)
+      //   .map((label) => ({
+      //     name: label.name,
+      //     color: label.color,
+      //   }));
 
-      updateTask({
-        rowId: taskId,
-        patch: {
-          labels: JSON.stringify(taskLabels),
-        },
-      });
+      // updateTask({
+      //   rowId: taskId,
+      //   patch: {
+      //     labels: JSON.stringify(taskLabels),
+      //   },
+      // });
 
-      updateProject({
-        rowId: projectId,
-        patch: {
-          labels: allLabels,
-        },
-      });
+      // updateProject({
+      //   rowId: projectId,
+      //   patch: {
+      //     labels:
+      //   },
+      // });
 
       formApi.reset();
     },
@@ -685,7 +676,7 @@ function TaskPage() {
 
                       <PopoverPositioner>
                         <PopoverContent className="flex min-w-80 flex-col p-0">
-                          <TaskLabelsForm form={updateLabelsForm} />
+                          {/* <TaskLabelsForm form={updateLabelsForm} /> */}
 
                           <updateLabelsForm.Subscribe
                             selector={(state) => [

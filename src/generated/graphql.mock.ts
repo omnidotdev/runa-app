@@ -74,6 +74,72 @@ export const mockCreateColumnMutation = (resolver: GraphQLResponseResolver<Types
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockCreateLabelMutation(
+ *   ({ query, variables }) => {
+ *     const { input } = variables;
+ *     return HttpResponse.json({
+ *       data: { createLabel }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockCreateLabelMutation = (resolver: GraphQLResponseResolver<Types.CreateLabelMutation, Types.CreateLabelMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.CreateLabelMutation, Types.CreateLabelMutationVariables>(
+    'CreateLabel',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockDeleteLabelMutation(
+ *   ({ query, variables }) => {
+ *     const { rowId } = variables;
+ *     return HttpResponse.json({
+ *       data: { deleteLabel }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockDeleteLabelMutation = (resolver: GraphQLResponseResolver<Types.DeleteLabelMutation, Types.DeleteLabelMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.DeleteLabelMutation, Types.DeleteLabelMutationVariables>(
+    'DeleteLabel',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUpdateLabelMutation(
+ *   ({ query, variables }) => {
+ *     const { rowId, patch } = variables;
+ *     return HttpResponse.json({
+ *       data: { updateLabel }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockUpdateLabelMutation = (resolver: GraphQLResponseResolver<Types.UpdateLabelMutation, Types.UpdateLabelMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.UpdateLabelMutation, Types.UpdateLabelMutationVariables>(
+    'UpdateLabel',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockCreatePostMutation(
  *   ({ query, variables }) => {
  *     const { input } = variables;
@@ -153,6 +219,28 @@ export const mockDeleteProjectMutation = (resolver: GraphQLResponseResolver<Type
 export const mockUpdateProjectMutation = (resolver: GraphQLResponseResolver<Types.UpdateProjectMutation, Types.UpdateProjectMutationVariables>, options?: RequestHandlerOptions) =>
   graphql.mutation<Types.UpdateProjectMutation, Types.UpdateProjectMutationVariables>(
     'UpdateProject',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCreateTaskLabelMutation(
+ *   ({ query, variables }) => {
+ *     const { input } = variables;
+ *     return HttpResponse.json({
+ *       data: { createTaskLabel }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockCreateTaskLabelMutation = (resolver: GraphQLResponseResolver<Types.CreateTaskLabelMutation, Types.CreateTaskLabelMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.CreateTaskLabelMutation, Types.CreateTaskLabelMutationVariables>(
+    'CreateTaskLabel',
     resolver,
     options
   )
@@ -307,6 +395,28 @@ export const mockDeleteWorkspaceUserMutation = (resolver: GraphQLResponseResolve
 export const mockUpdateWorkspaceMutation = (resolver: GraphQLResponseResolver<Types.UpdateWorkspaceMutation, Types.UpdateWorkspaceMutationVariables>, options?: RequestHandlerOptions) =>
   graphql.mutation<Types.UpdateWorkspaceMutation, Types.UpdateWorkspaceMutationVariables>(
     'UpdateWorkspace',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockLabelsQuery(
+ *   ({ query, variables }) => {
+ *     const { projectId } = variables;
+ *     return HttpResponse.json({
+ *       data: { labels }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockLabelsQuery = (resolver: GraphQLResponseResolver<Types.LabelsQuery, Types.LabelsQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.LabelsQuery, Types.LabelsQueryVariables>(
+    'Labels',
     resolver,
     options
   )

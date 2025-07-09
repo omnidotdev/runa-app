@@ -16,4 +16,5 @@ export const labelColors = [
   { name: "Fuchsia", classes: "bg-fuchsia-400 dark:bg-fuchsia-700" },
   { name: "Pink", classes: "bg-pink-400 dark:bg-pink-700" },
   { name: "Rose", classes: "bg-rose-400 dark:bg-rose-700" },
+  { name: "Gray", classes: "bg-gray-400 dark:bg-gray-700" },
 ];

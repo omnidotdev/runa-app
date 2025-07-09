@@ -9,7 +9,13 @@ query Task($rowId: UUID!) {
     createdAt
     updatedAt
     dueDate
-    labels
+    taskLabels {
+      nodes {
+        label {
+          ...Label
+        }
+      }
+    }
     posts(orderBy: CREATED_AT_ASC) {
       totalCount
       nodes {

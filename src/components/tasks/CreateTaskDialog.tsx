@@ -1,3 +1,4 @@
+import { useStore } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { TagIcon, TypeIcon } from "lucide-react";
@@ -6,7 +7,6 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
-import Labels from "@/components/Labels";
 import CreateTaskAssignees from "@/components/tasks/CreateTaskAssignees";
 import CreateTaskDatePicker from "@/components/tasks/CreateTaskDatePicker";
 import TaskColumnForm from "@/components/tasks/TaskColumnForm";
@@ -28,8 +28,8 @@ import {
 } from "@/components/ui/popover";
 import {
   useCreateAssigneeMutation,
+  // useCreateTaskLabelMutation,
   useCreateTaskMutation,
-  useUpdateProjectMutation,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -37,6 +37,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
+import Labels from "../Labels";
 
 interface Props {
   columnId?: string;
@@ -70,15 +71,23 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     column?.tasks?.nodes?.map((task) => task?.rowId),
   )?.length;
 
-  const projectLabels: { name: string; color: string; checked: boolean }[] =
-    project?.labels?.map((label: { name: string; color: string }) => ({
-      ...label,
-      checked: false,
-    })) ?? [];
+  const projectLabels: {
+    name: string;
+    color: string;
+    rowId: string;
+    checked: boolean;
+  }[] =
+    project?.labels?.nodes.map(
+      (label: { name: string; color: string; rowId: string }) => ({
+        ...label,
+        checked: false,
+      }),
+    ) ?? [];
 
   const { mutateAsync: addNewTask } = useCreateTaskMutation();
   const { mutate: addNewAssignee } = useCreateAssigneeMutation();
-  const { mutate: updateProject } = useUpdateProjectMutation();
+  // const { mutate: updateProject } = useUpdateProjectMutation();
+  // const { mutate: addNewTaskLabel } = useCreateTaskLabelMutation();
 
   const form = useForm({
     defaultValues: {
@@ -93,16 +102,12 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       // TODO: dynamic with auth
       const authorId = "024bec7c-5822-4b34-f993-39cbc613e1c9";
 
-      const allLabels = value.labels.map((label) => ({
-        name: label.name,
-        color: label.color,
-      }));
-
       const taskLabels = value.labels
         .filter((l) => l.checked)
         .map((label) => ({
           name: label.name,
           color: label.color,
+          rowId: label.rowId,
         }));
 
       const [{ createTask }] = await Promise.all([
@@ -114,20 +119,26 @@ const CreateTaskDialog = ({ columnId }: Props) => {
               projectId,
               columnId: value.columnId,
               authorId,
-              labels: JSON.stringify(taskLabels),
               dueDate: value.dueDate.length
                 ? new Date(value.dueDate)
                 : undefined,
             },
           },
         }),
-        updateProject({
-          rowId: projectId,
-          patch: {
-            labels: allLabels,
-          },
-        }),
       ]);
+
+      // const taskId = createTask?.task?.rowId;
+
+      // for (const label of taskLabels) {
+      //   addNewTaskLabel({
+      //     input: {
+      //       taskLabel: {
+      //         taskId: taskId!,
+      //         labelId: label.rowId,
+      //       },
+      //     },
+      //   });
+      // }
 
       if (createTask && value.assignees.length) {
         for (const assignee of value.assignees) {
@@ -148,6 +159,8 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       setColumnId(null);
     },
   });
+
+  const labels = useStore(form.store, (state) => state.values.labels);
 
   return (
     <DialogRoot
@@ -236,11 +249,11 @@ const CreateTaskDialog = ({ columnId }: Props) => {
             <div className="py-1">
               <form.Subscribe
                 selector={(state) => ({
-                  labels: state.values.labels,
+                  taskLabels: state.values.labels,
                   assignees: state.values.assignees,
                 })}
               >
-                {({ labels, assignees }) => (
+                {({ taskLabels, assignees }) => (
                   <div className="flex flex-col gap-2">
                     <Assignees
                       assignees={assignees}
@@ -249,7 +262,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                     />
 
                     <Labels
-                      labels={labels.filter((l) => l.checked)}
+                      labels={taskLabels.filter((l) => l.checked)}
                       className="flex flex-wrap gap-1"
                     />
                   </div>

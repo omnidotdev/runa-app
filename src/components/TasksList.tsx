@@ -6,7 +6,6 @@ import { CalendarIcon, UserIcon } from "lucide-react";
 
 import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
-import Labels from "@/components/Labels";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import {
@@ -195,7 +194,7 @@ const TasksList = ({
                     </div>
 
                     <div className="hidden items-center justify-between sm:flex">
-                      {!!task.labels.length && (
+                      {!!task.taskLabels.nodes.length && (
                         <TooltipRoot
                           positioning={{
                             placement: "top-start",
@@ -203,10 +202,11 @@ const TasksList = ({
                           }}
                         >
                           <TooltipTrigger asChild>
-                            <Labels
-                              labels={JSON.parse(task.labels)}
+                            {/* TODO */}
+                            {/* <Labels
+                              labels={task.taskLabels.nodes}
                               className="flex flex-wrap gap-1"
-                            />
+                            /> */}
                           </TooltipTrigger>
                           <TooltipPositioner>
                             <TooltipContent className="border bg-background text-foreground">

@@ -15,7 +15,6 @@ import * as z from "zod/v4";
 
 import Board from "@/components/Board";
 import Link from "@/components/core/Link";
-import Filter from "@/components/Filter";
 import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
 import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
@@ -241,7 +240,7 @@ function ProjectPage() {
                 </Link>
               </Tooltip>
 
-              <Filter />
+              {/* <Filter /> */}
             </div>
           </div>
         </div>

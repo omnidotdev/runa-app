@@ -12,9 +12,7 @@ import {
   UserIcon,
 } from "lucide-react";
 
-import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
-import Labels from "@/components/Labels";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
@@ -24,6 +22,7 @@ import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
+import Assignees from "./Assignees";
 import { SidebarMenuShotcut } from "./ui/sidebar";
 import {
   TooltipContent,
@@ -228,7 +227,7 @@ const Tasks = ({
 
                     <div className="grid grid-cols-4">
                       <div className="-m-3 col-span-3 flex items-end p-2.5">
-                        {!!task.labels.length && (
+                        {!!task.taskLabels.nodes.length && (
                           <TooltipRoot
                             positioning={{
                               placement: "top-start",
@@ -236,10 +235,11 @@ const Tasks = ({
                             }}
                           >
                             <TooltipTrigger asChild>
-                              <Labels
-                                labels={JSON.parse(task.labels)}
+                              {/* TODO */}
+                              {/* <Labels
+                                labels={task.taskLabels.nodes}
                                 className="flex flex-wrap gap-1"
-                              />
+                              /> */}
                             </TooltipTrigger>
                             <TooltipPositioner>
                               <TooltipContent className="border bg-background text-foreground">

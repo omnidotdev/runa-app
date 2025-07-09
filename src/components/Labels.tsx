@@ -5,9 +5,10 @@ import { getLabelClasses } from "@/lib/util/getLabelClasses";
 import { cn } from "@/lib/utils";
 
 import type { ComponentProps } from "react";
+import type { LabelFragment as Label } from "@/generated/graphql";
 
 interface Props extends ComponentProps<"div"> {
-  labels: { name: string; color: string }[];
+  labels: Label[];
 }
 
 const Labels = ({ labels, ...rest }: Props) => {

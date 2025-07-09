@@ -1,0 +1,7 @@
+query Labels($projectId: UUID!) {
+  labels(condition: { projectId: $projectId }) {
+    nodes {
+      ...Label
+    }
+  }
+}

@@ -20,7 +20,6 @@ export type Scalars = {
   BigInt: { input: string; output: string; }
   Cursor: { input: string; output: string; }
   Datetime: { input: Date; output: Date; }
-  JSON: { input: any; output: any; }
   UUID: { input: string; output: string; }
 };
 
@@ -663,8 +662,6 @@ export enum ColumnOrderBy {
   TasksDistinctCountDescriptionDesc = 'TASKS_DISTINCT_COUNT_DESCRIPTION_DESC',
   TasksDistinctCountDueDateAsc = 'TASKS_DISTINCT_COUNT_DUE_DATE_ASC',
   TasksDistinctCountDueDateDesc = 'TASKS_DISTINCT_COUNT_DUE_DATE_DESC',
-  TasksDistinctCountLabelsAsc = 'TASKS_DISTINCT_COUNT_LABELS_ASC',
-  TasksDistinctCountLabelsDesc = 'TASKS_DISTINCT_COUNT_LABELS_DESC',
   TasksDistinctCountPriorityAsc = 'TASKS_DISTINCT_COUNT_PRIORITY_ASC',
   TasksDistinctCountPriorityDesc = 'TASKS_DISTINCT_COUNT_PRIORITY_DESC',
   TasksDistinctCountProjectIdAsc = 'TASKS_DISTINCT_COUNT_PROJECT_ID_ASC',
@@ -831,6 +828,39 @@ export type CreateColumnPayloadColumnEdgeArgs = {
   orderBy?: Array<ColumnOrderBy>;
 };
 
+/** All input for the create `Label` mutation. */
+export type CreateLabelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `Label` to be created by this mutation. */
+  label: LabelInput;
+};
+
+/** The output of our create `Label` mutation. */
+export type CreateLabelPayload = {
+  __typename?: 'CreateLabelPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Label` that was created by this mutation. */
+  label?: Maybe<Label>;
+  /** An edge for our `Label`. May be used by Relay 1. */
+  labelEdge?: Maybe<LabelEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `Label` mutation. */
+export type CreateLabelPayloadLabelEdgeArgs = {
+  orderBy?: Array<LabelOrderBy>;
+};
+
 /** All input for the create `Post` mutation. */
 export type CreatePostInput = {
   /**
@@ -906,6 +936,39 @@ export type CreateTaskInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** The `Task` to be created by this mutation. */
   task: TaskInput;
+};
+
+/** All input for the create `TaskLabel` mutation. */
+export type CreateTaskLabelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `TaskLabel` to be created by this mutation. */
+  taskLabel: TaskLabelInput;
+};
+
+/** The output of our create `TaskLabel` mutation. */
+export type CreateTaskLabelPayload = {
+  __typename?: 'CreateTaskLabelPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `TaskLabel` that was created by this mutation. */
+  taskLabel?: Maybe<TaskLabel>;
+  /** An edge for our `TaskLabel`. May be used by Relay 1. */
+  taskLabelEdge?: Maybe<TaskLabelEdge>;
+};
+
+
+/** The output of our create `TaskLabel` mutation. */
+export type CreateTaskLabelPayloadTaskLabelEdgeArgs = {
+  orderBy?: Array<TaskLabelOrderBy>;
 };
 
 /** The output of our create `Task` mutation. */
@@ -1143,6 +1206,50 @@ export type DeleteColumnPayloadColumnEdgeArgs = {
   orderBy?: Array<ColumnOrderBy>;
 };
 
+/** All input for the `deleteLabelById` mutation. */
+export type DeleteLabelByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Label` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteLabel` mutation. */
+export type DeleteLabelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `Label` mutation. */
+export type DeleteLabelPayload = {
+  __typename?: 'DeleteLabelPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedLabelId?: Maybe<Scalars['ID']['output']>;
+  /** The `Label` that was deleted by this mutation. */
+  label?: Maybe<Label>;
+  /** An edge for our `Label`. May be used by Relay 1. */
+  labelEdge?: Maybe<LabelEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Label` mutation. */
+export type DeleteLabelPayloadLabelEdgeArgs = {
+  orderBy?: Array<LabelOrderBy>;
+};
+
 /** All input for the `deletePostById` mutation. */
 export type DeletePostByIdInput = {
   /**
@@ -1250,6 +1357,50 @@ export type DeleteTaskInput = {
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   rowId: Scalars['UUID']['input'];
+};
+
+/** All input for the `deleteTaskLabelById` mutation. */
+export type DeleteTaskLabelByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `TaskLabel` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteTaskLabel` mutation. */
+export type DeleteTaskLabelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `TaskLabel` mutation. */
+export type DeleteTaskLabelPayload = {
+  __typename?: 'DeleteTaskLabelPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedTaskLabelId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `TaskLabel` that was deleted by this mutation. */
+  taskLabel?: Maybe<TaskLabel>;
+  /** An edge for our `TaskLabel`. May be used by Relay 1. */
+  taskLabelEdge?: Maybe<TaskLabelEdge>;
+};
+
+
+/** The output of our delete `TaskLabel` mutation. */
+export type DeleteTaskLabelPayloadTaskLabelEdgeArgs = {
+  orderBy?: Array<TaskLabelOrderBy>;
 };
 
 /** The output of our delete `Task` mutation. */
@@ -1462,40 +1613,285 @@ export type IntFilter = {
   notIn?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
-/** A filter to be used against JSON fields. All fields are combined with a logical ‘and.’ */
-export type JsonFilter = {
-  /** Contained by the specified JSON. */
-  containedBy?: InputMaybe<Scalars['JSON']['input']>;
-  /** Contains the specified JSON. */
-  contains?: InputMaybe<Scalars['JSON']['input']>;
-  /** Contains all of the specified keys. */
-  containsAllKeys?: InputMaybe<Array<Scalars['String']['input']>>;
-  /** Contains any of the specified keys. */
-  containsAnyKeys?: InputMaybe<Array<Scalars['String']['input']>>;
-  /** Contains the specified key. */
-  containsKey?: InputMaybe<Scalars['String']['input']>;
-  /** Not equal to the specified value, treating null like an ordinary value. */
-  distinctFrom?: InputMaybe<Scalars['JSON']['input']>;
-  /** Equal to the specified value. */
-  equalTo?: InputMaybe<Scalars['JSON']['input']>;
-  /** Greater than the specified value. */
-  greaterThan?: InputMaybe<Scalars['JSON']['input']>;
-  /** Greater than or equal to the specified value. */
-  greaterThanOrEqualTo?: InputMaybe<Scalars['JSON']['input']>;
-  /** Included in the specified list. */
-  in?: InputMaybe<Array<Scalars['JSON']['input']>>;
-  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
-  isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Less than the specified value. */
-  lessThan?: InputMaybe<Scalars['JSON']['input']>;
-  /** Less than or equal to the specified value. */
-  lessThanOrEqualTo?: InputMaybe<Scalars['JSON']['input']>;
-  /** Equal to the specified value, treating null like an ordinary value. */
-  notDistinctFrom?: InputMaybe<Scalars['JSON']['input']>;
-  /** Not equal to the specified value. */
-  notEqualTo?: InputMaybe<Scalars['JSON']['input']>;
-  /** Not included in the specified list. */
-  notIn?: InputMaybe<Array<Scalars['JSON']['input']>>;
+export type Label = Node & {
+  __typename?: 'Label';
+  color: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  /** Reads a single `Project` that is related to this `Label`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `TaskLabel`. */
+  taskLabels: TaskLabelConnection;
+  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+};
+
+
+export type LabelTaskLabelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskLabelCondition>;
+  filter?: InputMaybe<TaskLabelFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskLabelOrderBy>>;
+};
+
+export type LabelAggregates = {
+  __typename?: 'LabelAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<LabelDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Label` object types. */
+export type LabelAggregatesFilter = {
+  /** Distinct count aggregate over matching `Label` objects. */
+  distinctCount?: InputMaybe<LabelDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Label` object to be included within the aggregate. */
+  filter?: InputMaybe<LabelFilter>;
+};
+
+/** A condition to be used against `Label` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type LabelCondition = {
+  /** Checks for equality with the object’s `color` field. */
+  color?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `name` field. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `Label` values. */
+export type LabelConnection = {
+  __typename?: 'LabelConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<LabelAggregates>;
+  /** A list of edges which contains the `Label` and cursor to aid in pagination. */
+  edges: Array<LabelEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<LabelAggregates>>;
+  /** A list of `Label` objects. */
+  nodes: Array<Label>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Label` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Label` values. */
+export type LabelConnectionGroupedAggregatesArgs = {
+  groupBy: Array<LabelGroupBy>;
+  having?: InputMaybe<LabelHavingInput>;
+};
+
+export type LabelDistinctCountAggregateFilter = {
+  color?: InputMaybe<BigIntFilter>;
+  createdAt?: InputMaybe<BigIntFilter>;
+  name?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type LabelDistinctCountAggregates = {
+  __typename?: 'LabelDistinctCountAggregates';
+  /** Distinct count of color across the matching connection */
+  color?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of name across the matching connection */
+  name?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Label` edge in the connection. */
+export type LabelEdge = {
+  __typename?: 'LabelEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Label` at the end of the edge. */
+  node: Label;
+};
+
+/** A filter to be used against `Label` object types. All fields are combined with a logical ‘and.’ */
+export type LabelFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<LabelFilter>>;
+  /** Filter by the object’s `color` field. */
+  color?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `name` field. */
+  name?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<LabelFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<LabelFilter>>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `taskLabels` relation. */
+  taskLabels?: InputMaybe<LabelToManyTaskLabelFilter>;
+  /** Some related `taskLabels` exist. */
+  taskLabelsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `Label` for usage during aggregation. */
+export enum LabelGroupBy {
+  Color = 'COLOR',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Name = 'NAME',
+  ProjectId = 'PROJECT_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type LabelHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type LabelHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Label` aggregates. */
+export type LabelHavingInput = {
+  AND?: InputMaybe<Array<LabelHavingInput>>;
+  OR?: InputMaybe<Array<LabelHavingInput>>;
+  average?: InputMaybe<LabelHavingAverageInput>;
+  distinctCount?: InputMaybe<LabelHavingDistinctCountInput>;
+  max?: InputMaybe<LabelHavingMaxInput>;
+  min?: InputMaybe<LabelHavingMinInput>;
+  stddevPopulation?: InputMaybe<LabelHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<LabelHavingStddevSampleInput>;
+  sum?: InputMaybe<LabelHavingSumInput>;
+  variancePopulation?: InputMaybe<LabelHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<LabelHavingVarianceSampleInput>;
+};
+
+export type LabelHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type LabelHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type LabelHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type LabelHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type LabelHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type LabelHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type LabelHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `Label` */
+export type LabelInput = {
+  color: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  name: Scalars['String']['input'];
+  projectId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** Methods to use when ordering `Label`. */
+export enum LabelOrderBy {
+  ColorAsc = 'COLOR_ASC',
+  ColorDesc = 'COLOR_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  TaskLabelsCountAsc = 'TASK_LABELS_COUNT_ASC',
+  TaskLabelsCountDesc = 'TASK_LABELS_COUNT_DESC',
+  TaskLabelsDistinctCountCreatedAtAsc = 'TASK_LABELS_DISTINCT_COUNT_CREATED_AT_ASC',
+  TaskLabelsDistinctCountCreatedAtDesc = 'TASK_LABELS_DISTINCT_COUNT_CREATED_AT_DESC',
+  TaskLabelsDistinctCountLabelIdAsc = 'TASK_LABELS_DISTINCT_COUNT_LABEL_ID_ASC',
+  TaskLabelsDistinctCountLabelIdDesc = 'TASK_LABELS_DISTINCT_COUNT_LABEL_ID_DESC',
+  TaskLabelsDistinctCountRowIdAsc = 'TASK_LABELS_DISTINCT_COUNT_ROW_ID_ASC',
+  TaskLabelsDistinctCountRowIdDesc = 'TASK_LABELS_DISTINCT_COUNT_ROW_ID_DESC',
+  TaskLabelsDistinctCountTaskIdAsc = 'TASK_LABELS_DISTINCT_COUNT_TASK_ID_ASC',
+  TaskLabelsDistinctCountTaskIdDesc = 'TASK_LABELS_DISTINCT_COUNT_TASK_ID_DESC',
+  TaskLabelsDistinctCountUpdatedAtAsc = 'TASK_LABELS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  TaskLabelsDistinctCountUpdatedAtDesc = 'TASK_LABELS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `Label`. Fields that are set will be updated. */
+export type LabelPatch = {
+  color?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A filter to be used against many `TaskLabel` object types. All fields are combined with a logical ‘and.’ */
+export type LabelToManyTaskLabelFilter = {
+  /** Aggregates across related `TaskLabel` match the filter criteria. */
+  aggregates?: InputMaybe<TaskLabelAggregatesFilter>;
+  /** Every related `TaskLabel` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<TaskLabelFilter>;
+  /** No related `TaskLabel` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<TaskLabelFilter>;
+  /** Some related `TaskLabel` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<TaskLabelFilter>;
 };
 
 /** The root mutation type which contains root level fields which mutate data. */
@@ -1505,12 +1901,16 @@ export type Mutation = {
   createAssignee?: Maybe<CreateAssigneePayload>;
   /** Creates a single `Column`. */
   createColumn?: Maybe<CreateColumnPayload>;
+  /** Creates a single `Label`. */
+  createLabel?: Maybe<CreateLabelPayload>;
   /** Creates a single `Post`. */
   createPost?: Maybe<CreatePostPayload>;
   /** Creates a single `Project`. */
   createProject?: Maybe<CreateProjectPayload>;
   /** Creates a single `Task`. */
   createTask?: Maybe<CreateTaskPayload>;
+  /** Creates a single `TaskLabel`. */
+  createTaskLabel?: Maybe<CreateTaskLabelPayload>;
   /** Creates a single `User`. */
   createUser?: Maybe<CreateUserPayload>;
   /** Creates a single `Workspace`. */
@@ -1525,6 +1925,10 @@ export type Mutation = {
   deleteColumn?: Maybe<DeleteColumnPayload>;
   /** Deletes a single `Column` using its globally unique id. */
   deleteColumnById?: Maybe<DeleteColumnPayload>;
+  /** Deletes a single `Label` using a unique key. */
+  deleteLabel?: Maybe<DeleteLabelPayload>;
+  /** Deletes a single `Label` using its globally unique id. */
+  deleteLabelById?: Maybe<DeleteLabelPayload>;
   /** Deletes a single `Post` using a unique key. */
   deletePost?: Maybe<DeletePostPayload>;
   /** Deletes a single `Post` using its globally unique id. */
@@ -1537,6 +1941,10 @@ export type Mutation = {
   deleteTask?: Maybe<DeleteTaskPayload>;
   /** Deletes a single `Task` using its globally unique id. */
   deleteTaskById?: Maybe<DeleteTaskPayload>;
+  /** Deletes a single `TaskLabel` using a unique key. */
+  deleteTaskLabel?: Maybe<DeleteTaskLabelPayload>;
+  /** Deletes a single `TaskLabel` using its globally unique id. */
+  deleteTaskLabelById?: Maybe<DeleteTaskLabelPayload>;
   /** Deletes a single `User` using a unique key. */
   deleteUser?: Maybe<DeleteUserPayload>;
   /** Deletes a single `User` using its globally unique id. */
@@ -1559,6 +1967,10 @@ export type Mutation = {
   updateColumn?: Maybe<UpdateColumnPayload>;
   /** Updates a single `Column` using its globally unique id and a patch. */
   updateColumnById?: Maybe<UpdateColumnPayload>;
+  /** Updates a single `Label` using a unique key and a patch. */
+  updateLabel?: Maybe<UpdateLabelPayload>;
+  /** Updates a single `Label` using its globally unique id and a patch. */
+  updateLabelById?: Maybe<UpdateLabelPayload>;
   /** Updates a single `Post` using a unique key and a patch. */
   updatePost?: Maybe<UpdatePostPayload>;
   /** Updates a single `Post` using its globally unique id and a patch. */
@@ -1571,6 +1983,10 @@ export type Mutation = {
   updateTask?: Maybe<UpdateTaskPayload>;
   /** Updates a single `Task` using its globally unique id and a patch. */
   updateTaskById?: Maybe<UpdateTaskPayload>;
+  /** Updates a single `TaskLabel` using a unique key and a patch. */
+  updateTaskLabel?: Maybe<UpdateTaskLabelPayload>;
+  /** Updates a single `TaskLabel` using its globally unique id and a patch. */
+  updateTaskLabelById?: Maybe<UpdateTaskLabelPayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUser?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using its globally unique id and a patch. */
@@ -1601,6 +2017,12 @@ export type MutationCreateColumnArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateLabelArgs = {
+  input: CreateLabelInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreatePostArgs = {
   input: CreatePostInput;
 };
@@ -1615,6 +2037,12 @@ export type MutationCreateProjectArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateTaskArgs = {
   input: CreateTaskInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateTaskLabelArgs = {
+  input: CreateTaskLabelInput;
 };
 
 
@@ -1661,6 +2089,18 @@ export type MutationDeleteColumnByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteLabelArgs = {
+  input: DeleteLabelInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteLabelByIdArgs = {
+  input: DeleteLabelByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeletePostArgs = {
   input: DeletePostInput;
 };
@@ -1693,6 +2133,18 @@ export type MutationDeleteTaskArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTaskByIdArgs = {
   input: DeleteTaskByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTaskLabelArgs = {
+  input: DeleteTaskLabelInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTaskLabelByIdArgs = {
+  input: DeleteTaskLabelByIdInput;
 };
 
 
@@ -1763,6 +2215,18 @@ export type MutationUpdateColumnByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateLabelArgs = {
+  input: UpdateLabelInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateLabelByIdArgs = {
+  input: UpdateLabelByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdatePostArgs = {
   input: UpdatePostInput;
 };
@@ -1795,6 +2259,18 @@ export type MutationUpdateTaskArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateTaskByIdArgs = {
   input: UpdateTaskByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTaskLabelArgs = {
+  input: UpdateTaskLabelInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTaskLabelByIdArgs = {
+  input: UpdateTaskLabelByIdInput;
 };
 
 
@@ -2123,7 +2599,8 @@ export type Project = Node & {
   description?: Maybe<Scalars['String']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
-  labels?: Maybe<Scalars['JSON']['output']>;
+  /** Reads and enables pagination through a set of `Label`. */
+  labels: LabelConnection;
   name: Scalars['String']['output'];
   prefix?: Maybe<Scalars['String']['output']>;
   rowId: Scalars['UUID']['output'];
@@ -2147,6 +2624,18 @@ export type ProjectColumnsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ColumnOrderBy>>;
+};
+
+
+export type ProjectLabelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<LabelCondition>;
+  filter?: InputMaybe<LabelFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<LabelOrderBy>>;
 };
 
 
@@ -2184,8 +2673,6 @@ export type ProjectCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `description` field. */
   description?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `labels` field. */
-  labels?: InputMaybe<Scalars['JSON']['input']>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `prefix` field. */
@@ -2230,7 +2717,6 @@ export type ProjectDistinctCountAggregateFilter = {
   color?: InputMaybe<BigIntFilter>;
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
-  labels?: InputMaybe<BigIntFilter>;
   name?: InputMaybe<BigIntFilter>;
   prefix?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
@@ -2248,8 +2734,6 @@ export type ProjectDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of description across the matching connection */
   description?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of labels across the matching connection */
-  labels?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
   name?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of prefix across the matching connection */
@@ -2289,8 +2773,10 @@ export type ProjectFilter = {
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `description` field. */
   description?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `labels` field. */
-  labels?: InputMaybe<JsonFilter>;
+  /** Filter by the object’s `labels` relation. */
+  labels?: InputMaybe<ProjectToManyLabelFilter>;
+  /** Some related `labels` exist. */
+  labelsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
@@ -2324,7 +2810,6 @@ export enum ProjectGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
-  Labels = 'LABELS',
   Name = 'NAME',
   Prefix = 'PREFIX',
   Status = 'STATUS',
@@ -2400,7 +2885,6 @@ export type ProjectInput = {
   color?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
-  labels?: InputMaybe<Scalars['JSON']['input']>;
   name: Scalars['String']['input'];
   prefix?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -2448,8 +2932,20 @@ export enum ProjectOrderBy {
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
   DescriptionDesc = 'DESCRIPTION_DESC',
-  LabelsAsc = 'LABELS_ASC',
-  LabelsDesc = 'LABELS_DESC',
+  LabelsCountAsc = 'LABELS_COUNT_ASC',
+  LabelsCountDesc = 'LABELS_COUNT_DESC',
+  LabelsDistinctCountColorAsc = 'LABELS_DISTINCT_COUNT_COLOR_ASC',
+  LabelsDistinctCountColorDesc = 'LABELS_DISTINCT_COUNT_COLOR_DESC',
+  LabelsDistinctCountCreatedAtAsc = 'LABELS_DISTINCT_COUNT_CREATED_AT_ASC',
+  LabelsDistinctCountCreatedAtDesc = 'LABELS_DISTINCT_COUNT_CREATED_AT_DESC',
+  LabelsDistinctCountNameAsc = 'LABELS_DISTINCT_COUNT_NAME_ASC',
+  LabelsDistinctCountNameDesc = 'LABELS_DISTINCT_COUNT_NAME_DESC',
+  LabelsDistinctCountProjectIdAsc = 'LABELS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  LabelsDistinctCountProjectIdDesc = 'LABELS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  LabelsDistinctCountRowIdAsc = 'LABELS_DISTINCT_COUNT_ROW_ID_ASC',
+  LabelsDistinctCountRowIdDesc = 'LABELS_DISTINCT_COUNT_ROW_ID_DESC',
+  LabelsDistinctCountUpdatedAtAsc = 'LABELS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  LabelsDistinctCountUpdatedAtDesc = 'LABELS_DISTINCT_COUNT_UPDATED_AT_DESC',
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
@@ -2479,8 +2975,6 @@ export enum ProjectOrderBy {
   TasksDistinctCountDescriptionDesc = 'TASKS_DISTINCT_COUNT_DESCRIPTION_DESC',
   TasksDistinctCountDueDateAsc = 'TASKS_DISTINCT_COUNT_DUE_DATE_ASC',
   TasksDistinctCountDueDateDesc = 'TASKS_DISTINCT_COUNT_DUE_DATE_DESC',
-  TasksDistinctCountLabelsAsc = 'TASKS_DISTINCT_COUNT_LABELS_ASC',
-  TasksDistinctCountLabelsDesc = 'TASKS_DISTINCT_COUNT_LABELS_DESC',
   TasksDistinctCountPriorityAsc = 'TASKS_DISTINCT_COUNT_PRIORITY_ASC',
   TasksDistinctCountPriorityDesc = 'TASKS_DISTINCT_COUNT_PRIORITY_DESC',
   TasksDistinctCountProjectIdAsc = 'TASKS_DISTINCT_COUNT_PROJECT_ID_ASC',
@@ -2516,7 +3010,6 @@ export type ProjectPatch = {
   color?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
-  labels?: InputMaybe<Scalars['JSON']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   prefix?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -2570,6 +3063,18 @@ export type ProjectToManyColumnFilter = {
   some?: InputMaybe<ColumnFilter>;
 };
 
+/** A filter to be used against many `Label` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyLabelFilter = {
+  /** Aggregates across related `Label` match the filter criteria. */
+  aggregates?: InputMaybe<LabelAggregatesFilter>;
+  /** Every related `Label` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<LabelFilter>;
+  /** No related `Label` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<LabelFilter>;
+  /** Some related `Label` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<LabelFilter>;
+};
+
 /** A filter to be used against many `Task` object types. All fields are combined with a logical ‘and.’ */
 export type ProjectToManyTaskFilter = {
   /** Aggregates across related `Task` match the filter criteria. */
@@ -2599,6 +3104,12 @@ export type Query = Node & {
   columns?: Maybe<ColumnConnection>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
+  /** Get a single `Label`. */
+  label?: Maybe<Label>;
+  /** Reads a single `Label` using its globally unique `ID`. */
+  labelById?: Maybe<Label>;
+  /** Reads and enables pagination through a set of `Label`. */
+  labels?: Maybe<LabelConnection>;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
   /** Get a single `Post`. */
@@ -2622,6 +3133,12 @@ export type Query = Node & {
   task?: Maybe<Task>;
   /** Reads a single `Task` using its globally unique `ID`. */
   taskById?: Maybe<Task>;
+  /** Get a single `TaskLabel`. */
+  taskLabel?: Maybe<TaskLabel>;
+  /** Reads a single `TaskLabel` using its globally unique `ID`. */
+  taskLabelById?: Maybe<TaskLabel>;
+  /** Reads and enables pagination through a set of `TaskLabel`. */
+  taskLabels?: Maybe<TaskLabelConnection>;
   /** Reads and enables pagination through a set of `Task`. */
   tasks?: Maybe<TaskConnection>;
   /** Get a single `User`. */
@@ -2698,6 +3215,31 @@ export type QueryColumnsArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryLabelArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLabelByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLabelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<LabelCondition>;
+  filter?: InputMaybe<LabelFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<LabelOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryNodeArgs = {
   id: Scalars['ID']['input'];
 };
@@ -2762,6 +3304,31 @@ export type QueryTaskArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryTaskByIdArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTaskLabelArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTaskLabelByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTaskLabelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskLabelCondition>;
+  filter?: InputMaybe<TaskLabelFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskLabelOrderBy>>;
 };
 
 
@@ -2954,7 +3521,6 @@ export type Task = Node & {
   dueDate?: Maybe<Scalars['Datetime']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
-  labels?: Maybe<Scalars['JSON']['output']>;
   /** Reads and enables pagination through a set of `Post`. */
   posts: PostConnection;
   priority: Scalars['String']['output'];
@@ -2962,6 +3528,8 @@ export type Task = Node & {
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
   rowId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `TaskLabel`. */
+  taskLabels: TaskLabelConnection;
   updatedAt?: Maybe<Scalars['Datetime']['output']>;
 };
 
@@ -2987,6 +3555,18 @@ export type TaskPostsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<PostOrderBy>>;
+};
+
+
+export type TaskTaskLabelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskLabelCondition>;
+  filter?: InputMaybe<TaskLabelFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskLabelOrderBy>>;
 };
 
 export type TaskAggregates = {
@@ -3062,8 +3642,6 @@ export type TaskCondition = {
   description?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `dueDate` field. */
   dueDate?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `labels` field. */
-  labels?: InputMaybe<Scalars['JSON']['input']>;
   /** Checks for equality with the object’s `priority` field. */
   priority?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
@@ -3106,7 +3684,6 @@ export type TaskDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
   dueDate?: InputMaybe<BigIntFilter>;
-  labels?: InputMaybe<BigIntFilter>;
   priority?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
@@ -3129,8 +3706,6 @@ export type TaskDistinctCountAggregates = {
   description?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of dueDate across the matching connection */
   dueDate?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of labels across the matching connection */
-  labels?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of priority across the matching connection */
   priority?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
@@ -3176,8 +3751,6 @@ export type TaskFilter = {
   description?: InputMaybe<StringFilter>;
   /** Filter by the object’s `dueDate` field. */
   dueDate?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `labels` field. */
-  labels?: InputMaybe<JsonFilter>;
   /** Negates the expression. */
   not?: InputMaybe<TaskFilter>;
   /** Checks for any expressions in this list. */
@@ -3194,6 +3767,10 @@ export type TaskFilter = {
   projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `taskLabels` relation. */
+  taskLabels?: InputMaybe<TaskToManyTaskLabelFilter>;
+  /** Some related `taskLabels` exist. */
+  taskLabelsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
 };
@@ -3211,7 +3788,6 @@ export enum TaskGroupBy {
   DueDate = 'DUE_DATE',
   DueDateTruncatedToDay = 'DUE_DATE_TRUNCATED_TO_DAY',
   DueDateTruncatedToHour = 'DUE_DATE_TRUNCATED_TO_HOUR',
-  Labels = 'LABELS',
   Priority = 'PRIORITY',
   ProjectId = 'PROJECT_ID',
   UpdatedAt = 'UPDATED_AT',
@@ -3306,10 +3882,242 @@ export type TaskInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description: Scalars['String']['input'];
   dueDate?: InputMaybe<Scalars['Datetime']['input']>;
-  labels?: InputMaybe<Scalars['JSON']['input']>;
   priority?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type TaskLabel = Node & {
+  __typename?: 'TaskLabel';
+  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  /** Reads a single `Label` that is related to this `TaskLabel`. */
+  label?: Maybe<Label>;
+  labelId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  /** Reads a single `Task` that is related to this `TaskLabel`. */
+  task?: Maybe<Task>;
+  taskId: Scalars['UUID']['output'];
+  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+};
+
+export type TaskLabelAggregates = {
+  __typename?: 'TaskLabelAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<TaskLabelDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `TaskLabel` object types. */
+export type TaskLabelAggregatesFilter = {
+  /** Distinct count aggregate over matching `TaskLabel` objects. */
+  distinctCount?: InputMaybe<TaskLabelDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `TaskLabel` object to be included within the aggregate. */
+  filter?: InputMaybe<TaskLabelFilter>;
+};
+
+/**
+ * A condition to be used against `TaskLabel` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type TaskLabelCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `labelId` field. */
+  labelId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `taskId` field. */
+  taskId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `TaskLabel` values. */
+export type TaskLabelConnection = {
+  __typename?: 'TaskLabelConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<TaskLabelAggregates>;
+  /** A list of edges which contains the `TaskLabel` and cursor to aid in pagination. */
+  edges: Array<TaskLabelEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<TaskLabelAggregates>>;
+  /** A list of `TaskLabel` objects. */
+  nodes: Array<TaskLabel>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `TaskLabel` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `TaskLabel` values. */
+export type TaskLabelConnectionGroupedAggregatesArgs = {
+  groupBy: Array<TaskLabelGroupBy>;
+  having?: InputMaybe<TaskLabelHavingInput>;
+};
+
+export type TaskLabelDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  labelId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  taskId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type TaskLabelDistinctCountAggregates = {
+  __typename?: 'TaskLabelDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of labelId across the matching connection */
+  labelId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of taskId across the matching connection */
+  taskId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `TaskLabel` edge in the connection. */
+export type TaskLabelEdge = {
+  __typename?: 'TaskLabelEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `TaskLabel` at the end of the edge. */
+  node: TaskLabel;
+};
+
+/** A filter to be used against `TaskLabel` object types. All fields are combined with a logical ‘and.’ */
+export type TaskLabelFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<TaskLabelFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `label` relation. */
+  label?: InputMaybe<LabelFilter>;
+  /** Filter by the object’s `labelId` field. */
+  labelId?: InputMaybe<UuidFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<TaskLabelFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<TaskLabelFilter>>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `task` relation. */
+  task?: InputMaybe<TaskFilter>;
+  /** Filter by the object’s `taskId` field. */
+  taskId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `TaskLabel` for usage during aggregation. */
+export enum TaskLabelGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  LabelId = 'LABEL_ID',
+  TaskId = 'TASK_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type TaskLabelHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskLabelHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `TaskLabel` aggregates. */
+export type TaskLabelHavingInput = {
+  AND?: InputMaybe<Array<TaskLabelHavingInput>>;
+  OR?: InputMaybe<Array<TaskLabelHavingInput>>;
+  average?: InputMaybe<TaskLabelHavingAverageInput>;
+  distinctCount?: InputMaybe<TaskLabelHavingDistinctCountInput>;
+  max?: InputMaybe<TaskLabelHavingMaxInput>;
+  min?: InputMaybe<TaskLabelHavingMinInput>;
+  stddevPopulation?: InputMaybe<TaskLabelHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<TaskLabelHavingStddevSampleInput>;
+  sum?: InputMaybe<TaskLabelHavingSumInput>;
+  variancePopulation?: InputMaybe<TaskLabelHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<TaskLabelHavingVarianceSampleInput>;
+};
+
+export type TaskLabelHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskLabelHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskLabelHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskLabelHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskLabelHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskLabelHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskLabelHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `TaskLabel` */
+export type TaskLabelInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  labelId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  taskId: Scalars['UUID']['input'];
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** Methods to use when ordering `TaskLabel`. */
+export enum TaskLabelOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  LabelIdAsc = 'LABEL_ID_ASC',
+  LabelIdDesc = 'LABEL_ID_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  TaskIdAsc = 'TASK_ID_ASC',
+  TaskIdDesc = 'TASK_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `TaskLabel`. Fields that are set will be updated. */
+export type TaskLabelPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  labelId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  taskId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
@@ -3363,8 +4171,6 @@ export enum TaskOrderBy {
   DescriptionDesc = 'DESCRIPTION_DESC',
   DueDateAsc = 'DUE_DATE_ASC',
   DueDateDesc = 'DUE_DATE_DESC',
-  LabelsAsc = 'LABELS_ASC',
-  LabelsDesc = 'LABELS_DESC',
   Natural = 'NATURAL',
   PostsCountAsc = 'POSTS_COUNT_ASC',
   PostsCountDesc = 'POSTS_COUNT_DESC',
@@ -3390,6 +4196,18 @@ export enum TaskOrderBy {
   ProjectIdDesc = 'PROJECT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  TaskLabelsCountAsc = 'TASK_LABELS_COUNT_ASC',
+  TaskLabelsCountDesc = 'TASK_LABELS_COUNT_DESC',
+  TaskLabelsDistinctCountCreatedAtAsc = 'TASK_LABELS_DISTINCT_COUNT_CREATED_AT_ASC',
+  TaskLabelsDistinctCountCreatedAtDesc = 'TASK_LABELS_DISTINCT_COUNT_CREATED_AT_DESC',
+  TaskLabelsDistinctCountLabelIdAsc = 'TASK_LABELS_DISTINCT_COUNT_LABEL_ID_ASC',
+  TaskLabelsDistinctCountLabelIdDesc = 'TASK_LABELS_DISTINCT_COUNT_LABEL_ID_DESC',
+  TaskLabelsDistinctCountRowIdAsc = 'TASK_LABELS_DISTINCT_COUNT_ROW_ID_ASC',
+  TaskLabelsDistinctCountRowIdDesc = 'TASK_LABELS_DISTINCT_COUNT_ROW_ID_DESC',
+  TaskLabelsDistinctCountTaskIdAsc = 'TASK_LABELS_DISTINCT_COUNT_TASK_ID_ASC',
+  TaskLabelsDistinctCountTaskIdDesc = 'TASK_LABELS_DISTINCT_COUNT_TASK_ID_DESC',
+  TaskLabelsDistinctCountUpdatedAtAsc = 'TASK_LABELS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  TaskLabelsDistinctCountUpdatedAtDesc = 'TASK_LABELS_DISTINCT_COUNT_UPDATED_AT_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC'
 }
@@ -3403,7 +4221,6 @@ export type TaskPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   dueDate?: InputMaybe<Scalars['Datetime']['input']>;
-  labels?: InputMaybe<Scalars['JSON']['input']>;
   priority?: InputMaybe<Scalars['String']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -3462,6 +4279,18 @@ export type TaskToManyPostFilter = {
   none?: InputMaybe<PostFilter>;
   /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<PostFilter>;
+};
+
+/** A filter to be used against many `TaskLabel` object types. All fields are combined with a logical ‘and.’ */
+export type TaskToManyTaskLabelFilter = {
+  /** Aggregates across related `TaskLabel` match the filter criteria. */
+  aggregates?: InputMaybe<TaskLabelAggregatesFilter>;
+  /** Every related `TaskLabel` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<TaskLabelFilter>;
+  /** No related `TaskLabel` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<TaskLabelFilter>;
+  /** Some related `TaskLabel` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<TaskLabelFilter>;
 };
 
 export type TaskVariancePopulationAggregateFilter = {
@@ -3604,6 +4433,53 @@ export type UpdateColumnPayloadColumnEdgeArgs = {
   orderBy?: Array<ColumnOrderBy>;
 };
 
+/** All input for the `updateLabelById` mutation. */
+export type UpdateLabelByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Label` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `Label` being updated. */
+  patch: LabelPatch;
+};
+
+/** All input for the `updateLabel` mutation. */
+export type UpdateLabelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Label` being updated. */
+  patch: LabelPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `Label` mutation. */
+export type UpdateLabelPayload = {
+  __typename?: 'UpdateLabelPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Label` that was updated by this mutation. */
+  label?: Maybe<Label>;
+  /** An edge for our `Label`. May be used by Relay 1. */
+  labelEdge?: Maybe<LabelEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `Label` mutation. */
+export type UpdateLabelPayloadLabelEdgeArgs = {
+  orderBy?: Array<LabelOrderBy>;
+};
+
 /** All input for the `updatePostById` mutation. */
 export type UpdatePostByIdInput = {
   /**
@@ -3721,6 +4597,53 @@ export type UpdateTaskInput = {
   /** An object where the defined keys will be set on the `Task` being updated. */
   patch: TaskPatch;
   rowId: Scalars['UUID']['input'];
+};
+
+/** All input for the `updateTaskLabelById` mutation. */
+export type UpdateTaskLabelByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `TaskLabel` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `TaskLabel` being updated. */
+  patch: TaskLabelPatch;
+};
+
+/** All input for the `updateTaskLabel` mutation. */
+export type UpdateTaskLabelInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `TaskLabel` being updated. */
+  patch: TaskLabelPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `TaskLabel` mutation. */
+export type UpdateTaskLabelPayload = {
+  __typename?: 'UpdateTaskLabelPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `TaskLabel` that was updated by this mutation. */
+  taskLabel?: Maybe<TaskLabel>;
+  /** An edge for our `TaskLabel`. May be used by Relay 1. */
+  taskLabelEdge?: Maybe<TaskLabelEdge>;
+};
+
+
+/** The output of our update `TaskLabel` mutation. */
+export type UpdateTaskLabelPayloadTaskLabelEdgeArgs = {
+  orderBy?: Array<TaskLabelOrderBy>;
 };
 
 /** The output of our update `Task` mutation. */
@@ -4209,8 +5132,6 @@ export enum UserOrderBy {
   AuthoredTasksDistinctCountDescriptionDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_DESCRIPTION_DESC',
   AuthoredTasksDistinctCountDueDateAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_DUE_DATE_ASC',
   AuthoredTasksDistinctCountDueDateDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_DUE_DATE_DESC',
-  AuthoredTasksDistinctCountLabelsAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_LABELS_ASC',
-  AuthoredTasksDistinctCountLabelsDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_LABELS_DESC',
   AuthoredTasksDistinctCountPriorityAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_PRIORITY_ASC',
   AuthoredTasksDistinctCountPriorityDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_PRIORITY_DESC',
   AuthoredTasksDistinctCountProjectIdAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_PROJECT_ID_ASC',
@@ -4552,8 +5473,6 @@ export enum WorkspaceOrderBy {
   ProjectsDistinctCountCreatedAtDesc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_DESC',
   ProjectsDistinctCountDescriptionAsc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   ProjectsDistinctCountDescriptionDesc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_DESC',
-  ProjectsDistinctCountLabelsAsc = 'PROJECTS_DISTINCT_COUNT_LABELS_ASC',
-  ProjectsDistinctCountLabelsDesc = 'PROJECTS_DISTINCT_COUNT_LABELS_DESC',
   ProjectsDistinctCountNameAsc = 'PROJECTS_DISTINCT_COUNT_NAME_ASC',
   ProjectsDistinctCountNameDesc = 'PROJECTS_DISTINCT_COUNT_NAME_DESC',
   ProjectsDistinctCountPrefixAsc = 'PROJECTS_DISTINCT_COUNT_PREFIX_ASC',
@@ -4814,6 +5733,8 @@ export type WorkspaceUserPatch = {
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type LabelFragment = { __typename?: 'Label', color: string, name: string, rowId: string };
+
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } };
 
 export type CreateAssigneeMutationVariables = Exact<{
@@ -4836,6 +5757,28 @@ export type CreateColumnMutationVariables = Exact<{
 
 
 export type CreateColumnMutation = { __typename?: 'Mutation', createColumn?: { __typename?: 'CreateColumnPayload', column?: { __typename?: 'Column', rowId: string } | null } | null };
+
+export type CreateLabelMutationVariables = Exact<{
+  input: CreateLabelInput;
+}>;
+
+
+export type CreateLabelMutation = { __typename?: 'Mutation', createLabel?: { __typename?: 'CreateLabelPayload', label?: { __typename?: 'Label', rowId: string } | null } | null };
+
+export type DeleteLabelMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteLabelMutation = { __typename?: 'Mutation', deleteLabel?: { __typename?: 'DeleteLabelPayload', clientMutationId?: string | null } | null };
+
+export type UpdateLabelMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: LabelPatch;
+}>;
+
+
+export type UpdateLabelMutation = { __typename?: 'Mutation', updateLabel?: { __typename?: 'UpdateLabelPayload', label?: { __typename?: 'Label', rowId: string } | null } | null };
 
 export type CreatePostMutationVariables = Exact<{
   input: CreatePostInput;
@@ -4865,6 +5808,13 @@ export type UpdateProjectMutationVariables = Exact<{
 
 
 export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
+
+export type CreateTaskLabelMutationVariables = Exact<{
+  input: CreateTaskLabelInput;
+}>;
+
+
+export type CreateTaskLabelMutation = { __typename?: 'Mutation', createTaskLabel?: { __typename?: 'CreateTaskLabelPayload', taskLabel?: { __typename?: 'TaskLabel', rowId: string } | null } | null };
 
 export type CreateTaskMutationVariables = Exact<{
   input: CreateTaskInput;
@@ -4918,12 +5868,19 @@ export type UpdateWorkspaceMutationVariables = Exact<{
 
 export type UpdateWorkspaceMutation = { __typename?: 'Mutation', updateWorkspace?: { __typename?: 'UpdateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string } | null } | null };
 
+export type LabelsQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+}>;
+
+
+export type LabelsQuery = { __typename?: 'Query', labels?: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', color: string, name: string, rowId: string }> } | null };
+
 export type ProjectQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels?: any | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt?: Date | null }> } }> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt?: Date | null }> } }> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
@@ -4938,7 +5895,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt?: Date | null, updatedAt?: Date | null, dueDate?: Date | null, labels?: any | null, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null }> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt?: Date | null, updatedAt?: Date | null, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null }> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -4947,7 +5904,7 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, labels?: any | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
 
 export type WorkspaceQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -4970,6 +5927,13 @@ export type WorkspacesQueryVariables = Exact<{
 
 export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } }> } | null };
 
+export const LabelFragmentDoc = gql`
+    fragment Label on Label {
+  color
+  name
+  rowId
+}
+    `;
 export const ProjectFragmentDoc = gql`
     fragment Project on Project {
   rowId
@@ -5017,6 +5981,31 @@ export const CreateColumnDocument = gql`
   }
 }
     `;
+export const CreateLabelDocument = gql`
+    mutation CreateLabel($input: CreateLabelInput!) {
+  createLabel(input: $input) {
+    label {
+      rowId
+    }
+  }
+}
+    `;
+export const DeleteLabelDocument = gql`
+    mutation DeleteLabel($rowId: UUID!) {
+  deleteLabel(input: {rowId: $rowId}) {
+    clientMutationId
+  }
+}
+    `;
+export const UpdateLabelDocument = gql`
+    mutation UpdateLabel($rowId: UUID!, $patch: LabelPatch!) {
+  updateLabel(input: {rowId: $rowId, patch: $patch}) {
+    label {
+      rowId
+    }
+  }
+}
+    `;
 export const CreatePostDocument = gql`
     mutation CreatePost($input: CreatePostInput!) {
   createPost(input: $input) {
@@ -5046,6 +6035,15 @@ export const UpdateProjectDocument = gql`
     mutation UpdateProject($rowId: UUID!, $patch: ProjectPatch!) {
   updateProject(input: {rowId: $rowId, patch: $patch}) {
     project {
+      rowId
+    }
+  }
+}
+    `;
+export const CreateTaskLabelDocument = gql`
+    mutation CreateTaskLabel($input: CreateTaskLabelInput!) {
+  createTaskLabel(input: $input) {
+    taskLabel {
       rowId
     }
   }
@@ -5110,6 +6108,15 @@ export const UpdateWorkspaceDocument = gql`
   }
 }
     `;
+export const LabelsDocument = gql`
+    query Labels($projectId: UUID!) {
+  labels(condition: {projectId: $projectId}) {
+    nodes {
+      ...Label
+    }
+  }
+}
+    ${LabelFragmentDoc}`;
 export const ProjectDocument = gql`
     query Project($rowId: UUID!) {
   project(rowId: $rowId) {
@@ -5119,7 +6126,13 @@ export const ProjectDocument = gql`
     prefix
     color
     viewMode
-    labels
+    labels {
+      nodes {
+        name
+        color
+        rowId
+      }
+    }
     columns(orderBy: INDEX_ASC) {
       nodes {
         rowId
@@ -5161,7 +6174,13 @@ export const TaskDocument = gql`
     createdAt
     updatedAt
     dueDate
-    labels
+    taskLabels {
+      nodes {
+        label {
+          ...Label
+        }
+      }
+    }
     posts(orderBy: CREATED_AT_ASC) {
       totalCount
       nodes {
@@ -5194,7 +6213,7 @@ export const TaskDocument = gql`
     }
   }
 }
-    `;
+    ${LabelFragmentDoc}`;
 export const TasksDocument = gql`
     query Tasks($projectId: UUID!, $search: String = "", $assignees: TaskToManyAssigneeFilter) {
   tasks(
@@ -5208,7 +6227,13 @@ export const TasksDocument = gql`
       content
       priority
       dueDate
-      labels
+      taskLabels {
+        nodes {
+          label {
+            ...Label
+          }
+        }
+      }
       assignees {
         nodes {
           rowId
@@ -5222,7 +6247,7 @@ export const TasksDocument = gql`
     }
   }
 }
-    `;
+    ${LabelFragmentDoc}`;
 export const WorkspaceDocument = gql`
     query Workspace($rowId: UUID!) {
   workspace(rowId: $rowId) {
@@ -5283,6 +6308,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     CreateColumn(variables: CreateColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateColumnMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateColumnMutation>({ document: CreateColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateColumn', 'mutation', variables);
     },
+    CreateLabel(variables: CreateLabelMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateLabelMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateLabelMutation>({ document: CreateLabelDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateLabel', 'mutation', variables);
+    },
+    DeleteLabel(variables: DeleteLabelMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DeleteLabelMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteLabelMutation>({ document: DeleteLabelDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DeleteLabel', 'mutation', variables);
+    },
+    UpdateLabel(variables: UpdateLabelMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateLabelMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateLabelMutation>({ document: UpdateLabelDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateLabel', 'mutation', variables);
+    },
     CreatePost(variables: CreatePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreatePostMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreatePostMutation>({ document: CreatePostDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreatePost', 'mutation', variables);
     },
@@ -5294,6 +6328,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UpdateProject(variables: UpdateProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateProjectMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateProjectMutation>({ document: UpdateProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateProject', 'mutation', variables);
+    },
+    CreateTaskLabel(variables: CreateTaskLabelMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateTaskLabelMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateTaskLabelMutation>({ document: CreateTaskLabelDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateTaskLabel', 'mutation', variables);
     },
     CreateTask(variables: CreateTaskMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateTaskMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateTaskMutation>({ document: CreateTaskDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateTask', 'mutation', variables);
@@ -5315,6 +6352,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UpdateWorkspace(variables: UpdateWorkspaceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateWorkspaceMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateWorkspaceMutation>({ document: UpdateWorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateWorkspace', 'mutation', variables);
+    },
+    Labels(variables: LabelsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<LabelsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<LabelsQuery>({ document: LabelsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Labels', 'query', variables);
     },
     Project(variables: ProjectQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectQuery>({ document: ProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Project', 'query', variables);
