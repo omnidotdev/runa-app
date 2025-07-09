@@ -26,6 +26,7 @@
         "graphql": "^16.11.0",
         "graphql-request": "^7.2.0",
         "lucide-react": "^0.523.0",
+        "parse-human-relative-time": "^4.0.0",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
         "react-hotkeys-hook": "^5.1.0",
@@ -1804,6 +1805,8 @@
     "parse-filepath": ["parse-filepath@1.0.2", "", { "dependencies": { "is-absolute": "^1.0.0", "map-cache": "^0.2.0", "path-root": "^0.1.1" } }, "sha512-FwdRXKCohSVeXqwtYonZTXtbGJKrn+HNyWDYVcp5yuJlesTwNH4rsmRZ+GrKAPJ5bLpRxESMeS+Rl0VCHRvB2Q=="],
 
     "parse-gitignore": ["parse-gitignore@2.0.0", "", {}, "sha512-RmVuCHWsfu0QPNW+mraxh/xjQVw/lhUCUru8Zni3Ctq3AoMhpDTq0OVdKS6iesd6Kqb7viCV3isAL43dciOSog=="],
+
+    "parse-human-relative-time": ["parse-human-relative-time@4.0.0", "", { "peerDependencies": { "date-fns": "^4.1.0", "luxon": "^3.0.0" } }, "sha512-q9TSws/icmDATupBKoCSn4FU39rdjDSwq1eJkk6CrqBMF5MtnRjGFGi4PEGS+umGUc0G03dXzSi03MS1DH3iAg=="],
 
     "parse-json": ["parse-json@5.2.0", "", { "dependencies": { "@babel/code-frame": "^7.0.0", "error-ex": "^1.3.1", "json-parse-even-better-errors": "^2.3.0", "lines-and-columns": "^1.1.6" } }, "sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg=="],
 

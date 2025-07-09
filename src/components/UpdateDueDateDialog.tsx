@@ -1,4 +1,10 @@
+import { useQuery } from "@tanstack/react-query";
+import { useParams, useSearch } from "@tanstack/react-router";
+import * as dateFns from "date-fns";
+// @ts-ignore no declaration file
+import { createParseHumanRelativeTime } from "parse-human-relative-time/date-fns.js";
 import { useHotkeys } from "react-hotkeys-hook";
+import * as z from "zod/v4";
 
 import {
   DialogBackdrop,
@@ -9,15 +15,68 @@ import {
   DialogRoot,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useUpdateTaskMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import useForm from "@/lib/hooks/useForm";
+import projectsOptions from "@/lib/options/projects.options";
+import taskOptions from "@/lib/options/task.options";
+import tasksOptions from "@/lib/options/tasks.options";
+import { Button } from "./ui/button";
 
 const UpdateDueDateDialog = () => {
+  const { workspaceId, projectId } = useParams({
+    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  });
+
+  const { search } = useSearch({
+    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  });
+
+  const parseHumanRelativeTime = createParseHumanRelativeTime(dateFns);
+
+  const { taskId } = useTaskStore();
+
   const { setTaskId } = useTaskStore();
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.UpdateDueDate,
+  });
+
+  const { data: defaultDueDate } = useQuery({
+    ...taskOptions({ rowId: taskId! }),
+    enabled: !!taskId,
+    select: (data) => data?.task?.dueDate,
+  });
+
+  const { mutate: updateTask } = useUpdateTaskMutation({
+    meta: {
+      invalidates: [
+        taskOptions({ rowId: taskId! }).queryKey,
+        tasksOptions({ projectId, search }).queryKey,
+        projectsOptions({ workspaceId, search }).queryKey,
+      ],
+    },
+  });
+
+  const form = useForm({
+    defaultValues: {
+      dueDate: defaultDueDate ? defaultDueDate.toString() : "",
+    },
+    onSubmit: ({ value: { dueDate }, formApi }) => {
+      updateTask({
+        rowId: taskId!,
+        patch: {
+          dueDate: new Date(dueDate),
+        },
+      });
+
+      formApi.reset();
+      setIsOpen(false);
+      setTaskId(null);
+    },
   });
 
   useHotkeys(Hotkeys.UpdateDueDate, () => setIsOpen(true), [setIsOpen]);
@@ -42,7 +101,55 @@ const UpdateDueDateDialog = () => {
             Update the due date of this task.
           </DialogDescription>
 
-          <div>TODO: implementation</div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+          >
+            <form.Field
+              name="dueDate"
+              validators={{
+                onChangeAsyncDebounceMs: 300,
+                onChangeAsync: z.string().min(1),
+              }}
+            >
+              {(field) => (
+                <Input
+                  onChange={async (e) => {
+                    try {
+                      const date = await parseHumanRelativeTime(e.target.value);
+
+                      field.handleChange(date.toString());
+                    } catch (_error) {
+                      field.handleChange("");
+                    }
+                  }}
+                  placeholder="Try: tomorrow, in 2 days, next wednesday"
+                />
+              )}
+            </form.Field>
+
+            <form.Subscribe
+              selector={(state) => [
+                state.canSubmit,
+                state.isSubmitting,
+                state.isDirty,
+              ]}
+            >
+              {([canSubmit, isSubmitting, isDirty]) => (
+                <Button
+                  type="submit"
+                  disabled={!canSubmit || isSubmitting || !isDirty}
+                  size="sm"
+                  className="mt-4 w-full"
+                >
+                  Update Due Date
+                </Button>
+              )}
+            </form.Subscribe>
+          </form>
         </DialogContent>
       </DialogPositioner>
     </DialogRoot>
