@@ -90,7 +90,10 @@ const UpdateDueDateDialog = () => {
     },
   });
 
-  useHotkeys(Hotkeys.UpdateDueDate, () => setIsOpen(true), [setIsOpen]);
+  useHotkeys(Hotkeys.UpdateDueDate, () => setIsOpen(!isOpen), [
+    isOpen,
+    setIsOpen,
+  ]);
 
   return (
     <DialogRoot

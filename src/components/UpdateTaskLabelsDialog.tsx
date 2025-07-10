@@ -39,7 +39,10 @@ const UpdateTaskLabelsDialog = () => {
     type: DialogType.UpdateTaskLabels,
   });
 
-  useHotkeys(Hotkeys.UpdateTaskLabels, () => setIsOpen(true), [setIsOpen]);
+  useHotkeys(Hotkeys.UpdateTaskLabels, () => setIsOpen(!isOpen), [
+    isOpen,
+    setIsOpen,
+  ]);
 
   const { data: task } = useQuery({
     ...taskOptions({ rowId: taskId! }),

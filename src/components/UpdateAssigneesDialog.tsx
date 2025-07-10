@@ -35,7 +35,10 @@ const UpdateAssigneesDialog = () => {
     type: DialogType.UpdateAssignees,
   });
 
-  useHotkeys(Hotkeys.UpdateAssignees, () => setIsOpen(true), [setIsOpen]);
+  useHotkeys(Hotkeys.UpdateAssignees, () => setIsOpen(!isOpen), [
+    isOpen,
+    setIsOpen,
+  ]);
 
   const { data: task } = useQuery({
     ...taskOptions({ rowId: taskId! }),
