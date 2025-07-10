@@ -24,7 +24,7 @@ export type Scalars = {
 
 export type Assignee = Node & {
   __typename?: 'Assignee';
-  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
   deletedAt?: Maybe<Scalars['Datetime']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
@@ -32,7 +32,7 @@ export type Assignee = Node & {
   /** Reads a single `Task` that is related to this `Assignee`. */
   task?: Maybe<Task>;
   taskId: Scalars['UUID']['output'];
-  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
   /** Reads a single `User` that is related to this `Assignee`. */
   user?: Maybe<User>;
   userId: Scalars['UUID']['output'];
@@ -333,7 +333,7 @@ export type BigIntFilter = {
 
 export type Column = Node & {
   __typename?: 'Column';
-  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   index: Scalars['Int']['output'];
@@ -344,7 +344,7 @@ export type Column = Node & {
   /** Reads and enables pagination through a set of `Task`. */
   tasks: TaskConnection;
   title: Scalars['String']['output'];
-  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
 };
 
 
@@ -1615,7 +1615,7 @@ export type IntFilter = {
 export type Label = Node & {
   __typename?: 'Label';
   color: Scalars['String']['output'];
-  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
@@ -1625,7 +1625,7 @@ export type Label = Node & {
   rowId: Scalars['UUID']['output'];
   /** Reads and enables pagination through a set of `TaskLabel`. */
   taskLabels: TaskLabelConnection;
-  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
 };
 
 
@@ -2338,7 +2338,7 @@ export type Post = Node & {
   /** Reads a single `User` that is related to this `Post`. */
   author?: Maybe<User>;
   authorId: Scalars['UUID']['output'];
-  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
@@ -2347,7 +2347,7 @@ export type Post = Node & {
   task?: Maybe<Task>;
   taskId: Scalars['UUID']['output'];
   title?: Maybe<Scalars['String']['output']>;
-  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
 };
 
 export type PostAggregates = {
@@ -2594,7 +2594,7 @@ export type Project = Node & {
   color?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Column`. */
   columns: ColumnConnection;
-  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
@@ -2606,7 +2606,7 @@ export type Project = Node & {
   status: ProjectStatus;
   /** Reads and enables pagination through a set of `Task`. */
   tasks: TaskConnection;
-  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
   viewMode: Scalars['String']['output'];
   /** Reads a single `Workspace` that is related to this `Project`. */
   workspace?: Maybe<Workspace>;
@@ -3515,7 +3515,7 @@ export type Task = Node & {
   columnId: Scalars['UUID']['output'];
   columnIndex: Scalars['Int']['output'];
   content: Scalars['String']['output'];
-  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
   description: Scalars['String']['output'];
   dueDate?: Maybe<Scalars['Datetime']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -3529,7 +3529,7 @@ export type Task = Node & {
   rowId: Scalars['UUID']['output'];
   /** Reads and enables pagination through a set of `TaskLabel`. */
   taskLabels: TaskLabelConnection;
-  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
 };
 
 
@@ -3889,7 +3889,7 @@ export type TaskInput = {
 
 export type TaskLabel = Node & {
   __typename?: 'TaskLabel';
-  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   /** Reads a single `Label` that is related to this `TaskLabel`. */
@@ -3899,7 +3899,7 @@ export type TaskLabel = Node & {
   /** Reads a single `Task` that is related to this `TaskLabel`. */
   task?: Maybe<Task>;
   taskId: Scalars['UUID']['output'];
-  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
 };
 
 export type TaskLabelAggregates = {
@@ -4830,13 +4830,13 @@ export type User = Node & {
   /** Reads and enables pagination through a set of `Task`. */
   authoredTasks: TaskConnection;
   avatarUrl?: Maybe<Scalars['String']['output']>;
-  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   identityProviderId: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
   rowId: Scalars['UUID']['output'];
-  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
   /** Reads and enables pagination through a set of `WorkspaceUser`. */
   workspaceUsers: WorkspaceUserConnection;
 };
@@ -5238,14 +5238,14 @@ export type UserToManyWorkspaceUserFilter = {
 
 export type Workspace = Node & {
   __typename?: 'Workspace';
-  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   /** Reads and enables pagination through a set of `Project`. */
   projects: ProjectConnection;
   rowId: Scalars['UUID']['output'];
-  updatedAt?: Maybe<Scalars['Datetime']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
   viewMode: Scalars['String']['output'];
   /** Reads and enables pagination through a set of `WorkspaceUser`. */
   workspaceUsers: WorkspaceUserConnection;
@@ -5537,7 +5537,7 @@ export type WorkspaceToManyWorkspaceUserFilter = {
 
 export type WorkspaceUser = Node & {
   __typename?: 'WorkspaceUser';
-  createdAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   /** Reads a single `User` that is related to this `WorkspaceUser`. */
@@ -5886,7 +5886,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt?: Date | null }> } }> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
@@ -5901,7 +5901,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt?: Date | null, updatedAt?: Date | null, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', rowId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt?: Date | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null }> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', rowId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null }> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
