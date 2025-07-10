@@ -60,7 +60,7 @@ const Tasks = ({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { search, assignees } = useSearch({
+  const { search, assignees, labels } = useSearch({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -92,6 +92,9 @@ const Tasks = ({
       search: search,
       assignees: assignees.length
         ? { some: { user: { rowId: { in: assignees } } } }
+        : undefined,
+      labels: labels.length
+        ? { some: { label: { rowId: { in: labels } } } }
         : undefined,
     }),
     select: (data) =>

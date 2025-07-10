@@ -5907,6 +5907,7 @@ export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
   assignees?: InputMaybe<TaskToManyAssigneeFilter>;
+  labels?: InputMaybe<TaskToManyTaskLabelFilter>;
 }>;
 
 
@@ -6765,9 +6766,9 @@ useInfiniteTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task.infinite
 useTaskQuery.fetcher = (variables: TaskQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, variables, options);
 
 export const TasksDocument = `
-    query Tasks($projectId: UUID!, $search: String = "", $assignees: TaskToManyAssigneeFilter) {
+    query Tasks($projectId: UUID!, $search: String = "", $assignees: TaskToManyAssigneeFilter, $labels: TaskToManyTaskLabelFilter) {
   tasks(
-    filter: {projectId: {equalTo: $projectId}, content: {includesInsensitive: $search}, assignees: $assignees}
+    filter: {projectId: {equalTo: $projectId}, content: {includesInsensitive: $search}, assignees: $assignees, taskLabels: $labels}
   ) {
     nodes {
       rowId

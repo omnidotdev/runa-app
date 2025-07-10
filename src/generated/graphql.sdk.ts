@@ -5908,6 +5908,7 @@ export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
   assignees?: InputMaybe<TaskToManyAssigneeFilter>;
+  labels?: InputMaybe<TaskToManyTaskLabelFilter>;
 }>;
 
 
@@ -6232,9 +6233,9 @@ export const TaskDocument = gql`
 }
     ${LabelFragmentDoc}`;
 export const TasksDocument = gql`
-    query Tasks($projectId: UUID!, $search: String = "", $assignees: TaskToManyAssigneeFilter) {
+    query Tasks($projectId: UUID!, $search: String = "", $assignees: TaskToManyAssigneeFilter, $labels: TaskToManyTaskLabelFilter) {
   tasks(
-    filter: {projectId: {equalTo: $projectId}, content: {includesInsensitive: $search}, assignees: $assignees}
+    filter: {projectId: {equalTo: $projectId}, content: {includesInsensitive: $search}, assignees: $assignees, taskLabels: $labels}
   ) {
     nodes {
       rowId

@@ -29,7 +29,6 @@ import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { labelColors } from "@/lib/constants/labelColors";
-import useTaskFiltersStore from "@/lib/hooks/store/useFilterStore";
 import projectOptions from "@/lib/options/project.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
@@ -39,7 +38,7 @@ const Filter = () => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { assignees } = useSearch({
+  const { assignees, labels } = useSearch({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -50,8 +49,6 @@ const Filter = () => {
   const popoverButtonRef = useRef<HTMLButtonElement | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const { selectedLabels, setSelectedLabels } = useTaskFiltersStore();
-
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
@@ -61,12 +58,6 @@ const Filter = () => {
     ...workspaceUsersOptions({ rowId: workspaceId }),
     select: (data) => data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
   });
-
-  // const projectLabels: { name: string; color: string; checked: boolean }[] =
-  //   project?.labels?.map((label: { name: string; color: string }) => ({
-  //     ...label,
-  //     checked: false,
-  //   })) ?? [];
 
   useHotkeys(Hotkeys.ToggleFilter, () => setIsFilterOpen(!isFilterOpen), [
     isFilterOpen,
@@ -123,17 +114,27 @@ const Filter = () => {
                 <PopoverContent className="flex w-48 flex-col gap-2 p-2">
                   {project?.labels?.nodes?.map((label) => (
                     <CheckboxRoot
-                      key={label.name}
+                      key={label.rowId}
                       className="group flex cursor-pointer items-center justify-between p-0.5"
-                      checked={selectedLabels.includes(label.name)}
+                      checked={labels.includes(label.rowId)}
                       onCheckedChange={({ checked }) => {
-                        const current =
-                          useTaskFiltersStore.getState().selectedLabels;
-                        setSelectedLabels(
-                          checked
-                            ? [...current, label.name]
-                            : current.filter((l) => l !== label.name),
-                        );
+                        if (checked) {
+                          navigate({
+                            search: (prev) => ({
+                              ...prev,
+                              labels: [...(prev.labels ?? []), label.rowId],
+                            }),
+                          });
+                        } else {
+                          navigate({
+                            search: (prev) => ({
+                              ...prev,
+                              labels: prev.labels?.filter(
+                                (id) => id !== label.rowId,
+                              ),
+                            }),
+                          });
+                        }
                       }}
                     >
                       <CheckboxLabel className="ml-0 flex items-center gap-2">
@@ -148,12 +149,7 @@ const Filter = () => {
                         <p className="font-light text-sm">{label.name}</p>
                       </CheckboxLabel>
                       <CheckboxHiddenInput />
-                      <CheckboxControl
-                        className={cn(
-                          "hidden group-hover:flex",
-                          selectedLabels.includes(label.name) ? "flex" : "",
-                        )}
-                      >
+                      <CheckboxControl>
                         <CheckboxIndicator>
                           <CheckIcon className="size-4" />
                         </CheckboxIndicator>

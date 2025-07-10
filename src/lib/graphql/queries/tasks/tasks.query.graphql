@@ -2,12 +2,14 @@ query Tasks(
   $projectId: UUID!
   $search: String = ""
   $assignees: TaskToManyAssigneeFilter
+  $labels: TaskToManyTaskLabelFilter
 ) {
   tasks(
     filter: {
       projectId: { equalTo: $projectId }
       content: { includesInsensitive: $search }
       assignees: $assignees
+      taskLabels: $labels
     }
   ) {
     nodes {
