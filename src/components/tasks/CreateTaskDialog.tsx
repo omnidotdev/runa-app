@@ -1,4 +1,3 @@
-import { useStore } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { TagIcon, TypeIcon } from "lucide-react";
@@ -28,6 +27,8 @@ import {
 } from "@/components/ui/popover";
 import {
   useCreateAssigneeMutation,
+  useCreateLabelMutation,
+  useCreateTaskLabelMutation,
   // useCreateTaskLabelMutation,
   useCreateTaskMutation,
 } from "@/generated/graphql";
@@ -86,8 +87,8 @@ const CreateTaskDialog = ({ columnId }: Props) => {
 
   const { mutateAsync: addNewTask } = useCreateTaskMutation();
   const { mutate: addNewAssignee } = useCreateAssigneeMutation();
-  // const { mutate: updateProject } = useUpdateProjectMutation();
-  // const { mutate: addNewTaskLabel } = useCreateTaskLabelMutation();
+  const { mutateAsync: updateProjectLabel } = useCreateLabelMutation();
+  const { mutateAsync: createTaskLabel } = useCreateTaskLabelMutation();
 
   const form = useForm({
     defaultValues: {
@@ -102,13 +103,32 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       // TODO: dynamic with auth
       const authorId = "024bec7c-5822-4b34-f993-39cbc613e1c9";
 
-      const taskLabels = value.labels
-        .filter((l) => l.checked)
-        .map((label) => ({
-          name: label.name,
-          color: label.color,
-          rowId: label.rowId,
-        }));
+      const allTaskLabels = value.labels.filter((l) => l.checked);
+
+      const newLabels = value.labels.filter((l) => l.rowId === "pending");
+
+      const data = await Promise.all(
+        newLabels.map((label) =>
+          updateProjectLabel({
+            input: {
+              label: {
+                name: label.name,
+                color: label.color,
+                projectId,
+              },
+            },
+          }),
+        ),
+      );
+
+      const newlyAddedLabels = data.map(
+        (mutation) => mutation.createLabel?.label!,
+      );
+      const restOfTaskLabels = allTaskLabels.filter(
+        (label) => label.rowId !== "pending",
+      );
+
+      const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
 
       const [{ createTask }] = await Promise.all([
         addNewTask({
@@ -127,18 +147,20 @@ const CreateTaskDialog = ({ columnId }: Props) => {
         }),
       ]);
 
-      // const taskId = createTask?.task?.rowId;
+      const taskId = createTask?.task?.rowId!;
 
-      // for (const label of taskLabels) {
-      //   addNewTaskLabel({
-      //     input: {
-      //       taskLabel: {
-      //         taskId: taskId!,
-      //         labelId: label.rowId,
-      //       },
-      //     },
-      //   });
-      // }
+      await Promise.all(
+        newTaskLabels.map((label) =>
+          createTaskLabel({
+            input: {
+              taskLabel: {
+                labelId: label.rowId,
+                taskId,
+              },
+            },
+          }),
+        ),
+      );
 
       if (createTask && value.assignees.length) {
         for (const assignee of value.assignees) {
@@ -159,8 +181,6 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       setColumnId(null);
     },
   });
-
-  const labels = useStore(form.store, (state) => state.values.labels);
 
   return (
     <DialogRoot

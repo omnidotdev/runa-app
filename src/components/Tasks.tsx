@@ -23,6 +23,7 @@ import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
 import Assignees from "./Assignees";
+import Labels from "./Labels";
 import { SidebarMenuShotcut } from "./ui/sidebar";
 import {
   TooltipContent,
@@ -235,11 +236,14 @@ const Tasks = ({
                             }}
                           >
                             <TooltipTrigger asChild>
-                              {/* TODO */}
-                              {/* <Labels
-                                labels={task.taskLabels.nodes}
+                              <Labels
+                                labels={
+                                  task.taskLabels.nodes?.map(
+                                    (label) => label?.label!,
+                                  ) ?? []
+                                }
                                 className="flex flex-wrap gap-1"
-                              /> */}
+                              />
                             </TooltipTrigger>
                             <TooltipPositioner>
                               <TooltipContent className="border bg-background text-foreground">

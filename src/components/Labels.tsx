@@ -12,7 +12,7 @@ interface Props extends ComponentProps<"div"> {
 }
 
 const Labels = ({ labels, ...rest }: Props) => {
-  if (!labels.length) return null;
+  if (!labels.length) return <p className="place-self-center">No labels</p>;
 
   return (
     <div {...rest}>

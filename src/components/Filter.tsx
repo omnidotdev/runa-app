@@ -114,7 +114,7 @@ const Filter = () => {
               </PopoverTrigger>
               <PopoverPositioner>
                 <PopoverContent className="flex w-48 flex-col gap-2 p-2">
-                  {projectLabels.map((label) => (
+                  {project?.labels?.nodes?.map((label) => (
                     <CheckboxRoot
                       key={label.name}
                       className="group flex cursor-pointer items-center justify-between p-0.5"

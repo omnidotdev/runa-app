@@ -1,4 +1,4 @@
-import { CheckIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -8,10 +8,20 @@ import {
   CheckboxLabel,
   CheckboxRoot,
 } from "@/components/ui/checkbox";
-import { createListCollection } from "@/components/ui/select";
+import {
+  createListCollection,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectItemGroup,
+  SelectItemText,
+  SelectTrigger,
+} from "@/components/ui/select";
 import { labelColors } from "@/lib/constants/labelColors";
 import { withForm } from "@/lib/hooks/useForm";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const TaskLabelsForm = withForm({
   defaultValues: {
@@ -48,7 +58,7 @@ const TaskLabelsForm = withForm({
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
                 <div className="relative flex w-full border-b">
-                  {/* <Select
+                  <Select
                     // @ts-ignore TODO: type issue
                     collection={colorCollection}
                     value={[newLabel.color]}
@@ -86,8 +96,8 @@ const TaskLabelsForm = withForm({
                         ))}
                       </SelectItemGroup>
                     </SelectContent>
-                  </Select> */}
-                  {/* <Input
+                  </Select>
+                  <Input
                     className="rounded-none border-0 border-l shadow-none focus-visible:ring-0"
                     placeholder="Add new label..."
                     value={newLabel.name}
@@ -108,6 +118,7 @@ const TaskLabelsForm = withForm({
                         field.pushValue({
                           name: newLabel.name,
                           color: newLabel.color,
+                          rowId: "pending",
                           checked: true,
                         });
 
@@ -128,12 +139,13 @@ const TaskLabelsForm = withForm({
                       field.pushValue({
                         name: newLabel.name,
                         color: newLabel.color,
+                        rowId: "pending",
                         checked: true,
                       })
                     }
                   >
                     <PlusIcon className="size-4" />
-                  </Button> */}
+                  </Button>
                 </div>
               </div>
 

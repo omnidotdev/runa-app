@@ -27,6 +27,7 @@ import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import Labels from "@/components/Labels";
 import NotFound from "@/components/layout/NotFound";
+import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
 import UpdateAssignees from "@/components/tasks/UpdateAssignees";
 import UpdateDueDate from "@/components/tasks/UpdateDueDate";
 import { Avatar } from "@/components/ui/avatar";
@@ -50,8 +51,11 @@ import {
 } from "@/components/ui/select";
 import {
   useCreateAssigneeMutation,
+  useCreateLabelMutation,
   useCreatePostMutation,
+  useCreateTaskLabelMutation,
   useDeleteAssigneeMutation,
+  useDeleteTaskLabelMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
@@ -170,6 +174,8 @@ const PriorityBadge = ({ priority }: { priority: string }) => {
 function TaskPage() {
   const { workspaceId, projectId, taskId } = Route.useParams();
 
+  const { queryClient } = Route.useRouteContext();
+
   const commentEditorApiRef = useRef<EditorApi | null>(null);
 
   const { data: task } = useSuspenseQuery({
@@ -181,6 +187,15 @@ function TaskPage() {
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
+
+  const taskLabelIds =
+    task?.taskLabels?.nodes?.map((label) => label.label?.rowId!) ?? [];
+
+  const defaultLabels =
+    project?.labels?.nodes?.map((label) => ({
+      ...label,
+      checked: taskLabelIds.includes(label.rowId),
+    })) ?? [];
 
   const defaultAssignees = task?.assignees?.nodes?.map(
     (assignee) => assignee.user?.rowId!,
@@ -202,7 +217,10 @@ function TaskPage() {
     ],
   });
 
-  // const { mutate: updateProject } = useUpdateProjectMutation();
+  const { mutateAsync: updateProjectLabel } = useCreateLabelMutation();
+  const { mutateAsync: deleteTaskLabel } = useDeleteTaskLabelMutation();
+  const { mutateAsync: createTaskLabel } = useCreateTaskLabelMutation();
+
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
       invalidates: [
@@ -263,38 +281,63 @@ function TaskPage() {
     defaultValues: {
       title: "",
       description: "",
-      // labels: ,
+      labels: defaultLabels,
       assignees: [] as string[],
       dueDate: "",
       columnId: "",
     },
-    onSubmit: ({ value, formApi }) => {
-      // const allLabels = value.labels.map((label) => ({
-      //   name: label.name,
-      //   color: label.color,
-      // }));
+    onSubmit: async ({ value, formApi }) => {
+      const allTaskLabels = value.labels.filter((l) => l.checked);
 
-      // const taskLabels = value.labels
-      //   .filter((l) => l.checked)
-      //   .map((label) => ({
-      //     name: label.name,
-      //     color: label.color,
-      //   }));
+      const newLabels = value.labels.filter((l) => l.rowId === "pending");
 
-      // updateTask({
-      //   rowId: taskId,
-      //   patch: {
-      //     labels: JSON.stringify(taskLabels),
-      //   },
-      // });
+      // Add all new labels to project labels
+      const data = await Promise.all(
+        newLabels.map((label) =>
+          updateProjectLabel({
+            input: {
+              label: {
+                name: label.name,
+                color: label.color,
+                projectId,
+              },
+            },
+          }),
+        ),
+      );
 
-      // updateProject({
-      //   rowId: projectId,
-      //   patch: {
-      //     labels:
-      //   },
-      // });
+      const newlyAddedLabels = data.map(
+        (mutation) => mutation.createLabel?.label!,
+      );
+      const restOfTaskLabels = allTaskLabels.filter(
+        (label) => label.rowId !== "pending",
+      );
 
+      const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
+
+      const currentTaskLabelIds =
+        task?.taskLabels?.nodes?.map((l) => l.rowId) ?? [];
+
+      // delete all current task labels
+      await Promise.all(
+        currentTaskLabelIds.map((rowId) => deleteTaskLabel({ rowId })),
+      );
+
+      // add all task labels (re-add existing and update with newly added)
+      await Promise.all(
+        newTaskLabels.map((label) =>
+          createTaskLabel({
+            input: {
+              taskLabel: {
+                labelId: label.rowId,
+                taskId,
+              },
+            },
+          }),
+        ),
+      );
+
+      queryClient.invalidateQueries();
       formApi.reset();
     },
   });
@@ -676,7 +719,7 @@ function TaskPage() {
 
                       <PopoverPositioner>
                         <PopoverContent className="flex min-w-80 flex-col p-0">
-                          {/* <TaskLabelsForm form={updateLabelsForm} /> */}
+                          <TaskLabelsForm form={updateLabelsForm} />
 
                           <updateLabelsForm.Subscribe
                             selector={(state) => [
@@ -704,7 +747,9 @@ function TaskPage() {
                 </CardHeader>
                 <CardContent className="p-4">
                   <Labels
-                    labels={JSON.parse(task?.labels)}
+                    labels={
+                      task?.taskLabels?.nodes?.map((node) => node.label!) ?? []
+                    }
                     className="flex flex-wrap gap-2"
                   />
                 </CardContent>

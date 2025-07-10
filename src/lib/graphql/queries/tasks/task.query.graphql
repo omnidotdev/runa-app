@@ -11,6 +11,7 @@ query Task($rowId: UUID!) {
     dueDate
     taskLabels {
       nodes {
+        rowId
         label {
           ...Label
         }
