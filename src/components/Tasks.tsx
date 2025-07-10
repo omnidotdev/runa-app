@@ -112,7 +112,7 @@ const Tasks = ({
       ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
       .sort(
         (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+          new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime(),
       )
       .map((task) => task?.rowId)
       .indexOf(taskId);

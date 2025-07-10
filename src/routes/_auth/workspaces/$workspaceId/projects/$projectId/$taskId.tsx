@@ -251,7 +251,7 @@ function TaskPage() {
     ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
     .sort(
       (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime(),
     )
     .map((task) => task.rowId)
     .indexOf(taskId);
@@ -413,7 +413,7 @@ function TaskPage() {
                           </span>
                           <span className="text-base-500 text-sm dark:text-base-400">
                             {format(
-                              new Date(comment.createdAt),
+                              new Date(comment.createdAt!),
                               "MMM d, yyyy 'at' h:mm a",
                             )}
                           </span>
