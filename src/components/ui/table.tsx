@@ -110,5 +110,6 @@ export {
   TableHead,
   TableRow,
   TableCell,
+  /** @knipignore */
   TableCaption,
 };

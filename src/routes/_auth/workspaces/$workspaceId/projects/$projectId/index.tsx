@@ -37,14 +37,16 @@ import seo from "@/lib/util/seo";
 
 import type { ChangeEvent } from "react";
 
-const projectSearchSchema = z.object({
+const projectSearchParamsSchema = z.object({
   search: z.string().default(""),
+  // See: https://zod.dev/v4/changelog?id=stricter-uuid
+  assignees: z.array(z.guid()).default([]),
 });
 
 export const Route = createFileRoute({
-  loaderDeps: ({ search: { search } }) => ({ search }),
+  loaderDeps: ({ search: { search, assignees } }) => ({ search, assignees }),
   loader: async ({
-    deps: { search },
+    deps: { search, assignees },
     params: { projectId, workspaceId },
     context: { queryClient },
   }) => {
@@ -54,7 +56,15 @@ export const Route = createFileRoute({
       queryClient.ensureQueryData(
         workspaceUsersOptions({ rowId: workspaceId }),
       ),
-      queryClient.ensureQueryData(tasksOptions({ projectId, search })),
+      queryClient.ensureQueryData(
+        tasksOptions({
+          projectId,
+          search,
+          assignees: assignees.length
+            ? { some: { user: { rowId: { in: assignees } } } }
+            : undefined,
+        }),
+      ),
     ]);
 
     if (!project) {
@@ -63,9 +73,9 @@ export const Route = createFileRoute({
 
     return { name: project.name };
   },
-  validateSearch: zodValidator(projectSearchSchema),
+  validateSearch: zodValidator(projectSearchParamsSchema),
   search: {
-    middlewares: [stripSearchParams({ search: "" })],
+    middlewares: [stripSearchParams({ search: "", assignees: [] })],
   },
   head: ({ loaderData }) => ({
     meta: loaderData ? [...seo({ title: loaderData.name })] : undefined,

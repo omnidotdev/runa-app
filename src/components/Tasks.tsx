@@ -16,7 +16,6 @@ import RichTextEditor from "@/components/core/RichTextEditor";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
-import useTaskFiltersStore from "@/lib/hooks/store/useFilterStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
@@ -61,7 +60,7 @@ const Tasks = ({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { search } = useSearch({
+  const { search, assignees } = useSearch({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -82,11 +81,6 @@ const Tasks = ({
     isUpdateDueDateDialogOpen ||
     isUpdateTaskLabelsDialogOpen;
 
-  const {
-    // selectedLabels,
-    selectedUsers,
-  } = useTaskFiltersStore();
-
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
@@ -96,8 +90,8 @@ const Tasks = ({
     ...tasksOptions({
       projectId: projectId,
       search: search,
-      assignees: selectedUsers.length
-        ? { some: { user: { rowId: { in: selectedUsers } } } }
+      assignees: assignees.length
+        ? { some: { user: { rowId: { in: assignees } } } }
         : undefined,
     }),
     select: (data) =>

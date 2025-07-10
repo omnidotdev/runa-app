@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import {
   CheckIcon,
   ChevronRight,
@@ -39,11 +39,18 @@ const Filter = () => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
+  const { assignees } = useSearch({
+    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  });
+
+  const navigate = useNavigate({
+    from: "/workspaces/$workspaceId/projects/$projectId",
+  });
+
   const popoverButtonRef = useRef<HTMLButtonElement | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const { selectedLabels, selectedUsers, setSelectedLabels, setSelectedUsers } =
-    useTaskFiltersStore();
+  const { selectedLabels, setSelectedLabels } = useTaskFiltersStore();
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
@@ -171,15 +178,28 @@ const Filter = () => {
                     <CheckboxRoot
                       key={user?.rowId}
                       className="group flex cursor-pointer items-center justify-between p-0.5"
-                      checked={selectedUsers.includes(user?.rowId ?? "")}
+                      checked={assignees.includes(user?.rowId!)}
                       onCheckedChange={({ checked }) => {
-                        const current =
-                          useTaskFiltersStore.getState().selectedUsers;
-                        setSelectedUsers(
-                          checked
-                            ? [...current, user?.rowId!]
-                            : current.filter((u) => u !== user?.rowId!),
-                        );
+                        if (checked) {
+                          navigate({
+                            search: (prev) => ({
+                              ...prev,
+                              assignees: [
+                                ...(prev.assignees ?? []),
+                                user?.rowId!,
+                              ],
+                            }),
+                          });
+                        } else {
+                          navigate({
+                            search: (prev) => ({
+                              ...prev,
+                              assignees: prev.assignees?.filter(
+                                (id) => id !== user?.rowId!,
+                              ),
+                            }),
+                          });
+                        }
                       }}
                     >
                       <CheckboxLabel className="-ml-2 flex h-8 items-center gap-2">
@@ -192,14 +212,7 @@ const Filter = () => {
                         <p className="-ml-2 font-light text-sm">{user?.name}</p>
                       </CheckboxLabel>
                       <CheckboxHiddenInput />
-                      <CheckboxControl
-                        className={cn(
-                          "hidden group-hover:flex",
-                          selectedUsers.includes(user?.rowId ?? "")
-                            ? "flex"
-                            : "",
-                        )}
-                      >
+                      <CheckboxControl>
                         <CheckboxIndicator>
                           <CheckIcon className="size-4" />
                         </CheckboxIndicator>
