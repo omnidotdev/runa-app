@@ -256,7 +256,7 @@ function ProjectPage() {
                   positioning={{ placement: "bottom" }}
                   tooltip={{
                     className: "bg-background text-foreground border",
-                    children: isForceClosed ? "Expand List" : "Collapse List",
+                    children: isForceClosed ? "Expand Lists" : "Collapse Lists",
                   }}
                 >
                   <Button
