@@ -25,12 +25,15 @@ import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
 
 import type { DropResult } from "@hello-pangea/dnd";
+import type { Dispatch, SetStateAction } from "react";
 
 interface Props {
-  shouldForceClose?: boolean;
+  openStates: boolean[];
+  setOpenStates: Dispatch<SetStateAction<boolean[]>>;
+  setIsForceClosed: (value: boolean) => void;
 }
 
-const ListView = ({ shouldForceClose }: Props) => {
+const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
   const { theme } = useTheme();
 
   const { workspaceId, projectId } = useParams({
@@ -129,13 +132,28 @@ const ListView = ({ shouldForceClose }: Props) => {
             : undefined,
         }}
       >
-        {project?.columns?.nodes?.map((column) => {
+        {project?.columns?.nodes?.map((column, index) => {
           return (
             <CollapsibleRoot
               key={column?.rowId}
               className="mb-4 rounded-lg border bg-background last:mb-0"
-              defaultOpen
-              open={shouldForceClose ? false : undefined}
+              open={openStates[index]}
+              onOpenChange={({ open }) => {
+                setOpenStates((prev) => {
+                  const newStates = [...prev];
+                  newStates[index] = open;
+
+                  if (newStates.every((state) => state === false)) {
+                    setIsForceClosed(true);
+                  }
+
+                  if (newStates.every((state) => state === true)) {
+                    setIsForceClosed(false);
+                  }
+
+                  return newStates;
+                });
+              }}
             >
               <CollapsibleTrigger asChild>
                 <div className="flex items-center justify-between">

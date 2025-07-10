@@ -95,20 +95,13 @@ export const Route = createFileRoute({
 function ProjectPage() {
   const { projectId, workspaceId } = Route.useParams();
   const { search } = Route.useSearch();
-  const [shouldForceClose, setShouldForceClose] = useState(false);
+  const [isForceClosed, setIsForceClosed] = useState(false);
 
   const navigate = Route.useNavigate();
 
   const { queryClient } = Route.useRouteContext();
 
   const { taskId, columnId } = useTaskStore();
-
-  const handleForceClose = () => {
-    setShouldForceClose(true);
-    setTimeout(() => {
-      setShouldForceClose(false);
-    }, 100);
-  };
 
   const handleSearch = useDebounceCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -126,6 +119,20 @@ function ProjectPage() {
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
+
+  const [projectColumnOpenStates, setProjectColumnOpenStates] = useState(
+    project?.columns?.nodes?.map(() => true) ?? [],
+  );
+
+  const handleCloseAll = () => {
+    setProjectColumnOpenStates((prev) => prev.map(() => false));
+    setIsForceClosed(true);
+  };
+
+  const handleOpenAll = () => {
+    setProjectColumnOpenStates((prev) => prev.map(() => true));
+    setIsForceClosed(false);
+  };
 
   const { mutate: updateViewMode } = useUpdateProjectMutation({
     meta: {
@@ -226,13 +233,13 @@ function ProjectPage() {
                   positioning={{ placement: "bottom" }}
                   tooltip={{
                     className: "bg-background text-foreground border",
-                    children: "Collapse List",
+                    children: isForceClosed ? "Expand List" : "Collapse List",
                   }}
                 >
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={handleForceClose}
+                    onClick={isForceClosed ? handleOpenAll : handleCloseAll}
                   >
                     <ListCollapse />
                   </Button>
@@ -267,7 +274,11 @@ function ProjectPage() {
         {project?.viewMode === "board" ? (
           <Board />
         ) : (
-          <ListView shouldForceClose={shouldForceClose} />
+          <ListView
+            openStates={projectColumnOpenStates}
+            setOpenStates={setProjectColumnOpenStates}
+            setIsForceClosed={setIsForceClosed}
+          />
         )}
       </div>
 
