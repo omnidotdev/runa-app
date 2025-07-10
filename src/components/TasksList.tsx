@@ -184,7 +184,7 @@ const TasksList = ({
                                 aria-label="No Assignees"
                                 className="mr-2 size-5.5"
                               >
-                                <AvatarFallback className="border border-muted-foreground border-dashed bg-transparent p-1 text-muted-foreground">
+                                <AvatarFallback className="border border-border border-dashed bg-transparent p-1 text-muted-foreground">
                                   <UserIcon />
                                 </AvatarFallback>
                               </AvatarRoot>
@@ -228,7 +228,6 @@ const TasksList = ({
                               className="border-border border-dashed"
                             >
                               <TagIcon className="!size-2.5" />
-                              <span className="text-[10px]">No labels</span>
                             </Badge>
                           )}
                         </TooltipTrigger>
@@ -244,34 +243,42 @@ const TasksList = ({
                         </TooltipPositioner>
                       </TooltipRoot>
 
-                      {task?.dueDate && (
-                        <TooltipRoot
-                          positioning={{
-                            placement: "top-end",
-                            shift: -12,
-                          }}
-                        >
-                          <TooltipTrigger asChild>
-                            <div className="ml-auto flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
+                      <TooltipRoot
+                        positioning={{
+                          placement: "top-end",
+                          shift: -8,
+                        }}
+                      >
+                        <TooltipTrigger asChild>
+                          {task?.dueDate ? (
+                            <div className="flex h-5 items-center gap-1 text-base-500 text-xs dark:text-base-400">
                               <CalendarIcon className="h-3 w-3" />
                               <span>
                                 {format(new Date(task.dueDate), "MMM d")}
                               </span>
                             </div>
-                          </TooltipTrigger>
+                          ) : (
+                            <Badge
+                              size="sm"
+                              variant="outline"
+                              className="h-5 w-fit place-self-end border-border border-dashed"
+                            >
+                              <CalendarIcon className="!size-2.5" />
+                            </Badge>
+                          )}
+                        </TooltipTrigger>
 
-                          <TooltipPositioner>
-                            <TooltipContent className="border bg-background text-foreground">
-                              <div className="inline-flex">
-                                Update Due Date
-                                <div className="ml-2 flex items-center gap-0.5">
-                                  <SidebarMenuShotcut>D</SidebarMenuShotcut>
-                                </div>
+                        <TooltipPositioner>
+                          <TooltipContent className="border bg-background text-foreground">
+                            <div className="inline-flex">
+                              Update Due Date
+                              <div className="ml-2 flex items-center gap-0.5">
+                                <SidebarMenuShotcut>D</SidebarMenuShotcut>
                               </div>
-                            </TooltipContent>
-                          </TooltipPositioner>
-                        </TooltipRoot>
-                      )}
+                            </div>
+                          </TooltipContent>
+                        </TooltipPositioner>
+                      </TooltipRoot>
                     </div>
                   </div>
                 )}

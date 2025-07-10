@@ -205,7 +205,7 @@ const Tasks = ({
                                 aria-label="No Assignees"
                                 className="mt-2.5 mr-2 size-5.5"
                               >
-                                <AvatarFallback className="border border-muted-foreground border-dashed bg-transparent p-1 text-muted-foreground">
+                                <AvatarFallback className="border border-border border-dashed bg-transparent p-1 text-muted-foreground">
                                   <UserIcon />
                                 </AvatarFallback>
                               </AvatarRoot>
@@ -250,7 +250,6 @@ const Tasks = ({
                                 className="border-border border-dashed"
                               >
                                 <TagIcon className="!size-2.5" />
-                                <span className="text-[10px]">No labels</span>
                               </Badge>
                             )}
                           </TooltipTrigger>
@@ -267,35 +266,43 @@ const Tasks = ({
                         </TooltipRoot>
                       </div>
 
-                      {task?.dueDate && (
-                        <TooltipRoot
-                          positioning={{
-                            placement: "top-end",
-                            shift: -12,
-                          }}
-                        >
-                          <TooltipTrigger asChild>
-                            <div className="col-span-1 mr-1 flex items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
+                      <TooltipRoot
+                        positioning={{
+                          placement: "top-end",
+                          shift: -8,
+                        }}
+                      >
+                        <TooltipTrigger asChild>
+                          {task?.dueDate ? (
+                            <div className="col-span-1 mr-1 flex h-5 items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
                               <CalendarIcon className="h-3 w-3" />
                               {/* TODO: timezone handling */}
                               <span>
                                 {format(new Date(task.dueDate), "MMM d")}
                               </span>
                             </div>
-                          </TooltipTrigger>
+                          ) : (
+                            <Badge
+                              size="sm"
+                              variant="outline"
+                              className="h-5 w-fit place-self-end border-border border-dashed"
+                            >
+                              <CalendarIcon className="!size-2.5" />
+                            </Badge>
+                          )}
+                        </TooltipTrigger>
 
-                          <TooltipPositioner>
-                            <TooltipContent className="border bg-background text-foreground">
-                              <div className="inline-flex">
-                                Update Due Date
-                                <div className="ml-2 flex items-center gap-0.5">
-                                  <SidebarMenuShotcut>D</SidebarMenuShotcut>
-                                </div>
+                        <TooltipPositioner>
+                          <TooltipContent className="border bg-background text-foreground">
+                            <div className="inline-flex">
+                              Update Due Date
+                              <div className="ml-2 flex items-center gap-0.5">
+                                <SidebarMenuShotcut>D</SidebarMenuShotcut>
                               </div>
-                            </TooltipContent>
-                          </TooltipPositioner>
-                        </TooltipRoot>
-                      )}
+                            </div>
+                          </TooltipContent>
+                        </TooltipPositioner>
+                      </TooltipRoot>
                     </div>
                   </div>
                 </div>
