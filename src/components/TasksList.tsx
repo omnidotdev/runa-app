@@ -120,10 +120,6 @@ const TasksList = ({
                 index={index}
               >
                 {(provided, snapshot) => (
-                  // TODO: due date dialog on hover + hotkey
-                  // TODO: assignee dialog on hover + hotkey
-                  // TODO: labels dialog on hover + hotkey
-                  // Thoughts for the above: set `taskId` in global store during `onMouseEnter`, use in dialogs for updates
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
@@ -171,7 +167,7 @@ const TasksList = ({
                         }}
                       >
                         <TooltipTrigger asChild>
-                          <div className="-mt-2.5 -mr-2 ml-auto flex items-center gap-1">
+                          <div className="-mt-6 -mr-2 ml-auto flex items-center gap-1">
                             {task.assignees.nodes.length ? (
                               <Assignees
                                 assignees={task.assignees.nodes.map(
