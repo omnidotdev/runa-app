@@ -283,6 +283,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
 
                     <Labels
                       labels={taskLabels.filter((l) => l.checked)}
+                      showFallback={false}
                       className="flex flex-wrap gap-1"
                     />
                   </div>

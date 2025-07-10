@@ -1,4 +1,4 @@
-import { parseDate } from "@ark-ui/react";
+import { parseAbsoluteToLocal } from "@internationalized/date";
 import { format, parseISO } from "date-fns";
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
@@ -47,11 +47,17 @@ const CreateTaskDatePicker = withForm({
           <DatePickerRoot
             positioning={{ sameWidth: true }}
             value={
-              field.state.value.length ? [parseDate(field.state.value)] : []
+              field.state.value.length
+                ? [parseAbsoluteToLocal(field.state.value)]
+                : []
             }
             onValueChange={({ value }) =>
               value.length
-                ? field.handleChange(value[0].toString())
+                ? field.handleChange(
+                    new Date(
+                      value[0].add({ days: 1 }).toString(),
+                    ).toISOString(),
+                  )
                 : field.handleChange("")
             }
           >

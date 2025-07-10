@@ -9,9 +9,12 @@ import type { LabelFragment as Label } from "@/generated/graphql";
 
 interface Props extends ComponentProps<"div"> {
   labels: Label[];
+  showFallback?: boolean;
 }
 
-const Labels = ({ labels, ...rest }: Props) => {
+const Labels = ({ labels, showFallback = true, ...rest }: Props) => {
+  if (!showFallback && !labels.length) return null;
+
   if (!labels.length) return <p className="place-self-center">No labels</p>;
 
   return (

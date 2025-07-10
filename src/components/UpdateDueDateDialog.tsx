@@ -25,6 +25,7 @@ import useForm from "@/lib/hooks/useForm";
 import projectsOptions from "@/lib/options/projects.options";
 import taskOptions from "@/lib/options/task.options";
 import tasksOptions from "@/lib/options/tasks.options";
+import CreateTaskDatePicker from "./tasks/CreateTaskDatePicker";
 
 const UpdateDueDateDialog = () => {
   const { workspaceId, projectId } = useParams({
@@ -63,7 +64,17 @@ const UpdateDueDateDialog = () => {
 
   const form = useForm({
     defaultValues: {
-      dueDate: defaultDueDate ? defaultDueDate.toString() : "",
+      title: "",
+      description: "",
+      labels: [] as {
+        name: string;
+        color: string;
+        checked: boolean;
+        rowId: string;
+      }[],
+      assignees: [] as string[],
+      dueDate: defaultDueDate ? new Date(defaultDueDate).toISOString() : "",
+      columnId: "",
     },
     onSubmit: ({ value: { dueDate }, formApi }) => {
       updateTask({
@@ -108,28 +119,34 @@ const UpdateDueDateDialog = () => {
               form.handleSubmit();
             }}
           >
-            <form.Field
-              name="dueDate"
-              validators={{
-                onChangeAsyncDebounceMs: 300,
-                onChangeAsync: z.string().min(1),
-              }}
-            >
-              {(field) => (
-                <Input
-                  onChange={async (e) => {
-                    try {
-                      const date = await parseHumanRelativeTime(e.target.value);
+            <div className="flex items-center gap-1">
+              <form.Field
+                name="dueDate"
+                validators={{
+                  onChangeAsyncDebounceMs: 300,
+                  onChangeAsync: z.string().min(1),
+                }}
+              >
+                {(field) => (
+                  <Input
+                    onChange={async (e) => {
+                      try {
+                        const date = await parseHumanRelativeTime(
+                          e.target.value,
+                        );
 
-                      field.handleChange(date.toString());
-                    } catch (_error) {
-                      field.handleChange("");
-                    }
-                  }}
-                  placeholder="Try: tomorrow, in 2 days, next wednesday"
-                />
-              )}
-            </form.Field>
+                        field.handleChange(new Date(date).toISOString());
+                      } catch (_error) {
+                        field.handleChange("");
+                      }
+                    }}
+                    placeholder="Try: tomorrow, in 2 days, next wednesday"
+                  />
+                )}
+              </form.Field>
+
+              <CreateTaskDatePicker form={form} />
+            </div>
 
             <form.Subscribe
               selector={(state) => [
