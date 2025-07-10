@@ -5,24 +5,12 @@ import ColorSelector from "@/components/core/ColorSelector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { labelColors } from "@/lib/constants/labelColors";
+import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 import { cn } from "@/lib/utils";
 
 const TaskLabelsForm = withForm({
-  defaultValues: {
-    title: "",
-    description: "",
-    labels: [] as {
-      name: string;
-      color: string;
-      checked: boolean;
-      rowId: string;
-    }[],
-    assignees: [] as string[],
-    dueDate: "",
-    columnId: "",
-    priority: "low",
-  },
+  defaultValues: taskFormDefaults,
   render: ({ form }) => {
     const [newLabel, setNewLabel] = useState({
       name: "",

@@ -14,6 +14,7 @@ import {
   ComboboxRoot,
   ComboboxTrigger,
 } from "@/components/ui/combobox";
+import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 
@@ -34,18 +35,7 @@ interface WorkspaceUser {
 }
 
 const UpdateAssignees = withForm({
-  defaultValues: {
-    title: "",
-    description: "",
-    labels: [] as {
-      name: string;
-      color: string;
-      checked: boolean;
-    }[],
-    assignees: [] as string[],
-    dueDate: "",
-    columnId: "",
-  },
+  defaultValues: taskFormDefaults,
   props: {} as AdditionalProps,
   render: ({ form, comboboxInputProps }) => {
     const { workspaceId } = useParams({

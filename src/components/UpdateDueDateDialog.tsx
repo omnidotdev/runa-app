@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useUpdateTaskMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
+import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
@@ -54,18 +55,8 @@ const UpdateDueDateDialog = () => {
 
   const form = useForm({
     defaultValues: {
-      title: "",
-      description: "",
-      labels: [] as {
-        name: string;
-        color: string;
-        checked: boolean;
-        rowId: string;
-      }[],
-      assignees: [] as string[],
+      ...taskFormDefaults,
       dueDate: defaultDueDate ? new Date(defaultDueDate).toISOString() : "",
-      columnId: "",
-      priority: "",
     },
     onSubmit: ({ value: { dueDate }, formApi }) => {
       updateTask({

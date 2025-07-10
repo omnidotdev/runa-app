@@ -19,6 +19,7 @@ import {
   useDeleteTaskLabelMutation,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
+import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
@@ -72,13 +73,8 @@ const UpdateTaskLabelsDialog = () => {
 
   const form = useForm({
     defaultValues: {
-      title: "",
-      description: "",
+      ...taskFormDefaults,
       labels: defaultLabels,
-      assignees: [] as string[],
-      dueDate: "",
-      columnId: "",
-      priority: "",
     },
     onSubmit: async ({ value, formApi }) => {
       const allTaskLabels = value.labels.filter((l) => l.checked);

@@ -9,6 +9,7 @@ import {
   SelectItemText,
   SelectTrigger,
 } from "@/components/ui/select";
+import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
@@ -32,20 +33,7 @@ const priorityConfig = [
 ];
 
 const CreateTaskDatePicker = withForm({
-  defaultValues: {
-    title: "",
-    description: "",
-    labels: [] as {
-      name: string;
-      color: string;
-      checked: boolean;
-      rowId: string;
-    }[],
-    assignees: [] as string[],
-    dueDate: "",
-    columnId: "",
-    priority: "low",
-  },
+  defaultValues: taskFormDefaults,
   render: ({ form }) => {
     const priorityCollection = createListCollection({
       items: [

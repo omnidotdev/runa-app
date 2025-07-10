@@ -18,6 +18,7 @@ import {
   useDeleteAssigneeMutation,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
+import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
@@ -71,16 +72,8 @@ const UpdateAssigneesDialog = () => {
 
   const form = useForm({
     defaultValues: {
-      title: "",
-      description: "",
-      labels: [] as {
-        name: string;
-        color: string;
-        checked: boolean;
-      }[],
+      ...taskFormDefaults,
       assignees: defaultAssignees ?? [],
-      dueDate: "",
-      columnId: "",
     },
     onSubmit: ({ value: { assignees }, formApi }) => {
       for (const assignee of assignees) {

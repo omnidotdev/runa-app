@@ -24,23 +24,11 @@ import {
   DatePickerViewControl,
   DatePickerViewTrigger,
 } from "@/components/ui/date-picker";
+import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 
 const CreateTaskDatePicker = withForm({
-  defaultValues: {
-    title: "",
-    description: "",
-    labels: [] as {
-      name: string;
-      color: string;
-      checked: boolean;
-      rowId: string;
-    }[],
-    assignees: [] as string[],
-    dueDate: "",
-    columnId: "",
-    priority: "low",
-  },
+  defaultValues: taskFormDefaults,
   render: ({ form }) => {
     return (
       <form.Field name="dueDate">

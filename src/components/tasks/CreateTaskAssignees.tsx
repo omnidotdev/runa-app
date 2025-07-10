@@ -13,25 +13,13 @@ import {
   SelectItemText,
   SelectTrigger,
 } from "@/components/ui/select";
+import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 
 const CreateTaskAssignees = withForm({
-  defaultValues: {
-    title: "",
-    description: "",
-    labels: [] as {
-      name: string;
-      color: string;
-      checked: boolean;
-      rowId: string;
-    }[],
-    assignees: [] as string[],
-    dueDate: "",
-    columnId: "",
-    priority: "low",
-  },
+  defaultValues: taskFormDefaults,
   render: ({ form }) => {
     const { workspaceId } = useParams({ strict: false });
 

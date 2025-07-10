@@ -34,6 +34,7 @@ import {
   useCreateTaskMutation,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
+import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
@@ -93,13 +94,9 @@ const CreateTaskDialog = ({ columnId }: Props) => {
 
   const form = useForm({
     defaultValues: {
-      title: "",
-      description: "",
+      ...taskFormDefaults,
       labels: projectLabels,
-      assignees: [] as string[],
-      dueDate: "",
       columnId: columnId ?? defaultColumnId,
-      priority: "low",
     },
     onSubmit: async ({ value, formApi }) => {
       // TODO: dynamic with auth
