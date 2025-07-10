@@ -3,8 +3,9 @@ import { notFound, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import {
   Grid2X2Icon,
-  ListCollapse,
   ListIcon,
+  Maximize2Icon,
+  Minimize2Icon,
   SearchIcon,
   Settings2,
 } from "lucide-react";
@@ -228,24 +229,6 @@ function ProjectPage() {
                 </Button>
               </Tooltip>
 
-              {project?.viewMode === "list" && (
-                <Tooltip
-                  positioning={{ placement: "bottom" }}
-                  tooltip={{
-                    className: "bg-background text-foreground border",
-                    children: isForceClosed ? "Expand List" : "Collapse List",
-                  }}
-                >
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={isForceClosed ? handleOpenAll : handleCloseAll}
-                  >
-                    <ListCollapse />
-                  </Button>
-                </Tooltip>
-              )}
-
               <Tooltip
                 positioning={{ placement: "bottom" }}
                 tooltip={{
@@ -267,6 +250,24 @@ function ProjectPage() {
               </Tooltip>
 
               <Filter />
+
+              {project?.viewMode === "list" && (
+                <Tooltip
+                  positioning={{ placement: "bottom" }}
+                  tooltip={{
+                    className: "bg-background text-foreground border",
+                    children: isForceClosed ? "Expand List" : "Collapse List",
+                  }}
+                >
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={isForceClosed ? handleOpenAll : handleCloseAll}
+                  >
+                    {isForceClosed ? <Maximize2Icon /> : <Minimize2Icon />}
+                  </Button>
+                </Tooltip>
+              )}
             </div>
           </div>
         </div>
