@@ -39,7 +39,6 @@ export const Route = createFileRoute({
 
 function RouteComponent() {
   const { workspaceId, projectId } = Route.useParams();
-  const { queryClient } = Route.useRouteContext();
 
   const [editProject, setEditProject] = useState(false);
 
@@ -49,11 +48,10 @@ function RouteComponent() {
   });
 
   const { mutate: updateProject } = useUpdateProjectMutation({
-    onSettled: () => {
-      reset();
-
-      return queryClient.invalidateQueries();
+    meta: {
+      invalidates: [["all"]],
     },
+    onSettled: () => reset(),
   });
 
   const { Field, Subscribe, handleSubmit, reset } = useForm({

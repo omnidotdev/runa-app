@@ -223,10 +223,7 @@ function TaskPage() {
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
-      invalidates: [
-        taskOptions({ rowId: taskId }).queryKey,
-        projectOptions({ rowId: projectId }).queryKey,
-      ],
+      invalidates: [["all"]],
     },
   });
   const { mutate: addComment } = useCreatePostMutation({
@@ -236,18 +233,12 @@ function TaskPage() {
   });
   const { mutate: addNewAssignee } = useCreateAssigneeMutation({
     meta: {
-      invalidates: [
-        taskOptions({ rowId: taskId }).queryKey,
-        projectOptions({ rowId: projectId }).queryKey,
-      ],
+      invalidates: [["all"]],
     },
   });
   const { mutate: removeAssignee } = useDeleteAssigneeMutation({
     meta: {
-      invalidates: [
-        taskOptions({ rowId: taskId }).queryKey,
-        projectOptions({ rowId: projectId }).queryKey,
-      ],
+      invalidates: [["all"]],
     },
   });
 

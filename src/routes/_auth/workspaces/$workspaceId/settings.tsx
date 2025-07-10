@@ -48,7 +48,6 @@ export const Route = createFileRoute({
 function SettingsPage() {
   const { workspaceId } = Route.useParams();
   const navigate = Route.useNavigate();
-  const { queryClient } = Route.useRouteContext();
 
   const [selectedMember, setSelectedMember] = useState<{
     name: string;
@@ -111,11 +110,12 @@ function SettingsPage() {
     });
 
   const { mutate: updateProject } = useUpdateWorkspaceMutation({
+    meta: {
+      invalidates: [["all"]],
+    },
     onSettled: () => {
       reset();
       setEditWorkspace(false);
-
-      return queryClient.invalidateQueries();
     },
   });
 

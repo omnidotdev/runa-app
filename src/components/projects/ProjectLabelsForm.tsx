@@ -25,7 +25,6 @@ import {
 } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
 import labelsOptions from "@/lib/options/labels.options";
-import getQueryClient from "@/lib/util/getQueryClient";
 import ColorSelector from "../core/ColorSelector";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -69,8 +68,6 @@ const defaultColumn: Partial<ColumnDef<Label>> = {
 };
 
 const ProjectLabelsForm = () => {
-  const queryClient = getQueryClient();
-
   const { projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/settings",
   });
@@ -80,11 +77,21 @@ const ProjectLabelsForm = () => {
     select: (data) => data?.labels?.nodes,
   });
 
-  const onSettled = () => queryClient.invalidateQueries();
-
-  const { mutate: createLabel } = useCreateLabelMutation({ onSettled });
-  const { mutate: updateLabel } = useUpdateLabelMutation({ onSettled });
-  const { mutate: deleteLabel } = useDeleteLabelMutation({ onSettled });
+  const { mutate: createLabel } = useCreateLabelMutation({
+    meta: {
+      invalidates: [["all"]],
+    },
+  });
+  const { mutate: updateLabel } = useUpdateLabelMutation({
+    meta: {
+      invalidates: [["all"]],
+    },
+  });
+  const { mutate: deleteLabel } = useDeleteLabelMutation({
+    meta: {
+      invalidates: [["all"]],
+    },
+  });
 
   const { Field, Subscribe, handleSubmit } = useForm({
     defaultValues: {

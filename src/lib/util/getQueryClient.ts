@@ -33,12 +33,24 @@ const makeQueryClient = () => {
     mutationCache: new MutationCache({
       onSettled: (_data, _error, _variables, _context, mutation) => {
         queryClient.invalidateQueries({
-          predicate: (query) =>
+          predicate: (query) => {
+            // if `all` is included in the pattern, invalidate entire cache
+            if (
+              mutation.meta?.invalidates?.some((queryKey) =>
+                queryKey.includes("all"),
+              )
+            ) {
+              return true;
+            }
+
             // invalidate all matching tags at once
             // or nothing if no meta is provided
-            mutation.meta?.invalidates?.some((queryKey) =>
-              matchQuery({ queryKey }, query),
-            ) ?? false,
+            return (
+              mutation.meta?.invalidates?.some((queryKey) =>
+                matchQuery({ queryKey }, query),
+              ) ?? false
+            );
+          },
         });
       },
     }),
