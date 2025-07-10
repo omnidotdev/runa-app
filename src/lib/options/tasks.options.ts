@@ -4,6 +4,7 @@ import { useTasksQuery } from "@/generated/graphql";
 
 import type {
   InputMaybe,
+  TasksQueryVariables,
   TaskToManyAssigneeFilter,
   TaskToManyTaskLabelFilter,
 } from "@/generated/graphql";
@@ -22,24 +23,21 @@ const tasksOptions = ({
   assignees,
   labels,
   priorities,
-}: Options) =>
-  queryOptions({
-    queryKey: useTasksQuery.getKey({
-      projectId,
-      search,
-      assignees,
-      labels,
-      priorities,
-    }),
-    queryFn: useTasksQuery.fetcher({
-      projectId,
-      search,
-      assignees,
-      labels,
-      priorities,
-    }),
+}: Options) => {
+  const variables: TasksQueryVariables = {
+    projectId,
+    search,
+    assignees,
+    labels,
+    priorities,
+  };
+
+  return queryOptions({
+    queryKey: useTasksQuery.getKey(variables),
+    queryFn: useTasksQuery.fetcher(variables),
     // TODO: discuss proper refetch interval
     refetchInterval: 3000,
   });
+};
 
 export default tasksOptions;
