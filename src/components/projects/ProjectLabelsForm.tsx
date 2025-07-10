@@ -9,6 +9,9 @@ import {
 import { PlusIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import ColorSelector from "@/components/core/ColorSelector";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -25,9 +28,6 @@ import {
 } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
 import labelsOptions from "@/lib/options/labels.options";
-import ColorSelector from "../core/ColorSelector";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 
 import type { ColumnDef, RowData } from "@tanstack/react-table";
 import type { LabelFragment as Label } from "@/generated/graphql";

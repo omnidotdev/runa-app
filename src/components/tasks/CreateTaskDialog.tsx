@@ -6,6 +6,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
+import Labels from "@/components/Labels";
 import CreateTaskAssignees from "@/components/tasks/CreateTaskAssignees";
 import CreateTaskDatePicker from "@/components/tasks/CreateTaskDatePicker";
 import TaskColumnForm from "@/components/tasks/TaskColumnForm";
@@ -38,7 +39,6 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
-import Labels from "../Labels";
 
 interface Props {
   columnId?: string;
