@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useSearch } from "@tanstack/react-router";
+import { useParams } from "@tanstack/react-router";
 import * as dateFns from "date-fns";
 // @ts-ignore no declaration file
 import { createParseHumanRelativeTime } from "parse-human-relative-time/date-fns.js";
@@ -22,29 +22,23 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
-import projectsOptions from "@/lib/options/projects.options";
 import taskOptions from "@/lib/options/task.options";
-import tasksOptions from "@/lib/options/tasks.options";
 import CreateTaskDatePicker from "./tasks/CreateTaskDatePicker";
 
 const UpdateDueDateDialog = () => {
-  const { workspaceId, projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
-  });
-
-  const { search } = useSearch({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
-  });
+  const { taskId: paramsTaskId } = useParams({ strict: false });
 
   const parseHumanRelativeTime = createParseHumanRelativeTime(dateFns);
 
-  const { taskId } = useTaskStore();
+  const { taskId: storeTaskId } = useTaskStore();
 
   const { setTaskId } = useTaskStore();
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.UpdateDueDate,
   });
+
+  const taskId = paramsTaskId ?? storeTaskId;
 
   const { data: defaultDueDate } = useQuery({
     ...taskOptions({ rowId: taskId! }),
@@ -54,11 +48,7 @@ const UpdateDueDateDialog = () => {
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
-      invalidates: [
-        taskOptions({ rowId: taskId! }).queryKey,
-        tasksOptions({ projectId, search }).queryKey,
-        projectsOptions({ workspaceId, search }).queryKey,
-      ],
+      invalidates: [["all"]],
     },
   });
 

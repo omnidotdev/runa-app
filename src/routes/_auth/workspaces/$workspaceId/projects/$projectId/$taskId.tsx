@@ -10,11 +10,11 @@ import {
   CircleDotIcon,
   CircleIcon,
   ClockIcon,
+  EditIcon,
   EyeIcon,
   InfoIcon,
   MessageSquareIcon,
   MinusCircleIcon,
-  MoreHorizontalIcon,
   SendIcon,
   TagIcon,
   TypeIcon,
@@ -27,19 +27,13 @@ import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import Labels from "@/components/Labels";
 import NotFound from "@/components/layout/NotFound";
-import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
-import UpdateAssignees from "@/components/tasks/UpdateAssignees";
-import UpdateDueDate from "@/components/tasks/UpdateDueDate";
+import UpdateAssigneesDialog from "@/components/UpdateAssigneesDialog";
+import UpdateDueDateDialog from "@/components/UpdateDueDateDialog";
+import UpdateTaskLabelsDialog from "@/components/UpdateTaskLabelsDialog";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
-import {
-  PopoverContent,
-  PopoverPositioner,
-  PopoverRoot,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   createListCollection,
   Select,
@@ -49,16 +43,18 @@ import {
   SelectItemText,
   SelectTrigger,
 } from "@/components/ui/select";
+import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import {
-  useCreateAssigneeMutation,
-  useCreateLabelMutation,
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   useCreatePostMutation,
-  useCreateTaskLabelMutation,
-  useDeleteAssigneeMutation,
-  useDeleteTaskLabelMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
-import useForm from "@/lib/hooks/useForm";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
@@ -174,8 +170,6 @@ const PriorityBadge = ({ priority }: { priority: string }) => {
 function TaskPage() {
   const { workspaceId, projectId, taskId } = Route.useParams();
 
-  const { queryClient } = Route.useRouteContext();
-
   const commentEditorApiRef = useRef<EditorApi | null>(null);
 
   const { data: task } = useSuspenseQuery({
@@ -187,19 +181,6 @@ function TaskPage() {
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
-
-  const taskLabelIds =
-    task?.taskLabels?.nodes?.map((label) => label.label?.rowId!) ?? [];
-
-  const defaultLabels =
-    project?.labels?.nodes?.map((label) => ({
-      ...label,
-      checked: taskLabelIds.includes(label.rowId),
-    })) ?? [];
-
-  const defaultAssignees = task?.assignees?.nodes?.map(
-    (assignee) => assignee.user?.rowId!,
-  );
 
   const columnCollection = createListCollection({
     items:
@@ -217,10 +198,6 @@ function TaskPage() {
     ],
   });
 
-  const { mutateAsync: updateProjectLabel } = useCreateLabelMutation();
-  const { mutateAsync: deleteTaskLabel } = useDeleteTaskLabelMutation();
-  const { mutateAsync: createTaskLabel } = useCreateTaskLabelMutation();
-
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
       invalidates: [["all"]],
@@ -229,16 +206,6 @@ function TaskPage() {
   const { mutate: addComment } = useCreatePostMutation({
     meta: {
       invalidates: [taskOptions({ rowId: taskId }).queryKey],
-    },
-  });
-  const { mutate: addNewAssignee } = useCreateAssigneeMutation({
-    meta: {
-      invalidates: [["all"]],
-    },
-  });
-  const { mutate: removeAssignee } = useDeleteAssigneeMutation({
-    meta: {
-      invalidates: [["all"]],
     },
   });
 
@@ -268,108 +235,16 @@ function TaskPage() {
     }
   };
 
-  const updateLabelsForm = useForm({
-    defaultValues: {
-      title: "",
-      description: "",
-      labels: defaultLabels,
-      assignees: [] as string[],
-      dueDate: "",
-      columnId: "",
-    },
-    onSubmit: async ({ value, formApi }) => {
-      const allTaskLabels = value.labels.filter((l) => l.checked);
-
-      const newLabels = value.labels.filter((l) => l.rowId === "pending");
-
-      // Add all new labels to project labels
-      const data = await Promise.all(
-        newLabels.map((label) =>
-          updateProjectLabel({
-            input: {
-              label: {
-                name: label.name,
-                color: label.color,
-                projectId,
-              },
-            },
-          }),
-        ),
-      );
-
-      const newlyAddedLabels = data.map(
-        (mutation) => mutation.createLabel?.label!,
-      );
-      const restOfTaskLabels = allTaskLabels.filter(
-        (label) => label.rowId !== "pending",
-      );
-
-      const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
-
-      const currentTaskLabelIds =
-        task?.taskLabels?.nodes?.map((l) => l.rowId) ?? [];
-
-      // delete all current labels and add all checked task labels. This is to provide ease of functionality rather than needing to compare on each current label to see if it is still valid.
-      await Promise.all([
-        ...currentTaskLabelIds.map((rowId) => deleteTaskLabel({ rowId })),
-        ...newTaskLabels.map((label) =>
-          createTaskLabel({
-            input: {
-              taskLabel: {
-                labelId: label.rowId,
-                taskId: taskId!,
-              },
-            },
-          }),
-        ),
-      ]);
-
-      queryClient.invalidateQueries();
-      formApi.reset();
-    },
+  const { setIsOpen: setIsUpdateAssigneesDialogOpen } = useDialogStore({
+    type: DialogType.UpdateAssignees,
   });
 
-  const updateAssigneesForm = useForm({
-    defaultValues: {
-      title: "",
-      description: "",
-      labels: [] as {
-        name: string;
-        color: string;
-        checked: boolean;
-      }[],
-      assignees: defaultAssignees ?? [],
-      dueDate: "",
-      columnId: "",
-    },
-    onSubmit: ({ value: { assignees } }) => {
-      for (const assignee of assignees) {
-        // Add any new assignees
-        if (!defaultAssignees?.includes(assignee)) {
-          addNewAssignee({
-            input: {
-              assignee: {
-                taskId,
-                userId: assignee,
-              },
-            },
-          });
-        }
-      }
+  const { setIsOpen: setIsUpdateTaskLabelsDialogOpen } = useDialogStore({
+    type: DialogType.UpdateTaskLabels,
+  });
 
-      if (defaultAssignees?.length) {
-        for (const assignee of defaultAssignees) {
-          // remove any assignees that are no longer assigned
-          if (!assignees.includes(assignee)) {
-            removeAssignee({
-              rowId: task?.assignees?.nodes?.find(
-                (a) => a?.user?.rowId === assignee,
-              )?.rowId!,
-            });
-          }
-        }
-      }
-    },
+  const { setIsOpen: setIsUpdateDueDateDialogOpen } = useDialogStore({
+    type: DialogType.UpdateDueDate,
   });
 
   const taskIndex = project?.columns?.nodes
@@ -602,55 +477,28 @@ function TaskPage() {
                       Assignees
                     </h3>
                   </div>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      updateAssigneesForm.handleSubmit();
-                    }}
-                  >
-                    <PopoverRoot
-                      positioning={{ placement: "bottom-end", gutter: -2 }}
-                      onOpenChange={({ open }) => {
-                        if (!open) {
-                          updateAssigneesForm.reset();
-                        }
-                      }}
-                    >
-                      <PopoverTrigger asChild>
-                        <Button variant="ghost" className="size-6">
-                          <MoreHorizontalIcon className="size-3" />
-                        </Button>
-                      </PopoverTrigger>
+                  <TooltipRoot positioning={{ placement: "top" }}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => setIsUpdateAssigneesDialogOpen(true)}
+                      >
+                        <EditIcon />
+                      </Button>
+                    </TooltipTrigger>
 
-                      <PopoverPositioner>
-                        <PopoverContent className="flex min-w-80 flex-col overflow-hidden p-0">
-                          <UpdateAssignees form={updateAssigneesForm} />
-
-                          <updateAssigneesForm.Subscribe
-                            selector={(state) => [
-                              state.canSubmit,
-                              state.isSubmitting,
-                              state.isDirty,
-                            ]}
-                          >
-                            {([canSubmit, isSubmitting, isDirty]) => (
-                              <Button
-                                type="submit"
-                                disabled={
-                                  !canSubmit || isSubmitting || !isDirty
-                                }
-                                size="sm"
-                                className="rounded-t-none"
-                              >
-                                Update Assignees
-                              </Button>
-                            )}
-                          </updateAssigneesForm.Subscribe>
-                        </PopoverContent>
-                      </PopoverPositioner>
-                    </PopoverRoot>
-                  </form>
+                    <TooltipPositioner>
+                      <TooltipContent className="border bg-background text-foreground">
+                        <div className="inline-flex">
+                          Update Assignees
+                          <div className="ml-2 flex items-center gap-0.5">
+                            <SidebarMenuShotcut>A</SidebarMenuShotcut>
+                          </div>
+                        </div>
+                      </TooltipContent>
+                    </TooltipPositioner>
+                  </TooltipRoot>
                 </CardHeader>
                 <CardContent className="space-y-4 p-4">
                   {task?.assignees?.nodes?.length ? (
@@ -688,49 +536,28 @@ function TaskPage() {
                       Labels
                     </h3>
                   </div>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      updateLabelsForm.handleSubmit();
-                    }}
-                  >
-                    <PopoverRoot
-                      positioning={{ placement: "bottom-end", gutter: -2 }}
-                    >
-                      <PopoverTrigger asChild>
-                        <Button variant="ghost" className="size-6">
-                          <MoreHorizontalIcon className="size-3" />
-                        </Button>
-                      </PopoverTrigger>
+                  <TooltipRoot positioning={{ placement: "top" }}>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => setIsUpdateTaskLabelsDialogOpen(true)}
+                      >
+                        <EditIcon />
+                      </Button>
+                    </TooltipTrigger>
 
-                      <PopoverPositioner>
-                        <PopoverContent className="flex min-w-80 flex-col p-0">
-                          <TaskLabelsForm form={updateLabelsForm} />
-
-                          <updateLabelsForm.Subscribe
-                            selector={(state) => [
-                              state.canSubmit,
-                              state.isSubmitting,
-                              state.isDirty,
-                            ]}
-                          >
-                            {([canSubmit, isSubmitting, isDirty]) => (
-                              <Button
-                                type="submit"
-                                disabled={
-                                  !canSubmit || isSubmitting || !isDirty
-                                }
-                                className="rounded-t-none disabled:bg-muted disabled:text-muted-foreground"
-                              >
-                                Update Labels
-                              </Button>
-                            )}
-                          </updateLabelsForm.Subscribe>
-                        </PopoverContent>
-                      </PopoverPositioner>
-                    </PopoverRoot>
-                  </form>
+                    <TooltipPositioner>
+                      <TooltipContent className="border bg-background text-foreground">
+                        <div className="inline-flex">
+                          Update Labels
+                          <div className="ml-2 flex items-center gap-0.5">
+                            <SidebarMenuShotcut>L</SidebarMenuShotcut>
+                          </div>
+                        </div>
+                      </TooltipContent>
+                    </TooltipPositioner>
+                  </TooltipRoot>
                 </CardHeader>
                 <CardContent className="p-4">
                   <Labels
@@ -770,7 +597,30 @@ function TaskPage() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <UpdateDueDate />
+                    <TooltipRoot positioning={{ placement: "top" }}>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="group h-fit py-0 font-normal text-base-500 hover:bg-transparent has-[>svg]:px-0 dark:text-base-400"
+                          onClick={() => setIsUpdateDueDateDialogOpen(true)}
+                        >
+                          Due Date
+                          <EditIcon className="size-3.5" />
+                        </Button>
+                      </TooltipTrigger>
+
+                      <TooltipPositioner>
+                        <TooltipContent className="border bg-background text-foreground">
+                          <div className="inline-flex">
+                            Update Due Date
+                            <div className="ml-2 flex items-center gap-0.5">
+                              <SidebarMenuShotcut>D</SidebarMenuShotcut>
+                            </div>
+                          </div>
+                        </TooltipContent>
+                      </TooltipPositioner>
+                    </TooltipRoot>
+
                     {task?.dueDate ? (
                       <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
                         <CalendarIcon className="size-3" />
@@ -803,6 +653,10 @@ function TaskPage() {
           </div>
         </div>
       </div>
+
+      <UpdateAssigneesDialog />
+      <UpdateDueDateDialog />
+      <UpdateTaskLabelsDialog />
     </div>
   );
 }

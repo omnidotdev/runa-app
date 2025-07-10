@@ -25,11 +25,13 @@ import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 
 const UpdateAssigneesDialog = () => {
-  const { projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  const { projectId, taskId: paramsTaskId } = useParams({
+    strict: false,
   });
 
-  const { taskId, setTaskId } = useTaskStore();
+  const { taskId: storeTaskId, setTaskId } = useTaskStore();
+
+  const taskId = paramsTaskId ?? storeTaskId;
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.UpdateAssignees,
@@ -54,7 +56,7 @@ const UpdateAssigneesDialog = () => {
     meta: {
       invalidates: [
         taskOptions({ rowId: taskId! }).queryKey,
-        projectOptions({ rowId: projectId }).queryKey,
+        projectOptions({ rowId: projectId! }).queryKey,
       ],
     },
   });
@@ -62,7 +64,7 @@ const UpdateAssigneesDialog = () => {
     meta: {
       invalidates: [
         taskOptions({ rowId: taskId! }).queryKey,
-        projectOptions({ rowId: projectId }).queryKey,
+        projectOptions({ rowId: projectId! }).queryKey,
       ],
     },
   });

@@ -29,11 +29,13 @@ import getQueryClient from "@/lib/util/getQueryClient";
 const UpdateTaskLabelsDialog = () => {
   const queryClient = getQueryClient();
 
-  const { projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  const { projectId, taskId: paramsTaskId } = useParams({
+    strict: false,
   });
 
-  const { taskId, setTaskId } = useTaskStore();
+  const { taskId: storeTaskId, setTaskId } = useTaskStore();
+
+  const taskId = paramsTaskId ?? storeTaskId;
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.UpdateTaskLabels,
@@ -51,7 +53,7 @@ const UpdateTaskLabelsDialog = () => {
   });
 
   const { data: project } = useSuspenseQuery({
-    ...projectOptions({ rowId: projectId }),
+    ...projectOptions({ rowId: projectId! }),
     select: (data) => data?.project,
   });
 
@@ -90,7 +92,7 @@ const UpdateTaskLabelsDialog = () => {
               label: {
                 name: label.name,
                 color: label.color,
-                projectId,
+                projectId: projectId!,
               },
             },
           }),
