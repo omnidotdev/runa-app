@@ -52,55 +52,57 @@ const TaskLabelsForm = withForm({
                       }));
                     }}
                   />
-                  <Input
-                    className="rounded-none border-0 border-l shadow-none focus-visible:ring-0"
-                    placeholder="Add new label..."
-                    value={newLabel.name}
-                    onChange={(e) =>
-                      setNewLabel((prev) => ({
-                        ...prev,
-                        name: e.target.value,
-                      }))
-                    }
-                    onKeyDown={(e) => {
-                      if (
-                        e.key === "Enter" &&
-                        newLabel.name &&
-                        newLabel.color
-                      ) {
-                        e.preventDefault();
+                  <div className="flex w-full items-center justify-between">
+                    <Input
+                      className="rounded-none border-0 border-l shadow-none focus-visible:ring-0"
+                      placeholder="Add new label..."
+                      value={newLabel.name}
+                      onChange={(e) =>
+                        setNewLabel((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === "Enter" &&
+                          newLabel.name &&
+                          newLabel.color
+                        ) {
+                          e.preventDefault();
 
+                          field.pushValue({
+                            name: newLabel.name,
+                            color: newLabel.color,
+                            rowId: "pending",
+                            checked: true,
+                          });
+
+                          setNewLabel({
+                            name: "",
+                            color: "blue",
+                          });
+                        }
+                      }}
+                    />
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={!newLabel.name || !newLabel.color}
+                      className="mr-1 h-7 w-7"
+                      onClick={() =>
                         field.pushValue({
                           name: newLabel.name,
                           color: newLabel.color,
                           rowId: "pending",
                           checked: true,
-                        });
-
-                        setNewLabel({
-                          name: "",
-                          color: "blue",
-                        });
+                        })
                       }
-                    }}
-                  />
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    disabled={!newLabel.name || !newLabel.color}
-                    className="absolute right-1"
-                    onClick={() =>
-                      field.pushValue({
-                        name: newLabel.name,
-                        color: newLabel.color,
-                        rowId: "pending",
-                        checked: true,
-                      })
-                    }
-                  >
-                    <PlusIcon className="size-4" />
-                  </Button>
+                    >
+                      <PlusIcon className="size-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
 

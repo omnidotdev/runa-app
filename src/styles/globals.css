@@ -219,7 +219,7 @@ html.dark {
   .tiptap p.is-empty::before {
     content: attr(data-placeholder);
     float: left;
-    color: var(--color-muted-foreground);
+    color: var(--base-400);
     pointer-events: none;
     height: 0;
   }

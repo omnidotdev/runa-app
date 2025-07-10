@@ -6,7 +6,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { PlusIcon, Trash2Icon } from "lucide-react";
+import { PlusIcon, TagIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import ColorSelector from "@/components/core/ColorSelector";
@@ -164,38 +164,42 @@ const ProjectLabelsForm = () => {
       columnHelper.accessor("rowId", {
         header: "",
         cell: ({ row }) => (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="ml-auto flex gap-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
-            onClick={() =>
-              deleteLabel({
-                rowId: row.original.rowId!,
-              })
-            }
-          >
-            <Trash2Icon className="size-4" />
-          </Button>
+          <div className="flex items-center justify-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-base-400 hover:text-red-500 dark:hover:text-red-400"
+              onClick={() =>
+                deleteLabel({
+                  rowId: row.original.rowId!,
+                })
+              }
+            >
+              <Trash2Icon className="size-4" />
+            </Button>
+          </div>
         ),
         footer: () => (
-          <Subscribe
-            selector={(state) => [
-              state.canSubmit,
-              state.isSubmitting,
-              state.isDirty,
-            ]}
-          >
-            {([canSubmit, isSubmitting, isDirty]) => (
-              <Button
-                size="icon"
-                type="submit"
-                className="ml-auto flex gap-1"
-                disabled={!canSubmit || isSubmitting || !isDirty}
-              >
-                <PlusIcon className="size-4" />
-              </Button>
-            )}
-          </Subscribe>
+          <div className="flex items-center justify-center">
+            <Subscribe
+              selector={(state) => [
+                state.canSubmit,
+                state.isSubmitting,
+                state.isDirty,
+              ]}
+            >
+              {([canSubmit, isSubmitting, isDirty]) => (
+                <Button
+                  size="icon"
+                  type="submit"
+                  className="h-7 w-7"
+                  disabled={!canSubmit || isSubmitting || !isDirty}
+                >
+                  <PlusIcon className="size-4" />
+                </Button>
+              )}
+            </Subscribe>
+          </div>
         ),
       }),
     ],
@@ -220,9 +224,11 @@ const ProjectLabelsForm = () => {
   });
 
   return (
-    <div className="mt-8 flex flex-col gap-3">
-      <h2 className="block font-medium text-base-700 text-sm dark:text-base-300">
+    <div className="flex flex-col gap-3">
+      <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
+        <TagIcon className="size-4" />
         Project Labels
+        <span className="text-base-400">({labels?.length})</span>
       </h2>
 
       <form
@@ -236,16 +242,17 @@ const ProjectLabelsForm = () => {
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="divide-x">
-                {headerGroup.headers.map((header) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header, index) => (
                   <TableHead
                     key={header.id}
+                    className={index < 1 ? "border-border border-r" : ""}
                     style={{
                       width:
                         header.id === "color"
                           ? "200px"
                           : header.id === "rowId"
-                            ? "32px"
+                            ? "50px"
                             : "auto",
                     }}
                   >
@@ -266,10 +273,12 @@ const ProjectLabelsForm = () => {
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className="divide-x"
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                {row.getVisibleCells().map((cell, index) => (
+                  <TableCell
+                    key={cell.id}
+                    className={index < 1 ? "border-border border-r" : ""}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -279,9 +288,12 @@ const ProjectLabelsForm = () => {
 
           <TableFooter>
             {table.getFooterGroups().map((footerGroup) => (
-              <TableRow key={footerGroup.id} className="divide-x">
-                {footerGroup.headers.map((header) => (
-                  <TableCell key={header.id}>
+              <TableRow key={footerGroup.id}>
+                {footerGroup.headers.map((header, index) => (
+                  <TableCell
+                    key={header.id}
+                    className={index < 1 ? "border-border border-r" : ""}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(

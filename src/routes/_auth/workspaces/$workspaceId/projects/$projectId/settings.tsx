@@ -1,15 +1,13 @@
 import { useForm } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound } from "@tanstack/react-router";
-import { ArrowLeft, Edit } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 
 import Link from "@/components/core/Link";
+import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
 import ProjectLabelsForm from "@/components/projects/ProjectLabelsForm";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
@@ -40,8 +38,6 @@ export const Route = createFileRoute({
 function RouteComponent() {
   const { workspaceId, projectId } = Route.useParams();
 
-  const [editProject, setEditProject] = useState(false);
-
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
@@ -51,10 +47,10 @@ function RouteComponent() {
     meta: {
       invalidates: [["all"]],
     },
-    onSettled: () => reset(),
+    onSettled: () => form.reset(),
   });
 
-  const { Field, Subscribe, handleSubmit, reset } = useForm({
+  const form = useForm({
     defaultValues: {
       name: project?.name || "",
       prefix: project?.prefix || "",
@@ -72,8 +68,10 @@ function RouteComponent() {
     },
   });
 
+  const [nameError, setNameError] = useState<string | null>(null);
+
   return (
-    <div className="relative h-full p-6">
+    <div className="no-scrollbar relative h-full overflow-auto p-6">
       <Link
         to="/workspaces/$workspaceId/projects/$projectId"
         className="inset-0 flex w-fit justify-start"
@@ -84,130 +82,66 @@ function RouteComponent() {
         Back to Project
       </Link>
 
-      <div className="mt-4 flex flex-col gap-6 p-8">
+      <div className="flex flex-col gap-12 p-8">
         <h1 className="text-2xl">Project Settings</h1>
 
-        <div className="flex flex-col gap-3 rounded-lg">
-          <div className="flex items-center justify-between">
-            <h2 className="block font-medium text-base-700 text-sm dark:text-base-300">
-              Project Details
-            </h2>
+        <div className="flex flex-col gap-3">
+          <RichTextEditor
+            defaultContent={project?.name}
+            className="min-h-0 border-0 bg-transparent p-0 text-2xl text-base-600 dark:bg-transparent dark:text-base-400"
+            skeletonClassName="h-8"
+            onUpdate={({ editor }) => {
+              const text = editor.getText().trim();
 
-            <Tooltip tooltip="Edit project details">
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Edit project details"
-                onClick={() => setEditProject((prev) => !prev)}
-              >
-                <Edit />
-              </Button>
-            </Tooltip>
-          </div>
+              if (text.length < 3) {
+                setNameError("Project name must be at least 3 characters.");
+                return;
+              }
 
-          <form
-            className="flex flex-col gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleSubmit();
+              setNameError(null);
+              updateProject({
+                rowId: projectId,
+                patch: { name: text },
+              });
             }}
-          >
-            <Field name="name">
-              {(field) => (
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="mb-1 block font-medium text-base-700 text-sm dark:text-base-300"
-                  >
-                    Name
-                  </label>
-                  <Input
-                    id="name"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Runa"
-                    className="disabled:opacity-100"
-                    disabled={!editProject}
-                  />
-                </div>
-              )}
-            </Field>
+          />
 
-            <Field name="prefix">
-              {(field) => (
-                <div>
-                  <label
-                    htmlFor="prefix"
-                    className="mb-1 block font-medium text-base-700 text-sm dark:text-base-300"
-                  >
-                    Prefix
-                  </label>
-                  <Input
-                    id="prefix"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="PROJ"
-                    className="disabled:opacity-100"
-                    disabled={!editProject}
-                  />
-                </div>
-              )}
-            </Field>
+          {nameError && (
+            <p className="mt-1 text-red-500 text-sm">{nameError}</p>
+          )}
 
-            <Field name="description">
-              {(field) => (
-                <div>
-                  <label
-                    htmlFor="description"
-                    className="mb-1 block font-medium text-base-700 text-sm dark:text-base-300"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    id="description"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    rows={4}
-                    className="w-full resize-none rounded-md border border-input bg-transparent p-3 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:font-medium file:text-foreground file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                    disabled={!editProject}
-                  />
-                </div>
-              )}
-            </Field>
+          <RichTextEditor
+            defaultContent={project?.prefix || ""}
+            className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
+            placeholder="Add a prefix..."
+            skeletonClassName="h-8"
+            onUpdate={({ editor }) =>
+              updateProject({
+                rowId: projectId,
+                patch: {
+                  prefix: editor.getText(),
+                },
+              })
+            }
+          />
 
-            {editProject && (
-              <div className="flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setEditProject(false)}
-                >
-                  Cancel
-                </Button>
-
-                <Subscribe
-                  selector={(state) => [
-                    state.canSubmit,
-                    state.isSubmitting,
-                    state.isDirty,
-                  ]}
-                >
-                  {([canSubmit, isSubmitting, isDirty]) => (
-                    <Button
-                      type="submit"
-                      disabled={!canSubmit || isSubmitting || !isDirty}
-                    >
-                      Save Changes
-                    </Button>
-                  )}
-                </Subscribe>
-              </div>
-            )}
-          </form>
-
-          <ProjectLabelsForm />
+          <RichTextEditor
+            defaultContent={project?.description || ""}
+            className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
+            placeholder="Add a short description..."
+            skeletonClassName="h-8"
+            onUpdate={({ editor }) =>
+              updateProject({
+                rowId: projectId,
+                patch: {
+                  description: editor.getText(),
+                },
+              })
+            }
+          />
         </div>
+
+        <ProjectLabelsForm />
       </div>
     </div>
   );

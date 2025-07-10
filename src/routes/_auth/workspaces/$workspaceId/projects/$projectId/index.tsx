@@ -16,6 +16,7 @@ import * as z from "zod/v4";
 
 import Board from "@/components/Board";
 import Link from "@/components/core/Link";
+import RichTextEditor from "@/components/core/RichTextEditor";
 import Filter from "@/components/Filter";
 import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
@@ -97,6 +98,7 @@ function ProjectPage() {
   const { projectId, workspaceId } = Route.useParams();
   const { search } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
+  const [nameError, setNameError] = useState<string | null>(null);
 
   const navigate = Route.useNavigate();
 
@@ -155,6 +157,12 @@ function ProjectPage() {
     },
   });
 
+  const { mutate: updateProject } = useUpdateProjectMutation({
+    meta: {
+      invalidates: [["all"]],
+    },
+  });
+
   useHotkeys(
     Hotkeys.ToggleViewMode,
     () =>
@@ -171,18 +179,47 @@ function ProjectPage() {
     <div className="flex size-full">
       <div className="flex size-full flex-col">
         <div className="border-b px-6 py-4">
-          <div className="flex flex-col gap-4">
-            <div>
-              <h1 className="mb-1 font-bold text-2xl text-base-800 sm:mb-2 sm:text-3xl dark:text-base-100">
-                {project?.name}
-              </h1>
-              {project?.description && (
-                <p className="text-base-600 text-sm sm:text-base dark:text-base-300">
-                  {project.description}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2 sm:flex-nowrap">
+          <div className="flex flex-col gap-2">
+            <RichTextEditor
+              defaultContent={project?.name}
+              className="min-h-0 border-0 bg-transparent p-0 font-semibold text-2xl text-base-600 dark:bg-transparent dark:text-base-400"
+              skeletonClassName="h-8"
+              onUpdate={({ editor }) => {
+                const text = editor.getText().trim();
+
+                if (text.length < 3) {
+                  setNameError("Project name must be at least 3 characters.");
+                  return;
+                }
+
+                setNameError(null);
+                updateProject({
+                  rowId: projectId,
+                  patch: { name: text },
+                });
+              }}
+            />
+
+            {nameError && (
+              <p className="mt-1 text-red-500 text-sm">{nameError}</p>
+            )}
+
+            <RichTextEditor
+              defaultContent={project?.description || ""}
+              className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
+              placeholder="Add a short description..."
+              skeletonClassName="h-8"
+              onUpdate={({ editor }) =>
+                updateProject({
+                  rowId: projectId,
+                  patch: {
+                    description: editor.getText(),
+                  },
+                })
+              }
+            />
+
+            <div className="mt-2 flex flex-wrap gap-2 sm:flex-nowrap">
               <div className="relative flex-1 sm:flex-none">
                 <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-base-400" />
                 <Input
