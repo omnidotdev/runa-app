@@ -3,6 +3,7 @@ query Tasks(
   $search: String = ""
   $assignees: TaskToManyAssigneeFilter
   $labels: TaskToManyTaskLabelFilter
+  $priorities: [String!]
 ) {
   tasks(
     filter: {
@@ -10,6 +11,7 @@ query Tasks(
       content: { includesInsensitive: $search }
       assignees: $assignees
       taskLabels: $labels
+      priority: { in: $priorities }
     }
   ) {
     nodes {

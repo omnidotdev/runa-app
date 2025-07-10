@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import {
   CheckIcon,
   ChevronRight,
+  CircleAlertIcon,
   ListFilter,
   TagIcon,
   UserPlusIcon,
@@ -38,7 +39,7 @@ const Filter = () => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { assignees, labels } = useSearch({
+  const { assignees, labels, priorities } = useSearch({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -161,7 +162,7 @@ const Filter = () => {
             </PopoverRoot>
 
             <PopoverRoot positioning={{ placement: "right-start" }}>
-              <PopoverTrigger className="flex w-full cursor-pointer justify-between px-3 py-2">
+              <PopoverTrigger className="flex w-full cursor-pointer justify-between border-b px-3 py-2">
                 <div className="flex items-center gap-2">
                   <UserPlusIcon className="size-4" />
                   <p>Assignees</p>
@@ -206,6 +207,69 @@ const Filter = () => {
                           className="size-6 rounded-full"
                         />
                         <p className="-ml-2 font-light text-sm">{user?.name}</p>
+                      </CheckboxLabel>
+                      <CheckboxHiddenInput />
+                      <CheckboxControl>
+                        <CheckboxIndicator>
+                          <CheckIcon className="size-4" />
+                        </CheckboxIndicator>
+                      </CheckboxControl>
+                    </CheckboxRoot>
+                  ))}
+                </PopoverContent>
+              </PopoverPositioner>
+            </PopoverRoot>
+
+            <PopoverRoot positioning={{ placement: "right-start" }}>
+              <PopoverTrigger className="flex w-full cursor-pointer justify-between border-b px-3 py-2">
+                <div className="flex items-center gap-2">
+                  <CircleAlertIcon className="size-4" />
+                  <p>Priorities</p>
+                </div>
+                <ChevronRight className="h-4 w-4" />
+              </PopoverTrigger>
+              <PopoverPositioner>
+                <PopoverContent className="flex w-48 flex-col gap-2 p-2">
+                  {(["low", "medium", "high"] as const).map((priority) => (
+                    <CheckboxRoot
+                      key={priority}
+                      className="group flex cursor-pointer items-center justify-between p-0.5"
+                      checked={priorities.includes(priority)}
+                      onCheckedChange={({ checked }) => {
+                        if (checked) {
+                          navigate({
+                            search: (prev) => ({
+                              ...prev,
+                              priorities: [
+                                ...(prev.priorities ?? []),
+                                priority,
+                              ],
+                            }),
+                          });
+                        } else {
+                          navigate({
+                            search: (prev) => ({
+                              ...prev,
+                              priorities: prev.priorities?.filter(
+                                (p) => p !== priority,
+                              ),
+                            }),
+                          });
+                        }
+                      }}
+                    >
+                      <CheckboxLabel className="ml-0 flex items-center gap-2">
+                        <div
+                          className={cn(
+                            "size-4 rounded-full",
+                            priority === "high" && "bg-red-500",
+                            priority === "medium" && "bg-yellow-500",
+                            priority === "low" && "bg-green-500",
+                          )}
+                        />
+                        <p className="font-light text-sm first-letter:uppercase">
+                          {priority}
+                        </p>
                       </CheckboxLabel>
                       <CheckboxHiddenInput />
                       <CheckboxControl>

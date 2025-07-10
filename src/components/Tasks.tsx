@@ -62,7 +62,7 @@ const Tasks = ({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { search, assignees, labels } = useSearch({
+  const { search, assignees, labels, priorities } = useSearch({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -98,6 +98,7 @@ const Tasks = ({
       labels: labels.length
         ? { some: { label: { rowId: { in: labels } } } }
         : undefined,
+      priorities: priorities.length ? priorities : undefined,
     }),
     select: (data) =>
       data?.tasks?.nodes?.filter((task) => task.columnId === columnId),

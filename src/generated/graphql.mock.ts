@@ -516,7 +516,7 @@ export const mockTaskQuery = (resolver: GraphQLResponseResolver<Types.TaskQuery,
  * @example
  * mockTasksQuery(
  *   ({ query, variables }) => {
- *     const { projectId, search, assignees, labels } = variables;
+ *     const { projectId, search, assignees, labels, priorities } = variables;
  *     return HttpResponse.json({
  *       data: { tasks }
  *     })

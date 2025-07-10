@@ -13,12 +13,31 @@ interface Options {
   search?: string;
   assignees?: InputMaybe<TaskToManyAssigneeFilter> | undefined;
   labels?: InputMaybe<TaskToManyTaskLabelFilter> | undefined;
+  priorities?: string[];
 }
 
-const tasksOptions = ({ projectId, search, assignees, labels }: Options) =>
+const tasksOptions = ({
+  projectId,
+  search,
+  assignees,
+  labels,
+  priorities,
+}: Options) =>
   queryOptions({
-    queryKey: useTasksQuery.getKey({ projectId, search, assignees, labels }),
-    queryFn: useTasksQuery.fetcher({ projectId, search, assignees, labels }),
+    queryKey: useTasksQuery.getKey({
+      projectId,
+      search,
+      assignees,
+      labels,
+      priorities,
+    }),
+    queryFn: useTasksQuery.fetcher({
+      projectId,
+      search,
+      assignees,
+      labels,
+      priorities,
+    }),
     // TODO: discuss proper refetch interval
     refetchInterval: 3000,
   });

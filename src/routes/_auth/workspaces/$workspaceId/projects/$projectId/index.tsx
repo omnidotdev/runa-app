@@ -44,16 +44,18 @@ const projectSearchParamsSchema = z.object({
   // See: https://zod.dev/v4/changelog?id=stricter-uuid
   assignees: z.array(z.guid()).default([]),
   labels: z.array(z.guid()).default([]),
+  priorities: z.array(z.enum(["low", "medium", "high"])).default([]),
 });
 
 export const Route = createFileRoute({
-  loaderDeps: ({ search: { search, assignees, labels } }) => ({
+  loaderDeps: ({ search: { search, assignees, labels, priorities } }) => ({
     search,
     assignees,
     labels,
+    priorities,
   }),
   loader: async ({
-    deps: { search, assignees, labels },
+    deps: { search, assignees, labels, priorities },
     params: { projectId, workspaceId },
     context: { queryClient },
   }) => {
@@ -73,6 +75,7 @@ export const Route = createFileRoute({
           labels: labels.length
             ? { some: { label: { rowId: { in: labels } } } }
             : undefined,
+          priorities: priorities.length ? priorities : undefined,
         }),
       ),
     ]);
@@ -85,7 +88,14 @@ export const Route = createFileRoute({
   },
   validateSearch: zodValidator(projectSearchParamsSchema),
   search: {
-    middlewares: [stripSearchParams({ search: "", assignees: [], labels: [] })],
+    middlewares: [
+      stripSearchParams({
+        search: "",
+        assignees: [],
+        labels: [],
+        priorities: [],
+      }),
+    ],
   },
   head: ({ loaderData }) => ({
     meta: loaderData ? [...seo({ title: loaderData.name })] : undefined,
