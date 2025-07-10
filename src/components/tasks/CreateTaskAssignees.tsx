@@ -30,6 +30,7 @@ const CreateTaskAssignees = withForm({
     assignees: [] as string[],
     dueDate: "",
     columnId: "",
+    priority: "low",
   },
   render: ({ form }) => {
     const { workspaceId } = useParams({ strict: false });
@@ -73,21 +74,19 @@ const CreateTaskAssignees = withForm({
               </SelectTrigger>
 
               <SelectContent className="max-h-80 overflow-auto">
-                <SelectItemGroup className="flex flex-col gap-1">
+                <SelectItemGroup className="space-y-1">
                   {usersCollection.items.map((item) => {
                     return (
-                      <SelectItem
-                        key={item.value}
-                        item={item}
-                        className="flex items-center justify-start gap-1 px-1 py-0.5"
-                      >
-                        <Avatar
-                          src={item.user?.avatarUrl ?? undefined}
-                          alt={item.user?.name}
-                          fallback={item.user?.name?.charAt(0)}
-                          className="size-6 rounded-full"
-                        />
-                        <SelectItemText>{item.label}</SelectItemText>
+                      <SelectItem key={item.value} item={item}>
+                        <SelectItemText className="-m-2">
+                          <Avatar
+                            src={item.user?.avatarUrl ?? undefined}
+                            alt={item.user?.name}
+                            fallback={item.user?.name?.charAt(0)}
+                            className=" size-6 rounded-full"
+                          />
+                          {item.label}
+                        </SelectItemText>
                       </SelectItem>
                     );
                   })}

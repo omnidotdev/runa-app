@@ -39,6 +39,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
+import CreateTaskPriority from "./CreateTaskPriority";
 
 interface Props {
   columnId?: string;
@@ -98,6 +99,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       assignees: [] as string[],
       dueDate: "",
       columnId: columnId ?? defaultColumnId,
+      priority: "low",
     },
     onSubmit: async ({ value, formApi }) => {
       // TODO: dynamic with auth
@@ -142,6 +144,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
               dueDate: value.dueDate.length
                 ? new Date(value.dueDate)
                 : undefined,
+              priority: value.priority,
             },
           },
         }),
@@ -249,6 +252,8 @@ const CreateTaskDialog = ({ columnId }: Props) => {
               <CreateTaskDatePicker form={form} />
 
               <TaskColumnForm form={form} />
+
+              <CreateTaskPriority form={form} />
             </div>
 
             <div className="prose prose-sm dark:prose-invert w-full max-w-none">

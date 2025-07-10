@@ -182,7 +182,7 @@ function ProjectPage() {
           <div className="flex flex-col gap-2">
             <RichTextEditor
               defaultContent={project?.name}
-              className="min-h-0 border-0 bg-transparent p-0 font-semibold text-2xl text-base-600 dark:bg-transparent dark:text-base-400"
+              className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
               skeletonClassName="h-8 max-w-80"
               onUpdate={({ editor }) => {
                 const text = editor.getText().trim();

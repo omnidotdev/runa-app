@@ -39,6 +39,7 @@ const CreateTaskDatePicker = withForm({
     assignees: [] as string[],
     dueDate: "",
     columnId: "",
+    priority: "low",
   },
   render: ({ form }) => {
     return (

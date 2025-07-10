@@ -30,6 +30,7 @@ const TaskColumnForm = withForm({
     assignees: [] as string[],
     dueDate: "",
     columnId: "",
+    priority: "low",
   },
   render: ({ form }) => {
     const { projectId } = useParams({
@@ -96,22 +97,20 @@ const TaskColumnForm = withForm({
               </SelectTrigger>
 
               <SelectContent className="max-h-80 overflow-auto">
-                <SelectItemGroup className="flex flex-col gap-1">
+                <SelectItemGroup className="space-y-1">
                   {projectColumns.items.map((item) => {
                     return (
-                      <SelectItem
-                        key={item.value}
-                        item={item}
-                        className="flex items-center justify-start gap-1 px-1 py-0.5"
-                      >
-                        {
-                          columnIcons[
-                            item?.label
-                              .toLowerCase()
-                              .replace(/ /g, "-") as keyof typeof columnIcons
-                          ]
-                        }
-                        <SelectItemText>{item.label}</SelectItemText>
+                      <SelectItem key={item.value} item={item}>
+                        <SelectItemText>
+                          {
+                            columnIcons[
+                              item?.label
+                                .toLowerCase()
+                                .replace(/ /g, "-") as keyof typeof columnIcons
+                            ]
+                          }
+                          {item.label}
+                        </SelectItemText>
                       </SelectItem>
                     );
                   })}

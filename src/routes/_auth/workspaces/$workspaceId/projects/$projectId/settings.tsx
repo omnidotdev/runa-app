@@ -88,7 +88,7 @@ function RouteComponent() {
         <div className="flex flex-col gap-3">
           <RichTextEditor
             defaultContent={project?.name}
-            className="min-h-0 border-0 bg-transparent p-0 text-2xl text-base-600 dark:bg-transparent dark:text-base-400"
+            className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
             skeletonClassName="h-8 max-w-80"
             onUpdate={({ editor }) => {
               const text = editor.getText().trim();
@@ -112,7 +112,7 @@ function RouteComponent() {
 
           <RichTextEditor
             defaultContent={project?.prefix || ""}
-            className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
+            className="min-h-0 border-0 bg-transparent p-0 text-sm dark:bg-transparent"
             placeholder="Add a prefix..."
             skeletonClassName="h-5 w-12"
             onUpdate={({ editor }) =>
@@ -127,7 +127,7 @@ function RouteComponent() {
 
           <RichTextEditor
             defaultContent={project?.description || ""}
-            className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
+            className="min-h-0 border-0 bg-transparent p-0 text-sm dark:bg-transparent"
             placeholder="Add a short description..."
             skeletonClassName="h-5 max-w-40"
             onUpdate={({ editor }) =>

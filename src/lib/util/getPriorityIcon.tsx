@@ -1,29 +1,23 @@
-import {
-  AlertTriangleIcon,
-  CircleDotIcon,
-  MinusCircleIcon,
-} from "lucide-react";
-
-import { cn } from "@/lib/utils";
-
-const priorityConfig = {
-  high: {
-    icon: AlertTriangleIcon,
-    className: "text-red-700 dark:text-red-600",
+const priorityConfig = [
+  {
+    key: "high",
+    label: "High",
+    className: "bg-red-500 opacity-50 h-2 w-2 rounded-full",
   },
-  medium: {
-    icon: CircleDotIcon,
-    className: "text-yellow-700 dark:text-yellow-600",
+  {
+    key: "medium",
+    label: "Medium",
+    className: "bg-yellow-500 opacity-50 h-2 w-2 rounded-full",
   },
-  low: {
-    icon: MinusCircleIcon,
-    className: "text-green-700 dark:text-green-600",
+  {
+    key: "low",
+    label: "Low",
+    className: "bg-green-500  opacity-50h-2 w-2 rounded-full",
   },
-};
+];
 
 export const getPriorityIcon = (priority: string) => {
-  const config = priorityConfig[priority as keyof typeof priorityConfig];
-  if (!config) return null;
-  const Icon = config.icon;
-  return <Icon className={cn("size-4 flex-shrink-0", config.className)} />;
+  const currentPriority = priorityConfig.find((p) => p.key === priority);
+
+  return <div className={currentPriority?.className} />;
 };

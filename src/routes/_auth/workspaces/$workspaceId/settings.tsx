@@ -138,7 +138,7 @@ function SettingsPage() {
         <div className="flex flex-col gap-3">
           <RichTextEditor
             defaultContent={workspace?.name}
-            className="min-h-0 border-0 bg-transparent p-0 font-semibold text-2xl text-base-600 dark:bg-transparent dark:text-base-400"
+            className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
             skeletonClassName="h-8"
             onUpdate={({ editor }) => {
               const text = editor.getText().trim();
@@ -165,6 +165,10 @@ function SettingsPage() {
 
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-4">
+            <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
+              <UsersIcon className="size-4" />
+              Team Members
+            </h2>
             <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
               <UsersIcon className="size-4" />
               Team Members
@@ -200,21 +204,22 @@ function SettingsPage() {
                         <span className="text-foreground text-sm">
                           {member?.user?.name}
                         </span>
+                        <span className="text-foreground text-sm">
+                          {member?.user?.name}
+                        </span>
 
-                        <Tooltip tooltip="Remove team member">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            aria-label="Remove team member"
-                            onClick={() => {
-                              setIsDeleteTeamMemberOpen(true);
-                              setSelectedMember(member.user!);
-                            }}
-                            className="ml-auto p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
-                          >
-                            <Trash2 />
-                          </Button>
-                        </Tooltip>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label="Remove team member"
+                          onClick={() => {
+                            setIsDeleteTeamMemberOpen(true);
+                            setSelectedMember(member.user!);
+                          }}
+                          className="ml-auto p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
+                        >
+                          <Trash2 />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -226,6 +231,10 @@ function SettingsPage() {
 
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-4">
+            <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
+              <FolderOpenIcon className="size-4" />
+              Projects
+            </h2>
             <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
               <FolderOpenIcon className="size-4" />
               Projects
@@ -267,24 +276,25 @@ function SettingsPage() {
                             {project?.name}
                           </span>
                         </div>
+                        <span className="text-foreground text-sm">
+                          {project?.name}
+                        </span>
 
-                        <Tooltip tooltip="Delete project">
-                          <Button
-                            variant="ghost"
-                            aria-label="Delete project"
-                            size="icon"
-                            onClick={() => {
-                              setIsDeleteProjectOpen(true);
-                              setSelectedProject({
-                                rowId: project.rowId,
-                                name: project.name,
-                              });
-                            }}
-                            className="ml-auto p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </Tooltip>
+                        <Button
+                          variant="ghost"
+                          aria-label="Delete project"
+                          size="icon"
+                          onClick={() => {
+                            setIsDeleteProjectOpen(true);
+                            setSelectedProject({
+                              rowId: project.rowId,
+                              name: project.name,
+                            });
+                          }}
+                          className="ml-auto p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -295,54 +305,56 @@ function SettingsPage() {
         </div>
 
         <div className="flex flex-col gap-4">
-          <h3 className="font-medium text-sm">Danger Zone</h3>
+          <div className="flex flex-col gap-4">
+            <h3 className="font-medium text-sm">Danger Zone</h3>
 
-          <Button
-            variant="destructive"
-            className="w-fit text-background"
-            onClick={() => setIsDeleteWorkspaceOpen(true)}
-          >
-            Delete Workspace
-          </Button>
+            <Button
+              variant="destructive"
+              className="w-fit text-background"
+              onClick={() => setIsDeleteWorkspaceOpen(true)}
+            >
+              Delete Workspace
+            </Button>
+          </div>
         </div>
-      </div>
-      <ConfirmDialog
-        title="Danger Zone"
-        description={`This will permanently delete ${workspace?.name} and all associated data. This action cannot be undone.`}
-        onConfirm={() => {
-          deleteWorkspace({ rowId: workspace?.rowId! });
-        }}
-        dialogType={DialogType.DeleteWorkspace}
-        confirmation={`permanently delete ${workspace?.name}`}
-        inputProps={{
-          className: "focus-visible:ring-red-500",
-        }}
-      />
+        <ConfirmDialog
+          title="Danger Zone"
+          description={`This will permanently delete ${workspace?.name} and all associated data. This action cannot be undone.`}
+          onConfirm={() => {
+            deleteWorkspace({ rowId: workspace?.rowId! });
+          }}
+          dialogType={DialogType.DeleteWorkspace}
+          confirmation={`permanently delete ${workspace?.name}`}
+          inputProps={{
+            className: "focus-visible:ring-red-500",
+          }}
+        />
 
-      <ConfirmDialog
-        title="Danger Zone"
-        description={`This will delete ${selectedMember?.name} from ${workspace?.name} workspace. This action cannot be undone.`}
-        onConfirm={() =>
-          deleteMember({ userId: selectedMember?.rowId!, workspaceId })
-        }
-        dialogType={DialogType.DeleteTeamMember}
-        confirmation={selectedMember?.name}
-        inputProps={{
-          className: "focus-visible:ring-red-500",
-        }}
-      />
-      <ConfirmDialog
-        title="Danger Zone"
-        description={`This will delete the project "${selectedProject?.name}" from ${workspace?.name} workspace. This action cannot be undone.`}
-        onConfirm={() => {
-          deleteProject({ rowId: selectedProject?.rowId! });
-        }}
-        dialogType={DialogType.DeleteProject}
-        confirmation={`permanently delete ${selectedProject?.name}`}
-        inputProps={{
-          className: "focus-visible:ring-red-500",
-        }}
-      />
+        <ConfirmDialog
+          title="Danger Zone"
+          description={`This will delete ${selectedMember?.name} from ${workspace?.name} workspace. This action cannot be undone.`}
+          onConfirm={() =>
+            deleteMember({ userId: selectedMember?.rowId!, workspaceId })
+          }
+          dialogType={DialogType.DeleteTeamMember}
+          confirmation={selectedMember?.name}
+          inputProps={{
+            className: "focus-visible:ring-red-500",
+          }}
+        />
+        <ConfirmDialog
+          title="Danger Zone"
+          description={`This will delete the project "${selectedProject?.name}" from ${workspace?.name} workspace. This action cannot be undone.`}
+          onConfirm={() => {
+            deleteProject({ rowId: selectedProject?.rowId! });
+          }}
+          dialogType={DialogType.DeleteProject}
+          confirmation={`permanently delete ${selectedProject?.name}`}
+          inputProps={{
+            className: "focus-visible:ring-red-500",
+          }}
+        />
+      </div>
     </div>
   );
 }
