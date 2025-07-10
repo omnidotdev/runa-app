@@ -6,6 +6,7 @@ import { createParseHumanRelativeTime } from "parse-human-relative-time/date-fns
 import { useHotkeys } from "react-hotkeys-hook";
 import * as z from "zod/v4";
 
+import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
@@ -24,7 +25,6 @@ import useForm from "@/lib/hooks/useForm";
 import projectsOptions from "@/lib/options/projects.options";
 import taskOptions from "@/lib/options/task.options";
 import tasksOptions from "@/lib/options/tasks.options";
-import { Button } from "./ui/button";
 
 const UpdateDueDateDialog = () => {
   const { workspaceId, projectId } = useParams({

@@ -6,7 +6,9 @@ import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 
 import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
+import Labels from "@/components/Labels";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import {
   TooltipContent,
@@ -21,8 +23,6 @@ import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
-import Labels from "./Labels";
-import { Badge } from "./ui/badge";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 

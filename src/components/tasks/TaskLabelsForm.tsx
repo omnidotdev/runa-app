@@ -157,7 +157,7 @@ const TaskLabelsForm = withForm({
                         return (
                           <CheckboxRoot
                             className="flex items-center justify-between p-2"
-                            defaultChecked={subField.state.value.checked}
+                            checked={subField.state.value.checked}
                             onCheckedChange={({ checked }) =>
                               subField.handleChange({
                                 ...subField.state.value,

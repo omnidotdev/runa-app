@@ -13,8 +13,18 @@ import {
   UserIcon,
 } from "lucide-react";
 
+import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
+import Labels from "@/components/Labels";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { SidebarMenuShotcut } from "@/components/ui/sidebar";
+import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
@@ -22,16 +32,6 @@ import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
-import Assignees from "./Assignees";
-import Labels from "./Labels";
-import { Badge } from "./ui/badge";
-import { SidebarMenuShotcut } from "./ui/sidebar";
-import {
-  TooltipContent,
-  TooltipPositioner,
-  TooltipRoot,
-  TooltipTrigger,
-} from "./ui/tooltip";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
@@ -138,7 +138,9 @@ const Tasks = ({
                   ref={provided.innerRef}
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}
-                  onMouseEnter={() => setTaskId(task.rowId)}
+                  onMouseEnter={() =>
+                    !isUpdateDialogOpen && setTaskId(task.rowId)
+                  }
                   onMouseLeave={() => !isUpdateDialogOpen && setTaskId(null)}
                   onClick={() => {
                     if (!snapshot.isDragging) {
