@@ -529,7 +529,12 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
                   )}
                 >
                   {statusProjects.length === 0 ? (
-                    <p className="ml-2 p-2 text-muted-foreground text-xs">
+                    <p
+                      className={cn(
+                        "ml-2 p-2 text-muted-foreground text-xs",
+                        snapshot.isDraggingOver && "hidden",
+                      )}
+                    >
                       No projects
                     </p>
                   ) : (

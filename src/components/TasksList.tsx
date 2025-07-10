@@ -30,11 +30,13 @@ interface TasksListProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   prefix: string;
   columnId: string;
+  isDraggingOver: boolean;
 }
 
 const TasksList = ({
   prefix,
   columnId,
+  isDraggingOver,
   className,
   children,
   ...rest
@@ -105,7 +107,14 @@ const TasksList = ({
       {...rest}
     >
       {tasks?.length === 0 ? (
-        <p className="ml-2 p-2 text-muted-foreground text-xs">No tasks</p>
+        <p
+          className={cn(
+            "ml-2 p-2 text-muted-foreground text-xs",
+            isDraggingOver && "hidden",
+          )}
+        >
+          No tasks
+        </p>
       ) : (
         tasks
           ?.filter((task) => task.rowId !== draggableId)

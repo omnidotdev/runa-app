@@ -223,6 +223,7 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
                       {...provided.droppableProps}
                       prefix={project?.prefix ?? "PROJ"}
                       columnId={column.rowId}
+                      isDraggingOver={snapshot.isDraggingOver}
                       style={{
                         backgroundColor:
                           project?.color && snapshot.isDraggingOver

@@ -12,11 +12,9 @@ import {
 import { labelColors } from "@/lib/constants/labelColors";
 import { cn } from "@/lib/utils";
 
-import type { Select as ArkSelect } from "@ark-ui/react/select";
 import type { ComponentProps } from "react";
 
-interface Props
-  extends Omit<ComponentProps<typeof ArkSelect.Root>, "collection"> {
+interface Props extends Omit<ComponentProps<typeof Select>, "collection"> {
   triggerValue?: string;
 }
 
