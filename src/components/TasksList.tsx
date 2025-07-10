@@ -44,7 +44,7 @@ const TasksList = ({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { search } = useSearch({
+  const { search, assignees, labels } = useSearch({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -71,9 +71,18 @@ const TasksList = ({
   });
 
   const { data: tasks } = useSuspenseQuery({
-    ...tasksOptions({ projectId, search }),
+    ...tasksOptions({
+      projectId: projectId,
+      search: search,
+      assignees: assignees.length
+        ? { some: { user: { rowId: { in: assignees } } } }
+        : undefined,
+      labels: labels.length
+        ? { some: { label: { rowId: { in: labels } } } }
+        : undefined,
+    }),
     select: (data) =>
-      data?.tasks?.nodes?.filter((task) => task?.columnId === columnId),
+      data?.tasks?.nodes?.filter((task) => task.columnId === columnId),
   });
 
   const taskIndex = (taskId: string) =>
