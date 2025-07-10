@@ -89,7 +89,7 @@ function RouteComponent() {
           <RichTextEditor
             defaultContent={project?.name}
             className="min-h-0 border-0 bg-transparent p-0 text-2xl text-base-600 dark:bg-transparent dark:text-base-400"
-            skeletonClassName="h-8"
+            skeletonClassName="h-8 max-w-80"
             onUpdate={({ editor }) => {
               const text = editor.getText().trim();
 
@@ -114,7 +114,7 @@ function RouteComponent() {
             defaultContent={project?.prefix || ""}
             className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
             placeholder="Add a prefix..."
-            skeletonClassName="h-8"
+            skeletonClassName="h-5 w-12"
             onUpdate={({ editor }) =>
               updateProject({
                 rowId: projectId,
@@ -129,7 +129,7 @@ function RouteComponent() {
             defaultContent={project?.description || ""}
             className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
             placeholder="Add a short description..."
-            skeletonClassName="h-8"
+            skeletonClassName="h-5 max-w-40"
             onUpdate={({ editor }) =>
               updateProject({
                 rowId: projectId,

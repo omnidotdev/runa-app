@@ -183,7 +183,7 @@ function ProjectPage() {
             <RichTextEditor
               defaultContent={project?.name}
               className="min-h-0 border-0 bg-transparent p-0 font-semibold text-2xl text-base-600 dark:bg-transparent dark:text-base-400"
-              skeletonClassName="h-8"
+              skeletonClassName="h-8 max-w-80"
               onUpdate={({ editor }) => {
                 const text = editor.getText().trim();
 
@@ -208,7 +208,7 @@ function ProjectPage() {
               defaultContent={project?.description || ""}
               className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
               placeholder="Add a short description..."
-              skeletonClassName="h-8"
+              skeletonClassName="h-5 max-w-40"
               onUpdate={({ editor }) =>
                 updateProject({
                   rowId: projectId,
