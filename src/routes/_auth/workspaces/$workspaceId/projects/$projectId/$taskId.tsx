@@ -281,6 +281,7 @@ function TaskPage() {
                   className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
                   skeletonClassName="h-8"
                   onUpdate={({ editor }) =>
+                    !editor.isEmpty &&
                     handleTaskUpdate({
                       rowId: taskId,
                       patch: {
@@ -369,14 +370,16 @@ function TaskPage() {
                     defaultContent={task?.description}
                     className="border-0"
                     skeletonClassName="h-[120px] rounded-t-none"
-                    onUpdate={({ editor }) =>
-                      handleTaskUpdate({
-                        rowId: taskId,
-                        patch: {
-                          description: editor.getHTML(),
-                        },
-                      })
-                    }
+                    onUpdate={({ editor }) => {
+                      !editor.isEmpty &&
+                        handleTaskUpdate({
+                          rowId: taskId,
+                          patch: {
+                            // TODO: discuss if description should be nullable. Current schema structure doesn't allow it
+                            description: editor.getHTML(),
+                          },
+                        });
+                    }}
                   />
                 </CardContent>
               </CardRoot>

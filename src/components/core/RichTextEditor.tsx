@@ -1,9 +1,16 @@
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import css from "highlight.js/lib/languages/css";
+import js from "highlight.js/lib/languages/javascript";
+import json from "highlight.js/lib/languages/json";
+import ts from "highlight.js/lib/languages/typescript";
+import html from "highlight.js/lib/languages/xml";
+import { createLowlight } from "lowlight";
 import { useEffect, useRef } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,6 +18,13 @@ import { cn } from "@/lib/utils";
 
 import type { EditorEvents } from "@tiptap/react";
 import type { ComponentProps, RefObject } from "react";
+
+const lowlight = createLowlight();
+lowlight.register("ts", ts);
+lowlight.register("js", js);
+lowlight.register("html", html);
+lowlight.register("css", css);
+lowlight.register("json", json);
 
 export interface EditorApi {
   clearContent: () => void;
@@ -42,6 +56,7 @@ const RichTextEditor = ({
         heading: {
           levels: [1, 2],
         },
+        codeBlock: false,
       }),
       Placeholder.configure({
         placeholder,
@@ -52,6 +67,9 @@ const RichTextEditor = ({
       }),
       Link.configure({
         openOnClick: false,
+      }),
+      CodeBlockLowlight.configure({
+        lowlight,
       }),
     ],
     editable,
