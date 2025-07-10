@@ -309,24 +309,20 @@ function TaskPage() {
       const currentTaskLabelIds =
         task?.taskLabels?.nodes?.map((l) => l.rowId) ?? [];
 
-      // delete all current task labels
-      await Promise.all(
-        currentTaskLabelIds.map((rowId) => deleteTaskLabel({ rowId })),
-      );
-
-      // add all task labels (re-add existing and update with newly added)
-      await Promise.all(
-        newTaskLabels.map((label) =>
+      // delete all current labels and add all checked task labels. This is to provide ease of functionality rather than needing to compare on each current label to see if it is still valid.
+      await Promise.all([
+        ...currentTaskLabelIds.map((rowId) => deleteTaskLabel({ rowId })),
+        ...newTaskLabels.map((label) =>
           createTaskLabel({
             input: {
               taskLabel: {
                 labelId: label.rowId,
-                taskId,
+                taskId: taskId!,
               },
             },
           }),
         ),
-      );
+      ]);
 
       queryClient.invalidateQueries();
       formApi.reset();
