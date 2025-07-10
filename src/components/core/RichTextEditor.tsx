@@ -1,4 +1,3 @@
-import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import TaskItem from "@tiptap/extension-task-item";
@@ -15,6 +14,7 @@ import { useEffect, useRef } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { CodeBlockWithHeader } from "./CodeBlockWithHeader";
 
 import type { EditorEvents } from "@tiptap/react";
 import type { ComponentProps, RefObject } from "react";
@@ -68,7 +68,7 @@ const RichTextEditor = ({
       Link.configure({
         openOnClick: false,
       }),
-      CodeBlockLowlight.configure({
+      CodeBlockWithHeader.configure({
         lowlight,
       }),
     ],
@@ -109,7 +109,7 @@ const RichTextEditor = ({
           className={cn(
             " pointer-events-auto min-h-[120px] rounded-md border border-base-300 border-dashed bg-transparent p-3 text-base-600 dark:border-base-600 dark:text-base-300 dark:hover:border-base-500",
             editor?.isFocused
-              ? "border-2 border-primary-500/20 bg-primary-50/50 dark:border-primary-500/10 dark:bg-primary-900/5"
+              ? "border-2 border-primary-500/20 dark:border-primary-500/10"
               : "hover:border-base-400 dark:hover:border-base-500",
             className,
           )}
