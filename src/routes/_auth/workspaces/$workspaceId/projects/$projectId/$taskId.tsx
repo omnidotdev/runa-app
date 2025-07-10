@@ -771,7 +771,7 @@ function TaskPage() {
                       Created
                     </span>
                     <span className="text-base-900 dark:text-base-100">
-                      {format(new Date(task?.createdAt), "MMM d, yyyy")}
+                      {format(new Date(task?.createdAt!), "MMM d, yyyy")}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
