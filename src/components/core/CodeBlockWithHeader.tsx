@@ -28,7 +28,7 @@ const CodeBlockComponent: React.FC<ReactNodeViewProps> = ({ node }) => {
 
   return (
     <NodeViewWrapper className="mt-2">
-      <div className="rounded-t-lg border bg-base-100 px-4 py-2 dark:bg-base-800">
+      <div className="rounded-t-lg border bg-base-100 px-4 py-2 dark:bg-base-900/70">
         <div className="flex items-center justify-between">
           <span className="font-medium text-base-600 text-sm dark:text-base-400">
             {language}
@@ -45,7 +45,7 @@ const CodeBlockComponent: React.FC<ReactNodeViewProps> = ({ node }) => {
           </div>
         </div>
       </div>
-      <pre className="overflow-x-auto rounded-b-lg border bg-base-50 p-4 text-sm dark:bg-base-950">
+      <pre className="overflow-x-auto rounded-b-lg border-x border-b bg-base-50 p-4 text-sm dark:bg-base-950">
         <NodeViewContent as="code" />
       </pre>
     </NodeViewWrapper>
