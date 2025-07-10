@@ -2,14 +2,12 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { useLabelsQuery } from "@/generated/graphql";
 
-interface Options {
-  projectId: string;
-}
+import type { LabelsQueryVariables } from "@/generated/graphql";
 
-const labelsOptions = ({ projectId }: Options) =>
+const labelsOptions = (variables: LabelsQueryVariables) =>
   queryOptions({
-    queryKey: useLabelsQuery.getKey({ projectId }),
-    queryFn: useLabelsQuery.fetcher({ projectId }),
+    queryKey: useLabelsQuery.getKey(variables),
+    queryFn: useLabelsQuery.fetcher(variables),
   });
 
 export default labelsOptions;

@@ -2,14 +2,12 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { useWorkspacesQuery } from "@/generated/graphql";
 
-interface Options {
-  limit?: number;
-}
+import type { WorkspacesQueryVariables } from "@/generated/graphql";
 
-const workspacesOptions = ({ limit }: Options = {}) =>
+const workspacesOptions = (variables: WorkspacesQueryVariables = {}) =>
   queryOptions({
-    queryKey: useWorkspacesQuery.getKey({ limit }),
-    queryFn: useWorkspacesQuery.fetcher({ limit }),
+    queryKey: useWorkspacesQuery.getKey(variables),
+    queryFn: useWorkspacesQuery.fetcher(variables),
   });
 
 export default workspacesOptions;

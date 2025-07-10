@@ -2,14 +2,12 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { useTaskQuery } from "@/generated/graphql";
 
-interface Options {
-  rowId: string;
-}
+import type { TaskQueryVariables } from "@/generated/graphql";
 
-const taskOptions = ({ rowId }: Options) =>
+const taskOptions = (variables: TaskQueryVariables) =>
   queryOptions({
-    queryKey: useTaskQuery.getKey({ rowId }),
-    queryFn: useTaskQuery.fetcher({ rowId }),
+    queryKey: useTaskQuery.getKey(variables),
+    queryFn: useTaskQuery.fetcher(variables),
   });
 
 export default taskOptions;

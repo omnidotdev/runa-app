@@ -2,15 +2,12 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { useProjectsQuery } from "@/generated/graphql";
 
-interface Options {
-  workspaceId: string;
-  search?: string;
-}
+import type { ProjectsQueryVariables } from "@/generated/graphql";
 
-const projectsOptions = ({ workspaceId, search }: Options) =>
+const projectsOptions = (variables: ProjectsQueryVariables) =>
   queryOptions({
-    queryKey: useProjectsQuery.getKey({ workspaceId, search }),
-    queryFn: useProjectsQuery.fetcher({ workspaceId, search }),
+    queryKey: useProjectsQuery.getKey(variables),
+    queryFn: useProjectsQuery.fetcher(variables),
   });
 
 export default projectsOptions;

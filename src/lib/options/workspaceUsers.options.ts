@@ -2,14 +2,12 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { useWorkspaceUsersQuery } from "@/generated/graphql";
 
-interface Options {
-  rowId: string;
-}
+import type { WorkspaceUsersQueryVariables } from "@/generated/graphql";
 
-const workspaceUsersOptions = ({ rowId }: Options) =>
+const workspaceUsersOptions = (variables: WorkspaceUsersQueryVariables) =>
   queryOptions({
-    queryKey: useWorkspaceUsersQuery.getKey({ rowId }),
-    queryFn: useWorkspaceUsersQuery.fetcher({ rowId }),
+    queryKey: useWorkspaceUsersQuery.getKey(variables),
+    queryFn: useWorkspaceUsersQuery.fetcher(variables),
   });
 
 export default workspaceUsersOptions;

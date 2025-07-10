@@ -2,14 +2,12 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { useProjectQuery } from "@/generated/graphql";
 
-interface Options {
-  rowId: string;
-}
+import type { ProjectQueryVariables } from "@/generated/graphql";
 
-const projectOptions = ({ rowId }: Options) =>
+const projectOptions = (variables: ProjectQueryVariables) =>
   queryOptions({
-    queryKey: useProjectQuery.getKey({ rowId }),
-    queryFn: useProjectQuery.fetcher({ rowId }),
+    queryKey: useProjectQuery.getKey(variables),
+    queryFn: useProjectQuery.fetcher(variables),
   });
 
 export default projectOptions;
