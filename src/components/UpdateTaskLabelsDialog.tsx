@@ -78,6 +78,7 @@ const UpdateTaskLabelsDialog = () => {
       assignees: [] as string[],
       dueDate: "",
       columnId: "",
+      priority: "",
     },
     onSubmit: async ({ value, formApi }) => {
       const allTaskLabels = value.labels.filter((l) => l.checked);

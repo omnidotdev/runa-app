@@ -65,6 +65,7 @@ const UpdateDueDateDialog = () => {
       assignees: [] as string[],
       dueDate: defaultDueDate ? new Date(defaultDueDate).toISOString() : "",
       columnId: "",
+      priority: "",
     },
     onSubmit: ({ value: { dueDate }, formApi }) => {
       updateTask({

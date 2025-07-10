@@ -1,4 +1,3 @@
-import { useForm } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
@@ -47,100 +46,88 @@ function RouteComponent() {
     meta: {
       invalidates: [["all"]],
     },
-    onSettled: () => form.reset(),
-  });
-
-  const form = useForm({
-    defaultValues: {
-      name: project?.name || "",
-      prefix: project?.prefix || "",
-      description: project?.description || "",
-    },
-    onSubmit: ({ value }) => {
-      updateProject({
-        rowId: projectId,
-        patch: {
-          name: value.name,
-          prefix: value.prefix,
-          description: value.description,
-        },
-      });
-    },
   });
 
   const [nameError, setNameError] = useState<string | null>(null);
 
   return (
-    <div className="no-scrollbar relative h-full overflow-auto p-6">
-      <Link
-        to="/workspaces/$workspaceId/projects/$projectId"
-        className="inset-0 flex w-fit justify-start"
-        params={{ workspaceId: workspaceId, projectId: projectId }}
-        variant="ghost"
-      >
-        <ArrowLeft />
-        Back to Project
-      </Link>
+    <div className="no-scrollbar relative h-full overflow-auto p-12">
+      {/* Header */}
+      <div className="mb-10 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Link
+            to="/workspaces/$workspaceId/projects/$projectId"
+            params={{ workspaceId: workspaceId, projectId: projectId }}
+            variant="ghost"
+            size="icon"
+          >
+            <ArrowLeft className="size-4" />
+          </Link>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <RichTextEditor
+                defaultContent={project?.name}
+                className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
+                skeletonClassName="h-8 w-80"
+                onUpdate={({ editor }) => {
+                  const text = editor.getText().trim();
 
-      <div className="flex flex-col gap-12 p-8">
-        <h1 className="text-2xl">Project Settings</h1>
+                  if (text.length < 3) {
+                    setNameError("Project name must be at least 3 characters.");
+                    return;
+                  }
 
-        <div className="flex flex-col gap-3">
-          <RichTextEditor
-            defaultContent={project?.name}
-            className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
-            skeletonClassName="h-8 max-w-80"
-            onUpdate={({ editor }) => {
-              const text = editor.getText().trim();
+                  setNameError(null);
+                  updateProject({
+                    rowId: projectId,
+                    patch: { name: text },
+                  });
+                }}
+              />
+              <div className="mt-1 flex items-center">
+                <span className="font-mono text-base-400 text-sm dark:text-base-500">
+                  #
+                </span>
+                <RichTextEditor
+                  defaultContent={project?.prefix || ""}
+                  className="min-h-0 border-0 bg-transparent p-0 font-mono text-base-400 text-sm dark:bg-transparent dark:text-base-500"
+                  placeholder="prefix"
+                  skeletonClassName="h-5 w-12"
+                  onUpdate={({ editor }) =>
+                    updateProject({
+                      rowId: projectId,
+                      patch: {
+                        prefix: editor.getText(),
+                      },
+                    })
+                  }
+                />
+              </div>
+            </div>
 
-              if (text.length < 3) {
-                setNameError("Project name must be at least 3 characters.");
-                return;
+            {nameError && (
+              <p className="mt-1 text-red-500 text-sm">{nameError}</p>
+            )}
+
+            <RichTextEditor
+              defaultContent={project?.description || ""}
+              className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
+              placeholder="Add a short description..."
+              skeletonClassName="h-5 max-w-40"
+              onUpdate={({ editor }) =>
+                updateProject({
+                  rowId: projectId,
+                  patch: {
+                    description: editor.getText(),
+                  },
+                })
               }
-
-              setNameError(null);
-              updateProject({
-                rowId: projectId,
-                patch: { name: text },
-              });
-            }}
-          />
-
-          {nameError && (
-            <p className="mt-1 text-red-500 text-sm">{nameError}</p>
-          )}
-
-          <RichTextEditor
-            defaultContent={project?.prefix || ""}
-            className="min-h-0 border-0 bg-transparent p-0 text-sm dark:bg-transparent"
-            placeholder="Add a prefix..."
-            skeletonClassName="h-5 w-12"
-            onUpdate={({ editor }) =>
-              updateProject({
-                rowId: projectId,
-                patch: {
-                  prefix: editor.getText(),
-                },
-              })
-            }
-          />
-
-          <RichTextEditor
-            defaultContent={project?.description || ""}
-            className="min-h-0 border-0 bg-transparent p-0 text-sm dark:bg-transparent"
-            placeholder="Add a short description..."
-            skeletonClassName="h-5 max-w-40"
-            onUpdate={({ editor }) =>
-              updateProject({
-                rowId: projectId,
-                patch: {
-                  description: editor.getText(),
-                },
-              })
-            }
-          />
+            />
+          </div>
         </div>
+      </div>
 
+      <div className="flex flex-col gap-12">
         <ProjectLabelsForm />
       </div>
     </div>

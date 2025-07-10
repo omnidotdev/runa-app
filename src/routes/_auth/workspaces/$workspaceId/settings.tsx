@@ -122,53 +122,51 @@ function SettingsPage() {
   });
 
   return (
-    <div className="no-scrollbar relative h-full overflow-auto p-6">
-      <Link
-        to="/workspaces/$workspaceId/projects"
-        className="inset-0 flex w-fit justify-start"
-        params={{ workspaceId: workspaceId }}
-        variant="ghost"
-      >
-        <ArrowLeft />
-        Projects Overview
-      </Link>
-      <div className="flex flex-col gap-12 p-8">
-        <h1 className="text-2xl">Workspace Settings</h1>
+    <div className="no-scrollbar relative h-full overflow-auto p-12">
+      {/* Header */}
+      <div className="mb-10 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Link
+            to="/workspaces/$workspaceId/projects"
+            params={{ workspaceId: workspaceId }}
+            variant="ghost"
+            size="icon"
+          >
+            <ArrowLeft className="size-4" />
+          </Link>
+          <div className="flex flex-col gap-2">
+            <RichTextEditor
+              defaultContent={workspace?.name}
+              className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
+              skeletonClassName="h-8 w-80"
+              onUpdate={({ editor }) => {
+                const text = editor.getText().trim();
 
-        <div className="flex flex-col gap-3">
-          <RichTextEditor
-            defaultContent={workspace?.name}
-            className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
-            skeletonClassName="h-8"
-            onUpdate={({ editor }) => {
-              const text = editor.getText().trim();
+                if (text.length < 3) {
+                  setNameError("Workspace name must be at least 3 characters.");
+                  return;
+                }
 
-              if (text.length < 3) {
-                setNameError("Workspace name must be at least 3 characters.");
-                return;
-              }
+                setNameError(null);
+                updateProject({
+                  rowId: workspaceId,
+                  patch: {
+                    name: text,
+                  },
+                });
+              }}
+            />
 
-              setNameError(null);
-              updateProject({
-                rowId: workspaceId,
-                patch: {
-                  name: text,
-                },
-              });
-            }}
-          />
-
-          {nameError && (
-            <p className="mt-1 text-red-500 text-sm">{nameError}</p>
-          )}
+            {nameError && (
+              <p className="mt-1 text-red-500 text-sm">{nameError}</p>
+            )}
+          </div>
         </div>
+      </div>
 
+      <div className="flex flex-col gap-12">
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
-              <UsersIcon className="size-4" />
-              Team Members
-            </h2>
             <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
               <UsersIcon className="size-4" />
               Team Members
@@ -204,9 +202,6 @@ function SettingsPage() {
                         <span className="text-foreground text-sm">
                           {member?.user?.name}
                         </span>
-                        <span className="text-foreground text-sm">
-                          {member?.user?.name}
-                        </span>
 
                         <Button
                           variant="ghost"
@@ -231,10 +226,6 @@ function SettingsPage() {
 
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
-              <FolderOpenIcon className="size-4" />
-              Projects
-            </h2>
             <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
               <FolderOpenIcon className="size-4" />
               Projects
@@ -276,9 +267,6 @@ function SettingsPage() {
                             {project?.name}
                           </span>
                         </div>
-                        <span className="text-foreground text-sm">
-                          {project?.name}
-                        </span>
 
                         <Button
                           variant="ghost"

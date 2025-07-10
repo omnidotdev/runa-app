@@ -3,18 +3,15 @@ import { notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
   AlertCircleIcon,
-  AlertTriangleIcon,
   ArrowLeftIcon,
   CalendarIcon,
   CheckCircle2Icon,
-  CircleDotIcon,
   CircleIcon,
   ClockIcon,
   EditIcon,
   EyeIcon,
   InfoIcon,
   MessageSquareIcon,
-  MinusCircleIcon,
   SendIcon,
   TagIcon,
   TypeIcon,
@@ -136,18 +133,15 @@ const StatusBadge = ({ status }: { status: string }) => {
 const PriorityBadge = ({ priority }: { priority: string }) => {
   const priorityConfig = {
     high: {
-      icon: AlertTriangleIcon,
       label: "High",
       className: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300",
     },
     medium: {
-      icon: CircleDotIcon,
       label: "Medium",
       className:
         "bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300",
     },
     low: {
-      icon: MinusCircleIcon,
       label: "Low",
       className:
         "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300",
@@ -157,11 +151,8 @@ const PriorityBadge = ({ priority }: { priority: string }) => {
   const config = priorityConfig[priority as keyof typeof priorityConfig];
   if (!config) return null;
 
-  const Icon = config.icon;
-
   return (
     <Badge className={cn("gap-1.5", config.className)} variant="outline">
-      <Icon className="!size-3" />
       {config.label}
     </Badge>
   );

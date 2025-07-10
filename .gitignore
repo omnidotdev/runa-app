@@ -11,6 +11,7 @@ coverage
 # editor
 .vscode
 .zed
+.rules
 
 # TLS/HTTPS
 certificates
