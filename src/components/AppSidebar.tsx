@@ -140,7 +140,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                   >
                     <div
                       className={cn(
-                        "flex aspect-square size-6 items-center justify-center rounded-md transition-all group-data-[collapsible=icon]:size-8",
+                        "flex aspect-square size-6 items-center justify-center rounded-md transition-transform group-data-[collapsible=icon]:size-8",
                         workspace
                           ? "bg-primary text-primary-foreground dark:bg-primary-400"
                           : "dark:bg-primary-400",
