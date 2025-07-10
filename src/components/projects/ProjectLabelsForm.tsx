@@ -25,6 +25,7 @@ import {
 } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
 import labelsOptions from "@/lib/options/labels.options";
+import getQueryClient from "@/lib/util/getQueryClient";
 import ColorSelector from "../core/ColorSelector";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -68,6 +69,8 @@ const defaultColumn: Partial<ColumnDef<Label>> = {
 };
 
 const ProjectLabelsForm = () => {
+  const queryClient = getQueryClient();
+
   const { projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/settings",
   });
@@ -77,24 +80,18 @@ const ProjectLabelsForm = () => {
     select: (data) => data?.labels?.nodes,
   });
 
-  const meta = {
-    invalidates: [labelsOptions({ projectId }).queryKey],
-  };
+  const onSettled = () => queryClient.invalidateQueries();
 
-  const { mutate: createLabel } = useCreateLabelMutation({
-    meta,
-    onSettled: () => reset(),
-  });
+  const { mutate: createLabel } = useCreateLabelMutation({ onSettled });
+  const { mutate: updateLabel } = useUpdateLabelMutation({ onSettled });
+  const { mutate: deleteLabel } = useDeleteLabelMutation({ onSettled });
 
-  const { mutate: updateLabel } = useUpdateLabelMutation({ meta });
-  const { mutate: deleteLabel } = useDeleteLabelMutation({ meta });
-
-  const { Field, Subscribe, handleSubmit, reset } = useForm({
+  const { Field, Subscribe, handleSubmit } = useForm({
     defaultValues: {
       name: "",
       color: "gray",
     },
-    onSubmit: ({ value }) => {
+    onSubmit: ({ value, formApi }) => {
       createLabel({
         input: {
           label: {
@@ -104,12 +101,15 @@ const ProjectLabelsForm = () => {
           },
         },
       });
+
+      formApi.reset();
     },
   });
 
   const columns = useMemo(
     () => [
       columnHelper.accessor("color", {
+        header: "Color",
         cell: (info) => (
           <ColorSelector
             value={[info.getValue() || "blue"]}
@@ -139,6 +139,7 @@ const ProjectLabelsForm = () => {
         ),
       }),
       columnHelper.accessor("name", {
+        header: "Name",
         footer: () => (
           <Field name="name">
             {(field) => (

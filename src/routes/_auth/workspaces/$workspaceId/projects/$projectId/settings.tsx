@@ -11,14 +11,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
+import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
   loader: async ({ params: { projectId }, context: { queryClient } }) => {
-    const { project } = await queryClient.ensureQueryData(
-      projectOptions({ rowId: projectId }),
-    );
+    const [{ project }] = await Promise.all([
+      queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
+      queryClient.ensureQueryData(labelsOptions({ projectId })),
+    ]);
 
     if (!project) {
       throw notFound();
