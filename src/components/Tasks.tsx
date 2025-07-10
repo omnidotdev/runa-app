@@ -9,6 +9,7 @@ import {
   CircleIcon,
   ClockIcon,
   EyeIcon,
+  TagIcon,
   UserIcon,
 } from "lucide-react";
 
@@ -23,6 +24,7 @@ import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
 import Assignees from "./Assignees";
 import Labels from "./Labels";
+import { Badge } from "./ui/badge";
 import { SidebarMenuShotcut } from "./ui/sidebar";
 import {
   TooltipContent,
@@ -225,14 +227,14 @@ const Tasks = ({
 
                     <div className="grid grid-cols-4">
                       <div className="-m-3 col-span-3 flex items-end p-2.5">
-                        {!!task.taskLabels.nodes.length && (
-                          <TooltipRoot
-                            positioning={{
-                              placement: "top-start",
-                              shift: -6,
-                            }}
-                          >
-                            <TooltipTrigger asChild>
+                        <TooltipRoot
+                          positioning={{
+                            placement: "top-start",
+                            shift: -6,
+                          }}
+                        >
+                          <TooltipTrigger asChild>
+                            {task.taskLabels.nodes.length ? (
                               <Labels
                                 labels={
                                   task.taskLabels.nodes?.map(
@@ -241,19 +243,28 @@ const Tasks = ({
                                 }
                                 className="flex flex-wrap gap-1"
                               />
-                            </TooltipTrigger>
-                            <TooltipPositioner>
-                              <TooltipContent className="border bg-background text-foreground">
-                                <div className="inline-flex">
-                                  Update Labels
-                                  <div className="ml-2 flex items-center gap-0.5">
-                                    <SidebarMenuShotcut>L</SidebarMenuShotcut>
-                                  </div>
+                            ) : (
+                              <Badge
+                                size="sm"
+                                variant="outline"
+                                className="border-border border-dashed"
+                              >
+                                <TagIcon className="!size-2.5" />
+                                <span className="text-[10px]">No labels</span>
+                              </Badge>
+                            )}
+                          </TooltipTrigger>
+                          <TooltipPositioner>
+                            <TooltipContent className="border bg-background text-foreground">
+                              <div className="inline-flex">
+                                Update Labels
+                                <div className="ml-2 flex items-center gap-0.5">
+                                  <SidebarMenuShotcut>L</SidebarMenuShotcut>
                                 </div>
-                              </TooltipContent>
-                            </TooltipPositioner>
-                          </TooltipRoot>
-                        )}
+                              </div>
+                            </TooltipContent>
+                          </TooltipPositioner>
+                        </TooltipRoot>
                       </div>
 
                       {task?.dueDate && (

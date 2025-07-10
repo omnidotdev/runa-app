@@ -2,7 +2,7 @@ import { Draggable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import { format } from "date-fns";
-import { CalendarIcon, UserIcon } from "lucide-react";
+import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 
 import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
@@ -22,6 +22,7 @@ import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
 import Labels from "./Labels";
+import { Badge } from "./ui/badge";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
@@ -147,20 +148,20 @@ const TasksList = ({
                     )}
                   >
                     <div className="flex items-center">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col">
                         <div className="flex items-center gap-2 text-base-400 text-xs dark:text-base-500">
                           <span className="font-mono">{displayId}</span>
                           {PriorityIcon}
                         </div>
-                      </div>
 
-                      <div className="ml-4 py-2">
-                        <RichTextEditor
-                          defaultContent={task?.content}
-                          className="min-h-0 border-0 p-0 text-xs dark:bg-background"
-                          skeletonClassName="h-4 p-0 w-80"
-                          editable={false}
-                        />
+                        <div className="py-2">
+                          <RichTextEditor
+                            defaultContent={task?.content}
+                            className="min-h-0 border-0 p-0 text-xs dark:bg-background"
+                            skeletonClassName="h-4 p-0 w-80"
+                            editable={false}
+                          />
+                        </div>
                       </div>
 
                       <TooltipRoot
@@ -204,15 +205,14 @@ const TasksList = ({
                     </div>
 
                     <div className="hidden items-center justify-between sm:flex">
-                      {!!task.taskLabels.nodes.length && (
-                        <TooltipRoot
-                          positioning={{
-                            placement: "top-start",
-                            shift: -6,
-                          }}
-                        >
-                          <TooltipTrigger asChild>
-                            {/* TODO */}
+                      <TooltipRoot
+                        positioning={{
+                          placement: "top-start",
+                          shift: -6,
+                        }}
+                      >
+                        <TooltipTrigger asChild>
+                          {task.taskLabels.nodes.length ? (
                             <Labels
                               labels={
                                 task.taskLabels.nodes?.map(
@@ -221,19 +221,28 @@ const TasksList = ({
                               }
                               className="flex flex-wrap gap-1"
                             />
-                          </TooltipTrigger>
-                          <TooltipPositioner>
-                            <TooltipContent className="border bg-background text-foreground">
-                              <div className="inline-flex">
-                                Update Labels
-                                <div className="ml-2 flex items-center gap-0.5">
-                                  <SidebarMenuShotcut>L</SidebarMenuShotcut>
-                                </div>
+                          ) : (
+                            <Badge
+                              size="sm"
+                              variant="outline"
+                              className="border-border border-dashed"
+                            >
+                              <TagIcon className="!size-2.5" />
+                              <span className="text-[10px]">No labels</span>
+                            </Badge>
+                          )}
+                        </TooltipTrigger>
+                        <TooltipPositioner>
+                          <TooltipContent className="border bg-background text-foreground">
+                            <div className="inline-flex">
+                              Update Labels
+                              <div className="ml-2 flex items-center gap-0.5">
+                                <SidebarMenuShotcut>L</SidebarMenuShotcut>
                               </div>
-                            </TooltipContent>
-                          </TooltipPositioner>
-                        </TooltipRoot>
-                      )}
+                            </div>
+                          </TooltipContent>
+                        </TooltipPositioner>
+                      </TooltipRoot>
 
                       {task?.dueDate && (
                         <TooltipRoot
@@ -243,7 +252,7 @@ const TasksList = ({
                           }}
                         >
                           <TooltipTrigger asChild>
-                            <div className="flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
+                            <div className="ml-auto flex items-center gap-1 text-base-500 text-xs dark:text-base-400">
                               <CalendarIcon className="h-3 w-3" />
                               <span>
                                 {format(new Date(task.dueDate), "MMM d")}
