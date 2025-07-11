@@ -7,7 +7,7 @@ import type { ComponentProps } from "react";
 import type { VariantProps } from "tailwind-variants";
 
 const badgeVariants = tv({
-  base: "inline-flex select-none items-center whitespace-nowrap rounded-md border font-semibold transition-colors",
+  base: "inline-flex select-none items-center whitespace-nowrap rounded-md border font-semibold",
   variants: {
     variant: {
       solid: "border-transparent bg-primary text-primary-foreground shadow-sm ",

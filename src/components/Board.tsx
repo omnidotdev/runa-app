@@ -1,209 +1,190 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { useEffect, useRef, useState } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useParams, useSearch } from "@tanstack/react-router";
+import { PlusIcon } from "lucide-react";
+import { useCallback, useRef } from "react";
 
-import Column from "@/components/Column";
-import ConfirmDialog from "@/components/ConfirmDialog";
-import TaskDialog from "@/components/TaskDialog";
+import Tasks, { columnIcons } from "@/components/Tasks";
+import { Button } from "@/components/ui/button";
+import { SidebarMenuShotcut } from "@/components/ui/sidebar";
+import { Tooltip } from "@/components/ui/tooltip";
+import { useUpdateTaskMutation } from "@/generated/graphql";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useDragStore from "@/lib/hooks/store/useDragStore";
+import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import projectOptions from "@/lib/options/project.options";
+import projectsOptions from "@/lib/options/projects.options";
+import tasksOptions from "@/lib/options/tasks.options";
+import getQueryClient from "@/lib/util/getQueryClient";
+import { useTheme } from "@/providers/ThemeProvider";
 
 import type { DropResult } from "@hello-pangea/dnd";
-import type { Project, Task } from "@/types";
+import type { MouseEvent } from "react";
 
-interface BoardProps {
-  project: Project;
-  onProjectUpdate: (columns: Project["columns"]) => void;
-  isProjectView?: boolean;
-}
+const Board = () => {
+  const { theme } = useTheme();
 
-const Board = ({
-  project,
-  onProjectUpdate,
-  isProjectView = false,
-}: BoardProps) => {
-  const [selectedTask, setSelectedTask] = useState<string | null>(null);
-  const [isAddingTask, setIsAddingTask] = useState(false);
-  const [newTaskColumn, setNewTaskColumn] = useState<string | null>(null);
-  const [columnToDelete, setColumnToDelete] = useState<string | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
-  const isMouseDown = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
+  const { workspaceId, projectId } = useParams({
+    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  });
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    // Don't initiate board scroll if clicking on interactive elements
-    const target = e.target as HTMLElement;
-    if (
-      target.closest("[data-rbd-draggable-id]") || // Draggable elements
-      target.closest("button") || // Buttons
-      target.closest("input") || // Input fields
-      target.closest("[data-rbd-droppable-id]") || // Droppable areas
-      target.closest('[role="dialog"]') // Dialog content
-    ) {
-      return;
-    }
+  const { search } = useSearch({
+    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  });
 
-    isMouseDown.current = true;
-    startX.current = e.pageX;
-    scrollLeft.current = containerRef.current?.scrollLeft || 0;
-  };
+  const { setIsOpen: setIsCreateTaskDialogOpen } = useDialogStore({
+    type: DialogType.CreateTask,
+  });
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isMouseDown.current || isDragging.current || !containerRef.current)
-        return;
+  const { setColumnId } = useTaskStore();
 
-      e.preventDefault();
-      const dx = e.pageX - startX.current;
-      containerRef.current.scrollLeft = scrollLeft.current - dx;
-    };
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-    const handleMouseUp = () => {
-      isMouseDown.current = false;
-    };
+  const { setDraggableId } = useDragStore();
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+  const queryClient = getQueryClient();
 
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
+  const { data: project } = useSuspenseQuery({
+    ...projectOptions({ rowId: projectId }),
+    select: (data) => data?.project,
+  });
+
+  const { mutate: updateTask } = useUpdateTaskMutation({
+    meta: {
+      invalidates: [
+        tasksOptions({ projectId, search }).queryKey,
+        projectsOptions({ workspaceId, search }).queryKey,
+      ],
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries(tasksOptions({ projectId, search }));
+
+      queryClient.setQueryData(
+        tasksOptions({ projectId, search }).queryKey,
+        // @ts-ignore TODO: type properly
+        (old) => ({
+          tasks: {
+            ...old?.tasks!,
+            nodes: old?.tasks?.nodes?.map((task) => {
+              if (task?.rowId === variables.rowId) {
+                return {
+                  ...task!,
+                  columnId: variables.patch.columnId,
+                  columnIndex: variables.patch.columnIndex,
+                };
+              }
+
+              return task;
+            }),
+          },
+        }),
+      );
+
+      setDraggableId(null);
+    },
+  });
+
+  const startAutoScroll = useCallback((direction: "left" | "right") => {
+    if (autoScrollIntervalRef.current) return;
+
+    autoScrollIntervalRef.current = setInterval(() => {
+      if (scrollContainerRef.current) {
+        const scrollAmount = direction === "left" ? -10 : 10;
+        scrollContainerRef.current.scrollLeft += scrollAmount;
+      }
+    }, 16); // ~60fps
   }, []);
 
-  const onDragStart = () => {
-    isDragging.current = true;
-  };
-
-  const onDragEnd = (result: DropResult) => {
-    isDragging.current = false;
-
-    const { destination, source } = result;
-
-    if (!destination) return;
-
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
+  const stopAutoScroll = useCallback(() => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+      autoScrollIntervalRef.current = null;
     }
+  }, []);
 
-    const sourceColumn = project.columns[source.droppableId];
-    const destColumn = project.columns[destination.droppableId];
-    const sourceTasks = [...sourceColumn.tasks];
-    const destTasks =
-      source.droppableId === destination.droppableId
-        ? sourceTasks
-        : [...destColumn.tasks];
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!scrollContainerRef.current) return;
 
-    const [removed] = sourceTasks.splice(source.index, 1);
-    destTasks.splice(destination.index, 0, removed);
+      const container = scrollContainerRef.current;
+      const rect = container.getBoundingClientRect();
+      const scrollZone = 100; // pixels from edge to trigger scroll
 
-    onProjectUpdate({
-      ...project.columns,
-      [source.droppableId]: {
-        ...sourceColumn,
-        tasks: sourceTasks,
-      },
-      [destination.droppableId]: {
-        ...destColumn,
-        tasks: destTasks,
-      },
-    });
-  };
+      const mouseX = e.clientX - rect.left;
 
-  const handleDeleteColumn = (columnId: string) => {
-    const columnCount = Object.keys(project.columns).length;
-    if (columnCount <= 1) {
-      alert("Cannot delete the last column");
-      setColumnToDelete(null);
-      return;
-    }
-
-    // Get all tasks from the column being deleted
-    const tasksToMove = project.columns[columnId].tasks;
-
-    // Create new columns object without the deleted column
-    const { [columnId]: _deletedColumn, ...remainingColumns } = project.columns;
-
-    // If there are tasks in the deleted column, move them to the first remaining column
-    if (tasksToMove.length > 0) {
-      const firstColumnId = Object.keys(remainingColumns)[0];
-      remainingColumns[firstColumnId] = {
-        ...remainingColumns[firstColumnId],
-        tasks: [...remainingColumns[firstColumnId].tasks, ...tasksToMove],
-      };
-    }
-
-    // Update the project with the new columns structure
-    onProjectUpdate(remainingColumns);
-    setColumnToDelete(null);
-  };
-
-  const getTaskById = (taskId: string) => {
-    for (const column of Object.values(project.columns)) {
-      const task = column.tasks.find((t) => t.id === taskId);
-      if (task) return task;
-    }
-    return null;
-  };
-
-  const handleAddTask = (columnId: string, task: Task) => {
-    const column = project.columns[columnId];
-    onProjectUpdate({
-      ...project.columns,
-      [columnId]: {
-        ...column,
-        tasks: [...column.tasks, task],
-      },
-    });
-  };
-
-  const handleUpdateTask = (task: Task) => {
-    for (const columnId in project.columns) {
-      const column = project.columns[columnId];
-      const taskIndex = column.tasks.findIndex((t) => t.id === task.id);
-      if (taskIndex !== -1) {
-        const updatedTasks = [...column.tasks];
-        updatedTasks[taskIndex] = task;
-        onProjectUpdate({
-          ...project.columns,
-          [columnId]: {
-            ...column,
-            tasks: updatedTasks,
-          },
-        });
-        break;
+      if (mouseX < scrollZone && container.scrollLeft > 0) {
+        startAutoScroll("left");
+      } else if (
+        mouseX > rect.width - scrollZone &&
+        container.scrollLeft < container.scrollWidth - container.clientWidth
+      ) {
+        startAutoScroll("right");
+      } else {
+        stopAutoScroll();
       }
+    },
+    [startAutoScroll, stopAutoScroll],
+  );
+
+  const onDragStart = useCallback(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.addEventListener(
+        "mousemove",
+        // biome-ignore lint/suspicious/noExplicitAny: needed for conversion
+        handleMouseMove as any,
+      );
     }
-  };
+  }, [handleMouseMove]);
 
-  const handleDeleteTask = (columnId: string, taskId: string) => {
-    const column = project.columns[columnId];
-    onProjectUpdate({
-      ...project.columns,
-      [columnId]: {
-        ...column,
-        tasks: column.tasks.filter((t) => t.id !== taskId),
-      },
-    });
-    setSelectedTask(null);
-  };
-
-  const boardStyle = project.color
-    ? {
-        backgroundColor: `${project.color}08`,
+  const onDragEnd = useCallback(
+    (result: DropResult) => {
+      stopAutoScroll();
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.removeEventListener(
+          "mousemove",
+          // biome-ignore lint/suspicious/noExplicitAny: needed for conversion
+          handleMouseMove as any,
+        );
       }
-    : {};
+
+      const { destination, source, draggableId } = result;
+
+      // Exit early if dropped outside a droppable area or in the same position
+      if (!destination) return;
+
+      if (
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
+      )
+        return;
+
+      setDraggableId(draggableId);
+
+      updateTask({
+        rowId: draggableId,
+        patch: {
+          columnId: destination.droppableId,
+          columnIndex: destination.index,
+        },
+      });
+    },
+    [updateTask, stopAutoScroll, handleMouseMove, setDraggableId],
+  );
 
   return (
     <div
-      ref={containerRef}
-      className="custom-scrollbar h-full select-none overflow-x-auto"
-      onMouseDown={handleMouseDown}
-      style={boardStyle}
+      ref={scrollContainerRef}
+      className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/20"
+      style={{
+        backgroundColor: project?.color
+          ? theme === "dark"
+            ? `${project?.color}12`
+            : `${project?.color}0D`
+          : undefined,
+      }}
     >
-      <div className="h-full min-w-fit px-4 py-4">
+      <div className="h-full min-w-fit p-4">
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
           <Droppable droppableId="board" direction="horizontal" type="column">
             {(provided) => (
@@ -212,86 +193,92 @@ const Board = ({
                 {...provided.droppableProps}
                 className="flex h-full gap-3"
               >
-                {Object.entries(project.columns).map(
-                  ([columnId, column], index) => (
-                    <Column
-                      key={columnId}
-                      column={column}
-                      index={index}
-                      onTaskClick={(taskId) => setSelectedTask(taskId)}
-                      onAddClick={() => {
-                        setIsAddingTask(true);
-                        setNewTaskColumn(columnId);
-                      }}
-                      onDeleteClick={(columnId) => setColumnToDelete(columnId)}
-                      isProjectView={isProjectView}
-                      projectPrefix={project.prefix}
-                      projectColor={project.color}
-                    />
-                  ),
-                )}
+                {project?.columns?.nodes?.map((column) => (
+                  <div
+                    key={column?.rowId}
+                    className="relative flex h-full w-[340px] flex-col gap-2 bg-inherit"
+                  >
+                    <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-shrink-0">
+                          {
+                            columnIcons[
+                              column?.title
+                                .toLowerCase()
+                                .replace(/ /g, "-") as keyof typeof columnIcons
+                            ]
+                          }
+                        </div>
+
+                        <h3 className="text-base-800 text-sm dark:text-base-100">
+                          {column?.title}
+                        </h3>
+
+                        <span className="flex size-7 items-center justify-center rounded-full bg-muted text-foreground text-xs tabular-nums">
+                          {
+                            project?.columns?.nodes?.find(
+                              (c) => c?.rowId === column?.rowId,
+                            )?.tasks?.totalCount
+                          }
+                        </span>
+                      </div>
+
+                      <Tooltip
+                        positioning={{ placement: "top", gutter: 11 }}
+                        tooltip={{
+                          className: "bg-background text-foreground border",
+                          children: (
+                            <div className="inline-flex">
+                              Add Task
+                              <div className="ml-2 flex items-center gap-0.5">
+                                <SidebarMenuShotcut>C</SidebarMenuShotcut>
+                              </div>
+                            </div>
+                          ),
+                        }}
+                      >
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          className="size-5"
+                          onClick={() => {
+                            setColumnId(column.rowId);
+                            setIsCreateTaskDialogOpen(true);
+                          }}
+                        >
+                          <PlusIcon className="size-4" />
+                        </Button>
+                      </Tooltip>
+                    </div>
+
+                    <div className="no-scrollbar flex h-full overflow-y-auto">
+                      <Droppable droppableId={column.rowId}>
+                        {(provided, snapshot) => (
+                          <Tasks
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            prefix={project.prefix ?? "PROJ"}
+                            columnId={column.rowId}
+                            style={{
+                              backgroundColor:
+                                project?.color && snapshot.isDraggingOver
+                                  ? `${project?.color}0D`
+                                  : undefined,
+                            }}
+                          >
+                            {provided.placeholder}
+                          </Tasks>
+                        )}
+                      </Droppable>
+                    </div>
+                  </div>
+                ))}
                 {provided.placeholder}
               </div>
             )}
           </Droppable>
         </DragDropContext>
       </div>
-
-      {selectedTask && (
-        <TaskDialog
-          task={getTaskById(selectedTask)!}
-          team={project.team}
-          isProject={isProjectView}
-          projectPrefix={project.prefix}
-          onClose={() => setSelectedTask(null)}
-          onDelete={(taskId) => {
-            for (const columnId in project.columns) {
-              const column = project.columns[columnId];
-              if (column.tasks.some((t) => t.id === taskId)) {
-                handleDeleteTask(columnId, taskId);
-                break;
-              }
-            }
-          }}
-          // @ts-ignore: TODO
-          onUpdate={handleUpdateTask}
-        />
-      )}
-
-      {isAddingTask && newTaskColumn && (
-        <TaskDialog
-          isNew
-          team={project.team}
-          isProject={isProjectView}
-          projectPrefix={project.prefix}
-          task={{
-            id: `${isProjectView ? "project" : "task"}-${Date.now()}`,
-            content: "",
-            description: "",
-            priority: "medium",
-            assignees: [],
-            dueDate: undefined,
-          }}
-          onClose={() => {
-            setIsAddingTask(false);
-            setNewTaskColumn(null);
-          }}
-          onSave={(task) => {
-            handleAddTask(newTaskColumn, task);
-            setIsAddingTask(false);
-            setNewTaskColumn(null);
-          }}
-        />
-      )}
-
-      {columnToDelete && (
-        <ConfirmDialog
-          title="Delete Column"
-          message={`Are you sure you want to delete this column? All tasks will be moved to the first remaining column.`}
-          onConfirm={() => handleDeleteColumn(columnToDelete)}
-          onCancel={() => setColumnToDelete(null)}
-        />
-      )}
     </div>
   );
 };

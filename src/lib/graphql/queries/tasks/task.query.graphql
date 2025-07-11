@@ -1,0 +1,51 @@
+query Task($rowId: UUID!) {
+  task(rowId: $rowId) {
+    rowId
+    columnId
+    columnIndex
+    content
+    description
+    priority
+    createdAt
+    updatedAt
+    dueDate
+    taskLabels {
+      nodes {
+        rowId
+        label {
+          ...Label
+        }
+      }
+    }
+    posts(orderBy: CREATED_AT_ASC) {
+      totalCount
+      nodes {
+        rowId
+        title
+        description
+        createdAt
+        author {
+          name
+          avatarUrl
+        }
+      }
+    }
+    column {
+      title
+    }
+    author {
+      name
+      avatarUrl
+    }
+    assignees {
+      nodes {
+        rowId
+        user {
+          rowId
+          name
+          avatarUrl
+        }
+      }
+    }
+  }
+}

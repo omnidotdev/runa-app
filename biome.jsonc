@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.5/schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
@@ -34,7 +34,7 @@
         "useKeyWithClickEvents": "off"
       },
       "correctness": {
-        "noUnusedImports": "error"
+        "noUnusedImports": { "fix": "safe", "level": "error" }
       },
       "nursery": {
         "useUniqueElementIds": "off",
@@ -43,7 +43,7 @@
           "fix": "safe",
           "options": {
             "attributes": ["className"],
-            "functions": ["cn, cva"]
+            "functions": ["cn, cva, tv"]
           }
         }
       },
@@ -56,7 +56,6 @@
         }
       },
       "suspicious": {
-        // TODO: remove to allow for error
         "noArrayIndexKey": "warn",
         "noConsole": {
           "level": "error",

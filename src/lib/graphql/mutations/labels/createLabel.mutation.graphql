@@ -1,0 +1,9 @@
+mutation CreateLabel($input: CreateLabelInput!) {
+  createLabel(input: $input) {
+    label {
+      rowId
+      name
+      color
+    }
+  }
+}
