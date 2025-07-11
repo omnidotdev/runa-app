@@ -8,6 +8,7 @@ import {
   UsersIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { useDebounceCallback } from "usehooks-ts";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "@/components/core/Link";
@@ -115,11 +116,13 @@ function SettingsPage() {
       type: DialogType.CreateProject,
     });
 
-  const { mutate: updateProject } = useUpdateWorkspaceMutation({
+  const { mutate: updateWorkspace } = useUpdateWorkspaceMutation({
     meta: {
       invalidates: [["all"]],
     },
   });
+
+  const handleWorkspaceUpdate = useDebounceCallback(updateWorkspace, 300);
 
   return (
     <div className="no-scrollbar relative h-full overflow-auto p-12">
@@ -148,7 +151,7 @@ function SettingsPage() {
                 }
 
                 setNameError(null);
-                updateProject({
+                handleWorkspaceUpdate({
                   rowId: workspaceId,
                   patch: {
                     name: text,

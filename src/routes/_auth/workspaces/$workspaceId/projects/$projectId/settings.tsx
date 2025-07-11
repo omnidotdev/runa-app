@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import { useDebounceCallback } from "usehooks-ts";
 
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
@@ -50,6 +51,8 @@ function RouteComponent() {
 
   const [nameError, setNameError] = useState<string | null>(null);
 
+  const handleProjectUpdate = useDebounceCallback(updateProject, 300);
+
   return (
     <div className="no-scrollbar relative h-full overflow-auto p-12">
       {/* Header */}
@@ -78,7 +81,7 @@ function RouteComponent() {
                   }
 
                   setNameError(null);
-                  updateProject({
+                  handleProjectUpdate({
                     rowId: projectId,
                     patch: { name: text },
                   });
@@ -94,7 +97,7 @@ function RouteComponent() {
                   placeholder="prefix"
                   skeletonClassName="h-5 w-12"
                   onUpdate={({ editor }) =>
-                    updateProject({
+                    handleProjectUpdate({
                       rowId: projectId,
                       patch: {
                         prefix: editor.getText(),
@@ -115,7 +118,7 @@ function RouteComponent() {
               placeholder="Add a short description..."
               skeletonClassName="h-5 max-w-40"
               onUpdate={({ editor }) =>
-                updateProject({
+                handleProjectUpdate({
                   rowId: projectId,
                   patch: {
                     description: editor.getText(),

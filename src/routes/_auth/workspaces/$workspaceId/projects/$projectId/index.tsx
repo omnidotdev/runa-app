@@ -173,6 +173,8 @@ function ProjectPage() {
     },
   });
 
+  const handleProjectUpdate = useDebounceCallback(updateProject, 300);
+
   useHotkeys(
     Hotkeys.ToggleViewMode,
     () =>
@@ -203,7 +205,7 @@ function ProjectPage() {
                 }
 
                 setNameError(null);
-                updateProject({
+                handleProjectUpdate({
                   rowId: projectId,
                   patch: { name: text },
                 });
@@ -220,7 +222,7 @@ function ProjectPage() {
               placeholder="Add a short description..."
               skeletonClassName="h-5 max-w-40"
               onUpdate={({ editor }) =>
-                updateProject({
+                handleProjectUpdate({
                   rowId: projectId,
                   patch: {
                     description: editor.getText(),
