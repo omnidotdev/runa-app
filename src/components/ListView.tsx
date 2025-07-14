@@ -4,7 +4,6 @@ import { useParams, useSearch } from "@tanstack/react-router";
 import { ChevronDownIcon, PlusIcon } from "lucide-react";
 import { useCallback } from "react";
 
-import { columnIcons } from "@/components/Tasks";
 import TasksList from "@/components/TasksList";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +20,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import projectsOptions from "@/lib/options/projects.options";
 import tasksOptions from "@/lib/options/tasks.options";
+import { getColumnIcon } from "@/lib/util/getColumnIcon";
 import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
 
@@ -133,6 +133,8 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
         }}
       >
         {project?.columns?.nodes?.map((column, index) => {
+          const ColumnIcon = getColumnIcon(column.title);
+
           return (
             <CollapsibleRoot
               key={column?.rowId}
@@ -158,15 +160,7 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
               <CollapsibleTrigger asChild>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="flex-shrink-0">
-                      {
-                        columnIcons[
-                          column?.title
-                            .toLowerCase()
-                            .replace(/ /g, "-") as keyof typeof columnIcons
-                        ]
-                      }
-                    </div>
+                    <div className="flex-shrink-0">{ColumnIcon}</div>
 
                     <h3 className="text-base-800 text-sm dark:text-base-100">
                       {column?.title}

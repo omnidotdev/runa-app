@@ -20,6 +20,7 @@ import {
   SheetDescription,
   SheetRoot,
   SheetTitle,
+  SheetTrigger,
 } from "@/components/ui/sheet";
 import {
   Tooltip,
@@ -204,6 +205,11 @@ function Sidebar({
         open={openMobile}
         onOpenChange={({ open }) => setOpenMobile(open)}
       >
+        <SheetTrigger asChild className="m-2">
+          <Button variant="ghost" size="icon" className="h-8 w-8">
+            <PanelLeftIcon className="size-4" />
+          </Button>
+        </SheetTrigger>
         <SheetContent
           data-sidebar="sidebar"
           data-slot="sidebar"
@@ -570,11 +576,13 @@ function SidebarMenuButton({
   variant = "default",
   size = "default",
   tooltip,
+  shortcut,
   className,
   ...rest
 }: ComponentProps<typeof ark.button> & {
   isActive?: boolean;
   tooltip?: string | ComponentProps<typeof TooltipContent>;
+  shortcut?: Hotkeys;
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const { isMobile, state } = useSidebar();
 
@@ -595,7 +603,14 @@ function SidebarMenuButton({
 
   if (typeof tooltip === "string") {
     tooltip = {
-      children: tooltip,
+      children: (
+        <div className="flex items-center justify-between gap-2">
+          <span>{tooltip}</span>
+          {shortcut && (
+            <SidebarMenuShotcut>{shortcut.toUpperCase()}</SidebarMenuShotcut>
+          )}
+        </div>
+      ),
     };
   }
 

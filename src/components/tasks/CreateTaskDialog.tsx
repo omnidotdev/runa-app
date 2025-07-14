@@ -9,6 +9,7 @@ import RichTextEditor from "@/components/core/RichTextEditor";
 import Labels from "@/components/Labels";
 import CreateTaskAssignees from "@/components/tasks/CreateTaskAssignees";
 import CreateTaskDatePicker from "@/components/tasks/CreateTaskDatePicker";
+import CreateTaskPriority from "@/components/tasks/CreateTaskPriority";
 import TaskColumnForm from "@/components/tasks/TaskColumnForm";
 import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,6 @@ import {
   useCreateAssigneeMutation,
   useCreateLabelMutation,
   useCreateTaskLabelMutation,
-  // useCreateTaskLabelMutation,
   useCreateTaskMutation,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -40,7 +40,6 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
-import CreateTaskPriority from "./CreateTaskPriority";
 
 interface Props {
   columnId?: string;

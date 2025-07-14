@@ -82,7 +82,10 @@ const Tooltip = ({ tooltip, children, ...rest }: Props) => {
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <Portal>
         <TooltipPositioner>
-          <TooltipContent {...tooltipProps} />
+          <TooltipContent
+            className="border bg-background text-foreground"
+            {...tooltipProps}
+          />
         </TooltipPositioner>
       </Portal>
     </TooltipRoot>

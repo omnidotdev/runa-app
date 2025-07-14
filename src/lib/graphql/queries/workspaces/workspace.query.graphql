@@ -9,6 +9,28 @@ query Workspace($rowId: UUID!) {
         name
         color
         viewMode
+        prefix
+        tasks {
+          totalCount
+        }
+        columns {
+          nodes {
+            allTasks: tasks {
+              totalCount
+            }
+
+            completedTasks: tasks(
+              filter: { column: { title: { equalTo: "Done" } } }
+            ) {
+              totalCount
+            }
+          }
+        }
+      }
+    }
+    workspaceUsers {
+      nodes {
+        userId
       }
     }
   }

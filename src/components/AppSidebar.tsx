@@ -12,6 +12,7 @@ import {
   PanelLeftIcon,
   PlusIcon,
   Settings2,
+  SquarePlusIcon,
   SunIcon,
   Trash2Icon,
 } from "lucide-react";
@@ -60,7 +61,7 @@ import { useTheme } from "@/providers/ThemeProvider";
 import type { ComponentProps } from "react";
 
 export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
-  const { workspaceId } = useParams({ strict: false });
+  const { workspaceId, projectId } = useParams({ strict: false });
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<{
     rowId: string;
@@ -115,20 +116,21 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   });
 
   const { setIsOpen: setIsCreateProjectOpen } = useDialogStore({
-    type: DialogType.CreateProject,
-  });
-
-  const { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
-    type: DialogType.CreateWorkspace,
-  });
-
-  const { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({
-    type: DialogType.DeleteProject,
-  });
+      type: DialogType.CreateProject,
+    }),
+    { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
+      type: DialogType.CreateWorkspace,
+    }),
+    { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({
+      type: DialogType.DeleteProject,
+    }),
+    { setIsOpen: setIsCreateTaskDialogOpen } = useDialogStore({
+      type: DialogType.CreateTask,
+    });
 
   return (
     <>
-      <Sidebar collapsible="icon" {...props}>
+      <Sidebar collapsible="icon" variant="inset" {...props}>
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -374,6 +376,19 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                               <SidebarMenuShotcut>V</SidebarMenuShotcut>
                             </MenuItem>
 
+                            {project.rowId === projectId && (
+                              <MenuItem
+                                value="createTask"
+                                className="flex cursor-pointer items-center gap-2"
+                                onClick={() => setIsCreateTaskDialogOpen(true)}
+                              >
+                                <SquarePlusIcon />
+                                <span>Add Task</span>
+
+                                <SidebarMenuShotcut>C</SidebarMenuShotcut>
+                              </MenuItem>
+                            )}
+
                             <MenuItem
                               value="delete"
                               className="flex cursor-pointer items-center gap-2"
@@ -457,6 +472,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip="Expand Sidebar"
+                shortcut={Hotkeys.ToggleSidebar}
                 onClick={() => setOpen(!open)}
                 className="flex justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
               >
@@ -471,6 +487,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip="Toggle Theme"
+                shortcut={Hotkeys.ToggleTheme}
                 onClick={() => toggleTheme()}
                 className="justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
               >

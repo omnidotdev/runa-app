@@ -33,7 +33,7 @@ const ColorSelector = ({ triggerValue, ...rest }: Props) => {
       collection={colorCollection}
       {...rest}
     >
-      <SelectTrigger className="w-full justify-start bg-transparent shadow-none hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent">
+      <SelectTrigger className="w-full justify-start bg-transparent px-3 shadow-none hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent">
         <div
           className={cn(
             "size-4 rounded-full",

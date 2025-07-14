@@ -8,15 +8,16 @@ import {
 } from "@tanstack/react-table";
 import { PlusIcon, TagIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import * as z from "zod/v4";
 
-import ColorSelector from "@/components/core/ColorSelector";
+import ColorSelector from "@/components/core/selectors/ColorSelector";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -28,6 +29,8 @@ import {
 } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
 import labelsOptions from "@/lib/options/labels.options";
+import { getLabelClasses } from "@/lib/util/getLabelClasses";
+import { cn } from "@/lib/utils";
 
 import type { ColumnDef, RowData } from "@tanstack/react-table";
 import type { LabelFragment as Label } from "@/generated/graphql";
@@ -60,8 +63,8 @@ const defaultColumn: Partial<ColumnDef<Label>> = {
         value={value as string}
         onChange={(e) => setValue(e.target.value)}
         onBlur={onBlur}
-        placeholder="Frontend"
-        className="border-none px-2 font-light shadow-none focus-visible:ring-0 disabled:opacity-100"
+        placeholder="Enter a label name..."
+        className="rounded-none border-none font-light text-xs shadow-none placeholder:opacity-50 focus-visible:ring-0 disabled:opacity-100"
       />
     );
   },
@@ -148,14 +151,20 @@ const ProjectLabelsForm = () => {
       columnHelper.accessor("name", {
         header: "Name",
         footer: () => (
-          <Field name="name">
+          <Field
+            name="name"
+            validators={{
+              onChangeAsyncDebounceMs: 300,
+              onChangeAsync: z.string().min(1),
+            }}
+          >
             {(field) => (
               <Input
                 id="name"
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 placeholder="Enter a label name..."
-                className="border-none px-2 shadow-none placeholder:opacity-50 focus-visible:ring-0 disabled:opacity-100"
+                className="rounded-none border-none text-xs shadow-none placeholder:opacity-50 focus-visible:ring-0 disabled:opacity-100"
               />
             )}
           </Field>
@@ -231,42 +240,79 @@ const ProjectLabelsForm = () => {
         <span className="text-base-400">({labels?.length})</span>
       </h2>
 
+      <div className="flex items-center gap-2">
+        {labels?.map((label) => {
+          const colors = getLabelClasses(label.color);
+
+          return (
+            <Badge
+              key={label.name}
+              size="sm"
+              variant="outline"
+              className={cn("border-border/50", colors.bg, colors.text)}
+            >
+              <TagIcon className={cn("!size-2.5", colors.icon)} />
+              <span className="font-medium text-[10px]">{label.name}</span>
+            </Badge>
+          );
+        })}
+      </div>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           handleSubmit();
         }}
-        className="flex-1 rounded-md border"
+        className="mt-2 flex-1 rounded-md border"
       >
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header, index) => (
-                  <TableHead
-                    key={header.id}
-                    className={index < 1 ? "border-border border-r" : ""}
-                    style={{
-                      width:
-                        header.id === "color"
-                          ? "200px"
-                          : header.id === "rowId"
-                            ? "50px"
-                            : "auto",
-                    }}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
+            {table.getHeaderGroups().map((headerGroup) =>
+              headerGroup.headers.map((header, index) => (
+                <TableHead
+                  key={header.id}
+                  className={cn(
+                    "border-b",
+                    index < 1 ? "border-border border-r" : "",
+                  )}
+                  style={{
+                    width:
+                      header.id === "color"
+                        ? "200px"
+                        : header.id === "rowId"
+                          ? "50px"
+                          : "auto",
+                  }}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                </TableHead>
+              )),
+            )}
           </TableHeader>
+
+          {table.getFooterGroups().map((footerGroup) => (
+            <TableRow key={footerGroup.id}>
+              {footerGroup.headers.map((header, index) => (
+                <TableCell
+                  key={header.id}
+                  className={index < 1 ? "border-border border-r" : ""}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.footer,
+                        header.getContext(),
+                      )}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
 
           <TableBody>
             {table.getRowModel().rows.map((row) => (
@@ -277,7 +323,10 @@ const ProjectLabelsForm = () => {
                 {row.getVisibleCells().map((cell, index) => (
                   <TableCell
                     key={cell.id}
-                    className={index < 1 ? "border-border border-r" : ""}
+                    className={cn(
+                      "",
+                      index < 1 ? "border-border border-r" : "",
+                    )}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
@@ -285,26 +334,6 @@ const ProjectLabelsForm = () => {
               </TableRow>
             ))}
           </TableBody>
-
-          <TableFooter>
-            {table.getFooterGroups().map((footerGroup) => (
-              <TableRow key={footerGroup.id}>
-                {footerGroup.headers.map((header, index) => (
-                  <TableCell
-                    key={header.id}
-                    className={index < 1 ? "border-border border-r" : ""}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.footer,
-                          header.getContext(),
-                        )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableFooter>
         </Table>
       </form>
     </div>

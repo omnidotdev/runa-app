@@ -2,14 +2,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
-  AlertCircleIcon,
   ArrowLeftIcon,
   CalendarIcon,
-  CheckCircle2Icon,
-  CircleIcon,
-  ClockIcon,
   EditIcon,
-  EyeIcon,
   InfoIcon,
   MessageSquareIcon,
   SendIcon,
@@ -22,6 +17,8 @@ import { useDebounceCallback } from "usehooks-ts";
 
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
+import ColumnSelector from "@/components/core/selectors/ColumnSelector";
+import PrioritySelector from "@/components/core/selectors/PrioritySelector";
 import Labels from "@/components/Labels";
 import NotFound from "@/components/layout/NotFound";
 import UpdateAssigneesDialog from "@/components/UpdateAssigneesDialog";
@@ -31,15 +28,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
-import {
-  createListCollection,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectItemGroup,
-  SelectItemText,
-  SelectTrigger,
-} from "@/components/ui/select";
+import { createListCollection } from "@/components/ui/select";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import {
   TooltipContent,
@@ -56,7 +45,6 @@ import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import seo from "@/lib/util/seo";
-import { cn } from "@/lib/utils";
 
 import type { EditorApi } from "@/components/core/RichTextEditor";
 
@@ -82,81 +70,6 @@ export const Route = createFileRoute({
   notFoundComponent: () => <NotFound>Task Not Found</NotFound>,
   component: TaskPage,
 });
-
-const StatusBadge = ({ status }: { status: string }) => {
-  const statusConfig = {
-    "To Do": {
-      icon: ClockIcon,
-      label: "To Do",
-      className:
-        "bg-base-100 text-base-600 dark:bg-base-800 dark:text-base-300",
-    },
-    "In Progress": {
-      icon: AlertCircleIcon,
-      label: "In Progress",
-      className:
-        "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300",
-    },
-    "Awaiting Review": {
-      icon: EyeIcon,
-      label: "Awaiting Review",
-      className:
-        "bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300",
-    },
-    Done: {
-      icon: CheckCircle2Icon,
-      label: "Done",
-      className:
-        "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300",
-    },
-    Backlog: {
-      icon: CircleIcon,
-      label: "Backlog",
-      className:
-        "bg-base-100 text-base-600 dark:bg-base-800 dark:text-base-300",
-    },
-  };
-
-  const config = statusConfig[status as keyof typeof statusConfig];
-  if (!config) return null;
-
-  const Icon = config.icon;
-
-  return (
-    <Badge className={cn("gap-1.5", config.className)} variant="outline">
-      <Icon className="!size-3" />
-      {config.label}
-    </Badge>
-  );
-};
-
-const PriorityBadge = ({ priority }: { priority: string }) => {
-  const priorityConfig = {
-    high: {
-      label: "High",
-      className: "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300",
-    },
-    medium: {
-      label: "Medium",
-      className:
-        "bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300",
-    },
-    low: {
-      label: "Low",
-      className:
-        "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300",
-    },
-  };
-
-  const config = priorityConfig[priority as keyof typeof priorityConfig];
-  if (!config) return null;
-
-  return (
-    <Badge className={cn("gap-1.5", config.className)} variant="outline">
-      {config.label}
-    </Badge>
-  );
-};
 
 function TaskPage() {
   const { workspaceId, projectId, taskId } = Route.useParams();
@@ -285,10 +198,11 @@ function TaskPage() {
                   <span className="font-mono text-base-400 text-sm dark:text-base-500">
                     {`${project?.prefix ? project.prefix : "PROJ"}-${taskIndex}`}
                   </span>
-                  <Select
-                    // @ts-ignore TODO: type issue
-                    collection={columnCollection}
+
+                  <ColumnSelector
                     defaultValue={[task?.columnId!]}
+                    triggerValue={task?.column?.title}
+                    size="xs"
                     onValueChange={({ value }) =>
                       updateTask({
                         rowId: taskId,
@@ -297,26 +211,12 @@ function TaskPage() {
                         },
                       })
                     }
-                  >
-                    <SelectTrigger className="size-fit bg-transparent p-0 data-[size=default]:h-fit dark:bg-transparent">
-                      <StatusBadge status={task?.column?.title!} />
-                    </SelectTrigger>
+                  />
 
-                    <SelectContent>
-                      <SelectItemGroup className="space-y-1">
-                        {columnCollection.items.map((column) => (
-                          <SelectItem key={column.value} item={column}>
-                            <SelectItemText>{column.label}</SelectItemText>
-                          </SelectItem>
-                        ))}
-                      </SelectItemGroup>
-                    </SelectContent>
-                  </Select>
-
-                  <Select
-                    // @ts-ignore TODO: type issue
-                    collection={priorityCollection}
+                  <PrioritySelector
                     defaultValue={[task?.priority!]}
+                    triggerValue={task?.priority}
+                    size="xs"
                     onValueChange={({ value }) =>
                       updateTask({
                         rowId: taskId,
@@ -325,21 +225,7 @@ function TaskPage() {
                         },
                       })
                     }
-                  >
-                    <SelectTrigger className="size-fit bg-transparent p-0 data-[size=default]:h-fit dark:bg-transparent">
-                      <PriorityBadge priority={task?.priority!} />
-                    </SelectTrigger>
-
-                    <SelectContent>
-                      <SelectItemGroup className="space-y-1">
-                        {priorityCollection.items.map((column) => (
-                          <SelectItem key={column.value} item={column}>
-                            <SelectItemText>{column.label}</SelectItemText>
-                          </SelectItem>
-                        ))}
-                      </SelectItemGroup>
-                    </SelectContent>
-                  </Select>
+                  />
                 </div>
               </div>
             </div>
