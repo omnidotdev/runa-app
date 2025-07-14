@@ -142,6 +142,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
                 ? new Date(value.dueDate)
                 : undefined,
               priority: value.priority,
+              columnIndex: totalTasks ?? 0,
             },
           },
         }),

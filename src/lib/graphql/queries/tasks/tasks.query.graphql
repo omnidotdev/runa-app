@@ -13,6 +13,7 @@ query Tasks(
       taskLabels: $labels
       priority: { in: $priorities }
     }
+    orderBy: COLUMN_INDEX_ASC
   ) {
     nodes {
       rowId
