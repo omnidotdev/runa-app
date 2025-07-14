@@ -57,6 +57,11 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
     select: (data) => data?.project,
   });
 
+  const { data: tasks } = useSuspenseQuery({
+    ...tasksOptions({ projectId, search }),
+    select: (data) => data?.tasks,
+  });
+
   const { setDraggableId } = useDragStore();
 
   const { mutate: updateTask } = useUpdateTaskMutation({
@@ -79,7 +84,7 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
               if (task?.rowId === variables.rowId) {
                 return {
                   ...task!,
-                  columnId: variables.patch.columnId,
+                  columnId: variables.patch.columnId ?? task.columnId,
                   columnIndex: variables.patch.columnIndex,
                 };
               }
@@ -116,8 +121,63 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
           columnIndex: destination.index,
         },
       });
+
+      if (tasks?.nodes?.length) {
+        const currentTask = tasks.nodes.find(
+          (task) => task.rowId === draggableId,
+        )!;
+
+        const destinationColumnTasks = tasks.nodes.filter(
+          (task) => task.columnId === destination.droppableId,
+        );
+
+        if (source.droppableId === destination.droppableId) {
+          const reorderedColumnTasks = [...destinationColumnTasks];
+          const [taskToMove] = reorderedColumnTasks.splice(
+            currentTask.columnIndex,
+            1,
+          );
+          reorderedColumnTasks.splice(destination.index, 0, taskToMove);
+
+          reorderedColumnTasks.map((task, index) =>
+            updateTask({
+              rowId: task.rowId,
+              patch: {
+                columnIndex: index,
+              },
+            }),
+          );
+        } else {
+          const sourceColumnTasksExcludingMovedTask = tasks.nodes.filter(
+            (task) =>
+              task.columnId === source.droppableId &&
+              task.rowId !== draggableId,
+          );
+
+          sourceColumnTasksExcludingMovedTask.map((task, index) =>
+            updateTask({
+              rowId: task.rowId,
+              patch: {
+                columnIndex: index,
+              },
+            }),
+          );
+
+          const tasksWithMovedInDestination = [...destinationColumnTasks];
+          tasksWithMovedInDestination.splice(destination.index, 0, currentTask);
+
+          tasksWithMovedInDestination.map((task, index) =>
+            updateTask({
+              rowId: task.rowId,
+              patch: {
+                columnIndex: index,
+              },
+            }),
+          );
+        }
+      }
     },
-    [updateTask, setDraggableId],
+    [updateTask, setDraggableId, tasks],
   );
 
   return (

@@ -50,6 +50,11 @@ const Board = () => {
     select: (data) => data?.project,
   });
 
+  const { data: tasks } = useSuspenseQuery({
+    ...tasksOptions({ projectId, search }),
+    select: (data) => data?.tasks,
+  });
+
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
       invalidates: [
@@ -138,7 +143,7 @@ const Board = () => {
   }, [handleMouseMove]);
 
   const onDragEnd = useCallback(
-    async (result: DropResult) => {
+    (result: DropResult) => {
       stopAutoScroll();
       if (scrollContainerRef.current) {
         scrollContainerRef.current.removeEventListener(
@@ -168,10 +173,6 @@ const Board = () => {
           columnIndex: destination.index,
         },
       });
-
-      const { tasks } = await queryClient.ensureQueryData(
-        tasksOptions({ projectId, search }),
-      );
 
       if (tasks?.nodes?.length) {
         const currentTask = tasks.nodes.find(
@@ -228,15 +229,7 @@ const Board = () => {
         }
       }
     },
-    [
-      updateTask,
-      stopAutoScroll,
-      handleMouseMove,
-      setDraggableId,
-      queryClient,
-      projectId,
-      search,
-    ],
+    [updateTask, stopAutoScroll, handleMouseMove, setDraggableId, tasks],
   );
 
   return (
