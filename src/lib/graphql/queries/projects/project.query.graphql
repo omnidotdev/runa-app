@@ -1,0 +1,31 @@
+query Project($rowId: UUID!) {
+  project(rowId: $rowId) {
+    rowId
+    name
+    description
+    prefix
+    color
+    viewMode
+    labels {
+      nodes {
+        name
+        color
+        rowId
+      }
+    }
+    columns(orderBy: INDEX_ASC) {
+      nodes {
+        rowId
+        index
+        title
+        tasks {
+          totalCount
+          nodes {
+            rowId
+            createdAt
+          }
+        }
+      }
+    }
+  }
+}

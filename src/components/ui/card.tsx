@@ -129,9 +129,7 @@ const Card = ({
 
 export {
   Card,
-  /** @knipignore */
   CardRoot,
-  /** @knipignore */
   CardHeader,
   /** @knipignore */
   CardFooter,
@@ -139,7 +137,6 @@ export {
   CardTitle,
   /** @knipignore */
   CardDescription,
-  /** @knipignore */
   CardContent,
   /** @knipignore */
   cardVariants,

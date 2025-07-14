@@ -1,78 +1,102 @@
 import { AlertTriangle } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useRef, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import useDialogStore from "@/lib/hooks/store/useDialogStore";
+
+import type { ComponentProps } from "react";
+import type { DialogType } from "@/lib/hooks/store/useDialogStore";
 
 interface ConfirmDialogProps {
   title: string;
-  message: string;
+  description: string;
   onConfirm: () => void;
-  onCancel: () => void;
+  dialogType: DialogType;
+  confirmation?: string;
+  inputProps?: ComponentProps<typeof Input>;
 }
 
 const ConfirmDialog = ({
   title,
-  message,
+  description,
   onConfirm,
-  onCancel,
+  dialogType,
+  confirmation = "",
+  inputProps,
 }: ConfirmDialogProps) => {
-  const modalRef = useRef<HTMLDivElement>(null);
+  const { isOpen, setIsOpen } = useDialogStore({ type: dialogType });
+  const [userInput, setUserInput] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onCancel();
-    };
-
-    const handleClickOutside = (e: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onCancel();
-      }
-    };
-
-    window.addEventListener("keydown", handleEscape);
-    window.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      window.removeEventListener("keydown", handleEscape);
-      window.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [onCancel]);
+  const handleConfirm = () => {
+    if (userInput === confirmation) {
+      onConfirm();
+      setUserInput("");
+      setIsOpen(false);
+    }
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 dark:bg-black/70">
-      <div
-        ref={modalRef}
-        className="w-full max-w-md rounded-lg bg-white dark:bg-gray-800"
-      >
-        <div className="p-6">
-          <div className="mb-4 flex items-center gap-3">
+    <DialogRoot
+      open={isOpen}
+      onOpenChange={({ open }) => setIsOpen(open)}
+      initialFocusEl={() => inputRef.current}
+    >
+      <DialogBackdrop />
+      <DialogPositioner>
+        <DialogContent className="w-full max-w-md rounded-lg bg-background">
+          <DialogCloseTrigger />
+
+          <div className="mb-4 flex flex-col gap-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
               <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
             </div>
-            <h2 className="font-semibold text-gray-900 text-lg dark:text-gray-100">
-              {title}
-            </h2>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>{description}</DialogDescription>
           </div>
-          <p className="mb-6 text-gray-600 text-sm dark:text-gray-300">
-            {message}
-          </p>
+
+          <div className="grid gap-2">
+            <label className="text-foreground text-sm" htmlFor="confirmation">
+              Type <strong className="text-destructive">{confirmation}</strong>{" "}
+              to confirm deletion
+            </label>
+
+            <Input
+              ref={inputRef}
+              id="confirmation"
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              placeholder={confirmation}
+              {...inputProps}
+            />
+          </div>
+
           <div className="flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="rounded-md border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={onConfirm}
+            <DialogCloseTrigger asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogCloseTrigger>
+
+            <Button
+              onClick={handleConfirm}
+              disabled={userInput !== confirmation}
               className="rounded-md bg-red-500 px-4 py-2 font-medium text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
             >
               Delete
-            </button>
+            </Button>
           </div>
-        </div>
-      </div>
-    </div>
+        </DialogContent>
+      </DialogPositioner>
+    </DialogRoot>
   );
 };
 

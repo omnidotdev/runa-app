@@ -12,9 +12,8 @@ type FetchOptions = {
 };
 
 /**
- * GraphQL fetch wrapper. This is a wrapper around `graphql-request` that adds support for Next.js request options.
+ * GraphQL fetch wrapper. This is a wrapper around `graphql-request` that adds support for request options.
  * ! NB: this wrapper is not meant to be used directly. It is intended to be used by GraphQL Code Generator as a custom fetch implementation.
- * @knipignore - this wrapper is used by GraphQL Code Generator as a custom fetch implementation.
  */
 export const graphqlFetch =
   <TData, TVariables>(

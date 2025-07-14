@@ -1,5 +1,7 @@
 import { Moon, Sun } from "lucide-react";
+import { useHotkeys } from "react-hotkeys-hook";
 
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import { useTheme } from "@/providers/ThemeProvider";
 
 const ThemeToggle = () => {
@@ -8,15 +10,17 @@ const ThemeToggle = () => {
   const toggleTheme = () =>
     theme === "dark" ? setTheme("light") : setTheme("dark");
 
+  useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
+
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      className="rounded-md p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+      className="rounded-md hover:bg-base-100 dark:hover:bg-base-700"
       aria-label="Toggle theme"
     >
-      <Moon className="hidden h-5 w-5 text-gray-600 dark:block dark:text-gray-300" />
-      <Sun className="h-5 w-5 text-gray-600 dark:hidden dark:text-gray-300" />
+      <Moon className="hidden h-4 w-4 text-base-600 dark:block dark:text-base-300" />
+      <Sun className="h-4 w-4 text-base-600 dark:hidden dark:text-base-300" />
     </button>
   );
 };

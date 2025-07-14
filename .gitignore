@@ -1,6 +1,6 @@
 node_modules
 
-# TanStack
+# Tanstack
 .tanstack
 .nitro
 .output
@@ -11,6 +11,7 @@ coverage
 # editor
 .vscode
 .zed
+.rules
 
 # TLS/HTTPS
 certificates
