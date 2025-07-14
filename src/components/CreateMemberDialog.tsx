@@ -31,6 +31,7 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 
+// TODO: Hook up member invite with BA to replace this temporary component.
 const CreateMemberDialog = () => {
   const { workspaceId } = useParams({ strict: false });
   const nameRef = useRef<HTMLInputElement>(null);

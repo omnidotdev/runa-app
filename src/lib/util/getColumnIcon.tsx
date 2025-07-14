@@ -1,5 +1,4 @@
 import { columnIcons } from "@/lib/constants/columns";
-import { cn } from "../utils";
 
 export const getColumnIcon = (column?: string) => {
   const currentIcon = columnIcons.find(
@@ -10,5 +9,5 @@ export const getColumnIcon = (column?: string) => {
     return null;
   }
 
-  return <currentIcon.icon className={cn(currentIcon.classes)} />;
+  return <currentIcon.icon className={currentIcon.classes} />;
 };
