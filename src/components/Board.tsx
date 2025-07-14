@@ -166,14 +166,6 @@ const Board = () => {
 
       setDraggableId(draggableId);
 
-      updateTask({
-        rowId: draggableId,
-        patch: {
-          columnId: destination.droppableId,
-          columnIndex: destination.index,
-        },
-      });
-
       if (tasks?.nodes?.length) {
         const currentTask = tasks.nodes.find(
           (task) => task.rowId === draggableId,
@@ -223,6 +215,10 @@ const Board = () => {
               rowId: task.rowId,
               patch: {
                 columnIndex: index,
+                columnId:
+                  task.rowId === currentTask.rowId
+                    ? destination.droppableId
+                    : task.columnId,
               },
             }),
           );
