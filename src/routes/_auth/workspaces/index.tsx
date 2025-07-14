@@ -5,6 +5,7 @@ import Link from "@/components/core/Link";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardHeader, CardRoot } from "@/components/ui/card";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import seo from "@/lib/util/seo";
 
@@ -21,6 +22,10 @@ function WorkspacesOverviewPage() {
   const { data: recentWorkspaces } = useSuspenseQuery({
     ...workspacesOptions({ limit: 4 }),
     select: (data) => data?.workspaces?.nodes,
+  });
+
+  const { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
+    type: DialogType.CreateWorkspace,
   });
 
   return (
@@ -69,7 +74,11 @@ function WorkspacesOverviewPage() {
         </div>
 
         <div className="flex justify-center">
-          <Button size="lg" className="gap-2">
+          <Button
+            size="lg"
+            className="gap-2"
+            onClick={() => setIsCreateWorkspaceOpen(true)}
+          >
             <PlusIcon className="size-4" />
             Create New Workspace
           </Button>
