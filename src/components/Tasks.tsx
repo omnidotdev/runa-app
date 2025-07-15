@@ -7,6 +7,7 @@ import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import Labels from "@/components/Labels";
+import PriorityIcon from "@/components/tasks/PriorityIcon";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
@@ -22,7 +23,6 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import projectOptions from "@/lib/options/project.options";
 import { getColumnIcon } from "@/lib/util/getColumnIcon";
-import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
@@ -98,7 +98,6 @@ const Tasks = ({
         ?.filter((task) => task.rowId !== draggableId)
         .map((task, index) => {
           const displayId = `${prefix}-${taskIndex(task.rowId) ? taskIndex(task.rowId) : 0}`;
-          const PriorityIcon = getPriorityIcon(task.priority);
           const ColumnIcon = getColumnIcon(columnTitle);
 
           return (
@@ -136,7 +135,10 @@ const Tasks = ({
                           <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
                             {displayId}
                           </span>
-                          <p className="scale-75 opacity-50">{PriorityIcon}</p>
+                          <PriorityIcon
+                            priority={task.priority}
+                            className="scale-75 opacity-50"
+                          />
                         </div>
 
                         <div className="py-4">

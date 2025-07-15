@@ -1,3 +1,5 @@
+import PriorityIcon from "@/components/tasks/PriorityIcon";
+import { buttonVariants } from "@/components/ui/button";
 import {
   createListCollection,
   Select,
@@ -7,9 +9,7 @@ import {
   SelectItemText,
   SelectTrigger,
 } from "@/components/ui/select";
-import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "../../ui/button";
 
 import type { ComponentProps } from "react";
 
@@ -31,8 +31,6 @@ const PrioritySelector = ({
     ],
   });
 
-  const PriorityIcon = getPriorityIcon(triggerValue);
-
   return (
     <Select
       // @ts-ignore TODO: type issue
@@ -46,7 +44,7 @@ const PrioritySelector = ({
           "w-full [&[data-state=open]>svg]:rotate-0 [&_svg:not([class*='text-'])]:text-foreground",
         )}
       >
-        {PriorityIcon}
+        <PriorityIcon priority={triggerValue} />
 
         <p className="font-semibold text-xs first-letter:uppercase">
           {triggerValue}
@@ -54,18 +52,14 @@ const PrioritySelector = ({
       </SelectTrigger>
       <SelectContent>
         <SelectItemGroup className="space-y-1">
-          {priorityCollection.items.map((column) => {
-            const PriorityIcon = getPriorityIcon(column.label);
-
-            return (
-              <SelectItem key={column.value} item={column}>
-                <SelectItemText>
-                  {PriorityIcon}
-                  {column.label}
-                </SelectItemText>
-              </SelectItem>
-            );
-          })}
+          {priorityCollection.items.map((column) => (
+            <SelectItem key={column.value} item={column}>
+              <SelectItemText>
+                <PriorityIcon priority={column.label} />
+                {column.label}
+              </SelectItemText>
+            </SelectItem>
+          ))}
         </SelectItemGroup>
       </SelectContent>
     </Select>
