@@ -15,7 +15,12 @@ interface Props extends ComponentProps<"div"> {
 const Labels = ({ labels, showFallback = true, ...rest }: Props) => {
   if (!showFallback && !labels.length) return null;
 
-  if (!labels.length) return <p className="place-self-center">No labels</p>;
+  if (!labels.length)
+    return (
+      <p className="place-self-center text-muted-foreground text-sm">
+        No labels
+      </p>
+    );
 
   return (
     <div {...rest}>

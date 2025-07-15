@@ -115,16 +115,14 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   });
 
   const { setIsOpen: setIsCreateProjectOpen } = useDialogStore({
-    type: DialogType.CreateProject,
-  });
-
-  const { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
-    type: DialogType.CreateWorkspace,
-  });
-
-  const { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({
-    type: DialogType.DeleteProject,
-  });
+      type: DialogType.CreateProject,
+    }),
+    { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
+      type: DialogType.CreateWorkspace,
+    }),
+    { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({
+      type: DialogType.DeleteProject,
+    });
 
   return (
     <>
@@ -457,6 +455,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip="Expand Sidebar"
+                shortcut={Hotkeys.ToggleSidebar}
                 onClick={() => setOpen(!open)}
                 className="flex justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
               >
@@ -471,6 +470,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip="Toggle Theme"
+                shortcut={Hotkeys.ToggleTheme}
                 onClick={() => toggleTheme()}
                 className="justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
               >

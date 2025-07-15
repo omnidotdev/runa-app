@@ -1,7 +1,7 @@
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
-import ColorSelector from "@/components/core/ColorSelector";
+import ColorSelector from "@/components/core/selectors/ColorSelector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { labelColors } from "@/lib/constants/labelColors";
@@ -23,7 +23,12 @@ const TaskLabelsForm = withForm({
           return (
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <div className="relative flex w-full border-b">
+                <div
+                  className={cn(
+                    "relative flex w-full",
+                    !!field.state.value.length && "border-b",
+                  )}
+                >
                   <ColorSelector
                     triggerValue={newLabel.color}
                     value={[newLabel.color]}
@@ -88,50 +93,48 @@ const TaskLabelsForm = withForm({
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1 p-2">
-                {field.state.value.map((label, i) => {
-                  return (
+              {!!field.state.value.length && (
+                <div className="flex flex-col gap-1 p-2">
+                  {field.state.value.map((label, i) => (
                     <form.Field key={label.name} name={`labels[${i}]`}>
-                      {(subField) => {
-                        return (
-                          <div
-                            // NB: styles are mimicking the select item styles
-                            className={cn(
-                              "cursor-pointer rounded-sm px-2 py-1.5 text-sm hover:bg-accent dark:hover:bg-accent/50",
-                              subField.state.value.checked
-                                ? "bg-base-100 text-foreground hover:bg-base-200 dark:bg-base-700 dark:text-foreground dark:hover:bg-base-800"
-                                : "text-muted-foreground",
-                            )}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              subField.handleChange({
-                                ...subField.state.value,
-                                checked: !subField.state.value.checked,
-                              });
-                            }}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div
-                                className={cn(
-                                  "flex size-4 items-center gap-2 rounded-full",
-                                  labelColors.find(
-                                    (l) =>
-                                      l.name.toLowerCase() ===
-                                      subField.state.value.color,
-                                  )?.classes,
-                                )}
-                              />
-                              <p className="text-sm">
-                                {subField.state.value.name}
-                              </p>
-                            </div>
+                      {(subField) => (
+                        <div
+                          // NB: styles are mimicking the select item styles
+                          className={cn(
+                            "cursor-pointer rounded-sm px-2 py-1.5 text-sm hover:bg-accent dark:hover:bg-accent/50",
+                            subField.state.value.checked
+                              ? "bg-base-100 text-foreground hover:bg-base-200 dark:bg-base-700 dark:text-foreground dark:hover:bg-base-800"
+                              : "text-muted-foreground",
+                          )}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            subField.handleChange({
+                              ...subField.state.value,
+                              checked: !subField.state.value.checked,
+                            });
+                          }}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={cn(
+                                "flex size-4 items-center gap-2 rounded-full",
+                                labelColors.find(
+                                  (l) =>
+                                    l.name.toLowerCase() ===
+                                    subField.state.value.color,
+                                )?.classes,
+                              )}
+                            />
+                            <p className="text-sm">
+                              {subField.state.value.name}
+                            </p>
                           </div>
-                        );
-                      }}
+                        </div>
+                      )}
                     </form.Field>
-                  );
-                })}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         }}
@@ -141,33 +144,3 @@ const TaskLabelsForm = withForm({
 });
 
 export default TaskLabelsForm;
-// <CheckboxRoot
-//   className="flex items-center justify-between p-2"
-//   checked={subField.state.value.checked}
-//   onCheckedChange={({ checked }) =>
-//     subField.handleChange({
-//       ...subField.state.value,
-//       checked: !!checked,
-//     })
-//   }
-// >
-//   <CheckboxLabel className="ml-0">
-//     <div className="flex items-center gap-2">
-//       <div
-//         className={cn(
-//           "size-4 rounded-full",
-//           labelColors.find(
-//             (l) => l.name.toLowerCase() === subField.state.value.color,
-//           )?.classes,
-//         )}
-//       />
-//       <p className="text-sm">{subField.state.value.name}</p>
-//     </div>
-//   </CheckboxLabel>
-//   <CheckboxHiddenInput />
-//   <CheckboxControl>
-//     <CheckboxIndicator>
-//       <CheckIcon className="size-4" />
-//     </CheckboxIndicator>
-//   </CheckboxControl>
-// </CheckboxRoot>;

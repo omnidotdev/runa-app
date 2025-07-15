@@ -2,16 +2,7 @@ import { Draggable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { format } from "date-fns";
-import {
-  AlertCircleIcon,
-  CalendarIcon,
-  CheckCircle2Icon,
-  CircleIcon,
-  ClockIcon,
-  EyeIcon,
-  TagIcon,
-  UserIcon,
-} from "lucide-react";
+import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 
 import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
@@ -30,18 +21,11 @@ import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import projectOptions from "@/lib/options/project.options";
+import { getColumnIcon } from "@/lib/util/getColumnIcon";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
-
-export const columnIcons = {
-  "to-do": <ClockIcon className="h-4 w-4 text-base-400 dark:text-base-500" />,
-  "in-progress": <AlertCircleIcon className="h-4 w-4 text-primary-500" />,
-  "awaiting-review": <EyeIcon className="h-4 w-4 text-purple-500" />,
-  done: <CheckCircle2Icon className="h-4 w-4 text-green-500" />,
-  backlog: <CircleIcon className="h-4 w-4 text-base-400 dark:text-base-500" />,
-};
 
 interface TasksProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -115,6 +99,7 @@ const Tasks = ({
         .map((task, index) => {
           const displayId = `${prefix}-${taskIndex(task.rowId) ? taskIndex(task.rowId) : 0}`;
           const PriorityIcon = getPriorityIcon(task.priority);
+          const ColumnIcon = getColumnIcon(columnTitle);
 
           return (
             <Draggable key={task.rowId} draggableId={task.rowId} index={index}>
@@ -144,22 +129,14 @@ const Tasks = ({
                   <div className="flex flex-col gap-1">
                     <div className="flex items-start gap-2">
                       {columnTitle && (
-                        <div className="mt-0.5 flex-shrink-0">
-                          {
-                            columnIcons[
-                              columnTitle
-                                .toLowerCase()
-                                .replace(/ /g, "-") as keyof typeof columnIcons
-                            ]
-                          }
-                        </div>
+                        <div className="mt-0.5 flex-shrink-0">{ColumnIcon}</div>
                       )}
                       <div className="mt-0.5 min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
                             {displayId}
                           </span>
-                          {PriorityIcon}
+                          <p className="scale-75 opacity-50">{PriorityIcon}</p>
                         </div>
 
                         <div className="py-4">

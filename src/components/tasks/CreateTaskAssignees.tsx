@@ -71,7 +71,7 @@ const CreateTaskAssignees = withForm({
                             src={item.user?.avatarUrl ?? undefined}
                             alt={item.user?.name}
                             fallback={item.user?.name?.charAt(0)}
-                            className=" size-6 rounded-full"
+                            className="size-6 rounded-full"
                           />
                           {item.label}
                         </SelectItemText>

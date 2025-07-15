@@ -5,7 +5,6 @@ import {
   Outlet,
   Scripts,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 import { getCookie } from "@tanstack/react-start/server";
 
@@ -71,7 +70,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         {children}
 
         {/* Dev Tools - only included in development */}
-        <TanStackRouterDevtools position="top-right" />
+        {/* <TanStackRouterDevtools position="top-right" /> */}
         <ReactQueryDevtools />
         <Scripts />
       </body>

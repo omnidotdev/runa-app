@@ -16,7 +16,7 @@ const selectVariants = tv({
       "text-muted-foreground text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
     control: "",
     trigger:
-      "flex w-fit cursor-pointer items-center justify-between gap-2 whitespace-nowrap rounded-md bg-base-100 px-3 py-2 text-foreground text-xs shadow-xs outline-none transition-transform hover:bg-base-200 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[size=default]:h-9 data-[size=sm]:h-8 dark:bg-base-700 dark:aria-invalid:ring-destructive/40 dark:hover:bg-base-800 [&[data-state=open]>svg]:rotate-180 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      "flex w-fit cursor-pointer items-center justify-between gap-2 px-3 py-2 whitespace-nowrap rounded-md bg-base-100 text-foreground text-xs shadow-xs outline-none transition-transform hover:bg-base-200 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[size=default]:h-9 data-[size=sm]:h-8 data-[size=xs]:h-7 dark:bg-base-700 dark:aria-invalid:ring-destructive/40 dark:hover:bg-base-800 [&[data-state=open]>svg]:rotate-180 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
     valueText: "line-clamp-1 flex items-center gap-2",
     indicator: "size-4 transition-transform",
     clearTrigger:
@@ -34,6 +34,7 @@ const selectVariants = tv({
   },
   variants: {
     size: {
+      xs: { trigger: "h-7" },
       sm: { trigger: "h-8" },
       default: { trigger: "h-9" },
     },
@@ -93,7 +94,7 @@ const SelectTrigger = ({
   size = "default",
   ...rest
 }: ComponentProps<typeof ArkSelect.Trigger> & {
-  size?: "sm" | "default";
+  size?: "xs" | "sm" | "default";
 }) => (
   <ArkSelect.Trigger
     data-size={size}

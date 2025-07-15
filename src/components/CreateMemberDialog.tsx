@@ -1,9 +1,10 @@
+import { useStore } from "@tanstack/react-form";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
-import { useRef, useState } from "react";
+import { ChevronDownIcon, PlusIcon } from "lucide-react";
+import { useRef } from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
@@ -13,25 +14,26 @@ import {
   DialogRoot,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import {
+  createListCollection,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectItemGroup,
+  SelectItemText,
+  SelectTrigger,
+} from "@/components/ui/select";
+import { useCreateWorkspaceUserMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useForm from "@/lib/hooks/useForm";
+import usersOptions from "@/lib/options/users.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
+import { cn } from "@/lib/utils";
 
-import type { FormEvent } from "react";
-
-interface Assignee {
-  id: string;
-  name: string;
-}
-
-interface Props {
-  members: Assignee[];
-  setMembers: (members: Assignee[]) => void;
-}
-
-const CreateMemberDialog = ({ members, setMembers }: Props) => {
+// TODO: Hook up member invite with BA to replace this temporary component.
+const CreateMemberDialog = () => {
   const { workspaceId } = useParams({ strict: false });
-  const [newMemberName, setNewMemberName] = useState("");
   const nameRef = useRef<HTMLInputElement>(null);
 
   const { isOpen: isCreateMemberOpen, setIsOpen: setIsCreateMemberOpen } =
@@ -45,20 +47,57 @@ const CreateMemberDialog = ({ members, setMembers }: Props) => {
     select: (data) => data?.workspace,
   });
 
-  const handleAddMember = (e: FormEvent) => {
-    e.preventDefault();
-    if (!newMemberName.trim()) return;
+  const { data: users } = useQuery({
+    ...usersOptions(),
+    select: (data) => data?.users?.nodes,
+  });
 
-    const newMember: Assignee = {
-      id: `user-${Date.now()}`,
-      name: newMemberName.trim(),
-    };
+  const currentMemberIds =
+    currentWorkspace?.workspaceUsers?.nodes.map((u) => u.userId) ?? [];
 
-    const updatedMembers = [...members, newMember];
-    setMembers(updatedMembers);
-    // onUpdate(updatedMembers);
-    setNewMemberName("");
-  };
+  const { mutate: addNewMember } = useCreateWorkspaceUserMutation({
+    meta: {
+      invalidates: [
+        ["WorkspaceUsers"],
+        workspaceUsersOptions({ rowId: workspaceId! }).queryKey,
+      ],
+    },
+  });
+
+  const form = useForm({
+    defaultValues: {
+      users: [] as string[],
+    },
+    onSubmit: async ({ value, formApi }) => {
+      for (const user of value.users) {
+        addNewMember({
+          input: {
+            workspaceUser: {
+              workspaceId: workspaceId!,
+              userId: user,
+            },
+          },
+        });
+      }
+
+      formApi.reset();
+      setIsCreateMemberOpen(false);
+    },
+  });
+
+  const usersCollection = createListCollection({
+    items:
+      users
+        // TODO: Filter currentMembers in the query
+        ?.filter((user) => !currentMemberIds.includes(user?.rowId))
+        ?.map((user) => ({
+          label: user?.name || "",
+          value: user?.rowId || "",
+          user: user,
+        })) || [],
+  });
+
+  const selectedUsers = useStore(form.store, (state) => state.values.users);
 
   return (
     <DialogRoot
@@ -69,7 +108,6 @@ const CreateMemberDialog = ({ members, setMembers }: Props) => {
       <DialogBackdrop />
       <DialogPositioner>
         <DialogContent>
-          <DialogCloseTrigger />
           <DialogTitle>Add new member</DialogTitle>
           <DialogDescription>
             Create a new team member for the{" "}
@@ -77,24 +115,97 @@ const CreateMemberDialog = ({ members, setMembers }: Props) => {
             workspace.
           </DialogDescription>
 
-          <form onSubmit={handleAddMember}>
-            <div className="flex gap-2">
-              <Input
-                ref={nameRef}
-                type="text"
-                value={newMemberName}
-                onChange={(e) => setNewMemberName(e.target.value)}
-                placeholder="Enter member name"
-              />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+          >
+            <form.Field name="users">
+              {(field) => {
+                return (
+                  <Select
+                    // @ts-ignore TODO: fix type issue
+                    collection={usersCollection}
+                    multiple
+                    value={field.state.value}
+                    onValueChange={({ value }) =>
+                      value.length ? field.setValue(value) : field.clearValues()
+                    }
+                  >
+                    <SelectTrigger
+                      className={cn(
+                        buttonVariants({ variant: "outline" }),
+                        "w-full justify-between",
+                      )}
+                    >
+                      Select a member
+                      <ChevronDownIcon className="ml-auto size-3 transition-transform" />
+                    </SelectTrigger>
 
-              <Button
-                type="submit"
-                disabled={!newMemberName.trim()}
-                onClick={() => setIsCreateMemberOpen(false)}
+                    <SelectContent className="max-h-80 min-w-40 overflow-auto">
+                      <SelectItemGroup className="space-y-1">
+                        {usersCollection.items.map((item) => {
+                          return (
+                            <SelectItem key={item.value} item={item}>
+                              <SelectItemText className="">
+                                {item.label}
+                              </SelectItemText>
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectItemGroup>
+                    </SelectContent>
+                  </Select>
+                );
+              }}
+            </form.Field>
+
+            {selectedUsers?.length > 0 && (
+              <div className="mt-4 flex gap-1 text-sm">
+                {selectedUsers.map((user, index) => (
+                  <p key={user} className="text-base-500 dark:text-base-400">
+                    {
+                      usersCollection.items.find((item) => item.value === user)
+                        ?.label
+                    }
+                    {index < selectedUsers.length - 1 ? "," : ""}
+                  </p>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-4 flex justify-end gap-2">
+              <DialogCloseTrigger asChild>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    form.reset();
+                    setIsCreateMemberOpen(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </DialogCloseTrigger>
+
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isSubmitting,
+                  state.isDirty,
+                ]}
               >
-                <Plus className="h-4 w-4" />
-                Add Member
-              </Button>
+                {([canSubmit, isSubmitting, isDirty]) => (
+                  <Button
+                    type="submit"
+                    disabled={!canSubmit || isSubmitting || !isDirty}
+                  >
+                    <PlusIcon />
+                    Add Member
+                  </Button>
+                )}
+              </form.Subscribe>
             </div>
           </form>
         </DialogContent>

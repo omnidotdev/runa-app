@@ -332,8 +332,7 @@ function ProjectPage() {
         )}
       </div>
 
-      <CreateTaskDialog columnId={columnId ?? undefined} />
-
+      {columnId && <CreateTaskDialog columnId={columnId} />}
       {taskId && <UpdateAssigneesDialog />}
       {taskId && <UpdateDueDateDialog />}
       {taskId && <UpdateTaskLabelsDialog />}
