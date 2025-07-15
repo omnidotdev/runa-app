@@ -6810,6 +6810,7 @@ export const TasksDocument = `
     query Tasks($projectId: UUID!, $search: String = "", $assignees: TaskToManyAssigneeFilter, $labels: TaskToManyTaskLabelFilter, $priorities: [String!]) {
   tasks(
     filter: {projectId: {equalTo: $projectId}, content: {includesInsensitive: $search}, assignees: $assignees, taskLabels: $labels, priority: {in: $priorities}}
+    orderBy: COLUMN_INDEX_ASC
   ) {
     nodes {
       rowId

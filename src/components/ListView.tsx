@@ -1,8 +1,7 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useSearch } from "@tanstack/react-router";
+import { useParams } from "@tanstack/react-router";
 import { ChevronDownIcon, PlusIcon } from "lucide-react";
-import { useCallback } from "react";
 
 import TasksList from "@/components/TasksList";
 import { Button } from "@/components/ui/button";
@@ -13,18 +12,13 @@ import {
 } from "@/components/ui/collapsible";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
-import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import projectOptions from "@/lib/options/project.options";
-import projectsOptions from "@/lib/options/projects.options";
-import tasksOptions from "@/lib/options/tasks.options";
 import { getColumnIcon } from "@/lib/util/getColumnIcon";
-import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
 
-import type { DropResult } from "@hello-pangea/dnd";
 import type { Dispatch, SetStateAction } from "react";
 
 interface Props {
@@ -36,11 +30,7 @@ interface Props {
 const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
   const { theme } = useTheme();
 
-  const { workspaceId, projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
-  });
-
-  const { search } = useSearch({
+  const { projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -50,75 +40,12 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
 
   const { setColumnId } = useTaskStore();
 
-  const queryClient = getQueryClient();
-
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
 
-  const { setDraggableId } = useDragStore();
-
-  const { mutate: updateTask } = useUpdateTaskMutation({
-    meta: {
-      invalidates: [
-        tasksOptions({ projectId, search }).queryKey,
-        projectsOptions({ workspaceId, search }).queryKey,
-      ],
-    },
-    onMutate: async (variables) => {
-      await queryClient.cancelQueries(tasksOptions({ projectId, search }));
-
-      queryClient.setQueryData(
-        tasksOptions({ projectId, search }).queryKey,
-        // @ts-ignore TODO: type properly
-        (old) => ({
-          tasks: {
-            ...old?.tasks!,
-            nodes: old?.tasks?.nodes?.map((task) => {
-              if (task?.rowId === variables.rowId) {
-                return {
-                  ...task!,
-                  columnId: variables.patch.columnId,
-                  columnIndex: variables.patch.columnIndex,
-                };
-              }
-
-              return task;
-            }),
-          },
-        }),
-      );
-
-      setDraggableId(null);
-    },
-  });
-
-  const onDragEnd = useCallback(
-    (result: DropResult) => {
-      const { destination, source, draggableId } = result;
-
-      // Exit early if dropped outside a droppable area or in the same position
-      if (!destination) return;
-
-      if (
-        destination.droppableId === source.droppableId &&
-        destination.index === source.index
-      )
-        return;
-
-      setDraggableId(draggableId);
-
-      updateTask({
-        rowId: draggableId,
-        patch: {
-          columnId: destination.droppableId,
-          columnIndex: destination.index,
-        },
-      });
-    },
-    [updateTask, setDraggableId],
-  );
+  const { onDragEnd } = useReorderTasks();
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
