@@ -164,7 +164,7 @@ function TaskPage() {
     <div className="flex h-full">
       {/* Main content */}
       <div className="flex-1 overflow-auto">
-        <div className="p-12">
+        <div className="p-4 lg:p-12">
           {/* Header */}
           <div className="mb-10 flex items-center justify-between">
             <div className="flex items-center gap-3">

@@ -16,13 +16,6 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  SheetContent,
-  SheetDescription,
-  SheetRoot,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
   Tooltip,
   TooltipContent,
   TooltipPositioner,
@@ -33,6 +26,13 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import useIsMobile from "@/lib/hooks/use-mobile";
 import { useSidebarResize } from "@/lib/hooks/use-sidebar-resize";
 import { cn } from "@/lib/utils";
+import {
+  SheetContent,
+  SheetDescription,
+  SheetRoot,
+  SheetTitle,
+  SheetTrigger,
+} from "./sheet";
 
 import type { VariantProps } from "class-variance-authority";
 import type { ComponentProps, CSSProperties } from "react";
@@ -113,6 +113,7 @@ function SidebarProvider({
   // Helper to toggle the sidebar.
   const toggleSidebar = useCallback(() => {
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
+    // return setOpen((open) => !open);
   }, [isMobile, setOpen]);
 
   // Adds a keyboard shortcut to toggle the sidebar.
@@ -205,7 +206,7 @@ function Sidebar({
         open={openMobile}
         onOpenChange={({ open }) => setOpenMobile(open)}
       >
-        <SheetTrigger asChild className="m-2">
+        <SheetTrigger asChild className="absolute top-2 right-2 z-50">
           <Button variant="ghost" size="icon" className="h-8 w-8">
             <PanelLeftIcon className="size-4" />
           </Button>
@@ -234,7 +235,7 @@ function Sidebar({
 
   return (
     <div
-      className="group peer hidden text-sidebar-foreground md:block"
+      className="group peer block text-sidebar-foreground"
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
@@ -259,7 +260,7 @@ function Sidebar({
       <div
         data-slot="sidebar-container"
         className={cn(
-          "fixed inset-y-0 z-50 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+          "fixed inset-y-0 z-50 flex h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear",
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",

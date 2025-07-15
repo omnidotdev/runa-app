@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
-import { Plus, Trash2, UsersIcon } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
@@ -53,7 +53,6 @@ const Team = () => {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-4">
           <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
-            <UsersIcon className="size-4" />
             Team Members
           </h2>
 

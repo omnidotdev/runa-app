@@ -235,9 +235,7 @@ const ProjectLabelsForm = () => {
   return (
     <div className="flex flex-col gap-3">
       <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
-        <TagIcon className="size-4" />
         Project Labels
-        <span className="text-base-400">({labels?.length})</span>
       </h2>
 
       <div className="flex items-center gap-2">
@@ -279,7 +277,7 @@ const ProjectLabelsForm = () => {
                   style={{
                     width:
                       header.id === "color"
-                        ? "200px"
+                        ? "150px"
                         : header.id === "rowId"
                           ? "50px"
                           : "auto",

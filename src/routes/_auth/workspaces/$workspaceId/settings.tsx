@@ -72,7 +72,7 @@ function SettingsPage() {
   const handleWorkspaceUpdate = useDebounceCallback(updateWorkspace, 300);
 
   return (
-    <div className="no-scrollbar relative h-full overflow-auto p-4 md:p-12">
+    <div className="no-scrollbar relative h-full overflow-auto p-8 lg:p-12">
       {/* Header */}
       <div className="mb-10 flex items-center justify-between">
         <div className="flex items-center gap-3">

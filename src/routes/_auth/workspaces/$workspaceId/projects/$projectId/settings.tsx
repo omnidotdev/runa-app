@@ -54,7 +54,7 @@ function RouteComponent() {
   const handleProjectUpdate = useDebounceCallback(updateProject, 300);
 
   return (
-    <div className="no-scrollbar relative h-full overflow-auto p-12">
+    <div className="no-scrollbar relative h-full overflow-auto p-8 lg:p-12">
       {/* Header */}
       <div className="mb-10 flex items-center justify-between">
         <div className="flex items-center gap-3">

@@ -12,7 +12,6 @@ import {
   PanelLeftIcon,
   PlusIcon,
   Settings2,
-  SquarePlusIcon,
   SunIcon,
   Trash2Icon,
 } from "lucide-react";
@@ -61,7 +60,7 @@ import { useTheme } from "@/providers/ThemeProvider";
 import type { ComponentProps } from "react";
 
 export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
-  const { workspaceId, projectId } = useParams({ strict: false });
+  const { workspaceId } = useParams({ strict: false });
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<{
     rowId: string;
@@ -376,6 +375,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                               <SidebarMenuShotcut>V</SidebarMenuShotcut>
                             </MenuItem>
 
+                            {/* Not sure if this will work */}
+                            {/* 
                             {project.rowId === projectId && (
                               <MenuItem
                                 value="createTask"
@@ -387,7 +388,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
 
                                 <SidebarMenuShotcut>C</SidebarMenuShotcut>
                               </MenuItem>
-                            )}
+                            )} */}
 
                             <MenuItem
                               value="delete"

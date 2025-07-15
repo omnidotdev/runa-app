@@ -2,7 +2,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "@tanstack/react-router";
 import {
   BoxIcon,
-  FolderOpenIcon,
   Plus,
   PlusIcon,
   Settings2Icon,
@@ -18,6 +17,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 import ConfirmDialog from "../ConfirmDialog";
+import { SidebarMenuShotcut } from "../ui/sidebar";
 
 const Projects = () => {
   const { workspaceId } = useParams({
@@ -60,11 +60,22 @@ const Projects = () => {
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-4">
           <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
-            <FolderOpenIcon className="size-4" />
             Projects
           </h2>
 
-          <Tooltip tooltip="Add project">
+          <Tooltip
+            tooltip={{
+              className: "bg-background text-foreground border",
+              children: (
+                <div className="inline-flex">
+                  Create Project
+                  <div className="ml-2 flex items-center gap-0.5">
+                    <SidebarMenuShotcut>P</SidebarMenuShotcut>
+                  </div>
+                </div>
+              ),
+            }}
+          >
             <Button
               variant="ghost"
               size="icon"
