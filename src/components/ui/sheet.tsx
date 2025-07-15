@@ -1,5 +1,5 @@
 import { Dialog as ArkSheet } from "@ark-ui/react/dialog";
-import { FiX } from "react-icons/fi";
+import { XIcon } from "lucide-react";
 import { tv } from "tailwind-variants";
 
 import { cn } from "@/lib/utils";
@@ -108,7 +108,7 @@ const SheetCloseTrigger = ({
         className={cn(closeTrigger(), className)}
         {...rest}
       >
-        <FiX className="h-4 w-4" />
+        <XIcon className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </ArkSheet.CloseTrigger>
     );

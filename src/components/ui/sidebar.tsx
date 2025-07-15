@@ -16,6 +16,13 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  SheetContent,
+  SheetDescription,
+  SheetRoot,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
   Tooltip,
   TooltipContent,
   TooltipPositioner,
@@ -26,13 +33,6 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import useIsMobile from "@/lib/hooks/use-mobile";
 import { useSidebarResize } from "@/lib/hooks/use-sidebar-resize";
 import { cn } from "@/lib/utils";
-import {
-  SheetContent,
-  SheetDescription,
-  SheetRoot,
-  SheetTitle,
-  SheetTrigger,
-} from "./sheet";
 
 import type { VariantProps } from "class-variance-authority";
 import type { ComponentProps, CSSProperties } from "react";
@@ -207,8 +207,8 @@ function Sidebar({
         onOpenChange={({ open }) => setOpenMobile(open)}
       >
         <SheetTrigger asChild className="absolute top-2 right-2 z-50">
-          <Button variant="ghost" size="icon" className="h-8 w-8">
-            <PanelLeftIcon className="size-4" />
+          <Button variant="ghost" size="icon" className="h-10 w-10">
+            <PanelLeftIcon className="size-5" />
           </Button>
         </SheetTrigger>
         <SheetContent

@@ -122,9 +122,6 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
     }),
     { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({
       type: DialogType.DeleteProject,
-    }),
-    { setIsOpen: setIsCreateTaskDialogOpen } = useDialogStore({
-      type: DialogType.CreateTask,
     });
 
   return (
@@ -374,21 +371,6 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
 
                               <SidebarMenuShotcut>V</SidebarMenuShotcut>
                             </MenuItem>
-
-                            {/* Not sure if this will work */}
-                            {/* 
-                            {project.rowId === projectId && (
-                              <MenuItem
-                                value="createTask"
-                                className="flex cursor-pointer items-center gap-2"
-                                onClick={() => setIsCreateTaskDialogOpen(true)}
-                              >
-                                <SquarePlusIcon />
-                                <span>Add Task</span>
-
-                                <SidebarMenuShotcut>C</SidebarMenuShotcut>
-                              </MenuItem>
-                            )} */}
 
                             <MenuItem
                               value="delete"
