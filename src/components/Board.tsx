@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useSearch } from "@tanstack/react-router";
+import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
 
@@ -8,27 +8,18 @@ import Tasks, { columnIcons } from "@/components/Tasks";
 import { Button } from "@/components/ui/button";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
-import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import projectOptions from "@/lib/options/project.options";
-import projectsOptions from "@/lib/options/projects.options";
-import tasksOptions from "@/lib/options/tasks.options";
-import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
 
-import type { DropResult } from "@hello-pangea/dnd";
 import type { MouseEvent } from "react";
 
 const Board = () => {
   const { theme } = useTheme();
 
-  const { workspaceId, projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
-  });
-
-  const { search } = useSearch({
+  const { projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -41,48 +32,9 @@ const Board = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { setDraggableId } = useDragStore();
-
-  const queryClient = getQueryClient();
-
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
-  });
-
-  const { mutate: updateTask } = useUpdateTaskMutation({
-    meta: {
-      invalidates: [
-        tasksOptions({ projectId, search }).queryKey,
-        projectsOptions({ workspaceId, search }).queryKey,
-      ],
-    },
-    onMutate: async (variables) => {
-      await queryClient.cancelQueries(tasksOptions({ projectId, search }));
-
-      queryClient.setQueryData(
-        tasksOptions({ projectId, search }).queryKey,
-        // @ts-ignore TODO: type properly
-        (old) => ({
-          tasks: {
-            ...old?.tasks!,
-            nodes: old?.tasks?.nodes?.map((task) => {
-              if (task?.rowId === variables.rowId) {
-                return {
-                  ...task!,
-                  columnId: variables.patch.columnId,
-                  columnIndex: variables.patch.columnIndex,
-                };
-              }
-
-              return task;
-            }),
-          },
-        }),
-      );
-
-      setDraggableId(null);
-    },
   });
 
   const startAutoScroll = useCallback((direction: "left" | "right") => {
@@ -137,8 +89,8 @@ const Board = () => {
     }
   }, [handleMouseMove]);
 
-  const onDragEnd = useCallback(
-    (result: DropResult) => {
+  const { onDragEnd } = useReorderTasks({
+    callback: () => {
       stopAutoScroll();
       if (scrollContainerRef.current) {
         scrollContainerRef.current.removeEventListener(
@@ -147,30 +99,8 @@ const Board = () => {
           handleMouseMove as any,
         );
       }
-
-      const { destination, source, draggableId } = result;
-
-      // Exit early if dropped outside a droppable area or in the same position
-      if (!destination) return;
-
-      if (
-        destination.droppableId === source.droppableId &&
-        destination.index === source.index
-      )
-        return;
-
-      setDraggableId(draggableId);
-
-      updateTask({
-        rowId: draggableId,
-        patch: {
-          columnId: destination.droppableId,
-          columnIndex: destination.index,
-        },
-      });
     },
-    [updateTask, stopAutoScroll, handleMouseMove, setDraggableId],
-  );
+  });
 
   return (
     <div
