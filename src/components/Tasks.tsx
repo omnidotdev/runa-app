@@ -1,6 +1,6 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
   AlertCircleIcon,
@@ -28,8 +28,8 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import projectOptions from "@/lib/options/project.options";
-import tasksOptions from "@/lib/options/tasks.options";
 import { getPriorityIcon } from "@/lib/util/getPriorityIcon";
 import { cn } from "@/lib/utils";
 
@@ -62,10 +62,6 @@ const Tasks = ({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { search, assignees, labels, priorities } = useSearch({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
-  });
-
   const { draggableId } = useDragStore();
   const { setTaskId } = useTaskStore();
   const { isOpen: isUpdateAssigneesDialogOpen } = useDialogStore({
@@ -88,21 +84,9 @@ const Tasks = ({
     select: (data) => data?.project,
   });
 
-  const { data: tasks } = useSuspenseQuery({
-    ...tasksOptions({
-      projectId: projectId,
-      search: search,
-      assignees: assignees.length
-        ? { some: { user: { rowId: { in: assignees } } } }
-        : undefined,
-      labels: labels.length
-        ? { some: { label: { rowId: { in: labels } } } }
-        : undefined,
-      priorities: priorities.length ? priorities : undefined,
-    }),
-    select: (data) =>
-      data?.tasks?.nodes?.filter((task) => task.columnId === columnId),
-  });
+  const { tasks: projectTasks } = useReorderTasks();
+
+  const tasks = projectTasks?.filter((task) => task.columnId === columnId);
 
   const columnTitle = project?.columns?.nodes?.find(
     (column) => column?.rowId === columnId,

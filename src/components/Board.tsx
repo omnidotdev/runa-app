@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useSearch } from "@tanstack/react-router";
+import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
 
@@ -8,26 +8,18 @@ import Tasks, { columnIcons } from "@/components/Tasks";
 import { Button } from "@/components/ui/button";
 import { SidebarMenuShotcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
-import { useUpdateTaskMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import projectOptions from "@/lib/options/project.options";
-import tasksOptions from "@/lib/options/tasks.options";
-import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
 
-import type { DropResult } from "@hello-pangea/dnd";
 import type { MouseEvent } from "react";
 
 const Board = () => {
   const { theme } = useTheme();
 
   const { projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
-  });
-
-  const { search, assignees, labels, priorities } = useSearch({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -40,62 +32,9 @@ const Board = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { setDraggableId } = useDragStore();
-
-  const queryClient = getQueryClient();
-
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
-  });
-
-  const options = tasksOptions({
-    projectId,
-    search,
-    assignees: assignees.length
-      ? { some: { user: { rowId: { in: assignees } } } }
-      : undefined,
-    labels: labels.length
-      ? { some: { label: { rowId: { in: labels } } } }
-      : undefined,
-    priorities: priorities.length ? priorities : undefined,
-  });
-
-  const { data: tasks } = useSuspenseQuery({
-    ...options,
-    select: (data) => data?.tasks,
-  });
-
-  const { mutate: updateTask } = useUpdateTaskMutation({
-    meta: {
-      invalidates: [["all"]],
-    },
-    onMutate: async (variables) => {
-      await queryClient.cancelQueries(options);
-
-      queryClient.setQueryData(
-        options.queryKey,
-        // @ts-ignore TODO: type properly
-        (old) => ({
-          tasks: {
-            ...old?.tasks!,
-            nodes: old?.tasks?.nodes?.map((task) => {
-              if (task?.rowId === variables.rowId) {
-                return {
-                  ...task!,
-                  columnId: variables.patch.columnId ?? task.columnId,
-                  columnIndex: variables.patch.columnIndex,
-                };
-              }
-
-              return task;
-            }),
-          },
-        }),
-      );
-
-      setDraggableId(null);
-    },
   });
 
   const startAutoScroll = useCallback((direction: "left" | "right") => {
@@ -150,8 +89,8 @@ const Board = () => {
     }
   }, [handleMouseMove]);
 
-  const onDragEnd = useCallback(
-    (result: DropResult) => {
+  const { onDragEnd } = useReorderTasks({
+    callback: () => {
       stopAutoScroll();
       if (scrollContainerRef.current) {
         scrollContainerRef.current.removeEventListener(
@@ -160,81 +99,8 @@ const Board = () => {
           handleMouseMove as any,
         );
       }
-
-      const { destination, source, draggableId } = result;
-
-      // Exit early if dropped outside a droppable area or in the same position
-      if (!destination) return;
-
-      if (
-        destination.droppableId === source.droppableId &&
-        destination.index === source.index
-      )
-        return;
-
-      setDraggableId(draggableId);
-
-      if (tasks?.nodes?.length) {
-        const currentTask = tasks.nodes.find(
-          (task) => task.rowId === draggableId,
-        )!;
-
-        const destinationColumnTasks = tasks.nodes.filter(
-          (task) => task.columnId === destination.droppableId,
-        );
-
-        if (source.droppableId === destination.droppableId) {
-          const reorderedColumnTasks = [...destinationColumnTasks];
-          const [taskToMove] = reorderedColumnTasks.splice(
-            currentTask.columnIndex,
-            1,
-          );
-          reorderedColumnTasks.splice(destination.index, 0, taskToMove);
-
-          reorderedColumnTasks.map((task, index) =>
-            updateTask({
-              rowId: task.rowId,
-              patch: {
-                columnIndex: index,
-              },
-            }),
-          );
-        } else {
-          const sourceColumnTasksExcludingMovedTask = tasks.nodes.filter(
-            (task) =>
-              task.columnId === source.droppableId &&
-              task.rowId !== draggableId,
-          );
-
-          sourceColumnTasksExcludingMovedTask.map((task, index) =>
-            updateTask({
-              rowId: task.rowId,
-              patch: {
-                columnIndex: index,
-              },
-            }),
-          );
-
-          const tasksWithMovedInDestination = [...destinationColumnTasks];
-          tasksWithMovedInDestination.splice(destination.index, 0, currentTask);
-
-          tasksWithMovedInDestination.map((task, index) =>
-            updateTask({
-              rowId: task.rowId,
-              patch: {
-                columnIndex: index,
-                columnId:
-                  task.rowId === currentTask.rowId
-                    ? destination.droppableId
-                    : task.columnId,
-              },
-            }),
-          );
-        }
-      }
     },
-    [updateTask, stopAutoScroll, handleMouseMove, setDraggableId, tasks],
-  );
+  });
 
   return (
     <div
