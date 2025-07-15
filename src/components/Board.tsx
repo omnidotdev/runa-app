@@ -13,7 +13,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
-import projectsOptions from "@/lib/options/projects.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -24,11 +23,11 @@ import type { MouseEvent } from "react";
 const Board = () => {
   const { theme } = useTheme();
 
-  const { workspaceId, projectId } = useParams({
+  const { projectId } = useParams({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { search } = useSearch({
+  const { search, assignees, labels, priorities } = useSearch({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -50,23 +49,32 @@ const Board = () => {
     select: (data) => data?.project,
   });
 
+  const options = tasksOptions({
+    projectId,
+    search,
+    assignees: assignees.length
+      ? { some: { user: { rowId: { in: assignees } } } }
+      : undefined,
+    labels: labels.length
+      ? { some: { label: { rowId: { in: labels } } } }
+      : undefined,
+    priorities: priorities.length ? priorities : undefined,
+  });
+
   const { data: tasks } = useSuspenseQuery({
-    ...tasksOptions({ projectId, search }),
+    ...options,
     select: (data) => data?.tasks,
   });
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
-      invalidates: [
-        tasksOptions({ projectId, search }).queryKey,
-        projectsOptions({ workspaceId, search }).queryKey,
-      ],
+      invalidates: [["all"]],
     },
     onMutate: async (variables) => {
-      await queryClient.cancelQueries(tasksOptions({ projectId, search }));
+      await queryClient.cancelQueries(options);
 
       queryClient.setQueryData(
-        tasksOptions({ projectId, search }).queryKey,
+        options.queryKey,
         // @ts-ignore TODO: type properly
         (old) => ({
           tasks: {
