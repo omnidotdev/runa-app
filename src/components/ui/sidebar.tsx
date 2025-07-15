@@ -391,7 +391,7 @@ function SidebarRail({
             <div className="inline-flex">
               Click to {isCollapsed ? "expand" : "collapse"}{" "}
               <div className="ml-2 flex items-center gap-0.5">
-                <SidebarMenuShotcut>B</SidebarMenuShotcut>
+                <SidebarMenuShortcut>B</SidebarMenuShortcut>
               </div>
             </div>
           </TooltipContent>
@@ -608,7 +608,7 @@ function SidebarMenuButton({
         <div className="flex items-center justify-between gap-2">
           <span>{tooltip}</span>
           {shortcut && (
-            <SidebarMenuShotcut>{shortcut.toUpperCase()}</SidebarMenuShotcut>
+            <SidebarMenuShortcut>{shortcut.toUpperCase()}</SidebarMenuShortcut>
           )}
         </div>
       ),
@@ -681,7 +681,7 @@ function SidebarMenuBadge({ className, ...rest }: ComponentProps<"div">) {
 }
 
 // NB: Could extend on this with the hotkey hook for further advanced functionality
-function SidebarMenuShotcut({ className, ...rest }: ComponentProps<"span">) {
+function SidebarMenuShortcut({ className, ...rest }: ComponentProps<"span">) {
   return (
     <span
       data-slot="sidebar-menu-shortcut"
@@ -779,5 +779,5 @@ export {
   /** @knipignore */
   SidebarTrigger,
   useSidebar,
-  SidebarMenuShotcut,
+  SidebarMenuShortcut,
 };

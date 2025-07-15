@@ -10,7 +10,7 @@ import {
   CollapsibleRoot,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { SidebarMenuShotcut } from "@/components/ui/sidebar";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
@@ -111,7 +111,7 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
                           <div className="inline-flex">
                             Add Task
                             <div className="ml-2 flex items-center gap-0.5">
-                              <SidebarMenuShotcut>C</SidebarMenuShotcut>
+                              <SidebarMenuShortcut>C</SidebarMenuShortcut>
                             </div>
                           </div>
                         ),

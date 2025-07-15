@@ -17,7 +17,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 import ConfirmDialog from "../ConfirmDialog";
-import { SidebarMenuShotcut } from "../ui/sidebar";
+import { SidebarMenuShortcut } from "../ui/sidebar";
 
 const Projects = () => {
   const { workspaceId } = useParams({
@@ -70,7 +70,7 @@ const Projects = () => {
                 <div className="inline-flex">
                   Create Project
                   <div className="ml-2 flex items-center gap-0.5">
-                    <SidebarMenuShotcut>P</SidebarMenuShotcut>
+                    <SidebarMenuShortcut>P</SidebarMenuShortcut>
                   </div>
                 </div>
               ),

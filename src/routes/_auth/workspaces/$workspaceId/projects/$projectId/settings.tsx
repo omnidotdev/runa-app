@@ -92,7 +92,7 @@ function RouteComponent() {
                   #
                 </span>
                 <RichTextEditor
-                  defaultContent={project?.prefix || ""}
+                  defaultContent={project?.prefix || "PROJ"}
                   className="min-h-0 border-0 bg-transparent p-0 font-mono text-base-400 text-sm dark:bg-transparent dark:text-base-500"
                   placeholder="prefix"
                   skeletonClassName="h-5 w-12"

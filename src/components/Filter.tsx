@@ -26,7 +26,7 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { SidebarMenuShotcut } from "@/components/ui/sidebar";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { labelColors } from "@/lib/constants/labelColors";
@@ -83,7 +83,7 @@ const Filter = () => {
             <div className="inline-flex">
               Filter
               <div className="ml-2 flex items-center gap-0.5">
-                <SidebarMenuShotcut>F</SidebarMenuShotcut>
+                <SidebarMenuShortcut>F</SidebarMenuShortcut>
               </div>
             </div>
           ),
@@ -99,7 +99,7 @@ const Filter = () => {
         <PopoverContent className="p-0">
           <div className="inline-flex w-full items-center justify-between border-b p-2">
             <p className="text-base-500 text-sm">Filter</p>
-            <SidebarMenuShotcut>F</SidebarMenuShotcut>
+            <SidebarMenuShortcut>F</SidebarMenuShortcut>
           </div>
 
           <div>

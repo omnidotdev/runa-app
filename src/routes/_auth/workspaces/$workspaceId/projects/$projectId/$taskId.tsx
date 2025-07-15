@@ -23,7 +23,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
-import { SidebarMenuShotcut } from "@/components/ui/sidebar";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
   useCreatePostMutation,
@@ -156,7 +156,7 @@ function TaskPage() {
               <RichTextEditor
                 defaultContent={task?.content}
                 className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
-                skeletonClassName="h-8"
+                skeletonClassName="h-8 min-w-40"
                 onUpdate={({ editor }) =>
                   !editor.isEmpty &&
                   handleTaskUpdate({
@@ -214,7 +214,7 @@ function TaskPage() {
                     <div className="inline-flex">
                       Update Due Date
                       <div className="ml-2 flex items-center gap-0.5">
-                        <SidebarMenuShotcut>D</SidebarMenuShotcut>
+                        <SidebarMenuShortcut>D</SidebarMenuShortcut>
                       </div>
                     </div>
                   ),
@@ -256,8 +256,8 @@ function TaskPage() {
           </div>
 
           {/* Description */}
-          <CardRoot className="p-0 shadow-none">
-            <CardHeader className="flex h-10 flex-row items-center justify-between rounded-t-xl bg-base-50 px-3 dark:bg-base-800">
+          <CardRoot className="overflow-hidden p-0 shadow-none">
+            <CardHeader className="flex h-10 flex-row items-center justify-between bg-base-50 px-3 dark:bg-base-800">
               <h2 className="font-medium text-base-900 text-md dark:text-base-100">
                 Description
               </h2>
@@ -281,8 +281,8 @@ function TaskPage() {
             </CardContent>
           </CardRoot>
 
-          <CardRoot className="p-0 shadow-none">
-            <CardHeader className="flex h-10 flex-row items-center justify-between rounded-t-xl bg-base-50 px-3 dark:bg-base-800">
+          <CardRoot className="overflow-hidden p-0 shadow-none">
+            <CardHeader className="flex h-10 flex-row items-center justify-between bg-base-50 px-3 dark:bg-base-800">
               <h2 className="font-medium text-base-900 text-md dark:text-base-100">
                 Comments
               </h2>
@@ -337,6 +337,7 @@ function TaskPage() {
               <RichTextEditor
                 editorApi={commentEditorApiRef}
                 className="min-h-0 border-solid p-2 text-sm dark:bg-background"
+                skeletonClassName="h-[38px]"
                 onUpdate={({ editor }) => setNewComment(editor.getHTML())}
                 placeholder="Add a comment..."
               />
@@ -354,7 +355,7 @@ function TaskPage() {
           </div>
         </div>
 
-        <div className="hidden lg:block">
+        <div className="hidden lg:mt-38 lg:block">
           <TaskSidebar />
         </div>
       </div>
