@@ -59,7 +59,6 @@ const sendInvite = createServerFn({ method: "POST", response: "raw" })
     return Response.json({ email });
   });
 
-// TODO: Hook up member invite with BA to replace this temporary component.
 const InviteMemberDialog = () => {
   const { workspaceId } = useParams({
     from: "/_auth/workspaces/$workspaceId/settings",
@@ -97,6 +96,7 @@ const InviteMemberDialog = () => {
 
   const form = useForm({
     defaultValues: {
+      // TODO: update to an array when a tags input component is introduced
       recipientEmail: "",
     },
     onSubmit: async ({ value, formApi }) => {
@@ -137,6 +137,7 @@ const InviteMemberDialog = () => {
               form.handleSubmit();
             }}
           >
+            {/* TODO: update to use `mode="array"` and use a tags input component for bulk invites */}
             <form.Field name="recipientEmail">
               {(field) => (
                 <Input
