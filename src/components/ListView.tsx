@@ -17,6 +17,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import projectOptions from "@/lib/options/project.options";
 import { getColumnIcon } from "@/lib/util/getColumnIcon";
+import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
 
 import type { Dispatch, SetStateAction } from "react";
@@ -145,6 +146,10 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
                       prefix={project?.prefix ?? "PROJ"}
                       columnId={column.rowId}
                       isDraggingOver={snapshot.isDraggingOver}
+                      className={cn(
+                        snapshot.isDraggingOver &&
+                          "bg-primary-100/40 dark:bg-primary-950/30",
+                      )}
                       style={{
                         backgroundColor:
                           project?.color && snapshot.isDraggingOver
