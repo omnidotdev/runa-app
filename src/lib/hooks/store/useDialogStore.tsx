@@ -11,7 +11,7 @@ export enum DialogType {
   CreateProject = "create_project",
   CreateWorkspace = "create_workspace",
   DeleteProject = "delete_project",
-  CreateMember = "create_member",
+  InviteTeamMember = "invite_team_member",
   UpdateAssignees = "update_assignees",
   UpdateDueDate = "update_due_date",
   UpdateTaskLabels = "update_task_labels",

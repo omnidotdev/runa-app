@@ -44,8 +44,8 @@ const Team = () => {
   const { setIsOpen: setIsDeleteTeamMemberOpen } = useDialogStore({
       type: DialogType.DeleteTeamMember,
     }),
-    { setIsOpen: setIsCreateMemberOpen } = useDialogStore({
-      type: DialogType.CreateMember,
+    { setIsOpen: setIsInviteTeamMemberOpen } = useDialogStore({
+      type: DialogType.InviteTeamMember,
     });
 
   return (
@@ -56,12 +56,12 @@ const Team = () => {
             Team Members
           </h2>
 
-          <Tooltip tooltip="Add team member">
+          <Tooltip tooltip="Invite team member">
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Add team member"
-              onClick={() => setIsCreateMemberOpen(true)}
+              aria-label="Invite team member"
+              onClick={() => setIsInviteTeamMemberOpen(true)}
             >
               <Plus />
             </Button>

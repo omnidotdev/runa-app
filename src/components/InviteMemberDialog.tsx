@@ -65,10 +65,12 @@ const InviteMemberDialog = () => {
   });
   const emailRef = useRef<HTMLInputElement>(null);
 
-  const { isOpen: isCreateMemberOpen, setIsOpen: setIsCreateMemberOpen } =
-    useDialogStore({
-      type: DialogType.CreateMember,
-    });
+  const {
+    isOpen: isInviteTeamMemberOpen,
+    setIsOpen: setIsInviteTeamMemberOpen,
+  } = useDialogStore({
+    type: DialogType.InviteTeamMember,
+  });
 
   const { data: currentWorkspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId }),
@@ -110,22 +112,22 @@ const InviteMemberDialog = () => {
       });
 
       formApi.reset();
-      setIsCreateMemberOpen(false);
+      setIsInviteTeamMemberOpen(false);
     },
   });
 
   return (
     <DialogRoot
-      open={isCreateMemberOpen}
-      onOpenChange={({ open }) => setIsCreateMemberOpen(open)}
+      open={isInviteTeamMemberOpen}
+      onOpenChange={({ open }) => setIsInviteTeamMemberOpen(open)}
       initialFocusEl={() => emailRef.current}
     >
       <DialogBackdrop />
       <DialogPositioner>
         <DialogContent>
-          <DialogTitle>Add new member</DialogTitle>
+          <DialogTitle>Invite Team Member</DialogTitle>
           <DialogDescription>
-            Create a new team member for the{" "}
+            Invite a new team member for the{" "}
             <strong className="text-primary">{currentWorkspace?.name}</strong>{" "}
             workspace.
           </DialogDescription>
@@ -155,7 +157,7 @@ const InviteMemberDialog = () => {
                   variant="ghost"
                   onClick={() => {
                     form.reset();
-                    setIsCreateMemberOpen(false);
+                    setIsInviteTeamMemberOpen(false);
                   }}
                 >
                   Cancel
