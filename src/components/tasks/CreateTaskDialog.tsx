@@ -33,6 +33,7 @@ import {
   useCreateTaskLabelMutation,
   useCreateTaskMutation,
 } from "@/generated/graphql";
+import { USER_ID } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -99,7 +100,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     },
     onSubmit: async ({ value, formApi }) => {
       // TODO: dynamic with auth
-      const authorId = "024bec7c-5822-4b34-f993-39cbc613e1c9";
+      const authorId = USER_ID;
 
       const allTaskLabels = value.labels.filter((l) => l.checked);
 

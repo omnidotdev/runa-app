@@ -827,6 +827,39 @@ export type CreateColumnPayloadColumnEdgeArgs = {
   orderBy?: Array<ColumnOrderBy>;
 };
 
+/** All input for the create `Invitation` mutation. */
+export type CreateInvitationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `Invitation` to be created by this mutation. */
+  invitation: InvitationInput;
+};
+
+/** The output of our create `Invitation` mutation. */
+export type CreateInvitationPayload = {
+  __typename?: 'CreateInvitationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Invitation` that was created by this mutation. */
+  invitation?: Maybe<Invitation>;
+  /** An edge for our `Invitation`. May be used by Relay 1. */
+  invitationEdge?: Maybe<InvitationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `Invitation` mutation. */
+export type CreateInvitationPayloadInvitationEdgeArgs = {
+  orderBy?: Array<InvitationOrderBy>;
+};
+
 /** All input for the create `Label` mutation. */
 export type CreateLabelInput = {
   /**
@@ -1205,6 +1238,61 @@ export type DeleteColumnPayloadColumnEdgeArgs = {
   orderBy?: Array<ColumnOrderBy>;
 };
 
+/** All input for the `deleteInvitationById` mutation. */
+export type DeleteInvitationByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Invitation` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteInvitationByWorkspaceIdAndEmail` mutation. */
+export type DeleteInvitationByWorkspaceIdAndEmailInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+  workspaceId: Scalars['UUID']['input'];
+};
+
+/** All input for the `deleteInvitation` mutation. */
+export type DeleteInvitationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `Invitation` mutation. */
+export type DeleteInvitationPayload = {
+  __typename?: 'DeleteInvitationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedInvitationId?: Maybe<Scalars['ID']['output']>;
+  /** The `Invitation` that was deleted by this mutation. */
+  invitation?: Maybe<Invitation>;
+  /** An edge for our `Invitation`. May be used by Relay 1. */
+  invitationEdge?: Maybe<InvitationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Invitation` mutation. */
+export type DeleteInvitationPayloadInvitationEdgeArgs = {
+  orderBy?: Array<InvitationOrderBy>;
+};
+
 /** All input for the `deleteLabelById` mutation. */
 export type DeleteLabelByIdInput = {
   /**
@@ -1425,6 +1513,16 @@ export type DeleteTaskPayloadTaskEdgeArgs = {
   orderBy?: Array<TaskOrderBy>;
 };
 
+/** All input for the `deleteUserByEmail` mutation. */
+export type DeleteUserByEmailInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+};
+
 /** All input for the `deleteUserById` mutation. */
 export type DeleteUserByIdInput = {
   /**
@@ -1610,6 +1708,235 @@ export type IntFilter = {
   notEqualTo?: InputMaybe<Scalars['Int']['input']>;
   /** Not included in the specified list. */
   notIn?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+export type Invitation = Node & {
+  __typename?: 'Invitation';
+  createdAt: Scalars['Datetime']['output'];
+  email: Scalars['String']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+  /** Reads a single `Workspace` that is related to this `Invitation`. */
+  workspace?: Maybe<Workspace>;
+  workspaceId: Scalars['UUID']['output'];
+};
+
+export type InvitationAggregates = {
+  __typename?: 'InvitationAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<InvitationDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Invitation` object types. */
+export type InvitationAggregatesFilter = {
+  /** Distinct count aggregate over matching `Invitation` objects. */
+  distinctCount?: InputMaybe<InvitationDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Invitation` object to be included within the aggregate. */
+  filter?: InputMaybe<InvitationFilter>;
+};
+
+/**
+ * A condition to be used against `Invitation` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type InvitationCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `email` field. */
+  email?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `workspaceId` field. */
+  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `Invitation` values. */
+export type InvitationConnection = {
+  __typename?: 'InvitationConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<InvitationAggregates>;
+  /** A list of edges which contains the `Invitation` and cursor to aid in pagination. */
+  edges: Array<InvitationEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<InvitationAggregates>>;
+  /** A list of `Invitation` objects. */
+  nodes: Array<Invitation>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Invitation` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Invitation` values. */
+export type InvitationConnectionGroupedAggregatesArgs = {
+  groupBy: Array<InvitationGroupBy>;
+  having?: InputMaybe<InvitationHavingInput>;
+};
+
+export type InvitationDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  email?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  workspaceId?: InputMaybe<BigIntFilter>;
+};
+
+export type InvitationDistinctCountAggregates = {
+  __typename?: 'InvitationDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of email across the matching connection */
+  email?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of workspaceId across the matching connection */
+  workspaceId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Invitation` edge in the connection. */
+export type InvitationEdge = {
+  __typename?: 'InvitationEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Invitation` at the end of the edge. */
+  node: Invitation;
+};
+
+/** A filter to be used against `Invitation` object types. All fields are combined with a logical ‘and.’ */
+export type InvitationFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<InvitationFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `email` field. */
+  email?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<InvitationFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<InvitationFilter>>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `workspace` relation. */
+  workspace?: InputMaybe<WorkspaceFilter>;
+  /** Filter by the object’s `workspaceId` field. */
+  workspaceId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `Invitation` for usage during aggregation. */
+export enum InvitationGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Email = 'EMAIL',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  WorkspaceId = 'WORKSPACE_ID'
+}
+
+export type InvitationHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Invitation` aggregates. */
+export type InvitationHavingInput = {
+  AND?: InputMaybe<Array<InvitationHavingInput>>;
+  OR?: InputMaybe<Array<InvitationHavingInput>>;
+  average?: InputMaybe<InvitationHavingAverageInput>;
+  distinctCount?: InputMaybe<InvitationHavingDistinctCountInput>;
+  max?: InputMaybe<InvitationHavingMaxInput>;
+  min?: InputMaybe<InvitationHavingMinInput>;
+  stddevPopulation?: InputMaybe<InvitationHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<InvitationHavingStddevSampleInput>;
+  sum?: InputMaybe<InvitationHavingSumInput>;
+  variancePopulation?: InputMaybe<InvitationHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<InvitationHavingVarianceSampleInput>;
+};
+
+export type InvitationHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `Invitation` */
+export type InvitationInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  email: Scalars['String']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  workspaceId: Scalars['UUID']['input'];
+};
+
+/** Methods to use when ordering `Invitation`. */
+export enum InvitationOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  EmailAsc = 'EMAIL_ASC',
+  EmailDesc = 'EMAIL_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  WorkspaceIdAsc = 'WORKSPACE_ID_ASC',
+  WorkspaceIdDesc = 'WORKSPACE_ID_DESC'
+}
+
+/** Represents an update to a `Invitation`. Fields that are set will be updated. */
+export type InvitationPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type Label = Node & {
@@ -1900,6 +2227,8 @@ export type Mutation = {
   createAssignee?: Maybe<CreateAssigneePayload>;
   /** Creates a single `Column`. */
   createColumn?: Maybe<CreateColumnPayload>;
+  /** Creates a single `Invitation`. */
+  createInvitation?: Maybe<CreateInvitationPayload>;
   /** Creates a single `Label`. */
   createLabel?: Maybe<CreateLabelPayload>;
   /** Creates a single `Post`. */
@@ -1924,6 +2253,12 @@ export type Mutation = {
   deleteColumn?: Maybe<DeleteColumnPayload>;
   /** Deletes a single `Column` using its globally unique id. */
   deleteColumnById?: Maybe<DeleteColumnPayload>;
+  /** Deletes a single `Invitation` using a unique key. */
+  deleteInvitation?: Maybe<DeleteInvitationPayload>;
+  /** Deletes a single `Invitation` using its globally unique id. */
+  deleteInvitationById?: Maybe<DeleteInvitationPayload>;
+  /** Deletes a single `Invitation` using a unique key. */
+  deleteInvitationByWorkspaceIdAndEmail?: Maybe<DeleteInvitationPayload>;
   /** Deletes a single `Label` using a unique key. */
   deleteLabel?: Maybe<DeleteLabelPayload>;
   /** Deletes a single `Label` using its globally unique id. */
@@ -1946,6 +2281,8 @@ export type Mutation = {
   deleteTaskLabelById?: Maybe<DeleteTaskLabelPayload>;
   /** Deletes a single `User` using a unique key. */
   deleteUser?: Maybe<DeleteUserPayload>;
+  /** Deletes a single `User` using a unique key. */
+  deleteUserByEmail?: Maybe<DeleteUserPayload>;
   /** Deletes a single `User` using its globally unique id. */
   deleteUserById?: Maybe<DeleteUserPayload>;
   /** Deletes a single `User` using a unique key. */
@@ -1966,6 +2303,12 @@ export type Mutation = {
   updateColumn?: Maybe<UpdateColumnPayload>;
   /** Updates a single `Column` using its globally unique id and a patch. */
   updateColumnById?: Maybe<UpdateColumnPayload>;
+  /** Updates a single `Invitation` using a unique key and a patch. */
+  updateInvitation?: Maybe<UpdateInvitationPayload>;
+  /** Updates a single `Invitation` using its globally unique id and a patch. */
+  updateInvitationById?: Maybe<UpdateInvitationPayload>;
+  /** Updates a single `Invitation` using a unique key and a patch. */
+  updateInvitationByWorkspaceIdAndEmail?: Maybe<UpdateInvitationPayload>;
   /** Updates a single `Label` using a unique key and a patch. */
   updateLabel?: Maybe<UpdateLabelPayload>;
   /** Updates a single `Label` using its globally unique id and a patch. */
@@ -1988,6 +2331,8 @@ export type Mutation = {
   updateTaskLabelById?: Maybe<UpdateTaskLabelPayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUser?: Maybe<UpdateUserPayload>;
+  /** Updates a single `User` using a unique key and a patch. */
+  updateUserByEmail?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using its globally unique id and a patch. */
   updateUserById?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using a unique key and a patch. */
@@ -2012,6 +2357,12 @@ export type MutationCreateAssigneeArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateColumnArgs = {
   input: CreateColumnInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateInvitationArgs = {
+  input: CreateInvitationInput;
 };
 
 
@@ -2088,6 +2439,24 @@ export type MutationDeleteColumnByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteInvitationArgs = {
+  input: DeleteInvitationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteInvitationByIdArgs = {
+  input: DeleteInvitationByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteInvitationByWorkspaceIdAndEmailArgs = {
+  input: DeleteInvitationByWorkspaceIdAndEmailInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteLabelArgs = {
   input: DeleteLabelInput;
 };
@@ -2154,6 +2523,12 @@ export type MutationDeleteUserArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUserByEmailArgs = {
+  input: DeleteUserByEmailInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUserByIdArgs = {
   input: DeleteUserByIdInput;
 };
@@ -2210,6 +2585,24 @@ export type MutationUpdateColumnArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateColumnByIdArgs = {
   input: UpdateColumnByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateInvitationArgs = {
+  input: UpdateInvitationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateInvitationByIdArgs = {
+  input: UpdateInvitationByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateInvitationByWorkspaceIdAndEmailArgs = {
+  input: UpdateInvitationByWorkspaceIdAndEmailInput;
 };
 
 
@@ -2276,6 +2669,12 @@ export type MutationUpdateTaskLabelByIdArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateUserArgs = {
   input: UpdateUserInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateUserByEmailArgs = {
+  input: UpdateUserByEmailInput;
 };
 
 
@@ -3103,6 +3502,14 @@ export type Query = Node & {
   columns?: Maybe<ColumnConnection>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
+  /** Get a single `Invitation`. */
+  invitation?: Maybe<Invitation>;
+  /** Reads a single `Invitation` using its globally unique `ID`. */
+  invitationById?: Maybe<Invitation>;
+  /** Get a single `Invitation`. */
+  invitationByWorkspaceIdAndEmail?: Maybe<Invitation>;
+  /** Reads and enables pagination through a set of `Invitation`. */
+  invitations?: Maybe<InvitationConnection>;
   /** Get a single `Label`. */
   label?: Maybe<Label>;
   /** Reads a single `Label` using its globally unique `ID`. */
@@ -3142,6 +3549,8 @@ export type Query = Node & {
   tasks?: Maybe<TaskConnection>;
   /** Get a single `User`. */
   user?: Maybe<User>;
+  /** Get a single `User`. */
+  userByEmail?: Maybe<User>;
   /** Reads a single `User` using its globally unique `ID`. */
   userById?: Maybe<User>;
   /** Get a single `User`. */
@@ -3210,6 +3619,38 @@ export type QueryColumnsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ColumnOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryInvitationArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryInvitationByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryInvitationByWorkspaceIdAndEmailArgs = {
+  email: Scalars['String']['input'];
+  workspaceId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryInvitationsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<InvitationCondition>;
+  filter?: InputMaybe<InvitationFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<InvitationOrderBy>>;
 };
 
 
@@ -3347,6 +3788,12 @@ export type QueryTasksArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryUserArgs = {
   rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUserByEmailArgs = {
+  email: Scalars['String']['input'];
 };
 
 
@@ -4432,6 +4879,66 @@ export type UpdateColumnPayloadColumnEdgeArgs = {
   orderBy?: Array<ColumnOrderBy>;
 };
 
+/** All input for the `updateInvitationById` mutation. */
+export type UpdateInvitationByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Invitation` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `Invitation` being updated. */
+  patch: InvitationPatch;
+};
+
+/** All input for the `updateInvitationByWorkspaceIdAndEmail` mutation. */
+export type UpdateInvitationByWorkspaceIdAndEmailInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+  /** An object where the defined keys will be set on the `Invitation` being updated. */
+  patch: InvitationPatch;
+  workspaceId: Scalars['UUID']['input'];
+};
+
+/** All input for the `updateInvitation` mutation. */
+export type UpdateInvitationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Invitation` being updated. */
+  patch: InvitationPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `Invitation` mutation. */
+export type UpdateInvitationPayload = {
+  __typename?: 'UpdateInvitationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Invitation` that was updated by this mutation. */
+  invitation?: Maybe<Invitation>;
+  /** An edge for our `Invitation`. May be used by Relay 1. */
+  invitationEdge?: Maybe<InvitationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `Invitation` mutation. */
+export type UpdateInvitationPayloadInvitationEdgeArgs = {
+  orderBy?: Array<InvitationOrderBy>;
+};
+
 /** All input for the `updateLabelById` mutation. */
 export type UpdateLabelByIdInput = {
   /**
@@ -4667,6 +5174,18 @@ export type UpdateTaskPayloadTaskEdgeArgs = {
   orderBy?: Array<TaskOrderBy>;
 };
 
+/** All input for the `updateUserByEmail` mutation. */
+export type UpdateUserByEmailInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+  /** An object where the defined keys will be set on the `User` being updated. */
+  patch: UserPatch;
+};
+
 /** All input for the `updateUserById` mutation. */
 export type UpdateUserByIdInput = {
   /**
@@ -4831,6 +5350,7 @@ export type User = Node & {
   authoredTasks: TaskConnection;
   avatarUrl?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['Datetime']['output'];
+  email?: Maybe<Scalars['String']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   identityProviderId: Scalars['UUID']['output'];
@@ -4902,6 +5422,8 @@ export type UserCondition = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `email` field. */
+  email?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `identityProviderId` field. */
   identityProviderId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `name` field. */
@@ -4942,6 +5464,8 @@ export type UserDistinctCountAggregates = {
   avatarUrl?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of email across the matching connection */
+  email?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of identityProviderId across the matching connection */
   identityProviderId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
@@ -4981,6 +5505,8 @@ export type UserFilter = {
   avatarUrl?: InputMaybe<StringFilter>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `email` field. */
+  email?: InputMaybe<StringFilter>;
   /** Filter by the object’s `identityProviderId` field. */
   identityProviderId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `name` field. */
@@ -5075,6 +5601,7 @@ export type UserHavingVarianceSampleInput = {
 export type UserInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
   identityProviderId: Scalars['UUID']['input'];
   name: Scalars['String']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -5157,6 +5684,8 @@ export enum UserOrderBy {
   AvatarUrlDesc = 'AVATAR_URL_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
+  EmailAsc = 'EMAIL_ASC',
+  EmailDesc = 'EMAIL_DESC',
   IdentityProviderIdAsc = 'IDENTITY_PROVIDER_ID_ASC',
   IdentityProviderIdDesc = 'IDENTITY_PROVIDER_ID_DESC',
   NameAsc = 'NAME_ASC',
@@ -5182,6 +5711,7 @@ export enum UserOrderBy {
 export type UserPatch = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
   identityProviderId?: InputMaybe<Scalars['UUID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -5241,6 +5771,8 @@ export type Workspace = Node & {
   createdAt: Scalars['Datetime']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+  /** Reads and enables pagination through a set of `Invitation`. */
+  invitations: InvitationConnection;
   name: Scalars['String']['output'];
   /** Reads and enables pagination through a set of `Project`. */
   projects: ProjectConnection;
@@ -5249,6 +5781,18 @@ export type Workspace = Node & {
   viewMode: Scalars['String']['output'];
   /** Reads and enables pagination through a set of `WorkspaceUser`. */
   workspaceUsers: WorkspaceUserConnection;
+};
+
+
+export type WorkspaceInvitationsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<InvitationCondition>;
+  filter?: InputMaybe<InvitationFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<InvitationOrderBy>>;
 };
 
 
@@ -5352,6 +5896,10 @@ export type WorkspaceFilter = {
   and?: InputMaybe<Array<WorkspaceFilter>>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `invitations` relation. */
+  invitations?: InputMaybe<WorkspaceToManyInvitationFilter>;
+  /** Some related `invitations` exist. */
+  invitationsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
@@ -5459,6 +6007,18 @@ export type WorkspaceInput = {
 export enum WorkspaceOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
+  InvitationsCountAsc = 'INVITATIONS_COUNT_ASC',
+  InvitationsCountDesc = 'INVITATIONS_COUNT_DESC',
+  InvitationsDistinctCountCreatedAtAsc = 'INVITATIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  InvitationsDistinctCountCreatedAtDesc = 'INVITATIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  InvitationsDistinctCountEmailAsc = 'INVITATIONS_DISTINCT_COUNT_EMAIL_ASC',
+  InvitationsDistinctCountEmailDesc = 'INVITATIONS_DISTINCT_COUNT_EMAIL_DESC',
+  InvitationsDistinctCountRowIdAsc = 'INVITATIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  InvitationsDistinctCountRowIdDesc = 'INVITATIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  InvitationsDistinctCountUpdatedAtAsc = 'INVITATIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  InvitationsDistinctCountUpdatedAtDesc = 'INVITATIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  InvitationsDistinctCountWorkspaceIdAsc = 'INVITATIONS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
+  InvitationsDistinctCountWorkspaceIdDesc = 'INVITATIONS_DISTINCT_COUNT_WORKSPACE_ID_DESC',
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
@@ -5509,6 +6069,18 @@ export type WorkspacePatch = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** A filter to be used against many `Invitation` object types. All fields are combined with a logical ‘and.’ */
+export type WorkspaceToManyInvitationFilter = {
+  /** Aggregates across related `Invitation` match the filter criteria. */
+  aggregates?: InputMaybe<InvitationAggregatesFilter>;
+  /** Every related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<InvitationFilter>;
+  /** No related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<InvitationFilter>;
+  /** Some related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<InvitationFilter>;
 };
 
 /** A filter to be used against many `Project` object types. All fields are combined with a logical ‘and.’ */
@@ -5756,6 +6328,13 @@ export type CreateColumnMutationVariables = Exact<{
 
 
 export type CreateColumnMutation = { __typename?: 'Mutation', createColumn?: { __typename?: 'CreateColumnPayload', column?: { __typename?: 'Column', rowId: string } | null } | null };
+
+export type CreateInvitationMutationVariables = Exact<{
+  input: CreateInvitationInput;
+}>;
+
+
+export type CreateInvitationMutation = { __typename?: 'Mutation', createInvitation?: { __typename?: 'CreateInvitationPayload', invitation?: { __typename?: 'Invitation', rowId: string } | null } | null };
 
 export type CreateLabelMutationVariables = Exact<{
   input: CreateLabelInput;
@@ -6058,6 +6637,34 @@ useCreateColumnMutation.getKey = () => ['CreateColumn'];
 
 
 useCreateColumnMutation.fetcher = (variables: CreateColumnMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateColumnMutation, CreateColumnMutationVariables>(CreateColumnDocument, variables, options);
+
+export const CreateInvitationDocument = `
+    mutation CreateInvitation($input: CreateInvitationInput!) {
+  createInvitation(input: $input) {
+    invitation {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useCreateInvitationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateInvitationMutation, TError, CreateInvitationMutationVariables, TContext>) => {
+    
+    return useMutation<CreateInvitationMutation, TError, CreateInvitationMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateInvitation'],
+    mutationFn: (variables?: CreateInvitationMutationVariables) => graphqlFetch<CreateInvitationMutation, CreateInvitationMutationVariables>(CreateInvitationDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateInvitationMutation.getKey = () => ['CreateInvitation'];
+
+
+useCreateInvitationMutation.fetcher = (variables: CreateInvitationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateInvitationMutation, CreateInvitationMutationVariables>(CreateInvitationDocument, variables, options);
 
 export const CreateLabelDocument = `
     mutation CreateLabel($input: CreateLabelInput!) {

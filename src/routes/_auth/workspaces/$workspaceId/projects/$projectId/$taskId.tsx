@@ -29,6 +29,7 @@ import {
   useCreatePostMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
+import { USER_ID } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
@@ -94,7 +95,7 @@ function TaskPage() {
 
   const handleAddComment = () => {
     // TODO: dynamic with auth
-    const authorId = "024bec7c-5822-4b34-f993-39cbc613e1c9";
+    const authorId = USER_ID;
 
     if (newComment.trim()) {
       addComment({
@@ -258,9 +259,9 @@ function TaskPage() {
           {/* Description */}
           <CardRoot className="overflow-hidden p-0 shadow-none">
             <CardHeader className="flex h-10 flex-row items-center justify-between bg-base-50 px-3 dark:bg-base-800">
-              <h2 className="font-medium text-base-900 text-md dark:text-base-100">
+              <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
                 Description
-              </h2>
+              </h3>
             </CardHeader>
             <CardContent className="p-0">
               <RichTextEditor
@@ -283,9 +284,9 @@ function TaskPage() {
 
           <CardRoot className="overflow-hidden p-0 shadow-none">
             <CardHeader className="flex h-10 flex-row items-center justify-between bg-base-50 px-3 dark:bg-base-800">
-              <h2 className="font-medium text-base-900 text-md dark:text-base-100">
+              <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
                 Comments
-              </h2>
+              </h3>
             </CardHeader>
 
             <CardContent className="flex items-center p-0">
