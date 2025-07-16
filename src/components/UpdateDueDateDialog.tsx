@@ -6,6 +6,7 @@ import { createParseHumanRelativeTime } from "parse-human-relative-time/date-fns
 import { useHotkeys } from "react-hotkeys-hook";
 import * as z from "zod/v4";
 
+import CreateTaskDatePicker from "@/components/tasks/CreateTaskDatePicker";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -24,7 +25,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
-import CreateTaskDatePicker from "./tasks/CreateTaskDatePicker";
 
 const UpdateDueDateDialog = () => {
   const { taskId: paramsTaskId } = useParams({ strict: false });

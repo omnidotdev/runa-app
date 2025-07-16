@@ -580,18 +580,19 @@ export const mockTasksQuery = (resolver: GraphQLResponseResolver<Types.TasksQuer
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockUsersQuery(
+ * mockUserQuery(
  *   ({ query, variables }) => {
+ *     const { userId } = variables;
  *     return HttpResponse.json({
- *       data: { users }
+ *       data: { user }
  *     })
  *   },
  *   requestOptions
  * )
  */
-export const mockUsersQuery = (resolver: GraphQLResponseResolver<Types.UsersQuery, Types.UsersQueryVariables>, options?: RequestHandlerOptions) =>
-  graphql.query<Types.UsersQuery, Types.UsersQueryVariables>(
-    'Users',
+export const mockUserQuery = (resolver: GraphQLResponseResolver<Types.UserQuery, Types.UserQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.UserQuery, Types.UserQueryVariables>(
+    'User',
     resolver,
     options
   )

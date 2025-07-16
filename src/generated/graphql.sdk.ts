@@ -6501,10 +6501,12 @@ export type TasksQueryVariables = Exact<{
 
 export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
 
-export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
+export type UserQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+}>;
 
 
-export type UsersQuery = { __typename?: 'Query', users?: { __typename?: 'UserConnection', nodes: Array<{ __typename?: 'User', rowId: string, name: string }> } | null };
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', rowId: string, name: string, email?: string | null } | null };
 
 export type WorkspaceUsersQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -6877,13 +6879,12 @@ export const TasksDocument = gql`
   }
 }
     ${LabelFragmentDoc}`;
-export const UsersDocument = gql`
-    query Users {
-  users {
-    nodes {
-      rowId
-      name
-    }
+export const UserDocument = gql`
+    query User($userId: UUID!) {
+  user(rowId: $userId) {
+    rowId
+    name
+    email
   }
 }
     `;
@@ -7043,8 +7044,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     Tasks(variables: TasksQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<TasksQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TasksQuery>({ document: TasksDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Tasks', 'query', variables);
     },
-    Users(variables?: UsersQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UsersQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<UsersQuery>({ document: UsersDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Users', 'query', variables);
+    User(variables: UserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UserQuery>({ document: UserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'User', 'query', variables);
     },
     WorkspaceUsers(variables: WorkspaceUsersQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<WorkspaceUsersQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<WorkspaceUsersQuery>({ document: WorkspaceUsersDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'WorkspaceUsers', 'query', variables);

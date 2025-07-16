@@ -12,9 +12,9 @@ import html from "highlight.js/lib/languages/xml";
 import { createLowlight } from "lowlight";
 import { useEffect, useRef } from "react";
 
+import { CodeBlockWithHeader } from "@/components/core/CodeBlockWithHeader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { CodeBlockWithHeader } from "./CodeBlockWithHeader";
 
 import type { EditorEvents } from "@tiptap/react";
 import type { ComponentProps, RefObject } from "react";

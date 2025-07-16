@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { zodValidator } from "@tanstack/zod-adapter";
@@ -20,9 +20,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useCreateInvitationMutation } from "@/generated/graphql";
-import { BASE_URL, isDevEnv } from "@/lib/config/env.config";
+import { BASE_URL, isDevEnv, USER_ID } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
+import userOptions from "@/lib/options/user.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -75,14 +76,18 @@ const InviteMemberDialog = () => {
     select: (data) => data?.workspace,
   });
 
+  const { data: user } = useQuery({
+    // TODO: derive `USER_ID` from route context once auth is introduced
+    ...userOptions({ userId: USER_ID }),
+    select: (data) => data?.user,
+  });
+
   const { mutate: inviteMember } = useCreateInvitationMutation({
     onSuccess: async (_data, variables) => {
       await sendInvite({
         data: {
-          // TODO: dynamic with auth based query
-          inviterEmail: "hello@omni.dev",
-          // TODO: dynamic with auth based query
-          inviterUsername: "omnitest",
+          inviterEmail: user?.email!,
+          inviterUsername: user?.name!,
           recipientEmail: variables.input.invitation.email,
           workspaceName: currentWorkspace?.name!,
         },

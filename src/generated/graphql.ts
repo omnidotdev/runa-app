@@ -6500,10 +6500,12 @@ export type TasksQueryVariables = Exact<{
 
 export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
 
-export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
+export type UserQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+}>;
 
 
-export type UsersQuery = { __typename?: 'Query', users?: { __typename?: 'UserConnection', nodes: Array<{ __typename?: 'User', rowId: string, name: string }> } | null };
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', rowId: string, name: string, email?: string | null } | null };
 
 export type WorkspaceUsersQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -7491,58 +7493,57 @@ useInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks.infin
 
 useTasksQuery.fetcher = (variables: TasksQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables, options);
 
-export const UsersDocument = `
-    query Users {
-  users {
-    nodes {
-      rowId
-      name
-    }
+export const UserDocument = `
+    query User($userId: UUID!) {
+  user(rowId: $userId) {
+    rowId
+    name
+    email
   }
 }
     `;
 
-export const useUsersQuery = <
-      TData = UsersQuery,
+export const useUserQuery = <
+      TData = UserQuery,
       TError = unknown
     >(
-      variables?: UsersQueryVariables,
-      options?: Omit<UseQueryOptions<UsersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UsersQuery, TError, TData>['queryKey'] }
+      variables: UserQueryVariables,
+      options?: Omit<UseQueryOptions<UserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UserQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useQuery<UsersQuery, TError, TData>(
+    return useQuery<UserQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['Users'] : ['Users', variables],
-    queryFn: graphqlFetch<UsersQuery, UsersQueryVariables>(UsersDocument, variables),
+    queryKey: ['User', variables],
+    queryFn: graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables),
     ...options
   }
     )};
 
-useUsersQuery.getKey = (variables?: UsersQueryVariables) => variables === undefined ? ['Users'] : ['Users', variables];
+useUserQuery.getKey = (variables: UserQueryVariables) => ['User', variables];
 
-export const useInfiniteUsersQuery = <
-      TData = InfiniteData<UsersQuery>,
+export const useInfiniteUserQuery = <
+      TData = InfiniteData<UserQuery>,
       TError = unknown
     >(
-      variables: UsersQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<UsersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UsersQuery, TError, TData>['queryKey'] }
+      variables: UserQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<UserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UserQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useInfiniteQuery<UsersQuery, TError, TData>(
+    return useInfiniteQuery<UserQuery, TError, TData>(
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['Users.infinite'] : ['Users.infinite', variables],
-      queryFn: (metaData) => graphqlFetch<UsersQuery, UsersQueryVariables>(UsersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      queryKey: optionsQueryKey ?? ['User.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteUsersQuery.getKey = (variables?: UsersQueryVariables) => variables === undefined ? ['Users.infinite'] : ['Users.infinite', variables];
+useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite', variables];
 
 
-useUsersQuery.fetcher = (variables?: UsersQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UsersQuery, UsersQueryVariables>(UsersDocument, variables, options);
+useUserQuery.fetcher = (variables: UserQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables, options);
 
 export const WorkspaceUsersDocument = `
     query WorkspaceUsers($rowId: UUID!) {
