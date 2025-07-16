@@ -13,7 +13,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useCreateWorkspaceMutation } from "@/generated/graphql";
+import {
+  useCreateWorkspaceMutation,
+  useCreateWorkspaceUserMutation,
+} from "@/generated/graphql";
+import { USER_ID } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
@@ -37,11 +41,22 @@ const CreateWorkspaceDialog = () => {
 
   const [newWorkspaceName, setNewWorkspaceName] = useState("");
 
+  const { mutate: createTeamMember } = useCreateWorkspaceUserMutation();
+
   const { mutateAsync: createNewWorkspace } = useCreateWorkspaceMutation({
     meta: {
       invalidates: [workspacesOptions().queryKey],
     },
     onSuccess: ({ createWorkspace }) => {
+      createTeamMember({
+        input: {
+          workspaceUser: {
+            userId: USER_ID,
+            workspaceId: createWorkspace?.workspace?.rowId!,
+          },
+        },
+      });
+
       navigate({
         to: "/workspaces/$workspaceId/projects",
         params: { workspaceId: createWorkspace?.workspace?.rowId! },
