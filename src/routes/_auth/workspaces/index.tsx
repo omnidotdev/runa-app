@@ -8,6 +8,7 @@ import { CardHeader, CardRoot } from "@/components/ui/card";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import seo from "@/lib/util/seo";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute({
   head: () => ({
@@ -41,7 +42,12 @@ function WorkspacesOverviewPage() {
         </div>
 
         {!!recentWorkspaces?.length && (
-          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div
+            className={cn(
+              "mb-8 grid grid-cols-1 gap-6 md:grid-cols-2",
+              recentWorkspaces.length === 1 && "md:grid-cols-1",
+            )}
+          >
             {recentWorkspaces?.map((workspace) => (
               <Link
                 key={workspace.rowId}
