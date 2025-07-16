@@ -35,7 +35,7 @@ const inviteSchema = z.object({
   workspaceName: z.string(),
 });
 
-const sendInvite = createServerFn({ method: "POST", response: "raw" })
+const sendInviteEmail = createServerFn({ method: "POST", response: "raw" })
   .validator(zodValidator(inviteSchema))
   .handler(async ({ data }) => {
     const { inviterEmail, inviterUsername, recipientEmail, workspaceName } =
@@ -83,9 +83,10 @@ const InviteMemberDialog = () => {
     select: (data) => data?.user,
   });
 
+  // TODO: tanstack pacer integration once bulk invites are set up with tags input
   const { mutate: inviteMember } = useCreateInvitationMutation({
     onSuccess: async (_data, variables) => {
-      await sendInvite({
+      await sendInviteEmail({
         data: {
           inviterEmail: user?.email!,
           inviterUsername: user?.name!,
