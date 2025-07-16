@@ -4,7 +4,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 
-import { themeQueryKey, themeQueryOptions } from "@/lib/options/theme.options";
+import themeQueryOptions, { themeQueryKey } from "@/lib/options/theme.options";
 import { setTheme } from "@/lib/util/theme";
 import { Route } from "@/routes/__root";
 
@@ -34,7 +34,7 @@ const useOptimisticThemeMutation = () => {
   });
 };
 
-export const useTheme = () => {
+const useTheme = () => {
   const { requestInfo } = Route.useLoaderData();
   const { data: theme } = useSuspenseQuery(themeQueryOptions());
 
@@ -45,3 +45,5 @@ export const useTheme = () => {
     setTheme,
   };
 };
+
+export default useTheme;

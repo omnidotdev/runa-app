@@ -4,9 +4,10 @@ import { getTheme } from "@/lib/util/theme";
 
 export const themeQueryKey = ["theme"] as const;
 
-export const themeQueryOptions = () => {
-  return queryOptions({
+const themeQueryOptions = () =>
+  queryOptions({
     queryKey: themeQueryKey,
     queryFn: getTheme,
   });
-};
+
+export default themeQueryOptions;

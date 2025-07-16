@@ -15,7 +15,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useReorderTasks from "@/lib/hooks/useReorderTasks";
-import { useTheme } from "@/lib/hooks/useTheme";
+import useTheme from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
 import { getColumnIcon } from "@/lib/util/getColumnIcon";
 import { cn } from "@/lib/utils";

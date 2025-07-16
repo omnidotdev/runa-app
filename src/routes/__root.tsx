@@ -9,7 +9,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import ClientHintCheck from "@/components/scripts/ClientHintCheck";
-import { useTheme } from "@/lib/hooks/useTheme";
+import useTheme from "@/lib/hooks/useTheme";
 import { themeQueryKey } from "@/lib/options/theme.options";
 import { getRequestInfo } from "@/lib/util/requestInfo";
 import seo from "@/lib/util/seo";
