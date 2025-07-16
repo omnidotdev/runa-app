@@ -1,4 +1,4 @@
-import { Outlet } from "@tanstack/react-router";
+import { Outlet, redirect } from "@tanstack/react-router";
 
 import { AppSidebar } from "@/components/AppSidebar";
 import CreateProjectDialog from "@/components/CreateProjectDialog";
@@ -10,6 +10,9 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import SidebarProvider from "@/providers/SidebarProvider";
 
 export const Route = createFileRoute({
+  beforeLoad: ({ context: { session } }) => {
+    if (!session) throw redirect({ to: "/" });
+  },
   loader: async ({ params, context: { queryClient } }) => {
     // TODO: determine if there is a cleaner way to do this with ts router / start from layout files
     const { workspaceId } = params as unknown as { workspaceId?: string };
