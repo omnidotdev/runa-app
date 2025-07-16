@@ -8,7 +8,6 @@ import { CardHeader, CardRoot } from "@/components/ui/card";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import seo from "@/lib/util/seo";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute({
   head: () => ({
@@ -42,12 +41,7 @@ function WorkspacesOverviewPage() {
         </div>
 
         {!!recentWorkspaces?.length && (
-          <div
-            className={cn(
-              "mb-8 grid grid-cols-1 gap-6 md:grid-cols-2",
-              recentWorkspaces.length === 1 && "md:grid-cols-1",
-            )}
-          >
+          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
             {recentWorkspaces?.map((workspace) => (
               <Link
                 key={workspace.rowId}
@@ -80,19 +74,33 @@ function WorkspacesOverviewPage() {
                 </CardRoot>
               </Link>
             ))}
+
+            {recentWorkspaces.length % 2 === 1 && (
+              <CardRoot
+                className="flex w-full cursor-pointer items-center justify-center rounded-xl border-dashed transition-transform hover:scale-[1.02]"
+                onClick={() => setIsCreateWorkspaceOpen(true)}
+              >
+                <CardHeader className="flex-row items-center">
+                  <PlusIcon className="size-4" />
+                  Create New Workspace
+                </CardHeader>
+              </CardRoot>
+            )}
           </div>
         )}
 
-        <div className="flex justify-center">
-          <Button
-            size="lg"
-            className="gap-2"
-            onClick={() => setIsCreateWorkspaceOpen(true)}
-          >
-            <PlusIcon className="size-4" />
-            Create New Workspace
-          </Button>
-        </div>
+        {recentWorkspaces?.length! % 2 === 0 && (
+          <div className="flex justify-center">
+            <Button
+              size="lg"
+              className="gap-2"
+              onClick={() => setIsCreateWorkspaceOpen(true)}
+            >
+              <PlusIcon className="size-4" />
+              Create New Workspace
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
