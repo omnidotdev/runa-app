@@ -212,6 +212,7 @@ export {
   /** @knipignore */
   SelectControl,
   SelectTrigger,
+  /** @knipignore */
   SelectValueText,
   /** @knipignore */
   SelectIndicator,
