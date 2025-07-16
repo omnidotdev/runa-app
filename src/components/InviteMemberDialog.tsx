@@ -7,6 +7,7 @@ import { useRef } from "react";
 import { Resend } from "resend";
 import * as z from "zod/v4";
 
+import WorkspaceInvitation from "@/components/emails/WorkspaceInvitation";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -17,12 +18,12 @@ import {
   DialogRoot,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useCreateInvitationMutation } from "@/generated/graphql";
+import { BASE_URL, isDevEnv } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import workspaceOptions from "@/lib/options/workspace.options";
-import WorkspaceInvitation from "./emails/WorkspaceInvitation";
-import { Input } from "./ui/input";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -40,18 +41,15 @@ const sendInvite = createServerFn({ method: "POST", response: "raw" })
       data;
 
     const { data: email, error } = await resend.emails.send({
-      // TODO: dynamic for dev v prod
-      from: "Runa Support <onboarding@resend.dev>",
-      // TODO: user recipientEmail in prod
-      to: "delivered@resend.dev",
+      from: `Runa Support <${isDevEnv ? "onboarding@resend.dev" : inviterEmail}>`,
+      to: isDevEnv ? "delivered@resend.dev" : recipientEmail,
       subject: `You have been invited to join the ${workspaceName} workspace on Runa`,
       react: WorkspaceInvitation({
         inviterUsername,
         inviterEmail,
         workspaceName,
         recipientEmail,
-        // TODO: dynamic for dev v prod
-        inviteUrl: "https://localhost:3000",
+        inviteUrl: BASE_URL,
       }),
     });
 
@@ -65,7 +63,7 @@ const InviteMemberDialog = () => {
   const { workspaceId } = useParams({
     from: "/_auth/workspaces/$workspaceId/settings",
   });
-  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
 
   const { isOpen: isCreateMemberOpen, setIsOpen: setIsCreateMemberOpen } =
     useDialogStore({
@@ -115,7 +113,7 @@ const InviteMemberDialog = () => {
     <DialogRoot
       open={isCreateMemberOpen}
       onOpenChange={({ open }) => setIsCreateMemberOpen(open)}
-      initialFocusEl={() => nameRef.current}
+      initialFocusEl={() => emailRef.current}
     >
       <DialogBackdrop />
       <DialogPositioner>
@@ -137,6 +135,7 @@ const InviteMemberDialog = () => {
             <form.Field name="recipientEmail">
               {(field) => (
                 <Input
+                  ref={emailRef}
                   placeholder="hello@omni.dev"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}

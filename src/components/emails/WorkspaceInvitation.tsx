@@ -31,7 +31,7 @@ const inviteMemberDetails = {
   supportEmail: "support@omni.dev",
 };
 
-export interface WorkspaceInvitation {
+interface WorkspaceInvitation {
   /** Username of the person sending the invite. */
   inviterUsername: string;
   /** Email of the person sending the invite. */
