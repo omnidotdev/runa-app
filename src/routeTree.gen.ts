@@ -13,6 +13,7 @@ import type {
   CreateServerFileRoute,
   ServerFileRoutesByPath,
 } from '@tanstack/react-start/server'
+import { createServerRootRoute } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/_auth'
@@ -25,6 +26,9 @@ import { Route as AuthWorkspacesWorkspaceIdProjectsIndexRouteImport } from './ro
 import { Route as AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRouteImport } from './routes/_auth/workspaces/$workspaceId/projects/$projectId/index'
 import { Route as AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRouteImport } from './routes/_auth/workspaces/$workspaceId/projects/$projectId/settings'
 import { Route as AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRouteImport } from './routes/_auth/workspaces/$workspaceId/projects/$projectId/$taskId'
+import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
+
+const rootServerRouteImport = createServerRootRoute()
 
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
@@ -79,6 +83,11 @@ const AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute =
     path: '/workspaces/$workspaceId/projects/$projectId/$taskId',
     getParentRoute: () => AuthRoute,
   } as any)
+const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/pricing': typeof AnonPricingRoute
@@ -152,6 +161,27 @@ export interface RootRouteChildren {
   AnonRoute: typeof AnonRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
 }
+export interface FileServerRoutesByFullPath {
+  '/api/auth/$': typeof ApiAuthSplatServerRoute
+}
+export interface FileServerRoutesByTo {
+  '/api/auth/$': typeof ApiAuthSplatServerRoute
+}
+export interface FileServerRoutesById {
+  __root__: typeof rootServerRouteImport
+  '/api/auth/$': typeof ApiAuthSplatServerRoute
+}
+export interface FileServerRouteTypes {
+  fileServerRoutesByFullPath: FileServerRoutesByFullPath
+  fullPaths: '/api/auth/$'
+  fileServerRoutesByTo: FileServerRoutesByTo
+  to: '/api/auth/$'
+  id: '__root__' | '/api/auth/$'
+  fileServerRoutesById: FileServerRoutesById
+}
+export interface RootServerRouteChildren {
+  ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
+}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
@@ -182,6 +212,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AnonIndexRouteImport
       parentRoute: typeof AnonRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: ''
+      fullPath: '/api/auth/$'
+      preLoaderRoute: unknown
+      parentRoute: typeof rootRouteImport
     }
     '/_auth/workspaces/': {
       id: '/_auth/workspaces/'
@@ -224,6 +261,87 @@ declare module '@tanstack/react-router' {
       fullPath: '/workspaces/$workspaceId/projects/$projectId'
       preLoaderRoute: typeof AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRouteImport
       parentRoute: typeof AuthRoute
+    }
+  }
+}
+declare module '@tanstack/react-start/server' {
+  interface ServerFileRoutesByPath {
+    '/_anon': {
+      id: '/_anon'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/_anon/pricing': {
+      id: '/_anon/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/_anon/': {
+      id: '/_anon/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/_auth/workspaces/': {
+      id: '/_auth/workspaces/'
+      path: '/workspaces'
+      fullPath: '/workspaces'
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/_auth/workspaces/$workspaceId/settings': {
+      id: '/_auth/workspaces/$workspaceId/settings'
+      path: '/workspaces/$workspaceId/settings'
+      fullPath: '/workspaces/$workspaceId/settings'
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/_auth/workspaces/$workspaceId/projects/': {
+      id: '/_auth/workspaces/$workspaceId/projects/'
+      path: '/workspaces/$workspaceId/projects'
+      fullPath: '/workspaces/$workspaceId/projects'
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId': {
+      id: '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId'
+      path: '/workspaces/$workspaceId/projects/$projectId/$taskId'
+      fullPath: '/workspaces/$workspaceId/projects/$projectId/$taskId'
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/_auth/workspaces/$workspaceId/projects/$projectId/settings': {
+      id: '/_auth/workspaces/$workspaceId/projects/$projectId/settings'
+      path: '/workspaces/$workspaceId/projects/$projectId/settings'
+      fullPath: '/workspaces/$workspaceId/projects/$projectId/settings'
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/_auth/workspaces/$workspaceId/projects/$projectId/': {
+      id: '/_auth/workspaces/$workspaceId/projects/$projectId/'
+      path: '/workspaces/$workspaceId/projects/$projectId'
+      fullPath: '/workspaces/$workspaceId/projects/$projectId'
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
     }
   }
 }
@@ -293,6 +411,23 @@ declare module './routes/_anon/index' {
     ServerFileRoutesByPath['/_anon/']['id'],
     ServerFileRoutesByPath['/_anon/']['path'],
     ServerFileRoutesByPath['/_anon/']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/api/auth/$' {
+  const createFileRoute: CreateFileRoute<
+    '/api/auth/$',
+    FileRoutesByPath['/api/auth/$']['parentRoute'],
+    FileRoutesByPath['/api/auth/$']['id'],
+    FileRoutesByPath['/api/auth/$']['path'],
+    FileRoutesByPath['/api/auth/$']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/api/auth/$']['parentRoute'],
+    ServerFileRoutesByPath['/api/auth/$']['id'],
+    ServerFileRoutesByPath['/api/auth/$']['path'],
+    ServerFileRoutesByPath['/api/auth/$']['fullPath'],
     unknown
   >
 }
@@ -443,3 +578,9 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+const rootServerRouteChildren: RootServerRouteChildren = {
+  ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
+}
+export const serverRouteTree = rootServerRouteImport
+  ._addFileChildren(rootServerRouteChildren)
+  ._addFileTypes<FileServerRouteTypes>()
