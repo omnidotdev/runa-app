@@ -50,12 +50,12 @@ import {
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import { useTheme } from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/providers/ThemeProvider";
 
 import type { ComponentProps } from "react";
 
@@ -68,6 +68,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   }>();
   const queryClient = getQueryClient();
   const { theme, setTheme } = useTheme();
+
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const toggleTheme = () =>

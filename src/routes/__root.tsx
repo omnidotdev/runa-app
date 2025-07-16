@@ -6,25 +6,31 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { createServerFn } from "@tanstack/react-start";
-import { getCookie } from "@tanstack/react-start/server";
 
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
+import ClientHintCheck from "@/components/scripts/ClientHintCheck";
+import { useTheme } from "@/lib/hooks/useTheme";
+import { themeQueryKey } from "@/lib/options/theme.options";
+import { getRequestInfo } from "@/lib/util/requestInfo";
 import seo from "@/lib/util/seo";
-import { ThemeProvider, useTheme } from "@/providers/ThemeProvider";
 import appCss from "@/styles/globals.css?url";
 
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import type { Theme } from "@/providers/ThemeProvider";
-
-const getThemeServerFn = createServerFn().handler(async () => {
-  return (getCookie("ui-theme") || "light") as Theme;
-});
+import type { Theme } from "@/lib/util/theme";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
-    loader: () => getThemeServerFn(),
+    loader: async ({ context: { queryClient } }) => {
+      const requestInfo = await getRequestInfo();
+
+      queryClient.setQueryData(
+        themeQueryKey,
+        requestInfo.userPreferences.theme,
+      );
+
+      return { requestInfo };
+    },
     head: () => ({
       meta: [
         {
@@ -38,33 +44,29 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ],
       links: [{ rel: "stylesheet", href: appCss }],
     }),
-    errorComponent: (props) => (
-      <RootDocument>
-        <DefaultCatchBoundary {...props} />
-      </RootDocument>
-    ),
+    errorComponent: (props) => <DefaultCatchBoundary {...props} />,
     component: RootComponent,
   },
 );
 
 function RootComponent() {
-  const theme = Route.useLoaderData();
-
-  return (
-    <ThemeProvider theme={theme}>
-      <RootDocument>
-        <Outlet />
-      </RootDocument>
-    </ThemeProvider>
-  );
-}
-
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   const { theme } = useTheme();
 
   return (
+    <RootDocument theme={theme}>
+      <Outlet />
+    </RootDocument>
+  );
+}
+
+function RootDocument({
+  children,
+  theme,
+}: Readonly<{ children: ReactNode; theme: Theme }>) {
+  return (
     <html lang="en" className={theme} suppressHydrationWarning>
       <head>
+        <ClientHintCheck />
         <HeadContent />
       </head>
       <body>
