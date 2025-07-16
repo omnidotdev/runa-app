@@ -45,7 +45,7 @@ interface WorkspaceInvitation {
 }
 
 /**
- * Invite member to an organziation email template.
+ * Workspace invitation email template.
  */
 const WorkspaceInvitation = ({
   inviterUsername,
