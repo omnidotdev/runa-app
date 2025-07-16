@@ -7552,10 +7552,12 @@ export const WorkspaceUsersDocument = `
         name
         avatarUrl
         rowId
-        allTasks: authoredTasks {
+        allTasks: authoredTasks(filter: {project: {workspaceId: {equalTo: $rowId}}}) {
           totalCount
         }
-        completedTasks: authoredTasks(filter: {column: {title: {equalTo: "Done"}}}) {
+        completedTasks: authoredTasks(
+          filter: {project: {workspaceId: {equalTo: $rowId}}, column: {title: {equalTo: "Done"}}}
+        ) {
           totalCount
         }
       }
