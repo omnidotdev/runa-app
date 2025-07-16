@@ -1,3 +1,4 @@
+import { redirect } from "@tanstack/react-router";
 import {
   ArrowRightIcon,
   ChartNoAxesColumnIncreasingIcon,
@@ -11,8 +12,8 @@ import Link from "@/components/core/Link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { signIn } from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
-import { signIn } from "@/lib/util/signIn";
 import { cn } from "@/lib/utils";
 
 import type { ReactNode } from "react";
@@ -58,6 +59,9 @@ const features: Feature[] = [
 ];
 
 export const Route = createFileRoute({
+  beforeLoad: ({ context: { session } }) => {
+    if (session) throw redirect({ to: "/workspaces" });
+  },
   component: HomePage,
 });
 

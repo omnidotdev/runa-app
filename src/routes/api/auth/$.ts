@@ -1,6 +1,6 @@
 import { Auth } from "@auth/core";
 
-import authOptions from "@/lib/config/auth.config";
+import authOptions from "@/lib/auth/auth.config";
 
 export const ServerRoute = createServerFileRoute().methods({
   GET: async ({ request }) => {
