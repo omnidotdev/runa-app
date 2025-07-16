@@ -31,7 +31,7 @@ const inviteMemberDetails = {
   supportEmail: "support@omni.dev",
 };
 
-export interface OrganizationInvitation {
+export interface WorkspaceInvitation {
   /** Username of the person sending the invite. */
   inviterUsername: string;
   /** Email of the person sending the invite. */
@@ -47,13 +47,13 @@ export interface OrganizationInvitation {
 /**
  * Invite member to an organziation email template.
  */
-const InviteMemberEmailTemplate = ({
+const WorkspaceInvitation = ({
   inviterUsername,
   inviterEmail,
   workspaceName,
   recipientEmail,
   inviteUrl,
-}: OrganizationInvitation) => (
+}: WorkspaceInvitation) => (
   <Html>
     <Head />
     <Tailwind
@@ -135,4 +135,4 @@ const InviteMemberEmailTemplate = ({
   </Html>
 );
 
-export default InviteMemberEmailTemplate;
+export default WorkspaceInvitation;
