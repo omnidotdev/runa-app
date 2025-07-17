@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
 import {
+  AlignJustifyIcon,
   CheckIcon,
   ChevronRight,
   CircleAlertIcon,
@@ -39,7 +40,7 @@ const Filter = () => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { assignees, labels, priorities } = useSearch({
+  const { assignees, labels, priorities, columns } = useSearch({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -270,6 +271,62 @@ const Filter = () => {
                         <p className="font-light text-sm first-letter:uppercase">
                           {priority}
                         </p>
+                      </CheckboxLabel>
+                      <CheckboxHiddenInput />
+                      <CheckboxControl>
+                        <CheckboxIndicator>
+                          <CheckIcon className="size-4" />
+                        </CheckboxIndicator>
+                      </CheckboxControl>
+                    </CheckboxRoot>
+                  ))}
+                </PopoverContent>
+              </PopoverPositioner>
+            </PopoverRoot>
+
+            <PopoverRoot positioning={{ placement: "right-start" }}>
+              <PopoverTrigger className="flex w-full cursor-pointer justify-between border-b px-3 py-2">
+                <div className="flex items-center gap-2">
+                  <AlignJustifyIcon className="size-4 rotate-90" />
+                  <p>Columns</p>
+                </div>
+                <ChevronRight className="h-4 w-4" />
+              </PopoverTrigger>
+              <PopoverPositioner>
+                <PopoverContent className="flex w-48 flex-col gap-2 p-2">
+                  {project?.columns.nodes.map((column) => (
+                    <CheckboxRoot
+                      key={column.rowId}
+                      className="group flex cursor-pointer items-center justify-between p-0.5"
+                      checked={columns.includes(column.title)}
+                      //  TODO: Store in User preference table
+                      onCheckedChange={({ checked }) => {
+                        if (checked) {
+                          navigate({
+                            search: (prev) => ({
+                              ...prev,
+                              columns: [...(prev.columns ?? []), column.title],
+                            }),
+                          });
+                        } else {
+                          navigate({
+                            search: (prev) => ({
+                              ...prev,
+                              columns: prev.columns?.filter(
+                                (p) => p !== column.title,
+                              ),
+                            }),
+                          });
+                        }
+                      }}
+                    >
+                      <CheckboxLabel className="ml-0 flex items-center gap-2">
+                        <div className="flex items-center gap-2">
+                          <p>{column.emoji}</p>
+                          <p className="font-light text-sm first-letter:uppercase">
+                            {column.title}
+                          </p>
+                        </div>
                       </CheckboxLabel>
                       <CheckboxHiddenInput />
                       <CheckboxControl>

@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useSearch } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
 
@@ -12,7 +12,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import projectOptions from "@/lib/options/project.options";
-import { getColumnIcon } from "@/lib/util/getColumnIcon";
 import { useTheme } from "@/providers/ThemeProvider";
 
 import type { MouseEvent } from "react";
@@ -21,6 +20,10 @@ const Board = () => {
   const { theme } = useTheme();
 
   const { projectId } = useParams({
+    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  });
+
+  const { columns } = useSearch({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -34,7 +37,7 @@ const Board = () => {
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const { data: project } = useSuspenseQuery({
-    ...projectOptions({ rowId: projectId }),
+    ...projectOptions({ rowId: projectId, columns }),
     select: (data) => data?.project,
   });
 
@@ -125,8 +128,6 @@ const Board = () => {
                 className="flex h-full gap-3"
               >
                 {project?.columns?.nodes?.map((column) => {
-                  const ColumnIcon = getColumnIcon(column.title);
-
                   return (
                     <div
                       key={column?.rowId}
@@ -134,7 +135,9 @@ const Board = () => {
                     >
                       <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2">
                         <div className="flex items-center gap-2">
-                          <div className="flex-shrink-0">{ColumnIcon}</div>
+                          {column.emoji && (
+                            <p className="text-xs">{column.emoji}</p>
+                          )}
 
                           <h3 className="text-base-800 text-sm dark:text-base-100">
                             {column?.title}
@@ -149,32 +152,34 @@ const Board = () => {
                           </span>
                         </div>
 
-                        <Tooltip
-                          positioning={{ placement: "top", gutter: 11 }}
-                          tooltip={{
-                            className: "bg-background text-foreground border",
-                            children: (
-                              <div className="inline-flex">
-                                Add Task
-                                <div className="ml-2 flex items-center gap-0.5">
-                                  <SidebarMenuShotcut>C</SidebarMenuShotcut>
+                        <div className="flex items-center gap-1">
+                          <Tooltip
+                            positioning={{ placement: "top", gutter: 11 }}
+                            tooltip={{
+                              className: "bg-background text-foreground border",
+                              children: (
+                                <div className="inline-flex">
+                                  Add Task
+                                  <div className="ml-2 flex items-center gap-0.5">
+                                    <SidebarMenuShotcut>C</SidebarMenuShotcut>
+                                  </div>
                                 </div>
-                              </div>
-                            ),
-                          }}
-                        >
-                          <Button
-                            variant="ghost"
-                            size="xs"
-                            className="size-5"
-                            onClick={() => {
-                              setColumnId(column.rowId);
-                              setIsCreateTaskDialogOpen(true);
+                              ),
                             }}
                           >
-                            <PlusIcon className="size-4" />
-                          </Button>
-                        </Tooltip>
+                            <Button
+                              variant="ghost"
+                              size="xs"
+                              className="size-7"
+                              onClick={() => {
+                                setColumnId(column.rowId);
+                                setIsCreateTaskDialogOpen(true);
+                              }}
+                            >
+                              <PlusIcon className="size-4" />
+                            </Button>
+                          </Tooltip>
+                        </div>
                       </div>
 
                       <div className="no-scrollbar flex h-full overflow-y-auto">

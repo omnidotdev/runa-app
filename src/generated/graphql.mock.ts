@@ -74,6 +74,50 @@ export const mockCreateColumnMutation = (resolver: GraphQLResponseResolver<Types
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockDeleteColumnMutation(
+ *   ({ query, variables }) => {
+ *     const { rowId } = variables;
+ *     return HttpResponse.json({
+ *       data: { deleteColumn }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockDeleteColumnMutation = (resolver: GraphQLResponseResolver<Types.DeleteColumnMutation, Types.DeleteColumnMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.DeleteColumnMutation, Types.DeleteColumnMutationVariables>(
+    'DeleteColumn',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUpdateColumnMutation(
+ *   ({ query, variables }) => {
+ *     const { rowId, patch } = variables;
+ *     return HttpResponse.json({
+ *       data: { updateColumn }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockUpdateColumnMutation = (resolver: GraphQLResponseResolver<Types.UpdateColumnMutation, Types.UpdateColumnMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.UpdateColumnMutation, Types.UpdateColumnMutationVariables>(
+    'UpdateColumn',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockCreateLabelMutation(
  *   ({ query, variables }) => {
  *     const { input } = variables;
@@ -448,6 +492,28 @@ export const mockUpdateWorkspaceMutation = (resolver: GraphQLResponseResolver<Ty
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockColumnsQuery(
+ *   ({ query, variables }) => {
+ *     const { projectId } = variables;
+ *     return HttpResponse.json({
+ *       data: { columns }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockColumnsQuery = (resolver: GraphQLResponseResolver<Types.ColumnsQuery, Types.ColumnsQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.ColumnsQuery, Types.ColumnsQueryVariables>(
+    'Columns',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockLabelsQuery(
  *   ({ query, variables }) => {
  *     const { projectId } = variables;
@@ -472,7 +538,7 @@ export const mockLabelsQuery = (resolver: GraphQLResponseResolver<Types.LabelsQu
  * @example
  * mockProjectQuery(
  *   ({ query, variables }) => {
- *     const { rowId } = variables;
+ *     const { rowId, columns } = variables;
  *     return HttpResponse.json({
  *       data: { project }
  *     })

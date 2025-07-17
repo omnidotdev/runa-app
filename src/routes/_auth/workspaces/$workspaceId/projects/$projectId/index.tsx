@@ -45,22 +45,28 @@ const projectSearchParamsSchema = z.object({
   assignees: z.array(z.guid()).default([]),
   labels: z.array(z.guid()).default([]),
   priorities: z.array(z.enum(["low", "medium", "high"])).default([]),
+  columns: z.array(z.string()).default([]),
 });
 
 export const Route = createFileRoute({
-  loaderDeps: ({ search: { search, assignees, labels, priorities } }) => ({
+  loaderDeps: ({
+    search: { search, assignees, labels, priorities, columns },
+  }) => ({
     search,
     assignees,
     labels,
     priorities,
+    columns,
   }),
   loader: async ({
-    deps: { search, assignees, labels, priorities },
+    deps: { search, assignees, labels, priorities, columns },
     params: { projectId, workspaceId },
     context: { queryClient },
   }) => {
     const [{ project }] = await Promise.all([
-      queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
+      queryClient.ensureQueryData(
+        projectOptions({ rowId: projectId, columns }),
+      ),
       queryClient.ensureQueryData(workspaceOptions({ rowId: workspaceId })),
       queryClient.ensureQueryData(
         workspaceUsersOptions({ rowId: workspaceId }),
@@ -94,6 +100,7 @@ export const Route = createFileRoute({
         assignees: [],
         labels: [],
         priorities: [],
+        columns: [],
       }),
     ],
   },

@@ -1,4 +1,4 @@
-query Project($rowId: UUID!) {
+query Project($rowId: UUID!, $columns: [String!]) {
   project(rowId: $rowId) {
     rowId
     name
@@ -13,11 +13,12 @@ query Project($rowId: UUID!) {
         rowId
       }
     }
-    columns(orderBy: INDEX_ASC) {
+    columns(filter: { title: { notIn: $columns } }, orderBy: INDEX_ASC) {
       nodes {
         rowId
         index
         title
+        emoji
         tasks {
           totalCount
           nodes {

@@ -51,7 +51,8 @@ const TaskSidebar = () => {
           </h3>
           <ColumnSelector
             defaultValue={[task?.columnId!]}
-            triggerValue={task?.column?.title}
+            triggerLabel={task?.column?.title}
+            triggerEmoji={task?.column?.emoji ?? undefined}
             size="xs"
             onValueChange={({ value }) =>
               updateTask({

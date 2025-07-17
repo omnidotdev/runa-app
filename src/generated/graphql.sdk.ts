@@ -335,6 +335,7 @@ export type BigIntFilter = {
 export type Column = Node & {
   __typename?: 'Column';
   createdAt: Scalars['Datetime']['output'];
+  emoji?: Maybe<Scalars['String']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   index: Scalars['Int']['output'];
@@ -421,6 +422,8 @@ export type ColumnAverageAggregates = {
 export type ColumnCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `emoji` field. */
+  emoji?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `index` field. */
   index?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
@@ -459,6 +462,7 @@ export type ColumnConnectionGroupedAggregatesArgs = {
 
 export type ColumnDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
+  emoji?: InputMaybe<BigIntFilter>;
   index?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
@@ -470,6 +474,8 @@ export type ColumnDistinctCountAggregates = {
   __typename?: 'ColumnDistinctCountAggregates';
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of emoji across the matching connection */
+  emoji?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of index across the matching connection */
   index?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
@@ -497,6 +503,8 @@ export type ColumnFilter = {
   and?: InputMaybe<Array<ColumnFilter>>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `emoji` field. */
+  emoji?: InputMaybe<StringFilter>;
   /** Filter by the object’s `index` field. */
   index?: InputMaybe<IntFilter>;
   /** Negates the expression. */
@@ -524,6 +532,7 @@ export enum ColumnGroupBy {
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Emoji = 'EMOJI',
   Index = 'INDEX',
   ProjectId = 'PROJECT_ID',
   Title = 'TITLE',
@@ -604,6 +613,7 @@ export type ColumnHavingVarianceSampleInput = {
 /** An input for mutations affecting `Column` */
 export type ColumnInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  emoji?: InputMaybe<Scalars['String']['input']>;
   index?: InputMaybe<Scalars['Int']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -635,6 +645,8 @@ export type ColumnMinAggregates = {
 export enum ColumnOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
+  EmojiAsc = 'EMOJI_ASC',
+  EmojiDesc = 'EMOJI_DESC',
   IndexAsc = 'INDEX_ASC',
   IndexDesc = 'INDEX_DESC',
   Natural = 'NATURAL',
@@ -693,6 +705,7 @@ export enum ColumnOrderBy {
 /** Represents an update to a `Column`. Fields that are set will be updated. */
 export type ColumnPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  emoji?: InputMaybe<Scalars['String']['input']>;
   index?: InputMaybe<Scalars['Int']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -1024,6 +1037,39 @@ export type CreateUserPayload = {
 /** The output of our create `User` mutation. */
 export type CreateUserPayloadUserEdgeArgs = {
   orderBy?: Array<UserOrderBy>;
+};
+
+/** All input for the create `UserPreference` mutation. */
+export type CreateUserPreferenceInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `UserPreference` to be created by this mutation. */
+  userPreference: UserPreferenceInput;
+};
+
+/** The output of our create `UserPreference` mutation. */
+export type CreateUserPreferencePayload = {
+  __typename?: 'CreateUserPreferencePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `UserPreference` that was created by this mutation. */
+  userPreference?: Maybe<UserPreference>;
+  /** An edge for our `UserPreference`. May be used by Relay 1. */
+  userPreferenceEdge?: Maybe<UserPreferenceEdge>;
+};
+
+
+/** The output of our create `UserPreference` mutation. */
+export type CreateUserPreferencePayloadUserPreferenceEdgeArgs = {
+  orderBy?: Array<UserPreferenceOrderBy>;
 };
 
 /** All input for the create `Workspace` mutation. */
@@ -1480,6 +1526,50 @@ export type DeleteUserPayloadUserEdgeArgs = {
   orderBy?: Array<UserOrderBy>;
 };
 
+/** All input for the `deleteUserPreferenceById` mutation. */
+export type DeleteUserPreferenceByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `UserPreference` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteUserPreference` mutation. */
+export type DeleteUserPreferenceInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `UserPreference` mutation. */
+export type DeleteUserPreferencePayload = {
+  __typename?: 'DeleteUserPreferencePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedUserPreferenceId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `UserPreference` that was deleted by this mutation. */
+  userPreference?: Maybe<UserPreference>;
+  /** An edge for our `UserPreference`. May be used by Relay 1. */
+  userPreferenceEdge?: Maybe<UserPreferenceEdge>;
+};
+
+
+/** The output of our delete `UserPreference` mutation. */
+export type DeleteUserPreferencePayloadUserPreferenceEdgeArgs = {
+  orderBy?: Array<UserPreferenceOrderBy>;
+};
+
 /** All input for the `deleteWorkspaceById` mutation. */
 export type DeleteWorkspaceByIdInput = {
   /**
@@ -1913,6 +2003,8 @@ export type Mutation = {
   createTaskLabel?: Maybe<CreateTaskLabelPayload>;
   /** Creates a single `User`. */
   createUser?: Maybe<CreateUserPayload>;
+  /** Creates a single `UserPreference`. */
+  createUserPreference?: Maybe<CreateUserPreferencePayload>;
   /** Creates a single `Workspace`. */
   createWorkspace?: Maybe<CreateWorkspacePayload>;
   /** Creates a single `WorkspaceUser`. */
@@ -1951,6 +2043,10 @@ export type Mutation = {
   deleteUserById?: Maybe<DeleteUserPayload>;
   /** Deletes a single `User` using a unique key. */
   deleteUserByIdentityProviderId?: Maybe<DeleteUserPayload>;
+  /** Deletes a single `UserPreference` using a unique key. */
+  deleteUserPreference?: Maybe<DeleteUserPreferencePayload>;
+  /** Deletes a single `UserPreference` using its globally unique id. */
+  deleteUserPreferenceById?: Maybe<DeleteUserPreferencePayload>;
   /** Deletes a single `Workspace` using a unique key. */
   deleteWorkspace?: Maybe<DeleteWorkspacePayload>;
   /** Deletes a single `Workspace` using its globally unique id. */
@@ -1993,6 +2089,10 @@ export type Mutation = {
   updateUserById?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUserByIdentityProviderId?: Maybe<UpdateUserPayload>;
+  /** Updates a single `UserPreference` using a unique key and a patch. */
+  updateUserPreference?: Maybe<UpdateUserPreferencePayload>;
+  /** Updates a single `UserPreference` using its globally unique id and a patch. */
+  updateUserPreferenceById?: Maybe<UpdateUserPreferencePayload>;
   /** Updates a single `Workspace` using a unique key and a patch. */
   updateWorkspace?: Maybe<UpdateWorkspacePayload>;
   /** Updates a single `Workspace` using its globally unique id and a patch. */
@@ -2049,6 +2149,12 @@ export type MutationCreateTaskLabelArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateUserPreferenceArgs = {
+  input: CreateUserPreferenceInput;
 };
 
 
@@ -2163,6 +2269,18 @@ export type MutationDeleteUserByIdArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUserByIdentityProviderIdArgs = {
   input: DeleteUserByIdentityProviderIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUserPreferenceArgs = {
+  input: DeleteUserPreferenceInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUserPreferenceByIdArgs = {
+  input: DeleteUserPreferenceByIdInput;
 };
 
 
@@ -2289,6 +2407,18 @@ export type MutationUpdateUserByIdArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateUserByIdentityProviderIdArgs = {
   input: UpdateUserByIdentityProviderIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateUserPreferenceArgs = {
+  input: UpdateUserPreferenceInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateUserPreferenceByIdArgs = {
+  input: UpdateUserPreferenceByIdInput;
 };
 
 
@@ -2904,6 +3034,8 @@ export enum ProjectOrderBy {
   ColumnsCountDesc = 'COLUMNS_COUNT_DESC',
   ColumnsDistinctCountCreatedAtAsc = 'COLUMNS_DISTINCT_COUNT_CREATED_AT_ASC',
   ColumnsDistinctCountCreatedAtDesc = 'COLUMNS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ColumnsDistinctCountEmojiAsc = 'COLUMNS_DISTINCT_COUNT_EMOJI_ASC',
+  ColumnsDistinctCountEmojiDesc = 'COLUMNS_DISTINCT_COUNT_EMOJI_DESC',
   ColumnsDistinctCountIndexAsc = 'COLUMNS_DISTINCT_COUNT_INDEX_ASC',
   ColumnsDistinctCountIndexDesc = 'COLUMNS_DISTINCT_COUNT_INDEX_DESC',
   ColumnsDistinctCountProjectIdAsc = 'COLUMNS_DISTINCT_COUNT_PROJECT_ID_ASC',
@@ -3147,6 +3279,12 @@ export type Query = Node & {
   userById?: Maybe<User>;
   /** Get a single `User`. */
   userByIdentityProviderId?: Maybe<User>;
+  /** Get a single `UserPreference`. */
+  userPreference?: Maybe<UserPreference>;
+  /** Reads a single `UserPreference` using its globally unique `ID`. */
+  userPreferenceById?: Maybe<UserPreference>;
+  /** Reads and enables pagination through a set of `UserPreference`. */
+  userPreferences?: Maybe<UserPreferenceConnection>;
   /** Reads and enables pagination through a set of `User`. */
   users?: Maybe<UserConnection>;
   /** Get a single `Workspace`. */
@@ -3364,6 +3502,31 @@ export type QueryUserByIdentityProviderIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryUserPreferenceArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUserPreferenceByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUserPreferencesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<UserPreferenceCondition>;
+  filter?: InputMaybe<UserPreferenceFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UserPreferenceOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryUsersArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -3502,6 +3665,46 @@ export type StringFilter = {
   startsWith?: InputMaybe<Scalars['String']['input']>;
   /** Starts with the specified string (case-insensitive). */
   startsWithInsensitive?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** A filter to be used against String List fields. All fields are combined with a logical ‘and.’ */
+export type StringListFilter = {
+  /** Any array item is equal to the specified value. */
+  anyEqualTo?: InputMaybe<Scalars['String']['input']>;
+  /** Any array item is greater than the specified value. */
+  anyGreaterThan?: InputMaybe<Scalars['String']['input']>;
+  /** Any array item is greater than or equal to the specified value. */
+  anyGreaterThanOrEqualTo?: InputMaybe<Scalars['String']['input']>;
+  /** Any array item is less than the specified value. */
+  anyLessThan?: InputMaybe<Scalars['String']['input']>;
+  /** Any array item is less than or equal to the specified value. */
+  anyLessThanOrEqualTo?: InputMaybe<Scalars['String']['input']>;
+  /** Any array item is not equal to the specified value. */
+  anyNotEqualTo?: InputMaybe<Scalars['String']['input']>;
+  /** Contained by the specified list of values. */
+  containedBy?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Contains the specified list of values. */
+  contains?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Overlaps the specified list of values. */
+  overlaps?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type Task = Node & {
@@ -4727,6 +4930,53 @@ export type UpdateUserPayloadUserEdgeArgs = {
   orderBy?: Array<UserOrderBy>;
 };
 
+/** All input for the `updateUserPreferenceById` mutation. */
+export type UpdateUserPreferenceByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `UserPreference` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `UserPreference` being updated. */
+  patch: UserPreferencePatch;
+};
+
+/** All input for the `updateUserPreference` mutation. */
+export type UpdateUserPreferenceInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `UserPreference` being updated. */
+  patch: UserPreferencePatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `UserPreference` mutation. */
+export type UpdateUserPreferencePayload = {
+  __typename?: 'UpdateUserPreferencePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `UserPreference` that was updated by this mutation. */
+  userPreference?: Maybe<UserPreference>;
+  /** An edge for our `UserPreference`. May be used by Relay 1. */
+  userPreferenceEdge?: Maybe<UserPreferenceEdge>;
+};
+
+
+/** The output of our update `UserPreference` mutation. */
+export type UpdateUserPreferencePayloadUserPreferenceEdgeArgs = {
+  orderBy?: Array<UserPreferenceOrderBy>;
+};
+
 /** All input for the `updateWorkspaceById` mutation. */
 export type UpdateWorkspaceByIdInput = {
   /**
@@ -4838,6 +5088,8 @@ export type User = Node & {
   name: Scalars['String']['output'];
   rowId: Scalars['UUID']['output'];
   updatedAt: Scalars['Datetime']['output'];
+  /** Reads and enables pagination through a set of `UserPreference`. */
+  userPreferences: UserPreferenceConnection;
   /** Reads and enables pagination through a set of `WorkspaceUser`. */
   workspaceUsers: WorkspaceUserConnection;
 };
@@ -4876,6 +5128,18 @@ export type UserAuthoredTasksArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<TaskOrderBy>>;
+};
+
+
+export type UserUserPreferencesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<UserPreferenceCondition>;
+  filter?: InputMaybe<UserPreferenceFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UserPreferenceOrderBy>>;
 };
 
 
@@ -4994,6 +5258,10 @@ export type UserFilter = {
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `userPreferences` relation. */
+  userPreferences?: InputMaybe<UserToManyUserPreferenceFilter>;
+  /** Some related `userPreferences` exist. */
+  userPreferencesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `workspaceUsers` relation. */
   workspaceUsers?: InputMaybe<UserToManyWorkspaceUserFilter>;
   /** Some related `workspaceUsers` exist. */
@@ -5169,6 +5437,18 @@ export enum UserOrderBy {
   RowIdDesc = 'ROW_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserPreferencesCountAsc = 'USER_PREFERENCES_COUNT_ASC',
+  UserPreferencesCountDesc = 'USER_PREFERENCES_COUNT_DESC',
+  UserPreferencesDistinctCountCreatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_ASC',
+  UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
+  UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
+  UserPreferencesDistinctCountHiddenColumnIdsDesc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_DESC',
+  UserPreferencesDistinctCountRowIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_ASC',
+  UserPreferencesDistinctCountRowIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_DESC',
+  UserPreferencesDistinctCountUpdatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_UPDATED_AT_ASC',
+  UserPreferencesDistinctCountUpdatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_UPDATED_AT_DESC',
+  UserPreferencesDistinctCountUserIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_ASC',
+  UserPreferencesDistinctCountUserIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_DESC',
   WorkspaceUsersCountAsc = 'WORKSPACE_USERS_COUNT_ASC',
   WorkspaceUsersCountDesc = 'WORKSPACE_USERS_COUNT_DESC',
   WorkspaceUsersDistinctCountCreatedAtAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -5187,6 +5467,231 @@ export type UserPatch = {
   name?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type UserPreference = Node & {
+  __typename?: 'UserPreference';
+  createdAt: Scalars['Datetime']['output'];
+  hiddenColumnIds?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+  /** Reads a single `User` that is related to this `UserPreference`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+};
+
+export type UserPreferenceAggregates = {
+  __typename?: 'UserPreferenceAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<UserPreferenceDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `UserPreference` object types. */
+export type UserPreferenceAggregatesFilter = {
+  /** Distinct count aggregate over matching `UserPreference` objects. */
+  distinctCount?: InputMaybe<UserPreferenceDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `UserPreference` object to be included within the aggregate. */
+  filter?: InputMaybe<UserPreferenceFilter>;
+};
+
+/**
+ * A condition to be used against `UserPreference` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type UserPreferenceCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `UserPreference` values. */
+export type UserPreferenceConnection = {
+  __typename?: 'UserPreferenceConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<UserPreferenceAggregates>;
+  /** A list of edges which contains the `UserPreference` and cursor to aid in pagination. */
+  edges: Array<UserPreferenceEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<UserPreferenceAggregates>>;
+  /** A list of `UserPreference` objects. */
+  nodes: Array<UserPreference>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `UserPreference` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `UserPreference` values. */
+export type UserPreferenceConnectionGroupedAggregatesArgs = {
+  groupBy: Array<UserPreferenceGroupBy>;
+  having?: InputMaybe<UserPreferenceHavingInput>;
+};
+
+export type UserPreferenceDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  hiddenColumnIds?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type UserPreferenceDistinctCountAggregates = {
+  __typename?: 'UserPreferenceDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of hiddenColumnIds across the matching connection */
+  hiddenColumnIds?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `UserPreference` edge in the connection. */
+export type UserPreferenceEdge = {
+  __typename?: 'UserPreferenceEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `UserPreference` at the end of the edge. */
+  node: UserPreference;
+};
+
+/** A filter to be used against `UserPreference` object types. All fields are combined with a logical ‘and.’ */
+export type UserPreferenceFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<UserPreferenceFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `hiddenColumnIds` field. */
+  hiddenColumnIds?: InputMaybe<StringListFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<UserPreferenceFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<UserPreferenceFilter>>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `UserPreference` for usage during aggregation. */
+export enum UserPreferenceGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  HiddenColumnIds = 'HIDDEN_COLUMN_IDS',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type UserPreferenceHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `UserPreference` aggregates. */
+export type UserPreferenceHavingInput = {
+  AND?: InputMaybe<Array<UserPreferenceHavingInput>>;
+  OR?: InputMaybe<Array<UserPreferenceHavingInput>>;
+  average?: InputMaybe<UserPreferenceHavingAverageInput>;
+  distinctCount?: InputMaybe<UserPreferenceHavingDistinctCountInput>;
+  max?: InputMaybe<UserPreferenceHavingMaxInput>;
+  min?: InputMaybe<UserPreferenceHavingMinInput>;
+  stddevPopulation?: InputMaybe<UserPreferenceHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<UserPreferenceHavingStddevSampleInput>;
+  sum?: InputMaybe<UserPreferenceHavingSumInput>;
+  variancePopulation?: InputMaybe<UserPreferenceHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<UserPreferenceHavingVarianceSampleInput>;
+};
+
+export type UserPreferenceHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `UserPreference` */
+export type UserPreferenceInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId: Scalars['UUID']['input'];
+};
+
+/** Methods to use when ordering `UserPreference`. */
+export enum UserPreferenceOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `UserPreference`. Fields that are set will be updated. */
+export type UserPreferencePatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 /** A filter to be used against many `Assignee` object types. All fields are combined with a logical ‘and.’ */
@@ -5223,6 +5728,18 @@ export type UserToManyTaskFilter = {
   none?: InputMaybe<TaskFilter>;
   /** Some related `Task` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<TaskFilter>;
+};
+
+/** A filter to be used against many `UserPreference` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyUserPreferenceFilter = {
+  /** Aggregates across related `UserPreference` match the filter criteria. */
+  aggregates?: InputMaybe<UserPreferenceAggregatesFilter>;
+  /** Every related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<UserPreferenceFilter>;
+  /** No related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<UserPreferenceFilter>;
+  /** Some related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<UserPreferenceFilter>;
 };
 
 /** A filter to be used against many `WorkspaceUser` object types. All fields are combined with a logical ‘and.’ */
@@ -5733,6 +6250,8 @@ export type WorkspaceUserPatch = {
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type ColumnFragment = { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null };
+
 export type LabelFragment = { __typename?: 'Label', color: string, name: string, rowId: string };
 
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } };
@@ -5757,6 +6276,21 @@ export type CreateColumnMutationVariables = Exact<{
 
 
 export type CreateColumnMutation = { __typename?: 'Mutation', createColumn?: { __typename?: 'CreateColumnPayload', column?: { __typename?: 'Column', rowId: string } | null } | null };
+
+export type DeleteColumnMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteColumnMutation = { __typename?: 'Mutation', deleteColumn?: { __typename?: 'DeleteColumnPayload', clientMutationId?: string | null } | null };
+
+export type UpdateColumnMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: ColumnPatch;
+}>;
+
+
+export type UpdateColumnMutation = { __typename?: 'Mutation', updateColumn?: { __typename?: 'UpdateColumnPayload', column?: { __typename?: 'Column', rowId: string } | null } | null };
 
 export type CreateLabelMutationVariables = Exact<{
   input: CreateLabelInput;
@@ -5882,6 +6416,13 @@ export type UpdateWorkspaceMutationVariables = Exact<{
 
 export type UpdateWorkspaceMutation = { __typename?: 'Mutation', updateWorkspace?: { __typename?: 'UpdateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string } | null } | null };
 
+export type ColumnsQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+}>;
+
+
+export type ColumnsQuery = { __typename?: 'Query', columns?: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null }> } | null };
+
 export type LabelsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -5891,10 +6432,11 @@ export type LabelsQuery = { __typename?: 'Query', labels?: { __typename?: 'Label
 
 export type ProjectQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
+  columns?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
@@ -5909,7 +6451,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', rowId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null }> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', rowId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null }> }, column?: { __typename?: 'Column', title: string, emoji?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -5920,7 +6462,7 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5948,6 +6490,14 @@ export type WorkspacesQueryVariables = Exact<{
 
 export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } }> } | null };
 
+export const ColumnFragmentDoc = gql`
+    fragment Column on Column {
+  title
+  index
+  rowId
+  emoji
+}
+    `;
 export const LabelFragmentDoc = gql`
     fragment Label on Label {
   color
@@ -5996,6 +6546,22 @@ export const DeleteAssigneeDocument = gql`
 export const CreateColumnDocument = gql`
     mutation CreateColumn($input: CreateColumnInput!) {
   createColumn(input: $input) {
+    column {
+      rowId
+    }
+  }
+}
+    `;
+export const DeleteColumnDocument = gql`
+    mutation DeleteColumn($rowId: UUID!) {
+  deleteColumn(input: {rowId: $rowId}) {
+    clientMutationId
+  }
+}
+    `;
+export const UpdateColumnDocument = gql`
+    mutation UpdateColumn($rowId: UUID!, $patch: ColumnPatch!) {
+  updateColumn(input: {rowId: $rowId, patch: $patch}) {
     column {
       rowId
     }
@@ -6147,6 +6713,15 @@ export const UpdateWorkspaceDocument = gql`
   }
 }
     `;
+export const ColumnsDocument = gql`
+    query Columns($projectId: UUID!) {
+  columns(condition: {projectId: $projectId}, orderBy: INDEX_ASC) {
+    nodes {
+      ...Column
+    }
+  }
+}
+    ${ColumnFragmentDoc}`;
 export const LabelsDocument = gql`
     query Labels($projectId: UUID!) {
   labels(condition: {projectId: $projectId}) {
@@ -6157,7 +6732,7 @@ export const LabelsDocument = gql`
 }
     ${LabelFragmentDoc}`;
 export const ProjectDocument = gql`
-    query Project($rowId: UUID!) {
+    query Project($rowId: UUID!, $columns: [String!]) {
   project(rowId: $rowId) {
     rowId
     name
@@ -6172,11 +6747,12 @@ export const ProjectDocument = gql`
         rowId
       }
     }
-    columns(orderBy: INDEX_ASC) {
+    columns(filter: {title: {notIn: $columns}}, orderBy: INDEX_ASC) {
       nodes {
         rowId
         index
         title
+        emoji
         tasks {
           totalCount
           nodes {
@@ -6236,6 +6812,7 @@ export const TaskDocument = gql`
     }
     column {
       title
+      emoji
     }
     author {
       name
@@ -6265,6 +6842,9 @@ export const TasksDocument = gql`
       projectId
       columnId
       columnIndex
+      column {
+        ...Column
+      }
       content
       priority
       dueDate
@@ -6288,7 +6868,8 @@ export const TasksDocument = gql`
     }
   }
 }
-    ${LabelFragmentDoc}`;
+    ${ColumnFragmentDoc}
+${LabelFragmentDoc}`;
 export const UsersDocument = gql`
     query Users {
   users {
@@ -6384,6 +6965,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     CreateColumn(variables: CreateColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateColumnMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateColumnMutation>({ document: CreateColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateColumn', 'mutation', variables);
     },
+    DeleteColumn(variables: DeleteColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DeleteColumnMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteColumnMutation>({ document: DeleteColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DeleteColumn', 'mutation', variables);
+    },
+    UpdateColumn(variables: UpdateColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateColumnMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateColumnMutation>({ document: UpdateColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateColumn', 'mutation', variables);
+    },
     CreateLabel(variables: CreateLabelMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateLabelMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateLabelMutation>({ document: CreateLabelDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateLabel', 'mutation', variables);
     },
@@ -6434,6 +7021,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UpdateWorkspace(variables: UpdateWorkspaceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateWorkspaceMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateWorkspaceMutation>({ document: UpdateWorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateWorkspace', 'mutation', variables);
+    },
+    Columns(variables: ColumnsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ColumnsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ColumnsQuery>({ document: ColumnsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Columns', 'query', variables);
     },
     Labels(variables: LabelsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<LabelsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<LabelsQuery>({ document: LabelsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Labels', 'query', variables);

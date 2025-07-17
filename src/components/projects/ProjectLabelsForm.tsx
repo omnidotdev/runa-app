@@ -280,7 +280,7 @@ const ProjectLabelsForm = () => {
                         header.id === "color"
                           ? "150px"
                           : header.id === "rowId"
-                            ? "50px"
+                            ? "40px"
                             : "auto",
                     }}
                   >

@@ -7,6 +7,7 @@ import { useDebounceCallback } from "usehooks-ts";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
+import ProjectColumnsForm from "@/components/projects/ProjectColumnsForm";
 import ProjectLabelsForm from "@/components/projects/ProjectLabelsForm";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import labelsOptions from "@/lib/options/labels.options";
@@ -132,6 +133,8 @@ function RouteComponent() {
 
       <div className="flex flex-col gap-12">
         <ProjectLabelsForm />
+
+        <ProjectColumnsForm />
       </div>
     </div>
   );
