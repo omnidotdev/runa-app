@@ -52,6 +52,8 @@ function RouteComponent() {
 
   const { projectId } = Route.useLoaderData();
 
+  const navigate = Route.useNavigate();
+
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
@@ -60,6 +62,15 @@ function RouteComponent() {
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
       invalidates: [["all"]],
+    },
+    onSuccess: (_data, variables) => {
+      if (variables.patch.slug) {
+        navigate({
+          to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+          params: { workspaceSlug, projectSlug: variables.patch.slug },
+          replace: true,
+        });
+      }
     },
   });
 
