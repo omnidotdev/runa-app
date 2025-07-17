@@ -2,9 +2,6 @@
 export const API_GRAPHQL_URL = import.meta.env.VITE_API_GRAPHQL_URL;
 export const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-// TODO: remove when auth is integrated
-export const USER_ID = import.meta.env.VITE_USER_ID;
-
 // auth
 export const AUTH_ISSUER = import.meta.env.VITE_AUTH_ISSUER;
 export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID;

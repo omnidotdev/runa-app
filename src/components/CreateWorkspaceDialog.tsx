@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -17,7 +17,6 @@ import {
   useCreateWorkspaceMutation,
   useCreateWorkspaceUserMutation,
 } from "@/generated/graphql";
-import { USER_ID } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
@@ -27,6 +26,8 @@ import type { FormEvent } from "react";
 const CreateWorkspaceDialog = () => {
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
+
+  const { session } = useRouteContext({ strict: false });
 
   const { isOpen: isCreateWorkspaceOpen, setIsOpen: setIsCreateWorkspaceOpen } =
     useDialogStore({
@@ -51,7 +52,7 @@ const CreateWorkspaceDialog = () => {
       createTeamMember({
         input: {
           workspaceUser: {
-            userId: USER_ID,
+            userId: session?.user?.rowId!,
             workspaceId: createWorkspace?.workspace?.rowId!,
           },
         },

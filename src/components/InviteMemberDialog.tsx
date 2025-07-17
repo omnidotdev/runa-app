@@ -1,5 +1,5 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useRouteContext } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { PlusIcon } from "lucide-react";
@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useCreateInvitationMutation } from "@/generated/graphql";
-import { BASE_URL, isDevEnv, USER_ID } from "@/lib/config/env.config";
+import { BASE_URL, isDevEnv } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import userOptions from "@/lib/options/user.options";
@@ -65,6 +65,10 @@ const InviteMemberDialog = () => {
   });
   const emailRef = useRef<HTMLInputElement>(null);
 
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceId/settings",
+  });
+
   const {
     isOpen: isInviteTeamMemberOpen,
     setIsOpen: setIsInviteTeamMemberOpen,
@@ -78,8 +82,7 @@ const InviteMemberDialog = () => {
   });
 
   const { data: user } = useQuery({
-    // TODO: derive `USER_ID` from route context once auth is introduced
-    ...userOptions({ userId: USER_ID }),
+    ...userOptions({ userId: session?.user?.rowId! }),
     select: (data) => data?.user,
   });
 

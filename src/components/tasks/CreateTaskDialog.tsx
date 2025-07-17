@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useRouteContext } from "@tanstack/react-router";
 import { TagIcon, TypeIcon } from "lucide-react";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -33,7 +33,6 @@ import {
   useCreateTaskLabelMutation,
   useCreateTaskMutation,
 } from "@/generated/graphql";
-import { USER_ID } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -48,6 +47,10 @@ interface Props {
 
 const CreateTaskDialog = ({ columnId }: Props) => {
   const { projectId } = useParams({
+    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  });
+
+  const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -99,9 +102,6 @@ const CreateTaskDialog = ({ columnId }: Props) => {
       columnId: columnId ?? defaultColumnId,
     },
     onSubmit: async ({ value, formApi }) => {
-      // TODO: dynamic with auth
-      const authorId = USER_ID;
-
       const allTaskLabels = value.labels.filter((l) => l.checked);
 
       const newLabels = value.labels.filter((l) => l.rowId === "pending");
@@ -137,7 +137,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
               description: value.description,
               projectId,
               columnId: value.columnId,
-              authorId,
+              authorId: session?.user?.rowId!,
               dueDate: value.dueDate.length
                 ? new Date(value.dueDate)
                 : undefined,

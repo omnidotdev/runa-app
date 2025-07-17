@@ -29,7 +29,6 @@ import {
   useCreatePostMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
-import { USER_ID } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
@@ -62,6 +61,7 @@ export const Route = createFileRoute({
 });
 
 function TaskPage() {
+  const { session } = Route.useRouteContext();
   const { workspaceId, projectId, taskId } = Route.useParams();
   const matches = useMediaQuery("(min-width: 1024px)");
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
@@ -94,15 +94,12 @@ function TaskPage() {
   const [newComment, setNewComment] = useState("");
 
   const handleAddComment = () => {
-    // TODO: dynamic with auth
-    const authorId = USER_ID;
-
     if (newComment.trim()) {
       addComment({
         input: {
           post: {
             taskId,
-            authorId,
+            authorId: session?.user?.rowId!,
             description: newComment,
           },
         },
