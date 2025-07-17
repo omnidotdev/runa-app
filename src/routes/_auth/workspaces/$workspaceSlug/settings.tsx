@@ -86,7 +86,7 @@ function SettingsPage() {
       if (workspaceBySlug?.projects.nodes.length) {
         ctx.issues.push({
           code: "custom",
-          message: "Project slug already exists for this workspace.",
+          message: "Slug already exists.",
           input: ctx.value.name,
         });
       }
