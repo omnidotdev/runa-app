@@ -40,6 +40,15 @@ declare module "@auth/core/types" {
   }
 }
 
+interface UpdatedTokens {
+  /** New access token. */
+  access_token: string;
+  /** Expiration time in seconds. */
+  expires_in: number;
+  /** New refresh token. */
+  refresh_token: string;
+}
+
 /**
  * Shared cookie options required for cross-domain cookie processing flows. Without these, authentication breaks.
  */
@@ -110,9 +119,40 @@ const authOptions: AuthConfig = {
         return token;
       }
 
-      // TODO: refresh rotation
+      if (Date.now() < token.expires_at * 1000) return token;
 
-      return token;
+      try {
+        const response = await fetch(`${AUTH_ISSUER}/oauth2/token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            client_id: AUTH_CLIENT_ID!,
+            client_secret: AUTH_CLIENT_SECRET!,
+            grant_type: "refresh_token",
+            refresh_token: token.refresh_token,
+          }),
+        });
+
+        const tokensOrError = await response.json();
+
+        if (!response.ok) throw tokensOrError;
+
+        const newTokens = tokensOrError as UpdatedTokens;
+
+        return {
+          ...token,
+          access_token: newTokens.access_token,
+          refresh_token: newTokens.refresh_token,
+          expires_at: Math.floor(Date.now() / 1000 + newTokens.expires_in),
+        };
+      } catch (err) {
+        console.error(err);
+        token.error = "RefreshTokenError";
+
+        return token;
+      }
     },
     session: async ({ session, token }) => {
       session.user.hidraId = token.sub;
