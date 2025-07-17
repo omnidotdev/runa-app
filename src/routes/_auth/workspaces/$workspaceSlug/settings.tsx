@@ -48,7 +48,7 @@ export const Route = createFileRoute({
 });
 
 function SettingsPage() {
-  const { session } = Route.useRouteContext();
+  const { session, queryClient } = Route.useRouteContext();
   const { workspaceId } = Route.useLoaderData();
 
   const { workspaceSlug } = Route.useParams();
@@ -77,6 +77,15 @@ function SettingsPage() {
   const { mutate: updateWorkspace } = useUpdateWorkspaceMutation({
     meta: {
       invalidates: [["all"]],
+    },
+    onSuccess: (_data, variables) => {
+      if (variables.patch.slug) {
+        navigate({
+          to: "/workspaces/$workspaceSlug/settings",
+          params: { workspaceSlug: variables.patch.slug },
+          replace: true,
+        });
+      }
     },
   });
 
