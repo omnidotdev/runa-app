@@ -44,8 +44,6 @@ const ProjectColumnsForm = () => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/settings",
   });
 
-  const [showHiddenColumns, setShowHiddenColumns] = useState(false);
-
   const { data: columnsData } = useQuery({
     ...columnsOptions({
       projectId,
@@ -133,25 +131,10 @@ const ProjectColumnsForm = () => {
   return (
     <>
       <div className="flex flex-col gap-3">
-        {/* <div className="flex items-center justify-between gap-2"> */}
         <div className="flex items-center justify-between gap-2">
           <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
             Project Columns
           </h2>
-
-          {/* {localColumns.filter(({ hidden }) => hidden).length > 0 && (
-            <SwitchRoot
-              onCheckedChange={() => setShowHiddenColumns(!showHiddenColumns)}
-            >
-              <SwitchHiddenInput />
-              <SwitchLabel className="font-normal text-xs">
-                {showHiddenColumns ? "Hide hidden" : "Show hidden"}
-              </SwitchLabel>
-              <SwitchControl size="xs">
-                <SwitchThumb size="xs" />
-              </SwitchControl>
-            </SwitchRoot>
-          )} */}
         </div>
         <form
           onSubmit={(e) => {
@@ -221,7 +204,6 @@ const ProjectColumnsForm = () => {
                 <DraggableColumn
                   key={column.rowId}
                   column={column}
-                  columns={localColumns}
                   setColumnToDelete={setColumnToDelete}
                 />
               ))}
@@ -232,7 +214,20 @@ const ProjectColumnsForm = () => {
 
       <ConfirmDialog
         title="Danger Zone"
-        description={`This will delete the column "${columnToDelete?.title}". This action cannot be undone.`}
+        // description={`This will delete the column "${columnToDelete?.title}" including ${columnToDelete?.tasks?.totalCount} tasks. This action cannot be undone.`}
+        description={
+          <span>
+            This will delete the column{" "}
+            <strong className="font-medium text-base-900 dark:text-base-100">
+              {columnToDelete?.title}
+            </strong>{" "}
+            including{" "}
+            <strong className="font-medium text-base-900 dark:text-base-100">
+              {columnToDelete?.tasks?.totalCount ?? 0} tasks
+            </strong>
+            . This action cannot be undone.
+          </span>
+        }
         onConfirm={() => {
           if (!columnToDelete) return;
 
@@ -250,7 +245,7 @@ const ProjectColumnsForm = () => {
           }
         }}
         dialogType={DialogType.DeleteColumn}
-        confirmation={`permanently delete ${columnToDelete?.title}`}
+        confirmation={`Delete ${columnToDelete?.title}`}
         inputProps={{
           className: "focus-visible:ring-red-500",
         }}

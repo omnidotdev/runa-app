@@ -39,7 +39,7 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuShotcut,
+  SidebarMenuShortcut,
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
@@ -197,7 +197,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                     <div className="inline-flex">
                       Create Workspace
                       <div className="ml-2 flex items-center gap-0.5">
-                        <SidebarMenuShotcut>W</SidebarMenuShotcut>
+                        <SidebarMenuShortcut>W</SidebarMenuShortcut>
                       </div>
                     </div>
                   ),
@@ -245,7 +245,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                       <div className="inline-flex">
                         Create Project
                         <div className="ml-2 flex items-center gap-0.5">
-                          <SidebarMenuShotcut>P</SidebarMenuShotcut>
+                          <SidebarMenuShortcut>P</SidebarMenuShortcut>
                         </div>
                       </div>
                     ),
@@ -369,7 +369,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                                   : "List View"}
                               </span>
 
-                              <SidebarMenuShotcut>V</SidebarMenuShotcut>
+                              <SidebarMenuShortcut>V</SidebarMenuShortcut>
                             </MenuItem>
 
                             <MenuItem
@@ -462,7 +462,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                 <PanelLeftIcon />
                 <span className="flex w-full items-center justify-between">
                   Collapse Sidebar
-                  <SidebarMenuShotcut>B</SidebarMenuShotcut>
+                  <SidebarMenuShortcut>B</SidebarMenuShortcut>
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -477,7 +477,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                 {theme === "dark" ? <MoonIcon /> : <SunIcon />}
                 <span className="flex w-full items-center justify-between">
                   Toggle Theme
-                  <SidebarMenuShotcut>T</SidebarMenuShotcut>
+                  <SidebarMenuShortcut>T</SidebarMenuShortcut>
                 </span>
               </SidebarMenuButton>
             </SidebarMenuItem>

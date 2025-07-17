@@ -27,11 +27,16 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { SidebarMenuShotcut } from "@/components/ui/sidebar";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
+import {
+  useCreateUserPreferenceMutation,
+  useUpdateUserPreferenceMutation,
+} from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { labelColors } from "@/lib/constants/labelColors";
 import projectOptions from "@/lib/options/project.options";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 
@@ -40,7 +45,7 @@ const Filter = () => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { assignees, labels, priorities, columns } = useSearch({
+  const { assignees, labels, priorities } = useSearch({
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
@@ -60,6 +65,27 @@ const Filter = () => {
     ...workspaceUsersOptions({ rowId: workspaceId }),
     select: (data) => data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
   });
+
+  const { data: userPreferences } = useSuspenseQuery({
+    ...userPreferencesOptions({
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+      projectId,
+    }),
+    select: (data) => data?.userPreferences?.nodes?.[0],
+  });
+
+  const userHiddenColumns = userPreferences?.hiddenColumnIds ?? [];
+
+  const { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
+      meta: {
+        invalidates: [["all"]],
+      },
+    }),
+    { mutate: createUserPreference } = useCreateUserPreferenceMutation({
+      meta: {
+        invalidates: [["all"]],
+      },
+    });
 
   useHotkeys(Hotkeys.ToggleFilter, () => setIsFilterOpen(!isFilterOpen), [
     isFilterOpen,
@@ -84,7 +110,7 @@ const Filter = () => {
             <div className="inline-flex">
               Filter
               <div className="ml-2 flex items-center gap-0.5">
-                <SidebarMenuShotcut>F</SidebarMenuShotcut>
+                <SidebarMenuShortcut>F</SidebarMenuShortcut>
               </div>
             </div>
           ),
@@ -100,7 +126,7 @@ const Filter = () => {
         <PopoverContent className="p-0">
           <div className="inline-flex w-full items-center justify-between border-b p-2">
             <p className="text-base-500 text-sm">Filter</p>
-            <SidebarMenuShotcut>F</SidebarMenuShotcut>
+            <SidebarMenuShortcut>F</SidebarMenuShortcut>
           </div>
 
           <div>
@@ -298,24 +324,43 @@ const Filter = () => {
                     <CheckboxRoot
                       key={column.rowId}
                       className="group flex cursor-pointer items-center justify-between p-0.5"
-                      checked={columns.includes(column.title)}
-                      //  TODO: Store in User preference table
+                      checked={userHiddenColumns.includes(column.rowId)}
                       onCheckedChange={({ checked }) => {
                         if (checked) {
-                          navigate({
-                            search: (prev) => ({
-                              ...prev,
-                              columns: [...(prev.columns ?? []), column.title],
-                            }),
-                          });
+                          if (!userPreferences) {
+                            createUserPreference({
+                              input: {
+                                userPreference: {
+                                  // TODO: Dynamic userId
+                                  userId:
+                                    "024bec7c-5822-4b34-f993-39cbc613e1c9",
+                                  projectId,
+                                  hiddenColumnIds: [
+                                    ...userHiddenColumns,
+                                    column.rowId,
+                                  ],
+                                },
+                              },
+                            });
+                          } else {
+                            updateUserPreferences({
+                              rowId: userPreferences?.rowId!,
+                              patch: {
+                                hiddenColumnIds: [
+                                  ...userHiddenColumns,
+                                  column.rowId,
+                                ],
+                              },
+                            });
+                          }
                         } else {
-                          navigate({
-                            search: (prev) => ({
-                              ...prev,
-                              columns: prev.columns?.filter(
-                                (p) => p !== column.title,
+                          updateUserPreferences({
+                            rowId: userPreferences?.rowId!,
+                            patch: {
+                              hiddenColumnIds: userHiddenColumns.filter(
+                                (id) => id !== column.rowId,
                               ),
-                            }),
+                            },
                           });
                         }
                       }}

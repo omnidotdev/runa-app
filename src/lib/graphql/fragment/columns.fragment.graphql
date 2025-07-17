@@ -3,4 +3,7 @@ fragment Column on Column {
   index
   rowId
   emoji
+  tasks {
+    totalCount
+  }
 }

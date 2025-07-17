@@ -2737,6 +2737,8 @@ export type Project = Node & {
   /** Reads and enables pagination through a set of `Task`. */
   tasks: TaskConnection;
   updatedAt: Scalars['Datetime']['output'];
+  /** Reads and enables pagination through a set of `UserPreference`. */
+  userPreferences: UserPreferenceConnection;
   viewMode: Scalars['String']['output'];
   /** Reads a single `Workspace` that is related to this `Project`. */
   workspace?: Maybe<Workspace>;
@@ -2777,6 +2779,18 @@ export type ProjectTasksArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<TaskOrderBy>>;
+};
+
+
+export type ProjectUserPreferencesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<UserPreferenceCondition>;
+  filter?: InputMaybe<UserPreferenceFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UserPreferenceOrderBy>>;
 };
 
 export type ProjectAggregates = {
@@ -2924,6 +2938,10 @@ export type ProjectFilter = {
   tasksExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `userPreferences` relation. */
+  userPreferences?: InputMaybe<ProjectToManyUserPreferenceFilter>;
+  /** Some related `userPreferences` exist. */
+  userPreferencesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `viewMode` field. */
   viewMode?: InputMaybe<StringFilter>;
   /** Filter by the object’s `workspace` relation. */
@@ -3130,6 +3148,20 @@ export enum ProjectOrderBy {
   TasksVarianceSampleColumnIndexDesc = 'TASKS_VARIANCE_SAMPLE_COLUMN_INDEX_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserPreferencesCountAsc = 'USER_PREFERENCES_COUNT_ASC',
+  UserPreferencesCountDesc = 'USER_PREFERENCES_COUNT_DESC',
+  UserPreferencesDistinctCountCreatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_ASC',
+  UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
+  UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
+  UserPreferencesDistinctCountHiddenColumnIdsDesc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_DESC',
+  UserPreferencesDistinctCountProjectIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_ASC',
+  UserPreferencesDistinctCountProjectIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_DESC',
+  UserPreferencesDistinctCountRowIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_ASC',
+  UserPreferencesDistinctCountRowIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_DESC',
+  UserPreferencesDistinctCountUpdatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_UPDATED_AT_ASC',
+  UserPreferencesDistinctCountUpdatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_UPDATED_AT_DESC',
+  UserPreferencesDistinctCountUserIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_ASC',
+  UserPreferencesDistinctCountUserIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_DESC',
   ViewModeAsc = 'VIEW_MODE_ASC',
   ViewModeDesc = 'VIEW_MODE_DESC',
   WorkspaceIdAsc = 'WORKSPACE_ID_ASC',
@@ -3216,6 +3248,18 @@ export type ProjectToManyTaskFilter = {
   none?: InputMaybe<TaskFilter>;
   /** Some related `Task` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<TaskFilter>;
+};
+
+/** A filter to be used against many `UserPreference` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyUserPreferenceFilter = {
+  /** Aggregates across related `UserPreference` match the filter criteria. */
+  aggregates?: InputMaybe<UserPreferenceAggregatesFilter>;
+  /** Every related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<UserPreferenceFilter>;
+  /** No related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<UserPreferenceFilter>;
+  /** Some related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<UserPreferenceFilter>;
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -5442,6 +5486,8 @@ export enum UserOrderBy {
   UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
   UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
   UserPreferencesDistinctCountHiddenColumnIdsDesc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_DESC',
+  UserPreferencesDistinctCountProjectIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_ASC',
+  UserPreferencesDistinctCountProjectIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_DESC',
   UserPreferencesDistinctCountRowIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_ASC',
   UserPreferencesDistinctCountRowIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_DESC',
   UserPreferencesDistinctCountUpdatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -5471,9 +5517,12 @@ export type UserPatch = {
 export type UserPreference = Node & {
   __typename?: 'UserPreference';
   createdAt: Scalars['Datetime']['output'];
-  hiddenColumnIds?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  hiddenColumnIds: Array<Maybe<Scalars['String']['output']>>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+  /** Reads a single `Project` that is related to this `UserPreference`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
   rowId: Scalars['UUID']['output'];
   updatedAt: Scalars['Datetime']['output'];
   /** Reads a single `User` that is related to this `UserPreference`. */
@@ -5503,6 +5552,8 @@ export type UserPreferenceAggregatesFilter = {
 export type UserPreferenceCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -5538,6 +5589,7 @@ export type UserPreferenceConnectionGroupedAggregatesArgs = {
 export type UserPreferenceDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   hiddenColumnIds?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
@@ -5549,6 +5601,8 @@ export type UserPreferenceDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of hiddenColumnIds across the matching connection */
   hiddenColumnIds?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -5578,6 +5632,10 @@ export type UserPreferenceFilter = {
   not?: InputMaybe<UserPreferenceFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<UserPreferenceFilter>>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -5594,6 +5652,7 @@ export enum UserPreferenceGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   HiddenColumnIds = 'HIDDEN_COLUMN_IDS',
+  ProjectId = 'PROJECT_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
@@ -5664,6 +5723,7 @@ export type UserPreferenceHavingVarianceSampleInput = {
 export type UserPreferenceInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
@@ -5676,6 +5736,8 @@ export enum UserPreferenceOrderBy {
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -5688,6 +5750,7 @@ export enum UserPreferenceOrderBy {
 export type UserPreferencePatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
@@ -6249,7 +6312,7 @@ export type WorkspaceUserPatch = {
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
-export type ColumnFragment = { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null };
+export type ColumnFragment = { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } };
 
 export type LabelFragment = { __typename?: 'Label', color: string, name: string, rowId: string };
 
@@ -6378,6 +6441,21 @@ export type UpdateTaskMutationVariables = Exact<{
 
 export type UpdateTaskMutation = { __typename?: 'Mutation', updateTask?: { __typename?: 'UpdateTaskPayload', task?: { __typename?: 'Task', rowId: string } | null } | null };
 
+export type CreateUserPreferenceMutationVariables = Exact<{
+  input: CreateUserPreferenceInput;
+}>;
+
+
+export type CreateUserPreferenceMutation = { __typename?: 'Mutation', createUserPreference?: { __typename?: 'CreateUserPreferencePayload', userPreference?: { __typename?: 'UserPreference', rowId: string } | null } | null };
+
+export type UpdateUserPreferenceMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: UserPreferencePatch;
+}>;
+
+
+export type UpdateUserPreferenceMutation = { __typename?: 'Mutation', updateUserPreference?: { __typename?: 'UpdateUserPreferencePayload', userPreference?: { __typename?: 'UserPreference', rowId: string } | null } | null };
+
 export type CreateWorkspaceUserMutationVariables = Exact<{
   input: CreateWorkspaceUserInput;
 }>;
@@ -6420,7 +6498,7 @@ export type ColumnsQueryVariables = Exact<{
 }>;
 
 
-export type ColumnsQuery = { __typename?: 'Query', columns?: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null }> } | null };
+export type ColumnsQuery = { __typename?: 'Query', columns?: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
 
 export type LabelsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -6431,11 +6509,11 @@ export type LabelsQuery = { __typename?: 'Query', labels?: { __typename?: 'Label
 
 export type ProjectQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
-  columns?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+  columns?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
@@ -6461,7 +6539,15 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
+
+export type UserPreferencesQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  projectId: Scalars['UUID']['input'];
+}>;
+
+
+export type UserPreferencesQuery = { __typename?: 'Query', userPreferences?: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, rowId: string }> } | null };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6496,6 +6582,9 @@ export const ColumnFragmentDoc = `
   index
   rowId
   emoji
+  tasks {
+    totalCount
+  }
 }
     `;
 export const LabelFragmentDoc = `
@@ -6995,6 +7084,62 @@ useUpdateTaskMutation.getKey = () => ['UpdateTask'];
 
 useUpdateTaskMutation.fetcher = (variables: UpdateTaskMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateTaskMutation, UpdateTaskMutationVariables>(UpdateTaskDocument, variables, options);
 
+export const CreateUserPreferenceDocument = `
+    mutation CreateUserPreference($input: CreateUserPreferenceInput!) {
+  createUserPreference(input: $input) {
+    userPreference {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useCreateUserPreferenceMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateUserPreferenceMutation, TError, CreateUserPreferenceMutationVariables, TContext>) => {
+    
+    return useMutation<CreateUserPreferenceMutation, TError, CreateUserPreferenceMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateUserPreference'],
+    mutationFn: (variables?: CreateUserPreferenceMutationVariables) => graphqlFetch<CreateUserPreferenceMutation, CreateUserPreferenceMutationVariables>(CreateUserPreferenceDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateUserPreferenceMutation.getKey = () => ['CreateUserPreference'];
+
+
+useCreateUserPreferenceMutation.fetcher = (variables: CreateUserPreferenceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserPreferenceMutation, CreateUserPreferenceMutationVariables>(CreateUserPreferenceDocument, variables, options);
+
+export const UpdateUserPreferenceDocument = `
+    mutation UpdateUserPreference($rowId: UUID!, $patch: UserPreferencePatch!) {
+  updateUserPreference(input: {rowId: $rowId, patch: $patch}) {
+    userPreference {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useUpdateUserPreferenceMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateUserPreferenceMutation, TError, UpdateUserPreferenceMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateUserPreferenceMutation, TError, UpdateUserPreferenceMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateUserPreference'],
+    mutationFn: (variables?: UpdateUserPreferenceMutationVariables) => graphqlFetch<UpdateUserPreferenceMutation, UpdateUserPreferenceMutationVariables>(UpdateUserPreferenceDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateUserPreferenceMutation.getKey = () => ['UpdateUserPreference'];
+
+
+useUpdateUserPreferenceMutation.fetcher = (variables: UpdateUserPreferenceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateUserPreferenceMutation, UpdateUserPreferenceMutationVariables>(UpdateUserPreferenceDocument, variables, options);
+
 export const CreateWorkspaceUserDocument = `
     mutation CreateWorkspaceUser($input: CreateWorkspaceUserInput!) {
   createWorkspaceUser(input: $input) {
@@ -7236,7 +7381,7 @@ useInfiniteLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['Labels.in
 useLabelsQuery.fetcher = (variables: LabelsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, variables, options);
 
 export const ProjectDocument = `
-    query Project($rowId: UUID!, $columns: [String!]) {
+    query Project($rowId: UUID!, $columns: [UUID!]) {
   project(rowId: $rowId) {
     rowId
     name
@@ -7251,7 +7396,10 @@ export const ProjectDocument = `
         rowId
       }
     }
-    columns(filter: {title: {notIn: $columns}}, orderBy: INDEX_ASC) {
+    tasks {
+      totalCount
+    }
+    columns(filter: {rowId: {notIn: $columns}}, orderBy: INDEX_ASC) {
       nodes {
         rowId
         index
@@ -7545,6 +7693,59 @@ useInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks.infin
 
 
 useTasksQuery.fetcher = (variables: TasksQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables, options);
+
+export const UserPreferencesDocument = `
+    query UserPreferences($userId: UUID!, $projectId: UUID!) {
+  userPreferences(condition: {userId: $userId, projectId: $projectId}) {
+    nodes {
+      hiddenColumnIds
+      rowId
+    }
+  }
+}
+    `;
+
+export const useUserPreferencesQuery = <
+      TData = UserPreferencesQuery,
+      TError = unknown
+    >(
+      variables: UserPreferencesQueryVariables,
+      options?: Omit<UseQueryOptions<UserPreferencesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UserPreferencesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<UserPreferencesQuery, TError, TData>(
+      {
+    queryKey: ['UserPreferences', variables],
+    queryFn: graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, variables),
+    ...options
+  }
+    )};
+
+useUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferences', variables];
+
+export const useInfiniteUserPreferencesQuery = <
+      TData = InfiniteData<UserPreferencesQuery>,
+      TError = unknown
+    >(
+      variables: UserPreferencesQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<UserPreferencesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UserPreferencesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<UserPreferencesQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['UserPreferences.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferences.infinite', variables];
+
+
+useUserPreferencesQuery.fetcher = (variables: UserPreferencesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, variables, options);
 
 export const UsersDocument = `
     query Users {

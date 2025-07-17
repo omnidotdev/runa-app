@@ -272,7 +272,7 @@ const ProjectLabelsForm = () => {
                   <TableHead
                     key={header.id}
                     className={cn(
-                      "border-b",
+                      "border-b px-3",
                       index < 1 ? "border-border border-r" : "",
                     )}
                     style={{

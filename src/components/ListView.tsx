@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useSearch } from "@tanstack/react-router";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
 import { ChevronDownIcon, PlusIcon } from "lucide-react";
 
 import TasksList from "@/components/TasksList";
@@ -10,12 +10,13 @@ import {
   CollapsibleRoot,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { SidebarMenuShotcut } from "@/components/ui/sidebar";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import projectOptions from "@/lib/options/project.options";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { useTheme } from "@/providers/ThemeProvider";
 
 import type { Dispatch, SetStateAction } from "react";
@@ -33,18 +34,29 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { columns } = useSearch({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
-  });
-
   const { setIsOpen: setIsCreateTaskDialogOpen } = useDialogStore({
     type: DialogType.CreateTask,
   });
 
   const { setColumnId } = useTaskStore();
 
-  const { data: project } = useSuspenseQuery({
-    ...projectOptions({ rowId: projectId, columns }),
+  const { data: userPreferences } = useSuspenseQuery({
+    ...userPreferencesOptions({
+      // TODO: Dynamic userId
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+      projectId,
+    }),
+    select: (data) => data?.userPreferences?.nodes?.[0],
+  });
+
+  const userHiddenColumns = userPreferences?.hiddenColumnIds as string[];
+
+  const { data: project } = useQuery({
+    ...projectOptions({
+      rowId: projectId,
+      columns: userHiddenColumns,
+    }),
+    enabled: !!userPreferences,
     select: (data) => data?.project,
   });
 
@@ -112,7 +124,7 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
                           <div className="inline-flex">
                             Add Task
                             <div className="ml-2 flex items-center gap-0.5">
-                              <SidebarMenuShotcut>C</SidebarMenuShotcut>
+                              <SidebarMenuShortcut>C</SidebarMenuShortcut>
                             </div>
                           </div>
                         ),

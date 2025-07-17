@@ -1,0 +1,7 @@
+mutation CreateUserPreference($input: CreateUserPreferenceInput!) {
+  createUserPreference(input: $input) {
+    userPreference {
+      rowId
+    }
+  }
+}

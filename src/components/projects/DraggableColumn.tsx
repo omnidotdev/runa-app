@@ -1,6 +1,14 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVerticalIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
+import {
+  EyeClosedIcon,
+  EyeIcon,
+  GripVerticalIcon,
+  MoreHorizontalIcon,
+  Trash2Icon,
+} from "lucide-react";
 
 import RichTextEditor from "@/components/core/RichTextEditor";
 import EmojiSelector from "@/components/core/selectors/EmojiSelector";
@@ -11,19 +19,28 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useUpdateColumnMutation } from "@/generated/graphql";
+import {
+  useCreateUserPreferenceMutation,
+  useUpdateColumnMutation,
+  useUpdateUserPreferenceMutation,
+} from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
+import { Tooltip } from "../ui/tooltip";
 
 import type { CSSProperties } from "react";
 import type { ColumnFragment as Column } from "@/generated/graphql";
 
 interface Props {
   column: Column;
-  columns: Column[];
   setColumnToDelete: (column: Column) => void;
 }
 
-const DraggableColumn = ({ column, columns, setColumnToDelete }: Props) => {
+const DraggableColumn = ({ column, setColumnToDelete }: Props) => {
+  const { projectId } = useParams({
+    from: "/_auth/workspaces/$workspaceId/projects/$projectId/settings",
+  });
+
   const {
     attributes,
     listeners,
@@ -48,64 +65,66 @@ const DraggableColumn = ({ column, columns, setColumnToDelete }: Props) => {
   };
 
   const { mutate: updateColumn } = useUpdateColumnMutation({
-    meta: {
-      invalidates: [["all"]],
-    },
+      meta: {
+        invalidates: [["all"]],
+      },
+    }),
+    { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
+      meta: {
+        invalidates: [["all"]],
+      },
+    }),
+    { mutate: createUserPreference } = useCreateUserPreferenceMutation({
+      meta: {
+        invalidates: [["all"]],
+      },
+    });
+
+  const { data: userPreferences } = useSuspenseQuery({
+    ...userPreferencesOptions({
+      // TODO: Dynamic userId
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+      projectId,
+    }),
+    select: (data) => data?.userPreferences?.nodes?.[0],
   });
 
-  // const handleColumnHiding = () => {
-  //   if (!column.hidden) {
-  //     // Shift all visible columns after it left by 1
-  //     columns
-  //       .filter((col) => col.index > column.index)
-  //       .forEach((col) => {
-  //         updateColumn({
-  //           rowId: col.rowId,
-  //           patch: {
-  //             index: col.index - 1,
-  //           },
-  //         });
-  //       });
+  const userHiddenColumns = userPreferences?.hiddenColumnIds as string[];
 
-  //     // Hide the column: move to end
-  //     updateColumn({
-  //       rowId: column.rowId,
-  //       patch: {
-  //         hidden: true,
-  //         index: columns.length - 1,
-  //       },
-  //     });
-  //   } else {
-  //     const visibleColumns = columns.filter((col) => !col.hidden);
-  //     const newIndex = visibleColumns.length;
+  const handleColumnHiding = () => {
+    const isHidden = userHiddenColumns.includes(column.rowId);
 
-  //     // Shift hidden columns that are >= visibleCount up by 1
-  //     columns
-  //       .filter(
-  //         (col) =>
-  //           col.hidden &&
-  //           col.rowId !== column.rowId &&
-  //           col.index >= newIndex &&
-  //           col.index < column.index,
-  //       )
-  //       .forEach((col) => {
-  //         updateColumn({
-  //           rowId: col.rowId,
-  //           patch: {
-  //             index: col.index + 1,
-  //           },
-  //         });
-  //       });
-
-  //     updateColumn({
-  //       rowId: column.rowId,
-  //       patch: {
-  //         hidden: false,
-  //         index: newIndex,
-  //       },
-  //     });
-  //   }
-  // };
+    if (isHidden) {
+      updateUserPreferences({
+        rowId: userPreferences?.rowId!,
+        patch: {
+          hiddenColumnIds: userHiddenColumns.filter(
+            (id) => id !== column.rowId,
+          ),
+        },
+      });
+    } else {
+      if (!userPreferences) {
+        createUserPreference({
+          input: {
+            userPreference: {
+              // TODO: Dynamic userId
+              userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+              projectId,
+              hiddenColumnIds: [...userHiddenColumns, column.rowId],
+            },
+          },
+        });
+      } else {
+        updateUserPreferences({
+          rowId: userPreferences?.rowId!,
+          patch: {
+            hiddenColumnIds: [...userHiddenColumns, column.rowId],
+          },
+        });
+      }
+    }
+  };
 
   const handleColumnDelete = () => {
     setColumnToDelete(column);
@@ -160,20 +179,24 @@ const DraggableColumn = ({ column, columns, setColumnToDelete }: Props) => {
 
       <div className="mr-2 ml-auto flex h-10 items-center justify-center gap-1">
         <div className="hidden items-center gap-1 lg:flex">
-          {/* <Tooltip tooltip={column.hidden ? "Show" : "Hide column"}>
+          <Tooltip
+            tooltip={
+              userHiddenColumns?.includes(column.rowId) ? "Show" : "Hide column"
+            }
+          >
             <Button
               variant="ghost"
               size="xs"
               className="h-7 w-7 p-1 text-base-400"
               onClick={handleColumnHiding}
             >
-              {column.hidden ? (
+              {userHiddenColumns?.includes(column.rowId) ? (
                 <EyeClosedIcon className="size-4" />
               ) : (
                 <EyeIcon className="size-4" />
               )}
             </Button>
-          </Tooltip> */}
+          </Tooltip>
 
           <Button
             variant="ghost"
@@ -210,7 +233,7 @@ const DraggableColumn = ({ column, columns, setColumnToDelete }: Props) => {
                   className="flex justify-start gap-2"
                   onClick={handleColumnHiding}
                 >
-                  {column.hidden ? (
+                  {userHiddenColumns?.includes(column.rowId) ? (
                     <div className="flex items-center gap-2">
                       <EyeClosedIcon className="size-4" /> Unhide column
                     </div>

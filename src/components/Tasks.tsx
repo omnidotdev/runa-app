@@ -10,7 +10,7 @@ import Labels from "@/components/Labels";
 import PriorityIcon from "@/components/tasks/PriorityIcon";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { SidebarMenuShotcut } from "@/components/ui/sidebar";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import {
   TooltipContent,
   TooltipPositioner,
@@ -174,7 +174,7 @@ const Tasks = ({
                             <div className="inline-flex">
                               Update Assignees
                               <div className="ml-2 flex items-center gap-0.5">
-                                <SidebarMenuShotcut>A</SidebarMenuShotcut>
+                                <SidebarMenuShortcut>A</SidebarMenuShortcut>
                               </div>
                             </div>
                           </TooltipContent>
@@ -215,7 +215,7 @@ const Tasks = ({
                               <div className="inline-flex">
                                 Update Labels
                                 <div className="ml-2 flex items-center gap-0.5">
-                                  <SidebarMenuShotcut>L</SidebarMenuShotcut>
+                                  <SidebarMenuShortcut>L</SidebarMenuShortcut>
                                 </div>
                               </div>
                             </TooltipContent>
@@ -254,7 +254,7 @@ const Tasks = ({
                             <div className="inline-flex">
                               Update Due Date
                               <div className="ml-2 flex items-center gap-0.5">
-                                <SidebarMenuShotcut>D</SidebarMenuShotcut>
+                                <SidebarMenuShortcut>D</SidebarMenuShortcut>
                               </div>
                             </div>
                           </TooltipContent>

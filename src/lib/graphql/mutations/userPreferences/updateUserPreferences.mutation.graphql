@@ -1,0 +1,7 @@
+mutation UpdateUserPreference($rowId: UUID!, $patch: UserPreferencePatch!) {
+  updateUserPreference(input: { rowId: $rowId, patch: $patch }) {
+    userPreference {
+      rowId
+    }
+  }
+}

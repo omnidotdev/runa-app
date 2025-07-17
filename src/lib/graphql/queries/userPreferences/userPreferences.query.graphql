@@ -1,0 +1,8 @@
+query UserPreferences($userId: UUID!, $projectId: UUID!) {
+  userPreferences(condition: { userId: $userId, projectId: $projectId }) {
+    nodes {
+      hiddenColumnIds
+      rowId
+    }
+  }
+}

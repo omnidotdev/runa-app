@@ -26,7 +26,7 @@ import UpdateDueDateDialog from "@/components/UpdateDueDateDialog";
 import UpdateTaskLabelsDialog from "@/components/UpdateTaskLabelsDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SidebarMenuShotcut } from "@/components/ui/sidebar";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -258,7 +258,7 @@ function ProjectPage() {
                         ? "Board View"
                         : "List View"}
                       <div className="ml-2 flex items-center gap-0.5">
-                        <SidebarMenuShotcut>V</SidebarMenuShotcut>
+                        <SidebarMenuShortcut>V</SidebarMenuShortcut>
                       </div>
                     </div>
                   ),

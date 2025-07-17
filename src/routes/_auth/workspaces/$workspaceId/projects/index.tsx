@@ -27,7 +27,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
-import { SidebarMenuShotcut } from "@/components/ui/sidebar";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
   ProjectStatus,
@@ -247,7 +247,7 @@ function ProjectsOverviewPage() {
                         ? "Board View"
                         : "List View"}
                       <div className="ml-2 flex items-center gap-0.5">
-                        <SidebarMenuShotcut>V</SidebarMenuShotcut>
+                        <SidebarMenuShortcut>V</SidebarMenuShortcut>
                       </div>
                     </div>
                   ),
@@ -282,7 +282,7 @@ function ProjectsOverviewPage() {
                     <div className="inline-flex">
                       Create Project
                       <div className="ml-2 flex items-center gap-0.5">
-                        <SidebarMenuShotcut>P</SidebarMenuShotcut>
+                        <SidebarMenuShortcut>P</SidebarMenuShortcut>
                       </div>
                     </div>
                   ),
@@ -372,7 +372,7 @@ function ProjectsBoard({
                       <div className="inline-flex">
                         Create Project
                         <div className="ml-2 flex items-center gap-0.5">
-                          <SidebarMenuShotcut>P</SidebarMenuShotcut>
+                          <SidebarMenuShortcut>P</SidebarMenuShortcut>
                         </div>
                       </div>
                     ),
@@ -491,7 +491,7 @@ function ProjectsList({ projects }: { projects: ProjectFragment[] }) {
                       <div className="inline-flex">
                         Add Project
                         <div className="ml-2 flex items-center gap-0.5">
-                          <SidebarMenuShotcut>P</SidebarMenuShotcut>
+                          <SidebarMenuShortcut>P</SidebarMenuShortcut>
                         </div>
                       </div>
                     ),
