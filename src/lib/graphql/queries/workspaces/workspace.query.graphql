@@ -2,6 +2,7 @@ query Workspace($rowId: UUID!, $userFilter: WorkspaceUserFilter) {
   workspace(rowId: $rowId) {
     rowId
     name
+    slug
     viewMode
     projects {
       nodes {

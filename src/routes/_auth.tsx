@@ -7,6 +7,7 @@ import NotFound from "@/components/layout/NotFound";
 import { SidebarInset } from "@/components/ui/sidebar";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import workspaceOptions from "@/lib/options/workspace.options";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import SidebarProvider from "@/providers/SidebarProvider";
 
@@ -16,31 +17,38 @@ export const Route = createFileRoute({
   },
   loader: async ({ params, context: { queryClient, session } }) => {
     // TODO: determine if there is a cleaner way to do this with ts router / start from layout files
-    const { workspaceId } = params as unknown as { workspaceId?: string };
-
-    const fetchWorkspaces = async () =>
-      await queryClient.ensureQueryData(
-        workspacesOptions({ userId: session?.user.rowId! }),
-      );
+    const { workspaceSlug } = params as unknown as { workspaceSlug?: string };
 
     // validate that the user belongs to the workspace when applicable
-    if (workspaceId) {
+    if (workspaceSlug) {
+      const { workspaceBySlug } = await queryClient.ensureQueryData(
+        workspaceBySlugOptions({ slug: workspaceSlug }),
+      );
+
+      if (!workspaceBySlug) throw notFound();
+
       const [{ workspace }] = await Promise.all([
         queryClient.ensureQueryData(
           workspaceOptions({
-            rowId: workspaceId,
+            rowId: workspaceBySlug.rowId,
             userFilter: {
               userId: { equalTo: session?.user.rowId! },
             },
           }),
         ),
-        queryClient.ensureQueryData(workspaceOptions({ rowId: workspaceId })),
-        fetchWorkspaces,
+        queryClient.ensureQueryData(
+          workspaceOptions({ rowId: workspaceBySlug.rowId }),
+        ),
+        queryClient.ensureQueryData(
+          workspacesOptions({ userId: session?.user.rowId! }),
+        ),
       ]);
 
       if (!workspace?.workspaceUsers.nodes.length) throw notFound();
     } else {
-      await fetchWorkspaces();
+      await queryClient.ensureQueryData(
+        workspacesOptions({ userId: session?.user.rowId! }),
+      );
     }
   },
   notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,

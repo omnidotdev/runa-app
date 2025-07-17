@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import {
   useNavigate,
   useParams,
@@ -89,11 +89,12 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
     select: (data) => data.workspaceBySlug,
   });
 
-  const { data: workspaces } = useQuery({
+  const { data: workspaces } = useSuspenseQuery({
     ...workspacesOptions({ userId: session?.user.rowId! }),
     select: (data) => data.workspaces?.nodes,
   });
 
+  // TODO: figure out how to properly have this loaded and ready to go in SSR through loader in _auth.tsx, due to gcTime on workspaceBySlug query which is required for properly handling nav
   const { data: workspace } = useQuery({
     ...workspaceOptions({ rowId: workspaceBySlug?.rowId! }),
     enabled: !!workspaceBySlug?.rowId,

@@ -3,6 +3,7 @@ import { notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
+import * as z from "zod/v4";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "@/components/core/Link";
@@ -15,6 +16,7 @@ import {
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
+import getSdk from "@/lib/graphql/getSdk";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
@@ -25,7 +27,7 @@ import seo from "@/lib/util/seo";
 export const Route = createFileRoute({
   loader: async ({ params: { workspaceSlug }, context: { queryClient } }) => {
     const { workspaceBySlug } = await queryClient.ensureQueryData(
-      workspaceBySlugOptions({ slug: workspaceSlug }),
+      workspaceBySlugOptions({ slug: workspaceSlug, projectSlug: "" }),
     );
 
     if (!workspaceBySlug) {
@@ -59,6 +61,36 @@ function SettingsPage() {
     ...workspaceOptions({ rowId: workspaceId }),
     select: (data) => data?.workspace,
   });
+
+  const editNameSchema = z
+    .object({
+      name: z
+        .string()
+        .min(3, "Name must be at least 3 characters.")
+        .default(workspace?.name!),
+      currentSlug: z.string().default(workspace?.slug!),
+    })
+    .check(async (ctx) => {
+      const sdk = await getSdk();
+
+      const updatedSlug = generateSlug(ctx.value.name);
+
+      if (!updatedSlug?.length || updatedSlug === ctx.value.currentSlug)
+        return z.NEVER;
+
+      const { workspaceBySlug } = await sdk.WorkspaceBySlug({
+        slug: workspaceSlug,
+        projectSlug: updatedSlug,
+      });
+
+      if (workspaceBySlug?.projects.nodes.length) {
+        ctx.issues.push({
+          code: "custom",
+          message: "Project slug already exists for this workspace.",
+          input: ctx.value.name,
+        });
+      }
+    });
 
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
     meta: {
@@ -109,11 +141,15 @@ function SettingsPage() {
               defaultContent={workspace?.name}
               className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
               skeletonClassName="h-8 w-80"
-              onUpdate={({ editor }) => {
+              onUpdate={async ({ editor }) => {
                 const text = editor.getText().trim();
 
-                if (text.length < 3) {
-                  setNameError("Workspace name must be at least 3 characters.");
+                const result = await editNameSchema.safeParseAsync({
+                  name: text,
+                });
+
+                if (!result.success) {
+                  setNameError(result.error.issues[0].message);
                   return;
                 }
 
