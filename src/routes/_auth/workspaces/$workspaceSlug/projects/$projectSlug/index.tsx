@@ -185,6 +185,15 @@ function ProjectPage() {
     meta: {
       invalidates: [["all"]],
     },
+    onSuccess: (_data, variables) => {
+      if (variables.patch.slug) {
+        navigate({
+          to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+          params: { workspaceSlug, projectSlug: variables.patch.slug },
+          replace: true,
+        });
+      }
+    },
   });
 
   const handleProjectUpdate = useDebounceCallback(updateProject, 300);

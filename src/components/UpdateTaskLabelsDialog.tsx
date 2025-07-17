@@ -1,4 +1,4 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -64,8 +64,9 @@ const UpdateTaskLabelsDialog = () => {
     select: (data) => data?.task,
   });
 
-  const { data: project } = useSuspenseQuery({
+  const { data: project } = useQuery({
     ...projectOptions({ rowId: workspace?.projects?.nodes?.[0].rowId! }),
+    enabled: !!workspace?.projects?.nodes?.[0].rowId,
     select: (data) => data?.project,
   });
 
