@@ -14,13 +14,17 @@ export const Route = createFileRoute({
     meta: [...seo({ title: "Workspaces" })],
   }),
   component: WorkspacesOverviewPage,
-  loader: async ({ context: { queryClient } }) =>
-    await queryClient.ensureQueryData(workspacesOptions({ limit: 4 })),
+  loader: async ({ context: { queryClient, session } }) =>
+    await queryClient.ensureQueryData(
+      workspacesOptions({ userId: session?.user?.rowId!, limit: 4 }),
+    ),
 });
 
 function WorkspacesOverviewPage() {
+  const { session } = Route.useRouteContext();
+
   const { data: recentWorkspaces } = useSuspenseQuery({
-    ...workspacesOptions({ limit: 4 }),
+    ...workspacesOptions({ userId: session?.user?.rowId!, limit: 4 }),
     select: (data) => data?.workspaces?.nodes,
   });
 

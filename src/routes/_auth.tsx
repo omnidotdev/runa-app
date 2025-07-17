@@ -13,12 +13,14 @@ export const Route = createFileRoute({
   beforeLoad: ({ context: { session } }) => {
     if (!session) throw redirect({ to: "/" });
   },
-  loader: async ({ params, context: { queryClient } }) => {
+  loader: async ({ params, context: { queryClient, session } }) => {
     // TODO: determine if there is a cleaner way to do this with ts router / start from layout files
     const { workspaceId } = params as unknown as { workspaceId?: string };
 
     await Promise.all([
-      queryClient.ensureQueryData(workspacesOptions()),
+      queryClient.ensureQueryData(
+        workspacesOptions({ userId: session?.user.rowId! }),
+      ),
       ...(workspaceId
         ? [
             queryClient.ensureQueryData(

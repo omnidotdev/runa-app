@@ -1,5 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import {
+  useNavigate,
+  useParams,
+  useRouteContext,
+} from "@tanstack/react-router";
 import {
   ChevronsUpDown,
   FolderOpen,
@@ -61,6 +65,7 @@ import { cn } from "@/lib/utils";
 import type { ComponentProps } from "react";
 
 export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
+  const { session } = useRouteContext({ strict: false });
   const { workspaceId } = useParams({ strict: false });
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<{
@@ -78,7 +83,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
 
   const { data: workspaces } = useQuery({
-    ...workspacesOptions(),
+    ...workspacesOptions({ userId: session?.user.rowId! }),
     select: (data) => data.workspaces?.nodes,
   });
 

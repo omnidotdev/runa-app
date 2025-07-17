@@ -6529,6 +6529,7 @@ export type WorkspaceQueryVariables = Exact<{
 export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, viewMode: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, color?: string | null, viewMode: string, prefix?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> }, workspaceUsers: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', userId: string }> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
   limit?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
@@ -7748,8 +7749,12 @@ useInfiniteWorkspaceQuery.getKey = (variables: WorkspaceQueryVariables) => ['Wor
 useWorkspaceQuery.fetcher = (variables: WorkspaceQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceQuery, WorkspaceQueryVariables>(WorkspaceDocument, variables, options);
 
 export const WorkspacesDocument = `
-    query Workspaces($limit: Int) {
-  workspaces(orderBy: WORKSPACE_USERS_COUNT_DESC, first: $limit) {
+    query Workspaces($userId: UUID!, $limit: Int) {
+  workspaces(
+    filter: {workspaceUsers: {some: {userId: {equalTo: $userId}}}}
+    orderBy: WORKSPACE_USERS_COUNT_DESC
+    first: $limit
+  ) {
     nodes {
       rowId
       name
@@ -7765,19 +7770,19 @@ export const useWorkspacesQuery = <
       TData = WorkspacesQuery,
       TError = unknown
     >(
-      variables?: WorkspacesQueryVariables,
+      variables: WorkspacesQueryVariables,
       options?: Omit<UseQueryOptions<WorkspacesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<WorkspacesQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<WorkspacesQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['Workspaces'] : ['Workspaces', variables],
+    queryKey: ['Workspaces', variables],
     queryFn: graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, variables),
     ...options
   }
     )};
 
-useWorkspacesQuery.getKey = (variables?: WorkspacesQueryVariables) => variables === undefined ? ['Workspaces'] : ['Workspaces', variables];
+useWorkspacesQuery.getKey = (variables: WorkspacesQueryVariables) => ['Workspaces', variables];
 
 export const useInfiniteWorkspacesQuery = <
       TData = InfiniteData<WorkspacesQuery>,
@@ -7791,14 +7796,14 @@ export const useInfiniteWorkspacesQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['Workspaces.infinite'] : ['Workspaces.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Workspaces.infinite', variables],
       queryFn: (metaData) => graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteWorkspacesQuery.getKey = (variables?: WorkspacesQueryVariables) => variables === undefined ? ['Workspaces.infinite'] : ['Workspaces.infinite', variables];
+useInfiniteWorkspacesQuery.getKey = (variables: WorkspacesQueryVariables) => ['Workspaces.infinite', variables];
 
 
-useWorkspacesQuery.fetcher = (variables?: WorkspacesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, variables, options);
+useWorkspacesQuery.fetcher = (variables: WorkspacesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, variables, options);

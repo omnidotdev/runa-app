@@ -6530,6 +6530,7 @@ export type WorkspaceQueryVariables = Exact<{
 export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, viewMode: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, color?: string | null, viewMode: string, prefix?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> }, workspaceUsers: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', userId: string }> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
   limit?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
@@ -6962,8 +6963,12 @@ export const WorkspaceDocument = gql`
 }
     `;
 export const WorkspacesDocument = gql`
-    query Workspaces($limit: Int) {
-  workspaces(orderBy: WORKSPACE_USERS_COUNT_DESC, first: $limit) {
+    query Workspaces($userId: UUID!, $limit: Int) {
+  workspaces(
+    filter: {workspaceUsers: {some: {userId: {equalTo: $userId}}}}
+    orderBy: WORKSPACE_USERS_COUNT_DESC
+    first: $limit
+  ) {
     nodes {
       rowId
       name
@@ -7072,7 +7077,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     Workspace(variables: WorkspaceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<WorkspaceQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<WorkspaceQuery>({ document: WorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Workspace', 'query', variables);
     },
-    Workspaces(variables?: WorkspacesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<WorkspacesQuery> {
+    Workspaces(variables: WorkspacesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<WorkspacesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<WorkspacesQuery>({ document: WorkspacesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Workspaces', 'query', variables);
     }
   };

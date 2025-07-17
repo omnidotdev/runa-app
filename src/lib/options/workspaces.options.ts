@@ -4,7 +4,7 @@ import { useWorkspacesQuery } from "@/generated/graphql";
 
 import type { WorkspacesQueryVariables } from "@/generated/graphql";
 
-const workspacesOptions = (variables: WorkspacesQueryVariables = {}) =>
+const workspacesOptions = (variables: WorkspacesQueryVariables) =>
   queryOptions({
     queryKey: useWorkspacesQuery.getKey(variables),
     queryFn: useWorkspacesQuery.fetcher(variables),

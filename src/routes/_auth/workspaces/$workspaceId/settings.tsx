@@ -42,6 +42,8 @@ export const Route = createFileRoute({
 });
 
 function SettingsPage() {
+  const { session } = Route.useRouteContext();
+
   const { workspaceId } = Route.useParams();
   const navigate = Route.useNavigate();
   const [nameError, setNameError] = useState<string | null>(null);
@@ -53,7 +55,9 @@ function SettingsPage() {
 
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
     meta: {
-      invalidates: [workspacesOptions().queryKey],
+      invalidates: [
+        workspacesOptions({ userId: session?.user.rowId! }).queryKey,
+      ],
     },
     onMutate: () => navigate({ to: "/workspaces", replace: true }),
     onSettled: () => setIsDeleteWorkspaceOpen(false),
