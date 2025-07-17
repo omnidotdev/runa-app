@@ -1,5 +1,10 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import {
+  useNavigate,
+  useParams,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
 import { TagIcon, TypeIcon } from "lucide-react";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -35,7 +40,6 @@ import {
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
-import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
@@ -54,6 +58,14 @@ const CreateTaskDialog = ({ columnId }: Props) => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
+  const { createTask } = useSearch({
+    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  });
+
+  const navigate = useNavigate({
+    from: "/workspaces/$workspaceId/projects/$projectId",
+  });
+
   const titleRef = useRef<HTMLInputElement>(null);
 
   const queryClient = getQueryClient();
@@ -67,11 +79,17 @@ const CreateTaskDialog = ({ columnId }: Props) => {
 
   const { setColumnId } = useTaskStore();
 
-  const { isOpen, setIsOpen } = useDialogStore({
-    type: DialogType.CreateTask,
-  });
-
-  useHotkeys(Hotkeys.CreateTask, () => setIsOpen(!isOpen), [setIsOpen, isOpen]);
+  useHotkeys(
+    Hotkeys.CreateTask,
+    () =>
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          createTask: !createTask,
+        }),
+      }),
+    [navigate, createTask],
+  );
 
   const totalTasks = project?.columns?.nodes?.flatMap((column) =>
     column?.tasks?.nodes?.map((task) => task?.rowId),
@@ -178,20 +196,33 @@ const CreateTaskDialog = ({ columnId }: Props) => {
 
       queryClient.invalidateQueries();
       formApi.reset();
-      setIsOpen(false);
-      setColumnId(null);
+      // Allow for dialog close animation to finish
+      setTimeout(() => setColumnId(null), 350);
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          createTask: false,
+        }),
+      });
     },
   });
 
   return (
     <DialogRoot
-      open={isOpen}
+      open={createTask}
       onOpenChange={({ open }) => {
-        setIsOpen(open);
+        navigate({
+          search: (prev) => ({
+            ...prev,
+            createTask: open,
+          }),
+        });
+
         form.reset();
 
         if (!open) {
-          setColumnId(null);
+          // Allow for dialog close animation to finish
+          setTimeout(() => setColumnId(null), 350);
         }
       }}
       initialFocusEl={() => titleRef.current}

@@ -205,7 +205,7 @@ html.dark {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50 min-w-0 min-h-0;
+    @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;

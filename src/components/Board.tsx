@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
 
@@ -8,7 +8,6 @@ import Tasks from "@/components/Tasks";
 import { Button } from "@/components/ui/button";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
-import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import useTheme from "@/lib/hooks/useTheme";
@@ -25,8 +24,8 @@ const Board = () => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { setIsOpen: setIsCreateTaskDialogOpen } = useDialogStore({
-    type: DialogType.CreateTask,
+  const navigate = useNavigate({
+    from: "/workspaces/$workspaceId/projects/$projectId",
   });
 
   const { setColumnId } = useTaskStore();
@@ -170,7 +169,12 @@ const Board = () => {
                             className="size-5"
                             onClick={() => {
                               setColumnId(column.rowId);
-                              setIsCreateTaskDialogOpen(true);
+                              navigate({
+                                search: (prev) => ({
+                                  ...prev,
+                                  createTask: true,
+                                }),
+                              });
                             }}
                           >
                             <PlusIcon className="size-4" />

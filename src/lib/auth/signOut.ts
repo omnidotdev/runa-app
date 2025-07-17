@@ -2,9 +2,11 @@ import { BASE_URL } from "@/lib/config/env.config";
 
 export const signOut = async () => {
   const response = await fetch("/api/auth/csrf");
+
   const { csrfToken } = await (response.json() as Promise<{
     csrfToken: string;
   }>);
+
   const res = await fetch("/api/auth/signout", {
     method: "post",
     headers: {

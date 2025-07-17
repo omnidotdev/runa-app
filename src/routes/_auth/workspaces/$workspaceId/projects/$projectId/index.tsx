@@ -45,6 +45,7 @@ const projectSearchParamsSchema = z.object({
   assignees: z.array(z.guid()).default([]),
   labels: z.array(z.guid()).default([]),
   priorities: z.array(z.enum(["low", "medium", "high"])).default([]),
+  createTask: z.boolean().default(false),
 });
 
 export const Route = createFileRoute({
@@ -94,6 +95,7 @@ export const Route = createFileRoute({
         assignees: [],
         labels: [],
         priorities: [],
+        createTask: false,
       }),
     ],
   },
@@ -332,7 +334,7 @@ function ProjectPage() {
         )}
       </div>
 
-      {columnId && <CreateTaskDialog columnId={columnId} />}
+      <CreateTaskDialog columnId={columnId ?? undefined} />
       {taskId && <UpdateAssigneesDialog />}
       {taskId && <UpdateDueDateDialog />}
       {taskId && <UpdateTaskLabelsDialog />}

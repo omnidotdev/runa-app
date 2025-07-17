@@ -7,7 +7,6 @@ import { useStoreWithEqualityFn } from "zustand/traditional";
 export enum DialogType {
   DeleteTeamMember = "delete_team_member",
   DeleteWorkspace = "delete_workspace",
-  CreateTask = "create_task",
   CreateProject = "create_project",
   CreateWorkspace = "create_workspace",
   DeleteProject = "delete_project",

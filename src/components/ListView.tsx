@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { ChevronDownIcon, PlusIcon } from "lucide-react";
 
 import TasksList from "@/components/TasksList";
@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/collapsible";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
-import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import useTheme from "@/lib/hooks/useTheme";
@@ -35,8 +34,8 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
   });
 
-  const { setIsOpen: setIsCreateTaskDialogOpen } = useDialogStore({
-    type: DialogType.CreateTask,
+  const navigate = useNavigate({
+    from: "/workspaces/$workspaceId/projects/$projectId",
   });
 
   const { setColumnId } = useTaskStore();
@@ -125,7 +124,12 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
                         onClick={(e) => {
                           e.preventDefault();
                           setColumnId(column.rowId);
-                          setIsCreateTaskDialogOpen(true);
+                          navigate({
+                            search: (prev) => ({
+                              ...prev,
+                              createTask: true,
+                            }),
+                          });
                         }}
                       >
                         <PlusIcon className="size-4" />
