@@ -6524,6 +6524,7 @@ export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __t
 
 export type WorkspaceQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
+  userFilter?: InputMaybe<WorkspaceUserFilter>;
 }>;
 
 
@@ -6927,7 +6928,7 @@ export const WorkspaceUsersDocument = gql`
 }
     `;
 export const WorkspaceDocument = gql`
-    query Workspace($rowId: UUID!) {
+    query Workspace($rowId: UUID!, $userFilter: WorkspaceUserFilter) {
   workspace(rowId: $rowId) {
     rowId
     name
@@ -6954,7 +6955,7 @@ export const WorkspaceDocument = gql`
         }
       }
     }
-    workspaceUsers {
+    workspaceUsers(filter: $userFilter) {
       nodes {
         userId
       }

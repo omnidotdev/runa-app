@@ -6523,6 +6523,7 @@ export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __t
 
 export type WorkspaceQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
+  userFilter?: InputMaybe<WorkspaceUserFilter>;
 }>;
 
 
@@ -7670,7 +7671,7 @@ useInfiniteWorkspaceUsersQuery.getKey = (variables: WorkspaceUsersQueryVariables
 useWorkspaceUsersQuery.fetcher = (variables: WorkspaceUsersQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceUsersQuery, WorkspaceUsersQueryVariables>(WorkspaceUsersDocument, variables, options);
 
 export const WorkspaceDocument = `
-    query Workspace($rowId: UUID!) {
+    query Workspace($rowId: UUID!, $userFilter: WorkspaceUserFilter) {
   workspace(rowId: $rowId) {
     rowId
     name
@@ -7697,7 +7698,7 @@ export const WorkspaceDocument = `
         }
       }
     }
-    workspaceUsers {
+    workspaceUsers(filter: $userFilter) {
       nodes {
         userId
       }

@@ -1,8 +1,9 @@
-import { Outlet, redirect } from "@tanstack/react-router";
+import { notFound, Outlet, redirect } from "@tanstack/react-router";
 
 import { AppSidebar } from "@/components/AppSidebar";
 import CreateProjectDialog from "@/components/CreateProjectDialog";
 import CreateWorkspaceDialog from "@/components/CreateWorkspaceDialog";
+import NotFound from "@/components/layout/NotFound";
 import { SidebarInset } from "@/components/ui/sidebar";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -17,19 +18,32 @@ export const Route = createFileRoute({
     // TODO: determine if there is a cleaner way to do this with ts router / start from layout files
     const { workspaceId } = params as unknown as { workspaceId?: string };
 
-    await Promise.all([
-      queryClient.ensureQueryData(
+    const fetchWorkspaces = async () =>
+      await queryClient.ensureQueryData(
         workspacesOptions({ userId: session?.user.rowId! }),
-      ),
-      ...(workspaceId
-        ? [
-            queryClient.ensureQueryData(
-              workspaceOptions({ rowId: workspaceId }),
-            ),
-          ]
-        : []),
-    ]);
+      );
+
+    // validate that the user belongs to the workspace when applicable
+    if (workspaceId) {
+      const [{ workspace }] = await Promise.all([
+        queryClient.ensureQueryData(
+          workspaceOptions({
+            rowId: workspaceId,
+            userFilter: {
+              userId: { equalTo: session?.user.rowId! },
+            },
+          }),
+        ),
+        queryClient.ensureQueryData(workspaceOptions({ rowId: workspaceId })),
+        fetchWorkspaces,
+      ]);
+
+      if (!workspace?.workspaceUsers.nodes.length) throw notFound();
+    } else {
+      await fetchWorkspaces();
+    }
   },
+  notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,
   component: AuthenticatedLayout,
 });
 
