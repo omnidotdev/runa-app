@@ -3,12 +3,14 @@ import { notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
+import * as z from "zod/v4";
 
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
 import ProjectLabelsForm from "@/components/projects/ProjectLabelsForm";
 import { useUpdateProjectMutation } from "@/generated/graphql";
+import getSdk from "@/lib/graphql/getSdk";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
@@ -36,7 +38,7 @@ export const Route = createFileRoute({
       queryClient.ensureQueryData(labelsOptions({ projectId })),
     ]);
 
-    return { name: projectName, projectId };
+    return { name: projectName, projectId, workspaceId: workspaceBySlug.rowId };
   },
   head: ({ loaderData }) => ({
     meta: loaderData
@@ -58,6 +60,36 @@ function RouteComponent() {
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
+
+  const editNameSchema = z
+    .object({
+      name: z
+        .string()
+        .min(3, "Name must be at least 3 characters.")
+        .default(project?.name!),
+      currentSlug: z.string().default(project?.slug!),
+    })
+    .check(async (ctx) => {
+      const sdk = await getSdk();
+
+      const updatedSlug = generateSlug(ctx.value.name);
+
+      if (!updatedSlug?.length || updatedSlug === ctx.value.currentSlug)
+        return z.NEVER;
+
+      const { workspaceBySlug } = await sdk.WorkspaceBySlug({
+        slug: workspaceSlug,
+        projectSlug: updatedSlug,
+      });
+
+      if (workspaceBySlug?.projects.nodes.length) {
+        ctx.issues.push({
+          code: "custom",
+          message: "Project slug already exists for this workspace.",
+          input: ctx.value.name,
+        });
+      }
+    });
 
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
@@ -97,11 +129,15 @@ function RouteComponent() {
                 defaultContent={project?.name}
                 className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
                 skeletonClassName="h-8 w-80"
-                onUpdate={({ editor }) => {
+                onUpdate={async ({ editor }) => {
                   const text = editor.getText().trim();
 
-                  if (text.length < 3) {
-                    setNameError("Project name must be at least 3 characters.");
+                  const result = await editNameSchema.safeParseAsync({
+                    name: text,
+                  });
+
+                  if (!result.success) {
+                    setNameError(result.error.issues[0].message);
                     return;
                   }
 

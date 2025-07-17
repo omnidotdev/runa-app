@@ -2,6 +2,7 @@ query Project($rowId: UUID!) {
   project(rowId: $rowId) {
     rowId
     name
+    slug
     description
     prefix
     color
