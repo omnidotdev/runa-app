@@ -50,7 +50,7 @@ export const Route = createRootRouteWithContext<{
     ],
     links: [{ rel: "stylesheet", href: appCss }],
   }),
-  errorComponent: (props) => <DefaultCatchBoundary {...props} />,
+  errorComponent: DefaultCatchBoundary,
   component: RootComponent,
 });
 
@@ -69,7 +69,7 @@ function RootDocument({
   theme,
 }: Readonly<{ children: ReactNode; theme: Theme }>) {
   return (
-    <html lang="en" className={theme} suppressHydrationWarning>
+    <html lang="en" className={theme}>
       <head>
         <ClientHintCheck />
         <HeadContent />
