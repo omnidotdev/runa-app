@@ -48,7 +48,7 @@ export const Route = createFileRoute({
 });
 
 function SettingsPage() {
-  const { session, queryClient } = Route.useRouteContext();
+  const { session } = Route.useRouteContext();
   const { workspaceId } = Route.useLoaderData();
 
   const { workspaceSlug } = Route.useParams();
