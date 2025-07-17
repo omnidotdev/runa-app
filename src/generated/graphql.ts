@@ -6519,7 +6519,7 @@ export type WorkspaceUsersQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', user?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } } | null }> } | null };
+export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', user?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, assignedTasks: { __typename?: 'AssigneeConnection', totalCount: number }, completedTasks: { __typename?: 'AssigneeConnection', totalCount: number } } | null }> } | null };
 
 export type WorkspaceQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -7610,11 +7610,13 @@ export const WorkspaceUsersDocument = `
         name
         avatarUrl
         rowId
-        allTasks: authoredTasks(filter: {project: {workspaceId: {equalTo: $rowId}}}) {
+        assignedTasks: assignees(
+          filter: {task: {project: {workspaceId: {equalTo: $rowId}}}}
+        ) {
           totalCount
         }
-        completedTasks: authoredTasks(
-          filter: {project: {workspaceId: {equalTo: $rowId}}, column: {title: {equalTo: "Done"}}}
+        completedTasks: assignees(
+          filter: {task: {project: {workspaceId: {equalTo: $rowId}}, column: {title: {equalTo: "Done"}}}}
         ) {
           totalCount
         }

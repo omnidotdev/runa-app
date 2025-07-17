@@ -5,15 +5,17 @@ query WorkspaceUsers($rowId: UUID!) {
         name
         avatarUrl
         rowId
-        allTasks: authoredTasks(
-          filter: { project: { workspaceId: { equalTo: $rowId } } }
+        assignedTasks: assignees(
+          filter: { task: { project: { workspaceId: { equalTo: $rowId } } } }
         ) {
           totalCount
         }
-        completedTasks: authoredTasks(
+        completedTasks: assignees(
           filter: {
-            project: { workspaceId: { equalTo: $rowId } }
-            column: { title: { equalTo: "Done" } }
+            task: {
+              project: { workspaceId: { equalTo: $rowId } }
+              column: { title: { equalTo: "Done" } }
+            }
           }
         ) {
           totalCount

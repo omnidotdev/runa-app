@@ -75,7 +75,8 @@ const Team = () => {
                 {members?.nodes?.map((member) => {
                   const completedTasks =
                     member?.user?.completedTasks?.totalCount ?? 0;
-                  const totalTasks = member?.user?.allTasks?.totalCount ?? 0;
+                  const totalTasks =
+                    member?.user?.assignedTasks?.totalCount ?? 0;
 
                   return (
                     <TableRow key={member?.user?.rowId}>
