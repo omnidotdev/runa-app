@@ -90,7 +90,6 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
     select: (data) => data.workspaces?.nodes,
   });
 
-  // TODO: figure out how to properly have this loaded and ready to go in SSR through loader in _auth.tsx, due to gcTime on workspaceBySlug query which is required for properly handling nav
   const { data: workspace } = useQuery({
     ...workspaceOptions({ rowId: workspaceId! }),
     enabled: !!workspaceId,
