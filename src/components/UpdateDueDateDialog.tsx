@@ -3,6 +3,7 @@ import { useParams } from "@tanstack/react-router";
 import * as dateFns from "date-fns";
 // @ts-ignore no declaration file
 import { createParseHumanRelativeTime } from "parse-human-relative-time/date-fns.js";
+import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import * as z from "zod/v4";
 
@@ -27,6 +28,8 @@ import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
 
 const UpdateDueDateDialog = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const { taskId: paramsTaskId } = useParams({ strict: false });
 
   const parseHumanRelativeTime = createParseHumanRelativeTime(dateFns);
@@ -87,6 +90,7 @@ const UpdateDueDateDialog = () => {
           setTaskId(null);
         }
       }}
+      initialFocusEl={() => inputRef.current}
     >
       <DialogBackdrop />
       <DialogPositioner>
@@ -114,6 +118,7 @@ const UpdateDueDateDialog = () => {
               >
                 {(field) => (
                   <Input
+                    ref={inputRef}
                     onChange={async (e) => {
                       try {
                         const date = await parseHumanRelativeTime(
