@@ -9,6 +9,11 @@ export default defineConfig(({ command }) => ({
     port: 3000,
     // Seemingly needed as a workaround for `https`. See: https://github.com/TanStack/router/issues/4287#issuecomment-2954268842
     proxy: {},
+    cors: {
+      // TODO: dynamic
+      origin: "https://localhost:8000",
+      credentials: true,
+    },
   },
   plugins: [
     // NB: command is `serve` in development, `build` in production

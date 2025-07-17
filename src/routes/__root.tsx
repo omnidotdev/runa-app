@@ -9,45 +9,50 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import ClientHintCheck from "@/components/scripts/ClientHintCheck";
+import fetchSession from "@/lib/auth/fetchSession";
 import useTheme from "@/lib/hooks/useTheme";
 import { themeQueryKey } from "@/lib/options/theme.options";
 import { getRequestInfo } from "@/lib/util/requestInfo";
 import seo from "@/lib/util/seo";
 import appCss from "@/styles/globals.css?url";
 
+import type { Session } from "@auth/core/types";
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import type { Theme } from "@/lib/util/theme";
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
-  {
-    loader: async ({ context: { queryClient } }) => {
-      const requestInfo = await getRequestInfo();
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+  session: Session | null;
+}>()({
+  beforeLoad: async () => {
+    const { session } = await fetchSession();
 
-      queryClient.setQueryData(
-        themeQueryKey,
-        requestInfo.userPreferences.theme,
-      );
-
-      return { requestInfo };
-    },
-    head: () => ({
-      meta: [
-        {
-          charSet: "utf-8",
-        },
-        {
-          name: "viewport",
-          content: "width=device-width, initial-scale=1",
-        },
-        ...seo(),
-      ],
-      links: [{ rel: "stylesheet", href: appCss }],
-    }),
-    errorComponent: (props) => <DefaultCatchBoundary {...props} />,
-    component: RootComponent,
+    return { session };
   },
-);
+  loader: async ({ context: { queryClient } }) => {
+    const requestInfo = await getRequestInfo();
+
+    queryClient.setQueryData(themeQueryKey, requestInfo.userPreferences.theme);
+
+    return { requestInfo };
+  },
+  head: () => ({
+    meta: [
+      {
+        charSet: "utf-8",
+      },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1",
+      },
+      ...seo(),
+    ],
+    links: [{ rel: "stylesheet", href: appCss }],
+  }),
+  errorComponent: (props) => <DefaultCatchBoundary {...props} />,
+  component: RootComponent,
+});
 
 function RootComponent() {
   const { theme } = useTheme();

@@ -5,5 +5,10 @@ export const BASE_URL = import.meta.env.VITE_BASE_URL;
 // TODO: remove when auth is integrated
 export const USER_ID = import.meta.env.VITE_USER_ID;
 
+// auth
+export const AUTH_ISSUER = import.meta.env.VITE_AUTH_ISSUER;
+export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID;
+export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
+
 // environment helpers
 export const isDevEnv = import.meta.env.DEV;

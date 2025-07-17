@@ -6507,6 +6507,13 @@ export type UserQueryVariables = Exact<{
 
 export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', rowId: string, name: string, email: string } | null };
 
+export type UserByIdentityProviderIdQueryVariables = Exact<{
+  hidraId: Scalars['UUID']['input'];
+}>;
+
+
+export type UserByIdentityProviderIdQuery = { __typename?: 'Query', userByIdentityProviderId?: { __typename?: 'User', rowId: string } | null };
+
 export type WorkspaceUsersQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
@@ -7544,6 +7551,56 @@ useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite
 
 
 useUserQuery.fetcher = (variables: UserQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables, options);
+
+export const UserByIdentityProviderIdDocument = `
+    query UserByIdentityProviderId($hidraId: UUID!) {
+  userByIdentityProviderId(identityProviderId: $hidraId) {
+    rowId
+  }
+}
+    `;
+
+export const useUserByIdentityProviderIdQuery = <
+      TData = UserByIdentityProviderIdQuery,
+      TError = unknown
+    >(
+      variables: UserByIdentityProviderIdQueryVariables,
+      options?: Omit<UseQueryOptions<UserByIdentityProviderIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UserByIdentityProviderIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<UserByIdentityProviderIdQuery, TError, TData>(
+      {
+    queryKey: ['UserByIdentityProviderId', variables],
+    queryFn: graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, variables),
+    ...options
+  }
+    )};
+
+useUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderId', variables];
+
+export const useInfiniteUserByIdentityProviderIdQuery = <
+      TData = InfiniteData<UserByIdentityProviderIdQuery>,
+      TError = unknown
+    >(
+      variables: UserByIdentityProviderIdQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<UserByIdentityProviderIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UserByIdentityProviderIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<UserByIdentityProviderIdQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['UserByIdentityProviderId.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderId.infinite', variables];
+
+
+useUserByIdentityProviderIdQuery.fetcher = (variables: UserByIdentityProviderIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, variables, options);
 
 export const WorkspaceUsersDocument = `
     query WorkspaceUsers($rowId: UUID!) {

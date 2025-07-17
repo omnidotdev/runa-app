@@ -48,6 +48,7 @@ import {
   useDeleteProjectMutation,
   useUpdateProjectMutation,
 } from "@/generated/graphql";
+import { signOut } from "@/lib/auth/signOut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTheme from "@/lib/hooks/useTheme";
@@ -486,7 +487,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 tooltip="Sign Out"
-                onClick={() => navigate({ to: "/" })}
+                onClick={signOut}
                 className="hover: justify-start border bg-background text-red-600 shadow-xs hover:bg-accent hover:text-red-600 dark:border-input dark:bg-input/30 dark:text-red-400 dark:hover:bg-input/50 dark:hover:text-red-400"
               >
                 <LogOutIcon />

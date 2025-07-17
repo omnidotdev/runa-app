@@ -1,3 +1,4 @@
+import { redirect } from "@tanstack/react-router";
 import {
   ArrowRightIcon,
   ChartNoAxesColumnIncreasingIcon,
@@ -9,7 +10,10 @@ import { match } from "ts-pattern";
 
 import Link from "@/components/core/Link";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { signIn } from "@/lib/auth/signIn";
+import { BASE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 
 import type { ReactNode } from "react";
@@ -55,6 +59,9 @@ const features: Feature[] = [
 ];
 
 export const Route = createFileRoute({
+  beforeLoad: ({ context: { session } }) => {
+    if (session) throw redirect({ to: "/workspaces" });
+  },
   component: HomePage,
 });
 
@@ -83,13 +90,13 @@ function HomePage() {
             </p>
 
             <div className="flex flex-col gap-5 sm:flex-row">
-              <Link
-                to="/workspaces"
+              <Button
                 className="group h-full px-6 py-4 has-[>svg]:px-6"
+                onClick={() => signIn({ redirectUrl: BASE_URL })}
               >
                 Get Started{" "}
                 <ArrowRightIcon className="ml-1 inline-block transition-transform group-hover:translate-x-1" />
-              </Link>
+              </Button>
               <Link
                 to="/pricing"
                 variant="outline"
