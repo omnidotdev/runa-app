@@ -35,6 +35,7 @@ import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
+import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
 import type { ChangeEvent } from "react";
@@ -209,7 +210,7 @@ function ProjectPage() {
                 setNameError(null);
                 handleProjectUpdate({
                   rowId: projectId,
-                  patch: { name: text },
+                  patch: { name: text, slug: generateSlug(text) },
                 });
               }}
             />

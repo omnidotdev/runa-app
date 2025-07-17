@@ -23,6 +23,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useForm from "@/lib/hooks/useForm";
 import workspaceOptions from "@/lib/options/workspace.options";
+import generateSlug from "@/lib/util/generateSlug";
 
 import type { ProjectStatus } from "@/generated/graphql";
 
@@ -109,6 +110,7 @@ const CreateProjectDialog = ({ status }: Props) => {
           project: {
             workspaceId: workspaceId!,
             name: value.name,
+            slug: generateSlug(value.name),
             description: value.description,
             status: value.status,
           },

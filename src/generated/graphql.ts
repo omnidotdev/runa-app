@@ -1392,6 +1392,17 @@ export type DeleteProjectByIdInput = {
   id: Scalars['ID']['input'];
 };
 
+/** All input for the `deleteProjectBySlugAndWorkspaceId` mutation. */
+export type DeleteProjectBySlugAndWorkspaceIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  slug: Scalars['String']['input'];
+  workspaceId: Scalars['UUID']['input'];
+};
+
 /** All input for the `deleteProject` mutation. */
 export type DeleteProjectInput = {
   /**
@@ -1586,6 +1597,16 @@ export type DeleteWorkspaceByIdInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** The globally unique `ID` which will identify a single `Workspace` to be deleted. */
   id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteWorkspaceBySlug` mutation. */
+export type DeleteWorkspaceBySlugInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  slug: Scalars['String']['input'];
 };
 
 /** All input for the `deleteWorkspace` mutation. */
@@ -2271,6 +2292,8 @@ export type Mutation = {
   deleteProject?: Maybe<DeleteProjectPayload>;
   /** Deletes a single `Project` using its globally unique id. */
   deleteProjectById?: Maybe<DeleteProjectPayload>;
+  /** Deletes a single `Project` using a unique key. */
+  deleteProjectBySlugAndWorkspaceId?: Maybe<DeleteProjectPayload>;
   /** Deletes a single `Task` using a unique key. */
   deleteTask?: Maybe<DeleteTaskPayload>;
   /** Deletes a single `Task` using its globally unique id. */
@@ -2291,6 +2314,8 @@ export type Mutation = {
   deleteWorkspace?: Maybe<DeleteWorkspacePayload>;
   /** Deletes a single `Workspace` using its globally unique id. */
   deleteWorkspaceById?: Maybe<DeleteWorkspacePayload>;
+  /** Deletes a single `Workspace` using a unique key. */
+  deleteWorkspaceBySlug?: Maybe<DeleteWorkspacePayload>;
   /** Deletes a single `WorkspaceUser` using a unique key. */
   deleteWorkspaceUser?: Maybe<DeleteWorkspaceUserPayload>;
   /** Deletes a single `WorkspaceUser` using its globally unique id. */
@@ -2321,6 +2346,8 @@ export type Mutation = {
   updateProject?: Maybe<UpdateProjectPayload>;
   /** Updates a single `Project` using its globally unique id and a patch. */
   updateProjectById?: Maybe<UpdateProjectPayload>;
+  /** Updates a single `Project` using a unique key and a patch. */
+  updateProjectBySlugAndWorkspaceId?: Maybe<UpdateProjectPayload>;
   /** Updates a single `Task` using a unique key and a patch. */
   updateTask?: Maybe<UpdateTaskPayload>;
   /** Updates a single `Task` using its globally unique id and a patch. */
@@ -2341,6 +2368,8 @@ export type Mutation = {
   updateWorkspace?: Maybe<UpdateWorkspacePayload>;
   /** Updates a single `Workspace` using its globally unique id and a patch. */
   updateWorkspaceById?: Maybe<UpdateWorkspacePayload>;
+  /** Updates a single `Workspace` using a unique key and a patch. */
+  updateWorkspaceBySlug?: Maybe<UpdateWorkspacePayload>;
   /** Updates a single `WorkspaceUser` using a unique key and a patch. */
   updateWorkspaceUser?: Maybe<UpdateWorkspaceUserPayload>;
   /** Updates a single `WorkspaceUser` using its globally unique id and a patch. */
@@ -2493,6 +2522,12 @@ export type MutationDeleteProjectByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteProjectBySlugAndWorkspaceIdArgs = {
+  input: DeleteProjectBySlugAndWorkspaceIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTaskArgs = {
   input: DeleteTaskInput;
 };
@@ -2549,6 +2584,12 @@ export type MutationDeleteWorkspaceArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteWorkspaceByIdArgs = {
   input: DeleteWorkspaceByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteWorkspaceBySlugArgs = {
+  input: DeleteWorkspaceBySlugInput;
 };
 
 
@@ -2643,6 +2684,12 @@ export type MutationUpdateProjectByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateProjectBySlugAndWorkspaceIdArgs = {
+  input: UpdateProjectBySlugAndWorkspaceIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateTaskArgs = {
   input: UpdateTaskInput;
 };
@@ -2699,6 +2746,12 @@ export type MutationUpdateWorkspaceArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateWorkspaceByIdArgs = {
   input: UpdateWorkspaceByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateWorkspaceBySlugArgs = {
+  input: UpdateWorkspaceBySlugInput;
 };
 
 
@@ -3002,6 +3055,7 @@ export type Project = Node & {
   name: Scalars['String']['output'];
   prefix?: Maybe<Scalars['String']['output']>;
   rowId: Scalars['UUID']['output'];
+  slug: Scalars['String']['output'];
   status: ProjectStatus;
   /** Reads and enables pagination through a set of `Task`. */
   tasks: TaskConnection;
@@ -3077,6 +3131,8 @@ export type ProjectCondition = {
   prefix?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `slug` field. */
+  slug?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `status` field. */
   status?: InputMaybe<ProjectStatus>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -3118,6 +3174,7 @@ export type ProjectDistinctCountAggregateFilter = {
   name?: InputMaybe<BigIntFilter>;
   prefix?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
+  slug?: InputMaybe<BigIntFilter>;
   status?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
   viewMode?: InputMaybe<BigIntFilter>;
@@ -3138,6 +3195,8 @@ export type ProjectDistinctCountAggregates = {
   prefix?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of slug across the matching connection */
+  slug?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of status across the matching connection */
   status?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -3185,6 +3244,8 @@ export type ProjectFilter = {
   prefix?: InputMaybe<StringFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `slug` field. */
+  slug?: InputMaybe<StringFilter>;
   /** Filter by the object’s `status` field. */
   status?: InputMaybe<ProjectStatusFilter>;
   /** Filter by the object’s `tasks` relation. */
@@ -3210,6 +3271,7 @@ export enum ProjectGroupBy {
   Description = 'DESCRIPTION',
   Name = 'NAME',
   Prefix = 'PREFIX',
+  Slug = 'SLUG',
   Status = 'STATUS',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -3286,6 +3348,7 @@ export type ProjectInput = {
   name: Scalars['String']['input'];
   prefix?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  slug: Scalars['String']['input'];
   status?: InputMaybe<ProjectStatus>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
@@ -3353,6 +3416,8 @@ export enum ProjectOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  SlugAsc = 'SLUG_ASC',
+  SlugDesc = 'SLUG_DESC',
   StatusAsc = 'STATUS_ASC',
   StatusDesc = 'STATUS_DESC',
   TasksAverageColumnIndexAsc = 'TASKS_AVERAGE_COLUMN_INDEX_ASC',
@@ -3411,6 +3476,7 @@ export type ProjectPatch = {
   name?: InputMaybe<Scalars['String']['input']>;
   prefix?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<ProjectStatus>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
@@ -3528,6 +3594,8 @@ export type Query = Node & {
   project?: Maybe<Project>;
   /** Reads a single `Project` using its globally unique `ID`. */
   projectById?: Maybe<Project>;
+  /** Get a single `Project`. */
+  projectBySlugAndWorkspaceId?: Maybe<Project>;
   /** Reads and enables pagination through a set of `Project`. */
   projects?: Maybe<ProjectConnection>;
   /**
@@ -3561,6 +3629,8 @@ export type Query = Node & {
   workspace?: Maybe<Workspace>;
   /** Reads a single `Workspace` using its globally unique `ID`. */
   workspaceById?: Maybe<Workspace>;
+  /** Get a single `Workspace`. */
+  workspaceBySlug?: Maybe<Workspace>;
   /** Get a single `WorkspaceUser`. */
   workspaceUser?: Maybe<WorkspaceUser>;
   /** Reads a single `WorkspaceUser` using its globally unique `ID`. */
@@ -3723,6 +3793,13 @@ export type QueryProjectByIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryProjectBySlugAndWorkspaceIdArgs = {
+  slug: Scalars['String']['input'];
+  workspaceId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryProjectsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -3831,6 +3908,12 @@ export type QueryWorkspaceArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryWorkspaceByIdArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryWorkspaceBySlugArgs = {
+  slug: Scalars['String']['input'];
 };
 
 
@@ -5046,6 +5129,19 @@ export type UpdateProjectByIdInput = {
   patch: ProjectPatch;
 };
 
+/** All input for the `updateProjectBySlugAndWorkspaceId` mutation. */
+export type UpdateProjectBySlugAndWorkspaceIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Project` being updated. */
+  patch: ProjectPatch;
+  slug: Scalars['String']['input'];
+  workspaceId: Scalars['UUID']['input'];
+};
+
 /** All input for the `updateProject` mutation. */
 export type UpdateProjectInput = {
   /**
@@ -5256,6 +5352,18 @@ export type UpdateWorkspaceByIdInput = {
   id: Scalars['ID']['input'];
   /** An object where the defined keys will be set on the `Workspace` being updated. */
   patch: WorkspacePatch;
+};
+
+/** All input for the `updateWorkspaceBySlug` mutation. */
+export type UpdateWorkspaceBySlugInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Workspace` being updated. */
+  patch: WorkspacePatch;
+  slug: Scalars['String']['input'];
 };
 
 /** All input for the `updateWorkspace` mutation. */
@@ -5777,6 +5885,7 @@ export type Workspace = Node & {
   /** Reads and enables pagination through a set of `Project`. */
   projects: ProjectConnection;
   rowId: Scalars['UUID']['output'];
+  slug: Scalars['String']['output'];
   updatedAt: Scalars['Datetime']['output'];
   viewMode: Scalars['String']['output'];
   /** Reads and enables pagination through a set of `WorkspaceUser`. */
@@ -5837,6 +5946,8 @@ export type WorkspaceCondition = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `slug` field. */
+  slug?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `viewMode` field. */
@@ -5875,6 +5986,8 @@ export type WorkspaceDistinctCountAggregates = {
   name?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of slug across the matching connection */
+  slug?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of viewMode across the matching connection */
@@ -5912,6 +6025,8 @@ export type WorkspaceFilter = {
   projectsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `slug` field. */
+  slug?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `viewMode` field. */
@@ -5999,6 +6114,7 @@ export type WorkspaceInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   name: Scalars['String']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  slug: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
 };
@@ -6038,6 +6154,8 @@ export enum WorkspaceOrderBy {
   ProjectsDistinctCountPrefixDesc = 'PROJECTS_DISTINCT_COUNT_PREFIX_DESC',
   ProjectsDistinctCountRowIdAsc = 'PROJECTS_DISTINCT_COUNT_ROW_ID_ASC',
   ProjectsDistinctCountRowIdDesc = 'PROJECTS_DISTINCT_COUNT_ROW_ID_DESC',
+  ProjectsDistinctCountSlugAsc = 'PROJECTS_DISTINCT_COUNT_SLUG_ASC',
+  ProjectsDistinctCountSlugDesc = 'PROJECTS_DISTINCT_COUNT_SLUG_DESC',
   ProjectsDistinctCountStatusAsc = 'PROJECTS_DISTINCT_COUNT_STATUS_ASC',
   ProjectsDistinctCountStatusDesc = 'PROJECTS_DISTINCT_COUNT_STATUS_DESC',
   ProjectsDistinctCountUpdatedAtAsc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -6048,6 +6166,8 @@ export enum WorkspaceOrderBy {
   ProjectsDistinctCountWorkspaceIdDesc = 'PROJECTS_DISTINCT_COUNT_WORKSPACE_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  SlugAsc = 'SLUG_ASC',
+  SlugDesc = 'SLUG_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   ViewModeAsc = 'VIEW_MODE_ASC',
@@ -6067,6 +6187,7 @@ export type WorkspacePatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
 };

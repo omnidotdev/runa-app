@@ -11,6 +11,7 @@ import ProjectLabelsForm from "@/components/projects/ProjectLabelsForm";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
+import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
@@ -83,7 +84,7 @@ function RouteComponent() {
                   setNameError(null);
                   handleProjectUpdate({
                     rowId: projectId,
-                    patch: { name: text },
+                    patch: { name: text, slug: generateSlug(text) },
                   });
                 }}
               />

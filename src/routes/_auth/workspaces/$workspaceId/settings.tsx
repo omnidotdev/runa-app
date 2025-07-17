@@ -18,6 +18,7 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
+import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
@@ -106,6 +107,7 @@ function SettingsPage() {
                   rowId: workspaceId,
                   patch: {
                     name: text,
+                    slug: generateSlug(text),
                   },
                 });
               }}

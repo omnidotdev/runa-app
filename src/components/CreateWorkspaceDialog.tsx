@@ -20,6 +20,7 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
+import generateSlug from "@/lib/util/generateSlug";
 
 import type { FormEvent } from "react";
 
@@ -46,7 +47,9 @@ const CreateWorkspaceDialog = () => {
 
   const { mutateAsync: createNewWorkspace } = useCreateWorkspaceMutation({
     meta: {
-      invalidates: [workspacesOptions().queryKey],
+      invalidates: [
+        workspacesOptions({ userId: session?.user.rowId! }).queryKey,
+      ],
     },
     onSuccess: ({ createWorkspace }) => {
       createTeamMember({
@@ -73,6 +76,7 @@ const CreateWorkspaceDialog = () => {
       input: {
         workspace: {
           name: newWorkspaceName,
+          slug: generateSlug(newWorkspaceName),
         },
       },
     });
