@@ -30,6 +30,7 @@ import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
+import getSdk from "@/lib/graphql/getSdk";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
@@ -147,6 +148,36 @@ function ProjectPage() {
     select: (data) => data?.project,
   });
 
+  const editNameSchema = z
+    .object({
+      name: z
+        .string()
+        .min(3, "Name must be at least 3 characters.")
+        .default(project?.name!),
+      currentSlug: z.string().default(project?.slug!),
+    })
+    .check(async (ctx) => {
+      const sdk = await getSdk();
+
+      const updatedSlug = generateSlug(ctx.value.name);
+
+      if (!updatedSlug?.length || updatedSlug === ctx.value.currentSlug)
+        return z.NEVER;
+
+      const { workspaceBySlug } = await sdk.WorkspaceBySlug({
+        slug: workspaceSlug,
+        projectSlug: updatedSlug,
+      });
+
+      if (workspaceBySlug?.projects.nodes.length) {
+        ctx.issues.push({
+          code: "custom",
+          message: "Project slug already exists for this workspace.",
+          input: ctx.value.name,
+        });
+      }
+    });
+
   const [projectColumnOpenStates, setProjectColumnOpenStates] = useState(
     project?.columns?.nodes?.map(() => true) ?? [],
   );
@@ -219,11 +250,15 @@ function ProjectPage() {
               defaultContent={project?.name}
               className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
               skeletonClassName="h-8 max-w-80"
-              onUpdate={({ editor }) => {
+              onUpdate={async ({ editor }) => {
                 const text = editor.getText().trim();
 
-                if (text.length < 3) {
-                  setNameError("Project name must be at least 3 characters.");
+                const result = await editNameSchema.safeParseAsync({
+                  name: text,
+                });
+
+                if (!result.success) {
+                  setNameError(result.error.issues[0].message);
                   return;
                 }
 
