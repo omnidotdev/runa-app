@@ -1,4 +1,4 @@
-export async function signIn({ redirectUrl }: { redirectUrl: string }) {
+export const signIn = async ({ redirectUrl }: { redirectUrl: string }) => {
   const { callbackUrl = redirectUrl, redirect = true } = {};
 
   const response = await fetch("/api/auth/csrf");
@@ -28,4 +28,4 @@ export async function signIn({ redirectUrl }: { redirectUrl: string }) {
   }
 
   return res;
-}
+};

@@ -6,12 +6,10 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { createServerFn } from "@tanstack/react-start";
-import { getWebRequest } from "@tanstack/react-start/server";
 
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import ClientHintCheck from "@/components/scripts/ClientHintCheck";
-import { getAuth } from "@/lib/auth/getAuth";
+import fetchSession from "@/lib/auth/fetchSession";
 import useTheme from "@/lib/hooks/useTheme";
 import { themeQueryKey } from "@/lib/options/theme.options";
 import { getRequestInfo } from "@/lib/util/requestInfo";
@@ -22,15 +20,6 @@ import type { Session } from "@auth/core/types";
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import type { Theme } from "@/lib/util/theme";
-
-const fetchSession = createServerFn().handler(async () => {
-  const request = getWebRequest();
-  const session = await getAuth(request);
-
-  return {
-    session,
-  };
-});
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
