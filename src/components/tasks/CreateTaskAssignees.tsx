@@ -15,17 +15,24 @@ import {
 } from "@/components/ui/select";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 
 const CreateTaskAssignees = withForm({
   defaultValues: taskFormDefaults,
   render: ({ form }) => {
-    const { workspaceId } = useParams({ strict: false });
+    const { workspaceSlug } = useParams({ strict: false });
+
+    const { data: workspace } = useQuery({
+      ...workspaceBySlugOptions({ slug: workspaceSlug! }),
+      enabled: !!workspaceSlug,
+      select: (data) => data?.workspaceBySlug,
+    });
 
     const { data: users } = useQuery({
-      ...workspaceUsersOptions({ rowId: workspaceId! }),
-      enabled: !!workspaceId,
+      ...workspaceUsersOptions({ rowId: workspace?.rowId! }),
+      enabled: !!workspace?.rowId,
       select: (data) =>
         data?.workspaceUsers?.nodes.flatMap((user) => user.user),
     });

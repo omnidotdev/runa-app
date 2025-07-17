@@ -1,6 +1,6 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useLoaderData, useNavigate, useParams } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 
@@ -43,8 +43,12 @@ const TasksList = ({
 }: TasksListProps) => {
   const navigate = useNavigate();
 
-  const { workspaceId, projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  const { workspaceSlug, projectSlug } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+  });
+
+  const { projectId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { draggableId } = useDragStore();
@@ -122,10 +126,10 @@ const TasksList = ({
                     onClick={() => {
                       if (!snapshot.isDragging) {
                         navigate({
-                          to: "/workspaces/$workspaceId/projects/$projectId/$taskId",
+                          to: "/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
                           params: {
-                            workspaceId,
-                            projectId,
+                            workspaceSlug,
+                            projectSlug,
                             taskId: task.rowId,
                           },
                         });

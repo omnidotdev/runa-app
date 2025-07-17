@@ -58,6 +58,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTheme from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import { cn } from "@/lib/utils";
@@ -66,7 +67,7 @@ import type { ComponentProps } from "react";
 
 export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const { session } = useRouteContext({ strict: false });
-  const { workspaceId } = useParams({ strict: false });
+  const { workspaceSlug } = useParams({ strict: false });
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<{
     rowId: string;
@@ -82,14 +83,20 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
 
   useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
 
+  const { data: workspaceBySlug } = useQuery({
+    ...workspaceBySlugOptions({ slug: workspaceSlug! }),
+    enabled: !!workspaceSlug,
+    select: (data) => data.workspaceBySlug,
+  });
+
   const { data: workspaces } = useQuery({
     ...workspacesOptions({ userId: session?.user.rowId! }),
     select: (data) => data.workspaces?.nodes,
   });
 
   const { data: workspace } = useQuery({
-    ...workspaceOptions({ rowId: workspaceId! }),
-    enabled: !!workspaceId,
+    ...workspaceOptions({ rowId: workspaceBySlug?.rowId! }),
+    enabled: !!workspaceBySlug?.rowId,
     select: (data) => data.workspace,
   });
 
@@ -99,14 +106,14 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
     meta: {
       invalidates: [
         ["Projects"],
-        workspaceOptions({ rowId: workspaceId! }).queryKey,
+        workspaceOptions({ rowId: workspace?.rowId! }).queryKey,
       ],
     },
   });
 
   const { mutate: updateViewMode } = useUpdateProjectMutation({
     meta: {
-      invalidates: [workspaceOptions({ rowId: workspaceId! }).queryKey],
+      invalidates: [workspaceOptions({ rowId: workspace?.rowId! }).queryKey],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(
@@ -175,8 +182,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                         key={workspace?.rowId}
                         onClick={() => {
                           navigate({
-                            to: "/workspaces/$workspaceId/projects",
-                            params: { workspaceId: workspace.rowId },
+                            to: "/workspaces/$workspaceSlug/projects",
+                            params: { workspaceSlug: workspace.slug },
                           });
                         }}
                         className="cursor-pointer gap-2 p-2"
@@ -218,13 +225,13 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               </Tooltip>
             </div>
 
-            {workspaceId && (
+            {workspaceSlug && (
               <SidebarMenu className="gap-2">
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Workspace Settings">
                     <Link
-                      to="/workspaces/$workspaceId/settings"
-                      params={{ workspaceId: workspaceId }}
+                      to="/workspaces/$workspaceSlug/settings"
+                      params={{ workspaceSlug }}
                       variant="ghost"
                       activeProps={{
                         variant: "outline",
@@ -240,7 +247,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             )}
           </SidebarGroup>
 
-          {workspaceId && (
+          {workspaceSlug && (
             <SidebarGroup>
               <div className="flex items-center justify-between">
                 <SidebarGroupLabel>Projects</SidebarGroupLabel>
@@ -270,8 +277,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Projects Overview">
                     <Link
-                      to="/workspaces/$workspaceId/projects"
-                      params={{ workspaceId: workspaceId }}
+                      to="/workspaces/$workspaceSlug/projects"
+                      params={{ workspaceSlug }}
                       variant="ghost"
                       activeOptions={{
                         exact: true,
@@ -292,10 +299,10 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                     <SidebarMenuItem key={project?.rowId}>
                       <SidebarMenuButton asChild tooltip={project?.name}>
                         <Link
-                          to="/workspaces/$workspaceId/projects/$projectId"
+                          to="/workspaces/$workspaceSlug/projects/$projectSlug"
                           params={{
-                            workspaceId: workspaceId,
-                            projectId: project.rowId,
+                            workspaceSlug,
+                            projectSlug: project.slug,
                           }}
                           variant="ghost"
                           activeProps={{
@@ -338,10 +345,10 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                               className="flex cursor-pointer items-center gap-2"
                               onClick={() => {
                                 navigate({
-                                  to: "/workspaces/$workspaceId/projects/$projectId/settings",
+                                  to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
                                   params: {
-                                    workspaceId: workspaceId,
-                                    projectId: project.rowId,
+                                    workspaceSlug,
+                                    projectSlug: project.slug,
                                   },
                                 });
                               }}
@@ -426,10 +433,10 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                             className="flex cursor-pointer items-center gap-1"
                             onSelect={() =>
                               navigate({
-                                to: "/workspaces/$workspaceId/projects/$projectId",
+                                to: "/workspaces/$workspaceSlug/projects/$projectSlug",
                                 params: {
-                                  workspaceId: workspaceId!,
-                                  projectId: project.rowId,
+                                  workspaceSlug,
+                                  projectSlug: project.slug,
                                 },
                               })
                             }
@@ -512,8 +519,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         onConfirm={() => {
           deleteProject({ rowId: selectedProject?.rowId! });
           navigate({
-            to: "/workspaces/$workspaceId/projects",
-            params: { workspaceId: workspaceId! },
+            to: "/workspaces/$workspaceSlug/projects",
+            params: { workspaceSlug: workspaceSlug! },
           });
         }}
         dialogType={DialogType.DeleteProject}

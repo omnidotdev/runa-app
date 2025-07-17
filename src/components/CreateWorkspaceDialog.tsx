@@ -62,8 +62,8 @@ const CreateWorkspaceDialog = () => {
       });
 
       navigate({
-        to: "/workspaces/$workspaceId/projects",
-        params: { workspaceId: createWorkspace?.workspace?.rowId! },
+        to: "/workspaces/$workspaceSlug/projects",
+        params: { workspaceSlug: createWorkspace?.workspace?.slug! },
       });
     },
   });

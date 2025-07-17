@@ -13,7 +13,7 @@ import taskOptions from "@/lib/options/task.options";
 
 const TaskSidebar = () => {
   const { taskId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/$taskId",
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
   const { data: task } = useQuery({

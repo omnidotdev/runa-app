@@ -17,21 +17,26 @@ import {
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
-  loader: async ({ params: { workspaceId }, context: { queryClient } }) => {
-    const { workspace } = await queryClient.ensureQueryData(
-      workspaceOptions({ rowId: workspaceId }),
+  loader: async ({ params: { workspaceSlug }, context: { queryClient } }) => {
+    const { workspaceBySlug } = await queryClient.ensureQueryData(
+      workspaceBySlugOptions({ slug: workspaceSlug }),
     );
 
-    if (!workspace) {
+    if (!workspaceBySlug) {
       throw notFound();
     }
 
-    return { name: workspace.name };
+    await queryClient.ensureQueryData(
+      workspaceOptions({ rowId: workspaceBySlug.rowId }),
+    );
+
+    return { name: workspaceBySlug.name, workspaceId: workspaceBySlug.rowId };
   },
   head: ({ loaderData }) => ({
     meta: loaderData
@@ -44,8 +49,9 @@ export const Route = createFileRoute({
 
 function SettingsPage() {
   const { session } = Route.useRouteContext();
+  const { workspaceId } = Route.useLoaderData();
 
-  const { workspaceId } = Route.useParams();
+  const { workspaceSlug } = Route.useParams();
   const navigate = Route.useNavigate();
   const [nameError, setNameError] = useState<string | null>(null);
 
@@ -82,8 +88,8 @@ function SettingsPage() {
       <div className="mb-10 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Link
-            to="/workspaces/$workspaceId/projects"
-            params={{ workspaceId: workspaceId }}
+            to="/workspaces/$workspaceSlug/projects"
+            params={{ workspaceSlug: workspaceSlug }}
             variant="ghost"
             size="icon"
           >

@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useSearch } from "@tanstack/react-router";
+import { useLoaderData, useSearch } from "@tanstack/react-router";
 import { useCallback } from "react";
 
 import { useUpdateTaskMutation } from "@/generated/graphql";
@@ -16,12 +16,12 @@ interface HookOptions {
 const useReorderTasks = ({ callback }: HookOptions = {}) => {
   const queryClient = getQueryClient();
 
-  const { projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  const { projectId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { search, assignees, labels, priorities } = useSearch({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { setDraggableId } = useDragStore();

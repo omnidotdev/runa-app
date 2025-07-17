@@ -1,6 +1,6 @@
 import { useStore } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 
 import ColumnSelector from "@/components/core/selectors/ColumnSelector";
 import { createListCollection } from "@/components/ui/select";
@@ -11,8 +11,8 @@ import projectOptions from "@/lib/options/project.options";
 const TaskColumnForm = withForm({
   defaultValues: taskFormDefaults,
   render: ({ form }) => {
-    const { projectId } = useParams({
-      from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+    const { projectId } = useLoaderData({
+      from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
     });
 
     const { data: project } = useSuspenseQuery({

@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useNavigate, useParams, useSearch } from "@tanstack/react-router";
+import { useLoaderData, useNavigate, useSearch } from "@tanstack/react-router";
 import {
   CheckIcon,
   ChevronRight,
@@ -35,16 +35,16 @@ import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 
 const Filter = () => {
-  const { workspaceId, projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  const { workspaceId, projectId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { assignees, labels, priorities } = useSearch({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const navigate = useNavigate({
-    from: "/workspaces/$workspaceId/projects/$projectId",
+    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });
 
   const popoverButtonRef = useRef<HTMLButtonElement | null>(null);

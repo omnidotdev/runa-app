@@ -6427,7 +6427,7 @@ export type WorkspaceUserPatch = {
 
 export type LabelFragment = { __typename?: 'Label', color: string, name: string, rowId: string };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } };
 
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
@@ -6491,7 +6491,7 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject?: { __typename?: 'CreateProjectPayload', project?: { __typename?: 'Project', rowId: string, slug: string } | null } | null };
 
 export type DeleteProjectMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -6564,7 +6564,7 @@ export type CreateWorkspaceMutationVariables = Exact<{
 }>;
 
 
-export type CreateWorkspaceMutation = { __typename?: 'Mutation', createWorkspace?: { __typename?: 'CreateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string } | null } | null };
+export type CreateWorkspaceMutation = { __typename?: 'Mutation', createWorkspace?: { __typename?: 'CreateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string, slug: string } | null } | null };
 
 export type DeleteWorkspaceMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -6601,7 +6601,7 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } | null };
 
 export type TaskQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -6648,7 +6648,15 @@ export type WorkspaceQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, viewMode: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, color?: string | null, viewMode: string, prefix?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> }, workspaceUsers: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', userId: string }> } } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, viewMode: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, viewMode: string, prefix?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> }, workspaceUsers: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', userId: string }> } } | null };
+
+export type WorkspaceBySlugQueryVariables = Exact<{
+  slug: Scalars['String']['input'];
+  projectSlug?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type WorkspaceBySlugQuery = { __typename?: 'Query', workspaceBySlug?: { __typename?: 'Workspace', name: string, rowId: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string }> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -6656,7 +6664,7 @@ export type WorkspacesQueryVariables = Exact<{
 }>;
 
 
-export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } }> } | null };
+export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, slug: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } }> } | null };
 
 
 export const LabelFragmentDoc = `
@@ -6670,6 +6678,7 @@ export const ProjectFragmentDoc = `
     fragment Project on Project {
   rowId
   name
+  slug
   description
   status
   color
@@ -6915,6 +6924,7 @@ export const CreateProjectDocument = `
   createProject(input: $input) {
     project {
       rowId
+      slug
     }
   }
 }
@@ -7189,6 +7199,7 @@ export const CreateWorkspaceDocument = `
   createWorkspace(input: $input) {
     workspace {
       rowId
+      slug
     }
   }
 }
@@ -7801,6 +7812,7 @@ export const WorkspaceDocument = `
       nodes {
         rowId
         name
+        slug
         color
         viewMode
         prefix
@@ -7870,6 +7882,63 @@ useInfiniteWorkspaceQuery.getKey = (variables: WorkspaceQueryVariables) => ['Wor
 
 useWorkspaceQuery.fetcher = (variables: WorkspaceQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceQuery, WorkspaceQueryVariables>(WorkspaceDocument, variables, options);
 
+export const WorkspaceBySlugDocument = `
+    query WorkspaceBySlug($slug: String!, $projectSlug: String) {
+  workspaceBySlug(slug: $slug) {
+    name
+    rowId
+    projects(condition: {slug: $projectSlug}) {
+      nodes {
+        name
+        rowId
+      }
+    }
+  }
+}
+    `;
+
+export const useWorkspaceBySlugQuery = <
+      TData = WorkspaceBySlugQuery,
+      TError = unknown
+    >(
+      variables: WorkspaceBySlugQueryVariables,
+      options?: Omit<UseQueryOptions<WorkspaceBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<WorkspaceBySlugQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<WorkspaceBySlugQuery, TError, TData>(
+      {
+    queryKey: ['WorkspaceBySlug', variables],
+    queryFn: graphqlFetch<WorkspaceBySlugQuery, WorkspaceBySlugQueryVariables>(WorkspaceBySlugDocument, variables),
+    ...options
+  }
+    )};
+
+useWorkspaceBySlugQuery.getKey = (variables: WorkspaceBySlugQueryVariables) => ['WorkspaceBySlug', variables];
+
+export const useInfiniteWorkspaceBySlugQuery = <
+      TData = InfiniteData<WorkspaceBySlugQuery>,
+      TError = unknown
+    >(
+      variables: WorkspaceBySlugQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<WorkspaceBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<WorkspaceBySlugQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<WorkspaceBySlugQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['WorkspaceBySlug.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<WorkspaceBySlugQuery, WorkspaceBySlugQueryVariables>(WorkspaceBySlugDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteWorkspaceBySlugQuery.getKey = (variables: WorkspaceBySlugQueryVariables) => ['WorkspaceBySlug.infinite', variables];
+
+
+useWorkspaceBySlugQuery.fetcher = (variables: WorkspaceBySlugQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceBySlugQuery, WorkspaceBySlugQueryVariables>(WorkspaceBySlugDocument, variables, options);
+
 export const WorkspacesDocument = `
     query Workspaces($userId: UUID!, $limit: Int) {
   workspaces(
@@ -7880,6 +7949,7 @@ export const WorkspacesDocument = `
     nodes {
       rowId
       name
+      slug
       workspaceUsers {
         totalCount
       }

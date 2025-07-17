@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
+  useLoaderData,
   useNavigate,
-  useParams,
   useRouteContext,
   useSearch,
 } from "@tanstack/react-router";
@@ -50,20 +50,20 @@ interface Props {
 }
 
 const CreateTaskDialog = ({ columnId }: Props) => {
-  const { projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  const { projectId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { createTask } = useSearch({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const navigate = useNavigate({
-    from: "/workspaces/$workspaceId/projects/$projectId",
+    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });
 
   const titleRef = useRef<HTMLInputElement>(null);

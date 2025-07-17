@@ -7,6 +7,7 @@ query Workspaces($userId: UUID!, $limit: Int) {
     nodes {
       rowId
       name
+      slug
       workspaceUsers {
         totalCount
       }

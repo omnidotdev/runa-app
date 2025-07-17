@@ -11,21 +11,32 @@ import ProjectLabelsForm from "@/components/projects/ProjectLabelsForm";
 import { useUpdateProjectMutation } from "@/generated/graphql";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
-  loader: async ({ params: { projectId }, context: { queryClient } }) => {
-    const [{ project }] = await Promise.all([
+  loader: async ({
+    params: { workspaceSlug, projectSlug },
+    context: { queryClient },
+  }) => {
+    const { workspaceBySlug } = await queryClient.ensureQueryData(
+      workspaceBySlugOptions({ slug: workspaceSlug, projectSlug }),
+    );
+
+    if (!workspaceBySlug || !workspaceBySlug.projects.nodes.length) {
+      throw notFound();
+    }
+
+    const projectId = workspaceBySlug.projects.nodes[0].rowId;
+    const projectName = workspaceBySlug.projects.nodes[0].name;
+
+    await Promise.all([
       queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
       queryClient.ensureQueryData(labelsOptions({ projectId })),
     ]);
 
-    if (!project) {
-      throw notFound();
-    }
-
-    return { name: project.name };
+    return { name: projectName, projectId };
   },
   head: ({ loaderData }) => ({
     meta: loaderData
@@ -37,7 +48,9 @@ export const Route = createFileRoute({
 });
 
 function RouteComponent() {
-  const { workspaceId, projectId } = Route.useParams();
+  const { workspaceSlug, projectSlug } = Route.useParams();
+
+  const { projectId } = Route.useLoaderData();
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
@@ -60,8 +73,8 @@ function RouteComponent() {
       <div className="mb-10 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Link
-            to="/workspaces/$workspaceId/projects/$projectId"
-            params={{ workspaceId: workspaceId, projectId: projectId }}
+            to="/workspaces/$workspaceSlug/projects/$projectSlug"
+            params={{ workspaceSlug, projectSlug }}
             variant="ghost"
             size="icon"
           >

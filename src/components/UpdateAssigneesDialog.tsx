@@ -24,10 +24,21 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 
 const UpdateAssigneesDialog = () => {
-  const { projectId, taskId: paramsTaskId } = useParams({
+  const {
+    workspaceSlug,
+    projectSlug,
+    taskId: paramsTaskId,
+  } = useParams({
     strict: false,
+  });
+
+  const { data: workspace } = useQuery({
+    ...workspaceBySlugOptions({ slug: workspaceSlug!, projectSlug }),
+    enabled: !!workspaceSlug,
+    select: (data) => data?.workspaceBySlug,
   });
 
   const { taskId: storeTaskId, setTaskId } = useTaskStore();
@@ -57,7 +68,8 @@ const UpdateAssigneesDialog = () => {
     meta: {
       invalidates: [
         taskOptions({ rowId: taskId! }).queryKey,
-        projectOptions({ rowId: projectId! }).queryKey,
+        projectOptions({ rowId: workspace?.projects?.nodes?.[0].rowId! })
+          .queryKey,
       ],
     },
   });
@@ -65,7 +77,8 @@ const UpdateAssigneesDialog = () => {
     meta: {
       invalidates: [
         taskOptions({ rowId: taskId! }).queryKey,
-        projectOptions({ rowId: projectId! }).queryKey,
+        projectOptions({ rowId: workspace?.projects?.nodes?.[0].rowId! })
+          .queryKey,
       ],
     },
   });

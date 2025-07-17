@@ -34,6 +34,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
@@ -58,14 +59,27 @@ export const Route = createFileRoute({
   }),
   loader: async ({
     deps: { search, assignees, labels, priorities },
-    params: { projectId, workspaceId },
+    params: { projectSlug, workspaceSlug },
     context: { queryClient },
   }) => {
-    const [{ project }] = await Promise.all([
+    const { workspaceBySlug } = await queryClient.ensureQueryData(
+      workspaceBySlugOptions({ slug: workspaceSlug, projectSlug }),
+    );
+
+    if (!workspaceBySlug || !workspaceBySlug.projects.nodes.length) {
+      throw notFound();
+    }
+
+    const projectId = workspaceBySlug.projects.nodes[0].rowId;
+    const projectName = workspaceBySlug.projects.nodes[0].name;
+
+    await Promise.all([
       queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
-      queryClient.ensureQueryData(workspaceOptions({ rowId: workspaceId })),
       queryClient.ensureQueryData(
-        workspaceUsersOptions({ rowId: workspaceId }),
+        workspaceOptions({ rowId: workspaceBySlug.rowId }),
+      ),
+      queryClient.ensureQueryData(
+        workspaceUsersOptions({ rowId: workspaceBySlug.rowId }),
       ),
       queryClient.ensureQueryData(
         tasksOptions({
@@ -82,11 +96,7 @@ export const Route = createFileRoute({
       ),
     ]);
 
-    if (!project) {
-      throw notFound();
-    }
-
-    return { name: project.name };
+    return { name: projectName, projectId, workspaceId: workspaceBySlug.rowId };
   },
   validateSearch: zodValidator(projectSearchParamsSchema),
   search: {
@@ -108,7 +118,8 @@ export const Route = createFileRoute({
 });
 
 function ProjectPage() {
-  const { projectId, workspaceId } = Route.useParams();
+  const { projectSlug, workspaceSlug } = Route.useParams();
+  const { projectId, workspaceId } = Route.useLoaderData();
   const { search } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
@@ -289,10 +300,10 @@ function ProjectPage() {
                 }}
               >
                 <Link
-                  to="/workspaces/$workspaceId/projects/$projectId/settings"
+                  to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
                   params={{
-                    workspaceId,
-                    projectId,
+                    workspaceSlug,
+                    projectSlug,
                   }}
                   variant="outline"
                   size="icon"

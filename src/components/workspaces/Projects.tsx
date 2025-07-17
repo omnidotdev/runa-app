@@ -1,5 +1,10 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Link, useNavigate, useParams } from "@tanstack/react-router";
+import {
+  Link,
+  useLoaderData,
+  useNavigate,
+  useParams,
+} from "@tanstack/react-router";
 import {
   BoxIcon,
   Plus,
@@ -20,8 +25,12 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 const Projects = () => {
-  const { workspaceId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/settings",
+  const { workspaceSlug } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
+  });
+
+  const { workspaceId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
   const [selectedProject, setSelectedProject] = useState<{
@@ -127,10 +136,10 @@ const Projects = () => {
 
                             <Tooltip tooltip="View project">
                               <Link
-                                to="/workspaces/$workspaceId/projects/$projectId"
+                                to="/workspaces/$workspaceSlug/projects/$projectSlug"
                                 params={{
-                                  workspaceId: workspaceId,
-                                  projectId: project.rowId,
+                                  workspaceSlug,
+                                  projectSlug: project.slug,
                                 }}
                                 className={buttonVariants({
                                   variant: "ghost",
@@ -144,10 +153,10 @@ const Projects = () => {
 
                             <Tooltip tooltip="Project settings">
                               <Link
-                                to="/workspaces/$workspaceId/projects/$projectId/settings"
+                                to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
                                 params={{
-                                  workspaceId: workspaceId,
-                                  projectId: project.rowId,
+                                  workspaceSlug,
+                                  projectSlug: project.slug,
                                 }}
                                 className={buttonVariants({
                                   variant: "ghost",
@@ -166,10 +175,10 @@ const Projects = () => {
                                 className="h-7 w-7 p-1 text-base-400"
                                 onClick={() => {
                                   navigate({
-                                    to: "/workspaces/$workspaceId/projects/$projectId",
+                                    to: "/workspaces/$workspaceSlug/projects/$projectSlug",
                                     params: {
-                                      workspaceId: workspaceId,
-                                      projectId: project.rowId,
+                                      workspaceSlug,
+                                      projectSlug: project.slug,
                                     },
                                     search: {
                                       createTask: true,

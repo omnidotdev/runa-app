@@ -40,6 +40,7 @@ import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 
@@ -59,19 +60,22 @@ export const Route = createFileRoute({
   loaderDeps: ({ search: { search } }) => ({ search }),
   loader: async ({
     deps: { search },
-    params: { workspaceId },
+    params: { workspaceSlug },
     context: { queryClient },
   }) => {
-    const [{ workspace }] = await Promise.all([
-      queryClient.ensureQueryData(workspaceOptions({ rowId: workspaceId })),
-      queryClient.ensureQueryData(projectsOptions({ workspaceId, search })),
-    ]);
+    const { workspaceBySlug } = await queryClient.ensureQueryData(
+      workspaceBySlugOptions({ slug: workspaceSlug }),
+    );
 
-    if (!workspace) {
+    if (!workspaceBySlug) {
       throw notFound();
     }
 
-    return { name: workspace.name };
+    await queryClient.ensureQueryData(
+      projectsOptions({ workspaceId: workspaceBySlug.rowId, search }),
+    );
+
+    return { name: workspaceBySlug.name, workspaceId: workspaceBySlug.rowId };
   },
   head: ({ loaderData }) => ({
     meta: loaderData
@@ -83,7 +87,7 @@ export const Route = createFileRoute({
 });
 
 function ProjectsOverviewPage() {
-  const { workspaceId } = Route.useParams();
+  const { workspaceId } = Route.useLoaderData();
   const { search } = Route.useSearch();
   const navigate = Route.useNavigate();
   const { queryClient } = Route.useRouteContext();
@@ -585,7 +589,7 @@ function ProjectCard({
   project: ProjectFragment;
   status: ProjectStatus;
 }) {
-  const { workspaceId } = Route.useParams();
+  const { workspaceSlug } = Route.useParams();
   const navigate = Route.useNavigate();
 
   const completedTasks = project.columns?.nodes?.reduce(
@@ -603,10 +607,10 @@ function ProjectCard({
     <div
       onClick={() =>
         navigate({
-          to: "/workspaces/$workspaceId/projects/$projectId",
+          to: "/workspaces/$workspaceSlug/projects/$projectSlug",
           params: {
-            workspaceId,
-            projectId: project.rowId,
+            workspaceSlug,
+            projectSlug: project.slug,
           },
         })
       }
@@ -653,7 +657,7 @@ function ProjectListItem({
   status: ProjectStatus;
 }) {
   const navigate = Route.useNavigate();
-  const { workspaceId } = Route.useParams();
+  const { workspaceSlug } = Route.useParams();
 
   const completedTasks = project.columns?.nodes?.reduce(
     (acc, col) => acc + (col?.completedTasks.totalCount || 0),
@@ -671,10 +675,10 @@ function ProjectListItem({
       className="cursor-pointer border-base-200 border-b bg-card p-4 last:border-b-0 dark:border-base-700"
       onClick={() =>
         navigate({
-          to: "/workspaces/$workspaceId/projects/$projectId",
+          to: "/workspaces/$workspaceSlug/projects/$projectSlug",
           params: {
-            workspaceId,
-            projectId: project.rowId,
+            workspaceSlug,
+            projectSlug: project.slug,
           },
         })
       }

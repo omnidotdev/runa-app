@@ -49,8 +49,8 @@ function WorkspacesOverviewPage() {
             {recentWorkspaces?.map((workspace) => (
               <Link
                 key={workspace.rowId}
-                to="/workspaces/$workspaceId/projects"
-                params={{ workspaceId: workspace.rowId }}
+                to="/workspaces/$workspaceSlug/projects"
+                params={{ workspaceSlug: workspace.slug }}
                 variant="ghost"
                 className="h-fit overflow-hidden p-0 transition-transform hover:scale-[1.02] hover:bg-transparent"
               >

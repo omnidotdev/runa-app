@@ -7,6 +7,7 @@ query Workspace($rowId: UUID!, $userFilter: WorkspaceUserFilter) {
       nodes {
         rowId
         name
+        slug
         color
         viewMode
         prefix

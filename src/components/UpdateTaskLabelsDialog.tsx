@@ -25,13 +25,24 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 
 const UpdateTaskLabelsDialog = () => {
   const queryClient = getQueryClient();
 
-  const { projectId, taskId: paramsTaskId } = useParams({
+  const {
+    workspaceSlug,
+    projectSlug,
+    taskId: paramsTaskId,
+  } = useParams({
     strict: false,
+  });
+
+  const { data: workspace } = useQuery({
+    ...workspaceBySlugOptions({ slug: workspaceSlug!, projectSlug }),
+    enabled: !!workspaceSlug,
+    select: (data) => data?.workspaceBySlug,
   });
 
   const { taskId: storeTaskId, setTaskId } = useTaskStore();
@@ -54,7 +65,7 @@ const UpdateTaskLabelsDialog = () => {
   });
 
   const { data: project } = useSuspenseQuery({
-    ...projectOptions({ rowId: projectId! }),
+    ...projectOptions({ rowId: workspace?.projects?.nodes?.[0].rowId! }),
     select: (data) => data?.project,
   });
 
@@ -89,7 +100,7 @@ const UpdateTaskLabelsDialog = () => {
               label: {
                 name: label.name,
                 color: label.color,
-                projectId: projectId!,
+                projectId: project?.rowId!,
               },
             },
           }),

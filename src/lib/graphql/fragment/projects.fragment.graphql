@@ -1,6 +1,7 @@
 fragment Project on Project {
   rowId
   name
+  slug
   description
   status
   color

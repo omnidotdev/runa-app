@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -15,8 +15,8 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 
 const Team = () => {
-  const { workspaceId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/settings",
+  const { workspaceId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
   const [selectedMember, setSelectedMember] = useState<{

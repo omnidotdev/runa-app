@@ -32,6 +32,7 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import seo from "@/lib/util/seo";
 
@@ -39,19 +40,32 @@ import type { EditorApi } from "@/components/core/RichTextEditor";
 
 export const Route = createFileRoute({
   loader: async ({
-    params: { workspaceId, taskId },
+    params: { workspaceSlug, projectSlug, taskId },
     context: { queryClient },
   }) => {
+    const { workspaceBySlug } = await queryClient.ensureQueryData(
+      workspaceBySlugOptions({ slug: workspaceSlug, projectSlug }),
+    );
+
+    if (!workspaceBySlug) {
+      throw notFound();
+    }
+
     const [{ task }] = await Promise.all([
       queryClient.ensureQueryData(taskOptions({ rowId: taskId })),
       queryClient.ensureQueryData(
-        workspaceUsersOptions({ rowId: workspaceId }),
+        workspaceUsersOptions({ rowId: workspaceBySlug.rowId }),
       ),
     ]);
 
     if (!task) {
       throw notFound();
     }
+
+    return {
+      workspaceId: workspaceBySlug.rowId,
+      projectId: workspaceBySlug.projects?.nodes?.[0]?.rowId!,
+    };
   },
   head: () => ({
     meta: [...seo({ title: "Task" })],
@@ -62,7 +76,8 @@ export const Route = createFileRoute({
 
 function TaskPage() {
   const { session } = Route.useRouteContext();
-  const { workspaceId, projectId, taskId } = Route.useParams();
+  const { projectId } = Route.useLoaderData();
+  const { workspaceSlug, projectSlug, taskId } = Route.useParams();
   const matches = useMediaQuery("(min-width: 1024px)");
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
 
@@ -139,10 +154,10 @@ function TaskPage() {
           {/* Header */}
           <div className="flex items-center gap-3">
             <Link
-              to="/workspaces/$workspaceId/projects/$projectId"
+              to="/workspaces/$workspaceSlug/projects/$projectSlug"
               params={{
-                workspaceId,
-                projectId,
+                workspaceSlug,
+                projectSlug,
               }}
               variant="ghost"
               size="icon"

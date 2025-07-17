@@ -1,5 +1,5 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { PlusIcon } from "lucide-react";
@@ -60,13 +60,13 @@ const sendInviteEmail = createServerFn({ method: "POST", response: "raw" })
   });
 
 const InviteMemberDialog = () => {
-  const { workspaceId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/settings",
+  const { workspaceId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
   });
   const emailRef = useRef<HTMLInputElement>(null);
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceId/settings",
+    from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
   const {

@@ -21,11 +21,11 @@ import { Route as AnonRouteImport } from './routes/_anon'
 import { Route as AnonIndexRouteImport } from './routes/_anon/index'
 import { Route as AnonPricingRouteImport } from './routes/_anon/pricing'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
-import { Route as AuthWorkspacesWorkspaceIdSettingsRouteImport } from './routes/_auth/workspaces/$workspaceId/settings'
-import { Route as AuthWorkspacesWorkspaceIdProjectsIndexRouteImport } from './routes/_auth/workspaces/$workspaceId/projects/index'
-import { Route as AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRouteImport } from './routes/_auth/workspaces/$workspaceId/projects/$projectId/index'
-import { Route as AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRouteImport } from './routes/_auth/workspaces/$workspaceId/projects/$projectId/settings'
-import { Route as AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRouteImport } from './routes/_auth/workspaces/$workspaceId/projects/$projectId/$taskId'
+import { Route as AuthWorkspacesWorkspaceSlugSettingsRouteImport } from './routes/_auth/workspaces/$workspaceSlug/settings'
+import { Route as AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/index'
+import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/index'
+import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
 import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
 
 const rootServerRouteImport = createServerRootRoute()
@@ -53,34 +53,34 @@ const AuthWorkspacesIndexRoute = AuthWorkspacesIndexRouteImport.update({
   path: '/workspaces/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthWorkspacesWorkspaceIdSettingsRoute =
-  AuthWorkspacesWorkspaceIdSettingsRouteImport.update({
-    id: '/workspaces/$workspaceId/settings',
-    path: '/workspaces/$workspaceId/settings',
+const AuthWorkspacesWorkspaceSlugSettingsRoute =
+  AuthWorkspacesWorkspaceSlugSettingsRouteImport.update({
+    id: '/workspaces/$workspaceSlug/settings',
+    path: '/workspaces/$workspaceSlug/settings',
     getParentRoute: () => AuthRoute,
   } as any)
-const AuthWorkspacesWorkspaceIdProjectsIndexRoute =
-  AuthWorkspacesWorkspaceIdProjectsIndexRouteImport.update({
-    id: '/workspaces/$workspaceId/projects/',
-    path: '/workspaces/$workspaceId/projects/',
+const AuthWorkspacesWorkspaceSlugProjectsIndexRoute =
+  AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport.update({
+    id: '/workspaces/$workspaceSlug/projects/',
+    path: '/workspaces/$workspaceSlug/projects/',
     getParentRoute: () => AuthRoute,
   } as any)
-const AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute =
-  AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRouteImport.update({
-    id: '/workspaces/$workspaceId/projects/$projectId/',
-    path: '/workspaces/$workspaceId/projects/$projectId/',
+const AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute =
+  AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport.update({
+    id: '/workspaces/$workspaceSlug/projects/$projectSlug/',
+    path: '/workspaces/$workspaceSlug/projects/$projectSlug/',
     getParentRoute: () => AuthRoute,
   } as any)
-const AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRoute =
-  AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRouteImport.update({
-    id: '/workspaces/$workspaceId/projects/$projectId/settings',
-    path: '/workspaces/$workspaceId/projects/$projectId/settings',
+const AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute =
+  AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport.update({
+    id: '/workspaces/$workspaceSlug/projects/$projectSlug/settings',
+    path: '/workspaces/$workspaceSlug/projects/$projectSlug/settings',
     getParentRoute: () => AuthRoute,
   } as any)
-const AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute =
-  AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRouteImport.update({
-    id: '/workspaces/$workspaceId/projects/$projectId/$taskId',
-    path: '/workspaces/$workspaceId/projects/$projectId/$taskId',
+const AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute =
+  AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport.update({
+    id: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId',
+    path: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId',
     getParentRoute: () => AuthRoute,
   } as any)
 const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
@@ -93,21 +93,21 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof AnonPricingRoute
   '/': typeof AnonIndexRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
-  '/workspaces/$workspaceId/settings': typeof AuthWorkspacesWorkspaceIdSettingsRoute
-  '/workspaces/$workspaceId/projects': typeof AuthWorkspacesWorkspaceIdProjectsIndexRoute
-  '/workspaces/$workspaceId/projects/$projectId/$taskId': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute
-  '/workspaces/$workspaceId/projects/$projectId/settings': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRoute
-  '/workspaces/$workspaceId/projects/$projectId': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute
+  '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
+  '/workspaces/$workspaceSlug/projects': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/pricing': typeof AnonPricingRoute
   '/': typeof AnonIndexRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
-  '/workspaces/$workspaceId/settings': typeof AuthWorkspacesWorkspaceIdSettingsRoute
-  '/workspaces/$workspaceId/projects': typeof AuthWorkspacesWorkspaceIdProjectsIndexRoute
-  '/workspaces/$workspaceId/projects/$projectId/$taskId': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute
-  '/workspaces/$workspaceId/projects/$projectId/settings': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRoute
-  '/workspaces/$workspaceId/projects/$projectId': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute
+  '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
+  '/workspaces/$workspaceSlug/projects': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,11 +116,11 @@ export interface FileRoutesById {
   '/_anon/pricing': typeof AnonPricingRoute
   '/_anon/': typeof AnonIndexRoute
   '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
-  '/_auth/workspaces/$workspaceId/settings': typeof AuthWorkspacesWorkspaceIdSettingsRoute
-  '/_auth/workspaces/$workspaceId/projects/': typeof AuthWorkspacesWorkspaceIdProjectsIndexRoute
-  '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute
-  '/_auth/workspaces/$workspaceId/projects/$projectId/settings': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRoute
-  '/_auth/workspaces/$workspaceId/projects/$projectId/': typeof AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute
+  '/_auth/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
+  '/_auth/workspaces/$workspaceSlug/projects/': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
+  '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
+  '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
+  '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -128,21 +128,21 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/'
     | '/workspaces'
-    | '/workspaces/$workspaceId/settings'
-    | '/workspaces/$workspaceId/projects'
-    | '/workspaces/$workspaceId/projects/$projectId/$taskId'
-    | '/workspaces/$workspaceId/projects/$projectId/settings'
-    | '/workspaces/$workspaceId/projects/$projectId'
+    | '/workspaces/$workspaceSlug/settings'
+    | '/workspaces/$workspaceSlug/projects'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/pricing'
     | '/'
     | '/workspaces'
-    | '/workspaces/$workspaceId/settings'
-    | '/workspaces/$workspaceId/projects'
-    | '/workspaces/$workspaceId/projects/$projectId/$taskId'
-    | '/workspaces/$workspaceId/projects/$projectId/settings'
-    | '/workspaces/$workspaceId/projects/$projectId'
+    | '/workspaces/$workspaceSlug/settings'
+    | '/workspaces/$workspaceSlug/projects'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug'
   id:
     | '__root__'
     | '/_anon'
@@ -150,11 +150,11 @@ export interface FileRouteTypes {
     | '/_anon/pricing'
     | '/_anon/'
     | '/_auth/workspaces/'
-    | '/_auth/workspaces/$workspaceId/settings'
-    | '/_auth/workspaces/$workspaceId/projects/'
-    | '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId'
-    | '/_auth/workspaces/$workspaceId/projects/$projectId/settings'
-    | '/_auth/workspaces/$workspaceId/projects/$projectId/'
+    | '/_auth/workspaces/$workspaceSlug/settings'
+    | '/_auth/workspaces/$workspaceSlug/projects/'
+    | '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
+    | '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+    | '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -227,39 +227,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthWorkspacesIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/workspaces/$workspaceId/settings': {
-      id: '/_auth/workspaces/$workspaceId/settings'
-      path: '/workspaces/$workspaceId/settings'
-      fullPath: '/workspaces/$workspaceId/settings'
-      preLoaderRoute: typeof AuthWorkspacesWorkspaceIdSettingsRouteImport
+    '/_auth/workspaces/$workspaceSlug/settings': {
+      id: '/_auth/workspaces/$workspaceSlug/settings'
+      path: '/workspaces/$workspaceSlug/settings'
+      fullPath: '/workspaces/$workspaceSlug/settings'
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugSettingsRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/workspaces/$workspaceId/projects/': {
-      id: '/_auth/workspaces/$workspaceId/projects/'
-      path: '/workspaces/$workspaceId/projects'
-      fullPath: '/workspaces/$workspaceId/projects'
-      preLoaderRoute: typeof AuthWorkspacesWorkspaceIdProjectsIndexRouteImport
+    '/_auth/workspaces/$workspaceSlug/projects/': {
+      id: '/_auth/workspaces/$workspaceSlug/projects/'
+      path: '/workspaces/$workspaceSlug/projects'
+      fullPath: '/workspaces/$workspaceSlug/projects'
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId': {
-      id: '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId'
-      path: '/workspaces/$workspaceId/projects/$projectId/$taskId'
-      fullPath: '/workspaces/$workspaceId/projects/$projectId/$taskId'
-      preLoaderRoute: typeof AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRouteImport
+    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': {
+      id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
+      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/workspaces/$workspaceId/projects/$projectId/settings': {
-      id: '/_auth/workspaces/$workspaceId/projects/$projectId/settings'
-      path: '/workspaces/$workspaceId/projects/$projectId/settings'
-      fullPath: '/workspaces/$workspaceId/projects/$projectId/settings'
-      preLoaderRoute: typeof AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRouteImport
+    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings': {
+      id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/workspaces/$workspaceId/projects/$projectId/': {
-      id: '/_auth/workspaces/$workspaceId/projects/$projectId/'
-      path: '/workspaces/$workspaceId/projects/$projectId'
-      fullPath: '/workspaces/$workspaceId/projects/$projectId'
-      preLoaderRoute: typeof AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRouteImport
+    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/': {
+      id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug'
+      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug'
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport
       parentRoute: typeof AuthRoute
     }
   }
@@ -308,38 +308,38 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: unknown
       parentRoute: typeof rootServerRouteImport
     }
-    '/_auth/workspaces/$workspaceId/settings': {
-      id: '/_auth/workspaces/$workspaceId/settings'
-      path: '/workspaces/$workspaceId/settings'
-      fullPath: '/workspaces/$workspaceId/settings'
+    '/_auth/workspaces/$workspaceSlug/settings': {
+      id: '/_auth/workspaces/$workspaceSlug/settings'
+      path: '/workspaces/$workspaceSlug/settings'
+      fullPath: '/workspaces/$workspaceSlug/settings'
       preLoaderRoute: unknown
       parentRoute: typeof rootServerRouteImport
     }
-    '/_auth/workspaces/$workspaceId/projects/': {
-      id: '/_auth/workspaces/$workspaceId/projects/'
-      path: '/workspaces/$workspaceId/projects'
-      fullPath: '/workspaces/$workspaceId/projects'
+    '/_auth/workspaces/$workspaceSlug/projects/': {
+      id: '/_auth/workspaces/$workspaceSlug/projects/'
+      path: '/workspaces/$workspaceSlug/projects'
+      fullPath: '/workspaces/$workspaceSlug/projects'
       preLoaderRoute: unknown
       parentRoute: typeof rootServerRouteImport
     }
-    '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId': {
-      id: '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId'
-      path: '/workspaces/$workspaceId/projects/$projectId/$taskId'
-      fullPath: '/workspaces/$workspaceId/projects/$projectId/$taskId'
+    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': {
+      id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
+      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
       preLoaderRoute: unknown
       parentRoute: typeof rootServerRouteImport
     }
-    '/_auth/workspaces/$workspaceId/projects/$projectId/settings': {
-      id: '/_auth/workspaces/$workspaceId/projects/$projectId/settings'
-      path: '/workspaces/$workspaceId/projects/$projectId/settings'
-      fullPath: '/workspaces/$workspaceId/projects/$projectId/settings'
+    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings': {
+      id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
+      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
       preLoaderRoute: unknown
       parentRoute: typeof rootServerRouteImport
     }
-    '/_auth/workspaces/$workspaceId/projects/$projectId/': {
-      id: '/_auth/workspaces/$workspaceId/projects/$projectId/'
-      path: '/workspaces/$workspaceId/projects/$projectId'
-      fullPath: '/workspaces/$workspaceId/projects/$projectId'
+    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/': {
+      id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug'
+      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug'
       preLoaderRoute: unknown
       parentRoute: typeof rootServerRouteImport
     }
@@ -448,88 +448,88 @@ declare module './routes/_auth/workspaces/index' {
     unknown
   >
 }
-declare module './routes/_auth/workspaces/$workspaceId/settings' {
+declare module './routes/_auth/workspaces/$workspaceSlug/settings' {
   const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/$workspaceId/settings',
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/settings']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/settings']['id'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/settings']['path'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/settings']['fullPath']
+    '/_auth/workspaces/$workspaceSlug/settings',
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['parentRoute'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['id'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['path'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['fullPath']
   >
 
   const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/settings']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/settings']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/settings']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/settings']['fullPath'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['id'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['path'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['fullPath'],
     unknown
   >
 }
-declare module './routes/_auth/workspaces/$workspaceId/projects/index' {
+declare module './routes/_auth/workspaces/$workspaceSlug/projects/index' {
   const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/$workspaceId/projects/',
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['id'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['path'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['fullPath']
+    '/_auth/workspaces/$workspaceSlug/projects/',
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['parentRoute'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['id'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['path'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['fullPath']
   >
 
   const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/']['fullPath'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['id'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['path'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['fullPath'],
     unknown
   >
 }
-declare module './routes/_auth/workspaces/$workspaceId/projects/$projectId/$taskId' {
+declare module './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId' {
   const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/$workspaceId/projects/$projectId/$taskId',
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['id'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['path'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['fullPath']
+    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId',
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['parentRoute'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['id'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['path'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['fullPath']
   >
 
   const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/$taskId']['fullPath'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['id'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['path'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['fullPath'],
     unknown
   >
 }
-declare module './routes/_auth/workspaces/$workspaceId/projects/$projectId/settings' {
+declare module './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings' {
   const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/$workspaceId/projects/$projectId/settings',
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/settings']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/settings']['id'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/settings']['path'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/settings']['fullPath']
+    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings',
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['parentRoute'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['id'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['path'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['fullPath']
   >
 
   const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/settings']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/settings']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/settings']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/settings']['fullPath'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['id'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['path'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['fullPath'],
     unknown
   >
 }
-declare module './routes/_auth/workspaces/$workspaceId/projects/$projectId/index' {
+declare module './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/index' {
   const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/$workspaceId/projects/$projectId/',
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['id'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['path'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['fullPath']
+    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/',
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['parentRoute'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['id'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['path'],
+    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['fullPath']
   >
 
   const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceId/projects/$projectId/']['fullPath'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['id'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['path'],
+    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['fullPath'],
     unknown
   >
 }
@@ -548,25 +548,25 @@ const AnonRouteWithChildren = AnonRoute._addFileChildren(AnonRouteChildren)
 
 interface AuthRouteChildren {
   AuthWorkspacesIndexRoute: typeof AuthWorkspacesIndexRoute
-  AuthWorkspacesWorkspaceIdSettingsRoute: typeof AuthWorkspacesWorkspaceIdSettingsRoute
-  AuthWorkspacesWorkspaceIdProjectsIndexRoute: typeof AuthWorkspacesWorkspaceIdProjectsIndexRoute
-  AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute: typeof AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute
-  AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRoute: typeof AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRoute
-  AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute: typeof AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute
+  AuthWorkspacesWorkspaceSlugSettingsRoute: typeof AuthWorkspacesWorkspaceSlugSettingsRoute
+  AuthWorkspacesWorkspaceSlugProjectsIndexRoute: typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
+  AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
+  AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
+  AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthWorkspacesIndexRoute: AuthWorkspacesIndexRoute,
-  AuthWorkspacesWorkspaceIdSettingsRoute:
-    AuthWorkspacesWorkspaceIdSettingsRoute,
-  AuthWorkspacesWorkspaceIdProjectsIndexRoute:
-    AuthWorkspacesWorkspaceIdProjectsIndexRoute,
-  AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute:
-    AuthWorkspacesWorkspaceIdProjectsProjectIdTaskIdRoute,
-  AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRoute:
-    AuthWorkspacesWorkspaceIdProjectsProjectIdSettingsRoute,
-  AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute:
-    AuthWorkspacesWorkspaceIdProjectsProjectIdIndexRoute,
+  AuthWorkspacesWorkspaceSlugSettingsRoute:
+    AuthWorkspacesWorkspaceSlugSettingsRoute,
+  AuthWorkspacesWorkspaceSlugProjectsIndexRoute:
+    AuthWorkspacesWorkspaceSlugProjectsIndexRoute,
+  AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute:
+    AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute,
+  AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute:
+    AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute,
+  AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute:
+    AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

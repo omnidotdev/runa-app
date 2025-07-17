@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/combobox";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 
 import type { ComponentProps } from "react";
@@ -38,15 +39,19 @@ const UpdateAssignees = withForm({
   defaultValues: taskFormDefaults,
   props: {} as AdditionalProps,
   render: ({ form, comboboxInputProps }) => {
-    const { workspaceId } = useParams({
-      strict: false,
+    const { workspaceSlug } = useParams({ strict: false });
+
+    const { data: workspace } = useQuery({
+      ...workspaceBySlugOptions({ slug: workspaceSlug! }),
+      enabled: !!workspaceSlug,
+      select: (data) => data?.workspaceBySlug,
     });
 
     const { contains } = useFilter({ sensitivity: "base" });
 
     const { data: users } = useQuery({
-      ...workspaceUsersOptions({ rowId: workspaceId! }),
-      enabled: !!workspaceId,
+      ...workspaceUsersOptions({ rowId: workspace?.rowId! }),
+      enabled: !!workspace?.rowId,
       select: (data) => data?.workspaceUsers?.nodes.map((user) => user.user),
     });
 

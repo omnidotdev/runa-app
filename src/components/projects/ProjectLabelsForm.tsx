@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import {
   createColumnHelper,
   flexRender,
@@ -71,8 +71,8 @@ const defaultColumn: Partial<ColumnDef<Label>> = {
 };
 
 const ProjectLabelsForm = () => {
-  const { projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/settings",
+  const { projectId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
   const { data: labels } = useQuery({

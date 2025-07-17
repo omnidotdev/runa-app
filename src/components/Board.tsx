@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useLoaderData, useNavigate } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
 
@@ -20,12 +20,12 @@ import type { MouseEvent } from "react";
 const Board = () => {
   const { theme } = useTheme();
 
-  const { projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/",
+  const { projectId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const navigate = useNavigate({
-    from: "/workspaces/$workspaceId/projects/$projectId",
+    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });
 
   const { setColumnId } = useTaskStore();
