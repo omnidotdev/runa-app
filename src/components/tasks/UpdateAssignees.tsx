@@ -1,6 +1,6 @@
 import { useFilter, useListCollection } from "@ark-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import { TrashIcon } from "lucide-react";
 
 import { Avatar } from "@/components/ui/avatar";
@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/combobox";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
-import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 
 import type { ComponentProps } from "react";
@@ -39,19 +38,13 @@ const UpdateAssignees = withForm({
   defaultValues: taskFormDefaults,
   props: {} as AdditionalProps,
   render: ({ form, comboboxInputProps }) => {
-    const { workspaceSlug } = useParams({ strict: false });
-
-    const { data: workspace } = useQuery({
-      ...workspaceBySlugOptions({ slug: workspaceSlug! }),
-      enabled: !!workspaceSlug,
-      select: (data) => data?.workspaceBySlug,
-    });
+    const { workspaceId } = useLoaderData({ from: "/_auth" });
 
     const { contains } = useFilter({ sensitivity: "base" });
 
     const { data: users } = useQuery({
-      ...workspaceUsersOptions({ rowId: workspace?.rowId! }),
-      enabled: !!workspace?.rowId,
+      ...workspaceUsersOptions({ rowId: workspaceId! }),
+      enabled: !!workspaceId,
       select: (data) => data?.workspaceUsers?.nodes.map((user) => user.user),
     });
 

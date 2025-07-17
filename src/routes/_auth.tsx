@@ -45,10 +45,14 @@ export const Route = createFileRoute({
       ]);
 
       if (!workspace?.workspaceUsers.nodes.length) throw notFound();
+
+      return { workspaceId: workspaceBySlug.rowId };
     } else {
       await queryClient.ensureQueryData(
         workspacesOptions({ userId: session?.user.rowId! }),
       );
+
+      return { workspaceId: undefined };
     }
   },
   notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import { UserPlusIcon } from "lucide-react";
 
 import { Avatar } from "@/components/ui/avatar";
@@ -15,24 +15,17 @@ import {
 } from "@/components/ui/select";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
-import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 
 const CreateTaskAssignees = withForm({
   defaultValues: taskFormDefaults,
   render: ({ form }) => {
-    const { workspaceSlug } = useParams({ strict: false });
-
-    const { data: workspace } = useQuery({
-      ...workspaceBySlugOptions({ slug: workspaceSlug! }),
-      enabled: !!workspaceSlug,
-      select: (data) => data?.workspaceBySlug,
-    });
+    const { workspaceId } = useLoaderData({ from: "/_auth" });
 
     const { data: users } = useQuery({
-      ...workspaceUsersOptions({ rowId: workspace?.rowId! }),
-      enabled: !!workspace?.rowId,
+      ...workspaceUsersOptions({ rowId: workspaceId! }),
+      enabled: !!workspaceId,
       select: (data) =>
         data?.workspaceUsers?.nodes.flatMap((user) => user.user),
     });

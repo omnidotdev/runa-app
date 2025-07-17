@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useLoaderData, useNavigate, useParams } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -23,7 +23,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useForm from "@/lib/hooks/useForm";
 import workspaceOptions from "@/lib/options/workspace.options";
-import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import generateSlug from "@/lib/util/generateSlug";
 
 import type { ProjectStatus } from "@/generated/graphql";
@@ -41,13 +40,8 @@ interface Props {
 }
 
 const CreateProjectDialog = ({ status }: Props) => {
+  const { workspaceId } = useLoaderData({ from: "/_auth" });
   const { workspaceSlug } = useParams({ strict: false });
-
-  const { data: workspace } = useQuery({
-    ...workspaceBySlugOptions({ slug: workspaceSlug! }),
-    enabled: !!workspaceSlug,
-    select: (data) => data?.workspaceBySlug,
-  });
 
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
@@ -55,8 +49,8 @@ const CreateProjectDialog = ({ status }: Props) => {
   const { setStatus } = useProjectStore();
 
   const { data: currentWorkspace } = useQuery({
-    ...workspaceOptions({ rowId: workspace?.rowId! }),
-    enabled: !!workspace?.rowId,
+    ...workspaceOptions({ rowId: workspaceId! }),
+    enabled: !!workspaceId,
     select: (data) => data?.workspace,
   });
 
@@ -77,7 +71,7 @@ const CreateProjectDialog = ({ status }: Props) => {
     meta: {
       invalidates: [
         ["Projects"],
-        workspaceOptions({ rowId: workspace?.rowId! }).queryKey,
+        workspaceOptions({ rowId: workspaceId! }).queryKey,
       ],
     },
     onSuccess: async ({ createProject }) => {
@@ -115,7 +109,7 @@ const CreateProjectDialog = ({ status }: Props) => {
       createNewProject({
         input: {
           project: {
-            workspaceId: workspace?.rowId!,
+            workspaceId: workspaceId!,
             name: value.name,
             slug: generateSlug(value.name),
             description: value.description,

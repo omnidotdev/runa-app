@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useLoaderData, useParams } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
@@ -25,24 +25,21 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
-import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 
 const UpdateTaskLabelsDialog = () => {
   const queryClient = getQueryClient();
 
-  const {
-    workspaceSlug,
-    projectSlug,
-    taskId: paramsTaskId,
-  } = useParams({
+  const { workspaceId } = useLoaderData({ from: "/_auth" });
+
+  const { taskId: paramsTaskId } = useParams({
     strict: false,
   });
 
-  const { data: workspace } = useQuery({
-    ...workspaceBySlugOptions({ slug: workspaceSlug!, projectSlug }),
-    enabled: !!workspaceSlug,
-    select: (data) => data?.workspaceBySlug,
+  const { data: workspace } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId! }),
+    select: (data) => data?.workspace,
   });
 
   const { taskId: storeTaskId, setTaskId } = useTaskStore();

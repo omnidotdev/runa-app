@@ -1,5 +1,6 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import {
+  useLoaderData,
   useNavigate,
   useParams,
   useRouteContext,
@@ -58,7 +59,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTheme from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 import { cn } from "@/lib/utils";
@@ -66,6 +66,8 @@ import { cn } from "@/lib/utils";
 import type { ComponentProps } from "react";
 
 export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
+  const { workspaceId } = useLoaderData({ from: "/_auth" });
+
   const { session } = useRouteContext({ strict: false });
   const { workspaceSlug } = useParams({ strict: false });
   const navigate = useNavigate();
@@ -83,12 +85,6 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
 
   useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
 
-  const { data: workspaceBySlug } = useQuery({
-    ...workspaceBySlugOptions({ slug: workspaceSlug! }),
-    enabled: !!workspaceSlug,
-    select: (data) => data.workspaceBySlug,
-  });
-
   const { data: workspaces } = useSuspenseQuery({
     ...workspacesOptions({ userId: session?.user.rowId! }),
     select: (data) => data.workspaces?.nodes,
@@ -96,8 +92,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
 
   // TODO: figure out how to properly have this loaded and ready to go in SSR through loader in _auth.tsx, due to gcTime on workspaceBySlug query which is required for properly handling nav
   const { data: workspace } = useQuery({
-    ...workspaceOptions({ rowId: workspaceBySlug?.rowId! }),
-    enabled: !!workspaceBySlug?.rowId,
+    ...workspaceOptions({ rowId: workspaceId! }),
+    enabled: !!workspaceId,
     select: (data) => data.workspace,
   });
 
