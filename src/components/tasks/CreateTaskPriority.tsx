@@ -1,8 +1,8 @@
 import { useStore } from "@tanstack/react-form";
 
+import PrioritySelector from "@/components/core/selectors/PrioritySelector";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
-import PrioritySelector from "../core/selectors/PrioritySelector";
 
 const CreateTaskPriority = withForm({
   defaultValues: taskFormDefaults,

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 
+import { buttonVariants } from "@/components/ui/button";
 import {
   createListCollection,
   Select,
@@ -13,7 +14,6 @@ import {
 import projectOptions from "@/lib/options/project.options";
 import { getColumnIcon } from "@/lib/util/getColumnIcon";
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "../../ui/button";
 
 import type { ComponentProps } from "react";
 
