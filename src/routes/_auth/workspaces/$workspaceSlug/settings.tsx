@@ -27,7 +27,7 @@ import seo from "@/lib/util/seo";
 export const Route = createFileRoute({
   loader: async ({ params: { workspaceSlug }, context: { queryClient } }) => {
     const { workspaceBySlug } = await queryClient.ensureQueryData(
-      workspaceBySlugOptions({ slug: workspaceSlug, projectSlug: "" }),
+      workspaceBySlugOptions({ slug: workspaceSlug }),
     );
 
     if (!workspaceBySlug) {
