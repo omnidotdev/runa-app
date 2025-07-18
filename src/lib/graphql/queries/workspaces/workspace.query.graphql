@@ -3,6 +3,13 @@ query Workspace($rowId: UUID!) {
     rowId
     name
     viewMode
+    projectColumns {
+      nodes {
+        emoji
+        rowId
+        title
+      }
+    }
     projects {
       nodes {
         rowId
@@ -10,6 +17,10 @@ query Workspace($rowId: UUID!) {
         color
         viewMode
         prefix
+        projectColumn {
+          title
+          emoji
+        }
         tasks {
           totalCount
         }

@@ -2,9 +2,9 @@ fragment Project on Project {
   rowId
   name
   description
-  status
   color
   prefix
+  projectColumnId
   columns {
     nodes {
       allTasks: tasks {

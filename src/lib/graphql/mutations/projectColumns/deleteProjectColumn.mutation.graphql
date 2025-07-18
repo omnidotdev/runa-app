@@ -1,0 +1,5 @@
+mutation DeleteProjectColumn($rowId: UUID!) {
+  deleteProjectColumn(input: { rowId: $rowId }) {
+    clientMutationId
+  }
+}

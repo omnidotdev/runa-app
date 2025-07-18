@@ -13,12 +13,21 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useCreateWorkspaceMutation } from "@/generated/graphql";
+import {
+  useCreateProjectColumnMutation,
+  useCreateWorkspaceMutation,
+} from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
 
 import type { FormEvent } from "react";
+
+const DEFAULT_PROJECT_COLUMNS = [
+  { title: "Planned", emoji: "🗓️", index: 0 },
+  { title: "In Progress", emoji: "🚧", index: 1 },
+  { title: "Completed", emoji: "✅", index: 2 },
+];
 
 const CreateWorkspaceDialog = () => {
   const navigate = useNavigate();
@@ -49,11 +58,17 @@ const CreateWorkspaceDialog = () => {
     },
   });
 
+  const { mutate: createProjectColumn } = useCreateProjectColumnMutation({
+    meta: {
+      invalidates: [["all"]],
+    },
+  });
+
   const handleCreateWorkspace = async (e?: FormEvent) => {
     e?.preventDefault();
     if (!newWorkspaceName.trim()) return;
 
-    await createNewWorkspace({
+    const newWorkspaceData = await createNewWorkspace({
       input: {
         workspace: {
           name: newWorkspaceName,
@@ -63,6 +78,21 @@ const CreateWorkspaceDialog = () => {
 
     setNewWorkspaceName("");
     setIsCreateWorkspaceOpen(false);
+
+    const newlyCreatedWorkspace =
+      newWorkspaceData.createWorkspace?.workspace?.rowId;
+
+    for (const column of DEFAULT_PROJECT_COLUMNS) {
+      createProjectColumn({
+        input: {
+          projectColumn: {
+            title: column.title,
+            emoji: column.emoji,
+            workspaceId: newlyCreatedWorkspace!,
+          },
+        },
+      });
+    }
   };
 
   return (

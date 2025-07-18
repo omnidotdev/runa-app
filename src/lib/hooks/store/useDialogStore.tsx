@@ -16,6 +16,7 @@ export enum DialogType {
   UpdateDueDate = "update_due_date",
   UpdateTaskLabels = "update_task_labels",
   DeleteColumn = "delete_column",
+  DeleteProjectColumn = "delete_project_column",
 }
 
 interface DialogState {

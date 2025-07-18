@@ -11,7 +11,6 @@ import {
   restrictToParentElement,
   restrictToVerticalAxis,
 } from "@dnd-kit/modifiers";
-// needed for row & cell level scope DnD setup
 import {
   arrayMove,
   SortableContext,
@@ -22,49 +21,52 @@ import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import ConfirmDialog from "@/components/ConfirmDialog";
+import EmojiSelector from "@/components/core/selectors/EmojiSelector";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  useCreateColumnMutation,
-  useDeleteColumnMutation,
-  useUpdateColumnMutation,
+  useCreateProjectColumnMutation,
+  useDeleteProjectColumnMutation,
+  useUpdateProjectColumnMutation,
 } from "@/generated/graphql";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
-import columnsOptions from "@/lib/options/columns.options";
-import ConfirmDialog from "../ConfirmDialog";
-import EmojiSelector from "../core/selectors/EmojiSelector";
-import DraggableColumn from "./DraggableColumn";
+import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import DraggableProjectColumn from "./DraggableProjectColumn";
 
 import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
-import type { ColumnFragment as Column } from "@/generated/graphql";
+import type { ProjectColumnFragment as ProjectColumn } from "@/generated/graphql";
 
-const ProjectColumnsForm = () => {
-  const { projectId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/$projectId/settings",
+const WorkspaceColumnsForm = () => {
+  const { workspaceId } = useParams({
+    from: "/_auth/workspaces/$workspaceId/settings",
   });
 
-  const { data: columnsData } = useQuery({
-    ...columnsOptions({
-      projectId,
+  const { data: projectColumnsData } = useQuery({
+    ...projectColumnsOptions({
+      workspaceId,
     }),
-    select: (data) => data?.columns?.nodes,
+    select: (data) => data?.projectColumns?.nodes,
   });
 
-  const [localColumns, setLocalColumns] = useState<Column[]>(columnsData ?? []);
-  const [columnToDelete, setColumnToDelete] = useState<Column>();
+  const [localProjectColumns, setLocalProjectColumns] = useState<
+    ProjectColumn[]
+  >(projectColumnsData ?? []);
+  const [projectColumnToDelete, setProjectColumnToDelete] =
+    useState<ProjectColumn>();
 
-  const { mutate: createColumn } = useCreateColumnMutation({
+  const { mutate: createProjectColumn } = useCreateProjectColumnMutation({
       meta: {
         invalidates: [["all"]],
       },
     }),
-    { mutate: updateColumn } = useUpdateColumnMutation({
+    { mutate: updateProjectColumn } = useUpdateProjectColumnMutation({
       meta: {
         invalidates: [["all"]],
       },
     }),
-    { mutate: deleteColumn } = useDeleteColumnMutation({
+    { mutate: deleteProjectColumn } = useDeleteProjectColumnMutation({
       meta: {
         invalidates: [["all"]],
       },
@@ -74,13 +76,15 @@ const ProjectColumnsForm = () => {
     defaultValues: {
       title: "",
       emoji: "😀",
-      index: columnsData?.length ? columnsData.length + 1 : undefined,
+      index: projectColumnsData?.length
+        ? projectColumnsData.length + 1
+        : undefined,
     },
     onSubmit: ({ value, formApi }) => {
-      createColumn({
+      createProjectColumn({
         input: {
-          column: {
-            projectId,
+          projectColumn: {
+            workspaceId,
             title: value.title,
             index: value.index,
             emoji: value.emoji,
@@ -93,8 +97,8 @@ const ProjectColumnsForm = () => {
   });
 
   const dataIds = useMemo<UniqueIdentifier[]>(
-    () => localColumns.map(({ rowId }) => rowId),
-    [localColumns],
+    () => localProjectColumns.map(({ rowId }) => rowId),
+    [localProjectColumns],
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -103,13 +107,13 @@ const ProjectColumnsForm = () => {
 
     const oldIndex = dataIds.indexOf(active.id);
     const newIndex = dataIds.indexOf(over.id);
-    const reordered = arrayMove(localColumns, oldIndex, newIndex);
+    const reordered = arrayMove(localProjectColumns, oldIndex, newIndex);
 
     // Optimistically update the local state
-    setLocalColumns(reordered);
+    setLocalProjectColumns(reordered);
 
     reordered.forEach((column, index) => {
-      updateColumn({
+      updateProjectColumn({
         rowId: column.rowId,
         patch: { index: index },
       });
@@ -123,10 +127,10 @@ const ProjectColumnsForm = () => {
   );
 
   useEffect(() => {
-    if (columnsData) {
-      setLocalColumns(columnsData);
+    if (projectColumnsData) {
+      setLocalProjectColumns(projectColumnsData);
     }
-  }, [columnsData]);
+  }, [projectColumnsData]);
 
   return (
     <>
@@ -200,11 +204,11 @@ const ProjectColumnsForm = () => {
             strategy={verticalListSortingStrategy}
           >
             <div className="flex flex-col gap-2">
-              {localColumns?.map((column) => (
-                <DraggableColumn
-                  key={column.rowId}
-                  column={column}
-                  setColumnToDelete={setColumnToDelete}
+              {localProjectColumns?.map((projectColumn) => (
+                <DraggableProjectColumn
+                  key={projectColumn.rowId}
+                  projectColumn={projectColumn}
+                  setProjectColumnToDelete={setProjectColumnToDelete}
                 />
               ))}
             </div>
@@ -214,38 +218,38 @@ const ProjectColumnsForm = () => {
 
       <ConfirmDialog
         title="Danger Zone"
-        // description={`This will delete the column "${columnToDelete?.title}" including ${columnToDelete?.tasks?.totalCount} tasks. This action cannot be undone.`}
         description={
           <span>
-            This will delete the column{" "}
+            This will delete the project column{" "}
             <strong className="font-medium text-base-900 dark:text-base-100">
-              {columnToDelete?.title}
+              {projectColumnToDelete?.title}
             </strong>{" "}
             including{" "}
             <strong className="font-medium text-base-900 dark:text-base-100">
-              {columnToDelete?.tasks?.totalCount ?? 0} tasks
+              {projectColumnToDelete?.projects?.totalCount ?? 0} tasks
             </strong>
             . This action cannot be undone.
           </span>
         }
         onConfirm={() => {
-          if (!columnToDelete) return;
+          if (!projectColumnToDelete) return;
 
-          deleteColumn({
-            rowId: columnToDelete.rowId,
+          deleteProjectColumn({
+            rowId: projectColumnToDelete.rowId,
           });
 
-          for (const c of localColumns) {
-            updateColumn({
+          for (const c of localProjectColumns) {
+            updateProjectColumn({
               rowId: c.rowId,
               patch: {
-                index: c.index > columnToDelete.index ? c.index - 1 : c.index,
+                index:
+                  c.index > projectColumnToDelete.index ? c.index - 1 : c.index,
               },
             });
           }
         }}
-        dialogType={DialogType.DeleteColumn}
-        confirmation={`Delete ${columnToDelete?.title}`}
+        dialogType={DialogType.DeleteProjectColumn}
+        confirmation={`Delete ${projectColumnToDelete?.title}`}
         inputProps={{
           className: "focus-visible:ring-red-500",
         }}
@@ -254,4 +258,4 @@ const ProjectColumnsForm = () => {
   );
 };
 
-export default ProjectColumnsForm;
+export default WorkspaceColumnsForm;

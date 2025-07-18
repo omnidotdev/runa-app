@@ -9,8 +9,9 @@ import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
-import Projects from "@/components/workspaces/Projects";
-import Team from "@/components/workspaces/Team";
+import Projects from "@/components/workspaces/settings/Projects";
+import Team from "@/components/workspaces/settings/Team";
+import WorkspaceColumnsForm from "@/components/workspaces/settings/WorkspaceColumnsForm";
 import {
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
@@ -118,6 +119,8 @@ function SettingsPage() {
         <Team />
 
         <Projects />
+
+        <WorkspaceColumnsForm />
 
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-4">

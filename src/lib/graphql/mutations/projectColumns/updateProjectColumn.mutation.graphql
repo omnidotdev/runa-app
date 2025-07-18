@@ -1,0 +1,7 @@
+mutation UpdateProjectColumn($rowId: UUID!, $patch: ProjectColumnPatch!) {
+  updateProjectColumn(input: { rowId: $rowId, patch: $patch }) {
+    projectColumn {
+      rowId
+    }
+  }
+}

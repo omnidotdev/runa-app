@@ -8,7 +8,7 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
-import ProjectColumnsForm from "@/components/projects/ProjectColumnsForm";
+import ProjectColumnsForm from "@/components/projects/ColumnsForm";
 import ProjectLabelsForm from "@/components/projects/ProjectLabelsForm";
 import { Button } from "@/components/ui/button";
 import {

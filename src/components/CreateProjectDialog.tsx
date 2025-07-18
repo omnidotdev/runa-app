@@ -24,8 +24,6 @@ import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useForm from "@/lib/hooks/useForm";
 import workspaceOptions from "@/lib/options/workspace.options";
 
-import type { ProjectStatus } from "@/generated/graphql";
-
 const DEFAULT_COLUMNS = [
   { title: "Backlog", index: 0 },
   { title: "To Do", index: 1 },
@@ -35,16 +33,16 @@ const DEFAULT_COLUMNS = [
 ];
 
 interface Props {
-  status?: ProjectStatus;
+  projectColumnId?: string | null;
 }
 
-const CreateProjectDialog = ({ status }: Props) => {
+const CreateProjectDialog = ({ projectColumnId }: Props) => {
   const { workspaceId } = useParams({ strict: false });
 
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
 
-  const { setStatus } = useProjectStore();
+  const { setProjectColumnId } = useProjectStore();
 
   const { data: currentWorkspace } = useQuery({
     ...workspaceOptions({ rowId: workspaceId! }),
@@ -101,7 +99,7 @@ const CreateProjectDialog = ({ status }: Props) => {
     defaultValues: {
       name: "",
       description: "",
-      status: status ?? undefined,
+      projectColumnId: projectColumnId!,
     },
     onSubmit: async ({ value, formApi }) => {
       createNewProject({
@@ -110,13 +108,13 @@ const CreateProjectDialog = ({ status }: Props) => {
             workspaceId: workspaceId!,
             name: value.name,
             description: value.description,
-            status: value.status,
+            projectColumnId: value.projectColumnId,
           },
         },
       });
 
       setIsCreateProjectOpen(false);
-      setStatus(null);
+      setProjectColumnId(null);
       formApi.reset();
     },
   });
@@ -128,7 +126,7 @@ const CreateProjectDialog = ({ status }: Props) => {
         setIsCreateProjectOpen(open);
 
         if (!open) {
-          setStatus(null);
+          setProjectColumnId(null);
         }
       }}
       initialFocusEl={() => nameRef.current}

@@ -1,0 +1,16 @@
+query ProjectColumns($workspaceId: UUID!) {
+  projectColumns(condition: { workspaceId: $workspaceId }, orderBy: INDEX_ASC) {
+    nodes {
+      title
+      index
+      rowId
+      emoji
+      projects {
+        totalCount
+        nodes {
+          ...Project
+        }
+      }
+    }
+  }
+}

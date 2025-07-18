@@ -29,7 +29,7 @@ export const Route = createFileRoute({
 });
 
 function AuthenticatedLayout() {
-  const { status } = useProjectStore();
+  const { projectColumnId } = useProjectStore();
 
   return (
     <SidebarProvider>
@@ -41,7 +41,7 @@ function AuthenticatedLayout() {
         </SidebarInset>
       </div>
 
-      <CreateProjectDialog status={status ?? undefined} />
+      <CreateProjectDialog projectColumnId={projectColumnId ?? undefined} />
       <CreateWorkspaceDialog />
     </SidebarProvider>
   );

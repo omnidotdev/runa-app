@@ -118,6 +118,10 @@ const Projects = () => {
                           </div>
 
                           <span className="text-sm">{project?.name}</span>
+
+                          <span className="text-base-600 text-sm dark:text-base-400">
+                            {project.projectColumn?.emoji}
+                          </span>
                         </div>
 
                         <div className="mr-1 ml-auto flex gap-1">

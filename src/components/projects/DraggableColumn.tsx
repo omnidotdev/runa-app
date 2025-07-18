@@ -52,7 +52,7 @@ const DraggableColumn = ({ column, setColumnToDelete }: Props) => {
     id: column.rowId,
   });
 
-  const { setIsOpen: setIsDeleteProjectColumnDialogOpen } = useDialogStore({
+  const { setIsOpen: setIsDeleteColumnDialogOpen } = useDialogStore({
     type: DialogType.DeleteColumn,
   });
 
@@ -128,7 +128,7 @@ const DraggableColumn = ({ column, setColumnToDelete }: Props) => {
 
   const handleColumnDelete = () => {
     setColumnToDelete(column);
-    setIsDeleteProjectColumnDialogOpen(true);
+    setIsDeleteColumnDialogOpen(true);
   };
 
   return (
@@ -227,7 +227,7 @@ const DraggableColumn = ({ column, setColumnToDelete }: Props) => {
             </PopoverTrigger>
             <PopoverPositioner>
               <PopoverContent className="flex h-full w-40 flex-col gap-1 p-1 text-sm">
-                {/* <Button
+                <Button
                   size="xs"
                   variant="ghost"
                   className="flex justify-start gap-2"
@@ -242,7 +242,7 @@ const DraggableColumn = ({ column, setColumnToDelete }: Props) => {
                       <EyeIcon className="size-4" /> Hide column
                     </div>
                   )}
-                </Button> */}
+                </Button>
 
                 <Button
                   size="xs"

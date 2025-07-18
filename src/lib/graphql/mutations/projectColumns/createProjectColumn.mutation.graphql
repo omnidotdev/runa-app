@@ -1,0 +1,7 @@
+mutation CreateProjectColumn($input: CreateProjectColumnInput!) {
+  createProjectColumn(input: $input) {
+    projectColumn {
+      rowId
+    }
+  }
+}
