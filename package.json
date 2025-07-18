@@ -50,7 +50,6 @@
     "highlight.js": "^11.11.1",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.523.0",
-    "motion": "^12.23.6",
     "parse-human-relative-time": "^4.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
