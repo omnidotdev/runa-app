@@ -3,7 +3,7 @@ import { notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
-import * as z from "zod/v4";
+import * as z from "zod";
 
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
@@ -65,7 +65,7 @@ function RouteComponent() {
     .object({
       name: z
         .string()
-        .min(3, "Name must be at least 3 characters.")
+        .min(3, { error: "Name must be at least 3 characters." })
         .default(project?.name!),
       currentSlug: z.string().default(project?.slug!),
     })

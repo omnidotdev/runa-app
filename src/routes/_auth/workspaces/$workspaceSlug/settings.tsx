@@ -3,7 +3,7 @@ import { notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
-import * as z from "zod/v4";
+import * as z from "zod";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "@/components/core/Link";
@@ -66,7 +66,7 @@ function SettingsPage() {
     .object({
       name: z
         .string()
-        .min(3, "Name must be at least 3 characters.")
+        .min(3, { error: "Name must be at least 3 characters." })
         .default(workspace?.name!),
       currentSlug: z.string().default(workspace?.slug!),
     })

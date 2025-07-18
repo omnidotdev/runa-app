@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-table";
 import { PlusIcon, TagIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import * as z from "zod/v4";
+import * as z from "zod";
 
 import ColorSelector from "@/components/core/selectors/ColorSelector";
 import { Badge } from "@/components/ui/badge";

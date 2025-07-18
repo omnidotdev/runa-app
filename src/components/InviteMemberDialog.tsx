@@ -5,7 +5,7 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { PlusIcon } from "lucide-react";
 import { useRef } from "react";
 import { Resend } from "resend";
-import * as z from "zod/v4";
+import * as z from "zod";
 
 import WorkspaceInvitation from "@/components/emails/WorkspaceInvitation";
 import { Button } from "@/components/ui/button";

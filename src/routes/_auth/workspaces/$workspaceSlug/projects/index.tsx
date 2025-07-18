@@ -17,7 +17,7 @@ import { useCallback } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { match } from "ts-pattern";
 import { useDebounceCallback } from "usehooks-ts";
-import * as z from "zod/v4";
+import * as z from "zod";
 
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";

@@ -1,7 +1,5 @@
-import Link from "@tiptap/extension-link";
-import Placeholder from "@tiptap/extension-placeholder";
-import TaskItem from "@tiptap/extension-task-item";
-import TaskList from "@tiptap/extension-task-list";
+import { TaskItem, TaskList } from "@tiptap/extension-list";
+import { Placeholder } from "@tiptap/extensions";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import css from "highlight.js/lib/languages/css";
@@ -57,6 +55,9 @@ const RichTextEditor = ({
           levels: [1, 2],
         },
         codeBlock: false,
+        link: {
+          openOnClick: false,
+        },
       }),
       Placeholder.configure({
         placeholder,
@@ -64,9 +65,6 @@ const RichTextEditor = ({
       TaskList,
       TaskItem.configure({
         nested: true,
-      }),
-      Link.configure({
-        openOnClick: false,
       }),
       CodeBlockWithHeader.configure({
         lowlight,

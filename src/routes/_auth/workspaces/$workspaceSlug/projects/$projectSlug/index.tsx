@@ -12,7 +12,7 @@ import {
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
-import * as z from "zod/v4";
+import * as z from "zod";
 
 import Board from "@/components/Board";
 import Link from "@/components/core/Link";
@@ -152,7 +152,7 @@ function ProjectPage() {
     .object({
       name: z
         .string()
-        .min(3, "Name must be at least 3 characters.")
+        .min(3, { error: "Name must be at least 3 characters." })
         .default(project?.name!),
       currentSlug: z.string().default(project?.slug!),
     })
