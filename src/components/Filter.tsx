@@ -325,6 +325,7 @@ const Filter = () => {
                       key={column.rowId}
                       className="group flex cursor-pointer items-center justify-between p-0.5"
                       checked={userHiddenColumns.includes(column.rowId)}
+                      // TODO: rather than updating user pref in the table, just use query params and filter the query. Leave db state management to settings. Filters can be used for quick views not persistent
                       onCheckedChange={({ checked }) => {
                         if (checked) {
                           if (!userPreferences) {
