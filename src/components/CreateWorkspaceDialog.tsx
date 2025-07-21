@@ -76,15 +76,14 @@ const CreateWorkspaceDialog = () => {
       },
     });
 
-    const newlyCreatedWorkspace =
-      newWorkspaceData.createWorkspace?.workspace?.rowId;
+    const newWorkspaceId = newWorkspaceData.createWorkspace?.workspace?.rowId;
 
     for (const column of DEFAULT_PROJECT_COLUMNS) {
       createProjectColumn({
         input: {
           projectColumn: {
             ...column,
-            workspaceId: newlyCreatedWorkspace!,
+            workspaceId: newWorkspaceId!,
           },
         },
       });

@@ -83,6 +83,7 @@ const Board = () => {
                   </Button>
                 </Tooltip>
               </div>
+
               <div className="no-scrollbar flex h-full overflow-y-auto">
                 <Droppable droppableId={column.rowId}>
                   {(provided, snapshot) => (
