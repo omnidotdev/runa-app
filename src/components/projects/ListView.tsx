@@ -100,7 +100,7 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
               <CollapsibleTrigger asChild>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    {column.emoji && <p className="text-xs">{column.emoji}</p>}
+                    <p className="text-xs">{column.emoji ?? "😀"}</p>
 
                     <h3 className="text-base-800 text-sm dark:text-base-100">
                       {column?.title}

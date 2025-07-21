@@ -17,15 +17,21 @@ import {
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
   loader: async ({ params: { workspaceId }, context: { queryClient } }) => {
-    const { workspace } = await queryClient.ensureQueryData(
-      workspaceOptions({ rowId: workspaceId }),
-    );
+    const [{ workspace }] = await Promise.all([
+      queryClient.ensureQueryData(workspaceOptions({ rowId: workspaceId })),
+      queryClient.ensureQueryData(
+        projectColumnsOptions({
+          workspaceId,
+        }),
+      ),
+    ]);
 
     if (!workspace) {
       throw notFound();

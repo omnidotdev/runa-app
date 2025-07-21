@@ -16,10 +16,10 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import EmojiSelector from "@/components/core/selectors/EmojiSelector";
@@ -43,7 +43,7 @@ const WorkspaceColumnsForm = () => {
     from: "/_auth/workspaces/$workspaceId/settings",
   });
 
-  const { data: projectColumnsData } = useQuery({
+  const { data: projectColumns } = useSuspenseQuery({
     ...projectColumnsOptions({
       workspaceId,
     }),
@@ -52,13 +52,21 @@ const WorkspaceColumnsForm = () => {
 
   const [localProjectColumns, setLocalProjectColumns] = useState<
     ProjectColumn[]
-  >(projectColumnsData ?? []);
+  >(projectColumns ?? []);
   const [projectColumnToDelete, setProjectColumnToDelete] =
     useState<ProjectColumn>();
 
   const { mutate: createProjectColumn } = useCreateProjectColumnMutation({
       meta: {
         invalidates: [["all"]],
+      },
+      onError: (error) => console.error(error),
+      onSuccess: (data) => {
+        const newColumn = data?.createProjectColumn?.projectColumn;
+
+        if (newColumn) {
+          setLocalProjectColumns((prev) => [...prev, newColumn]);
+        }
       },
     }),
     { mutate: updateProjectColumn } = useUpdateProjectColumnMutation({
@@ -70,15 +78,17 @@ const WorkspaceColumnsForm = () => {
       meta: {
         invalidates: [["all"]],
       },
+      onSuccess: (_data, variables) =>
+        setLocalProjectColumns((prev) =>
+          prev.filter((column) => column.rowId !== variables.rowId),
+        ),
     });
 
   const { Field, Subscribe, handleSubmit } = useForm({
     defaultValues: {
       title: "",
       emoji: "😀",
-      index: projectColumnsData?.length
-        ? projectColumnsData.length + 1
-        : undefined,
+      index: projectColumns?.length ?? 0,
     },
     onSubmit: ({ value, formApi }) => {
       createProjectColumn({
@@ -125,12 +135,6 @@ const WorkspaceColumnsForm = () => {
     useSensor(TouchSensor, {}),
     useSensor(KeyboardSensor, {}),
   );
-
-  useEffect(() => {
-    if (projectColumnsData) {
-      setLocalProjectColumns(projectColumnsData);
-    }
-  }, [projectColumnsData]);
 
   return (
     <>

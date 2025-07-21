@@ -24,9 +24,9 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import type { FormEvent } from "react";
 
 const DEFAULT_PROJECT_COLUMNS = [
-  { title: "Planned", index: 0 },
-  { title: "In Progress", index: 1 },
-  { title: "Completed", index: 2 },
+  { title: "Planned", index: 0, emoji: "🗓️" },
+  { title: "In Progress", index: 1, emoji: "🚧" },
+  { title: "Completed", index: 2, emoji: "✅" },
 ];
 
 const CreateWorkspaceDialog = () => {

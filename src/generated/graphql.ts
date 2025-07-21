@@ -6973,7 +6973,7 @@ export type ColumnFragment = { __typename?: 'Column', title: string, index: numb
 
 export type LabelFragment = { __typename?: 'Label', color: string, name: string, rowId: string };
 
-export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: string, index: number, rowId: string, emoji?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, description?: string | null, color?: string | null, prefix?: string | null, projectColumnId: string, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } };
+export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: string, index: number, rowId: string, emoji?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } };
 
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, description?: string | null, color?: string | null, prefix?: string | null, projectColumnId: string, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } };
 
@@ -6996,7 +6996,7 @@ export type CreateColumnMutationVariables = Exact<{
 }>;
 
 
-export type CreateColumnMutation = { __typename?: 'Mutation', createColumn?: { __typename?: 'CreateColumnPayload', column?: { __typename?: 'Column', rowId: string } | null } | null };
+export type CreateColumnMutation = { __typename?: 'Mutation', createColumn?: { __typename?: 'CreateColumnPayload', column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null } | null };
 
 export type DeleteColumnMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -7047,7 +7047,7 @@ export type CreateProjectColumnMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectColumnMutation = { __typename?: 'Mutation', createProjectColumn?: { __typename?: 'CreateProjectColumnPayload', projectColumn?: { __typename?: 'ProjectColumn', rowId: string } | null } | null };
+export type CreateProjectColumnMutation = { __typename?: 'Mutation', createProjectColumn?: { __typename?: 'CreateProjectColumnPayload', projectColumn?: { __typename?: 'ProjectColumn', title: string, index: number, rowId: string, emoji?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } } | null } | null };
 
 export type DeleteProjectColumnMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -7283,6 +7283,17 @@ export const LabelFragmentDoc = `
   rowId
 }
     `;
+export const ProjectColumnFragmentDoc = `
+    fragment ProjectColumn on ProjectColumn {
+  title
+  index
+  rowId
+  emoji
+  projects {
+    totalCount
+  }
+}
+    `;
 export const ProjectFragmentDoc = `
     fragment Project on Project {
   rowId
@@ -7303,20 +7314,6 @@ export const ProjectFragmentDoc = `
   }
 }
     `;
-export const ProjectColumnFragmentDoc = `
-    fragment ProjectColumn on ProjectColumn {
-  title
-  index
-  rowId
-  emoji
-  projects {
-    totalCount
-    nodes {
-      ...Project
-    }
-  }
-}
-    ${ProjectFragmentDoc}`;
 export const CreateAssigneeDocument = `
     mutation CreateAssignee($input: CreateAssigneeInput!) {
   createAssignee(input: $input) {
@@ -7377,11 +7374,11 @@ export const CreateColumnDocument = `
     mutation CreateColumn($input: CreateColumnInput!) {
   createColumn(input: $input) {
     column {
-      rowId
+      ...Column
     }
   }
 }
-    `;
+    ${ColumnFragmentDoc}`;
 
 export const useCreateColumnMutation = <
       TError = unknown,
@@ -7571,11 +7568,11 @@ export const CreateProjectColumnDocument = `
     mutation CreateProjectColumn($input: CreateProjectColumnInput!) {
   createProjectColumn(input: $input) {
     projectColumn {
-      rowId
+      ...ProjectColumn
     }
   }
 }
-    `;
+    ${ProjectColumnFragmentDoc}`;
 
 export const useCreateProjectColumnMutation = <
       TError = unknown,

@@ -16,10 +16,10 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import EmojiSelector from "@/components/core/selectors/EmojiSelector";
@@ -43,19 +43,26 @@ const ColumnsForm = () => {
     from: "/_auth/workspaces/$workspaceId/projects/$projectId/settings",
   });
 
-  const { data: columnsData } = useQuery({
+  const { data: columns } = useSuspenseQuery({
     ...columnsOptions({
       projectId,
     }),
     select: (data) => data?.columns?.nodes,
   });
 
-  const [localColumns, setLocalColumns] = useState<Column[]>(columnsData ?? []);
+  const [localColumns, setLocalColumns] = useState<Column[]>(columns ?? []);
   const [columnToDelete, setColumnToDelete] = useState<Column>();
 
   const { mutate: createColumn } = useCreateColumnMutation({
       meta: {
         invalidates: [["all"]],
+      },
+      onSuccess: (data) => {
+        const newColumn = data?.createColumn?.column;
+
+        if (newColumn) {
+          setLocalColumns((prev) => [...prev, newColumn]);
+        }
       },
     }),
     { mutate: updateColumn } = useUpdateColumnMutation({
@@ -67,13 +74,17 @@ const ColumnsForm = () => {
       meta: {
         invalidates: [["all"]],
       },
+      onSuccess: (_data, variables) =>
+        setLocalColumns((prev) =>
+          prev.filter((column) => column.rowId !== variables.rowId),
+        ),
     });
 
   const { Field, Subscribe, handleSubmit } = useForm({
     defaultValues: {
       title: "",
       emoji: "😀",
-      index: columnsData?.length ? columnsData.length + 1 : undefined,
+      index: columns?.length ?? 0,
     },
     onSubmit: ({ value, formApi }) => {
       createColumn({
@@ -120,12 +131,6 @@ const ColumnsForm = () => {
     useSensor(TouchSensor, {}),
     useSensor(KeyboardSensor, {}),
   );
-
-  useEffect(() => {
-    if (columnsData) {
-      setLocalColumns(columnsData);
-    }
-  }, [columnsData]);
 
   return (
     <>

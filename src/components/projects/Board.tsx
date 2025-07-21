@@ -146,9 +146,7 @@ const Board = () => {
                   >
                     <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2">
                       <div className="flex items-center gap-2">
-                        {column.emoji && (
-                          <p className="text-xs">{column.emoji}</p>
-                        )}
+                        <p className="text-xs">{column.emoji ?? "😀"}</p>
 
                         <h3 className="text-base-800 text-sm dark:text-base-100">
                           {column?.title}

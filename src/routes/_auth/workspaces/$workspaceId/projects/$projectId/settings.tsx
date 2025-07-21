@@ -16,6 +16,7 @@ import {
   useUpdateProjectMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
 import seo from "@/lib/util/seo";
@@ -25,6 +26,7 @@ export const Route = createFileRoute({
     const [{ project }] = await Promise.all([
       queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
       queryClient.ensureQueryData(labelsOptions({ projectId })),
+      queryClient.ensureQueryData(columnsOptions({ projectId })),
     ]);
 
     if (!project) {

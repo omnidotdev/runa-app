@@ -47,7 +47,7 @@ const Board = () => {
             >
               <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2 shadow-sm">
                 <div className="flex items-center gap-2">
-                  <span>{column.emoji}</span>
+                  <span>{column.emoji ?? "😀"}</span>
                   <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
                     {column.title}
                   </h3>

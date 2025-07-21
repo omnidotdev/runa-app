@@ -367,7 +367,7 @@ const Filter = () => {
                     >
                       <CheckboxLabel className="ml-0 flex items-center gap-2">
                         <div className="flex items-center gap-2">
-                          <p>{column.emoji}</p>
+                          <p>{column.emoji ?? "😀"}</p>
                           <p className="font-light text-sm first-letter:uppercase">
                             {column.title}
                           </p>

@@ -50,7 +50,7 @@ const List = () => {
           <CollapsibleTrigger asChild>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span>{column.emoji}</span>
+                <span>{column.emoji ?? "😀"}</span>
                 <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
                   {column.title}
                 </h3>
@@ -94,7 +94,7 @@ const List = () => {
           </CollapsibleTrigger>
 
           <CollapsibleContent className="border-t">
-            <Droppable droppableId={status}>
+            <Droppable droppableId={column.rowId}>
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}

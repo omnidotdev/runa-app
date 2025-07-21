@@ -5,8 +5,5 @@ fragment ProjectColumn on ProjectColumn {
   emoji
   projects {
     totalCount
-    nodes {
-      ...Project
-    }
   }
 }
