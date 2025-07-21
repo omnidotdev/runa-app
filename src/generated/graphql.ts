@@ -8712,7 +8712,7 @@ export const WorkspaceDocument = `
     rowId
     name
     viewMode
-    projectColumns {
+    projectColumns(orderBy: INDEX_ASC) {
       nodes {
         emoji
         rowId

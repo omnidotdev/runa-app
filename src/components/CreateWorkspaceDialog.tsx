@@ -50,7 +50,20 @@ const CreateWorkspaceDialog = () => {
     meta: {
       invalidates: [workspacesOptions().queryKey],
     },
-    onSuccess: ({ createWorkspace }) => {
+    onSuccess: async ({ createWorkspace }) => {
+      await Promise.all(
+        DEFAULT_PROJECT_COLUMNS.map((column) =>
+          createProjectColumn({
+            input: {
+              projectColumn: {
+                ...column,
+                workspaceId: createWorkspace?.workspace?.rowId!,
+              },
+            },
+          }),
+        ),
+      );
+
       navigate({
         to: "/workspaces/$workspaceId/projects",
         params: { workspaceId: createWorkspace?.workspace?.rowId! },
@@ -68,26 +81,13 @@ const CreateWorkspaceDialog = () => {
     e?.preventDefault();
     if (!newWorkspaceName.trim()) return;
 
-    const newWorkspaceData = await createNewWorkspace({
+    await createNewWorkspace({
       input: {
         workspace: {
           name: newWorkspaceName,
         },
       },
     });
-
-    const newWorkspaceId = newWorkspaceData.createWorkspace?.workspace?.rowId;
-
-    for (const column of DEFAULT_PROJECT_COLUMNS) {
-      createProjectColumn({
-        input: {
-          projectColumn: {
-            ...column,
-            workspaceId: newWorkspaceId!,
-          },
-        },
-      });
-    }
 
     setNewWorkspaceName("");
     setIsCreateWorkspaceOpen(false);

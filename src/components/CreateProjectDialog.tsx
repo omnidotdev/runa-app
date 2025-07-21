@@ -34,17 +34,13 @@ const DEFAULT_COLUMNS = [
   { title: "Done", index: 4, emoji: "✅" },
 ];
 
-interface Props {
-  projectColumnId?: string | null;
-}
-
-const CreateProjectDialog = ({ projectColumnId }: Props) => {
+const CreateProjectDialog = () => {
   const { workspaceId } = useParams({ strict: false });
 
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
 
-  const { setProjectColumnId } = useProjectStore();
+  const { projectColumnId, setProjectColumnId } = useProjectStore();
 
   const { data: currentWorkspace } = useQuery({
     ...workspaceOptions({ rowId: workspaceId! }),
@@ -67,7 +63,7 @@ const CreateProjectDialog = ({ projectColumnId }: Props) => {
   const { mutateAsync: createUserPreference } =
     useCreateUserPreferenceMutation();
 
-  const { mutate: createNewProject } = useCreateProjectMutation({
+  const { mutateAsync: createNewProject } = useCreateProjectMutation({
     meta: {
       invalidates: [
         ["Projects"],
@@ -114,15 +110,11 @@ const CreateProjectDialog = ({ projectColumnId }: Props) => {
     defaultValues: {
       name: "",
       description: "",
-      projectColumnId: projectColumnId
-        ? projectColumnId
-        : // Fallback to the first column if not provided
-          currentWorkspace?.projectColumns?.nodes.find(
-            (column) => column.index === 0,
-          )?.rowId,
+      projectColumnId:
+        projectColumnId ?? currentWorkspace?.projectColumns?.nodes[0].rowId,
     },
     onSubmit: async ({ value, formApi }) => {
-      createNewProject({
+      await createNewProject({
         input: {
           project: {
             workspaceId: workspaceId!,
@@ -133,6 +125,7 @@ const CreateProjectDialog = ({ projectColumnId }: Props) => {
         },
       });
 
+      // TODO: set this in search param state for filtering and validate that navigation in `onSuccess` above has it as default of closed because some odd behavior is happening where it re-opens after navigation and cant be closed
       setIsCreateProjectOpen(false);
       setProjectColumnId(null);
       formApi.reset();
@@ -163,10 +156,10 @@ const CreateProjectDialog = ({ projectColumnId }: Props) => {
           </DialogDescription>
 
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               e.stopPropagation();
-              form.handleSubmit();
+              await form.handleSubmit();
             }}
             className="flex flex-col gap-2"
           >

@@ -7769,7 +7769,7 @@ export const WorkspaceDocument = gql`
     rowId
     name
     viewMode
-    projectColumns {
+    projectColumns(orderBy: INDEX_ASC) {
       nodes {
         emoji
         rowId

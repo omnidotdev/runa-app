@@ -1,5 +1,3 @@
-"use client";
-
 import { createStore } from "zustand";
 import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
