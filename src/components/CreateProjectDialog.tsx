@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import {
   useCreateColumnMutation,
   useCreateProjectMutation,
+  useCreateUserPreferenceMutation,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -63,6 +64,8 @@ const CreateProjectDialog = ({ projectColumnId }: Props) => {
   );
 
   const { mutateAsync: createColumn } = useCreateColumnMutation();
+  const { mutateAsync: createUserPreference } =
+    useCreateUserPreferenceMutation();
 
   const { mutate: createNewProject } = useCreateProjectMutation({
     meta: {
@@ -73,19 +76,29 @@ const CreateProjectDialog = ({ projectColumnId }: Props) => {
       ],
     },
     onSuccess: async ({ createProject }) => {
-      await Promise.all(
-        DEFAULT_COLUMNS.map((column) =>
+      await Promise.all([
+        ...DEFAULT_COLUMNS.map((column) =>
           createColumn({
             input: {
               column: {
                 title: column.title,
                 index: column.index,
                 projectId: createProject?.project?.rowId!,
+                emoji: column.emoji,
               },
             },
           }),
         ),
-      );
+        createUserPreference({
+          input: {
+            userPreference: {
+              projectId: createProject?.project?.rowId!,
+              // TODO: Dynamic userId
+              userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+            },
+          },
+        }),
+      ]);
 
       navigate({
         to: "/workspaces/$workspaceId/projects/$projectId",
