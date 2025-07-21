@@ -265,7 +265,7 @@ const ProjectLabelsForm = () => {
         className="mt-2 flex-1 rounded-md border"
       >
         <Table>
-          <TableHeader>
+          <TableHeader className="[&_tr]:border-b-0">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header, index) => (
