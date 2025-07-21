@@ -23,7 +23,7 @@ const EmojiSelector = ({ value, onChange, triggerProps }: Props) => {
   const { theme } = useTheme();
 
   return (
-    <PopoverRoot>
+    <PopoverRoot lazyMount>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"

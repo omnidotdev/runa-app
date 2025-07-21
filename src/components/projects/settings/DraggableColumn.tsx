@@ -140,6 +140,7 @@ const DraggableColumn = ({ column, setColumnToDelete }: Props) => {
       <div
         {...attributes}
         {...listeners}
+        aria-describedby={`DndDescribedBy-${column.rowId}`}
         className="flex w-10 cursor-move items-center justify-center"
       >
         <GripVerticalIcon className="flex size-3 text-muted-foreground" />
