@@ -306,7 +306,7 @@ const Filter = () => {
               <PopoverTrigger className="flex w-full cursor-pointer justify-between border-b px-3 py-2">
                 <div className="flex items-center gap-2">
                   <AlignJustifyIcon className="size-4 rotate-90" />
-                  <p>Columns</p>
+                  <p>Hidden Columns</p>
                 </div>
                 <ChevronRight className="h-4 w-4" />
               </PopoverTrigger>

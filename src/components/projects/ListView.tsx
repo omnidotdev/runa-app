@@ -49,14 +49,11 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
     select: (data) => data?.userPreferenceByUserIdAndProjectId,
   });
 
-  const userHiddenColumns = userPreferences?.hiddenColumnIds as string[];
-
   const { data: project } = useQuery({
     ...projectOptions({
       rowId: projectId,
-      columns: userHiddenColumns,
+      hiddenColumns: userPreferences?.hiddenColumnIds as string[],
     }),
-    enabled: !!userPreferences,
     select: (data) => data?.project,
   });
 

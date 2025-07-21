@@ -49,32 +49,34 @@ const projectSearchParamsSchema = z.object({
   assignees: z.array(z.guid()).default([]),
   labels: z.array(z.guid()).default([]),
   priorities: z.array(z.enum(["low", "medium", "high"])).default([]),
-  columns: z.array(z.string()).default([]),
 });
 
 export const Route = createFileRoute({
-  loaderDeps: ({
-    search: { search, assignees, labels, priorities, columns },
-  }) => ({
+  loaderDeps: ({ search: { search, assignees, labels, priorities } }) => ({
     search,
     assignees,
     labels,
     priorities,
-    columns,
   }),
   loader: async ({
-    deps: { search, assignees, labels, priorities, columns },
+    deps: { search, assignees, labels, priorities },
     params: { projectId, workspaceId },
     context: { queryClient },
   }) => {
-    const [{ project }] = await Promise.all([
-      queryClient.ensureQueryData(
-        projectOptions({ rowId: projectId, columns }),
-      ),
-      queryClient.ensureQueryData(
+    const { userPreferenceByUserIdAndProjectId } =
+      await queryClient.ensureQueryData(
         userPreferencesOptions({
           userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
           projectId,
+        }),
+      );
+
+    const [{ project }] = await Promise.all([
+      queryClient.ensureQueryData(
+        projectOptions({
+          rowId: projectId,
+          hiddenColumns:
+            userPreferenceByUserIdAndProjectId?.hiddenColumnIds as string[],
         }),
       ),
       queryClient.ensureQueryData(
@@ -115,7 +117,6 @@ export const Route = createFileRoute({
         assignees: [],
         labels: [],
         priorities: [],
-        columns: [],
       }),
     ],
   },
@@ -150,17 +151,20 @@ function ProjectPage() {
     300,
   );
 
-  const { data: project } = useSuspenseQuery({
-    ...projectOptions({ rowId: projectId }),
-    select: (data) => data?.project,
-  });
-
   const { data: userPreferences } = useSuspenseQuery({
     ...userPreferencesOptions({
       projectId: projectId,
       userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
     }),
     select: (data) => data?.userPreferenceByUserIdAndProjectId,
+  });
+
+  const { data: project } = useSuspenseQuery({
+    ...projectOptions({
+      rowId: projectId,
+      hiddenColumns: userPreferences?.hiddenColumnIds as string[],
+    }),
+    select: (data) => data?.project,
   });
 
   const [projectColumnOpenStates, setProjectColumnOpenStates] = useState(

@@ -1,4 +1,4 @@
-query Project($rowId: UUID!, $columns: [UUID!]) {
+query Project($rowId: UUID!, $hiddenColumns: [UUID!]) {
   project(rowId: $rowId) {
     rowId
     name
@@ -16,7 +16,7 @@ query Project($rowId: UUID!, $columns: [UUID!]) {
     tasks {
       totalCount
     }
-    columns(filter: { rowId: { notIn: $columns } }, orderBy: INDEX_ASC) {
+    columns(filter: { rowId: { notIn: $hiddenColumns } }, orderBy: INDEX_ASC) {
       nodes {
         rowId
         index

@@ -7248,7 +7248,7 @@ export type ProjectColumnsQuery = { __typename?: 'Query', projectColumns?: { __t
 
 export type ProjectQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
-  columns?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
+  hiddenColumns?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
 }>;
 
 
@@ -7632,7 +7632,7 @@ export const ProjectColumnsDocument = gql`
 }
     ${ProjectFragmentDoc}`;
 export const ProjectDocument = gql`
-    query Project($rowId: UUID!, $columns: [UUID!]) {
+    query Project($rowId: UUID!, $hiddenColumns: [UUID!]) {
   project(rowId: $rowId) {
     rowId
     name
@@ -7650,7 +7650,7 @@ export const ProjectDocument = gql`
     tasks {
       totalCount
     }
-    columns(filter: {rowId: {notIn: $columns}}, orderBy: INDEX_ASC) {
+    columns(filter: {rowId: {notIn: $hiddenColumns}}, orderBy: INDEX_ASC) {
       nodes {
         rowId
         index
