@@ -14,12 +14,12 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
 
-import Board from "@/components/Board";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import Filter from "@/components/Filter";
-import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
+import Board from "@/components/projects/Board";
+import ListView from "@/components/projects/ListView";
 import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
 import UpdateAssigneesDialog from "@/components/UpdateAssigneesDialog";
 import UpdateDueDateDialog from "@/components/UpdateDueDateDialog";

@@ -22,6 +22,7 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import seo from "@/lib/util/seo";
@@ -108,7 +109,10 @@ function ProjectsOverviewPage() {
 
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
-      invalidates: [projectsOptions({ workspaceId, search }).queryKey],
+      invalidates: [
+        projectsOptions({ workspaceId, search }).queryKey,
+        projectColumnsOptions({ workspaceId }).queryKey,
+      ],
     },
     onMutate: async (variables) => {
       await queryClient.cancelQueries(projectsOptions({ workspaceId, search }));

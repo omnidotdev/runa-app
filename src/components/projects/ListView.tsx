@@ -3,7 +3,7 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { ChevronDownIcon, PlusIcon } from "lucide-react";
 
-import TasksList from "@/components/TasksList";
+import TasksList from "@/components/projects/TasksList";
 import { Button } from "@/components/ui/button";
 import {
   CollapsibleContent,

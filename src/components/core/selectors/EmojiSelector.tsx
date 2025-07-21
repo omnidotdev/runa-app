@@ -1,5 +1,6 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import { ChevronDownIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,15 +27,17 @@ const EmojiSelector = ({ value, onChange, triggerProps }: Props) => {
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
-          size="icon"
           className="h-8 text-base-400 text-md hover:text-base-600 dark:hover:text-base-300"
           {...triggerProps}
         >
-          {value || "😀"}
+          {value || " "}
+
+          <ChevronDownIcon size={4} />
         </Button>
       </PopoverTrigger>
       <PopoverPositioner>
         <PopoverContent className="h-full w-full rounded-xl border-0 p-0">
+          {/* TODO: option for removing emoji */}
           <Picker
             navPosition="none"
             previewPosition="none"

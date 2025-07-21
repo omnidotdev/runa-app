@@ -51,6 +51,7 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
+import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/lib/util/getQueryClient";
@@ -93,6 +94,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
       invalidates: [
         ["Projects"],
         workspaceOptions({ rowId: workspaceId! }).queryKey,
+        projectColumnsOptions({ workspaceId: workspaceId! }).queryKey,
       ],
     },
   });
@@ -510,7 +512,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           });
         }}
         dialogType={DialogType.DeleteProject}
-        confirmation={`permanently delete ${selectedProject?.name}`}
+        confirmation={`Permanently delete ${selectedProject?.name}`}
         inputProps={{
           className: "focus-visible:ring-red-500",
         }}

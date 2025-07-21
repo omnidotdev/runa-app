@@ -8,9 +8,10 @@ query Workspace($rowId: UUID!) {
         emoji
         rowId
         title
+        index
       }
     }
-    projects {
+    projects(orderBy: NAME_ASC) {
       nodes {
         rowId
         name

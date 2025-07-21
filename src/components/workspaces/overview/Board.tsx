@@ -1,6 +1,6 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useParams, useSearch } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -20,12 +20,12 @@ const Board = () => {
     from: "/_auth/workspaces/$workspaceId/projects/",
   });
 
-  // const { search } = useSearch({
-  //   from: "/_auth/workspaces/$workspaceId/projects/",
-  // });
+  const { search } = useSearch({
+    from: "/_auth/workspaces/$workspaceId/projects/",
+  });
 
-  const { data: projectColumns } = useSuspenseQuery({
-    ...projectColumnsOptions({ workspaceId: workspaceId! }),
+  const { data: projectColumns } = useQuery({
+    ...projectColumnsOptions({ workspaceId: workspaceId!, search }),
     select: (data) => data?.projectColumns?.nodes,
   });
 

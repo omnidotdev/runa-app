@@ -7191,6 +7191,7 @@ export type LabelsQuery = { __typename?: 'Query', labels?: { __typename?: 'Label
 
 export type ProjectColumnsQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -7255,7 +7256,7 @@ export type WorkspaceQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, viewMode: string, projectColumns: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', emoji?: string | null, rowId: string, title: string }> }, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, color?: string | null, viewMode: string, prefix?: string | null, projectColumn?: { __typename?: 'ProjectColumn', title: string, emoji?: string | null } | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> }, workspaceUsers: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', userId: string }> } } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, viewMode: string, projectColumns: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', emoji?: string | null, rowId: string, title: string, index: number }> }, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, color?: string | null, viewMode: string, prefix?: string | null, projectColumn?: { __typename?: 'ProjectColumn', title: string, emoji?: string | null } | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> }, workspaceUsers: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', userId: string }> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -7566,14 +7567,14 @@ export const LabelsDocument = gql`
 }
     ${LabelFragmentDoc}`;
 export const ProjectColumnsDocument = gql`
-    query ProjectColumns($workspaceId: UUID!) {
+    query ProjectColumns($workspaceId: UUID!, $search: String = "") {
   projectColumns(condition: {workspaceId: $workspaceId}, orderBy: INDEX_ASC) {
     nodes {
       title
       index
       rowId
       emoji
-      projects {
+      projects(filter: {name: {includesInsensitive: $search}}) {
         totalCount
         nodes {
           ...Project
@@ -7776,9 +7777,10 @@ export const WorkspaceDocument = gql`
         emoji
         rowId
         title
+        index
       }
     }
-    projects {
+    projects(orderBy: NAME_ASC) {
       nodes {
         rowId
         name

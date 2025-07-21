@@ -1,6 +1,6 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useParams, useSearch } from "@tanstack/react-router";
 import { ChevronDownIcon, PlusIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -23,12 +23,12 @@ const List = () => {
     from: "/_auth/workspaces/$workspaceId/projects/",
   });
 
-  // const { search } = useSearch({
-  //   from: "/_auth/workspaces/$workspaceId/projects/",
-  // });
+  const { search } = useSearch({
+    from: "/_auth/workspaces/$workspaceId/projects/",
+  });
 
-  const { data: projectColumns } = useSuspenseQuery({
-    ...projectColumnsOptions({ workspaceId: workspaceId! }),
+  const { data: projectColumns } = useQuery({
+    ...projectColumnsOptions({ workspaceId: workspaceId!, search }),
     select: (data) => data?.projectColumns?.nodes,
   });
 
@@ -43,7 +43,7 @@ const List = () => {
     <div className="custom-scrollbar h-full overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/20">
       {projectColumns?.map((column) => (
         <CollapsibleRoot
-          key={status}
+          key={column.rowId}
           className="mb-4 rounded-lg border bg-background last:mb-0"
           defaultOpen
         >

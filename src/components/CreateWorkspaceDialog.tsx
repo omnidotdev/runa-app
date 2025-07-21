@@ -24,9 +24,9 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import type { FormEvent } from "react";
 
 const DEFAULT_PROJECT_COLUMNS = [
-  { title: "Planned", emoji: "🗓️", index: 0 },
-  { title: "In Progress", emoji: "🚧", index: 1 },
-  { title: "Completed", emoji: "✅", index: 2 },
+  { title: "Planned", index: 0 },
+  { title: "In Progress", index: 1 },
+  { title: "Completed", index: 2 },
 ];
 
 const CreateWorkspaceDialog = () => {
@@ -76,9 +76,6 @@ const CreateWorkspaceDialog = () => {
       },
     });
 
-    setNewWorkspaceName("");
-    setIsCreateWorkspaceOpen(false);
-
     const newlyCreatedWorkspace =
       newWorkspaceData.createWorkspace?.workspace?.rowId;
 
@@ -86,13 +83,15 @@ const CreateWorkspaceDialog = () => {
       createProjectColumn({
         input: {
           projectColumn: {
-            title: column.title,
-            emoji: column.emoji,
+            ...column,
             workspaceId: newlyCreatedWorkspace!,
           },
         },
       });
     }
+
+    setNewWorkspaceName("");
+    setIsCreateWorkspaceOpen(false);
   };
 
   return (

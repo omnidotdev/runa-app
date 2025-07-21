@@ -57,7 +57,7 @@ const Projects = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-4">
           <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
             Projects

@@ -1,6 +1,5 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useParams } from "@tanstack/react-router";
 import { GripVerticalIcon, Trash2Icon } from "lucide-react";
 
 import RichTextEditor from "@/components/core/RichTextEditor";
@@ -21,10 +20,6 @@ const DraggableProjectColumn = ({
   projectColumn,
   setProjectColumnToDelete,
 }: Props) => {
-  const { workspaceId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/settings",
-  });
-
   const {
     attributes,
     listeners,

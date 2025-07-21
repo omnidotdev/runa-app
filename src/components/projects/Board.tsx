@@ -4,7 +4,7 @@ import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
 
-import Tasks from "@/components/Tasks";
+import Tasks from "@/components/projects/Tasks";
 import { Button } from "@/components/ui/button";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";

@@ -23,7 +23,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import EmojiSelector from "@/components/core/selectors/EmojiSelector";
-import DraggableColumn from "@/components/projects/DraggableColumn";
+import DraggableColumn from "@/components/projects/settings/DraggableColumn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -150,6 +150,7 @@ const ColumnsForm = () => {
                 onChange={(emoji) => field.handleChange(emoji)}
                 triggerProps={{
                   variant: "outline",
+                  className: "h-9",
                 }}
               />
             )}

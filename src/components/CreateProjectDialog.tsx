@@ -22,6 +22,7 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useForm from "@/lib/hooks/useForm";
+import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 
 const DEFAULT_COLUMNS = [
@@ -68,6 +69,7 @@ const CreateProjectDialog = ({ projectColumnId }: Props) => {
       invalidates: [
         ["Projects"],
         workspaceOptions({ rowId: workspaceId! }).queryKey,
+        projectColumnsOptions({ workspaceId: workspaceId! }).queryKey,
       ],
     },
     onSuccess: async ({ createProject }) => {
@@ -99,7 +101,12 @@ const CreateProjectDialog = ({ projectColumnId }: Props) => {
     defaultValues: {
       name: "",
       description: "",
-      projectColumnId: projectColumnId!,
+      projectColumnId: projectColumnId
+        ? projectColumnId
+        : // Fallback to the first column if not provided
+          currentWorkspace?.projectColumns?.nodes.find(
+            (column) => column.index === 0,
+          )?.rowId,
     },
     onSubmit: async ({ value, formApi }) => {
       createNewProject({
@@ -108,7 +115,7 @@ const CreateProjectDialog = ({ projectColumnId }: Props) => {
             workspaceId: workspaceId!,
             name: value.name,
             description: value.description,
-            projectColumnId: value.projectColumnId,
+            projectColumnId: value.projectColumnId!,
           },
         },
       });

@@ -135,11 +135,10 @@ const WorkspaceColumnsForm = () => {
   return (
     <>
       <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
-            Project Columns
-          </h2>
-        </div>
+        <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
+          Project Columns
+        </h2>
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -155,6 +154,7 @@ const WorkspaceColumnsForm = () => {
                 onChange={(emoji) => field.handleChange(emoji)}
                 triggerProps={{
                   variant: "outline",
+                  className: "h-9",
                 }}
               />
             )}

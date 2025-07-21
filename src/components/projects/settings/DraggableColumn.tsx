@@ -19,6 +19,7 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Tooltip } from "@/components/ui/tooltip";
 import {
   useCreateUserPreferenceMutation,
   useUpdateColumnMutation,
@@ -26,7 +27,6 @@ import {
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
-import { Tooltip } from "../ui/tooltip";
 
 import type { CSSProperties } from "react";
 import type { ColumnFragment as Column } from "@/generated/graphql";

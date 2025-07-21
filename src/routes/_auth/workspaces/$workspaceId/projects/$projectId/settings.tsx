@@ -8,8 +8,8 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
-import ProjectColumnsForm from "@/components/projects/ColumnsForm";
-import ProjectLabelsForm from "@/components/projects/ProjectLabelsForm";
+import ProjectColumnsForm from "@/components/projects/settings/ColumnsForm";
+import ProjectLabelsForm from "@/components/projects/settings/ProjectLabelsForm";
 import { Button } from "@/components/ui/button";
 import {
   useDeleteProjectMutation,

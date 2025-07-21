@@ -138,12 +138,20 @@ function SettingsPage() {
 
         <ConfirmDialog
           title="Danger Zone"
-          description={`This will permanently delete ${workspace?.name} and all associated data. This action cannot be undone.`}
+          description={
+            <span>
+              This will delete{" "}
+              <strong className="font-medium text-base-900 dark:text-base-100">
+                {workspace?.name}
+              </strong>{" "}
+              and all associated data. This action cannot be undone.
+            </span>
+          }
           onConfirm={() => {
             deleteWorkspace({ rowId: workspace?.rowId! });
           }}
           dialogType={DialogType.DeleteWorkspace}
-          confirmation={`permanently delete ${workspace?.name}`}
+          confirmation={`Permanently delete ${workspace?.name}`}
           inputProps={{
             className: "focus-visible:ring-red-500",
           }}
