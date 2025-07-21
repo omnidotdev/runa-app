@@ -235,15 +235,19 @@ const ColumnsForm = () => {
         onConfirm={() => {
           if (!columnToDelete) return;
 
+          const currentColumns = localColumns.filter(
+            (c) => c.rowId !== columnToDelete.rowId,
+          );
+
           deleteColumn({
             rowId: columnToDelete.rowId,
           });
 
-          for (const c of localColumns) {
+          for (const c of currentColumns) {
             updateColumn({
               rowId: c.rowId,
               patch: {
-                index: c.index > columnToDelete.index ? c.index - 1 : c.index,
+                index: currentColumns.findIndex((col) => col.rowId === c.rowId),
               },
             });
           }

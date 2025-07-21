@@ -238,16 +238,19 @@ const WorkspaceColumnsForm = () => {
         onConfirm={() => {
           if (!projectColumnToDelete) return;
 
+          const currentColumns = localProjectColumns.filter(
+            (c) => c.rowId !== projectColumnToDelete.rowId,
+          );
+
           deleteProjectColumn({
             rowId: projectColumnToDelete.rowId,
           });
 
-          for (const c of localProjectColumns) {
+          for (const c of currentColumns) {
             updateProjectColumn({
               rowId: c.rowId,
               patch: {
-                index:
-                  c.index > projectColumnToDelete.index ? c.index - 1 : c.index,
+                index: currentColumns.findIndex((col) => col.rowId === c.rowId),
               },
             });
           }
