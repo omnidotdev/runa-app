@@ -18,7 +18,10 @@ export const Route = createFileRoute({
       ...(workspaceId
         ? [
             queryClient.ensureQueryData(
-              workspaceOptions({ rowId: workspaceId }),
+              workspaceOptions({
+                rowId: workspaceId,
+                userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+              }),
             ),
           ]
         : []),

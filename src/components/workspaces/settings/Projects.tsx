@@ -32,7 +32,10 @@ const Projects = () => {
   const navigate = useNavigate();
 
   const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId }),
+    ...workspaceOptions({
+      rowId: workspaceId,
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+    }),
     select: (data) => data?.workspace,
   });
 
@@ -40,7 +43,10 @@ const Projects = () => {
     meta: {
       invalidates: [
         ["Projects"],
-        workspaceOptions({ rowId: workspaceId }).queryKey,
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }).queryKey,
       ],
     },
   });

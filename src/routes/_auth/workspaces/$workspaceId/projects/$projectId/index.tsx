@@ -28,11 +28,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
-import { useUpdateProjectMutation } from "@/generated/graphql";
+import {
+  useUpdateProjectMutation,
+  useUpdateUserPreferenceMutation,
+} from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import seo from "@/lib/util/seo";
@@ -67,7 +71,18 @@ export const Route = createFileRoute({
       queryClient.ensureQueryData(
         projectOptions({ rowId: projectId, columns }),
       ),
-      queryClient.ensureQueryData(workspaceOptions({ rowId: workspaceId })),
+      queryClient.ensureQueryData(
+        userPreferencesOptions({
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+          projectId,
+        }),
+      ),
+      queryClient.ensureQueryData(
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }),
+      ),
       queryClient.ensureQueryData(
         workspaceUsersOptions({ rowId: workspaceId }),
       ),
@@ -140,6 +155,14 @@ function ProjectPage() {
     select: (data) => data?.project,
   });
 
+  const { data: userPreferences } = useSuspenseQuery({
+    ...userPreferencesOptions({
+      projectId: projectId,
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+    }),
+    select: (data) => data?.userPreferenceByUserIdAndProjectId,
+  });
+
   const [projectColumnOpenStates, setProjectColumnOpenStates] = useState(
     project?.columns?.nodes?.map(() => true) ?? [],
   );
@@ -154,19 +177,25 @@ function ProjectPage() {
     setIsForceClosed(false);
   };
 
-  const { mutate: updateViewMode } = useUpdateProjectMutation({
+  const { mutate: updateViewMode } = useUpdateUserPreferenceMutation({
     meta: {
       invalidates: [
         projectOptions({ rowId: projectId }).queryKey,
-        workspaceOptions({ rowId: workspaceId }).queryKey,
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }).queryKey,
       ],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(
-        projectOptions({ rowId: projectId }).queryKey,
+        userPreferencesOptions({
+          projectId: projectId,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }).queryKey,
         (old) => ({
-          project: {
-            ...old?.project!,
+          userPreferenceByUserIdAndProjectId: {
+            ...old?.userPreferenceByUserIdAndProjectId!,
             viewMode: variables.patch?.viewMode!,
           },
         }),
@@ -186,12 +215,12 @@ function ProjectPage() {
     Hotkeys.ToggleViewMode,
     () =>
       updateViewMode({
-        rowId: projectId,
+        rowId: userPreferences?.rowId!,
         patch: {
-          viewMode: project?.viewMode === "board" ? "list" : "board",
+          viewMode: userPreferences?.viewMode === "board" ? "list" : "board",
         },
       }),
-    [updateViewMode, project?.viewMode, projectId],
+    [updateViewMode, userPreferences?.viewMode, projectId],
   );
 
   return (
@@ -254,7 +283,7 @@ function ProjectPage() {
                   className: "bg-background text-foreground border",
                   children: (
                     <div className="inline-flex">
-                      {project?.viewMode === "list"
+                      {userPreferences?.viewMode === "list"
                         ? "Board View"
                         : "List View"}
                       <div className="ml-2 flex items-center gap-0.5">
@@ -269,15 +298,17 @@ function ProjectPage() {
                   size="icon"
                   onClick={() =>
                     updateViewMode({
-                      rowId: project?.rowId!,
+                      rowId: userPreferences?.rowId!,
                       patch: {
                         viewMode:
-                          project?.viewMode === "board" ? "list" : "board",
+                          userPreferences?.viewMode === "board"
+                            ? "list"
+                            : "board",
                       },
                     })
                   }
                 >
-                  {project?.viewMode === "list" ? (
+                  {userPreferences?.viewMode === "list" ? (
                     <Grid2X2Icon />
                   ) : (
                     <ListIcon />
@@ -307,7 +338,7 @@ function ProjectPage() {
 
               <Filter />
 
-              {project?.viewMode === "list" && (
+              {userPreferences?.viewMode === "list" && (
                 <Tooltip
                   positioning={{ placement: "bottom" }}
                   tooltip={{
@@ -328,7 +359,7 @@ function ProjectPage() {
           </div>
         </div>
 
-        {project?.viewMode === "board" ? (
+        {userPreferences?.viewMode === "board" ? (
           <Board />
         ) : (
           <ListView

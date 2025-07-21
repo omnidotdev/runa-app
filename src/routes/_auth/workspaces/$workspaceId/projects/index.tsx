@@ -46,7 +46,12 @@ export const Route = createFileRoute({
     context: { queryClient },
   }) => {
     const [{ workspace }] = await Promise.all([
-      queryClient.ensureQueryData(workspaceOptions({ rowId: workspaceId })),
+      queryClient.ensureQueryData(
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }),
+      ),
       queryClient.ensureQueryData(projectsOptions({ workspaceId, search })),
     ]);
 
@@ -72,7 +77,10 @@ function ProjectsOverviewPage() {
   const { queryClient } = Route.useRouteContext();
 
   const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId }),
+    ...workspaceOptions({
+      rowId: workspaceId,
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+    }),
     select: (data) => data?.workspace,
   });
 
@@ -80,11 +88,19 @@ function ProjectsOverviewPage() {
 
   const { mutate: updateViewMode } = useUpdateWorkspaceMutation({
     meta: {
-      invalidates: [workspaceOptions({ rowId: workspaceId }).queryKey],
+      invalidates: [
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }).queryKey,
+      ],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(
-        workspaceOptions({ rowId: workspaceId }).queryKey,
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }).queryKey,
         (old) => ({
           workspace: {
             ...old?.workspace!,

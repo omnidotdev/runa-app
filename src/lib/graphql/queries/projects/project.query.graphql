@@ -5,7 +5,6 @@ query Project($rowId: UUID!, $columns: [UUID!]) {
     description
     prefix
     color
-    viewMode
     projectColumnId
     labels {
       nodes {

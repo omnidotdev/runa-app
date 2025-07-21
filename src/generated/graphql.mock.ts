@@ -760,7 +760,7 @@ export const mockTasksQuery = (resolver: GraphQLResponseResolver<Types.TasksQuer
  *   ({ query, variables }) => {
  *     const { userId, projectId } = variables;
  *     return HttpResponse.json({
- *       data: { userPreferences }
+ *       data: { userPreferenceByUserIdAndProjectId }
  *     })
  *   },
  *   requestOptions
@@ -823,7 +823,7 @@ export const mockWorkspaceUsersQuery = (resolver: GraphQLResponseResolver<Types.
  * @example
  * mockWorkspaceQuery(
  *   ({ query, variables }) => {
- *     const { rowId } = variables;
+ *     const { rowId, userId } = variables;
  *     return HttpResponse.json({
  *       data: { workspace }
  *     })

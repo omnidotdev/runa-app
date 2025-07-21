@@ -1,8 +1,7 @@
 query UserPreferences($userId: UUID!, $projectId: UUID!) {
-  userPreferences(condition: { userId: $userId, projectId: $projectId }) {
-    nodes {
-      hiddenColumnIds
-      rowId
-    }
+  userPreferenceByUserIdAndProjectId(userId: $userId, projectId: $projectId) {
+    hiddenColumnIds
+    viewMode
+    rowId
   }
 }

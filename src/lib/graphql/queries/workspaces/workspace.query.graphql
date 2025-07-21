@@ -1,4 +1,4 @@
-query Workspace($rowId: UUID!) {
+query Workspace($rowId: UUID!, $userId: UUID!) {
   workspace(rowId: $rowId) {
     rowId
     name
@@ -16,8 +16,14 @@ query Workspace($rowId: UUID!) {
         rowId
         name
         color
-        viewMode
         prefix
+        userPreferences(condition: { userId: $userId }) {
+          nodes {
+            hiddenColumnIds
+            viewMode
+            rowId
+          }
+        }
         projectColumn {
           title
           emoji

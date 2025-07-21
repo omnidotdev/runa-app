@@ -29,10 +29,7 @@ import {
 } from "@/components/ui/popover";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
-import {
-  useCreateUserPreferenceMutation,
-  useUpdateUserPreferenceMutation,
-} from "@/generated/graphql";
+import { useUpdateUserPreferenceMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { labelColors } from "@/lib/constants/labelColors";
 import projectOptions from "@/lib/options/project.options";
@@ -71,21 +68,16 @@ const Filter = () => {
       userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
       projectId,
     }),
-    select: (data) => data?.userPreferences?.nodes?.[0],
+    select: (data) => data?.userPreferenceByUserIdAndProjectId,
   });
 
   const userHiddenColumns = userPreferences?.hiddenColumnIds ?? [];
 
   const { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
-      meta: {
-        invalidates: [["all"]],
-      },
-    }),
-    { mutate: createUserPreference } = useCreateUserPreferenceMutation({
-      meta: {
-        invalidates: [["all"]],
-      },
-    });
+    meta: {
+      invalidates: [["all"]],
+    },
+  });
 
   useHotkeys(Hotkeys.ToggleFilter, () => setIsFilterOpen(!isFilterOpen), [
     isFilterOpen,
@@ -327,32 +319,15 @@ const Filter = () => {
                       checked={userHiddenColumns.includes(column.rowId)}
                       onCheckedChange={({ checked }) => {
                         if (checked) {
-                          if (!userPreferences) {
-                            createUserPreference({
-                              input: {
-                                userPreference: {
-                                  // TODO: Dynamic userId
-                                  userId:
-                                    "024bec7c-5822-4b34-f993-39cbc613e1c9",
-                                  projectId,
-                                  hiddenColumnIds: [
-                                    ...userHiddenColumns,
-                                    column.rowId,
-                                  ],
-                                },
-                              },
-                            });
-                          } else {
-                            updateUserPreferences({
-                              rowId: userPreferences?.rowId!,
-                              patch: {
-                                hiddenColumnIds: [
-                                  ...userHiddenColumns,
-                                  column.rowId,
-                                ],
-                              },
-                            });
-                          }
+                          updateUserPreferences({
+                            rowId: userPreferences?.rowId!,
+                            patch: {
+                              hiddenColumnIds: [
+                                ...userHiddenColumns,
+                                column.rowId,
+                              ],
+                            },
+                          });
                         } else {
                           updateUserPreferences({
                             rowId: userPreferences?.rowId!,

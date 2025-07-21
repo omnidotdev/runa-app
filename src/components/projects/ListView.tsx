@@ -46,7 +46,7 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
       userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
       projectId,
     }),
-    select: (data) => data?.userPreferences?.nodes?.[0],
+    select: (data) => data?.userPreferenceByUserIdAndProjectId,
   });
 
   const userHiddenColumns = userPreferences?.hiddenColumnIds as string[];

@@ -46,12 +46,12 @@ import {
 import { Tooltip } from "@/components/ui/tooltip";
 import {
   useDeleteProjectMutation,
-  useUpdateProjectMutation,
+  useUpdateUserPreferenceMutation,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import projectOptions from "@/lib/options/project.options";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import getQueryClient from "@/lib/util/getQueryClient";
@@ -82,7 +82,10 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   });
 
   const { data: workspace } = useQuery({
-    ...workspaceOptions({ rowId: workspaceId! }),
+    ...workspaceOptions({
+      rowId: workspaceId!,
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+    }),
     enabled: !!workspaceId,
     select: (data) => data.workspace,
   });
@@ -93,22 +96,28 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
     meta: {
       invalidates: [
         ["Projects"],
-        workspaceOptions({ rowId: workspaceId! }).queryKey,
+        workspaceOptions({
+          rowId: workspaceId!,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }).queryKey,
         projectColumnsOptions({ workspaceId: workspaceId! }).queryKey,
       ],
     },
   });
 
-  const { mutate: updateViewMode } = useUpdateProjectMutation({
+  const { mutate: updateViewMode } = useUpdateUserPreferenceMutation({
     meta: {
-      invalidates: [workspaceOptions({ rowId: workspaceId! }).queryKey],
+      invalidates: [["all"]],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(
-        projectOptions({ rowId: variables.rowId }).queryKey,
+        userPreferencesOptions({
+          projectId: selectedProject?.rowId!,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }).queryKey,
         (old) => ({
-          project: {
-            ...old?.project!,
+          userPreferenceByUserIdAndProjectId: {
+            ...old?.userPreferenceByUserIdAndProjectId!,
             viewMode: variables.patch?.viewMode!,
           },
         }),
@@ -298,7 +307,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                           }}
                           className="justify-start border border-transparent"
                         >
-                          {project?.viewMode === "board" ? (
+                          {project?.userPreferences?.nodes?.[0]?.viewMode ===
+                          "board" ? (
                             <Grid2X2Icon
                               className="size-4 text-primary-500"
                               style={{ color: project?.color ?? undefined }}
@@ -320,7 +330,15 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                         }}
                       >
                         <MenuTrigger asChild>
-                          <SidebarMenuAction showOnHover>
+                          <SidebarMenuAction
+                            showOnHover
+                            onClick={() => {
+                              setSelectedProject({
+                                rowId: project.rowId,
+                                name: project.name,
+                              });
+                            }}
+                          >
                             <MoreHorizontalIcon />
                             <span className="sr-only">More</span>
                           </SidebarMenuAction>
@@ -350,23 +368,28 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                               className="flex cursor-pointer items-center gap-2"
                               onClick={() =>
                                 updateViewMode({
-                                  rowId: project.rowId,
+                                  rowId:
+                                    project?.userPreferences?.nodes?.[0]
+                                      ?.rowId!,
                                   patch: {
                                     viewMode:
-                                      project?.viewMode === "board"
+                                      project?.userPreferences?.nodes?.[0]
+                                        ?.viewMode === "board"
                                         ? "list"
                                         : "board",
                                   },
                                 })
                               }
                             >
-                              {project?.viewMode === "list" ? (
+                              {project?.userPreferences?.nodes?.[0]
+                                ?.viewMode === "list" ? (
                                 <Grid2X2Icon />
                               ) : (
                                 <ListIcon />
                               )}
                               <span>
-                                {project?.viewMode === "list"
+                                {project?.userPreferences?.nodes?.[0]
+                                  ?.viewMode === "list"
                                   ? "Board View"
                                   : "List View"}
                               </span>
@@ -429,7 +452,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                               })
                             }
                           >
-                            {project?.viewMode === "board" ? (
+                            {project?.userPreferences?.nodes?.[0]?.viewMode ===
+                            "board" ? (
                               <Grid2X2Icon
                                 className="size-4 text-primary-500"
                                 style={{ color: project?.color ?? undefined }}

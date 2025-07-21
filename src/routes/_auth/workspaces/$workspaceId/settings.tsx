@@ -25,7 +25,12 @@ import seo from "@/lib/util/seo";
 export const Route = createFileRoute({
   loader: async ({ params: { workspaceId }, context: { queryClient } }) => {
     const [{ workspace }] = await Promise.all([
-      queryClient.ensureQueryData(workspaceOptions({ rowId: workspaceId })),
+      queryClient.ensureQueryData(
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }),
+      ),
       queryClient.ensureQueryData(
         projectColumnsOptions({
           workspaceId,
@@ -54,7 +59,10 @@ function SettingsPage() {
   const [nameError, setNameError] = useState<string | null>(null);
 
   const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId }),
+    ...workspaceOptions({
+      rowId: workspaceId,
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+    }),
     select: (data) => data?.workspace,
   });
 
