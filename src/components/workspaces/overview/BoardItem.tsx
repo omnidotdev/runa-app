@@ -39,7 +39,6 @@ const BoardItem = ({ project }: Props) => {
       className="cursor-pointer rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
     >
       <div className="mb-3 flex items-center gap-2">
-        {/* {getStatusIcon(status)} */}
         <p className="text-base-600 text-sm dark:text-base-400">
           #{project.prefix ?? "PROJ"}
         </p>

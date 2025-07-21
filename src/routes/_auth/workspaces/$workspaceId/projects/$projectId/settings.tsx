@@ -167,7 +167,6 @@ function RouteComponent() {
 
         <ConfirmDialog
           title="Danger Zone"
-          // description={`This will permanently delete ${workspace?.name} and all associated data. This action cannot be undone.`}
           description={
             <span>
               This will delete the project{" "}
