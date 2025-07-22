@@ -28,12 +28,11 @@ import seo from "@/lib/util/seo";
 export const Route = createFileRoute({
   loader: async ({
     params: { workspaceSlug, projectSlug },
-    context: { queryClient, session },
+    context: { queryClient },
   }) => {
     const { workspaceBySlug } = await queryClient.ensureQueryData(
       workspaceBySlugOptions({
         slug: workspaceSlug,
-        userId: session?.user?.rowId!,
         projectSlug,
       }),
     );
@@ -63,8 +62,6 @@ export const Route = createFileRoute({
 });
 
 function RouteComponent() {
-  const { session } = Route.useRouteContext();
-
   const { workspaceSlug, projectSlug } = Route.useParams();
 
   const { projectId } = Route.useLoaderData();
@@ -94,7 +91,6 @@ function RouteComponent() {
 
       const { workspaceBySlug } = await sdk.WorkspaceBySlug({
         slug: workspaceSlug,
-        userId: session?.user?.rowId!,
         projectSlug: updatedSlug,
       });
 

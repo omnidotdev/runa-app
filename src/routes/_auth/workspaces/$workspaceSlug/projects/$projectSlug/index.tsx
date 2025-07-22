@@ -74,7 +74,6 @@ export const Route = createFileRoute({
     const { workspaceBySlug } = await queryClient.ensureQueryData(
       workspaceBySlugOptions({
         slug: workspaceSlug,
-        userId: session?.user?.rowId!,
         projectSlug,
       }),
     );
@@ -87,44 +86,50 @@ export const Route = createFileRoute({
 
     const projectId = project.rowId;
     const projectName = project.name;
-    const userPreferences = project.userPreferences.nodes[0];
 
-    await Promise.all([
-      queryClient.ensureQueryData(
-        projectOptions({
-          rowId: projectId,
-          hiddenColumns: userPreferences.hiddenColumnIds as string[],
-        }),
-      ),
-      queryClient.ensureQueryData(
-        workspaceOptions({
-          rowId: workspaceBySlug.rowId,
-          userId: session?.user?.rowId!,
-        }),
-      ),
-      queryClient.ensureQueryData(
-        workspaceUsersOptions({ workspaceId: workspaceBySlug.rowId }),
-      ),
-      queryClient.ensureQueryData(
-        tasksOptions({
-          projectId,
-          search,
-          assignees: assignees.length
-            ? { some: { user: { rowId: { in: assignees } } } }
-            : undefined,
-          labels: labels.length
-            ? { some: { label: { rowId: { in: labels } } } }
-            : undefined,
-          priorities: priorities.length ? priorities : undefined,
-        }),
-      ),
-    ]);
+    const [{ userPreferenceByUserIdAndProjectId: userPreferences }] =
+      await Promise.all([
+        queryClient.ensureQueryData(
+          userPreferencesOptions({
+            userId: session?.user?.rowId!,
+            projectId,
+          }),
+        ),
+        queryClient.ensureQueryData(
+          workspaceOptions({
+            rowId: workspaceBySlug.rowId,
+            userId: session?.user?.rowId!,
+          }),
+        ),
+        queryClient.ensureQueryData(
+          workspaceUsersOptions({ workspaceId: workspaceBySlug.rowId }),
+        ),
+        queryClient.ensureQueryData(
+          tasksOptions({
+            projectId,
+            search,
+            assignees: assignees.length
+              ? { some: { user: { rowId: { in: assignees } } } }
+              : undefined,
+            labels: labels.length
+              ? { some: { label: { rowId: { in: labels } } } }
+              : undefined,
+            priorities: priorities.length ? priorities : undefined,
+          }),
+        ),
+      ]);
+
+    await queryClient.ensureQueryData(
+      projectOptions({
+        rowId: projectId,
+        hiddenColumns: userPreferences?.hiddenColumnIds as string[],
+      }),
+    );
 
     return {
       name: projectName,
       projectId,
       workspaceId: workspaceBySlug.rowId,
-      userPreferences,
     };
   },
   validateSearch: zodValidator(projectSearchParamsSchema),
@@ -149,7 +154,7 @@ export const Route = createFileRoute({
 function ProjectPage() {
   const { session } = Route.useRouteContext();
   const { projectSlug, workspaceSlug } = Route.useParams();
-  const { projectId, userPreferences } = Route.useLoaderData();
+  const { projectId } = Route.useLoaderData();
   const { search } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
@@ -172,10 +177,18 @@ function ProjectPage() {
     300,
   );
 
+  const { data: userPreferences } = useSuspenseQuery({
+    ...userPreferencesOptions({
+      userId: session?.user.rowId!,
+      projectId,
+    }),
+    select: (data) => data?.userPreferenceByUserIdAndProjectId,
+  });
+
   const { data: project } = useSuspenseQuery({
     ...projectOptions({
       rowId: projectId,
-      hiddenColumns: userPreferences.hiddenColumnIds as string[],
+      hiddenColumns: userPreferences?.hiddenColumnIds as string[],
     }),
     select: (data) => data?.project,
   });
@@ -198,7 +211,6 @@ function ProjectPage() {
 
       const { workspaceBySlug } = await sdk.WorkspaceBySlug({
         slug: workspaceSlug,
-        userId: session?.user.rowId!,
         projectSlug: updatedSlug,
       });
 
@@ -266,7 +278,7 @@ function ProjectPage() {
     Hotkeys.ToggleViewMode,
     () =>
       updateViewMode({
-        rowId: userPreferences.rowId,
+        rowId: userPreferences?.rowId!,
         patch: {
           viewMode: userPreferences?.viewMode === "board" ? "list" : "board",
         },

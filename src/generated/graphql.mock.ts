@@ -890,7 +890,7 @@ export const mockWorkspaceQuery = (resolver: GraphQLResponseResolver<Types.Works
  * @example
  * mockWorkspaceBySlugQuery(
  *   ({ query, variables }) => {
- *     const { slug, userId, projectSlug } = variables;
+ *     const { slug, projectSlug } = variables;
  *     return HttpResponse.json({
  *       data: { workspaceBySlug }
  *     })

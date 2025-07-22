@@ -34,7 +34,6 @@ export const Route = createFileRoute({
     const { workspaceBySlug } = await queryClient.ensureQueryData(
       workspaceBySlugOptions({
         slug: workspaceSlug,
-        userId: session?.user?.rowId!,
       }),
     );
 
@@ -101,7 +100,6 @@ function SettingsPage() {
 
       const { workspaceBySlug } = await sdk.WorkspaceBySlug({
         slug: workspaceSlug,
-        userId: session?.user?.rowId!,
         projectSlug: updatedSlug,
       });
 

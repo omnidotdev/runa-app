@@ -41,12 +41,11 @@ import type { EditorApi } from "@/components/core/RichTextEditor";
 export const Route = createFileRoute({
   loader: async ({
     params: { workspaceSlug, projectSlug, taskId },
-    context: { queryClient, session },
+    context: { queryClient },
   }) => {
     const { workspaceBySlug } = await queryClient.ensureQueryData(
       workspaceBySlugOptions({
         slug: workspaceSlug,
-        userId: session?.user?.rowId!,
         projectSlug,
       }),
     );
