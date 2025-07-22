@@ -36,7 +36,7 @@ const DEFAULT_COLUMNS = [
   { title: "Backlog", index: 0, emoji: "📚" },
   { title: "To Do", index: 1, emoji: "📝" },
   { title: "In Progress", index: 2, emoji: "🚧" },
-  { title: "Awaiting Review", index: 3, emoji: "👀" },
+  { title: "Awaiting Review", index: 3, emoji: "🔍" },
   { title: "Done", index: 4, emoji: "✅" },
 ];
 
