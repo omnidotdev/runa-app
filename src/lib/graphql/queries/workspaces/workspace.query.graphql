@@ -1,8 +1,4 @@
-query Workspace(
-  $rowId: UUID!
-  $userId: UUID!
-  $userFilter: WorkspaceUserFilter
-) {
+query Workspace($rowId: UUID!, $userId: UUID!) {
   workspace(rowId: $rowId) {
     rowId
     name
@@ -50,11 +46,6 @@ query Workspace(
             }
           }
         }
-      }
-    }
-    workspaceUsers(filter: $userFilter) {
-      nodes {
-        userId
       }
     }
   }

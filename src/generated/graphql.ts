@@ -8004,7 +8004,8 @@ export type UserByIdentityProviderIdQueryVariables = Exact<{
 export type UserByIdentityProviderIdQuery = { __typename?: 'Query', userByIdentityProviderId?: { __typename?: 'User', rowId: string } | null };
 
 export type WorkspaceUsersQueryVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
+  workspaceId: Scalars['UUID']['input'];
+  filter?: InputMaybe<WorkspaceUserFilter>;
 }>;
 
 
@@ -8013,19 +8014,19 @@ export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __t
 export type WorkspaceQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
   userId: Scalars['UUID']['input'];
-  userFilter?: InputMaybe<WorkspaceUserFilter>;
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, slug: string, viewMode: string, projectColumns: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', emoji?: string | null, rowId: string, title: string, index: number }> }, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, prefix?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string }> }, projectColumn?: { __typename?: 'ProjectColumn', title: string, emoji?: string | null } | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> }, workspaceUsers: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', userId: string }> } } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, slug: string, viewMode: string, projectColumns: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', emoji?: string | null, rowId: string, title: string, index: number }> }, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, prefix?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string }> }, projectColumn?: { __typename?: 'ProjectColumn', title: string, emoji?: string | null } | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } } | null };
 
 export type WorkspaceBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
+  userId: Scalars['UUID']['input'];
   projectSlug?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type WorkspaceBySlugQuery = { __typename?: 'Query', workspaceBySlug?: { __typename?: 'Workspace', name: string, rowId: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string }> } } | null };
+export type WorkspaceBySlugQuery = { __typename?: 'Query', workspaceBySlug?: { __typename?: 'Workspace', name: string, rowId: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string }> } }> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -9495,20 +9496,20 @@ useInfiniteUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProv
 useUserByIdentityProviderIdQuery.fetcher = (variables: UserByIdentityProviderIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, variables, options);
 
 export const WorkspaceUsersDocument = `
-    query WorkspaceUsers($rowId: UUID!) {
-  workspaceUsers(condition: {workspaceId: $rowId}) {
+    query WorkspaceUsers($workspaceId: UUID!, $filter: WorkspaceUserFilter) {
+  workspaceUsers(condition: {workspaceId: $workspaceId}, filter: $filter) {
     nodes {
       user {
         name
         avatarUrl
         rowId
         assignedTasks: assignees(
-          filter: {task: {project: {workspaceId: {equalTo: $rowId}}}}
+          filter: {task: {project: {workspaceId: {equalTo: $workspaceId}}}}
         ) {
           totalCount
         }
         completedTasks: assignees(
-          filter: {task: {project: {workspaceId: {equalTo: $rowId}}, column: {title: {equalTo: "Done"}}}}
+          filter: {task: {project: {workspaceId: {equalTo: $workspaceId}}, column: {title: {equalTo: "Done"}}}}
         ) {
           totalCount
         }
@@ -9561,7 +9562,7 @@ useInfiniteWorkspaceUsersQuery.getKey = (variables: WorkspaceUsersQueryVariables
 useWorkspaceUsersQuery.fetcher = (variables: WorkspaceUsersQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceUsersQuery, WorkspaceUsersQueryVariables>(WorkspaceUsersDocument, variables, options);
 
 export const WorkspaceDocument = `
-    query Workspace($rowId: UUID!, $userId: UUID!, $userFilter: WorkspaceUserFilter) {
+    query Workspace($rowId: UUID!, $userId: UUID!) {
   workspace(rowId: $rowId) {
     rowId
     name
@@ -9606,11 +9607,6 @@ export const WorkspaceDocument = `
             }
           }
         }
-      }
-    }
-    workspaceUsers(filter: $userFilter) {
-      nodes {
-        userId
       }
     }
   }
@@ -9660,7 +9656,7 @@ useInfiniteWorkspaceQuery.getKey = (variables: WorkspaceQueryVariables) => ['Wor
 useWorkspaceQuery.fetcher = (variables: WorkspaceQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceQuery, WorkspaceQueryVariables>(WorkspaceDocument, variables, options);
 
 export const WorkspaceBySlugDocument = `
-    query WorkspaceBySlug($slug: String!, $projectSlug: String) {
+    query WorkspaceBySlug($slug: String!, $userId: UUID!, $projectSlug: String) {
   workspaceBySlug(slug: $slug) {
     name
     rowId
@@ -9668,6 +9664,13 @@ export const WorkspaceBySlugDocument = `
       nodes {
         name
         rowId
+        userPreferences(condition: {userId: $userId}) {
+          nodes {
+            hiddenColumnIds
+            viewMode
+            rowId
+          }
+        }
       }
     }
   }

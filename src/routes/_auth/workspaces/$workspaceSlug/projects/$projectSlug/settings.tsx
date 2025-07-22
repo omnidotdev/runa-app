@@ -28,10 +28,14 @@ import seo from "@/lib/util/seo";
 export const Route = createFileRoute({
   loader: async ({
     params: { workspaceSlug, projectSlug },
-    context: { queryClient },
+    context: { queryClient, session },
   }) => {
     const { workspaceBySlug } = await queryClient.ensureQueryData(
-      workspaceBySlugOptions({ slug: workspaceSlug, projectSlug }),
+      workspaceBySlugOptions({
+        slug: workspaceSlug,
+        userId: session?.user?.rowId!,
+        projectSlug,
+      }),
     );
 
     if (!workspaceBySlug || !workspaceBySlug.projects.nodes.length) {
@@ -59,6 +63,8 @@ export const Route = createFileRoute({
 });
 
 function RouteComponent() {
+  const { session } = Route.useRouteContext();
+
   const { workspaceSlug, projectSlug } = Route.useParams();
 
   const { projectId } = Route.useLoaderData();
@@ -88,6 +94,7 @@ function RouteComponent() {
 
       const { workspaceBySlug } = await sdk.WorkspaceBySlug({
         slug: workspaceSlug,
+        userId: session?.user?.rowId!,
         projectSlug: updatedSlug,
       });
 

@@ -24,7 +24,7 @@ const CreateTaskAssignees = withForm({
     const { workspaceId } = useLoaderData({ from: "/_auth" });
 
     const { data: users } = useQuery({
-      ...workspaceUsersOptions({ rowId: workspaceId! }),
+      ...workspaceUsersOptions({ workspaceId: workspaceId! }),
       enabled: !!workspaceId,
       select: (data) =>
         data?.workspaceUsers?.nodes.flatMap((user) => user.user),

@@ -56,6 +56,10 @@ const projectSearchParamsSchema = z.object({
 });
 
 export const Route = createFileRoute({
+  // TODO: scaffold out. `loader` work takes longer than the preload of `intent` so without the `pendingComponent` we get flash of content
+  pendingComponent: () => (
+    <div className="flex size-full items-center justify-center">Loading...</div>
+  ),
   loaderDeps: ({ search: { search, assignees, labels, priorities } }) => ({
     search,
     assignees,
@@ -68,30 +72,28 @@ export const Route = createFileRoute({
     context: { queryClient, session },
   }) => {
     const { workspaceBySlug } = await queryClient.ensureQueryData(
-      workspaceBySlugOptions({ slug: workspaceSlug, projectSlug }),
+      workspaceBySlugOptions({
+        slug: workspaceSlug,
+        userId: session?.user?.rowId!,
+        projectSlug,
+      }),
     );
 
     if (!workspaceBySlug || !workspaceBySlug.projects.nodes.length) {
       throw notFound();
     }
 
-    const projectId = workspaceBySlug.projects.nodes[0].rowId;
-    const projectName = workspaceBySlug.projects.nodes[0].name;
+    const project = workspaceBySlug.projects.nodes[0];
 
-    const { userPreferenceByUserIdAndProjectId } =
-      await queryClient.ensureQueryData(
-        userPreferencesOptions({
-          userId: session?.user?.rowId!,
-          projectId,
-        }),
-      );
+    const projectId = project.rowId;
+    const projectName = project.name;
+    const userPreferences = project.userPreferences.nodes[0];
 
     await Promise.all([
       queryClient.ensureQueryData(
         projectOptions({
           rowId: projectId,
-          hiddenColumns:
-            userPreferenceByUserIdAndProjectId?.hiddenColumnIds as string[],
+          hiddenColumns: userPreferences.hiddenColumnIds as string[],
         }),
       ),
       queryClient.ensureQueryData(
@@ -101,7 +103,7 @@ export const Route = createFileRoute({
         }),
       ),
       queryClient.ensureQueryData(
-        workspaceUsersOptions({ rowId: workspaceBySlug.rowId }),
+        workspaceUsersOptions({ workspaceId: workspaceBySlug.rowId }),
       ),
       queryClient.ensureQueryData(
         tasksOptions({
@@ -118,7 +120,12 @@ export const Route = createFileRoute({
       ),
     ]);
 
-    return { name: projectName, projectId, workspaceId: workspaceBySlug.rowId };
+    return {
+      name: projectName,
+      projectId,
+      workspaceId: workspaceBySlug.rowId,
+      userPreferences,
+    };
   },
   validateSearch: zodValidator(projectSearchParamsSchema),
   search: {
@@ -142,7 +149,7 @@ export const Route = createFileRoute({
 function ProjectPage() {
   const { session } = Route.useRouteContext();
   const { projectSlug, workspaceSlug } = Route.useParams();
-  const { projectId, workspaceId } = Route.useLoaderData();
+  const { projectId, userPreferences } = Route.useLoaderData();
   const { search } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
@@ -165,18 +172,10 @@ function ProjectPage() {
     300,
   );
 
-  const { data: userPreferences } = useSuspenseQuery({
-    ...userPreferencesOptions({
-      projectId: projectId,
-      userId: session?.user?.rowId!,
-    }),
-    select: (data) => data?.userPreferenceByUserIdAndProjectId,
-  });
-
   const { data: project } = useSuspenseQuery({
     ...projectOptions({
       rowId: projectId,
-      hiddenColumns: userPreferences?.hiddenColumnIds as string[],
+      hiddenColumns: userPreferences.hiddenColumnIds as string[],
     }),
     select: (data) => data?.project,
   });
@@ -199,6 +198,7 @@ function ProjectPage() {
 
       const { workspaceBySlug } = await sdk.WorkspaceBySlug({
         slug: workspaceSlug,
+        userId: session?.user.rowId!,
         projectSlug: updatedSlug,
       });
 
@@ -227,13 +227,7 @@ function ProjectPage() {
 
   const { mutate: updateViewMode } = useUpdateUserPreferenceMutation({
     meta: {
-      invalidates: [
-        projectOptions({ rowId: projectId }).queryKey,
-        workspaceOptions({
-          rowId: workspaceId,
-          userId: session?.user?.rowId!,
-        }).queryKey,
-      ],
+      invalidates: [["all"]],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(
@@ -272,7 +266,7 @@ function ProjectPage() {
     Hotkeys.ToggleViewMode,
     () =>
       updateViewMode({
-        rowId: userPreferences?.rowId!,
+        rowId: userPreferences.rowId,
         patch: {
           viewMode: userPreferences?.viewMode === "board" ? "list" : "board",
         },

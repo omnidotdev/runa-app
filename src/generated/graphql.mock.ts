@@ -846,7 +846,7 @@ export const mockUserByIdentityProviderIdQuery = (resolver: GraphQLResponseResol
  * @example
  * mockWorkspaceUsersQuery(
  *   ({ query, variables }) => {
- *     const { rowId } = variables;
+ *     const { workspaceId, filter } = variables;
  *     return HttpResponse.json({
  *       data: { workspaceUsers }
  *     })
@@ -868,7 +868,7 @@ export const mockWorkspaceUsersQuery = (resolver: GraphQLResponseResolver<Types.
  * @example
  * mockWorkspaceQuery(
  *   ({ query, variables }) => {
- *     const { rowId, userId, userFilter } = variables;
+ *     const { rowId, userId } = variables;
  *     return HttpResponse.json({
  *       data: { workspace }
  *     })
@@ -890,7 +890,7 @@ export const mockWorkspaceQuery = (resolver: GraphQLResponseResolver<Types.Works
  * @example
  * mockWorkspaceBySlugQuery(
  *   ({ query, variables }) => {
- *     const { slug, projectSlug } = variables;
+ *     const { slug, userId, projectSlug } = variables;
  *     return HttpResponse.json({
  *       data: { workspaceBySlug }
  *     })

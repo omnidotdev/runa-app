@@ -68,7 +68,7 @@ const Filter = () => {
   });
 
   const { data: users } = useSuspenseQuery({
-    ...workspaceUsersOptions({ rowId: workspaceId }),
+    ...workspaceUsersOptions({ workspaceId: workspaceId }),
     select: (data) => data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
   });
 

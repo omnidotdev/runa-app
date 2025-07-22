@@ -38,13 +38,15 @@ const Team = () => {
   });
 
   const { data: members } = useSuspenseQuery({
-    ...workspaceUsersOptions({ rowId: workspaceId }),
+    ...workspaceUsersOptions({ workspaceId: workspaceId }),
     select: (data) => data?.workspaceUsers,
   });
 
   const { mutate: deleteMember } = useDeleteWorkspaceUserMutation({
     meta: {
-      invalidates: [workspaceUsersOptions({ rowId: workspaceId }).queryKey],
+      invalidates: [
+        workspaceUsersOptions({ workspaceId: workspaceId }).queryKey,
+      ],
     },
   });
 

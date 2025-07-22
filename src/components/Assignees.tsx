@@ -15,7 +15,7 @@ const Assignees = ({ assignees, showUsername = false, ...rest }: Props) => {
   const { workspaceId } = useLoaderData({ from: "/_auth" });
 
   const { data: workspaceUsers } = useQuery({
-    ...workspaceUsersOptions({ rowId: workspaceId! }),
+    ...workspaceUsersOptions({ workspaceId: workspaceId! }),
     enabled: !!workspaceId,
     select: (data) => data?.workspaceUsers?.nodes.map((user) => user?.user),
   });

@@ -41,10 +41,14 @@ import type { EditorApi } from "@/components/core/RichTextEditor";
 export const Route = createFileRoute({
   loader: async ({
     params: { workspaceSlug, projectSlug, taskId },
-    context: { queryClient },
+    context: { queryClient, session },
   }) => {
     const { workspaceBySlug } = await queryClient.ensureQueryData(
-      workspaceBySlugOptions({ slug: workspaceSlug, projectSlug }),
+      workspaceBySlugOptions({
+        slug: workspaceSlug,
+        userId: session?.user?.rowId!,
+        projectSlug,
+      }),
     );
 
     if (!workspaceBySlug) {
@@ -54,7 +58,7 @@ export const Route = createFileRoute({
     const [{ task }] = await Promise.all([
       queryClient.ensureQueryData(taskOptions({ rowId: taskId })),
       queryClient.ensureQueryData(
-        workspaceUsersOptions({ rowId: workspaceBySlug.rowId }),
+        workspaceUsersOptions({ workspaceId: workspaceBySlug.rowId }),
       ),
     ]);
 

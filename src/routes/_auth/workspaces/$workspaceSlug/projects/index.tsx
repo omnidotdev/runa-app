@@ -47,7 +47,10 @@ export const Route = createFileRoute({
     context: { queryClient, session },
   }) => {
     const { workspaceBySlug } = await queryClient.ensureQueryData(
-      workspaceBySlugOptions({ slug: workspaceSlug }),
+      workspaceBySlugOptions({
+        slug: workspaceSlug,
+        userId: session?.user?.rowId!,
+      }),
     );
 
     if (!workspaceBySlug) {
