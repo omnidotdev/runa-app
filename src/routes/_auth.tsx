@@ -16,7 +16,6 @@ export const Route = createFileRoute({
   beforeLoad: async ({ params, context: { queryClient, session } }) => {
     if (!session) throw redirect({ to: "/" });
 
-    // TODO: determine if there is a cleaner way to do this with ts router / start from layout files
     const { workspaceSlug, projectSlug } = params as unknown as {
       workspaceSlug?: string;
       projectSlug?: string;
@@ -33,12 +32,7 @@ export const Route = createFileRoute({
 
       if (!workspaceBySlug) throw notFound();
 
-      const projectId = workspaceBySlug.projects.nodes[0].rowId;
-
-      const [
-        { workspaceUsers },
-        { userPreferenceByUserIdAndProjectId: userPreferences },
-      ] = await Promise.all([
+      const [{ workspaceUsers }] = await Promise.all([
         // NB: used to ensure that the user is indeed a member of the workspace
         queryClient.ensureQueryData(
           workspaceUsersOptions({
@@ -46,12 +40,6 @@ export const Route = createFileRoute({
             filter: {
               userId: { equalTo: session.user.rowId! },
             },
-          }),
-        ),
-        queryClient.ensureQueryData(
-          userPreferencesOptions({
-            userId: session?.user?.rowId!,
-            projectId,
           }),
         ),
         queryClient.ensureQueryData(
@@ -72,7 +60,19 @@ export const Route = createFileRoute({
 
       if (!workspaceUsers?.nodes.length) throw notFound();
 
-      return { workspaceBySlug, userPreferences };
+      if (workspaceBySlug.projects.nodes.length) {
+        const { userPreferenceByUserIdAndProjectId: userPreferences } =
+          await queryClient.ensureQueryData(
+            userPreferencesOptions({
+              userId: session.user.rowId!,
+              projectId: workspaceBySlug.projects.nodes[0].rowId,
+            }),
+          );
+
+        return { workspaceBySlug, userPreferences };
+      }
+
+      return { workspaceBySlug, userPreferences: undefined };
     } else {
       await queryClient.ensureQueryData(
         workspacesOptions({ userId: session?.user.rowId! }),
