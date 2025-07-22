@@ -42,7 +42,6 @@ const Board = () => {
 
   const { data: userPreferences } = useSuspenseQuery({
     ...userPreferencesOptions({
-      // TODO: Dynamic userId
       userId: session?.user?.rowId!,
       projectId,
     }),

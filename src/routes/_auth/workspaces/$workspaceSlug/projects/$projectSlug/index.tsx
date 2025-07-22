@@ -286,6 +286,7 @@ function ProjectPage() {
         <div className="border-b px-6 py-4">
           <div className="flex flex-col gap-2">
             <RichTextEditor
+              key={project?.name}
               defaultContent={project?.name}
               className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
               skeletonClassName="h-8 max-w-80"
@@ -314,6 +315,7 @@ function ProjectPage() {
             )}
 
             <RichTextEditor
+              key={project?.description}
               defaultContent={project?.description || ""}
               className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
               placeholder="Add a short description..."

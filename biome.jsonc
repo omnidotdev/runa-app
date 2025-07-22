@@ -16,7 +16,7 @@
       "!certificates",
       "!public",
       "!src/routeTree.gen.ts",
-      "bun.lock"
+      "!bun.lock"
     ]
   },
   "formatter": {

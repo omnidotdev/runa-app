@@ -86,7 +86,6 @@ const DraggableColumn = ({ column, setColumnToDelete }: Props) => {
 
   const { data: userPreferences } = useSuspenseQuery({
     ...userPreferencesOptions({
-      // TODO: Dynamic userId
       userId: session?.user?.rowId!,
       projectId,
     }),
@@ -112,7 +111,6 @@ const DraggableColumn = ({ column, setColumnToDelete }: Props) => {
         createUserPreference({
           input: {
             userPreference: {
-              // TODO: Dynamic userId
               userId: session?.user?.rowId!,
               projectId,
               hiddenColumnIds: [...userHiddenColumns, column.rowId],

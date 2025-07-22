@@ -103,7 +103,6 @@ const CreateProjectDialog = () => {
           input: {
             userPreference: {
               projectId: createProject?.project?.rowId!,
-              // TODO: Dynamic userId
               userId: session?.user?.rowId!,
             },
           },

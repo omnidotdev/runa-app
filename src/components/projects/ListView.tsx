@@ -50,7 +50,6 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
 
   const { data: userPreferences } = useSuspenseQuery({
     ...userPreferencesOptions({
-      // TODO: Dynamic userId
       userId: session?.user?.rowId!,
       projectId,
     }),
