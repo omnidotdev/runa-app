@@ -20,6 +20,9 @@ query Tasks(
       projectId
       columnId
       columnIndex
+      column {
+        ...Column
+      }
       content
       priority
       dueDate

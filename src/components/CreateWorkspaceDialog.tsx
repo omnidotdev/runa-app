@@ -13,12 +13,21 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useCreateWorkspaceMutation } from "@/generated/graphql";
+import {
+  useCreateProjectColumnMutation,
+  useCreateWorkspaceMutation,
+} from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
 
 import type { FormEvent } from "react";
+
+const DEFAULT_PROJECT_COLUMNS = [
+  { title: "Planned", index: 0, emoji: "🗓️" },
+  { title: "In Progress", index: 1, emoji: "🚧" },
+  { title: "Completed", index: 2, emoji: "✅" },
+];
 
 const CreateWorkspaceDialog = () => {
   const navigate = useNavigate();
@@ -41,11 +50,30 @@ const CreateWorkspaceDialog = () => {
     meta: {
       invalidates: [workspacesOptions().queryKey],
     },
-    onSuccess: ({ createWorkspace }) => {
+    onSuccess: async ({ createWorkspace }) => {
+      await Promise.all(
+        DEFAULT_PROJECT_COLUMNS.map((column) =>
+          createProjectColumn({
+            input: {
+              projectColumn: {
+                ...column,
+                workspaceId: createWorkspace?.workspace?.rowId!,
+              },
+            },
+          }),
+        ),
+      );
+
       navigate({
         to: "/workspaces/$workspaceId/projects",
         params: { workspaceId: createWorkspace?.workspace?.rowId! },
       });
+    },
+  });
+
+  const { mutate: createProjectColumn } = useCreateProjectColumnMutation({
+    meta: {
+      invalidates: [["all"]],
     },
   });
 

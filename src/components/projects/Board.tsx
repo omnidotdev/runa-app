@@ -1,10 +1,10 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useCallback, useRef } from "react";
 
-import Tasks from "@/components/Tasks";
+import Tasks from "@/components/projects/Tasks";
 import { Button } from "@/components/ui/button";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -12,7 +12,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import projectOptions from "@/lib/options/project.options";
-import { getColumnIcon } from "@/lib/util/getColumnIcon";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { useTheme } from "@/providers/ThemeProvider";
 
 import type { MouseEvent } from "react";
@@ -33,8 +33,20 @@ const Board = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { data: project } = useSuspenseQuery({
-    ...projectOptions({ rowId: projectId }),
+  const { data: userPreferences } = useSuspenseQuery({
+    ...userPreferencesOptions({
+      // TODO: Dynamic userId
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+      projectId,
+    }),
+    select: (data) => data?.userPreferenceByUserIdAndProjectId,
+  });
+
+  const { data: project } = useQuery({
+    ...projectOptions({
+      rowId: projectId,
+      hiddenColumns: userPreferences?.hiddenColumnIds as string[],
+    }),
     select: (data) => data?.project,
   });
 
@@ -124,82 +136,78 @@ const Board = () => {
                 {...provided.droppableProps}
                 className="flex h-full gap-3"
               >
-                {project?.columns?.nodes?.map((column) => {
-                  const ColumnIcon = getColumnIcon(column.title);
+                {project?.columns?.nodes?.map((column) => (
+                  <div
+                    key={column?.rowId}
+                    className="relative flex h-full w-[340px] flex-col gap-2 bg-inherit"
+                  >
+                    <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2">
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs">{column.emoji ?? "😀"}</p>
 
-                  return (
-                    <div
-                      key={column?.rowId}
-                      className="relative flex h-full w-[340px] flex-col gap-2 bg-inherit"
-                    >
-                      <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2">
-                        <div className="flex items-center gap-2">
-                          <div className="flex-shrink-0">{ColumnIcon}</div>
+                        <h3 className="text-base-800 text-sm dark:text-base-100">
+                          {column?.title}
+                        </h3>
 
-                          <h3 className="text-base-800 text-sm dark:text-base-100">
-                            {column?.title}
-                          </h3>
+                        <span className="flex size-7 items-center justify-center rounded-full bg-muted text-foreground text-xs tabular-nums">
+                          {
+                            project?.columns?.nodes?.find(
+                              (c) => c?.rowId === column?.rowId,
+                            )?.tasks?.totalCount
+                          }
+                        </span>
+                      </div>
 
-                          <span className="flex size-7 items-center justify-center rounded-full bg-muted text-foreground text-xs tabular-nums">
-                            {
-                              project?.columns?.nodes?.find(
-                                (c) => c?.rowId === column?.rowId,
-                              )?.tasks?.totalCount
-                            }
-                          </span>
-                        </div>
-
-                        <Tooltip
-                          positioning={{ placement: "top", gutter: 11 }}
-                          tooltip={{
-                            className: "bg-background text-foreground border",
-                            children: (
-                              <div className="inline-flex">
-                                Add Task
-                                <div className="ml-2 flex items-center gap-0.5">
-                                  <SidebarMenuShortcut>C</SidebarMenuShortcut>
-                                </div>
+                      <Tooltip
+                        positioning={{ placement: "top", gutter: 11 }}
+                        tooltip={{
+                          className: "bg-background text-foreground border",
+                          children: (
+                            <div className="inline-flex">
+                              Add Task
+                              <div className="ml-2 flex items-center gap-0.5">
+                                <SidebarMenuShortcut>C</SidebarMenuShortcut>
                               </div>
-                            ),
+                            </div>
+                          ),
+                        }}
+                      >
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          className="size-5"
+                          onClick={() => {
+                            setColumnId(column.rowId);
+                            setIsCreateTaskDialogOpen(true);
                           }}
                         >
-                          <Button
-                            variant="ghost"
-                            size="xs"
-                            className="size-5"
-                            onClick={() => {
-                              setColumnId(column.rowId);
-                              setIsCreateTaskDialogOpen(true);
+                          <PlusIcon className="size-4" />
+                        </Button>
+                      </Tooltip>
+                    </div>
+
+                    <div className="no-scrollbar flex h-full overflow-y-auto">
+                      <Droppable droppableId={column.rowId}>
+                        {(provided, snapshot) => (
+                          <Tasks
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            prefix={project.prefix ?? "PROJ"}
+                            columnId={column.rowId}
+                            style={{
+                              backgroundColor:
+                                project?.color && snapshot.isDraggingOver
+                                  ? `${project?.color}0D`
+                                  : undefined,
                             }}
                           >
-                            <PlusIcon className="size-4" />
-                          </Button>
-                        </Tooltip>
-                      </div>
-
-                      <div className="no-scrollbar flex h-full overflow-y-auto">
-                        <Droppable droppableId={column.rowId}>
-                          {(provided, snapshot) => (
-                            <Tasks
-                              ref={provided.innerRef}
-                              {...provided.droppableProps}
-                              prefix={project.prefix ?? "PROJ"}
-                              columnId={column.rowId}
-                              style={{
-                                backgroundColor:
-                                  project?.color && snapshot.isDraggingOver
-                                    ? `${project?.color}0D`
-                                    : undefined,
-                              }}
-                            >
-                              {provided.placeholder}
-                            </Tasks>
-                          )}
-                        </Droppable>
-                      </div>
+                            {provided.placeholder}
+                          </Tasks>
+                        )}
+                      </Droppable>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
                 {provided.placeholder}
               </div>
             )}

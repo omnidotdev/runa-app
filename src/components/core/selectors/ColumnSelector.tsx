@@ -11,18 +11,23 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import projectOptions from "@/lib/options/project.options";
-import { getColumnIcon } from "@/lib/util/getColumnIcon";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../../ui/button";
 
 import type { ComponentProps } from "react";
 
 interface Props extends Omit<ComponentProps<typeof Select>, "collection"> {
-  triggerValue?: string;
+  triggerLabel?: string;
+  triggerEmoji?: string;
   size?: "xs" | "sm" | "default";
 }
 
-const ColumnSelector = ({ triggerValue, size = "default", ...rest }: Props) => {
+const ColumnSelector = ({
+  triggerLabel,
+  triggerEmoji,
+  size = "default",
+  ...rest
+}: Props) => {
   const { projectId } = useParams({ strict: false });
 
   const { data: project } = useQuery({
@@ -35,10 +40,9 @@ const ColumnSelector = ({ triggerValue, size = "default", ...rest }: Props) => {
       project?.columns?.nodes?.map((column) => ({
         label: column?.title ?? "",
         value: column?.rowId ?? "",
+        emoji: column?.emoji ?? "",
       })) ?? [],
   });
-
-  const ColumnIcon = getColumnIcon(triggerValue);
 
   return (
     <Select
@@ -53,24 +57,22 @@ const ColumnSelector = ({ triggerValue, size = "default", ...rest }: Props) => {
           "w-full [&[data-state=open]>svg]:rotate-0 [&_svg:not([class*='text-'])]:text-foreground",
         )}
       >
-        {ColumnIcon}
-        <p className="font-semibold text-xs">{triggerValue}</p>
+        {triggerEmoji && (
+          <p className="font-semibold text-xs">{triggerEmoji}</p>
+        )}
+        <p className="font-semibold text-xs">{triggerLabel}</p>
       </SelectTrigger>
       <SelectContent>
         <SelectItemGroup className="space-y-1">
-          {columnCollection.items.map((column) => {
-            const ColumnIcon = getColumnIcon(column.label);
+          {columnCollection.items.map((column) => (
+            <SelectItem key={column.value} item={column}>
+              <SelectItemText>
+                {column.emoji}
 
-            return (
-              <SelectItem key={column.value} item={column}>
-                <SelectItemText>
-                  {ColumnIcon}
-
-                  {column.label}
-                </SelectItemText>
-              </SelectItem>
-            );
-          })}
+                <p className="ml-1">{column.label}</p>
+              </SelectItemText>
+            </SelectItem>
+          ))}
         </SelectItemGroup>
       </SelectContent>
     </Select>

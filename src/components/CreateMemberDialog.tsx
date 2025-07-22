@@ -42,7 +42,10 @@ const CreateMemberDialog = () => {
     });
 
   const { data: currentWorkspace } = useQuery({
-    ...workspaceOptions({ rowId: workspaceId! }),
+    ...workspaceOptions({
+      rowId: workspaceId!,
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+    }),
     enabled: !!workspaceId,
     select: (data) => data?.workspace,
   });

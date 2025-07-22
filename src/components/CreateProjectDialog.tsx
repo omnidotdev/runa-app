@@ -17,37 +17,36 @@ import { Input } from "@/components/ui/input";
 import {
   useCreateColumnMutation,
   useCreateProjectMutation,
+  useCreateUserPreferenceMutation,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useForm from "@/lib/hooks/useForm";
+import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 
-import type { ProjectStatus } from "@/generated/graphql";
-
 const DEFAULT_COLUMNS = [
-  { title: "Backlog", index: 0 },
-  { title: "To Do", index: 1 },
-  { title: "In Progress", index: 2 },
-  { title: "Awaiting Review", index: 3 },
-  { title: "Done", index: 4 },
+  { title: "Backlog", index: 0, emoji: "📚" },
+  { title: "To Do", index: 1, emoji: "📝" },
+  { title: "In Progress", index: 2, emoji: "🚧" },
+  { title: "Awaiting Review", index: 3, emoji: "👀" },
+  { title: "Done", index: 4, emoji: "✅" },
 ];
 
-interface Props {
-  status?: ProjectStatus;
-}
-
-const CreateProjectDialog = ({ status }: Props) => {
+const CreateProjectDialog = () => {
   const { workspaceId } = useParams({ strict: false });
 
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
 
-  const { setStatus } = useProjectStore();
+  const { projectColumnId, setProjectColumnId } = useProjectStore();
 
   const { data: currentWorkspace } = useQuery({
-    ...workspaceOptions({ rowId: workspaceId! }),
+    ...workspaceOptions({
+      rowId: workspaceId!,
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+    }),
     enabled: !!workspaceId,
     select: (data) => data?.workspace,
   });
@@ -64,28 +63,44 @@ const CreateProjectDialog = ({ status }: Props) => {
   );
 
   const { mutateAsync: createColumn } = useCreateColumnMutation();
+  const { mutateAsync: createUserPreference } =
+    useCreateUserPreferenceMutation();
 
-  const { mutate: createNewProject } = useCreateProjectMutation({
+  const { mutateAsync: createNewProject } = useCreateProjectMutation({
     meta: {
       invalidates: [
         ["Projects"],
-        workspaceOptions({ rowId: workspaceId! }).queryKey,
+        workspaceOptions({
+          rowId: workspaceId!,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }).queryKey,
+        projectColumnsOptions({ workspaceId: workspaceId! }).queryKey,
       ],
     },
     onSuccess: async ({ createProject }) => {
-      await Promise.all(
-        DEFAULT_COLUMNS.map((column) =>
+      await Promise.all([
+        ...DEFAULT_COLUMNS.map((column) =>
           createColumn({
             input: {
               column: {
                 title: column.title,
                 index: column.index,
                 projectId: createProject?.project?.rowId!,
+                emoji: column.emoji,
               },
             },
           }),
         ),
-      );
+        createUserPreference({
+          input: {
+            userPreference: {
+              projectId: createProject?.project?.rowId!,
+              // TODO: Dynamic userId
+              userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+            },
+          },
+        }),
+      ]);
 
       navigate({
         to: "/workspaces/$workspaceId/projects/$projectId",
@@ -101,22 +116,24 @@ const CreateProjectDialog = ({ status }: Props) => {
     defaultValues: {
       name: "",
       description: "",
-      status: status ?? undefined,
+      projectColumnId:
+        projectColumnId ?? currentWorkspace?.projectColumns?.nodes[0].rowId,
     },
     onSubmit: async ({ value, formApi }) => {
-      createNewProject({
+      await createNewProject({
         input: {
           project: {
             workspaceId: workspaceId!,
             name: value.name,
             description: value.description,
-            status: value.status,
+            projectColumnId: value.projectColumnId!,
           },
         },
       });
 
+      // TODO: set this in search param state for filtering and validate that navigation in `onSuccess` above has it as default of closed because some odd behavior is happening where it re-opens after navigation and cant be closed
       setIsCreateProjectOpen(false);
-      setStatus(null);
+      setProjectColumnId(null);
       formApi.reset();
     },
   });
@@ -128,7 +145,7 @@ const CreateProjectDialog = ({ status }: Props) => {
         setIsCreateProjectOpen(open);
 
         if (!open) {
-          setStatus(null);
+          setProjectColumnId(null);
         }
       }}
       initialFocusEl={() => nameRef.current}
@@ -145,10 +162,10 @@ const CreateProjectDialog = ({ status }: Props) => {
           </DialogDescription>
 
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               e.stopPropagation();
-              form.handleSubmit();
+              await form.handleSubmit();
             }}
             className="flex flex-col gap-2"
           >

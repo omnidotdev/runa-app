@@ -9,22 +9,34 @@ import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
-import Projects from "@/components/workspaces/Projects";
-import Team from "@/components/workspaces/Team";
+import Projects from "@/components/workspaces/settings/Projects";
+import Team from "@/components/workspaces/settings/Team";
+import WorkspaceColumnsForm from "@/components/workspaces/settings/WorkspaceColumnsForm";
 import {
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
   loader: async ({ params: { workspaceId }, context: { queryClient } }) => {
-    const { workspace } = await queryClient.ensureQueryData(
-      workspaceOptions({ rowId: workspaceId }),
-    );
+    const [{ workspace }] = await Promise.all([
+      queryClient.ensureQueryData(
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }),
+      ),
+      queryClient.ensureQueryData(
+        projectColumnsOptions({
+          workspaceId,
+        }),
+      ),
+    ]);
 
     if (!workspace) {
       throw notFound();
@@ -47,7 +59,10 @@ function SettingsPage() {
   const [nameError, setNameError] = useState<string | null>(null);
 
   const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId }),
+    ...workspaceOptions({
+      rowId: workspaceId,
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+    }),
     select: (data) => data?.workspace,
   });
 
@@ -119,6 +134,8 @@ function SettingsPage() {
 
         <Projects />
 
+        <WorkspaceColumnsForm />
+
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Danger Zone</h3>
@@ -135,12 +152,20 @@ function SettingsPage() {
 
         <ConfirmDialog
           title="Danger Zone"
-          description={`This will permanently delete ${workspace?.name} and all associated data. This action cannot be undone.`}
+          description={
+            <span>
+              This will delete{" "}
+              <strong className="font-medium text-base-900 dark:text-base-100">
+                {workspace?.name}
+              </strong>{" "}
+              and all associated data. This action cannot be undone.
+            </span>
+          }
           onConfirm={() => {
             deleteWorkspace({ rowId: workspace?.rowId! });
           }}
           dialogType={DialogType.DeleteWorkspace}
-          confirmation={`permanently delete ${workspace?.name}`}
+          confirmation={`Permanently delete ${workspace?.name}`}
           inputProps={{
             className: "focus-visible:ring-red-500",
           }}

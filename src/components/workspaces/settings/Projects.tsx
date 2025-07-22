@@ -9,15 +9,15 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+import ConfirmDialog from "@/components/ConfirmDialog";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useDeleteProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
-import ConfirmDialog from "../ConfirmDialog";
-import { SidebarMenuShortcut } from "../ui/sidebar";
 
 const Projects = () => {
   const { workspaceId } = useParams({
@@ -32,7 +32,10 @@ const Projects = () => {
   const navigate = useNavigate();
 
   const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId }),
+    ...workspaceOptions({
+      rowId: workspaceId,
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+    }),
     select: (data) => data?.workspace,
   });
 
@@ -40,7 +43,10 @@ const Projects = () => {
     meta: {
       invalidates: [
         ["Projects"],
-        workspaceOptions({ rowId: workspaceId }).queryKey,
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+        }).queryKey,
       ],
     },
   });
@@ -57,7 +63,7 @@ const Projects = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-4">
           <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
             Projects
@@ -118,6 +124,10 @@ const Projects = () => {
                           </div>
 
                           <span className="text-sm">{project?.name}</span>
+
+                          <span className="text-base-600 text-sm dark:text-base-400">
+                            {project.projectColumn?.emoji}
+                          </span>
                         </div>
 
                         <div className="mr-1 ml-auto flex gap-1">

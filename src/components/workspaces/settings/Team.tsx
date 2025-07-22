@@ -4,6 +4,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
+import CreateMemberDialog from "@/components/CreateMemberDialog";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -12,7 +13,6 @@ import { useDeleteWorkspaceUserMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
-import CreateMemberDialog from "../CreateMemberDialog";
 
 const Team = () => {
   const { workspaceId } = useParams({
@@ -26,7 +26,10 @@ const Team = () => {
   }>();
 
   const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId }),
+    ...workspaceOptions({
+      rowId: workspaceId,
+      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+    }),
     select: (data) => data?.workspace,
   });
 

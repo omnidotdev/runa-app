@@ -14,12 +14,12 @@ import {
 import { Input } from "@/components/ui/input";
 import useDialogStore from "@/lib/hooks/store/useDialogStore";
 
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import type { DialogType } from "@/lib/hooks/store/useDialogStore";
 
 interface ConfirmDialogProps {
   title: string;
-  description: string;
+  description: string | ReactNode;
   onConfirm: () => void;
   dialogType: DialogType;
   confirmation?: string;
@@ -76,7 +76,7 @@ const ConfirmDialog = ({
               id="confirmation"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
-              placeholder={confirmation}
+              placeholder="Enter confirmation text..."
               {...inputProps}
             />
           </div>
