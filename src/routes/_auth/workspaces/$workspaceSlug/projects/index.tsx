@@ -83,6 +83,14 @@ function ProjectsOverviewPage() {
     select: (data) => data?.workspace,
   });
 
+  const { data: projects } = useSuspenseQuery({
+    ...projectColumnsOptions({ workspaceId, search }),
+    select: (data) =>
+      data?.projectColumns?.nodes?.flatMap((column) =>
+        column.projects?.nodes?.map((project) => project),
+      ),
+  });
+
   const { setDraggableId } = useDragStore();
 
   const { mutate: updateViewMode } = useUpdateWorkspaceMutation({
@@ -124,30 +132,38 @@ function ProjectsOverviewPage() {
 
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
-      invalidates: [
-        projectsOptions({ workspaceId, search }).queryKey,
-        projectColumnsOptions({ workspaceId }).queryKey,
-      ],
+      invalidates: [["all"]],
     },
     onMutate: async (variables) => {
-      await queryClient.cancelQueries(projectsOptions({ workspaceId, search }));
+      await queryClient.cancelQueries(
+        projectColumnsOptions({ workspaceId, search }),
+      );
 
       queryClient.setQueryData(
-        projectsOptions({ workspaceId, search }).queryKey,
+        projectColumnsOptions({ workspaceId, search }).queryKey,
         // @ts-ignore TODO: type properly
         (old) => ({
-          projects: {
-            ...old?.projects!,
-            nodes: old?.projects?.nodes?.map((project) => {
-              if (project?.rowId === variables.rowId) {
-                return {
-                  ...project!,
-                  projectColumnId: variables.patch.projectColumnId,
-                };
-              }
+          projectColumns: {
+            ...old?.projectColumns!,
+            nodes: old?.projectColumns?.nodes?.map((column) => ({
+              ...column,
+              projects: {
+                ...column.projects,
+                nodes: column.projects.nodes?.map((project) => {
+                  if (project?.rowId === variables.rowId) {
+                    return {
+                      ...project!,
+                      projectColumnId:
+                        variables.patch.projectColumnId ??
+                        project.projectColumnId,
+                      columnIndex: variables.patch.columnIndex,
+                    };
+                  }
 
-              return project;
-            }),
+                  return project;
+                }),
+              },
+            })),
           },
         }),
       );
@@ -187,14 +203,70 @@ function ProjectsOverviewPage() {
 
       setDraggableId(draggableId);
 
-      updateProject({
-        rowId: draggableId,
-        patch: {
-          projectColumnId: destination.droppableId,
-        },
-      });
+      if (projects?.length) {
+        const currentProject = projects.find(
+          (project) => project.rowId === draggableId,
+        )!;
+
+        const destinationColumnProjects = projects.filter(
+          (project) => project.projectColumnId === destination.droppableId,
+        );
+
+        if (source.droppableId === destination.droppableId) {
+          const reorderedColumnProjects = [...destinationColumnProjects];
+          const [projectToMove] = reorderedColumnProjects.splice(
+            currentProject.columnIndex,
+            1,
+          );
+          reorderedColumnProjects.splice(destination.index, 0, projectToMove);
+
+          reorderedColumnProjects.map((project, index) =>
+            updateProject({
+              rowId: project.rowId,
+              patch: {
+                columnIndex: index,
+              },
+            }),
+          );
+        } else {
+          const sourceColumnProjectsExcludingMovedProject = projects.filter(
+            (project) =>
+              project.projectColumnId === source.droppableId &&
+              project.rowId !== draggableId,
+          );
+
+          sourceColumnProjectsExcludingMovedProject.map((project, index) =>
+            updateProject({
+              rowId: project.rowId,
+              patch: {
+                columnIndex: index,
+              },
+            }),
+          );
+
+          const projectsWithMovedInDestination = [...destinationColumnProjects];
+          projectsWithMovedInDestination.splice(
+            destination.index,
+            0,
+            currentProject,
+          );
+
+          projectsWithMovedInDestination.map((project, index) =>
+            updateProject({
+              rowId: project.rowId,
+              patch: {
+                columnIndex: index,
+                projectColumnId:
+                  project.rowId === currentProject.rowId
+                    ? destination.droppableId
+                    : project.projectColumnId,
+              },
+            }),
+          );
+        }
+      }
     },
-    [updateProject, setDraggableId],
+    [updateProject, setDraggableId, projects],
   );
 
   return (

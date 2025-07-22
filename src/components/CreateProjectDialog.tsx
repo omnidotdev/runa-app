@@ -135,8 +135,7 @@ const CreateProjectDialog = () => {
     defaultValues: {
       name: "",
       description: "",
-      projectColumnId:
-        projectColumnId ?? currentWorkspace?.projectColumns?.nodes[0].rowId,
+      projectColumnId: newProjectColumnId,
       projectColumnIndex: projectColumnIndex ?? 0,
     },
     onSubmit: async ({ value, formApi }) => {
