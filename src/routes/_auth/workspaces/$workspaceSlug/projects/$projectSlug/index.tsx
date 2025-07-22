@@ -14,12 +14,12 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod";
 
-import Board from "@/components/Board";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import Filter from "@/components/Filter";
-import ListView from "@/components/ListView";
 import NotFound from "@/components/layout/NotFound";
+import Board from "@/components/projects/Board";
+import ListView from "@/components/projects/ListView";
 import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
 import UpdateAssigneesDialog from "@/components/UpdateAssigneesDialog";
 import UpdateDueDateDialog from "@/components/UpdateDueDateDialog";
@@ -28,12 +28,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
-import { useUpdateProjectMutation } from "@/generated/graphql";
+import {
+  useUpdateProjectMutation,
+  useUpdateUserPreferenceMutation,
+} from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import getSdk from "@/lib/graphql/getSdk";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
@@ -61,7 +65,7 @@ export const Route = createFileRoute({
   loader: async ({
     deps: { search, assignees, labels, priorities },
     params: { projectSlug, workspaceSlug },
-    context: { queryClient },
+    context: { queryClient, session },
   }) => {
     const { workspaceBySlug } = await queryClient.ensureQueryData(
       workspaceBySlugOptions({ slug: workspaceSlug, projectSlug }),
@@ -74,10 +78,27 @@ export const Route = createFileRoute({
     const projectId = workspaceBySlug.projects.nodes[0].rowId;
     const projectName = workspaceBySlug.projects.nodes[0].name;
 
+    const { userPreferenceByUserIdAndProjectId } =
+      await queryClient.ensureQueryData(
+        userPreferencesOptions({
+          userId: session?.user?.rowId!,
+          projectId,
+        }),
+      );
+
     await Promise.all([
-      queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
       queryClient.ensureQueryData(
-        workspaceOptions({ rowId: workspaceBySlug.rowId }),
+        projectOptions({
+          rowId: projectId,
+          hiddenColumns:
+            userPreferenceByUserIdAndProjectId?.hiddenColumnIds as string[],
+        }),
+      ),
+      queryClient.ensureQueryData(
+        workspaceOptions({
+          rowId: workspaceBySlug.rowId,
+          userId: session?.user?.rowId!,
+        }),
       ),
       queryClient.ensureQueryData(
         workspaceUsersOptions({ rowId: workspaceBySlug.rowId }),
@@ -119,6 +140,7 @@ export const Route = createFileRoute({
 });
 
 function ProjectPage() {
+  const { session } = Route.useRouteContext();
   const { projectSlug, workspaceSlug } = Route.useParams();
   const { projectId, workspaceId } = Route.useLoaderData();
   const { search } = Route.useSearch();
@@ -143,8 +165,19 @@ function ProjectPage() {
     300,
   );
 
+  const { data: userPreferences } = useSuspenseQuery({
+    ...userPreferencesOptions({
+      projectId: projectId,
+      userId: session?.user?.rowId!,
+    }),
+    select: (data) => data?.userPreferenceByUserIdAndProjectId,
+  });
+
   const { data: project } = useSuspenseQuery({
-    ...projectOptions({ rowId: projectId }),
+    ...projectOptions({
+      rowId: projectId,
+      hiddenColumns: userPreferences?.hiddenColumnIds as string[],
+    }),
     select: (data) => data?.project,
   });
 
@@ -192,19 +225,25 @@ function ProjectPage() {
     setIsForceClosed(false);
   };
 
-  const { mutate: updateViewMode } = useUpdateProjectMutation({
+  const { mutate: updateViewMode } = useUpdateUserPreferenceMutation({
     meta: {
       invalidates: [
         projectOptions({ rowId: projectId }).queryKey,
-        workspaceOptions({ rowId: workspaceId }).queryKey,
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: session?.user?.rowId!,
+        }).queryKey,
       ],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(
-        projectOptions({ rowId: projectId }).queryKey,
+        userPreferencesOptions({
+          projectId: projectId,
+          userId: session?.user?.rowId!,
+        }).queryKey,
         (old) => ({
-          project: {
-            ...old?.project!,
+          userPreferenceByUserIdAndProjectId: {
+            ...old?.userPreferenceByUserIdAndProjectId!,
             viewMode: variables.patch?.viewMode!,
           },
         }),
@@ -233,12 +272,12 @@ function ProjectPage() {
     Hotkeys.ToggleViewMode,
     () =>
       updateViewMode({
-        rowId: projectId,
+        rowId: userPreferences?.rowId!,
         patch: {
-          viewMode: project?.viewMode === "board" ? "list" : "board",
+          viewMode: userPreferences?.viewMode === "board" ? "list" : "board",
         },
       }),
-    [updateViewMode, project?.viewMode, projectId],
+    [updateViewMode, userPreferences?.viewMode, projectId],
   );
 
   return (
@@ -305,7 +344,7 @@ function ProjectPage() {
                   className: "bg-background text-foreground border",
                   children: (
                     <div className="inline-flex">
-                      {project?.viewMode === "list"
+                      {userPreferences?.viewMode === "list"
                         ? "Board View"
                         : "List View"}
                       <div className="ml-2 flex items-center gap-0.5">
@@ -320,15 +359,17 @@ function ProjectPage() {
                   size="icon"
                   onClick={() =>
                     updateViewMode({
-                      rowId: project?.rowId!,
+                      rowId: userPreferences?.rowId!,
                       patch: {
                         viewMode:
-                          project?.viewMode === "board" ? "list" : "board",
+                          userPreferences?.viewMode === "board"
+                            ? "list"
+                            : "board",
                       },
                     })
                   }
                 >
-                  {project?.viewMode === "list" ? (
+                  {userPreferences?.viewMode === "list" ? (
                     <Grid2X2Icon />
                   ) : (
                     <ListIcon />
@@ -358,7 +399,7 @@ function ProjectPage() {
 
               <Filter />
 
-              {project?.viewMode === "list" && (
+              {userPreferences?.viewMode === "list" && (
                 <Tooltip
                   positioning={{ placement: "bottom" }}
                   tooltip={{
@@ -379,7 +420,7 @@ function ProjectPage() {
           </div>
         </div>
 
-        {project?.viewMode === "board" ? (
+        {userPreferences?.viewMode === "board" ? (
           <Board />
         ) : (
           <ListView

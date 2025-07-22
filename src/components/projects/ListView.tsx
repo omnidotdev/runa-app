@@ -1,9 +1,13 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useNavigate } from "@tanstack/react-router";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useLoaderData,
+  useNavigate,
+  useRouteContext,
+} from "@tanstack/react-router";
 import { ChevronDownIcon, PlusIcon } from "lucide-react";
 
-import TasksList from "@/components/TasksList";
+import TasksList from "@/components/projects/TasksList";
 import { Button } from "@/components/ui/button";
 import {
   CollapsibleContent,
@@ -16,7 +20,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import useTheme from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
-import { getColumnIcon } from "@/lib/util/getColumnIcon";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
 
 import type { Dispatch, SetStateAction } from "react";
@@ -34,14 +38,30 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+  });
+
   const navigate = useNavigate({
     from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });
 
   const { setColumnId } = useTaskStore();
 
-  const { data: project } = useSuspenseQuery({
-    ...projectOptions({ rowId: projectId }),
+  const { data: userPreferences } = useSuspenseQuery({
+    ...userPreferencesOptions({
+      // TODO: Dynamic userId
+      userId: session?.user?.rowId!,
+      projectId,
+    }),
+    select: (data) => data?.userPreferenceByUserIdAndProjectId,
+  });
+
+  const { data: project } = useQuery({
+    ...projectOptions({
+      rowId: projectId,
+      hiddenColumns: userPreferences?.hiddenColumnIds as string[],
+    }),
     select: (data) => data?.project,
   });
 
@@ -60,8 +80,6 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
         }}
       >
         {project?.columns?.nodes?.map((column, index) => {
-          const ColumnIcon = getColumnIcon(column.title);
-
           return (
             <CollapsibleRoot
               key={column?.rowId}
@@ -87,7 +105,7 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
               <CollapsibleTrigger asChild>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="flex-shrink-0">{ColumnIcon}</div>
+                    <p className="text-xs">{column.emoji ?? "😀"}</p>
 
                     <h3 className="text-base-800 text-sm dark:text-base-100">
                       {column?.title}
@@ -102,7 +120,7 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
                     </span>
                   </div>
 
-                  <div className="ml-auto flex gap-2">
+                  <div className="ml-auto flex items-center gap-1">
                     <Tooltip
                       positioning={{ placement: "top", gutter: 11 }}
                       tooltip={{
@@ -119,8 +137,8 @@ const ListView = ({ openStates, setOpenStates, setIsForceClosed }: Props) => {
                     >
                       <Button
                         variant="ghost"
-                        size="xs"
-                        className="size-5"
+                        size="icon"
+                        className="h-7 w-7"
                         onClick={(e) => {
                           e.preventDefault();
                           setColumnId(column.rowId);

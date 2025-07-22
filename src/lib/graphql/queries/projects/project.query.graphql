@@ -1,4 +1,4 @@
-query Project($rowId: UUID!) {
+query Project($rowId: UUID!, $hiddenColumns: [UUID!]) {
   project(rowId: $rowId) {
     rowId
     name
@@ -6,7 +6,7 @@ query Project($rowId: UUID!) {
     description
     prefix
     color
-    viewMode
+    projectColumnId
     labels {
       nodes {
         name
@@ -14,11 +14,15 @@ query Project($rowId: UUID!) {
         rowId
       }
     }
-    columns(orderBy: INDEX_ASC) {
+    tasks {
+      totalCount
+    }
+    columns(filter: { rowId: { notIn: $hiddenColumns } }, orderBy: INDEX_ASC) {
       nodes {
         rowId
         index
         title
+        emoji
         tasks {
           totalCount
           nodes {

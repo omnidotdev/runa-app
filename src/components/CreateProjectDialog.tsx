@@ -1,5 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useNavigate, useParams } from "@tanstack/react-router";
+import {
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useRouteContext,
+} from "@tanstack/react-router";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -17,39 +22,39 @@ import { Input } from "@/components/ui/input";
 import {
   useCreateColumnMutation,
   useCreateProjectMutation,
+  useCreateUserPreferenceMutation,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useForm from "@/lib/hooks/useForm";
+import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import generateSlug from "@/lib/util/generateSlug";
 
-import type { ProjectStatus } from "@/generated/graphql";
-
 const DEFAULT_COLUMNS = [
-  { title: "Backlog", index: 0 },
-  { title: "To Do", index: 1 },
-  { title: "In Progress", index: 2 },
-  { title: "Awaiting Review", index: 3 },
-  { title: "Done", index: 4 },
+  { title: "Backlog", index: 0, emoji: "📚" },
+  { title: "To Do", index: 1, emoji: "📝" },
+  { title: "In Progress", index: 2, emoji: "🚧" },
+  { title: "Awaiting Review", index: 3, emoji: "👀" },
+  { title: "Done", index: 4, emoji: "✅" },
 ];
 
-interface Props {
-  status?: ProjectStatus;
-}
-
-const CreateProjectDialog = ({ status }: Props) => {
+const CreateProjectDialog = () => {
+  const { session } = useRouteContext({ from: "/_auth" });
   const { workspaceId } = useLoaderData({ from: "/_auth" });
   const { workspaceSlug } = useParams({ strict: false });
 
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
 
-  const { setStatus } = useProjectStore();
+  const { projectColumnId, setProjectColumnId } = useProjectStore();
 
   const { data: currentWorkspace } = useQuery({
-    ...workspaceOptions({ rowId: workspaceId! }),
+    ...workspaceOptions({
+      rowId: workspaceId!,
+      userId: session?.user?.rowId!,
+    }),
     enabled: !!workspaceId,
     select: (data) => data?.workspace,
   });
@@ -66,28 +71,44 @@ const CreateProjectDialog = ({ status }: Props) => {
   );
 
   const { mutateAsync: createColumn } = useCreateColumnMutation();
+  const { mutateAsync: createUserPreference } =
+    useCreateUserPreferenceMutation();
 
-  const { mutate: createNewProject } = useCreateProjectMutation({
+  const { mutateAsync: createNewProject } = useCreateProjectMutation({
     meta: {
       invalidates: [
         ["Projects"],
-        workspaceOptions({ rowId: workspaceId! }).queryKey,
+        workspaceOptions({
+          rowId: workspaceId!,
+          userId: session?.user?.rowId!,
+        }).queryKey,
+        projectColumnsOptions({ workspaceId: workspaceId! }).queryKey,
       ],
     },
     onSuccess: async ({ createProject }) => {
-      await Promise.all(
-        DEFAULT_COLUMNS.map((column) =>
+      await Promise.all([
+        ...DEFAULT_COLUMNS.map((column) =>
           createColumn({
             input: {
               column: {
                 title: column.title,
                 index: column.index,
                 projectId: createProject?.project?.rowId!,
+                emoji: column.emoji,
               },
             },
           }),
         ),
-      );
+        createUserPreference({
+          input: {
+            userPreference: {
+              projectId: createProject?.project?.rowId!,
+              // TODO: Dynamic userId
+              userId: session?.user?.rowId!,
+            },
+          },
+        }),
+      ]);
 
       navigate({
         to: "/workspaces/$workspaceSlug/projects/$projectSlug",
@@ -103,23 +124,24 @@ const CreateProjectDialog = ({ status }: Props) => {
     defaultValues: {
       name: "",
       description: "",
-      status: status ?? undefined,
+      projectColumnId:
+        projectColumnId ?? currentWorkspace?.projectColumns?.nodes[0].rowId,
     },
     onSubmit: async ({ value, formApi }) => {
-      createNewProject({
+      await createNewProject({
         input: {
           project: {
             workspaceId: workspaceId!,
             name: value.name,
             slug: generateSlug(value.name),
             description: value.description,
-            status: value.status,
+            projectColumnId: value.projectColumnId!,
           },
         },
       });
 
       setIsCreateProjectOpen(false);
-      setStatus(null);
+      setProjectColumnId(null);
       formApi.reset();
     },
   });
@@ -131,7 +153,7 @@ const CreateProjectDialog = ({ status }: Props) => {
         setIsCreateProjectOpen(open);
 
         if (!open) {
-          setStatus(null);
+          setProjectColumnId(null);
         }
       }}
       initialFocusEl={() => nameRef.current}
@@ -148,10 +170,10 @@ const CreateProjectDialog = ({ status }: Props) => {
           </DialogDescription>
 
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               e.stopPropagation();
-              form.handleSubmit();
+              await form.handleSubmit();
             }}
             className="flex flex-col gap-2"
           >

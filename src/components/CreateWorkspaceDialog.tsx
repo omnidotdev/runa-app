@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
+  useCreateProjectColumnMutation,
   useCreateWorkspaceMutation,
   useCreateWorkspaceUserMutation,
 } from "@/generated/graphql";
@@ -23,6 +24,12 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
 
 import type { FormEvent } from "react";
+
+const DEFAULT_PROJECT_COLUMNS = [
+  { title: "Planned", index: 0, emoji: "🗓️" },
+  { title: "In Progress", index: 1, emoji: "🚧" },
+  { title: "Completed", index: 2, emoji: "✅" },
+];
 
 const CreateWorkspaceDialog = () => {
   const navigate = useNavigate();
@@ -51,20 +58,38 @@ const CreateWorkspaceDialog = () => {
         workspacesOptions({ userId: session?.user.rowId! }).queryKey,
       ],
     },
-    onSuccess: ({ createWorkspace }) => {
-      createTeamMember({
-        input: {
-          workspaceUser: {
-            userId: session?.user?.rowId!,
-            workspaceId: createWorkspace?.workspace?.rowId!,
+    onSuccess: async ({ createWorkspace }) => {
+      await Promise.all([
+        ...DEFAULT_PROJECT_COLUMNS.map((column) =>
+          createProjectColumn({
+            input: {
+              projectColumn: {
+                ...column,
+                workspaceId: createWorkspace?.workspace?.rowId!,
+              },
+            },
+          }),
+        ),
+        createTeamMember({
+          input: {
+            workspaceUser: {
+              userId: session?.user?.rowId!,
+              workspaceId: createWorkspace?.workspace?.rowId!,
+            },
           },
-        },
-      });
+        }),
+      ]);
 
       navigate({
         to: "/workspaces/$workspaceSlug/projects",
         params: { workspaceSlug: createWorkspace?.workspace?.slug! },
       });
+    },
+  });
+
+  const { mutate: createProjectColumn } = useCreateProjectColumnMutation({
+    meta: {
+      invalidates: [["all"]],
     },
   });
 

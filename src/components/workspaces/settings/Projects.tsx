@@ -4,6 +4,7 @@ import {
   useLoaderData,
   useNavigate,
   useParams,
+  useRouteContext,
 } from "@tanstack/react-router";
 import {
   BoxIcon,
@@ -33,6 +34,10 @@ const Projects = () => {
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
+  });
+
   const [selectedProject, setSelectedProject] = useState<{
     rowId: string;
     name: string;
@@ -41,7 +46,10 @@ const Projects = () => {
   const navigate = useNavigate();
 
   const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId }),
+    ...workspaceOptions({
+      rowId: workspaceId,
+      userId: session?.user?.rowId!,
+    }),
     select: (data) => data?.workspace,
   });
 
@@ -49,7 +57,10 @@ const Projects = () => {
     meta: {
       invalidates: [
         ["Projects"],
-        workspaceOptions({ rowId: workspaceId }).queryKey,
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: session?.user?.rowId!,
+        }).queryKey,
       ],
     },
   });
@@ -63,7 +74,7 @@ const Projects = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-4">
           <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
             Projects
@@ -124,6 +135,10 @@ const Projects = () => {
                           </div>
 
                           <span className="text-sm">{project?.name}</span>
+
+                          <span className="text-base-600 text-sm dark:text-base-400">
+                            {project.projectColumn?.emoji}
+                          </span>
                         </div>
 
                         <div className="mr-1 ml-auto flex gap-1">

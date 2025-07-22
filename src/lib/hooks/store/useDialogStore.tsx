@@ -1,5 +1,3 @@
-"use client";
-
 import { createStore } from "zustand";
 import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
@@ -14,6 +12,8 @@ export enum DialogType {
   UpdateAssignees = "update_assignees",
   UpdateDueDate = "update_due_date",
   UpdateTaskLabels = "update_task_labels",
+  DeleteColumn = "delete_column",
+  DeleteProjectColumn = "delete_project_column",
 }
 
 interface DialogState {

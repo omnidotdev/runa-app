@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData } from "@tanstack/react-router";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -19,6 +19,10 @@ const Team = () => {
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
+  });
+
   const [selectedMember, setSelectedMember] = useState<{
     name: string;
     avatarUrl?: string | null;
@@ -26,7 +30,10 @@ const Team = () => {
   }>();
 
   const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId }),
+    ...workspaceOptions({
+      rowId: workspaceId,
+      userId: session?.user?.rowId!,
+    }),
     select: (data) => data?.workspace,
   });
 

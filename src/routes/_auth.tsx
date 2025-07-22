@@ -5,7 +5,6 @@ import CreateProjectDialog from "@/components/CreateProjectDialog";
 import CreateWorkspaceDialog from "@/components/CreateWorkspaceDialog";
 import NotFound from "@/components/layout/NotFound";
 import { SidebarInset } from "@/components/ui/sidebar";
-import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
@@ -31,13 +30,18 @@ export const Route = createFileRoute({
         queryClient.ensureQueryData(
           workspaceOptions({
             rowId: workspaceBySlug.rowId,
+            // TODO: dedup
+            userId: session?.user.rowId!,
             userFilter: {
               userId: { equalTo: session?.user.rowId! },
             },
           }),
         ),
         queryClient.ensureQueryData(
-          workspaceOptions({ rowId: workspaceBySlug.rowId }),
+          workspaceOptions({
+            rowId: workspaceBySlug.rowId,
+            userId: session?.user.rowId!,
+          }),
         ),
         queryClient.ensureQueryData(
           workspacesOptions({ userId: session?.user.rowId! }),
@@ -60,8 +64,6 @@ export const Route = createFileRoute({
 });
 
 function AuthenticatedLayout() {
-  const { status } = useProjectStore();
-
   return (
     <SidebarProvider>
       <div className="flex h-dvh w-full">
@@ -72,7 +74,7 @@ function AuthenticatedLayout() {
         </SidebarInset>
       </div>
 
-      <CreateProjectDialog status={status ?? undefined} />
+      <CreateProjectDialog />
       <CreateWorkspaceDialog />
     </SidebarProvider>
   );

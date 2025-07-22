@@ -1,17 +1,39 @@
-query Workspace($rowId: UUID!, $userFilter: WorkspaceUserFilter) {
+query Workspace(
+  $rowId: UUID!
+  $userId: UUID!
+  $userFilter: WorkspaceUserFilter
+) {
   workspace(rowId: $rowId) {
     rowId
     name
     slug
     viewMode
-    projects {
+    projectColumns(orderBy: INDEX_ASC) {
+      nodes {
+        emoji
+        rowId
+        title
+        index
+      }
+    }
+    projects(orderBy: NAME_ASC) {
       nodes {
         rowId
         name
         slug
         color
-        viewMode
         prefix
+        userPreferences(condition: { userId: $userId }) {
+          nodes {
+            hiddenColumnIds
+            viewMode
+            rowId
+          }
+        }
+        projectColumn {
+          title
+          emoji
+        }
         tasks {
           totalCount
         }

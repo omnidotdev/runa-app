@@ -22,7 +22,6 @@ import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useReorderTasks from "@/lib/hooks/useReorderTasks";
 import projectOptions from "@/lib/options/project.options";
-import { getColumnIcon } from "@/lib/util/getColumnIcon";
 import { cn } from "@/lib/utils";
 
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
@@ -53,14 +52,14 @@ const Tasks = ({
   const { draggableId } = useDragStore();
   const { setTaskId } = useTaskStore();
   const { isOpen: isUpdateAssigneesDialogOpen } = useDialogStore({
-    type: DialogType.UpdateAssignees,
-  });
-  const { isOpen: isUpdateDueDateDialogOpen } = useDialogStore({
-    type: DialogType.UpdateDueDate,
-  });
-  const { isOpen: isUpdateTaskLabelsDialogOpen } = useDialogStore({
-    type: DialogType.UpdateTaskLabels,
-  });
+      type: DialogType.UpdateAssignees,
+    }),
+    { isOpen: isUpdateDueDateDialogOpen } = useDialogStore({
+      type: DialogType.UpdateDueDate,
+    }),
+    { isOpen: isUpdateTaskLabelsDialogOpen } = useDialogStore({
+      type: DialogType.UpdateTaskLabels,
+    });
 
   const isUpdateDialogOpen =
     isUpdateAssigneesDialogOpen ||
@@ -75,10 +74,6 @@ const Tasks = ({
   const { tasks: projectTasks } = useReorderTasks();
 
   const tasks = projectTasks?.filter((task) => task.columnId === columnId);
-
-  const columnTitle = project?.columns?.nodes?.find(
-    (column) => column?.rowId === columnId,
-  )?.title;
 
   const taskIndex = (taskId: string) =>
     project?.columns?.nodes
@@ -102,7 +97,6 @@ const Tasks = ({
         ?.filter((task) => task.rowId !== draggableId)
         .map((task, index) => {
           const displayId = `${prefix}-${taskIndex(task.rowId) ? taskIndex(task.rowId) : 0}`;
-          const ColumnIcon = getColumnIcon(columnTitle);
 
           return (
             <Draggable key={task.rowId} draggableId={task.rowId} index={index}>
@@ -131,9 +125,6 @@ const Tasks = ({
                 >
                   <div className="flex flex-col gap-1">
                     <div className="flex items-start gap-2">
-                      {columnTitle && (
-                        <div className="mt-0.5 flex-shrink-0">{ColumnIcon}</div>
-                      )}
                       <div className="mt-0.5 min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
@@ -148,8 +139,8 @@ const Tasks = ({
                         <div className="py-4">
                           <RichTextEditor
                             defaultContent={task?.content}
-                            className="-mx-5 min-h-0 w-fit border-0 p-0 text-xs dark:bg-background"
-                            skeletonClassName="-mx-5 h-4 p-0 w-40"
+                            className="min-h-0 w-fit border-0 p-0 text-xs dark:bg-background"
+                            skeletonClassName="h-4 p-0 w-40"
                             editable={false}
                           />
                         </div>

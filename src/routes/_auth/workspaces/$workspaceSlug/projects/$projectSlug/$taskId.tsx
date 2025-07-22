@@ -192,8 +192,10 @@ function TaskPage() {
           <div className="w-full">
             <div className="no-scrollbar flex items-center gap-2 overflow-x-scroll">
               <ColumnSelector
+                projectId={projectId}
                 defaultValue={[task?.columnId!]}
-                triggerValue={task?.column?.title}
+                triggerLabel={task?.column?.title}
+                triggerEmoji={task?.column?.emoji ?? undefined}
                 size="xs"
                 onValueChange={({ value }) =>
                   updateTask({

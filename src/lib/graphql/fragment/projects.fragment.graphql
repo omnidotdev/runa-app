@@ -3,9 +3,9 @@ fragment Project on Project {
   name
   slug
   description
-  status
   color
   prefix
+  projectColumnId
   columns {
     nodes {
       allTasks: tasks {

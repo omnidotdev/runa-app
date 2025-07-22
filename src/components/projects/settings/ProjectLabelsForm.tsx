@@ -265,52 +265,56 @@ const ProjectLabelsForm = () => {
         className="mt-2 flex-1 rounded-md border"
       >
         <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) =>
-              headerGroup.headers.map((header, index) => (
-                <TableHead
-                  key={header.id}
-                  className={cn(
-                    "border-b px-3",
-                    index < 1 ? "border-border border-r" : "",
-                  )}
-                  style={{
-                    width:
-                      header.id === "color"
-                        ? "150px"
-                        : header.id === "rowId"
-                          ? "50px"
-                          : "auto",
-                  }}
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </TableHead>
-              )),
-            )}
-          </TableHeader>
+          <TableHeader className="[&_tr]:border-b-0">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header, index) => (
+                  <TableHead
+                    key={header.id}
+                    className={cn(
+                      "border-b px-3",
+                      index < 1 ? "border-border border-r" : "",
+                    )}
+                    style={{
+                      width:
+                        header.id === "color"
+                          ? "150px"
+                          : header.id === "rowId"
+                            ? "40px"
+                            : "auto",
+                    }}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
 
-          {table.getFooterGroups().map((footerGroup) => (
-            <TableRow key={footerGroup.id}>
-              {footerGroup.headers.map((header, index) => (
-                <TableCell
-                  key={header.id}
-                  className={index < 1 ? "border-border border-r" : ""}
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.footer,
-                        header.getContext(),
-                      )}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
+            {table.getFooterGroups().map((footerGroup) => (
+              <TableRow key={footerGroup.id}>
+                {footerGroup.headers.map((header, index) => (
+                  <TableCell
+                    key={header.id}
+                    className={
+                      index < 1 ? "border-border border-r" : "border-0"
+                    }
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.footer,
+                          header.getContext(),
+                        )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
 
           <TableBody>
             {table.getRowModel().rows.map((row) => (

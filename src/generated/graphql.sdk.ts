@@ -335,6 +335,7 @@ export type BigIntFilter = {
 export type Column = Node & {
   __typename?: 'Column';
   createdAt: Scalars['Datetime']['output'];
+  emoji?: Maybe<Scalars['String']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   index: Scalars['Int']['output'];
@@ -421,6 +422,8 @@ export type ColumnAverageAggregates = {
 export type ColumnCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `emoji` field. */
+  emoji?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `index` field. */
   index?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
@@ -459,6 +462,7 @@ export type ColumnConnectionGroupedAggregatesArgs = {
 
 export type ColumnDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
+  emoji?: InputMaybe<BigIntFilter>;
   index?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
@@ -470,6 +474,8 @@ export type ColumnDistinctCountAggregates = {
   __typename?: 'ColumnDistinctCountAggregates';
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of emoji across the matching connection */
+  emoji?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of index across the matching connection */
   index?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
@@ -497,6 +503,8 @@ export type ColumnFilter = {
   and?: InputMaybe<Array<ColumnFilter>>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `emoji` field. */
+  emoji?: InputMaybe<StringFilter>;
   /** Filter by the object’s `index` field. */
   index?: InputMaybe<IntFilter>;
   /** Negates the expression. */
@@ -524,6 +532,7 @@ export enum ColumnGroupBy {
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Emoji = 'EMOJI',
   Index = 'INDEX',
   ProjectId = 'PROJECT_ID',
   Title = 'TITLE',
@@ -604,6 +613,7 @@ export type ColumnHavingVarianceSampleInput = {
 /** An input for mutations affecting `Column` */
 export type ColumnInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  emoji?: InputMaybe<Scalars['String']['input']>;
   index?: InputMaybe<Scalars['Int']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -635,6 +645,8 @@ export type ColumnMinAggregates = {
 export enum ColumnOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
+  EmojiAsc = 'EMOJI_ASC',
+  EmojiDesc = 'EMOJI_DESC',
   IndexAsc = 'INDEX_ASC',
   IndexDesc = 'INDEX_DESC',
   Natural = 'NATURAL',
@@ -693,6 +705,7 @@ export enum ColumnOrderBy {
 /** Represents an update to a `Column`. Fields that are set will be updated. */
 export type ColumnPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  emoji?: InputMaybe<Scalars['String']['input']>;
   index?: InputMaybe<Scalars['Int']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -927,6 +940,39 @@ export type CreatePostPayloadPostEdgeArgs = {
   orderBy?: Array<PostOrderBy>;
 };
 
+/** All input for the create `ProjectColumn` mutation. */
+export type CreateProjectColumnInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `ProjectColumn` to be created by this mutation. */
+  projectColumn: ProjectColumnInput;
+};
+
+/** The output of our create `ProjectColumn` mutation. */
+export type CreateProjectColumnPayload = {
+  __typename?: 'CreateProjectColumnPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `ProjectColumn` that was created by this mutation. */
+  projectColumn?: Maybe<ProjectColumn>;
+  /** An edge for our `ProjectColumn`. May be used by Relay 1. */
+  projectColumnEdge?: Maybe<ProjectColumnEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `ProjectColumn` mutation. */
+export type CreateProjectColumnPayloadProjectColumnEdgeArgs = {
+  orderBy?: Array<ProjectColumnOrderBy>;
+};
+
 /** All input for the create `Project` mutation. */
 export type CreateProjectInput = {
   /**
@@ -1057,6 +1103,39 @@ export type CreateUserPayload = {
 /** The output of our create `User` mutation. */
 export type CreateUserPayloadUserEdgeArgs = {
   orderBy?: Array<UserOrderBy>;
+};
+
+/** All input for the create `UserPreference` mutation. */
+export type CreateUserPreferenceInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `UserPreference` to be created by this mutation. */
+  userPreference: UserPreferenceInput;
+};
+
+/** The output of our create `UserPreference` mutation. */
+export type CreateUserPreferencePayload = {
+  __typename?: 'CreateUserPreferencePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `UserPreference` that was created by this mutation. */
+  userPreference?: Maybe<UserPreference>;
+  /** An edge for our `UserPreference`. May be used by Relay 1. */
+  userPreferenceEdge?: Maybe<UserPreferenceEdge>;
+};
+
+
+/** The output of our create `UserPreference` mutation. */
+export type CreateUserPreferencePayloadUserPreferenceEdgeArgs = {
+  orderBy?: Array<UserPreferenceOrderBy>;
 };
 
 /** All input for the create `Workspace` mutation. */
@@ -1404,6 +1483,50 @@ export type DeleteProjectBySlugAndWorkspaceIdInput = {
   workspaceId: Scalars['UUID']['input'];
 };
 
+/** All input for the `deleteProjectColumnById` mutation. */
+export type DeleteProjectColumnByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `ProjectColumn` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteProjectColumn` mutation. */
+export type DeleteProjectColumnInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `ProjectColumn` mutation. */
+export type DeleteProjectColumnPayload = {
+  __typename?: 'DeleteProjectColumnPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedProjectColumnId?: Maybe<Scalars['ID']['output']>;
+  /** The `ProjectColumn` that was deleted by this mutation. */
+  projectColumn?: Maybe<ProjectColumn>;
+  /** An edge for our `ProjectColumn`. May be used by Relay 1. */
+  projectColumnEdge?: Maybe<ProjectColumnEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `ProjectColumn` mutation. */
+export type DeleteProjectColumnPayloadProjectColumnEdgeArgs = {
+  orderBy?: Array<ProjectColumnOrderBy>;
+};
+
 /** All input for the `deleteProject` mutation. */
 export type DeleteProjectInput = {
   /**
@@ -1587,6 +1710,61 @@ export type DeleteUserPayload = {
 /** The output of our delete `User` mutation. */
 export type DeleteUserPayloadUserEdgeArgs = {
   orderBy?: Array<UserOrderBy>;
+};
+
+/** All input for the `deleteUserPreferenceById` mutation. */
+export type DeleteUserPreferenceByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `UserPreference` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteUserPreferenceByUserIdAndProjectId` mutation. */
+export type DeleteUserPreferenceByUserIdAndProjectIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  projectId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+};
+
+/** All input for the `deleteUserPreference` mutation. */
+export type DeleteUserPreferenceInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `UserPreference` mutation. */
+export type DeleteUserPreferencePayload = {
+  __typename?: 'DeleteUserPreferencePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedUserPreferenceId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `UserPreference` that was deleted by this mutation. */
+  userPreference?: Maybe<UserPreference>;
+  /** An edge for our `UserPreference`. May be used by Relay 1. */
+  userPreferenceEdge?: Maybe<UserPreferenceEdge>;
+};
+
+
+/** The output of our delete `UserPreference` mutation. */
+export type DeleteUserPreferencePayloadUserPreferenceEdgeArgs = {
+  orderBy?: Array<UserPreferenceOrderBy>;
 };
 
 /** All input for the `deleteWorkspaceById` mutation. */
@@ -2257,12 +2435,16 @@ export type Mutation = {
   createPost?: Maybe<CreatePostPayload>;
   /** Creates a single `Project`. */
   createProject?: Maybe<CreateProjectPayload>;
+  /** Creates a single `ProjectColumn`. */
+  createProjectColumn?: Maybe<CreateProjectColumnPayload>;
   /** Creates a single `Task`. */
   createTask?: Maybe<CreateTaskPayload>;
   /** Creates a single `TaskLabel`. */
   createTaskLabel?: Maybe<CreateTaskLabelPayload>;
   /** Creates a single `User`. */
   createUser?: Maybe<CreateUserPayload>;
+  /** Creates a single `UserPreference`. */
+  createUserPreference?: Maybe<CreateUserPreferencePayload>;
   /** Creates a single `Workspace`. */
   createWorkspace?: Maybe<CreateWorkspacePayload>;
   /** Creates a single `WorkspaceUser`. */
@@ -2295,6 +2477,10 @@ export type Mutation = {
   deleteProjectById?: Maybe<DeleteProjectPayload>;
   /** Deletes a single `Project` using a unique key. */
   deleteProjectBySlugAndWorkspaceId?: Maybe<DeleteProjectPayload>;
+  /** Deletes a single `ProjectColumn` using a unique key. */
+  deleteProjectColumn?: Maybe<DeleteProjectColumnPayload>;
+  /** Deletes a single `ProjectColumn` using its globally unique id. */
+  deleteProjectColumnById?: Maybe<DeleteProjectColumnPayload>;
   /** Deletes a single `Task` using a unique key. */
   deleteTask?: Maybe<DeleteTaskPayload>;
   /** Deletes a single `Task` using its globally unique id. */
@@ -2311,6 +2497,12 @@ export type Mutation = {
   deleteUserById?: Maybe<DeleteUserPayload>;
   /** Deletes a single `User` using a unique key. */
   deleteUserByIdentityProviderId?: Maybe<DeleteUserPayload>;
+  /** Deletes a single `UserPreference` using a unique key. */
+  deleteUserPreference?: Maybe<DeleteUserPreferencePayload>;
+  /** Deletes a single `UserPreference` using its globally unique id. */
+  deleteUserPreferenceById?: Maybe<DeleteUserPreferencePayload>;
+  /** Deletes a single `UserPreference` using a unique key. */
+  deleteUserPreferenceByUserIdAndProjectId?: Maybe<DeleteUserPreferencePayload>;
   /** Deletes a single `Workspace` using a unique key. */
   deleteWorkspace?: Maybe<DeleteWorkspacePayload>;
   /** Deletes a single `Workspace` using its globally unique id. */
@@ -2349,6 +2541,10 @@ export type Mutation = {
   updateProjectById?: Maybe<UpdateProjectPayload>;
   /** Updates a single `Project` using a unique key and a patch. */
   updateProjectBySlugAndWorkspaceId?: Maybe<UpdateProjectPayload>;
+  /** Updates a single `ProjectColumn` using a unique key and a patch. */
+  updateProjectColumn?: Maybe<UpdateProjectColumnPayload>;
+  /** Updates a single `ProjectColumn` using its globally unique id and a patch. */
+  updateProjectColumnById?: Maybe<UpdateProjectColumnPayload>;
   /** Updates a single `Task` using a unique key and a patch. */
   updateTask?: Maybe<UpdateTaskPayload>;
   /** Updates a single `Task` using its globally unique id and a patch. */
@@ -2365,6 +2561,12 @@ export type Mutation = {
   updateUserById?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUserByIdentityProviderId?: Maybe<UpdateUserPayload>;
+  /** Updates a single `UserPreference` using a unique key and a patch. */
+  updateUserPreference?: Maybe<UpdateUserPreferencePayload>;
+  /** Updates a single `UserPreference` using its globally unique id and a patch. */
+  updateUserPreferenceById?: Maybe<UpdateUserPreferencePayload>;
+  /** Updates a single `UserPreference` using a unique key and a patch. */
+  updateUserPreferenceByUserIdAndProjectId?: Maybe<UpdateUserPreferencePayload>;
   /** Updates a single `Workspace` using a unique key and a patch. */
   updateWorkspace?: Maybe<UpdateWorkspacePayload>;
   /** Updates a single `Workspace` using its globally unique id and a patch. */
@@ -2415,6 +2617,12 @@ export type MutationCreateProjectArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateProjectColumnArgs = {
+  input: CreateProjectColumnInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateTaskArgs = {
   input: CreateTaskInput;
 };
@@ -2429,6 +2637,12 @@ export type MutationCreateTaskLabelArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateUserPreferenceArgs = {
+  input: CreateUserPreferenceInput;
 };
 
 
@@ -2529,6 +2743,18 @@ export type MutationDeleteProjectBySlugAndWorkspaceIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteProjectColumnArgs = {
+  input: DeleteProjectColumnInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteProjectColumnByIdArgs = {
+  input: DeleteProjectColumnByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTaskArgs = {
   input: DeleteTaskInput;
 };
@@ -2573,6 +2799,24 @@ export type MutationDeleteUserByIdArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUserByIdentityProviderIdArgs = {
   input: DeleteUserByIdentityProviderIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUserPreferenceArgs = {
+  input: DeleteUserPreferenceInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUserPreferenceByIdArgs = {
+  input: DeleteUserPreferenceByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteUserPreferenceByUserIdAndProjectIdArgs = {
+  input: DeleteUserPreferenceByUserIdAndProjectIdInput;
 };
 
 
@@ -2691,6 +2935,18 @@ export type MutationUpdateProjectBySlugAndWorkspaceIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateProjectColumnArgs = {
+  input: UpdateProjectColumnInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateProjectColumnByIdArgs = {
+  input: UpdateProjectColumnByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateTaskArgs = {
   input: UpdateTaskInput;
 };
@@ -2735,6 +2991,24 @@ export type MutationUpdateUserByIdArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateUserByIdentityProviderIdArgs = {
   input: UpdateUserByIdentityProviderIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateUserPreferenceArgs = {
+  input: UpdateUserPreferenceInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateUserPreferenceByIdArgs = {
+  input: UpdateUserPreferenceByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateUserPreferenceByUserIdAndProjectIdArgs = {
+  input: UpdateUserPreferenceByUserIdAndProjectIdInput;
 };
 
 
@@ -3055,13 +3329,16 @@ export type Project = Node & {
   labels: LabelConnection;
   name: Scalars['String']['output'];
   prefix?: Maybe<Scalars['String']['output']>;
+  /** Reads a single `ProjectColumn` that is related to this `Project`. */
+  projectColumn?: Maybe<ProjectColumn>;
+  projectColumnId: Scalars['UUID']['output'];
   rowId: Scalars['UUID']['output'];
   slug: Scalars['String']['output'];
-  status: ProjectStatus;
   /** Reads and enables pagination through a set of `Task`. */
   tasks: TaskConnection;
   updatedAt: Scalars['Datetime']['output'];
-  viewMode: Scalars['String']['output'];
+  /** Reads and enables pagination through a set of `UserPreference`. */
+  userPreferences: UserPreferenceConnection;
   /** Reads a single `Workspace` that is related to this `Project`. */
   workspace?: Maybe<Workspace>;
   workspaceId: Scalars['UUID']['output'];
@@ -3103,6 +3380,18 @@ export type ProjectTasksArgs = {
   orderBy?: InputMaybe<Array<TaskOrderBy>>;
 };
 
+
+export type ProjectUserPreferencesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<UserPreferenceCondition>;
+  filter?: InputMaybe<UserPreferenceFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UserPreferenceOrderBy>>;
+};
+
 export type ProjectAggregates = {
   __typename?: 'ProjectAggregates';
   /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
@@ -3118,6 +3407,434 @@ export type ProjectAggregatesFilter = {
   filter?: InputMaybe<ProjectFilter>;
 };
 
+export type ProjectColumn = Node & {
+  __typename?: 'ProjectColumn';
+  createdAt: Scalars['Datetime']['output'];
+  emoji?: Maybe<Scalars['String']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  index: Scalars['Int']['output'];
+  /** Reads and enables pagination through a set of `Project`. */
+  projects: ProjectConnection;
+  rowId: Scalars['UUID']['output'];
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+  /** Reads a single `Workspace` that is related to this `ProjectColumn`. */
+  workspace?: Maybe<Workspace>;
+  workspaceId: Scalars['UUID']['output'];
+};
+
+
+export type ProjectColumnProjectsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ProjectCondition>;
+  filter?: InputMaybe<ProjectFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ProjectOrderBy>>;
+};
+
+export type ProjectColumnAggregates = {
+  __typename?: 'ProjectColumnAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<ProjectColumnAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<ProjectColumnDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<ProjectColumnMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<ProjectColumnMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<ProjectColumnStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<ProjectColumnStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<ProjectColumnSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<ProjectColumnVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<ProjectColumnVarianceSampleAggregates>;
+};
+
+/** A filter to be used against aggregates of `ProjectColumn` object types. */
+export type ProjectColumnAggregatesFilter = {
+  /** Mean average aggregate over matching `ProjectColumn` objects. */
+  average?: InputMaybe<ProjectColumnAverageAggregateFilter>;
+  /** Distinct count aggregate over matching `ProjectColumn` objects. */
+  distinctCount?: InputMaybe<ProjectColumnDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `ProjectColumn` object to be included within the aggregate. */
+  filter?: InputMaybe<ProjectColumnFilter>;
+  /** Maximum aggregate over matching `ProjectColumn` objects. */
+  max?: InputMaybe<ProjectColumnMaxAggregateFilter>;
+  /** Minimum aggregate over matching `ProjectColumn` objects. */
+  min?: InputMaybe<ProjectColumnMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `ProjectColumn` objects. */
+  stddevPopulation?: InputMaybe<ProjectColumnStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `ProjectColumn` objects. */
+  stddevSample?: InputMaybe<ProjectColumnStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `ProjectColumn` objects. */
+  sum?: InputMaybe<ProjectColumnSumAggregateFilter>;
+  /** Population variance aggregate over matching `ProjectColumn` objects. */
+  variancePopulation?: InputMaybe<ProjectColumnVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `ProjectColumn` objects. */
+  varianceSample?: InputMaybe<ProjectColumnVarianceSampleAggregateFilter>;
+};
+
+export type ProjectColumnAverageAggregateFilter = {
+  index?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectColumnAverageAggregates = {
+  __typename?: 'ProjectColumnAverageAggregates';
+  /** Mean average of index across the matching connection */
+  index?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+/**
+ * A condition to be used against `ProjectColumn` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type ProjectColumnCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `emoji` field. */
+  emoji?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `index` field. */
+  index?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `title` field. */
+  title?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `workspaceId` field. */
+  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `ProjectColumn` values. */
+export type ProjectColumnConnection = {
+  __typename?: 'ProjectColumnConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<ProjectColumnAggregates>;
+  /** A list of edges which contains the `ProjectColumn` and cursor to aid in pagination. */
+  edges: Array<ProjectColumnEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<ProjectColumnAggregates>>;
+  /** A list of `ProjectColumn` objects. */
+  nodes: Array<ProjectColumn>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `ProjectColumn` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `ProjectColumn` values. */
+export type ProjectColumnConnectionGroupedAggregatesArgs = {
+  groupBy: Array<ProjectColumnGroupBy>;
+  having?: InputMaybe<ProjectColumnHavingInput>;
+};
+
+export type ProjectColumnDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  emoji?: InputMaybe<BigIntFilter>;
+  index?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  title?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  workspaceId?: InputMaybe<BigIntFilter>;
+};
+
+export type ProjectColumnDistinctCountAggregates = {
+  __typename?: 'ProjectColumnDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of emoji across the matching connection */
+  emoji?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of index across the matching connection */
+  index?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of title across the matching connection */
+  title?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of workspaceId across the matching connection */
+  workspaceId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `ProjectColumn` edge in the connection. */
+export type ProjectColumnEdge = {
+  __typename?: 'ProjectColumnEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `ProjectColumn` at the end of the edge. */
+  node: ProjectColumn;
+};
+
+/** A filter to be used against `ProjectColumn` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectColumnFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<ProjectColumnFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `emoji` field. */
+  emoji?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `index` field. */
+  index?: InputMaybe<IntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<ProjectColumnFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<ProjectColumnFilter>>;
+  /** Filter by the object’s `projects` relation. */
+  projects?: InputMaybe<ProjectColumnToManyProjectFilter>;
+  /** Some related `projects` exist. */
+  projectsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `title` field. */
+  title?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `workspace` relation. */
+  workspace?: InputMaybe<WorkspaceFilter>;
+  /** Filter by the object’s `workspaceId` field. */
+  workspaceId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `ProjectColumn` for usage during aggregation. */
+export enum ProjectColumnGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Emoji = 'EMOJI',
+  Index = 'INDEX',
+  Title = 'TITLE',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  WorkspaceId = 'WORKSPACE_ID'
+}
+
+export type ProjectColumnHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectColumnHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `ProjectColumn` aggregates. */
+export type ProjectColumnHavingInput = {
+  AND?: InputMaybe<Array<ProjectColumnHavingInput>>;
+  OR?: InputMaybe<Array<ProjectColumnHavingInput>>;
+  average?: InputMaybe<ProjectColumnHavingAverageInput>;
+  distinctCount?: InputMaybe<ProjectColumnHavingDistinctCountInput>;
+  max?: InputMaybe<ProjectColumnHavingMaxInput>;
+  min?: InputMaybe<ProjectColumnHavingMinInput>;
+  stddevPopulation?: InputMaybe<ProjectColumnHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<ProjectColumnHavingStddevSampleInput>;
+  sum?: InputMaybe<ProjectColumnHavingSumInput>;
+  variancePopulation?: InputMaybe<ProjectColumnHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<ProjectColumnHavingVarianceSampleInput>;
+};
+
+export type ProjectColumnHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectColumnHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectColumnHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectColumnHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectColumnHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectColumnHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ProjectColumnHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  index?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `ProjectColumn` */
+export type ProjectColumnInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  emoji?: InputMaybe<Scalars['String']['input']>;
+  index?: InputMaybe<Scalars['Int']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  workspaceId: Scalars['UUID']['input'];
+};
+
+export type ProjectColumnMaxAggregateFilter = {
+  index?: InputMaybe<IntFilter>;
+};
+
+export type ProjectColumnMaxAggregates = {
+  __typename?: 'ProjectColumnMaxAggregates';
+  /** Maximum of index across the matching connection */
+  index?: Maybe<Scalars['Int']['output']>;
+};
+
+export type ProjectColumnMinAggregateFilter = {
+  index?: InputMaybe<IntFilter>;
+};
+
+export type ProjectColumnMinAggregates = {
+  __typename?: 'ProjectColumnMinAggregates';
+  /** Minimum of index across the matching connection */
+  index?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Methods to use when ordering `ProjectColumn`. */
+export enum ProjectColumnOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  EmojiAsc = 'EMOJI_ASC',
+  EmojiDesc = 'EMOJI_DESC',
+  IndexAsc = 'INDEX_ASC',
+  IndexDesc = 'INDEX_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectsCountAsc = 'PROJECTS_COUNT_ASC',
+  ProjectsCountDesc = 'PROJECTS_COUNT_DESC',
+  ProjectsDistinctCountColorAsc = 'PROJECTS_DISTINCT_COUNT_COLOR_ASC',
+  ProjectsDistinctCountColorDesc = 'PROJECTS_DISTINCT_COUNT_COLOR_DESC',
+  ProjectsDistinctCountCreatedAtAsc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ProjectsDistinctCountCreatedAtDesc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ProjectsDistinctCountDescriptionAsc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_ASC',
+  ProjectsDistinctCountDescriptionDesc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  ProjectsDistinctCountNameAsc = 'PROJECTS_DISTINCT_COUNT_NAME_ASC',
+  ProjectsDistinctCountNameDesc = 'PROJECTS_DISTINCT_COUNT_NAME_DESC',
+  ProjectsDistinctCountPrefixAsc = 'PROJECTS_DISTINCT_COUNT_PREFIX_ASC',
+  ProjectsDistinctCountPrefixDesc = 'PROJECTS_DISTINCT_COUNT_PREFIX_DESC',
+  ProjectsDistinctCountProjectColumnIdAsc = 'PROJECTS_DISTINCT_COUNT_PROJECT_COLUMN_ID_ASC',
+  ProjectsDistinctCountProjectColumnIdDesc = 'PROJECTS_DISTINCT_COUNT_PROJECT_COLUMN_ID_DESC',
+  ProjectsDistinctCountRowIdAsc = 'PROJECTS_DISTINCT_COUNT_ROW_ID_ASC',
+  ProjectsDistinctCountRowIdDesc = 'PROJECTS_DISTINCT_COUNT_ROW_ID_DESC',
+  ProjectsDistinctCountSlugAsc = 'PROJECTS_DISTINCT_COUNT_SLUG_ASC',
+  ProjectsDistinctCountSlugDesc = 'PROJECTS_DISTINCT_COUNT_SLUG_DESC',
+  ProjectsDistinctCountUpdatedAtAsc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  ProjectsDistinctCountUpdatedAtDesc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  ProjectsDistinctCountWorkspaceIdAsc = 'PROJECTS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
+  ProjectsDistinctCountWorkspaceIdDesc = 'PROJECTS_DISTINCT_COUNT_WORKSPACE_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  TitleAsc = 'TITLE_ASC',
+  TitleDesc = 'TITLE_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  WorkspaceIdAsc = 'WORKSPACE_ID_ASC',
+  WorkspaceIdDesc = 'WORKSPACE_ID_DESC'
+}
+
+/** Represents an update to a `ProjectColumn`. Fields that are set will be updated. */
+export type ProjectColumnPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  emoji?: InputMaybe<Scalars['String']['input']>;
+  index?: InputMaybe<Scalars['Int']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type ProjectColumnStddevPopulationAggregateFilter = {
+  index?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectColumnStddevPopulationAggregates = {
+  __typename?: 'ProjectColumnStddevPopulationAggregates';
+  /** Population standard deviation of index across the matching connection */
+  index?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectColumnStddevSampleAggregateFilter = {
+  index?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectColumnStddevSampleAggregates = {
+  __typename?: 'ProjectColumnStddevSampleAggregates';
+  /** Sample standard deviation of index across the matching connection */
+  index?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectColumnSumAggregateFilter = {
+  index?: InputMaybe<BigIntFilter>;
+};
+
+export type ProjectColumnSumAggregates = {
+  __typename?: 'ProjectColumnSumAggregates';
+  /** Sum of index across the matching connection */
+  index: Scalars['BigInt']['output'];
+};
+
+/** A filter to be used against many `Project` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectColumnToManyProjectFilter = {
+  /** Aggregates across related `Project` match the filter criteria. */
+  aggregates?: InputMaybe<ProjectAggregatesFilter>;
+  /** Every related `Project` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<ProjectFilter>;
+  /** No related `Project` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<ProjectFilter>;
+  /** Some related `Project` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<ProjectFilter>;
+};
+
+export type ProjectColumnVariancePopulationAggregateFilter = {
+  index?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectColumnVariancePopulationAggregates = {
+  __typename?: 'ProjectColumnVariancePopulationAggregates';
+  /** Population variance of index across the matching connection */
+  index?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectColumnVarianceSampleAggregateFilter = {
+  index?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectColumnVarianceSampleAggregates = {
+  __typename?: 'ProjectColumnVarianceSampleAggregates';
+  /** Sample variance of index across the matching connection */
+  index?: Maybe<Scalars['BigFloat']['output']>;
+};
+
 /** A condition to be used against `Project` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type ProjectCondition = {
   /** Checks for equality with the object’s `color` field. */
@@ -3130,16 +3847,14 @@ export type ProjectCondition = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `prefix` field. */
   prefix?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `projectColumnId` field. */
+  projectColumnId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `slug` field. */
   slug?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `status` field. */
-  status?: InputMaybe<ProjectStatus>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `viewMode` field. */
-  viewMode?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `workspaceId` field. */
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
@@ -3174,11 +3889,10 @@ export type ProjectDistinctCountAggregateFilter = {
   description?: InputMaybe<BigIntFilter>;
   name?: InputMaybe<BigIntFilter>;
   prefix?: InputMaybe<BigIntFilter>;
+  projectColumnId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   slug?: InputMaybe<BigIntFilter>;
-  status?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
-  viewMode?: InputMaybe<BigIntFilter>;
   workspaceId?: InputMaybe<BigIntFilter>;
 };
 
@@ -3194,16 +3908,14 @@ export type ProjectDistinctCountAggregates = {
   name?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of prefix across the matching connection */
   prefix?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectColumnId across the matching connection */
+  projectColumnId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of slug across the matching connection */
   slug?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of status across the matching connection */
-  status?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of viewMode across the matching connection */
-  viewMode?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of workspaceId across the matching connection */
   workspaceId?: Maybe<Scalars['BigInt']['output']>;
 };
@@ -3243,20 +3955,24 @@ export type ProjectFilter = {
   or?: InputMaybe<Array<ProjectFilter>>;
   /** Filter by the object’s `prefix` field. */
   prefix?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `projectColumn` relation. */
+  projectColumn?: InputMaybe<ProjectColumnFilter>;
+  /** Filter by the object’s `projectColumnId` field. */
+  projectColumnId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `slug` field. */
   slug?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `status` field. */
-  status?: InputMaybe<ProjectStatusFilter>;
   /** Filter by the object’s `tasks` relation. */
   tasks?: InputMaybe<ProjectToManyTaskFilter>;
   /** Some related `tasks` exist. */
   tasksExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `viewMode` field. */
-  viewMode?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `userPreferences` relation. */
+  userPreferences?: InputMaybe<ProjectToManyUserPreferenceFilter>;
+  /** Some related `userPreferences` exist. */
+  userPreferencesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `workspace` relation. */
   workspace?: InputMaybe<WorkspaceFilter>;
   /** Filter by the object’s `workspaceId` field. */
@@ -3272,12 +3988,11 @@ export enum ProjectGroupBy {
   Description = 'DESCRIPTION',
   Name = 'NAME',
   Prefix = 'PREFIX',
+  ProjectColumnId = 'PROJECT_COLUMN_ID',
   Slug = 'SLUG',
-  Status = 'STATUS',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
-  ViewMode = 'VIEW_MODE',
   WorkspaceId = 'WORKSPACE_ID'
 }
 
@@ -3348,11 +4063,10 @@ export type ProjectInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   prefix?: InputMaybe<Scalars['String']['input']>;
+  projectColumnId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug: Scalars['String']['input'];
-  status?: InputMaybe<ProjectStatus>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  viewMode?: InputMaybe<Scalars['String']['input']>;
   workspaceId: Scalars['UUID']['input'];
 };
 
@@ -3366,6 +4080,8 @@ export enum ProjectOrderBy {
   ColumnsCountDesc = 'COLUMNS_COUNT_DESC',
   ColumnsDistinctCountCreatedAtAsc = 'COLUMNS_DISTINCT_COUNT_CREATED_AT_ASC',
   ColumnsDistinctCountCreatedAtDesc = 'COLUMNS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ColumnsDistinctCountEmojiAsc = 'COLUMNS_DISTINCT_COUNT_EMOJI_ASC',
+  ColumnsDistinctCountEmojiDesc = 'COLUMNS_DISTINCT_COUNT_EMOJI_DESC',
   ColumnsDistinctCountIndexAsc = 'COLUMNS_DISTINCT_COUNT_INDEX_ASC',
   ColumnsDistinctCountIndexDesc = 'COLUMNS_DISTINCT_COUNT_INDEX_DESC',
   ColumnsDistinctCountProjectIdAsc = 'COLUMNS_DISTINCT_COUNT_PROJECT_ID_ASC',
@@ -3415,12 +4131,12 @@ export enum ProjectOrderBy {
   PrefixDesc = 'PREFIX_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectColumnIdAsc = 'PROJECT_COLUMN_ID_ASC',
+  ProjectColumnIdDesc = 'PROJECT_COLUMN_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   SlugAsc = 'SLUG_ASC',
   SlugDesc = 'SLUG_DESC',
-  StatusAsc = 'STATUS_ASC',
-  StatusDesc = 'STATUS_DESC',
   TasksAverageColumnIndexAsc = 'TASKS_AVERAGE_COLUMN_INDEX_ASC',
   TasksAverageColumnIndexDesc = 'TASKS_AVERAGE_COLUMN_INDEX_DESC',
   TasksCountAsc = 'TASKS_COUNT_ASC',
@@ -3463,8 +4179,22 @@ export enum ProjectOrderBy {
   TasksVarianceSampleColumnIndexDesc = 'TASKS_VARIANCE_SAMPLE_COLUMN_INDEX_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
-  ViewModeAsc = 'VIEW_MODE_ASC',
-  ViewModeDesc = 'VIEW_MODE_DESC',
+  UserPreferencesCountAsc = 'USER_PREFERENCES_COUNT_ASC',
+  UserPreferencesCountDesc = 'USER_PREFERENCES_COUNT_DESC',
+  UserPreferencesDistinctCountCreatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_ASC',
+  UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
+  UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
+  UserPreferencesDistinctCountHiddenColumnIdsDesc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_DESC',
+  UserPreferencesDistinctCountProjectIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_ASC',
+  UserPreferencesDistinctCountProjectIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_DESC',
+  UserPreferencesDistinctCountRowIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_ASC',
+  UserPreferencesDistinctCountRowIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_DESC',
+  UserPreferencesDistinctCountUpdatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_UPDATED_AT_ASC',
+  UserPreferencesDistinctCountUpdatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_UPDATED_AT_DESC',
+  UserPreferencesDistinctCountUserIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_ASC',
+  UserPreferencesDistinctCountUserIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_DESC',
+  UserPreferencesDistinctCountViewModeAsc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_ASC',
+  UserPreferencesDistinctCountViewModeDesc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_DESC',
   WorkspaceIdAsc = 'WORKSPACE_ID_ASC',
   WorkspaceIdDesc = 'WORKSPACE_ID_DESC'
 }
@@ -3476,44 +4206,11 @@ export type ProjectPatch = {
   description?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   prefix?: InputMaybe<Scalars['String']['input']>;
+  projectColumnId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
-  status?: InputMaybe<ProjectStatus>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  viewMode?: InputMaybe<Scalars['String']['input']>;
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
-};
-
-export enum ProjectStatus {
-  Completed = 'completed',
-  InProgress = 'in_progress',
-  Planned = 'planned'
-}
-
-/** A filter to be used against ProjectStatus fields. All fields are combined with a logical ‘and.’ */
-export type ProjectStatusFilter = {
-  /** Not equal to the specified value, treating null like an ordinary value. */
-  distinctFrom?: InputMaybe<ProjectStatus>;
-  /** Equal to the specified value. */
-  equalTo?: InputMaybe<ProjectStatus>;
-  /** Greater than the specified value. */
-  greaterThan?: InputMaybe<ProjectStatus>;
-  /** Greater than or equal to the specified value. */
-  greaterThanOrEqualTo?: InputMaybe<ProjectStatus>;
-  /** Included in the specified list. */
-  in?: InputMaybe<Array<ProjectStatus>>;
-  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
-  isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Less than the specified value. */
-  lessThan?: InputMaybe<ProjectStatus>;
-  /** Less than or equal to the specified value. */
-  lessThanOrEqualTo?: InputMaybe<ProjectStatus>;
-  /** Equal to the specified value, treating null like an ordinary value. */
-  notDistinctFrom?: InputMaybe<ProjectStatus>;
-  /** Not equal to the specified value. */
-  notEqualTo?: InputMaybe<ProjectStatus>;
-  /** Not included in the specified list. */
-  notIn?: InputMaybe<Array<ProjectStatus>>;
 };
 
 /** A filter to be used against many `Column` object types. All fields are combined with a logical ‘and.’ */
@@ -3550,6 +4247,18 @@ export type ProjectToManyTaskFilter = {
   none?: InputMaybe<TaskFilter>;
   /** Some related `Task` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<TaskFilter>;
+};
+
+/** A filter to be used against many `UserPreference` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyUserPreferenceFilter = {
+  /** Aggregates across related `UserPreference` match the filter criteria. */
+  aggregates?: InputMaybe<UserPreferenceAggregatesFilter>;
+  /** Every related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<UserPreferenceFilter>;
+  /** No related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<UserPreferenceFilter>;
+  /** Some related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<UserPreferenceFilter>;
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -3597,6 +4306,12 @@ export type Query = Node & {
   projectById?: Maybe<Project>;
   /** Get a single `Project`. */
   projectBySlugAndWorkspaceId?: Maybe<Project>;
+  /** Get a single `ProjectColumn`. */
+  projectColumn?: Maybe<ProjectColumn>;
+  /** Reads a single `ProjectColumn` using its globally unique `ID`. */
+  projectColumnById?: Maybe<ProjectColumn>;
+  /** Reads and enables pagination through a set of `ProjectColumn`. */
+  projectColumns?: Maybe<ProjectColumnConnection>;
   /** Reads and enables pagination through a set of `Project`. */
   projects?: Maybe<ProjectConnection>;
   /**
@@ -3624,6 +4339,14 @@ export type Query = Node & {
   userById?: Maybe<User>;
   /** Get a single `User`. */
   userByIdentityProviderId?: Maybe<User>;
+  /** Get a single `UserPreference`. */
+  userPreference?: Maybe<UserPreference>;
+  /** Reads a single `UserPreference` using its globally unique `ID`. */
+  userPreferenceById?: Maybe<UserPreference>;
+  /** Get a single `UserPreference`. */
+  userPreferenceByUserIdAndProjectId?: Maybe<UserPreference>;
+  /** Reads and enables pagination through a set of `UserPreference`. */
+  userPreferences?: Maybe<UserPreferenceConnection>;
   /** Reads and enables pagination through a set of `User`. */
   users?: Maybe<UserConnection>;
   /** Get a single `Workspace`. */
@@ -3801,6 +4524,31 @@ export type QueryProjectBySlugAndWorkspaceIdArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryProjectColumnArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryProjectColumnByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryProjectColumnsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ProjectColumnCondition>;
+  filter?: InputMaybe<ProjectColumnFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ProjectColumnOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QueryProjectsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -3884,6 +4632,38 @@ export type QueryUserByIdArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryUserByIdentityProviderIdArgs = {
   identityProviderId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUserPreferenceArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUserPreferenceByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUserPreferenceByUserIdAndProjectIdArgs = {
+  projectId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryUserPreferencesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<UserPreferenceCondition>;
+  filter?: InputMaybe<UserPreferenceFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UserPreferenceOrderBy>>;
 };
 
 
@@ -4032,6 +4812,46 @@ export type StringFilter = {
   startsWith?: InputMaybe<Scalars['String']['input']>;
   /** Starts with the specified string (case-insensitive). */
   startsWithInsensitive?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** A filter to be used against String List fields. All fields are combined with a logical ‘and.’ */
+export type StringListFilter = {
+  /** Any array item is equal to the specified value. */
+  anyEqualTo?: InputMaybe<Scalars['String']['input']>;
+  /** Any array item is greater than the specified value. */
+  anyGreaterThan?: InputMaybe<Scalars['String']['input']>;
+  /** Any array item is greater than or equal to the specified value. */
+  anyGreaterThanOrEqualTo?: InputMaybe<Scalars['String']['input']>;
+  /** Any array item is less than the specified value. */
+  anyLessThan?: InputMaybe<Scalars['String']['input']>;
+  /** Any array item is less than or equal to the specified value. */
+  anyLessThanOrEqualTo?: InputMaybe<Scalars['String']['input']>;
+  /** Any array item is not equal to the specified value. */
+  anyNotEqualTo?: InputMaybe<Scalars['String']['input']>;
+  /** Contained by the specified list of values. */
+  containedBy?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Contains the specified list of values. */
+  contains?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  /** Overlaps the specified list of values. */
+  overlaps?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type Task = Node & {
@@ -5143,6 +5963,53 @@ export type UpdateProjectBySlugAndWorkspaceIdInput = {
   workspaceId: Scalars['UUID']['input'];
 };
 
+/** All input for the `updateProjectColumnById` mutation. */
+export type UpdateProjectColumnByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `ProjectColumn` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `ProjectColumn` being updated. */
+  patch: ProjectColumnPatch;
+};
+
+/** All input for the `updateProjectColumn` mutation. */
+export type UpdateProjectColumnInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `ProjectColumn` being updated. */
+  patch: ProjectColumnPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `ProjectColumn` mutation. */
+export type UpdateProjectColumnPayload = {
+  __typename?: 'UpdateProjectColumnPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `ProjectColumn` that was updated by this mutation. */
+  projectColumn?: Maybe<ProjectColumn>;
+  /** An edge for our `ProjectColumn`. May be used by Relay 1. */
+  projectColumnEdge?: Maybe<ProjectColumnEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `ProjectColumn` mutation. */
+export type UpdateProjectColumnPayloadProjectColumnEdgeArgs = {
+  orderBy?: Array<ProjectColumnOrderBy>;
+};
+
 /** All input for the `updateProject` mutation. */
 export type UpdateProjectInput = {
   /**
@@ -5342,6 +6209,66 @@ export type UpdateUserPayloadUserEdgeArgs = {
   orderBy?: Array<UserOrderBy>;
 };
 
+/** All input for the `updateUserPreferenceById` mutation. */
+export type UpdateUserPreferenceByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `UserPreference` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `UserPreference` being updated. */
+  patch: UserPreferencePatch;
+};
+
+/** All input for the `updateUserPreferenceByUserIdAndProjectId` mutation. */
+export type UpdateUserPreferenceByUserIdAndProjectIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `UserPreference` being updated. */
+  patch: UserPreferencePatch;
+  projectId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+};
+
+/** All input for the `updateUserPreference` mutation. */
+export type UpdateUserPreferenceInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `UserPreference` being updated. */
+  patch: UserPreferencePatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `UserPreference` mutation. */
+export type UpdateUserPreferencePayload = {
+  __typename?: 'UpdateUserPreferencePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `UserPreference` that was updated by this mutation. */
+  userPreference?: Maybe<UserPreference>;
+  /** An edge for our `UserPreference`. May be used by Relay 1. */
+  userPreferenceEdge?: Maybe<UserPreferenceEdge>;
+};
+
+
+/** The output of our update `UserPreference` mutation. */
+export type UpdateUserPreferencePayloadUserPreferenceEdgeArgs = {
+  orderBy?: Array<UserPreferenceOrderBy>;
+};
+
 /** All input for the `updateWorkspaceById` mutation. */
 export type UpdateWorkspaceByIdInput = {
   /**
@@ -5466,6 +6393,8 @@ export type User = Node & {
   name: Scalars['String']['output'];
   rowId: Scalars['UUID']['output'];
   updatedAt: Scalars['Datetime']['output'];
+  /** Reads and enables pagination through a set of `UserPreference`. */
+  userPreferences: UserPreferenceConnection;
   /** Reads and enables pagination through a set of `WorkspaceUser`. */
   workspaceUsers: WorkspaceUserConnection;
 };
@@ -5504,6 +6433,18 @@ export type UserAuthoredTasksArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<TaskOrderBy>>;
+};
+
+
+export type UserUserPreferencesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<UserPreferenceCondition>;
+  filter?: InputMaybe<UserPreferenceFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<UserPreferenceOrderBy>>;
 };
 
 
@@ -5628,6 +6569,10 @@ export type UserFilter = {
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `userPreferences` relation. */
+  userPreferences?: InputMaybe<UserToManyUserPreferenceFilter>;
+  /** Some related `userPreferences` exist. */
+  userPreferencesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `workspaceUsers` relation. */
   workspaceUsers?: InputMaybe<UserToManyWorkspaceUserFilter>;
   /** Some related `workspaceUsers` exist. */
@@ -5806,6 +6751,22 @@ export enum UserOrderBy {
   RowIdDesc = 'ROW_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserPreferencesCountAsc = 'USER_PREFERENCES_COUNT_ASC',
+  UserPreferencesCountDesc = 'USER_PREFERENCES_COUNT_DESC',
+  UserPreferencesDistinctCountCreatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_ASC',
+  UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
+  UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
+  UserPreferencesDistinctCountHiddenColumnIdsDesc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_DESC',
+  UserPreferencesDistinctCountProjectIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_ASC',
+  UserPreferencesDistinctCountProjectIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_DESC',
+  UserPreferencesDistinctCountRowIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_ASC',
+  UserPreferencesDistinctCountRowIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_DESC',
+  UserPreferencesDistinctCountUpdatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_UPDATED_AT_ASC',
+  UserPreferencesDistinctCountUpdatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_UPDATED_AT_DESC',
+  UserPreferencesDistinctCountUserIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_ASC',
+  UserPreferencesDistinctCountUserIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_DESC',
+  UserPreferencesDistinctCountViewModeAsc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_ASC',
+  UserPreferencesDistinctCountViewModeDesc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_DESC',
   WorkspaceUsersCountAsc = 'WORKSPACE_USERS_COUNT_ASC',
   WorkspaceUsersCountDesc = 'WORKSPACE_USERS_COUNT_DESC',
   WorkspaceUsersDistinctCountCreatedAtAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -5825,6 +6786,261 @@ export type UserPatch = {
   name?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type UserPreference = Node & {
+  __typename?: 'UserPreference';
+  createdAt: Scalars['Datetime']['output'];
+  hiddenColumnIds: Array<Maybe<Scalars['String']['output']>>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  /** Reads a single `Project` that is related to this `UserPreference`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+  /** Reads a single `User` that is related to this `UserPreference`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+  viewMode: Scalars['String']['output'];
+};
+
+export type UserPreferenceAggregates = {
+  __typename?: 'UserPreferenceAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<UserPreferenceDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `UserPreference` object types. */
+export type UserPreferenceAggregatesFilter = {
+  /** Distinct count aggregate over matching `UserPreference` objects. */
+  distinctCount?: InputMaybe<UserPreferenceDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `UserPreference` object to be included within the aggregate. */
+  filter?: InputMaybe<UserPreferenceFilter>;
+};
+
+/**
+ * A condition to be used against `UserPreference` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type UserPreferenceCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `viewMode` field. */
+  viewMode?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** A connection to a list of `UserPreference` values. */
+export type UserPreferenceConnection = {
+  __typename?: 'UserPreferenceConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<UserPreferenceAggregates>;
+  /** A list of edges which contains the `UserPreference` and cursor to aid in pagination. */
+  edges: Array<UserPreferenceEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<UserPreferenceAggregates>>;
+  /** A list of `UserPreference` objects. */
+  nodes: Array<UserPreference>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `UserPreference` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `UserPreference` values. */
+export type UserPreferenceConnectionGroupedAggregatesArgs = {
+  groupBy: Array<UserPreferenceGroupBy>;
+  having?: InputMaybe<UserPreferenceHavingInput>;
+};
+
+export type UserPreferenceDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  hiddenColumnIds?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+  viewMode?: InputMaybe<BigIntFilter>;
+};
+
+export type UserPreferenceDistinctCountAggregates = {
+  __typename?: 'UserPreferenceDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of hiddenColumnIds across the matching connection */
+  hiddenColumnIds?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of viewMode across the matching connection */
+  viewMode?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `UserPreference` edge in the connection. */
+export type UserPreferenceEdge = {
+  __typename?: 'UserPreferenceEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `UserPreference` at the end of the edge. */
+  node: UserPreference;
+};
+
+/** A filter to be used against `UserPreference` object types. All fields are combined with a logical ‘and.’ */
+export type UserPreferenceFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<UserPreferenceFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `hiddenColumnIds` field. */
+  hiddenColumnIds?: InputMaybe<StringListFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<UserPreferenceFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<UserPreferenceFilter>>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `viewMode` field. */
+  viewMode?: InputMaybe<StringFilter>;
+};
+
+/** Grouping methods for `UserPreference` for usage during aggregation. */
+export enum UserPreferenceGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  HiddenColumnIds = 'HIDDEN_COLUMN_IDS',
+  ProjectId = 'PROJECT_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID',
+  ViewMode = 'VIEW_MODE'
+}
+
+export type UserPreferenceHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `UserPreference` aggregates. */
+export type UserPreferenceHavingInput = {
+  AND?: InputMaybe<Array<UserPreferenceHavingInput>>;
+  OR?: InputMaybe<Array<UserPreferenceHavingInput>>;
+  average?: InputMaybe<UserPreferenceHavingAverageInput>;
+  distinctCount?: InputMaybe<UserPreferenceHavingDistinctCountInput>;
+  max?: InputMaybe<UserPreferenceHavingMaxInput>;
+  min?: InputMaybe<UserPreferenceHavingMinInput>;
+  stddevPopulation?: InputMaybe<UserPreferenceHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<UserPreferenceHavingStddevSampleInput>;
+  sum?: InputMaybe<UserPreferenceHavingSumInput>;
+  variancePopulation?: InputMaybe<UserPreferenceHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<UserPreferenceHavingVarianceSampleInput>;
+};
+
+export type UserPreferenceHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type UserPreferenceHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `UserPreference` */
+export type UserPreferenceInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  projectId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId: Scalars['UUID']['input'];
+  viewMode?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Methods to use when ordering `UserPreference`. */
+export enum UserPreferenceOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC',
+  ViewModeAsc = 'VIEW_MODE_ASC',
+  ViewModeDesc = 'VIEW_MODE_DESC'
+}
+
+/** Represents an update to a `UserPreference`. Fields that are set will be updated. */
+export type UserPreferencePatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+  viewMode?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** A filter to be used against many `Assignee` object types. All fields are combined with a logical ‘and.’ */
@@ -5863,6 +7079,18 @@ export type UserToManyTaskFilter = {
   some?: InputMaybe<TaskFilter>;
 };
 
+/** A filter to be used against many `UserPreference` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyUserPreferenceFilter = {
+  /** Aggregates across related `UserPreference` match the filter criteria. */
+  aggregates?: InputMaybe<UserPreferenceAggregatesFilter>;
+  /** Every related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<UserPreferenceFilter>;
+  /** No related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<UserPreferenceFilter>;
+  /** Some related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<UserPreferenceFilter>;
+};
+
 /** A filter to be used against many `WorkspaceUser` object types. All fields are combined with a logical ‘and.’ */
 export type UserToManyWorkspaceUserFilter = {
   /** Aggregates across related `WorkspaceUser` match the filter criteria. */
@@ -5883,6 +7111,8 @@ export type Workspace = Node & {
   /** Reads and enables pagination through a set of `Invitation`. */
   invitations: InvitationConnection;
   name: Scalars['String']['output'];
+  /** Reads and enables pagination through a set of `ProjectColumn`. */
+  projectColumns: ProjectColumnConnection;
   /** Reads and enables pagination through a set of `Project`. */
   projects: ProjectConnection;
   rowId: Scalars['UUID']['output'];
@@ -5903,6 +7133,18 @@ export type WorkspaceInvitationsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<InvitationOrderBy>>;
+};
+
+
+export type WorkspaceProjectColumnsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ProjectColumnCondition>;
+  filter?: InputMaybe<ProjectColumnFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ProjectColumnOrderBy>>;
 };
 
 
@@ -6020,6 +7262,10 @@ export type WorkspaceFilter = {
   not?: InputMaybe<WorkspaceFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<WorkspaceFilter>>;
+  /** Filter by the object’s `projectColumns` relation. */
+  projectColumns?: InputMaybe<WorkspaceToManyProjectColumnFilter>;
+  /** Some related `projectColumns` exist. */
+  projectColumnsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `projects` relation. */
   projects?: InputMaybe<WorkspaceToManyProjectFilter>;
   /** Some related `projects` exist. */
@@ -6153,18 +7399,48 @@ export enum WorkspaceOrderBy {
   ProjectsDistinctCountNameDesc = 'PROJECTS_DISTINCT_COUNT_NAME_DESC',
   ProjectsDistinctCountPrefixAsc = 'PROJECTS_DISTINCT_COUNT_PREFIX_ASC',
   ProjectsDistinctCountPrefixDesc = 'PROJECTS_DISTINCT_COUNT_PREFIX_DESC',
+  ProjectsDistinctCountProjectColumnIdAsc = 'PROJECTS_DISTINCT_COUNT_PROJECT_COLUMN_ID_ASC',
+  ProjectsDistinctCountProjectColumnIdDesc = 'PROJECTS_DISTINCT_COUNT_PROJECT_COLUMN_ID_DESC',
   ProjectsDistinctCountRowIdAsc = 'PROJECTS_DISTINCT_COUNT_ROW_ID_ASC',
   ProjectsDistinctCountRowIdDesc = 'PROJECTS_DISTINCT_COUNT_ROW_ID_DESC',
   ProjectsDistinctCountSlugAsc = 'PROJECTS_DISTINCT_COUNT_SLUG_ASC',
   ProjectsDistinctCountSlugDesc = 'PROJECTS_DISTINCT_COUNT_SLUG_DESC',
-  ProjectsDistinctCountStatusAsc = 'PROJECTS_DISTINCT_COUNT_STATUS_ASC',
-  ProjectsDistinctCountStatusDesc = 'PROJECTS_DISTINCT_COUNT_STATUS_DESC',
   ProjectsDistinctCountUpdatedAtAsc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_ASC',
   ProjectsDistinctCountUpdatedAtDesc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  ProjectsDistinctCountViewModeAsc = 'PROJECTS_DISTINCT_COUNT_VIEW_MODE_ASC',
-  ProjectsDistinctCountViewModeDesc = 'PROJECTS_DISTINCT_COUNT_VIEW_MODE_DESC',
   ProjectsDistinctCountWorkspaceIdAsc = 'PROJECTS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
   ProjectsDistinctCountWorkspaceIdDesc = 'PROJECTS_DISTINCT_COUNT_WORKSPACE_ID_DESC',
+  ProjectColumnsAverageIndexAsc = 'PROJECT_COLUMNS_AVERAGE_INDEX_ASC',
+  ProjectColumnsAverageIndexDesc = 'PROJECT_COLUMNS_AVERAGE_INDEX_DESC',
+  ProjectColumnsCountAsc = 'PROJECT_COLUMNS_COUNT_ASC',
+  ProjectColumnsCountDesc = 'PROJECT_COLUMNS_COUNT_DESC',
+  ProjectColumnsDistinctCountCreatedAtAsc = 'PROJECT_COLUMNS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ProjectColumnsDistinctCountCreatedAtDesc = 'PROJECT_COLUMNS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ProjectColumnsDistinctCountEmojiAsc = 'PROJECT_COLUMNS_DISTINCT_COUNT_EMOJI_ASC',
+  ProjectColumnsDistinctCountEmojiDesc = 'PROJECT_COLUMNS_DISTINCT_COUNT_EMOJI_DESC',
+  ProjectColumnsDistinctCountIndexAsc = 'PROJECT_COLUMNS_DISTINCT_COUNT_INDEX_ASC',
+  ProjectColumnsDistinctCountIndexDesc = 'PROJECT_COLUMNS_DISTINCT_COUNT_INDEX_DESC',
+  ProjectColumnsDistinctCountRowIdAsc = 'PROJECT_COLUMNS_DISTINCT_COUNT_ROW_ID_ASC',
+  ProjectColumnsDistinctCountRowIdDesc = 'PROJECT_COLUMNS_DISTINCT_COUNT_ROW_ID_DESC',
+  ProjectColumnsDistinctCountTitleAsc = 'PROJECT_COLUMNS_DISTINCT_COUNT_TITLE_ASC',
+  ProjectColumnsDistinctCountTitleDesc = 'PROJECT_COLUMNS_DISTINCT_COUNT_TITLE_DESC',
+  ProjectColumnsDistinctCountUpdatedAtAsc = 'PROJECT_COLUMNS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  ProjectColumnsDistinctCountUpdatedAtDesc = 'PROJECT_COLUMNS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  ProjectColumnsDistinctCountWorkspaceIdAsc = 'PROJECT_COLUMNS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
+  ProjectColumnsDistinctCountWorkspaceIdDesc = 'PROJECT_COLUMNS_DISTINCT_COUNT_WORKSPACE_ID_DESC',
+  ProjectColumnsMaxIndexAsc = 'PROJECT_COLUMNS_MAX_INDEX_ASC',
+  ProjectColumnsMaxIndexDesc = 'PROJECT_COLUMNS_MAX_INDEX_DESC',
+  ProjectColumnsMinIndexAsc = 'PROJECT_COLUMNS_MIN_INDEX_ASC',
+  ProjectColumnsMinIndexDesc = 'PROJECT_COLUMNS_MIN_INDEX_DESC',
+  ProjectColumnsStddevPopulationIndexAsc = 'PROJECT_COLUMNS_STDDEV_POPULATION_INDEX_ASC',
+  ProjectColumnsStddevPopulationIndexDesc = 'PROJECT_COLUMNS_STDDEV_POPULATION_INDEX_DESC',
+  ProjectColumnsStddevSampleIndexAsc = 'PROJECT_COLUMNS_STDDEV_SAMPLE_INDEX_ASC',
+  ProjectColumnsStddevSampleIndexDesc = 'PROJECT_COLUMNS_STDDEV_SAMPLE_INDEX_DESC',
+  ProjectColumnsSumIndexAsc = 'PROJECT_COLUMNS_SUM_INDEX_ASC',
+  ProjectColumnsSumIndexDesc = 'PROJECT_COLUMNS_SUM_INDEX_DESC',
+  ProjectColumnsVariancePopulationIndexAsc = 'PROJECT_COLUMNS_VARIANCE_POPULATION_INDEX_ASC',
+  ProjectColumnsVariancePopulationIndexDesc = 'PROJECT_COLUMNS_VARIANCE_POPULATION_INDEX_DESC',
+  ProjectColumnsVarianceSampleIndexAsc = 'PROJECT_COLUMNS_VARIANCE_SAMPLE_INDEX_ASC',
+  ProjectColumnsVarianceSampleIndexDesc = 'PROJECT_COLUMNS_VARIANCE_SAMPLE_INDEX_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   SlugAsc = 'SLUG_ASC',
@@ -6203,6 +7479,18 @@ export type WorkspaceToManyInvitationFilter = {
   none?: InputMaybe<InvitationFilter>;
   /** Some related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<InvitationFilter>;
+};
+
+/** A filter to be used against many `ProjectColumn` object types. All fields are combined with a logical ‘and.’ */
+export type WorkspaceToManyProjectColumnFilter = {
+  /** Aggregates across related `ProjectColumn` match the filter criteria. */
+  aggregates?: InputMaybe<ProjectColumnAggregatesFilter>;
+  /** Every related `ProjectColumn` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<ProjectColumnFilter>;
+  /** No related `ProjectColumn` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<ProjectColumnFilter>;
+  /** Some related `ProjectColumn` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<ProjectColumnFilter>;
 };
 
 /** A filter to be used against many `Project` object types. All fields are combined with a logical ‘and.’ */
@@ -6426,9 +7714,13 @@ export type WorkspaceUserPatch = {
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type ColumnFragment = { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } };
+
 export type LabelFragment = { __typename?: 'Label', color: string, name: string, rowId: string };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } };
+export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: string, index: number, rowId: string, emoji?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } };
+
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, color?: string | null, prefix?: string | null, projectColumnId: string, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } };
 
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
@@ -6449,7 +7741,22 @@ export type CreateColumnMutationVariables = Exact<{
 }>;
 
 
-export type CreateColumnMutation = { __typename?: 'Mutation', createColumn?: { __typename?: 'CreateColumnPayload', column?: { __typename?: 'Column', rowId: string } | null } | null };
+export type CreateColumnMutation = { __typename?: 'Mutation', createColumn?: { __typename?: 'CreateColumnPayload', column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null } | null };
+
+export type DeleteColumnMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteColumnMutation = { __typename?: 'Mutation', deleteColumn?: { __typename?: 'DeleteColumnPayload', clientMutationId?: string | null } | null };
+
+export type UpdateColumnMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: ColumnPatch;
+}>;
+
+
+export type UpdateColumnMutation = { __typename?: 'Mutation', updateColumn?: { __typename?: 'UpdateColumnPayload', column?: { __typename?: 'Column', rowId: string } | null } | null };
 
 export type CreateInvitationMutationVariables = Exact<{
   input: CreateInvitationInput;
@@ -6486,6 +7793,28 @@ export type CreatePostMutationVariables = Exact<{
 
 
 export type CreatePostMutation = { __typename?: 'Mutation', createPost?: { __typename?: 'CreatePostPayload', post?: { __typename?: 'Post', rowId: string } | null } | null };
+
+export type CreateProjectColumnMutationVariables = Exact<{
+  input: CreateProjectColumnInput;
+}>;
+
+
+export type CreateProjectColumnMutation = { __typename?: 'Mutation', createProjectColumn?: { __typename?: 'CreateProjectColumnPayload', projectColumn?: { __typename?: 'ProjectColumn', title: string, index: number, rowId: string, emoji?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } } | null } | null };
+
+export type DeleteProjectColumnMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteProjectColumnMutation = { __typename?: 'Mutation', deleteProjectColumn?: { __typename?: 'DeleteProjectColumnPayload', clientMutationId?: string | null } | null };
+
+export type UpdateProjectColumnMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: ProjectColumnPatch;
+}>;
+
+
+export type UpdateProjectColumnMutation = { __typename?: 'Mutation', updateProjectColumn?: { __typename?: 'UpdateProjectColumnPayload', projectColumn?: { __typename?: 'ProjectColumn', rowId: string } | null } | null };
 
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
@@ -6545,6 +7874,21 @@ export type UpdateTaskMutationVariables = Exact<{
 
 export type UpdateTaskMutation = { __typename?: 'Mutation', updateTask?: { __typename?: 'UpdateTaskPayload', task?: { __typename?: 'Task', rowId: string } | null } | null };
 
+export type CreateUserPreferenceMutationVariables = Exact<{
+  input: CreateUserPreferenceInput;
+}>;
+
+
+export type CreateUserPreferenceMutation = { __typename?: 'Mutation', createUserPreference?: { __typename?: 'CreateUserPreferencePayload', userPreference?: { __typename?: 'UserPreference', rowId: string } | null } | null };
+
+export type UpdateUserPreferenceMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  patch: UserPreferencePatch;
+}>;
+
+
+export type UpdateUserPreferenceMutation = { __typename?: 'Mutation', updateUserPreference?: { __typename?: 'UpdateUserPreferencePayload', userPreference?: { __typename?: 'UserPreference', rowId: string } | null } | null };
+
 export type CreateWorkspaceUserMutationVariables = Exact<{
   input: CreateWorkspaceUserInput;
 }>;
@@ -6582,6 +7926,13 @@ export type UpdateWorkspaceMutationVariables = Exact<{
 
 export type UpdateWorkspaceMutation = { __typename?: 'Mutation', updateWorkspace?: { __typename?: 'UpdateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string } | null } | null };
 
+export type ColumnsQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+}>;
+
+
+export type ColumnsQuery = { __typename?: 'Query', columns?: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
+
 export type LabelsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -6589,12 +7940,21 @@ export type LabelsQueryVariables = Exact<{
 
 export type LabelsQuery = { __typename?: 'Query', labels?: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', color: string, name: string, rowId: string }> } | null };
 
-export type ProjectQueryVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
+export type ProjectColumnsQueryVariables = Exact<{
+  workspaceId: Scalars['UUID']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, color?: string | null, viewMode: string, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> } } | null };
+export type ProjectColumnsQuery = { __typename?: 'Query', projectColumns?: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', title: string, index: number, rowId: string, emoji?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, color?: string | null, prefix?: string | null, projectColumnId: string, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } }> } | null };
+
+export type ProjectQueryVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+  hiddenColumns?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
+}>;
+
+
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, color?: string | null, projectColumnId: string, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
@@ -6602,14 +7962,14 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, status: ProjectStatus, color?: string | null, prefix?: string | null, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, color?: string | null, prefix?: string | null, projectColumnId: string, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } | null };
 
 export type TaskQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', rowId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null }> }, column?: { __typename?: 'Column', title: string } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', rowId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null }> }, column?: { __typename?: 'Column', title: string, emoji?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -6620,7 +7980,15 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
+
+export type UserPreferencesQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  projectId: Scalars['UUID']['input'];
+}>;
+
+
+export type UserPreferencesQuery = { __typename?: 'Query', userPreferenceByUserIdAndProjectId?: { __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string } | null };
 
 export type UserQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -6645,11 +8013,12 @@ export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __t
 
 export type WorkspaceQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
   userFilter?: InputMaybe<WorkspaceUserFilter>;
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, slug: string, viewMode: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, viewMode: string, prefix?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> }, workspaceUsers: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', userId: string }> } } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, slug: string, viewMode: string, projectColumns: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', emoji?: string | null, rowId: string, title: string, index: number }> }, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, prefix?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string }> }, projectColumn?: { __typename?: 'ProjectColumn', title: string, emoji?: string | null } | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> }, workspaceUsers: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', userId: string }> } } | null };
 
 export type WorkspaceBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -6667,11 +8036,33 @@ export type WorkspacesQueryVariables = Exact<{
 
 export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, slug: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } }> } | null };
 
+export const ColumnFragmentDoc = gql`
+    fragment Column on Column {
+  title
+  index
+  rowId
+  emoji
+  tasks {
+    totalCount
+  }
+}
+    `;
 export const LabelFragmentDoc = gql`
     fragment Label on Label {
   color
   name
   rowId
+}
+    `;
+export const ProjectColumnFragmentDoc = gql`
+    fragment ProjectColumn on ProjectColumn {
+  title
+  index
+  rowId
+  emoji
+  projects {
+    totalCount
+  }
 }
     `;
 export const ProjectFragmentDoc = gql`
@@ -6680,9 +8071,9 @@ export const ProjectFragmentDoc = gql`
   name
   slug
   description
-  status
   color
   prefix
+  projectColumnId
   columns {
     nodes {
       allTasks: tasks {
@@ -6716,6 +8107,22 @@ export const DeleteAssigneeDocument = gql`
 export const CreateColumnDocument = gql`
     mutation CreateColumn($input: CreateColumnInput!) {
   createColumn(input: $input) {
+    column {
+      ...Column
+    }
+  }
+}
+    ${ColumnFragmentDoc}`;
+export const DeleteColumnDocument = gql`
+    mutation DeleteColumn($rowId: UUID!) {
+  deleteColumn(input: {rowId: $rowId}) {
+    clientMutationId
+  }
+}
+    `;
+export const UpdateColumnDocument = gql`
+    mutation UpdateColumn($rowId: UUID!, $patch: ColumnPatch!) {
+  updateColumn(input: {rowId: $rowId, patch: $patch}) {
     column {
       rowId
     }
@@ -6762,6 +8169,31 @@ export const CreatePostDocument = gql`
     mutation CreatePost($input: CreatePostInput!) {
   createPost(input: $input) {
     post {
+      rowId
+    }
+  }
+}
+    `;
+export const CreateProjectColumnDocument = gql`
+    mutation CreateProjectColumn($input: CreateProjectColumnInput!) {
+  createProjectColumn(input: $input) {
+    projectColumn {
+      ...ProjectColumn
+    }
+  }
+}
+    ${ProjectColumnFragmentDoc}`;
+export const DeleteProjectColumnDocument = gql`
+    mutation DeleteProjectColumn($rowId: UUID!) {
+  deleteProjectColumn(input: {rowId: $rowId}) {
+    clientMutationId
+  }
+}
+    `;
+export const UpdateProjectColumnDocument = gql`
+    mutation UpdateProjectColumn($rowId: UUID!, $patch: ProjectColumnPatch!) {
+  updateProjectColumn(input: {rowId: $rowId, patch: $patch}) {
+    projectColumn {
       rowId
     }
   }
@@ -6836,6 +8268,24 @@ export const UpdateTaskDocument = gql`
   }
 }
     `;
+export const CreateUserPreferenceDocument = gql`
+    mutation CreateUserPreference($input: CreateUserPreferenceInput!) {
+  createUserPreference(input: $input) {
+    userPreference {
+      rowId
+    }
+  }
+}
+    `;
+export const UpdateUserPreferenceDocument = gql`
+    mutation UpdateUserPreference($rowId: UUID!, $patch: UserPreferencePatch!) {
+  updateUserPreference(input: {rowId: $rowId, patch: $patch}) {
+    userPreference {
+      rowId
+    }
+  }
+}
+    `;
 export const CreateWorkspaceUserDocument = gql`
     mutation CreateWorkspaceUser($input: CreateWorkspaceUserInput!) {
   createWorkspaceUser(input: $input) {
@@ -6878,6 +8328,15 @@ export const UpdateWorkspaceDocument = gql`
   }
 }
     `;
+export const ColumnsDocument = gql`
+    query Columns($projectId: UUID!) {
+  columns(condition: {projectId: $projectId}, orderBy: INDEX_ASC) {
+    nodes {
+      ...Column
+    }
+  }
+}
+    ${ColumnFragmentDoc}`;
 export const LabelsDocument = gql`
     query Labels($projectId: UUID!) {
   labels(condition: {projectId: $projectId}) {
@@ -6887,8 +8346,26 @@ export const LabelsDocument = gql`
   }
 }
     ${LabelFragmentDoc}`;
+export const ProjectColumnsDocument = gql`
+    query ProjectColumns($workspaceId: UUID!, $search: String = "") {
+  projectColumns(condition: {workspaceId: $workspaceId}, orderBy: INDEX_ASC) {
+    nodes {
+      title
+      index
+      rowId
+      emoji
+      projects(filter: {name: {includesInsensitive: $search}}) {
+        totalCount
+        nodes {
+          ...Project
+        }
+      }
+    }
+  }
+}
+    ${ProjectFragmentDoc}`;
 export const ProjectDocument = gql`
-    query Project($rowId: UUID!) {
+    query Project($rowId: UUID!, $hiddenColumns: [UUID!]) {
   project(rowId: $rowId) {
     rowId
     name
@@ -6896,7 +8373,7 @@ export const ProjectDocument = gql`
     description
     prefix
     color
-    viewMode
+    projectColumnId
     labels {
       nodes {
         name
@@ -6904,11 +8381,15 @@ export const ProjectDocument = gql`
         rowId
       }
     }
-    columns(orderBy: INDEX_ASC) {
+    tasks {
+      totalCount
+    }
+    columns(filter: {rowId: {notIn: $hiddenColumns}}, orderBy: INDEX_ASC) {
       nodes {
         rowId
         index
         title
+        emoji
         tasks {
           totalCount
           nodes {
@@ -6968,6 +8449,7 @@ export const TaskDocument = gql`
     }
     column {
       title
+      emoji
     }
     author {
       name
@@ -6997,6 +8479,9 @@ export const TasksDocument = gql`
       projectId
       columnId
       columnIndex
+      column {
+        ...Column
+      }
       content
       priority
       dueDate
@@ -7020,7 +8505,17 @@ export const TasksDocument = gql`
     }
   }
 }
-    ${LabelFragmentDoc}`;
+    ${ColumnFragmentDoc}
+${LabelFragmentDoc}`;
+export const UserPreferencesDocument = gql`
+    query UserPreferences($userId: UUID!, $projectId: UUID!) {
+  userPreferenceByUserIdAndProjectId(userId: $userId, projectId: $projectId) {
+    hiddenColumnIds
+    viewMode
+    rowId
+  }
+}
+    `;
 export const UserDocument = gql`
     query User($userId: UUID!) {
   user(rowId: $userId) {
@@ -7061,20 +8556,38 @@ export const WorkspaceUsersDocument = gql`
 }
     `;
 export const WorkspaceDocument = gql`
-    query Workspace($rowId: UUID!, $userFilter: WorkspaceUserFilter) {
+    query Workspace($rowId: UUID!, $userId: UUID!, $userFilter: WorkspaceUserFilter) {
   workspace(rowId: $rowId) {
     rowId
     name
     slug
     viewMode
-    projects {
+    projectColumns(orderBy: INDEX_ASC) {
+      nodes {
+        emoji
+        rowId
+        title
+        index
+      }
+    }
+    projects(orderBy: NAME_ASC) {
       nodes {
         rowId
         name
         slug
         color
-        viewMode
         prefix
+        userPreferences(condition: {userId: $userId}) {
+          nodes {
+            hiddenColumnIds
+            viewMode
+            rowId
+          }
+        }
+        projectColumn {
+          title
+          emoji
+        }
         tasks {
           totalCount
         }
@@ -7147,6 +8660,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     CreateColumn(variables: CreateColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateColumnMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateColumnMutation>({ document: CreateColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateColumn', 'mutation', variables);
     },
+    DeleteColumn(variables: DeleteColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DeleteColumnMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteColumnMutation>({ document: DeleteColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DeleteColumn', 'mutation', variables);
+    },
+    UpdateColumn(variables: UpdateColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateColumnMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateColumnMutation>({ document: UpdateColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateColumn', 'mutation', variables);
+    },
     CreateInvitation(variables: CreateInvitationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateInvitationMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateInvitationMutation>({ document: CreateInvitationDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateInvitation', 'mutation', variables);
     },
@@ -7161,6 +8680,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     CreatePost(variables: CreatePostMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreatePostMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreatePostMutation>({ document: CreatePostDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreatePost', 'mutation', variables);
+    },
+    CreateProjectColumn(variables: CreateProjectColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateProjectColumnMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateProjectColumnMutation>({ document: CreateProjectColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateProjectColumn', 'mutation', variables);
+    },
+    DeleteProjectColumn(variables: DeleteProjectColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DeleteProjectColumnMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeleteProjectColumnMutation>({ document: DeleteProjectColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DeleteProjectColumn', 'mutation', variables);
+    },
+    UpdateProjectColumn(variables: UpdateProjectColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateProjectColumnMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateProjectColumnMutation>({ document: UpdateProjectColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateProjectColumn', 'mutation', variables);
     },
     CreateProject(variables: CreateProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateProjectMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateProjectMutation>({ document: CreateProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateProject', 'mutation', variables);
@@ -7186,6 +8714,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     UpdateTask(variables: UpdateTaskMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateTaskMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateTaskMutation>({ document: UpdateTaskDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateTask', 'mutation', variables);
     },
+    CreateUserPreference(variables: CreateUserPreferenceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateUserPreferenceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateUserPreferenceMutation>({ document: CreateUserPreferenceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateUserPreference', 'mutation', variables);
+    },
+    UpdateUserPreference(variables: UpdateUserPreferenceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateUserPreferenceMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateUserPreferenceMutation>({ document: UpdateUserPreferenceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateUserPreference', 'mutation', variables);
+    },
     CreateWorkspaceUser(variables: CreateWorkspaceUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateWorkspaceUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateWorkspaceUserMutation>({ document: CreateWorkspaceUserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateWorkspaceUser', 'mutation', variables);
     },
@@ -7201,8 +8735,14 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     UpdateWorkspace(variables: UpdateWorkspaceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateWorkspaceMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateWorkspaceMutation>({ document: UpdateWorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateWorkspace', 'mutation', variables);
     },
+    Columns(variables: ColumnsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ColumnsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ColumnsQuery>({ document: ColumnsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Columns', 'query', variables);
+    },
     Labels(variables: LabelsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<LabelsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<LabelsQuery>({ document: LabelsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Labels', 'query', variables);
+    },
+    ProjectColumns(variables: ProjectColumnsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectColumnsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ProjectColumnsQuery>({ document: ProjectColumnsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'ProjectColumns', 'query', variables);
     },
     Project(variables: ProjectQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectQuery>({ document: ProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Project', 'query', variables);
@@ -7215,6 +8755,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Tasks(variables: TasksQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<TasksQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TasksQuery>({ document: TasksDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Tasks', 'query', variables);
+    },
+    UserPreferences(variables: UserPreferencesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserPreferencesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UserPreferencesQuery>({ document: UserPreferencesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UserPreferences', 'query', variables);
     },
     User(variables: UserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserQuery>({ document: UserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'User', 'query', variables);

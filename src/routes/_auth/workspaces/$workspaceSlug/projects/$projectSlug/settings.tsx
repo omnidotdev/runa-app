@@ -5,12 +5,20 @@ import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod";
 
+import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
-import ProjectLabelsForm from "@/components/projects/ProjectLabelsForm";
-import { useUpdateProjectMutation } from "@/generated/graphql";
+import ProjectColumnsForm from "@/components/projects/settings/ColumnsForm";
+import ProjectLabelsForm from "@/components/projects/settings/ProjectLabelsForm";
+import { Button } from "@/components/ui/button";
+import {
+  useDeleteProjectMutation,
+  useUpdateProjectMutation,
+} from "@/generated/graphql";
 import getSdk from "@/lib/graphql/getSdk";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
@@ -36,6 +44,7 @@ export const Route = createFileRoute({
     await Promise.all([
       queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
       queryClient.ensureQueryData(labelsOptions({ projectId })),
+      queryClient.ensureQueryData(columnsOptions({ projectId })),
     ]);
 
     return { name: projectName, projectId, workspaceId: workspaceBySlug.rowId };
@@ -92,18 +101,27 @@ function RouteComponent() {
     });
 
   const { mutate: updateProject } = useUpdateProjectMutation({
-    meta: {
-      invalidates: [["all"]],
-    },
-    onSuccess: (_data, variables) => {
-      if (variables.patch.slug) {
-        navigate({
-          to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-          params: { workspaceSlug, projectSlug: variables.patch.slug },
-          replace: true,
-        });
-      }
-    },
+      meta: {
+        invalidates: [["all"]],
+      },
+      onSuccess: (_data, variables) => {
+        if (variables.patch.slug) {
+          navigate({
+            to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+            params: { workspaceSlug, projectSlug: variables.patch.slug },
+            replace: true,
+          });
+        }
+      },
+    }),
+    { mutate: deleteWorkspace } = useDeleteProjectMutation({
+      meta: {
+        invalidates: [["all"]],
+      },
+    });
+
+  const { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({
+    type: DialogType.DeleteProject,
   });
 
   const [nameError, setNameError] = useState<string | null>(null);
@@ -193,6 +211,47 @@ function RouteComponent() {
 
       <div className="flex flex-col gap-12">
         <ProjectLabelsForm />
+
+        <ProjectColumnsForm />
+
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
+            <h3 className="font-medium text-sm">Danger Zone</h3>
+
+            <Button
+              variant="destructive"
+              className="w-fit text-background"
+              onClick={() => setIsDeleteProjectOpen(true)}
+            >
+              Delete Project
+            </Button>
+          </div>
+        </div>
+
+        <ConfirmDialog
+          title="Danger Zone"
+          description={
+            <span>
+              This will delete the project{" "}
+              <strong className="font-medium text-base-900 dark:text-base-100">
+                {project?.name}
+              </strong>{" "}
+              including{" "}
+              <strong className="font-medium text-base-900 dark:text-base-100">
+                {project?.tasks.totalCount ?? 0} tasks
+              </strong>
+              . This action cannot be undone.
+            </span>
+          }
+          onConfirm={() => {
+            deleteWorkspace({ rowId: project?.rowId! });
+          }}
+          dialogType={DialogType.DeleteProject}
+          confirmation={`Delete ${project?.name}`}
+          inputProps={{
+            className: "focus-visible:ring-red-500",
+          }}
+        />
       </div>
     </div>
   );

@@ -15,7 +15,8 @@
       "!node_modules",
       "!certificates",
       "!public",
-      "!src/routeTree.gen.ts"
+      "!src/routeTree.gen.ts",
+      "bun.lock"
     ]
   },
   "formatter": {

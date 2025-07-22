@@ -1,6 +1,12 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useNavigate, useSearch } from "@tanstack/react-router";
 import {
+  useLoaderData,
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
+import {
+  AlignJustifyIcon,
   CheckIcon,
   ChevronRight,
   CircleAlertIcon,
@@ -28,14 +34,20 @@ import {
 } from "@/components/ui/popover";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
+import { useUpdateUserPreferenceMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { labelColors } from "@/lib/constants/labelColors";
 import projectOptions from "@/lib/options/project.options";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 
 const Filter = () => {
   const { workspaceId, projectId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+  });
+
+  const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
@@ -58,6 +70,22 @@ const Filter = () => {
   const { data: users } = useSuspenseQuery({
     ...workspaceUsersOptions({ rowId: workspaceId }),
     select: (data) => data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
+  });
+
+  const { data: userPreferences } = useSuspenseQuery({
+    ...userPreferencesOptions({
+      userId: session?.user?.rowId!,
+      projectId,
+    }),
+    select: (data) => data?.userPreferenceByUserIdAndProjectId,
+  });
+
+  const userHiddenColumns = userPreferences?.hiddenColumnIds ?? [];
+
+  const { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
+    meta: {
+      invalidates: [["all"]],
+    },
   });
 
   useHotkeys(Hotkeys.ToggleFilter, () => setIsFilterOpen(!isFilterOpen), [
@@ -270,6 +298,64 @@ const Filter = () => {
                         <p className="font-light text-sm first-letter:uppercase">
                           {priority}
                         </p>
+                      </CheckboxLabel>
+                      <CheckboxHiddenInput />
+                      <CheckboxControl>
+                        <CheckboxIndicator>
+                          <CheckIcon className="size-4" />
+                        </CheckboxIndicator>
+                      </CheckboxControl>
+                    </CheckboxRoot>
+                  ))}
+                </PopoverContent>
+              </PopoverPositioner>
+            </PopoverRoot>
+
+            <PopoverRoot positioning={{ placement: "right-start" }}>
+              <PopoverTrigger className="flex w-full cursor-pointer justify-between border-b px-3 py-2">
+                <div className="flex items-center gap-2">
+                  <AlignJustifyIcon className="size-4 rotate-90" />
+                  <p>Hidden Columns</p>
+                </div>
+                <ChevronRight className="h-4 w-4" />
+              </PopoverTrigger>
+              <PopoverPositioner>
+                <PopoverContent className="flex w-48 flex-col gap-2 p-2">
+                  {project?.columns.nodes.map((column) => (
+                    <CheckboxRoot
+                      key={column.rowId}
+                      className="group flex cursor-pointer items-center justify-between p-0.5"
+                      checked={userHiddenColumns.includes(column.rowId)}
+                      onCheckedChange={({ checked }) => {
+                        if (checked) {
+                          updateUserPreferences({
+                            rowId: userPreferences?.rowId!,
+                            patch: {
+                              hiddenColumnIds: [
+                                ...userHiddenColumns,
+                                column.rowId,
+                              ],
+                            },
+                          });
+                        } else {
+                          updateUserPreferences({
+                            rowId: userPreferences?.rowId!,
+                            patch: {
+                              hiddenColumnIds: userHiddenColumns.filter(
+                                (id) => id !== column.rowId,
+                              ),
+                            },
+                          });
+                        }
+                      }}
+                    >
+                      <CheckboxLabel className="ml-0 flex items-center gap-2">
+                        <div className="flex items-center gap-2">
+                          <p>{column.emoji ?? "😀"}</p>
+                          <p className="font-light text-sm first-letter:uppercase">
+                            {column.title}
+                          </p>
+                        </div>
                       </CheckboxLabel>
                       <CheckboxHiddenInput />
                       <CheckboxControl>

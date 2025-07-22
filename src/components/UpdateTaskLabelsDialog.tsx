@@ -1,5 +1,9 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useParams } from "@tanstack/react-router";
+import {
+  useLoaderData,
+  useParams,
+  useRouteContext,
+} from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
@@ -33,12 +37,14 @@ const UpdateTaskLabelsDialog = () => {
 
   const { workspaceId } = useLoaderData({ from: "/_auth" });
 
+  const { session } = useRouteContext({ from: "/_auth" });
+
   const { taskId: paramsTaskId } = useParams({
     strict: false,
   });
 
   const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId! }),
+    ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
     select: (data) => data?.workspace,
   });
 

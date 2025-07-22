@@ -77,7 +77,7 @@ const InviteMemberDialog = () => {
   });
 
   const { data: currentWorkspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId }),
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
     select: (data) => data?.workspace,
   });
 

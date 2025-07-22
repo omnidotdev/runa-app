@@ -37,13 +37,15 @@ const TaskColumnForm = withForm({
         {(field) => {
           return (
             <ColumnSelector
+              projectId={projectId}
               defaultValue={
                 form.state.values.columnId ? [form.state.values.columnId] : []
               }
               onValueChange={({ value }) =>
                 value.length ? field.setValue(value[0]) : field.clearValues()
               }
-              triggerValue={currentColumn?.label}
+              triggerLabel={currentColumn?.label}
+              triggerEmoji={currentColumn?.column?.emoji ?? undefined}
             />
           );
         }}
