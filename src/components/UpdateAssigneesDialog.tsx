@@ -1,9 +1,5 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useParams,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import UpdateAssignees from "@/components/tasks/UpdateAssignees";
@@ -26,22 +22,11 @@ import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
-import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 
 const UpdateAssigneesDialog = () => {
-  const { workspaceId } = useLoaderData({ from: "/_auth" });
-
-  const { session } = useRouteContext({ from: "/_auth" });
-
   const { taskId: paramsTaskId } = useParams({
     strict: false,
-  });
-
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
-    select: (data) => data?.workspace,
   });
 
   const { taskId: storeTaskId, setTaskId } = useTaskStore();
@@ -69,20 +54,12 @@ const UpdateAssigneesDialog = () => {
 
   const { mutate: addNewAssignee } = useCreateAssigneeMutation({
     meta: {
-      invalidates: [
-        taskOptions({ rowId: taskId! }).queryKey,
-        projectOptions({ rowId: workspace?.projects?.nodes?.[0].rowId! })
-          .queryKey,
-      ],
+      invalidates: [["all"]],
     },
   });
   const { mutate: removeAssignee } = useDeleteAssigneeMutation({
     meta: {
-      invalidates: [
-        taskOptions({ rowId: taskId! }).queryKey,
-        projectOptions({ rowId: workspace?.projects?.nodes?.[0].rowId! })
-          .queryKey,
-      ],
+      invalidates: [["all"]],
     },
   });
 
