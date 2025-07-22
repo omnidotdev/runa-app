@@ -3318,6 +3318,7 @@ export type PostPatch = {
 export type Project = Node & {
   __typename?: 'Project';
   color?: Maybe<Scalars['String']['output']>;
+  columnIndex: Scalars['Int']['output'];
   /** Reads and enables pagination through a set of `Column`. */
   columns: ColumnConnection;
   createdAt: Scalars['Datetime']['output'];
@@ -3393,17 +3394,59 @@ export type ProjectUserPreferencesArgs = {
 
 export type ProjectAggregates = {
   __typename?: 'ProjectAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<ProjectAverageAggregates>;
   /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
   distinctCount?: Maybe<ProjectDistinctCountAggregates>;
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<ProjectMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<ProjectMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<ProjectStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<ProjectStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<ProjectSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<ProjectVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<ProjectVarianceSampleAggregates>;
 };
 
 /** A filter to be used against aggregates of `Project` object types. */
 export type ProjectAggregatesFilter = {
+  /** Mean average aggregate over matching `Project` objects. */
+  average?: InputMaybe<ProjectAverageAggregateFilter>;
   /** Distinct count aggregate over matching `Project` objects. */
   distinctCount?: InputMaybe<ProjectDistinctCountAggregateFilter>;
   /** A filter that must pass for the relevant `Project` object to be included within the aggregate. */
   filter?: InputMaybe<ProjectFilter>;
+  /** Maximum aggregate over matching `Project` objects. */
+  max?: InputMaybe<ProjectMaxAggregateFilter>;
+  /** Minimum aggregate over matching `Project` objects. */
+  min?: InputMaybe<ProjectMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `Project` objects. */
+  stddevPopulation?: InputMaybe<ProjectStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `Project` objects. */
+  stddevSample?: InputMaybe<ProjectStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `Project` objects. */
+  sum?: InputMaybe<ProjectSumAggregateFilter>;
+  /** Population variance aggregate over matching `Project` objects. */
+  variancePopulation?: InputMaybe<ProjectVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `Project` objects. */
+  varianceSample?: InputMaybe<ProjectVarianceSampleAggregateFilter>;
+};
+
+export type ProjectAverageAggregateFilter = {
+  columnIndex?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectAverageAggregates = {
+  __typename?: 'ProjectAverageAggregates';
+  /** Mean average of columnIndex across the matching connection */
+  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type ProjectColumn = Node & {
@@ -3729,10 +3772,14 @@ export enum ProjectColumnOrderBy {
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectsAverageColumnIndexAsc = 'PROJECTS_AVERAGE_COLUMN_INDEX_ASC',
+  ProjectsAverageColumnIndexDesc = 'PROJECTS_AVERAGE_COLUMN_INDEX_DESC',
   ProjectsCountAsc = 'PROJECTS_COUNT_ASC',
   ProjectsCountDesc = 'PROJECTS_COUNT_DESC',
   ProjectsDistinctCountColorAsc = 'PROJECTS_DISTINCT_COUNT_COLOR_ASC',
   ProjectsDistinctCountColorDesc = 'PROJECTS_DISTINCT_COUNT_COLOR_DESC',
+  ProjectsDistinctCountColumnIndexAsc = 'PROJECTS_DISTINCT_COUNT_COLUMN_INDEX_ASC',
+  ProjectsDistinctCountColumnIndexDesc = 'PROJECTS_DISTINCT_COUNT_COLUMN_INDEX_DESC',
   ProjectsDistinctCountCreatedAtAsc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_ASC',
   ProjectsDistinctCountCreatedAtDesc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_DESC',
   ProjectsDistinctCountDescriptionAsc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_ASC',
@@ -3751,6 +3798,20 @@ export enum ProjectColumnOrderBy {
   ProjectsDistinctCountUpdatedAtDesc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_DESC',
   ProjectsDistinctCountWorkspaceIdAsc = 'PROJECTS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
   ProjectsDistinctCountWorkspaceIdDesc = 'PROJECTS_DISTINCT_COUNT_WORKSPACE_ID_DESC',
+  ProjectsMaxColumnIndexAsc = 'PROJECTS_MAX_COLUMN_INDEX_ASC',
+  ProjectsMaxColumnIndexDesc = 'PROJECTS_MAX_COLUMN_INDEX_DESC',
+  ProjectsMinColumnIndexAsc = 'PROJECTS_MIN_COLUMN_INDEX_ASC',
+  ProjectsMinColumnIndexDesc = 'PROJECTS_MIN_COLUMN_INDEX_DESC',
+  ProjectsStddevPopulationColumnIndexAsc = 'PROJECTS_STDDEV_POPULATION_COLUMN_INDEX_ASC',
+  ProjectsStddevPopulationColumnIndexDesc = 'PROJECTS_STDDEV_POPULATION_COLUMN_INDEX_DESC',
+  ProjectsStddevSampleColumnIndexAsc = 'PROJECTS_STDDEV_SAMPLE_COLUMN_INDEX_ASC',
+  ProjectsStddevSampleColumnIndexDesc = 'PROJECTS_STDDEV_SAMPLE_COLUMN_INDEX_DESC',
+  ProjectsSumColumnIndexAsc = 'PROJECTS_SUM_COLUMN_INDEX_ASC',
+  ProjectsSumColumnIndexDesc = 'PROJECTS_SUM_COLUMN_INDEX_DESC',
+  ProjectsVariancePopulationColumnIndexAsc = 'PROJECTS_VARIANCE_POPULATION_COLUMN_INDEX_ASC',
+  ProjectsVariancePopulationColumnIndexDesc = 'PROJECTS_VARIANCE_POPULATION_COLUMN_INDEX_DESC',
+  ProjectsVarianceSampleColumnIndexAsc = 'PROJECTS_VARIANCE_SAMPLE_COLUMN_INDEX_ASC',
+  ProjectsVarianceSampleColumnIndexDesc = 'PROJECTS_VARIANCE_SAMPLE_COLUMN_INDEX_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
   TitleAsc = 'TITLE_ASC',
@@ -3838,6 +3899,8 @@ export type ProjectColumnVarianceSampleAggregates = {
 export type ProjectCondition = {
   /** Checks for equality with the object’s `color` field. */
   color?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `columnIndex` field. */
+  columnIndex?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `description` field. */
@@ -3884,6 +3947,7 @@ export type ProjectConnectionGroupedAggregatesArgs = {
 
 export type ProjectDistinctCountAggregateFilter = {
   color?: InputMaybe<BigIntFilter>;
+  columnIndex?: InputMaybe<BigIntFilter>;
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
   name?: InputMaybe<BigIntFilter>;
@@ -3899,6 +3963,8 @@ export type ProjectDistinctCountAggregates = {
   __typename?: 'ProjectDistinctCountAggregates';
   /** Distinct count of color across the matching connection */
   color?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of columnIndex across the matching connection */
+  columnIndex?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of description across the matching connection */
@@ -3934,6 +4000,8 @@ export type ProjectFilter = {
   and?: InputMaybe<Array<ProjectFilter>>;
   /** Filter by the object’s `color` field. */
   color?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `columnIndex` field. */
+  columnIndex?: InputMaybe<IntFilter>;
   /** Filter by the object’s `columns` relation. */
   columns?: InputMaybe<ProjectToManyColumnFilter>;
   /** Some related `columns` exist. */
@@ -3981,6 +4049,7 @@ export type ProjectFilter = {
 /** Grouping methods for `Project` for usage during aggregation. */
 export enum ProjectGroupBy {
   Color = 'COLOR',
+  ColumnIndex = 'COLUMN_INDEX',
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
@@ -3996,11 +4065,13 @@ export enum ProjectGroupBy {
 }
 
 export type ProjectHavingAverageInput = {
+  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingDistinctCountInput = {
+  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -4021,36 +4092,43 @@ export type ProjectHavingInput = {
 };
 
 export type ProjectHavingMaxInput = {
+  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingMinInput = {
+  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingStddevPopulationInput = {
+  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingStddevSampleInput = {
+  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingSumInput = {
+  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingVariancePopulationInput = {
+  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingVarianceSampleInput = {
+  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
@@ -4058,6 +4136,7 @@ export type ProjectHavingVarianceSampleInput = {
 /** An input for mutations affecting `Project` */
 export type ProjectInput = {
   color?: InputMaybe<Scalars['String']['input']>;
+  columnIndex?: InputMaybe<Scalars['Int']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
@@ -4067,6 +4146,26 @@ export type ProjectInput = {
   slug: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   workspaceId: Scalars['UUID']['input'];
+};
+
+export type ProjectMaxAggregateFilter = {
+  columnIndex?: InputMaybe<IntFilter>;
+};
+
+export type ProjectMaxAggregates = {
+  __typename?: 'ProjectMaxAggregates';
+  /** Maximum of columnIndex across the matching connection */
+  columnIndex?: Maybe<Scalars['Int']['output']>;
+};
+
+export type ProjectMinAggregateFilter = {
+  columnIndex?: InputMaybe<IntFilter>;
+};
+
+export type ProjectMinAggregates = {
+  __typename?: 'ProjectMinAggregates';
+  /** Minimum of columnIndex across the matching connection */
+  columnIndex?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Methods to use when ordering `Project`. */
@@ -4105,6 +4204,8 @@ export enum ProjectOrderBy {
   ColumnsVariancePopulationIndexDesc = 'COLUMNS_VARIANCE_POPULATION_INDEX_DESC',
   ColumnsVarianceSampleIndexAsc = 'COLUMNS_VARIANCE_SAMPLE_INDEX_ASC',
   ColumnsVarianceSampleIndexDesc = 'COLUMNS_VARIANCE_SAMPLE_INDEX_DESC',
+  ColumnIndexAsc = 'COLUMN_INDEX_ASC',
+  ColumnIndexDesc = 'COLUMN_INDEX_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
@@ -4201,6 +4302,7 @@ export enum ProjectOrderBy {
 /** Represents an update to a `Project`. Fields that are set will be updated. */
 export type ProjectPatch = {
   color?: InputMaybe<Scalars['String']['input']>;
+  columnIndex?: InputMaybe<Scalars['Int']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -4210,6 +4312,36 @@ export type ProjectPatch = {
   slug?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type ProjectStddevPopulationAggregateFilter = {
+  columnIndex?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectStddevPopulationAggregates = {
+  __typename?: 'ProjectStddevPopulationAggregates';
+  /** Population standard deviation of columnIndex across the matching connection */
+  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectStddevSampleAggregateFilter = {
+  columnIndex?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectStddevSampleAggregates = {
+  __typename?: 'ProjectStddevSampleAggregates';
+  /** Sample standard deviation of columnIndex across the matching connection */
+  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectSumAggregateFilter = {
+  columnIndex?: InputMaybe<BigIntFilter>;
+};
+
+export type ProjectSumAggregates = {
+  __typename?: 'ProjectSumAggregates';
+  /** Sum of columnIndex across the matching connection */
+  columnIndex: Scalars['BigInt']['output'];
 };
 
 /** A filter to be used against many `Column` object types. All fields are combined with a logical ‘and.’ */
@@ -4258,6 +4390,26 @@ export type ProjectToManyUserPreferenceFilter = {
   none?: InputMaybe<UserPreferenceFilter>;
   /** Some related `UserPreference` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<UserPreferenceFilter>;
+};
+
+export type ProjectVariancePopulationAggregateFilter = {
+  columnIndex?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectVariancePopulationAggregates = {
+  __typename?: 'ProjectVariancePopulationAggregates';
+  /** Population variance of columnIndex across the matching connection */
+  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type ProjectVarianceSampleAggregateFilter = {
+  columnIndex?: InputMaybe<BigFloatFilter>;
+};
+
+export type ProjectVarianceSampleAggregates = {
+  __typename?: 'ProjectVarianceSampleAggregates';
+  /** Sample variance of columnIndex across the matching connection */
+  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** The root query type which gives access points into the data universe. */
@@ -7386,10 +7538,14 @@ export enum WorkspaceOrderBy {
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectsAverageColumnIndexAsc = 'PROJECTS_AVERAGE_COLUMN_INDEX_ASC',
+  ProjectsAverageColumnIndexDesc = 'PROJECTS_AVERAGE_COLUMN_INDEX_DESC',
   ProjectsCountAsc = 'PROJECTS_COUNT_ASC',
   ProjectsCountDesc = 'PROJECTS_COUNT_DESC',
   ProjectsDistinctCountColorAsc = 'PROJECTS_DISTINCT_COUNT_COLOR_ASC',
   ProjectsDistinctCountColorDesc = 'PROJECTS_DISTINCT_COUNT_COLOR_DESC',
+  ProjectsDistinctCountColumnIndexAsc = 'PROJECTS_DISTINCT_COUNT_COLUMN_INDEX_ASC',
+  ProjectsDistinctCountColumnIndexDesc = 'PROJECTS_DISTINCT_COUNT_COLUMN_INDEX_DESC',
   ProjectsDistinctCountCreatedAtAsc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_ASC',
   ProjectsDistinctCountCreatedAtDesc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_DESC',
   ProjectsDistinctCountDescriptionAsc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_ASC',
@@ -7408,6 +7564,20 @@ export enum WorkspaceOrderBy {
   ProjectsDistinctCountUpdatedAtDesc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_DESC',
   ProjectsDistinctCountWorkspaceIdAsc = 'PROJECTS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
   ProjectsDistinctCountWorkspaceIdDesc = 'PROJECTS_DISTINCT_COUNT_WORKSPACE_ID_DESC',
+  ProjectsMaxColumnIndexAsc = 'PROJECTS_MAX_COLUMN_INDEX_ASC',
+  ProjectsMaxColumnIndexDesc = 'PROJECTS_MAX_COLUMN_INDEX_DESC',
+  ProjectsMinColumnIndexAsc = 'PROJECTS_MIN_COLUMN_INDEX_ASC',
+  ProjectsMinColumnIndexDesc = 'PROJECTS_MIN_COLUMN_INDEX_DESC',
+  ProjectsStddevPopulationColumnIndexAsc = 'PROJECTS_STDDEV_POPULATION_COLUMN_INDEX_ASC',
+  ProjectsStddevPopulationColumnIndexDesc = 'PROJECTS_STDDEV_POPULATION_COLUMN_INDEX_DESC',
+  ProjectsStddevSampleColumnIndexAsc = 'PROJECTS_STDDEV_SAMPLE_COLUMN_INDEX_ASC',
+  ProjectsStddevSampleColumnIndexDesc = 'PROJECTS_STDDEV_SAMPLE_COLUMN_INDEX_DESC',
+  ProjectsSumColumnIndexAsc = 'PROJECTS_SUM_COLUMN_INDEX_ASC',
+  ProjectsSumColumnIndexDesc = 'PROJECTS_SUM_COLUMN_INDEX_DESC',
+  ProjectsVariancePopulationColumnIndexAsc = 'PROJECTS_VARIANCE_POPULATION_COLUMN_INDEX_ASC',
+  ProjectsVariancePopulationColumnIndexDesc = 'PROJECTS_VARIANCE_POPULATION_COLUMN_INDEX_DESC',
+  ProjectsVarianceSampleColumnIndexAsc = 'PROJECTS_VARIANCE_SAMPLE_COLUMN_INDEX_ASC',
+  ProjectsVarianceSampleColumnIndexDesc = 'PROJECTS_VARIANCE_SAMPLE_COLUMN_INDEX_DESC',
   ProjectColumnsAverageIndexAsc = 'PROJECT_COLUMNS_AVERAGE_INDEX_ASC',
   ProjectColumnsAverageIndexDesc = 'PROJECT_COLUMNS_AVERAGE_INDEX_DESC',
   ProjectColumnsCountAsc = 'PROJECT_COLUMNS_COUNT_ASC',
@@ -8972,7 +9142,10 @@ export const ProjectColumnsDocument = `
       index
       rowId
       emoji
-      projects(filter: {name: {includesInsensitive: $search}}) {
+      projects(
+        filter: {name: {includesInsensitive: $search}}
+        orderBy: COLUMN_INDEX_ASC
+      ) {
         totalCount
         nodes {
           ...Project

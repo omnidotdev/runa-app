@@ -59,6 +59,18 @@ const CreateProjectDialog = () => {
     select: (data) => data?.workspace,
   });
 
+  const newProjectColumnId =
+    projectColumnId ?? currentWorkspace?.projectColumns?.nodes[0].rowId;
+
+  const { data: projectColumnIndex } = useQuery({
+    ...projectColumnsOptions({ workspaceId: workspaceId! }),
+    enabled: !!workspaceId && !!currentWorkspace,
+    select: (data) =>
+      data?.projectColumns?.nodes?.find(
+        (col) => col.rowId === newProjectColumnId,
+      )?.projects?.totalCount,
+  });
+
   const { isOpen: isCreateProjectOpen, setIsOpen: setIsCreateProjectOpen } =
     useDialogStore({
       type: DialogType.CreateProject,
@@ -125,6 +137,7 @@ const CreateProjectDialog = () => {
       description: "",
       projectColumnId:
         projectColumnId ?? currentWorkspace?.projectColumns?.nodes[0].rowId,
+      projectColumnIndex: projectColumnIndex ?? 0,
     },
     onSubmit: async ({ value, formApi }) => {
       await createNewProject({
@@ -135,6 +148,7 @@ const CreateProjectDialog = () => {
             slug: generateSlug(value.name),
             description: value.description,
             projectColumnId: value.projectColumnId!,
+            columnIndex: value.projectColumnIndex,
           },
         },
       });
