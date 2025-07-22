@@ -2,6 +2,9 @@ import { Outlet } from "@tanstack/react-router";
 
 import Link from "@/components/core/Link";
 import ThemeToggle from "@/components/ThemeToggle";
+import { Button } from "@/components/ui/button";
+import { signIn } from "@/lib/auth/signIn";
+import { BASE_URL } from "@/lib/config/env.config";
 
 export const Route = createFileRoute({
   component: UnauthenticatedLayout,
@@ -34,17 +37,12 @@ function UnauthenticatedLayout() {
                 Runa
               </h1>
             </Link>
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center gap-4">
               <ThemeToggle />
-              {/* TODO */}
-              {/* <Link
-                to="/docs"
-                variant="link"
-              >
-                Docs
-              </Link> */}
 
-              <Link to="/workspaces">Sign In</Link>
+              <Button onClick={() => signIn({ redirectUrl: BASE_URL })}>
+                Sign In
+              </Button>
             </div>
           </div>
         </div>

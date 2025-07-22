@@ -296,13 +296,11 @@ const ProjectLabelsForm = () => {
             ))}
 
             {table.getFooterGroups().map((footerGroup) => (
-              <TableRow key={footerGroup.id}>
+              <TableRow key={footerGroup.id} className="border-t">
                 {footerGroup.headers.map((header, index) => (
                   <TableCell
                     key={header.id}
-                    className={
-                      index < 1 ? "border-border border-r" : "border-0"
-                    }
+                    className={index < 1 ? "border-r border-b" : "border-b"}
                   >
                     {header.isPlaceholder
                       ? null
