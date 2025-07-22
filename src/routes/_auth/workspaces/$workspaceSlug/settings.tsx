@@ -26,24 +26,16 @@ import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
-  loader: async ({ context: { queryClient, session, workspaceBySlug } }) => {
+  loader: async ({ context: { queryClient, workspaceBySlug } }) => {
     if (!workspaceBySlug) {
       throw notFound();
     }
 
-    await Promise.all([
-      queryClient.ensureQueryData(
-        workspaceOptions({
-          rowId: workspaceBySlug.rowId!,
-          userId: session?.user.rowId!,
-        }),
-      ),
-      queryClient.ensureQueryData(
-        projectColumnsOptions({
-          workspaceId: workspaceBySlug.rowId!,
-        }),
-      ),
-    ]);
+    await queryClient.ensureQueryData(
+      projectColumnsOptions({
+        workspaceId: workspaceBySlug.rowId!,
+      }),
+    );
 
     return { name: workspaceBySlug.name, workspaceId: workspaceBySlug.rowId };
   },

@@ -65,9 +65,13 @@ export const Route = createFileRoute({
   }),
   loader: async ({
     deps: { search, assignees, labels, priorities },
-    context: { queryClient, session, workspaceBySlug },
+    context: { queryClient, workspaceBySlug, userPreferences },
   }) => {
-    if (!workspaceBySlug || !workspaceBySlug.projects.nodes.length) {
+    if (
+      !workspaceBySlug ||
+      !workspaceBySlug.projects.nodes.length ||
+      !userPreferences
+    ) {
       throw notFound();
     }
 
@@ -76,35 +80,27 @@ export const Route = createFileRoute({
     const projectId = project.rowId;
     const projectName = project.name;
 
-    const [{ userPreferenceByUserIdAndProjectId: userPreferences }] =
-      await Promise.all([
-        queryClient.ensureQueryData(
-          userPreferencesOptions({
-            userId: session?.user?.rowId!,
-            projectId,
-          }),
-        ),
-        queryClient.ensureQueryData(
-          tasksOptions({
-            projectId,
-            search,
-            assignees: assignees.length
-              ? { some: { user: { rowId: { in: assignees } } } }
-              : undefined,
-            labels: labels.length
-              ? { some: { label: { rowId: { in: labels } } } }
-              : undefined,
-            priorities: priorities.length ? priorities : undefined,
-          }),
-        ),
-      ]);
-
-    await queryClient.ensureQueryData(
-      projectOptions({
-        rowId: projectId,
-        hiddenColumns: userPreferences?.hiddenColumnIds as string[],
-      }),
-    );
+    await Promise.all([
+      queryClient.ensureQueryData(
+        projectOptions({
+          rowId: projectId,
+          hiddenColumns: userPreferences.hiddenColumnIds as string[],
+        }),
+      ),
+      queryClient.ensureQueryData(
+        tasksOptions({
+          projectId,
+          search,
+          assignees: assignees.length
+            ? { some: { user: { rowId: { in: assignees } } } }
+            : undefined,
+          labels: labels.length
+            ? { some: { label: { rowId: { in: labels } } } }
+            : undefined,
+          priorities: priorities.length ? priorities : undefined,
+        }),
+      ),
+    ]);
 
     return {
       name: projectName,

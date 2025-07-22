@@ -5,6 +5,7 @@ import CreateProjectDialog from "@/components/CreateProjectDialog";
 import CreateWorkspaceDialog from "@/components/CreateWorkspaceDialog";
 import NotFound from "@/components/layout/NotFound";
 import { SidebarInset } from "@/components/ui/sidebar";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
@@ -32,7 +33,12 @@ export const Route = createFileRoute({
 
       if (!workspaceBySlug) throw notFound();
 
-      const [{ workspaceUsers }] = await Promise.all([
+      const projectId = workspaceBySlug.projects.nodes[0].rowId;
+
+      const [
+        { workspaceUsers },
+        { userPreferenceByUserIdAndProjectId: userPreferences },
+      ] = await Promise.all([
         // NB: used to ensure that the user is indeed a member of the workspace
         queryClient.ensureQueryData(
           workspaceUsersOptions({
@@ -40,6 +46,12 @@ export const Route = createFileRoute({
             filter: {
               userId: { equalTo: session.user.rowId! },
             },
+          }),
+        ),
+        queryClient.ensureQueryData(
+          userPreferencesOptions({
+            userId: session?.user?.rowId!,
+            projectId,
           }),
         ),
         queryClient.ensureQueryData(
@@ -60,13 +72,13 @@ export const Route = createFileRoute({
 
       if (!workspaceUsers?.nodes.length) throw notFound();
 
-      return { workspaceBySlug };
+      return { workspaceBySlug, userPreferences };
     } else {
       await queryClient.ensureQueryData(
         workspacesOptions({ userId: session?.user.rowId! }),
       );
 
-      return { workspaceBySlug: undefined };
+      return { workspaceBySlug: undefined, userPreferences: undefined };
     }
   },
   loader: ({ context }) => ({

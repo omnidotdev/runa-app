@@ -32,7 +32,6 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
-import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import seo from "@/lib/util/seo";
 
 import type { EditorApi } from "@/components/core/RichTextEditor";
@@ -46,12 +45,9 @@ export const Route = createFileRoute({
       throw notFound();
     }
 
-    const [{ task }] = await Promise.all([
-      queryClient.ensureQueryData(taskOptions({ rowId: taskId })),
-      queryClient.ensureQueryData(
-        workspaceUsersOptions({ workspaceId: workspaceBySlug.rowId }),
-      ),
-    ]);
+    const { task } = await queryClient.ensureQueryData(
+      taskOptions({ rowId: taskId }),
+    );
 
     if (!task) {
       throw notFound();

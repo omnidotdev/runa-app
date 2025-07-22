@@ -42,19 +42,13 @@ export const Route = createFileRoute({
   loaderDeps: ({ search: { search } }) => ({ search }),
   loader: async ({
     deps: { search },
-    context: { queryClient, session, workspaceBySlug },
+    context: { queryClient, workspaceBySlug },
   }) => {
     if (!workspaceBySlug) {
       throw notFound();
     }
 
     await Promise.all([
-      queryClient.ensureQueryData(
-        workspaceOptions({
-          rowId: workspaceBySlug.rowId!,
-          userId: session?.user?.rowId!,
-        }),
-      ),
       queryClient.ensureQueryData(
         projectsOptions({ workspaceId: workspaceBySlug.rowId!, search }),
       ),
