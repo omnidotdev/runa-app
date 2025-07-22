@@ -21,22 +21,12 @@ import getSdk from "@/lib/graphql/getSdk";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
-  loader: async ({
-    params: { workspaceSlug },
-    context: { queryClient, session },
-  }) => {
-    const { workspaceBySlug } = await queryClient.ensureQueryData(
-      workspaceBySlugOptions({
-        slug: workspaceSlug,
-      }),
-    );
-
+  loader: async ({ context: { queryClient, session, workspaceBySlug } }) => {
     if (!workspaceBySlug) {
       throw notFound();
     }

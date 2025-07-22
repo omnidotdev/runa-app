@@ -38,9 +38,6 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
-import workspaceOptions from "@/lib/options/workspace.options";
-import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
-import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
@@ -68,16 +65,8 @@ export const Route = createFileRoute({
   }),
   loader: async ({
     deps: { search, assignees, labels, priorities },
-    params: { projectSlug, workspaceSlug },
-    context: { queryClient, session },
+    context: { queryClient, session, workspaceBySlug },
   }) => {
-    const { workspaceBySlug } = await queryClient.ensureQueryData(
-      workspaceBySlugOptions({
-        slug: workspaceSlug,
-        projectSlug,
-      }),
-    );
-
     if (!workspaceBySlug || !workspaceBySlug.projects.nodes.length) {
       throw notFound();
     }
@@ -94,15 +83,6 @@ export const Route = createFileRoute({
             userId: session?.user?.rowId!,
             projectId,
           }),
-        ),
-        queryClient.ensureQueryData(
-          workspaceOptions({
-            rowId: workspaceBySlug.rowId,
-            userId: session?.user?.rowId!,
-          }),
-        ),
-        queryClient.ensureQueryData(
-          workspaceUsersOptions({ workspaceId: workspaceBySlug.rowId }),
         ),
         queryClient.ensureQueryData(
           tasksOptions({

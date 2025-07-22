@@ -12,10 +12,9 @@ import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import SidebarProvider from "@/providers/SidebarProvider";
 
 export const Route = createFileRoute({
-  beforeLoad: ({ context: { session } }) => {
+  beforeLoad: async ({ params, context: { queryClient, session } }) => {
     if (!session) throw redirect({ to: "/" });
-  },
-  loader: async ({ params, context: { queryClient, session } }) => {
+
     // TODO: determine if there is a cleaner way to do this with ts router / start from layout files
     const { workspaceSlug, projectSlug } = params as unknown as {
       workspaceSlug?: string;
@@ -39,32 +38,40 @@ export const Route = createFileRoute({
           workspaceUsersOptions({
             workspaceId: workspaceBySlug.rowId,
             filter: {
-              userId: { equalTo: session?.user.rowId! },
+              userId: { equalTo: session.user.rowId! },
             },
+          }),
+        ),
+        queryClient.ensureQueryData(
+          workspaceUsersOptions({
+            workspaceId: workspaceBySlug.rowId,
           }),
         ),
         queryClient.ensureQueryData(
           workspaceOptions({
             rowId: workspaceBySlug.rowId,
-            userId: session?.user.rowId!,
+            userId: session.user.rowId!,
           }),
         ),
         queryClient.ensureQueryData(
-          workspacesOptions({ userId: session?.user.rowId! }),
+          workspacesOptions({ userId: session.user.rowId! }),
         ),
       ]);
 
       if (!workspaceUsers?.nodes.length) throw notFound();
 
-      return { workspaceId: workspaceBySlug.rowId };
+      return { workspaceBySlug };
     } else {
       await queryClient.ensureQueryData(
         workspacesOptions({ userId: session?.user.rowId! }),
       );
 
-      return { workspaceId: undefined };
+      return { workspaceBySlug: undefined };
     }
   },
+  loader: ({ context }) => ({
+    workspaceId: context.workspaceBySlug?.rowId,
+  }),
   notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,
   component: AuthenticatedLayout,
 });

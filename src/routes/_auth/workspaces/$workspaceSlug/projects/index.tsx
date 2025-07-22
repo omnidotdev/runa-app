@@ -25,7 +25,6 @@ import useDragStore from "@/lib/hooks/store/useDragStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import seo from "@/lib/util/seo";
 
 import type { DropResult } from "@hello-pangea/dnd";
@@ -43,15 +42,8 @@ export const Route = createFileRoute({
   loaderDeps: ({ search: { search } }) => ({ search }),
   loader: async ({
     deps: { search },
-    params: { workspaceSlug },
-    context: { queryClient, session },
+    context: { queryClient, session, workspaceBySlug },
   }) => {
-    const { workspaceBySlug } = await queryClient.ensureQueryData(
-      workspaceBySlugOptions({
-        slug: workspaceSlug,
-      }),
-    );
-
     if (!workspaceBySlug) {
       throw notFound();
     }

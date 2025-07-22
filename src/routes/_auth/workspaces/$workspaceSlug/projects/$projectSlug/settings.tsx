@@ -21,22 +21,11 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
-import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute({
-  loader: async ({
-    params: { workspaceSlug, projectSlug },
-    context: { queryClient },
-  }) => {
-    const { workspaceBySlug } = await queryClient.ensureQueryData(
-      workspaceBySlugOptions({
-        slug: workspaceSlug,
-        projectSlug,
-      }),
-    );
-
+  loader: async ({ context: { queryClient, workspaceBySlug } }) => {
     if (!workspaceBySlug || !workspaceBySlug.projects.nodes.length) {
       throw notFound();
     }
