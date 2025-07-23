@@ -714,7 +714,7 @@ export const mockProjectColumnsQuery = (resolver: GraphQLResponseResolver<Types.
  * @example
  * mockProjectQuery(
  *   ({ query, variables }) => {
- *     const { rowId, hiddenColumns } = variables;
+ *     const { rowId } = variables;
  *     return HttpResponse.json({
  *       data: { project }
  *     })

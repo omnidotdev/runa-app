@@ -56,9 +56,16 @@ const Board = ({ tasks }: Props) => {
   const { data: project } = useQuery({
     ...projectOptions({
       rowId: projectId,
-      hiddenColumns: userPreferences?.hiddenColumnIds as string[],
     }),
-    select: (data) => data?.project,
+    select: (data) => ({
+      ...data?.project,
+      columns: {
+        ...data?.project?.columns,
+        nodes: data?.project?.columns?.nodes?.filter(
+          (column) => !userPreferences?.hiddenColumnIds.includes(column.rowId),
+        ),
+      },
+    }),
   });
 
   const startAutoScroll = useCallback((direction: "left" | "right") => {

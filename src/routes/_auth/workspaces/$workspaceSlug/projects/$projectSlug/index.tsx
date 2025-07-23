@@ -58,9 +58,9 @@ const projectSearchParamsSchema = z.object({
 
 export const Route = createFileRoute({
   // TODO: scaffold out. `loader` work takes longer than the preload of `intent` so without the `pendingComponent` we get flash of content
-  pendingComponent: () => (
-    <div className="flex size-full items-center justify-center">Loading...</div>
-  ),
+  // pendingComponent: () => (
+  //   <div className="flex size-full items-center justify-center">Loading...</div>
+  // ),
   loaderDeps: ({ search: { search, assignees, labels, priorities } }) => ({
     search,
     assignees,
@@ -69,13 +69,9 @@ export const Route = createFileRoute({
   }),
   loader: async ({
     deps: { search, assignees, labels, priorities },
-    context: { queryClient, workspaceBySlug, userPreferences },
+    context: { queryClient, workspaceBySlug },
   }) => {
-    if (
-      !workspaceBySlug ||
-      !workspaceBySlug.projects.nodes.length ||
-      !userPreferences
-    ) {
+    if (!workspaceBySlug || !workspaceBySlug.projects.nodes.length) {
       throw notFound();
     }
 
@@ -88,7 +84,6 @@ export const Route = createFileRoute({
       queryClient.ensureQueryData(
         projectOptions({
           rowId: projectId,
-          hiddenColumns: userPreferences.hiddenColumnIds as string[],
         }),
       ),
       queryClient.ensureQueryData(
@@ -190,9 +185,17 @@ function ProjectPage() {
   const { data: project } = useSuspenseQuery({
     ...projectOptions({
       rowId: projectId,
-      hiddenColumns: userPreferences?.hiddenColumnIds as string[],
     }),
-    select: (data) => data?.project,
+    // TODO: determine best way to extract this logic. Using `userPreferences` in the loader to prefetch the project data was causing issue, this client side filtering seems to work well though.
+    select: (data) => ({
+      ...data?.project,
+      columns: {
+        ...data?.project?.columns,
+        nodes: data?.project?.columns?.nodes?.filter(
+          (column) => !userPreferences?.hiddenColumnIds.includes(column.rowId),
+        ),
+      },
+    }),
   });
 
   const editNameSchema = z

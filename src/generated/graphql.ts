@@ -8128,7 +8128,6 @@ export type ProjectColumnsQuery = { __typename?: 'Query', projectColumns?: { __t
 
 export type ProjectQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
-  hiddenColumns?: InputMaybe<Array<Scalars['UUID']['input']> | Scalars['UUID']['input']>;
 }>;
 
 
@@ -9295,7 +9294,7 @@ useInfiniteProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables
 useProjectColumnsQuery.fetcher = (variables: ProjectColumnsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectColumnsQuery, ProjectColumnsQueryVariables>(ProjectColumnsDocument, variables, options);
 
 export const ProjectDocument = `
-    query Project($rowId: UUID!, $hiddenColumns: [UUID!]) {
+    query Project($rowId: UUID!) {
   project(rowId: $rowId) {
     rowId
     name
@@ -9314,7 +9313,7 @@ export const ProjectDocument = `
     tasks {
       totalCount
     }
-    columns(filter: {rowId: {notIn: $hiddenColumns}}, orderBy: INDEX_ASC) {
+    columns(orderBy: INDEX_ASC) {
       nodes {
         rowId
         index

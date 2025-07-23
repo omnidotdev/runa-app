@@ -52,7 +52,6 @@ const ColumnMenu = ({ columnId }: Props) => {
   const { data: column } = useSuspenseQuery({
     ...projectOptions({
       rowId: projectId,
-      hiddenColumns: userPreferences?.hiddenColumnIds as string[],
     }),
     select: (data) =>
       data?.project?.columns?.nodes?.find((col) => col.rowId === columnId),
