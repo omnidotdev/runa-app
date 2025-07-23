@@ -17,7 +17,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import { cn } from "@/lib/utils";
 
@@ -36,7 +35,6 @@ const ListItem = ({ task, index, displayId }: Props) => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
-  const { draggableId } = useDragStore();
   const { setTaskId } = useTaskStore();
   const { isOpen: isUpdateAssigneesDialogOpen } = useDialogStore({
     type: DialogType.UpdateAssignees,
@@ -52,11 +50,6 @@ const ListItem = ({ task, index, displayId }: Props) => {
     isUpdateAssigneesDialogOpen ||
     isUpdateDueDateDialogOpen ||
     isUpdateTaskLabelsDialogOpen;
-
-  // Skip rendering if this task is being dragged
-  if (task.rowId === draggableId) {
-    return null;
-  }
 
   return (
     <Draggable key={task.rowId} draggableId={task.rowId} index={index}>
