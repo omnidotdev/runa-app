@@ -13,6 +13,7 @@ export enum DialogType {
   UpdateDueDate = "update_due_date",
   UpdateTaskLabels = "update_task_labels",
   DeleteColumn = "delete_column",
+  DeleteColumnTasks = "delete_column_tasks",
   DeleteProjectColumn = "delete_project_column",
 }
 

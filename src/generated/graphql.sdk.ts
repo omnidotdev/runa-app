@@ -8098,6 +8098,13 @@ export type UpdateWorkspaceMutationVariables = Exact<{
 
 export type UpdateWorkspaceMutation = { __typename?: 'Mutation', updateWorkspace?: { __typename?: 'UpdateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string } | null } | null };
 
+export type ColumnQueryVariables = Exact<{
+  columnId: Scalars['UUID']['input'];
+}>;
+
+
+export type ColumnQuery = { __typename?: 'Query', column?: { __typename?: 'Column', tasks: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string }> } } | null };
+
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -8533,6 +8540,17 @@ export const UpdateWorkspaceDocument = gql`
   }
 }
     `;
+export const ColumnDocument = gql`
+    query Column($columnId: UUID!) {
+  column(rowId: $columnId) {
+    tasks {
+      nodes {
+        rowId
+      }
+    }
+  }
+}
+    `;
 export const ColumnsDocument = gql`
     query Columns($projectId: UUID!) {
   columns(condition: {projectId: $projectId}, orderBy: INDEX_ASC) {
@@ -8911,6 +8929,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UpdateWorkspace(variables: UpdateWorkspaceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateWorkspaceMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateWorkspaceMutation>({ document: UpdateWorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateWorkspace', 'mutation', variables);
+    },
+    Column(variables: ColumnQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ColumnQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ColumnQuery>({ document: ColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Column', 'query', variables);
     },
     Columns(variables: ColumnsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ColumnsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ColumnsQuery>({ document: ColumnsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Columns', 'query', variables);

@@ -8097,6 +8097,13 @@ export type UpdateWorkspaceMutationVariables = Exact<{
 
 export type UpdateWorkspaceMutation = { __typename?: 'Mutation', updateWorkspace?: { __typename?: 'UpdateWorkspacePayload', workspace?: { __typename?: 'Workspace', rowId: string } | null } | null };
 
+export type ColumnQueryVariables = Exact<{
+  columnId: Scalars['UUID']['input'];
+}>;
+
+
+export type ColumnQuery = { __typename?: 'Query', column?: { __typename?: 'Column', tasks: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string }> } } | null };
+
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -9064,6 +9071,60 @@ useUpdateWorkspaceMutation.getKey = () => ['UpdateWorkspace'];
 
 
 useUpdateWorkspaceMutation.fetcher = (variables: UpdateWorkspaceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateWorkspaceMutation, UpdateWorkspaceMutationVariables>(UpdateWorkspaceDocument, variables, options);
+
+export const ColumnDocument = `
+    query Column($columnId: UUID!) {
+  column(rowId: $columnId) {
+    tasks {
+      nodes {
+        rowId
+      }
+    }
+  }
+}
+    `;
+
+export const useColumnQuery = <
+      TData = ColumnQuery,
+      TError = unknown
+    >(
+      variables: ColumnQueryVariables,
+      options?: Omit<UseQueryOptions<ColumnQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ColumnQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ColumnQuery, TError, TData>(
+      {
+    queryKey: ['Column', variables],
+    queryFn: graphqlFetch<ColumnQuery, ColumnQueryVariables>(ColumnDocument, variables),
+    ...options
+  }
+    )};
+
+useColumnQuery.getKey = (variables: ColumnQueryVariables) => ['Column', variables];
+
+export const useInfiniteColumnQuery = <
+      TData = InfiniteData<ColumnQuery>,
+      TError = unknown
+    >(
+      variables: ColumnQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ColumnQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ColumnQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ColumnQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Column.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<ColumnQuery, ColumnQueryVariables>(ColumnDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteColumnQuery.getKey = (variables: ColumnQueryVariables) => ['Column.infinite', variables];
+
+
+useColumnQuery.fetcher = (variables: ColumnQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ColumnQuery, ColumnQueryVariables>(ColumnDocument, variables, options);
 
 export const ColumnsDocument = `
     query Columns($projectId: UUID!) {

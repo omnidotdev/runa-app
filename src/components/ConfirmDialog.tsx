@@ -17,7 +17,7 @@ import useDialogStore from "@/lib/hooks/store/useDialogStore";
 import type { ComponentProps, ReactNode } from "react";
 import type { DialogType } from "@/lib/hooks/store/useDialogStore";
 
-interface ConfirmDialogProps {
+interface ConfirmDialogProps extends ComponentProps<typeof DialogRoot> {
   title: string;
   description: string | ReactNode;
   onConfirm: () => void;
@@ -33,6 +33,8 @@ const ConfirmDialog = ({
   dialogType,
   confirmation = "",
   inputProps,
+  onOpenChange,
+  ...rest
 }: ConfirmDialogProps) => {
   const { isOpen, setIsOpen } = useDialogStore({ type: dialogType });
   const [userInput, setUserInput] = useState("");
@@ -49,8 +51,12 @@ const ConfirmDialog = ({
   return (
     <DialogRoot
       open={isOpen}
-      onOpenChange={({ open }) => setIsOpen(open)}
+      onOpenChange={(details) => {
+        setIsOpen(details.open);
+        onOpenChange?.(details);
+      }}
       initialFocusEl={() => inputRef.current}
+      {...rest}
     >
       <DialogBackdrop />
       <DialogPositioner>
