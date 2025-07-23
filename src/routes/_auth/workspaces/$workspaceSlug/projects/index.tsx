@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { Grid2X2Icon, ListIcon, Plus, SearchIcon } from "lucide-react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod";
@@ -84,12 +84,11 @@ function ProjectsOverviewPage() {
   });
 
   const { data: projects } = useSuspenseQuery({
-    ...projectColumnsOptions({ workspaceId, search }),
-    select: (data) =>
-      data?.projectColumns?.nodes?.flatMap((column) =>
-        column.projects?.nodes?.map((project) => project),
-      ),
+    ...projectsOptions({ workspaceId, search }),
+    select: (data) => data?.projects?.nodes ?? [],
   });
+
+  const [localProjects, setLocalProjects] = useState(projects);
 
   const { setDraggableId } = useDragStore();
 
@@ -130,45 +129,9 @@ function ProjectsOverviewPage() {
     [updateViewMode, workspace?.viewMode, workspaceId],
   );
 
-  const { mutate: updateProject } = useUpdateProjectMutation({
+  const { mutateAsync: updateProject } = useUpdateProjectMutation({
     meta: {
       invalidates: [["all"]],
-    },
-    onMutate: async (variables) => {
-      await queryClient.cancelQueries(
-        projectColumnsOptions({ workspaceId, search }),
-      );
-
-      queryClient.setQueryData(
-        projectColumnsOptions({ workspaceId, search }).queryKey,
-        // @ts-ignore TODO: type properly
-        (old) => ({
-          projectColumns: {
-            ...old?.projectColumns!,
-            nodes: old?.projectColumns?.nodes?.map((column) => ({
-              ...column,
-              projects: {
-                ...column.projects,
-                nodes: column.projects.nodes?.map((project) => {
-                  if (project?.rowId === variables.rowId) {
-                    return {
-                      ...project!,
-                      projectColumnId:
-                        variables.patch.projectColumnId ??
-                        project.projectColumnId,
-                      columnIndex: variables.patch.columnIndex,
-                    };
-                  }
-
-                  return project;
-                }),
-              },
-            })),
-          },
-        }),
-      );
-
-      setDraggableId(null);
     },
   });
 
@@ -189,7 +152,7 @@ function ProjectsOverviewPage() {
   );
 
   const onDragEnd = useCallback(
-    (result: DropResult) => {
+    async (result: DropResult) => {
       const { destination, source, draggableId } = result;
 
       // Exit early if dropped outside a droppable area or in the same position
@@ -203,12 +166,12 @@ function ProjectsOverviewPage() {
 
       setDraggableId(draggableId);
 
-      if (projects?.length) {
-        const currentProject = projects.find(
+      if (localProjects?.length) {
+        const currentProject = localProjects.find(
           (project) => project.rowId === draggableId,
         )!;
 
-        const destinationColumnProjects = projects.filter(
+        const destinationColumnProjects = localProjects.filter(
           (project) => project.projectColumnId === destination.droppableId,
         );
 
@@ -220,29 +183,42 @@ function ProjectsOverviewPage() {
           );
           reorderedColumnProjects.splice(destination.index, 0, projectToMove);
 
-          reorderedColumnProjects.map((project, index) =>
-            updateProject({
-              rowId: project.rowId,
-              patch: {
+          setLocalProjects((prev) => {
+            const unTouchedProjects = prev.filter(
+              (project) => project.projectColumnId !== destination.droppableId,
+            );
+
+            return [
+              ...unTouchedProjects,
+              ...reorderedColumnProjects.map((project, index) => ({
+                ...project,
                 columnIndex: index,
-              },
-            }),
+              })),
+            ];
+          });
+
+          await Promise.all(
+            reorderedColumnProjects.map((project, index) =>
+              updateProject({
+                rowId: project.rowId,
+                patch: {
+                  columnIndex: index,
+                },
+              }),
+            ),
           );
         } else {
-          const sourceColumnProjectsExcludingMovedProject = projects.filter(
-            (project) =>
-              project.projectColumnId === source.droppableId &&
-              project.rowId !== draggableId,
-          );
+          const sourceColumnProjectsExcludingMovedProject =
+            localProjects.filter(
+              (project) =>
+                project.projectColumnId === source.droppableId &&
+                project.rowId !== draggableId,
+            );
 
-          sourceColumnProjectsExcludingMovedProject.map((project, index) =>
-            updateProject({
-              rowId: project.rowId,
-              patch: {
-                columnIndex: index,
-              },
-            }),
-          );
+          const sourceProjectIds =
+            sourceColumnProjectsExcludingMovedProject.map(
+              (project) => project.rowId,
+            );
 
           const projectsWithMovedInDestination = [...destinationColumnProjects];
           projectsWithMovedInDestination.splice(
@@ -251,22 +227,77 @@ function ProjectsOverviewPage() {
             currentProject,
           );
 
-          projectsWithMovedInDestination.map((project, index) =>
-            updateProject({
-              rowId: project.rowId,
-              patch: {
+          const destinationProjectIds = projectsWithMovedInDestination.map(
+            (project) => project.rowId,
+          );
+
+          setLocalProjects((prev) => {
+            const unTouchedProjects = prev.filter(
+              (project) =>
+                !sourceProjectIds.includes(project.rowId) &&
+                !destinationProjectIds.includes(project.rowId),
+            );
+
+            return [
+              ...unTouchedProjects,
+              ...sourceColumnProjectsExcludingMovedProject.map(
+                (project, index) => ({
+                  ...project,
+                  columnIndex: index,
+                }),
+              ),
+              ...projectsWithMovedInDestination.map((project, index) => ({
+                ...project,
                 columnIndex: index,
                 projectColumnId:
                   project.rowId === currentProject.rowId
                     ? destination.droppableId
                     : project.projectColumnId,
-              },
-            }),
-          );
+              })),
+            ];
+          });
+
+          await Promise.all([
+            ...sourceColumnProjectsExcludingMovedProject.map((project, index) =>
+              updateProject({
+                rowId: project.rowId,
+                patch: {
+                  columnIndex: index,
+                },
+              }),
+            ),
+            ...projectsWithMovedInDestination.map((project, index) =>
+              updateProject({
+                rowId: project.rowId,
+                patch: {
+                  columnIndex: index,
+                  projectColumnId:
+                    project.rowId === currentProject.rowId
+                      ? destination.droppableId
+                      : project.projectColumnId,
+                },
+              }),
+            ),
+          ]);
         }
+
+        setDraggableId(null);
+
+        const { projects } = await queryClient.fetchQuery(
+          projectsOptions({ workspaceId, search }),
+        );
+
+        setLocalProjects(projects?.nodes ?? []);
       }
     },
-    [updateProject, setDraggableId, projects],
+    [
+      updateProject,
+      setDraggableId,
+      localProjects,
+      queryClient,
+      workspaceId,
+      search,
+    ],
   );
 
   return (
@@ -357,7 +388,11 @@ function ProjectsOverviewPage() {
         </div>
 
         <DragDropContext onDragEnd={onDragEnd}>
-          {workspace?.viewMode === "board" ? <Board /> : <List />}
+          {workspace?.viewMode === "board" ? (
+            <Board projects={localProjects} />
+          ) : (
+            <List projects={localProjects} />
+          )}
         </DragDropContext>
       </div>
     </div>

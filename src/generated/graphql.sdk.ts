@@ -8581,6 +8581,7 @@ export const ProjectsDocument = gql`
   projects(
     condition: {workspaceId: $workspaceId}
     filter: {name: {includesInsensitive: $search}}
+    orderBy: COLUMN_INDEX_ASC
   ) {
     nodes {
       ...Project

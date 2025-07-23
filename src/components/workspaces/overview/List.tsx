@@ -13,12 +13,17 @@ import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import ListItem from "@/components/workspaces/overview/ListItem";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import { cn } from "@/lib/utils";
 
-const List = () => {
+import type { ProjectFragment } from "@/generated/graphql";
+
+interface Props {
+  projects: ProjectFragment[];
+}
+
+const List = ({ projects }: Props) => {
   const { workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
@@ -32,7 +37,8 @@ const List = () => {
     select: (data) => data?.projectColumns?.nodes,
   });
 
-  const { draggableId } = useDragStore();
+  const columnProjects = (columnId: string) =>
+    projects.filter((project) => project.projectColumnId === columnId);
 
   const { setProjectColumnId } = useProjectStore();
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
@@ -105,7 +111,7 @@ const List = () => {
                       "bg-primary-100/40 dark:bg-primary-950/40",
                   )}
                 >
-                  {column.projects.nodes.length === 0 ? (
+                  {columnProjects(column.rowId).length === 0 ? (
                     <p
                       className={cn(
                         "ml-2 p-2 text-muted-foreground text-xs",
@@ -115,31 +121,29 @@ const List = () => {
                       No projects
                     </p>
                   ) : (
-                    column.projects.nodes
-                      .filter((project) => project.rowId !== draggableId)
-                      .map((project, index) => (
-                        <Draggable
-                          key={project.rowId}
-                          draggableId={project.rowId}
-                          index={index}
-                        >
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className={cn(
-                                "group cursor-pointer bg-background",
-                                snapshot.isDragging
-                                  ? "z-10 shadow-lg"
-                                  : "hover:bg-base-50/50 dark:hover:bg-background/90",
-                              )}
-                            >
-                              <ListItem project={project} />
-                            </div>
-                          )}
-                        </Draggable>
-                      ))
+                    columnProjects(column.rowId).map((project, index) => (
+                      <Draggable
+                        key={project.rowId}
+                        draggableId={project.rowId}
+                        index={index}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={cn(
+                              "group cursor-pointer bg-background",
+                              snapshot.isDragging
+                                ? "z-10 shadow-lg"
+                                : "hover:bg-base-50/50 dark:hover:bg-background/90",
+                            )}
+                          >
+                            <ListItem project={project} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))
                   )}
                   {provided.placeholder}
                 </div>

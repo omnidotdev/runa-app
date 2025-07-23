@@ -8,14 +8,17 @@ import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import BoardItem from "@/components/workspaces/overview/BoardItem";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import { cn } from "@/lib/utils";
 
-import type { ProjectFragment as Project } from "@/generated/graphql";
+import type { ProjectFragment } from "@/generated/graphql";
 
-const Board = () => {
+interface Props {
+  projects: ProjectFragment[];
+}
+
+const Board = ({ projects }: Props) => {
   const { workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
@@ -28,8 +31,6 @@ const Board = () => {
     ...projectColumnsOptions({ workspaceId: workspaceId!, search }),
     select: (data) => data?.projectColumns?.nodes,
   });
-
-  const { draggableId } = useDragStore();
 
   const { setProjectColumnId } = useProjectStore();
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
@@ -96,8 +97,10 @@ const Board = () => {
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
                     >
-                      {column.projects.nodes
-                        .filter((project) => project.rowId !== draggableId)
+                      {projects
+                        .filter(
+                          (project) => project.projectColumnId === column.rowId,
+                        )
                         .map((project, index) => (
                           <Draggable
                             key={project.rowId}
@@ -111,7 +114,7 @@ const Board = () => {
                                 {...provided.dragHandleProps}
                                 className="my-1"
                               >
-                                <BoardItem project={project as Project} />
+                                <BoardItem project={project} />
                               </div>
                             )}
                           </Draggable>
