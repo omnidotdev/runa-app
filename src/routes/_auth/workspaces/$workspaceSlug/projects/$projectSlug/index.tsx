@@ -324,7 +324,7 @@ function ProjectPage() {
 
             return [
               ...unTouchedTasks,
-              ...reorderedColumnTasks.map((task, index) => ({
+              ...reorderedColumnTasks.filter(Boolean).map((task, index) => ({
                 ...task,
                 columnIndex: index,
               })),
@@ -332,7 +332,7 @@ function ProjectPage() {
           });
 
           await Promise.all(
-            reorderedColumnTasks.map((task, index) =>
+            reorderedColumnTasks.filter(Boolean).map((task, index) =>
               updateTask({
                 rowId: task.rowId,
                 patch: {
@@ -409,6 +409,8 @@ function ProjectPage() {
 
         setDraggableId(null);
 
+        // TODO: determine how to properly handle this logic when filters are active. This works great currently to update the local state after mutations either fail or succeed, but there is still flickering when filters are active
+        // The flickering occurs when switching filters
         const { tasks: updatedTasks } = await queryClient.fetchQuery(
           tasksOptions(tasksVariables),
         );
