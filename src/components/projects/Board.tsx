@@ -12,6 +12,7 @@ import BoardItem from "@/components/projects/BoardItem";
 import { Button } from "@/components/ui/button";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
+import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useTheme from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
@@ -41,6 +42,7 @@ const Board = ({ tasks }: Props) => {
   });
 
   const { setColumnId } = useTaskStore();
+  const { draggableId } = useDragStore();
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -81,7 +83,11 @@ const Board = ({ tasks }: Props) => {
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (!scrollContainerRef.current) return;
+      // Only enable auto-scroll when a task is being dragged
+      if (!draggableId || !scrollContainerRef.current) {
+        stopAutoScroll();
+        return;
+      }
 
       const container = scrollContainerRef.current;
       const rect = container.getBoundingClientRect();
@@ -100,7 +106,7 @@ const Board = ({ tasks }: Props) => {
         stopAutoScroll();
       }
     },
-    [startAutoScroll, stopAutoScroll],
+    [draggableId, startAutoScroll, stopAutoScroll],
   );
 
   const taskIndex = (taskId: string) =>

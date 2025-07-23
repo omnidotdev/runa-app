@@ -1,4 +1,5 @@
 export const labelColors = [
+  { name: "Gray", classes: "bg-gray-400 dark:bg-gray-700" },
   { name: "Red", classes: "bg-red-400 dark:bg-red-700" },
   { name: "Orange", classes: "bg-orange-400 dark:bg-orange-700" },
   { name: "Amber", classes: "bg-amber-400 dark:bg-amber-700" },
@@ -16,5 +17,4 @@ export const labelColors = [
   { name: "Fuchsia", classes: "bg-fuchsia-400 dark:bg-fuchsia-700" },
   { name: "Pink", classes: "bg-pink-400 dark:bg-pink-700" },
   { name: "Rose", classes: "bg-rose-400 dark:bg-rose-700" },
-  { name: "Gray", classes: "bg-gray-400 dark:bg-gray-700" },
 ];

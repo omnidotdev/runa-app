@@ -43,7 +43,7 @@ import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
-import type { DropResult } from "@hello-pangea/dnd";
+import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
 import type { TasksQueryVariables } from "@/generated/graphql";
 
@@ -416,6 +416,13 @@ function ProjectPage() {
     [updateTask, setDraggableId, localTasks, queryClient, tasksVariables],
   );
 
+  const onDragStart = useCallback(
+    (start: DragStart) => {
+      setDraggableId(start.draggableId);
+    },
+    [setDraggableId],
+  );
+
   useHotkeys(
     Hotkeys.ToggleViewMode,
     () =>
@@ -573,7 +580,7 @@ function ProjectPage() {
           </div>
         </div>
 
-        <DragDropContext onDragEnd={onDragEnd}>
+        <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
           {userPreferences?.viewMode === "board" ? (
             <Board tasks={localTasks} />
           ) : (
