@@ -411,14 +411,10 @@ function ProjectPage() {
 
         // TODO: determine how to properly handle this logic when filters are active. This works great currently to update the local state after mutations either fail or succeed, but there is still flickering when filters are active
         // The flickering occurs when switching filters
-        const { tasks: updatedTasks } = await queryClient.fetchQuery(
-          tasksOptions(tasksVariables),
-        );
-
-        setLocalTasks(updatedTasks?.nodes ?? []);
+        await queryClient.invalidateQueries();
       }
     },
-    [updateTask, setDraggableId, localTasks, queryClient, tasksVariables],
+    [updateTask, setDraggableId, localTasks, queryClient],
   );
 
   const onDragStart = useCallback(

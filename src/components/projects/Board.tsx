@@ -122,7 +122,7 @@ const Board = ({ tasks }: Props) => {
           new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime(),
       )
       .map((task) => task?.rowId)
-      .indexOf(taskId);
+      .indexOf(taskId) ?? 0;
 
   return (
     <div
@@ -190,9 +190,9 @@ const Board = ({ tasks }: Props) => {
                       {tasks
                         .filter((task) => task.columnId === column.rowId)
                         .map((task, index) => {
-                          const displayId = `${project?.prefix ?? "PROJ"}-${
-                            taskIndex(task.rowId) ? taskIndex(task.rowId) : 0
-                          }`;
+                          const displayId = `${project?.prefix ?? "PROJ"}-${taskIndex(
+                            task.rowId,
+                          )}`;
 
                           return (
                             <BoardItem

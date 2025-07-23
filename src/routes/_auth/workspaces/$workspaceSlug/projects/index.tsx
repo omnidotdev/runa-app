@@ -283,21 +283,10 @@ function ProjectsOverviewPage() {
 
         setDraggableId(null);
 
-        const { projects } = await queryClient.fetchQuery(
-          projectsOptions({ workspaceId, search }),
-        );
-
-        setLocalProjects(projects?.nodes ?? []);
+        await queryClient.invalidateQueries();
       }
     },
-    [
-      updateProject,
-      setDraggableId,
-      localProjects,
-      queryClient,
-      workspaceId,
-      search,
-    ],
+    [updateProject, setDraggableId, localProjects, queryClient],
   );
 
   // TODO: figure out a way to remove this... need to reset `localTasks` if i.e. search params change
