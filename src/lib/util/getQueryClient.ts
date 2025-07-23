@@ -26,8 +26,6 @@ const makeQueryClient = () => {
       queries: {
         // NB: with SSR, it is recommended to set a default staleTime above 0 to avoid refetching immediately on the client. See: https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr#initial-setup
         staleTime: 60 * 1000,
-        // TODO: discuss. With SSR, the `gcTime` of any query that is used in loader's through `ensureQueryData` will always take this default. The issue is that when it is hydrated on the client, options are *not* dehydrated, so they do not get overwritten, See: https://github.com/TanStack/query/issues/9335#issuecomment-3063346026
-        gcTime: 1000,
       },
     },
     mutationCache: new MutationCache({
