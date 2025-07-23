@@ -283,7 +283,11 @@ function ProjectsOverviewPage() {
 
         setDraggableId(null);
 
-        await queryClient.invalidateQueries();
+        await queryClient.invalidateQueries({
+          queryKey: ["Projects"],
+          // NB: important to refetch all `Projects` queries *even* if they are inactive to prevent flashing when search params are updated
+          refetchType: "all",
+        });
       }
     },
     [updateProject, setDraggableId, localProjects, queryClient],
