@@ -1,9 +1,12 @@
+import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
+import { useRateLimiter } from "@tanstack/react-pacer/rate-limiter";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { PlusIcon } from "lucide-react";
-import { useRef } from "react";
+import ms from "ms";
+import { useRef, useState } from "react";
 import { Resend } from "resend";
 import * as z from "zod";
 
@@ -18,13 +21,27 @@ import {
   DialogRoot,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import {
+  TagsInputClearTrigger,
+  TagsInputContext,
+  TagsInputControl,
+  TagsInputInput,
+  TagsInputItem,
+  TagsInputItemDeleteTrigger,
+  TagsInputItemInput,
+  TagsInputItemPreview,
+  TagsInputItemText,
+  TagsInputLabel,
+  TagsInputRoot,
+} from "@/components/ui/tags-input";
 import { useCreateInvitationMutation } from "@/generated/graphql";
 import { BASE_URL, isDevEnv } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import userOptions from "@/lib/options/user.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+
+const MAX_NUMBER_OF_INVITES = 10;
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -86,8 +103,37 @@ const InviteMemberDialog = () => {
     select: (data) => data?.user,
   });
 
+  const [numberOfToasts, setNumberOfToasts] = useState(0);
+
+  // {
+  //   maxSize: 25,
+  //   initialItems: Array.from({ length: 10 }, (_, i) => i + 1),
+  //   concurrency: 2, // Process 2 items concurrently
+  //   started: false,
+  //   wait: 100, // for demo purposes - usually you would not want extra wait time if you are also throttling with concurrency
+  //   onReject: (item, asyncQueuer) => {
+  //     console.log(
+  //       "Queue is full, rejecting item",
+  //       item,
+  //       asyncQueuer.store.state.rejectionCount,
+  //     );
+  //   },
+  //   onError: (error: unknown, asyncQueuer) => {
+  //     console.error(
+  //       "Error processing item",
+  //       error,
+  //       asyncQueuer.store.state.errorCount,
+  //     ); // optionally, handle errors here instead of your own try/catch
+  //   },
+  // },
+
+  const rateLimiter = useRateLimiter(setNumberOfToasts, {
+    limit: 2,
+    window: ms("1s"),
+  });
+
   // TODO: tanstack pacer integration once bulk invites are set up with tags input
-  const { mutate: inviteMember } = useCreateInvitationMutation({
+  const { mutateAsync: inviteMember } = useCreateInvitationMutation({
     onSuccess: async (_data, variables) => {
       await sendInviteEmail({
         data: {
@@ -100,20 +146,33 @@ const InviteMemberDialog = () => {
     },
   });
 
-  const form = useForm({
-    defaultValues: {
-      // TODO: update to an array when a tags input component is introduced
-      recipientEmail: "",
-    },
-    onSubmit: async ({ value, formApi }) => {
-      inviteMember({
+  const queuer = useAsyncQueuer(
+    async (recipientEmail: string) => {
+      await inviteMember({
         input: {
           invitation: {
+            email: recipientEmail,
             workspaceId,
-            email: value.recipientEmail,
           },
         },
       });
+    },
+    {
+      concurrency: 2,
+      wait: ms("1s"),
+      maxSize: MAX_NUMBER_OF_INVITES,
+      started: false,
+    },
+  );
+
+  const form = useForm({
+    defaultValues: {
+      recipientEmail: [] as string[],
+    },
+    onSubmit: async ({ value, formApi }) => {
+      value.recipientEmail.forEach((email) => queuer.addItem(email));
+
+      queuer.start();
 
       formApi.reset();
       setIsInviteTeamMemberOpen(false);
@@ -143,15 +202,75 @@ const InviteMemberDialog = () => {
               form.handleSubmit();
             }}
           >
-            {/* TODO: update to use `mode="array"` and use a tags input component for bulk invites */}
-            <form.Field name="recipientEmail">
+            <form.Field name="recipientEmail" mode="array">
               {(field) => (
-                <Input
-                  ref={emailRef}
-                  placeholder="hello@omni.dev"
+                <TagsInputRoot
+                  addOnPaste
+                  delimiter=","
+                  max={MAX_NUMBER_OF_INVITES}
+                  validate={(details) => {
+                    const emails = details.inputValue.split(",");
+
+                    // fail if more than max number of invites
+                    if (emails.length > MAX_NUMBER_OF_INVITES) {
+                      rateLimiter.maybeExecute(numberOfToasts + 1);
+
+                      if (rateLimiter.getRemainingInWindow()) {
+                        alert("max number of invites reached");
+                      }
+
+                      return false;
+                    }
+
+                    // fail if email that is currently being pasted or added is a duplicate
+                    if (emails.some((email) => details.value.includes(email))) {
+                      rateLimiter.maybeExecute(numberOfToasts + 1);
+
+                      if (rateLimiter.getRemainingInWindow()) {
+                        alert("This is a duplicate invite");
+                      }
+
+                      return false;
+                    }
+
+                    return emails.every((email) =>
+                      inviteSchema.shape.recipientEmail.safeParse(email),
+                    );
+                  }}
                   value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
+                  onValueChange={({ value }) => field.handleChange(value)}
+                >
+                  <TagsInputContext>
+                    {({ value }) => (
+                      <>
+                        <TagsInputLabel>Email(s)</TagsInputLabel>
+                        <div className="mt-2 grid rounded-md border">
+                          {!!value.length && (
+                            <TagsInputControl>
+                              {value.map((value, index) => (
+                                <TagsInputItem
+                                  key={value}
+                                  index={index}
+                                  value={value}
+                                >
+                                  <TagsInputItemPreview>
+                                    <TagsInputItemText>
+                                      {value}
+                                    </TagsInputItemText>
+                                    <TagsInputItemDeleteTrigger />
+                                  </TagsInputItemPreview>
+                                  <TagsInputItemInput />
+                                </TagsInputItem>
+                              ))}
+                            </TagsInputControl>
+                          )}
+                          <TagsInputInput placeholder="hello@omni.dev" />
+                        </div>
+                        <TagsInputClearTrigger />
+                      </>
+                    )}
+                  </TagsInputContext>
+                </TagsInputRoot>
               )}
             </form.Field>
 

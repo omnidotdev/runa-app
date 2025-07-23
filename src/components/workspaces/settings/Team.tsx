@@ -65,7 +65,12 @@ const Team = () => {
             Team Members
           </h2>
 
-          <Tooltip tooltip="Invite team member">
+          <Tooltip
+            positioning={{
+              placement: "left",
+            }}
+            tooltip="Invite team member"
+          >
             <Button
               variant="ghost"
               size="icon"

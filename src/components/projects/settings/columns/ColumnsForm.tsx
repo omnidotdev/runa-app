@@ -23,7 +23,7 @@ import { useMemo, useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import EmojiSelector from "@/components/core/selectors/EmojiSelector";
-import DraggableColumn from "@/components/projects/settings/DraggableColumn";
+import DraggableColumn from "@/components/projects/settings/columns/DraggableColumn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

@@ -81,6 +81,9 @@ const Projects = () => {
           </h2>
 
           <Tooltip
+            positioning={{
+              placement: "left",
+            }}
             tooltip={{
               className: "bg-background text-foreground border",
               children: (

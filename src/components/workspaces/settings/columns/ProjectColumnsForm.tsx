@@ -38,7 +38,7 @@ import DraggableProjectColumn from "./DraggableProjectColumn";
 import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
 import type { ProjectColumnFragment as ProjectColumn } from "@/generated/graphql";
 
-const WorkspaceColumnsForm = () => {
+const ProjectColumnsForm = () => {
   const { workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
@@ -265,4 +265,4 @@ const WorkspaceColumnsForm = () => {
   );
 };
 
-export default WorkspaceColumnsForm;
+export default ProjectColumnsForm;

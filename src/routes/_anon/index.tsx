@@ -97,6 +97,7 @@ function HomePage() {
                 Get Started{" "}
                 <ArrowRightIcon className="ml-1 inline-block transition-transform group-hover:translate-x-1" />
               </Button>
+
               <Link
                 to="/pricing"
                 variant="outline"
