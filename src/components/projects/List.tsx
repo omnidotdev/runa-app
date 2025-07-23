@@ -6,7 +6,9 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 
+import ColumnMenu from "@/components/projects/ColumnMenu";
 import ListItem from "@/components/projects/ListItem";
+import ListTrigger from "@/components/shared/ListTrigger";
 import {
   CollapsibleContent,
   CollapsibleRoot,
@@ -17,7 +19,6 @@ import useTheme from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
-import ListTrigger from "../shared/ListTrigger";
 
 import type { Dispatch, SetStateAction } from "react";
 import type { TaskFragment } from "@/generated/graphql";
@@ -138,7 +139,9 @@ const List = ({
                     }),
                   });
                 }}
-              />
+              >
+                <ColumnMenu columnId={column.rowId} />
+              </ListTrigger>
             </CollapsibleTrigger>
 
             <CollapsibleContent className="border-t">

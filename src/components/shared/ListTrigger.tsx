@@ -38,7 +38,7 @@ const ListTrigger = ({
         </span>
       </div>
 
-      <div className="ml-auto flex items-center gap-1">
+      <div className="ml-auto flex items-center gap-2">
         {children}
 
         <Tooltip
@@ -61,8 +61,8 @@ const ListTrigger = ({
         >
           <Button
             variant="ghost"
-            size="icon"
-            className="h-7 w-7"
+            size="xs"
+            className="size-5"
             onClick={onCreate}
           >
             <PlusIcon className="size-4" />

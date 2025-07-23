@@ -8,6 +8,7 @@ import {
 import { useCallback, useRef } from "react";
 
 import BoardItem from "@/components/projects/BoardItem";
+import ColumnMenu from "@/components/projects/ColumnMenu";
 import ColumnHeader from "@/components/shared/ColumnHeader";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
@@ -157,7 +158,9 @@ const Board = ({ tasks }: Props) => {
                     }),
                   });
                 }}
-              />
+              >
+                <ColumnMenu columnId={column.rowId} />
+              </ColumnHeader>
 
               <div className="no-scrollbar flex h-full overflow-y-auto">
                 <Droppable droppableId={column.rowId}>
