@@ -1,3 +1,4 @@
+import { DragDropContext } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
@@ -9,7 +10,7 @@ import {
   SearchIcon,
   Settings2,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod";
@@ -19,7 +20,7 @@ import RichTextEditor from "@/components/core/RichTextEditor";
 import Filter from "@/components/Filter";
 import NotFound from "@/components/layout/NotFound";
 import Board from "@/components/projects/Board";
-import ListView from "@/components/projects/ListView";
+import List from "@/components/projects/List";
 import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
 import UpdateAssigneesDialog from "@/components/UpdateAssigneesDialog";
 import UpdateDueDateDialog from "@/components/UpdateDueDateDialog";
@@ -30,10 +31,12 @@ import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
   useUpdateProjectMutation,
+  useUpdateTaskMutation,
   useUpdateUserPreferenceMutation,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import getSdk from "@/lib/graphql/getSdk";
+import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
@@ -41,6 +44,7 @@ import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
+import type { DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
 
 const projectSearchParamsSchema = z.object({
@@ -131,7 +135,7 @@ function ProjectPage() {
   const { session } = Route.useRouteContext();
   const { projectSlug, workspaceSlug } = Route.useParams();
   const { projectId } = Route.useLoaderData();
-  const { search } = Route.useSearch();
+  const { search, assignees, labels, priorities } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
 
@@ -140,6 +144,25 @@ function ProjectPage() {
   const { queryClient } = Route.useRouteContext();
 
   const { taskId, columnId } = useTaskStore();
+
+  const { data: tasks } = useSuspenseQuery({
+    ...tasksOptions({
+      projectId,
+      search,
+      assignees: assignees.length
+        ? { some: { user: { rowId: { in: assignees } } } }
+        : undefined,
+      labels: labels.length
+        ? { some: { label: { rowId: { in: labels } } } }
+        : undefined,
+      priorities: priorities.length ? priorities : undefined,
+    }),
+    select: (data) => data?.tasks?.nodes ?? [],
+  });
+
+  const [localTasks, setLocalTasks] = useState(tasks);
+
+  const { setDraggableId } = useDragStore();
 
   const handleSearch = useDebounceCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -249,6 +272,166 @@ function ProjectPage() {
   });
 
   const handleProjectUpdate = useDebounceCallback(updateProject, 300);
+
+  const { mutateAsync: updateTask } = useUpdateTaskMutation({
+    meta: {
+      invalidates: [["all"]],
+    },
+  });
+
+  const onDragEnd = useCallback(
+    async (result: DropResult) => {
+      const { destination, source, draggableId } = result;
+
+      // Exit early if dropped outside a droppable area or in the same position
+      if (!destination) return;
+
+      if (
+        destination.droppableId === source.droppableId &&
+        destination.index === source.index
+      )
+        return;
+
+      setDraggableId(draggableId);
+
+      if (localTasks?.length) {
+        const currentTask = localTasks.find(
+          (task) => task.rowId === draggableId,
+        )!;
+
+        const destinationColumnTasks = localTasks.filter(
+          (task) => task.columnId === destination.droppableId,
+        );
+
+        if (source.droppableId === destination.droppableId) {
+          const reorderedColumnTasks = [...destinationColumnTasks];
+          const [taskToMove] = reorderedColumnTasks.splice(
+            currentTask.columnIndex,
+            1,
+          );
+          reorderedColumnTasks.splice(destination.index, 0, taskToMove);
+
+          setLocalTasks((prev) => {
+            const unTouchedTasks = prev.filter(
+              (task) => task.columnId !== destination.droppableId,
+            );
+
+            return [
+              ...unTouchedTasks,
+              ...reorderedColumnTasks.map((task, index) => ({
+                ...task,
+                columnIndex: index,
+              })),
+            ];
+          });
+
+          await Promise.all(
+            reorderedColumnTasks.map((task, index) =>
+              updateTask({
+                rowId: task.rowId,
+                patch: {
+                  columnIndex: index,
+                },
+              }),
+            ),
+          );
+        } else {
+          const sourceColumnTasksExcludingMovedTask = localTasks.filter(
+            (task) =>
+              task.columnId === source.droppableId &&
+              task.rowId !== draggableId,
+          );
+
+          const sourceTaskIds = sourceColumnTasksExcludingMovedTask.map(
+            (task) => task.rowId,
+          );
+
+          const tasksWithMovedInDestination = [...destinationColumnTasks];
+          tasksWithMovedInDestination.splice(destination.index, 0, currentTask);
+
+          const destinationTaskIds = tasksWithMovedInDestination.map(
+            (task) => task.rowId,
+          );
+
+          setLocalTasks((prev) => {
+            const unTouchedTasks = prev.filter(
+              (task) =>
+                !sourceTaskIds.includes(task.rowId) &&
+                !destinationTaskIds.includes(task.rowId),
+            );
+
+            return [
+              ...unTouchedTasks,
+              ...sourceColumnTasksExcludingMovedTask.map((task, index) => ({
+                ...task,
+                columnIndex: index,
+              })),
+              ...tasksWithMovedInDestination.map((task, index) => ({
+                ...task,
+                columnIndex: index,
+                columnId:
+                  task.rowId === currentTask.rowId
+                    ? destination.droppableId
+                    : task.columnId,
+              })),
+            ];
+          });
+
+          await Promise.all([
+            ...sourceColumnTasksExcludingMovedTask.map((task, index) =>
+              updateTask({
+                rowId: task.rowId,
+                patch: {
+                  columnIndex: index,
+                },
+              }),
+            ),
+            ...tasksWithMovedInDestination.map((task, index) =>
+              updateTask({
+                rowId: task.rowId,
+                patch: {
+                  columnIndex: index,
+                  columnId:
+                    task.rowId === currentTask.rowId
+                      ? destination.droppableId
+                      : task.columnId,
+                },
+              }),
+            ),
+          ]);
+        }
+
+        setDraggableId(null);
+
+        const { tasks: updatedTasks } = await queryClient.fetchQuery(
+          tasksOptions({
+            projectId,
+            search,
+            assignees: assignees.length
+              ? { some: { user: { rowId: { in: assignees } } } }
+              : undefined,
+            labels: labels.length
+              ? { some: { label: { rowId: { in: labels } } } }
+              : undefined,
+            priorities: priorities.length ? priorities : undefined,
+          }),
+        );
+
+        setLocalTasks(updatedTasks?.nodes ?? []);
+      }
+    },
+    [
+      updateTask,
+      setDraggableId,
+      localTasks,
+      queryClient,
+      projectId,
+      search,
+      assignees,
+      labels,
+      priorities,
+    ],
+  );
 
   useHotkeys(
     Hotkeys.ToggleViewMode,
@@ -404,15 +587,18 @@ function ProjectPage() {
           </div>
         </div>
 
-        {userPreferences?.viewMode === "board" ? (
-          <Board />
-        ) : (
-          <ListView
-            openStates={projectColumnOpenStates}
-            setOpenStates={setProjectColumnOpenStates}
-            setIsForceClosed={setIsForceClosed}
-          />
-        )}
+        <DragDropContext onDragEnd={onDragEnd}>
+          {userPreferences?.viewMode === "board" ? (
+            <Board tasks={localTasks} />
+          ) : (
+            <List
+              tasks={localTasks}
+              openStates={projectColumnOpenStates}
+              setOpenStates={setProjectColumnOpenStates}
+              setIsForceClosed={setIsForceClosed}
+            />
+          )}
+        </DragDropContext>
       </div>
 
       <CreateTaskDialog columnId={columnId ?? undefined} />

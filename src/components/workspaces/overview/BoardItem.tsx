@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
 
-import type { ProjectFragment as Project } from "@/generated/graphql";
+import type { ProjectFragment } from "@/generated/graphql";
 
 interface Props {
-  project: Project;
+  project: ProjectFragment;
 }
 
 const BoardItem = ({ project }: Props) => {

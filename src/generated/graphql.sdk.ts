@@ -7892,6 +7892,8 @@ export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: strin
 
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, color?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } };
 
+export type TaskFragment = { __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } };
+
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
 }>;
@@ -8206,24 +8208,6 @@ export type WorkspacesQueryVariables = Exact<{
 
 export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, slug: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } }> } | null };
 
-export const ColumnFragmentDoc = gql`
-    fragment Column on Column {
-  title
-  index
-  rowId
-  emoji
-  tasks {
-    totalCount
-  }
-}
-    `;
-export const LabelFragmentDoc = gql`
-    fragment Label on Label {
-  color
-  name
-  rowId
-}
-    `;
 export const ProjectColumnFragmentDoc = gql`
     fragment ProjectColumn on ProjectColumn {
   title
@@ -8257,6 +8241,56 @@ export const ProjectFragmentDoc = gql`
   }
 }
     `;
+export const ColumnFragmentDoc = gql`
+    fragment Column on Column {
+  title
+  index
+  rowId
+  emoji
+  tasks {
+    totalCount
+  }
+}
+    `;
+export const LabelFragmentDoc = gql`
+    fragment Label on Label {
+  color
+  name
+  rowId
+}
+    `;
+export const TaskFragmentDoc = gql`
+    fragment Task on Task {
+  rowId
+  projectId
+  columnId
+  columnIndex
+  column {
+    ...Column
+  }
+  content
+  priority
+  dueDate
+  taskLabels {
+    nodes {
+      label {
+        ...Label
+      }
+    }
+  }
+  assignees {
+    nodes {
+      rowId
+      user {
+        rowId
+        name
+        avatarUrl
+      }
+    }
+  }
+}
+    ${ColumnFragmentDoc}
+${LabelFragmentDoc}`;
 export const CreateAssigneeDocument = gql`
     mutation CreateAssignee($input: CreateAssigneeInput!) {
   createAssignee(input: $input) {
@@ -8650,38 +8684,11 @@ export const TasksDocument = gql`
     orderBy: COLUMN_INDEX_ASC
   ) {
     nodes {
-      rowId
-      projectId
-      columnId
-      columnIndex
-      column {
-        ...Column
-      }
-      content
-      priority
-      dueDate
-      taskLabels {
-        nodes {
-          label {
-            ...Label
-          }
-        }
-      }
-      assignees {
-        nodes {
-          rowId
-          user {
-            rowId
-            name
-            avatarUrl
-          }
-        }
-      }
+      ...Task
     }
   }
 }
-    ${ColumnFragmentDoc}
-${LabelFragmentDoc}`;
+    ${TaskFragmentDoc}`;
 export const UserPreferencesDocument = gql`
     query UserPreferences($userId: UUID!, $projectId: UUID!) {
   userPreferenceByUserIdAndProjectId(userId: $userId, projectId: $projectId) {

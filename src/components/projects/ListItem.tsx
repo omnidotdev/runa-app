@@ -1,0 +1,225 @@
+import { Draggable } from "@hello-pangea/dnd";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { format } from "date-fns";
+import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
+
+import Assignees from "@/components/Assignees";
+import RichTextEditor from "@/components/core/RichTextEditor";
+import Labels from "@/components/Labels";
+import PriorityIcon from "@/components/tasks/PriorityIcon";
+import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
+import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useDragStore from "@/lib/hooks/store/useDragStore";
+import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import { cn } from "@/lib/utils";
+
+import type { TaskFragment } from "@/generated/graphql";
+
+interface Props {
+  task: TaskFragment;
+  index: number;
+  displayId: string;
+}
+
+const ListItem = ({ task, index, displayId }: Props) => {
+  const navigate = useNavigate();
+
+  const { workspaceSlug, projectSlug } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+  });
+
+  const { draggableId } = useDragStore();
+  const { setTaskId } = useTaskStore();
+  const { isOpen: isUpdateAssigneesDialogOpen } = useDialogStore({
+    type: DialogType.UpdateAssignees,
+  });
+  const { isOpen: isUpdateDueDateDialogOpen } = useDialogStore({
+    type: DialogType.UpdateDueDate,
+  });
+  const { isOpen: isUpdateTaskLabelsDialogOpen } = useDialogStore({
+    type: DialogType.UpdateTaskLabels,
+  });
+
+  const isUpdateDialogOpen =
+    isUpdateAssigneesDialogOpen ||
+    isUpdateDueDateDialogOpen ||
+    isUpdateTaskLabelsDialogOpen;
+
+  // Skip rendering if this task is being dragged
+  if (task.rowId === draggableId) {
+    return null;
+  }
+
+  return (
+    <Draggable key={task.rowId} draggableId={task.rowId} index={index}>
+      {(provided, snapshot) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          onMouseEnter={() => setTaskId(task.rowId)}
+          onMouseLeave={() => !isUpdateDialogOpen && setTaskId(null)}
+          onClick={() => {
+            if (!snapshot.isDragging) {
+              navigate({
+                to: "/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+                params: {
+                  workspaceSlug,
+                  projectSlug,
+                  taskId: task.rowId,
+                },
+              });
+            }
+          }}
+          className={cn(
+            "group flex cursor-pointer flex-col gap-2 bg-background px-4 py-3 last:rounded-b-lg",
+            snapshot.isDragging ? "z-10 rounded-md border" : "",
+          )}
+        >
+          <div className="flex items-center">
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 text-base-400 text-xs dark:text-base-500">
+                <span className="font-mono">{displayId}</span>
+                <PriorityIcon
+                  priority={task.priority}
+                  className="scale-75 opacity-50"
+                />
+              </div>
+
+              <div className="py-2">
+                <RichTextEditor
+                  defaultContent={task?.content}
+                  className="min-h-0 border-0 p-0 text-xs dark:bg-background"
+                  skeletonClassName="h-4 p-0 w-80"
+                  editable={false}
+                />
+              </div>
+            </div>
+
+            <TooltipRoot
+              positioning={{
+                placement: "bottom-end",
+                gutter: -4,
+              }}
+            >
+              <TooltipTrigger asChild>
+                <div className="-mt-6 -mr-2 ml-auto flex items-center gap-1">
+                  {task.assignees.nodes.length ? (
+                    <Assignees
+                      assignees={task.assignees.nodes.map(
+                        (assignee) => assignee.user?.rowId!,
+                      )}
+                      className="-space-x-5.5 flex"
+                    />
+                  ) : (
+                    <AvatarRoot
+                      aria-label="No Assignees"
+                      className="mr-2 size-5.5"
+                    >
+                      <AvatarFallback className="border border-border border-dashed bg-transparent p-1 text-muted-foreground">
+                        <UserIcon />
+                      </AvatarFallback>
+                    </AvatarRoot>
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipPositioner>
+                <TooltipContent className="border bg-background text-foreground">
+                  <div className="inline-flex">
+                    Update Assignees
+                    <div className="ml-2 flex items-center gap-0.5">
+                      <SidebarMenuShortcut>A</SidebarMenuShortcut>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </TooltipPositioner>
+            </TooltipRoot>
+          </div>
+
+          <div className="hidden items-center justify-between sm:flex">
+            <TooltipRoot
+              positioning={{
+                placement: "top-start",
+                shift: -6,
+              }}
+            >
+              <TooltipTrigger asChild>
+                {task.taskLabels.nodes.length ? (
+                  <Labels
+                    labels={
+                      task.taskLabels.nodes?.map((label) => label?.label!) ?? []
+                    }
+                    className="flex flex-wrap gap-1"
+                  />
+                ) : (
+                  <Badge
+                    size="sm"
+                    variant="outline"
+                    className="border-border border-dashed"
+                  >
+                    <TagIcon className="!size-2.5" />
+                  </Badge>
+                )}
+              </TooltipTrigger>
+              <TooltipPositioner>
+                <TooltipContent className="border bg-background text-foreground">
+                  <div className="inline-flex">
+                    Update Labels
+                    <div className="ml-2 flex items-center gap-0.5">
+                      <SidebarMenuShortcut>L</SidebarMenuShortcut>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </TooltipPositioner>
+            </TooltipRoot>
+
+            <TooltipRoot
+              positioning={{
+                placement: "top-end",
+                shift: -8,
+              }}
+            >
+              <TooltipTrigger asChild>
+                {task?.dueDate ? (
+                  <div className="flex h-5 items-center gap-1 text-base-500 text-xs dark:text-base-400">
+                    <CalendarIcon className="h-3 w-3" />
+                    <span>{format(new Date(task.dueDate), "MMM d")}</span>
+                  </div>
+                ) : (
+                  <Badge
+                    size="sm"
+                    variant="outline"
+                    className="h-5 w-fit place-self-end border-border border-dashed"
+                  >
+                    <CalendarIcon className="!size-2.5" />
+                  </Badge>
+                )}
+              </TooltipTrigger>
+
+              <TooltipPositioner>
+                <TooltipContent className="border bg-background text-foreground">
+                  <div className="inline-flex">
+                    Update Due Date
+                    <div className="ml-2 flex items-center gap-0.5">
+                      <SidebarMenuShortcut>D</SidebarMenuShortcut>
+                    </div>
+                  </div>
+                </TooltipContent>
+              </TooltipPositioner>
+            </TooltipRoot>
+          </div>
+        </div>
+      )}
+    </Draggable>
+  );
+};
+
+export default ListItem;
