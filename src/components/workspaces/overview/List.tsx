@@ -1,16 +1,13 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useSearch } from "@tanstack/react-router";
-import { ChevronDownIcon, PlusIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import ListTrigger from "@/components/shared/ListTrigger";
 import {
   CollapsibleContent,
   CollapsibleRoot,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { SidebarMenuShortcut } from "@/components/ui/sidebar";
-import { Tooltip } from "@/components/ui/tooltip";
 import ListItem from "@/components/workspaces/overview/ListItem";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
@@ -54,49 +51,20 @@ const List = ({ projects }: Props) => {
           defaultOpen
         >
           <CollapsibleTrigger asChild>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span>{column.emoji ?? "😀"}</span>
-                <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
-                  {column.title}
-                </h3>
-                <span className="flex size-7 items-center justify-center rounded-full bg-muted text-foreground text-xs tabular-nums">
-                  {column.projects.totalCount}
-                </span>
-              </div>
-
-              <div className="ml-auto flex gap-2">
-                <Tooltip
-                  positioning={{ placement: "top", gutter: 11 }}
-                  tooltip={{
-                    className: "bg-background text-foreground border",
-                    children: (
-                      <div className="inline-flex">
-                        Add Project
-                        <div className="ml-2 flex items-center gap-0.5">
-                          <SidebarMenuShortcut>P</SidebarMenuShortcut>
-                        </div>
-                      </div>
-                    ),
-                  }}
-                >
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    className="size-5"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setProjectColumnId(column.rowId);
-                      setIsCreateProjectDialogOpen(true);
-                    }}
-                  >
-                    <PlusIcon className="size-4" />
-                  </Button>
-                </Tooltip>
-              </div>
-
-              <ChevronDownIcon className="ml-2 size-4 transition-transform" />
-            </div>
+            <ListTrigger
+              title={column.title}
+              count={column.projects.totalCount}
+              tooltip={{
+                title: "Create Project",
+                shortCut: "P",
+              }}
+              emoji={column.emoji}
+              onCreate={(e) => {
+                e.preventDefault();
+                setProjectColumnId(column.rowId);
+                setIsCreateProjectDialogOpen(true);
+              }}
+            />
           </CollapsibleTrigger>
 
           <CollapsibleContent className="border-t">
