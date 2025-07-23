@@ -65,7 +65,6 @@ const UpdateAssignees = withForm({
           return (
             <div className="flex flex-col">
               <ComboboxRoot
-                // @ts-ignore TODO type issue
                 collection={usersCollection}
                 value={field.state.value}
                 onInputValueChange={({ inputValue }) => filter(inputValue)}

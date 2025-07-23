@@ -44,7 +44,6 @@ const CreateTaskAssignees = withForm({
         {(field) => {
           return (
             <Select
-              // @ts-ignore TODO: fix type issue
               collection={usersCollection}
               multiple
               onValueChange={({ value }) =>

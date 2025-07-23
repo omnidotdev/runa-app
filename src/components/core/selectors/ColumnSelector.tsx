@@ -31,7 +31,7 @@ const ColumnSelector = ({
   ...rest
 }: Props) => {
   const { data: project } = useQuery({
-    ...projectOptions({ rowId: projectId! }),
+    ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
 
@@ -45,11 +45,7 @@ const ColumnSelector = ({
   });
 
   return (
-    <Select
-      // @ts-ignore TODO: type issue
-      collection={columnCollection}
-      {...rest}
-    >
+    <Select collection={columnCollection} {...rest}>
       <SelectTrigger
         size={size}
         className={cn(

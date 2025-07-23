@@ -5,6 +5,7 @@ import { tv } from "tailwind-variants";
 
 import { cn } from "@/lib/utils";
 
+import type { SelectRootProps } from "@ark-ui/react/select";
 import type { ComponentProps, HTMLAttributes } from "react";
 
 // TODO: Add component to Thornberry registry.
@@ -67,10 +68,8 @@ const SelectRootProvider = ArkSelect.RootProvider;
 const SelectContext = ArkSelect.Context;
 const SelectHiddenSelect = ArkSelect.HiddenSelect;
 
-const Select = ({
-  className,
-  ...rest
-}: ComponentProps<typeof ArkSelect.Root>) => (
+// TODO: fix types upstream in thornberry
+const Select = <T,>({ className, ...rest }: SelectRootProps<T>) => (
   <ArkSelect.Root className={cn(root(), className)} {...rest} />
 );
 

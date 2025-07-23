@@ -6,6 +6,7 @@ import { tv } from "tailwind-variants";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+import type { ComboboxRootProps } from "@ark-ui/react/combobox";
 import type { ComponentProps } from "react";
 
 const comboboxVariants = tv({
@@ -47,10 +48,8 @@ const {
 const ComboboxProvider = ArkCombobox.RootProvider;
 const ComboboxContext = ArkCombobox.Context;
 
-const ComboboxRoot = ({
-  className,
-  ...rest
-}: ComponentProps<typeof ArkCombobox.Root>) => (
+// TODO: fix types upstream in thornberry
+const ComboboxRoot = <T,>({ className, ...rest }: ComboboxRootProps<T>) => (
   <ArkCombobox.Root className={cn(root(), className)} {...rest} />
 );
 

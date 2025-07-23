@@ -28,11 +28,7 @@ const ColorSelector = ({ triggerValue, ...rest }: Props) => {
   });
 
   return (
-    <Select
-      // @ts-ignore TODO: type issue
-      collection={colorCollection}
-      {...rest}
-    >
+    <Select collection={colorCollection} {...rest}>
       <SelectTrigger className="w-full justify-start bg-transparent shadow-none hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent">
         <div
           className={cn(

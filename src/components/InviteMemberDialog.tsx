@@ -105,34 +105,11 @@ const InviteMemberDialog = () => {
 
   const [numberOfToasts, setNumberOfToasts] = useState(0);
 
-  // {
-  //   maxSize: 25,
-  //   initialItems: Array.from({ length: 10 }, (_, i) => i + 1),
-  //   concurrency: 2, // Process 2 items concurrently
-  //   started: false,
-  //   wait: 100, // for demo purposes - usually you would not want extra wait time if you are also throttling with concurrency
-  //   onReject: (item, asyncQueuer) => {
-  //     console.log(
-  //       "Queue is full, rejecting item",
-  //       item,
-  //       asyncQueuer.store.state.rejectionCount,
-  //     );
-  //   },
-  //   onError: (error: unknown, asyncQueuer) => {
-  //     console.error(
-  //       "Error processing item",
-  //       error,
-  //       asyncQueuer.store.state.errorCount,
-  //     ); // optionally, handle errors here instead of your own try/catch
-  //   },
-  // },
-
   const rateLimiter = useRateLimiter(setNumberOfToasts, {
     limit: 2,
     window: ms("1s"),
   });
 
-  // TODO: tanstack pacer integration once bulk invites are set up with tags input
   const { mutateAsync: inviteMember } = useCreateInvitationMutation({
     onSuccess: async (_data, variables) => {
       await sendInviteEmail({
@@ -216,6 +193,7 @@ const InviteMemberDialog = () => {
                       rateLimiter.maybeExecute(numberOfToasts + 1);
 
                       if (rateLimiter.getRemainingInWindow()) {
+                        // TODO: toasts
                         alert("max number of invites reached");
                       }
 
@@ -227,6 +205,7 @@ const InviteMemberDialog = () => {
                       rateLimiter.maybeExecute(numberOfToasts + 1);
 
                       if (rateLimiter.getRemainingInWindow()) {
+                        // TODO: toasts
                         alert("This is a duplicate invite");
                       }
 

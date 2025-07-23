@@ -32,11 +32,7 @@ const PrioritySelector = ({
   });
 
   return (
-    <Select
-      // @ts-ignore TODO: type issue
-      collection={priorityCollection}
-      {...rest}
-    >
+    <Select collection={priorityCollection} {...rest}>
       <SelectTrigger
         size={size}
         className={cn(
