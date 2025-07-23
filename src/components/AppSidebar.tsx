@@ -68,7 +68,6 @@ import type { ComponentProps } from "react";
 
 export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const { workspaceId } = useLoaderData({ from: "/_auth" });
-
   const { session } = useRouteContext({ strict: false });
   const { workspaceSlug } = useParams({ strict: false });
   const navigate = useNavigate();
@@ -302,131 +301,139 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                 </SidebarMenuItem>
 
                 <div className="-mt-1 flex flex-col gap-1 group-data-[collapsible=icon]:hidden">
-                  {workspace?.projects.nodes.map((project) => (
-                    <SidebarMenuItem key={project?.rowId}>
-                      <SidebarMenuButton asChild tooltip={project?.name}>
-                        <Link
-                          to="/workspaces/$workspaceSlug/projects/$projectSlug"
-                          params={{
-                            workspaceSlug,
-                            projectSlug: project.slug,
-                          }}
-                          variant="ghost"
-                          activeProps={{
-                            variant: "outline",
-                          }}
-                          className="justify-start border border-transparent"
-                        >
-                          {project?.userPreferences?.nodes?.[0]?.viewMode ===
-                          "board" ? (
-                            <Grid2X2Icon
-                              className="size-4 text-primary-500"
-                              style={{ color: project?.color ?? undefined }}
-                            />
-                          ) : (
-                            <ListIcon
-                              className="size-4 text-primary-500"
-                              style={{ color: project?.color ?? undefined }}
-                            />
-                          )}
-                          <span className="truncate">{project?.name}</span>
-                        </Link>
-                      </SidebarMenuButton>
+                  {workspace?.projects.nodes.map((project) => {
+                    const userPreferences =
+                      project?.userPreferences?.nodes?.[0];
 
-                      <MenuRoot
-                        positioning={{
-                          strategy: "fixed",
-                          placement: isMobile ? "bottom-end" : "right-start",
-                        }}
-                      >
-                        <MenuTrigger asChild>
-                          <SidebarMenuAction
-                            showOnHover
-                            onClick={() => {
-                              setSelectedProject({
-                                rowId: project.rowId,
-                                name: project.name,
-                              });
+                    return (
+                      <SidebarMenuItem key={project?.rowId}>
+                        <SidebarMenuButton asChild tooltip={project?.name}>
+                          <Link
+                            to="/workspaces/$workspaceSlug/projects/$projectSlug"
+                            params={{
+                              workspaceSlug,
+                              projectSlug: project.slug,
                             }}
+                            variant="ghost"
+                            activeProps={{
+                              variant: "outline",
+                            }}
+                            className="justify-start border border-transparent"
                           >
-                            <MoreHorizontalIcon />
-                            <span className="sr-only">More</span>
-                          </SidebarMenuAction>
-                        </MenuTrigger>
+                            {userPreferences?.viewMode === "board" ? (
+                              <Grid2X2Icon
+                                className="size-4 text-primary-500"
+                                style={{
+                                  color: userPreferences.color ?? undefined,
+                                }}
+                              />
+                            ) : (
+                              <ListIcon
+                                className="size-4 text-primary-500"
+                                style={{
+                                  color: userPreferences.color ?? undefined,
+                                }}
+                              />
+                            )}
+                            <span className="truncate">{project?.name}</span>
+                          </Link>
+                        </SidebarMenuButton>
 
-                        <MenuPositioner>
-                          <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
-                            <MenuItem
-                              value="settings"
-                              className="flex cursor-pointer items-center gap-2"
-                              onClick={() => {
-                                navigate({
-                                  to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-                                  params: {
-                                    workspaceSlug,
-                                    projectSlug: project.slug,
-                                  },
-                                });
-                              }}
-                            >
-                              <Settings2 />
-                              <span>Settings</span>
-                            </MenuItem>
-
-                            <MenuItem
-                              value="viewMode"
-                              className="flex cursor-pointer items-center gap-2"
-                              onClick={() =>
-                                updateViewMode({
-                                  rowId:
-                                    project?.userPreferences?.nodes?.[0]
-                                      ?.rowId!,
-                                  patch: {
-                                    viewMode:
-                                      project?.userPreferences?.nodes?.[0]
-                                        ?.viewMode === "board"
-                                        ? "list"
-                                        : "board",
-                                  },
-                                })
-                              }
-                            >
-                              {project?.userPreferences?.nodes?.[0]
-                                ?.viewMode === "list" ? (
-                                <Grid2X2Icon />
-                              ) : (
-                                <ListIcon />
-                              )}
-                              <span>
-                                {project?.userPreferences?.nodes?.[0]
-                                  ?.viewMode === "list"
-                                  ? "Board View"
-                                  : "List View"}
-                              </span>
-
-                              <SidebarMenuShortcut>V</SidebarMenuShortcut>
-                            </MenuItem>
-
-                            <MenuItem
-                              value="delete"
-                              className="flex cursor-pointer items-center gap-2"
-                              variant="destructive"
+                        <MenuRoot
+                          positioning={{
+                            strategy: "fixed",
+                            placement: isMobile ? "bottom-end" : "right-start",
+                          }}
+                        >
+                          <MenuTrigger asChild>
+                            <SidebarMenuAction
+                              showOnHover
                               onClick={() => {
                                 setSelectedProject({
                                   rowId: project.rowId,
                                   name: project.name,
                                 });
-                                setIsDeleteProjectOpen(true);
                               }}
                             >
-                              <Trash2Icon />
-                              <span>Delete Project</span>
-                            </MenuItem>
-                          </MenuContent>
-                        </MenuPositioner>
-                      </MenuRoot>
-                    </SidebarMenuItem>
-                  ))}
+                              <MoreHorizontalIcon />
+                              <span className="sr-only">More</span>
+                            </SidebarMenuAction>
+                          </MenuTrigger>
+
+                          <MenuPositioner>
+                            <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
+                              <MenuItem
+                                value="settings"
+                                className="flex cursor-pointer items-center gap-2"
+                                onClick={() => {
+                                  navigate({
+                                    to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+                                    params: {
+                                      workspaceSlug,
+                                      projectSlug: project.slug,
+                                    },
+                                  });
+                                }}
+                              >
+                                <Settings2 />
+                                <span>Settings</span>
+                              </MenuItem>
+
+                              <MenuItem
+                                value="viewMode"
+                                className="flex cursor-pointer items-center gap-2"
+                                onClick={() =>
+                                  updateViewMode({
+                                    rowId:
+                                      project?.userPreferences?.nodes?.[0]
+                                        ?.rowId!,
+                                    patch: {
+                                      viewMode:
+                                        project?.userPreferences?.nodes?.[0]
+                                          ?.viewMode === "board"
+                                          ? "list"
+                                          : "board",
+                                    },
+                                  })
+                                }
+                              >
+                                {project?.userPreferences?.nodes?.[0]
+                                  ?.viewMode === "list" ? (
+                                  <Grid2X2Icon />
+                                ) : (
+                                  <ListIcon />
+                                )}
+                                <span>
+                                  {project?.userPreferences?.nodes?.[0]
+                                    ?.viewMode === "list"
+                                    ? "Board View"
+                                    : "List View"}
+                                </span>
+
+                                <SidebarMenuShortcut>V</SidebarMenuShortcut>
+                              </MenuItem>
+
+                              <MenuItem
+                                value="delete"
+                                className="flex cursor-pointer items-center gap-2"
+                                variant="destructive"
+                                onClick={() => {
+                                  setSelectedProject({
+                                    rowId: project.rowId,
+                                    name: project.name,
+                                  });
+                                  setIsDeleteProjectOpen(true);
+                                }}
+                              >
+                                <Trash2Icon />
+                                <span>Delete Project</span>
+                              </MenuItem>
+                            </MenuContent>
+                          </MenuPositioner>
+                        </MenuRoot>
+                      </SidebarMenuItem>
+                    );
+                  })}
                 </div>
 
                 {/* Mobile projects menu */}
@@ -447,36 +454,44 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
 
                     <MenuPositioner>
                       <MenuContent className="flex w-full min-w-56 flex-col gap-0.5 rounded-lg">
-                        {workspace?.projects.nodes.map((project) => (
-                          <MenuItem
-                            key={project.rowId}
-                            value={project.name}
-                            className="flex cursor-pointer items-center gap-1"
-                            onSelect={() =>
-                              navigate({
-                                to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-                                params: {
-                                  workspaceSlug,
-                                  projectSlug: project.slug,
-                                },
-                              })
-                            }
-                          >
-                            {project?.userPreferences?.nodes?.[0]?.viewMode ===
-                            "board" ? (
-                              <Grid2X2Icon
-                                className="size-4 text-primary-500"
-                                style={{ color: project?.color ?? undefined }}
-                              />
-                            ) : (
-                              <ListIcon
-                                className="size-4 text-primary-500"
-                                style={{ color: project?.color ?? undefined }}
-                              />
-                            )}
-                            <span className="truncate">{project?.name}</span>
-                          </MenuItem>
-                        ))}
+                        {workspace?.projects.nodes.map((project) => {
+                          const userPreferences =
+                            project?.userPreferences?.nodes?.[0];
+
+                          return (
+                            <MenuItem
+                              key={project.rowId}
+                              value={project.name}
+                              className="flex cursor-pointer items-center gap-1"
+                              onSelect={() =>
+                                navigate({
+                                  to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+                                  params: {
+                                    workspaceSlug,
+                                    projectSlug: project.slug,
+                                  },
+                                })
+                              }
+                            >
+                              {userPreferences?.viewMode === "board" ? (
+                                <Grid2X2Icon
+                                  className="size-4 text-primary-500"
+                                  style={{
+                                    color: userPreferences.color ?? undefined,
+                                  }}
+                                />
+                              ) : (
+                                <ListIcon
+                                  className="size-4 text-primary-500"
+                                  style={{
+                                    color: userPreferences.color ?? undefined,
+                                  }}
+                                />
+                              )}
+                              <span className="truncate">{project?.name}</span>
+                            </MenuItem>
+                          );
+                        })}
                       </MenuContent>
                     </MenuPositioner>
                   </MenuRoot>

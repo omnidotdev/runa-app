@@ -36,7 +36,6 @@ import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateUserPreferenceMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
-import { labelColors } from "@/lib/constants/labelColors";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
@@ -171,12 +170,8 @@ const Filter = () => {
                     >
                       <CheckboxLabel className="ml-0 flex items-center gap-2">
                         <div
-                          className={cn(
-                            "size-4 rounded-full",
-                            labelColors.find(
-                              (l) => l.name.toLowerCase() === label.color,
-                            )?.classes,
-                          )}
+                          className="size-4 rounded-full"
+                          style={{ backgroundColor: label.color }}
                         />
                         <p className="font-light text-sm">{label.name}</p>
                       </CheckboxLabel>

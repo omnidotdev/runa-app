@@ -4,12 +4,14 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 import Assignees from "@/components/Assignees";
-import Labels from "@/components/Labels";
+import Label from "@/components/Label";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import taskOptions from "@/lib/options/task.options";
+
+import type { LabelFragment } from "@/generated/graphql";
 
 const TaskSidebar = () => {
   const { taskId } = useParams({
@@ -76,10 +78,11 @@ const TaskSidebar = () => {
         </CardHeader>
 
         <CardContent className="space-y-4 p-4">
-          <Labels
-            labels={task?.taskLabels?.nodes?.map((node) => node.label!) ?? []}
-            className="flex flex-wrap gap-2"
-          />
+          <div className="flex flex-wrap gap-2">
+            {task?.taskLabels.nodes?.map(({ label }) => (
+              <Label key={label?.rowId} label={label as LabelFragment} />
+            ))}
+          </div>
         </CardContent>
       </CardRoot>
 

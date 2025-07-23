@@ -9,8 +9,8 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
-import ColorPicker from "@/components/projects/settings/ColorPicker";
 import ProjectColumnsForm from "@/components/projects/settings/columns/ColumnsForm";
+import ProjectColorPicker from "@/components/projects/settings/ProjectColorPicker";
 import ProjectLabelsForm from "@/components/projects/settings/ProjectLabelsForm";
 import { Button } from "@/components/ui/button";
 import {
@@ -207,7 +207,7 @@ function RouteComponent() {
 
         <ProjectColumnsForm />
 
-        <ColorPicker />
+        <ProjectColorPicker />
 
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-4">

@@ -89,10 +89,10 @@ const List = ({
     <div
       className="custom-scrollbar h-full overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/20"
       style={{
-        backgroundColor: project?.color
+        backgroundColor: userPreferences?.color
           ? theme === "dark"
-            ? `${project?.color}12`
-            : `${project?.color}0D`
+            ? `${userPreferences?.color}12`
+            : `${userPreferences?.color}0D`
           : undefined,
       }}
     >
@@ -151,7 +151,7 @@ const List = ({
               </ListTrigger>
             </CollapsibleTrigger>
 
-            <CollapsibleContent className="border-t">
+            <CollapsibleContent className="rounded-b-lg border-t">
               <Droppable droppableId={column.rowId}>
                 {(provided, snapshot) => (
                   <div
@@ -164,15 +164,15 @@ const List = ({
                     )}
                     style={{
                       backgroundColor:
-                        project?.color && snapshot.isDraggingOver
-                          ? `${project?.color}0D`
+                        userPreferences?.color && snapshot.isDraggingOver
+                          ? `${userPreferences?.color}0D`
                           : undefined,
                     }}
                   >
                     {columnTasks?.length === 0 ? (
                       <p
                         className={cn(
-                          "ml-2 p-2 text-muted-foreground text-xs",
+                          "p-2 pl-2 text-muted-foreground text-xs",
                           snapshot.isDraggingOver && "hidden",
                         )}
                       >

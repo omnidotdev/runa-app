@@ -128,10 +128,13 @@ const Projects = () => {
                           <div
                             className={cn(
                               "flex size-8 items-center justify-center rounded-full border bg-background font-medium text-sm uppercase shadow",
-                              project?.color && "text-background",
+                              project?.userPreferences.nodes?.[0].color &&
+                                "text-background",
                             )}
                             style={{
-                              backgroundColor: project?.color ?? undefined,
+                              backgroundColor:
+                                project?.userPreferences.nodes?.[0].color ??
+                                undefined,
                             }}
                           >
                             {project?.name[0]}

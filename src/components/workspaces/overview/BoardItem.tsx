@@ -1,4 +1,11 @@
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useNavigate,
+  useParams,
+  useRouteContext,
+} from "@tanstack/react-router";
+
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
 
 import type { ProjectFragment } from "@/generated/graphql";
 
@@ -8,6 +15,10 @@ interface Props {
 
 const BoardItem = ({ project }: Props) => {
   const { workspaceSlug } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
+  });
+
+  const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
@@ -24,6 +35,14 @@ const BoardItem = ({ project }: Props) => {
 
   const progressPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+  const { data: userPreferences } = useSuspenseQuery({
+    ...userPreferencesOptions({
+      userId: session?.user?.rowId!,
+      projectId: project.rowId,
+    }),
+    select: (data) => data?.userPreferenceByUserIdAndProjectId,
+  });
 
   return (
     <div
@@ -61,7 +80,7 @@ const BoardItem = ({ project }: Props) => {
             className="h-2 rounded-full bg-primary transition-all"
             style={{
               width: `${progressPercentage}%`,
-              backgroundColor: project?.color ?? undefined,
+              backgroundColor: userPreferences?.color ?? undefined,
             }}
           />
         </div>

@@ -17,13 +17,13 @@ query Workspace($rowId: UUID!, $userId: UUID!) {
         rowId
         name
         slug
-        color
         prefix
         userPreferences(condition: { userId: $userId }) {
           nodes {
             hiddenColumnIds
             viewMode
             rowId
+            color
           }
         }
         projectColumn {

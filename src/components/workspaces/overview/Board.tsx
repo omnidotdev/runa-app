@@ -35,7 +35,7 @@ const Board = ({ projects }: Props) => {
   });
 
   return (
-    <div className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/20">
+    <div className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/20">
       <div className="h-full min-w-fit p-4">
         <div className="flex h-full gap-3">
           {projectColumns?.map((column) => (

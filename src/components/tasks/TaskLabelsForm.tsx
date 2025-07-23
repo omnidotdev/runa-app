@@ -3,8 +3,8 @@ import { useState } from "react";
 
 import ColorSelector from "@/components/core/selectors/ColorSelector";
 import { Button } from "@/components/ui/button";
+import { parseColor } from "@/components/ui/color-picker";
 import { Input } from "@/components/ui/input";
-import { labelColors } from "@/lib/constants/labelColors";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 import { cn } from "@/lib/utils";
@@ -30,15 +30,19 @@ const TaskLabelsForm = withForm({
                   )}
                 >
                   <ColorSelector
-                    triggerValue={newLabel.color}
-                    value={[newLabel.color]}
+                    positioning={{
+                      strategy: "fixed",
+                      placement: "bottom",
+                    }}
+                    value={parseColor(newLabel.color)}
                     onValueChange={(details) => {
                       setNewLabel((prev) => ({
                         ...prev,
-                        color: details.value[0] || "blue",
+                        color: details.value.toString("hex"),
                       }));
                     }}
                   />
+
                   <div className="flex w-full items-center justify-between">
                     <Input
                       className="rounded-none border-0 border-l shadow-none focus-visible:ring-0"
@@ -116,14 +120,10 @@ const TaskLabelsForm = withForm({
                         >
                           <div className="flex items-center gap-2">
                             <div
-                              className={cn(
-                                "flex size-4 items-center gap-2 rounded-full",
-                                labelColors.find(
-                                  (l) =>
-                                    l.name.toLowerCase() ===
-                                    subField.state.value.color,
-                                )?.classes,
-                              )}
+                              className="size-4 rounded-full"
+                              style={{
+                                backgroundColor: subField.state.value.color,
+                              }}
                             />
                             <p className="text-sm">
                               {subField.state.value.name}

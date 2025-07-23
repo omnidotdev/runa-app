@@ -1,57 +1,101 @@
-import { ChevronDownIcon } from "lucide-react";
+import { PipetteIcon } from "lucide-react";
 
 import {
-  createListCollection,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectItemGroup,
-  SelectItemText,
-  SelectTrigger,
-} from "@/components/ui/select";
-import { labelColors } from "@/lib/constants/labelColors";
-import { cn } from "@/lib/utils";
+  ColorPickerArea,
+  ColorPickerAreaBackground,
+  ColorPickerAreaThumb,
+  ColorPickerChannelInput,
+  ColorPickerChannelSlider,
+  ColorPickerChannelSliderThumb,
+  ColorPickerChannelSliderTrack,
+  ColorPickerContent,
+  ColorPickerControl,
+  ColorPickerEyeDropperTrigger,
+  ColorPickerHiddenInput,
+  ColorPickerPositioner,
+  ColorPickerRoot,
+  ColorPickerSwatch,
+  ColorPickerSwatchGroup,
+  ColorPickerSwatchIndicator,
+  ColorPickerSwatchTrigger,
+  ColorPickerTransparencyGrid,
+  ColorPickerTrigger,
+  ColorPickerValueSwatch,
+  ColorPickerView,
+} from "@/components/ui/color-picker";
+import { Input } from "@/components/ui/input";
+import { colors } from "@/lib/constants/colors";
 
+import type { ColorPicker as ArkColorPicker } from "@ark-ui/react/color-picker";
 import type { ComponentProps } from "react";
 
-interface Props extends Omit<ComponentProps<typeof Select>, "collection"> {
-  triggerValue?: string;
+interface Props extends ComponentProps<typeof ArkColorPicker.Root> {
+  inputProps?: ComponentProps<typeof Input>;
+  colorPickerProps?: ComponentProps<typeof ArkColorPicker.Trigger>;
+  colorPickerControlProps?: ComponentProps<typeof ArkColorPicker.Control>;
 }
 
-const ColorSelector = ({ triggerValue, ...rest }: Props) => {
-  const colorCollection = createListCollection({
-    items: labelColors.map((color) => ({
-      label: color.name,
-      value: color.name.toLowerCase(),
-      color: color,
-    })),
-  });
-
+const ColorSelector = ({
+  inputProps,
+  colorPickerProps,
+  colorPickerControlProps,
+  ...rest
+}: Props) => {
   return (
-    <Select collection={colorCollection} {...rest}>
-      <SelectTrigger className="w-full justify-start bg-transparent shadow-none hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent">
-        <div
-          className={cn(
-            "size-4 rounded-full",
-            labelColors.find((l) => l.name.toLowerCase() === triggerValue)
-              ?.classes,
-          )}
-        />
-        <p className="first-letter:uppercase">{triggerValue}</p>
-        <ChevronDownIcon className="ml-auto size-3" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItemGroup className="space-y-0.5">
-          {colorCollection.items.map((item) => (
-            <SelectItem key={item.value} item={item}>
-              <SelectItemText>{item.label}</SelectItemText>
+    <ColorPickerRoot {...rest}>
+      <ColorPickerControl className="px-3" {...colorPickerControlProps}>
+        <ColorPickerTrigger
+          className="size-5 rounded-full"
+          {...colorPickerProps}
+        >
+          <ColorPickerTransparencyGrid />
+          <ColorPickerValueSwatch />
+        </ColorPickerTrigger>
 
-              <div className={cn("size-4 rounded-full", item.color.classes)} />
-            </SelectItem>
-          ))}
-        </SelectItemGroup>
-      </SelectContent>
-    </Select>
+        <ColorPickerChannelInput channel="hex" asChild>
+          <Input
+            className="rounded-none border-0 shadow-none focus-visible:ring-0"
+            {...inputProps}
+          />
+        </ColorPickerChannelInput>
+      </ColorPickerControl>
+
+      <ColorPickerPositioner>
+        <ColorPickerContent>
+          <ColorPickerArea>
+            <ColorPickerAreaBackground />
+            <ColorPickerAreaThumb />
+          </ColorPickerArea>
+
+          <div className="flex w-full items-center gap-4">
+            <ColorPickerEyeDropperTrigger>
+              <PipetteIcon size={14} />
+            </ColorPickerEyeDropperTrigger>
+
+            <div className="flex h-10 w-full flex-col items-center justify-center gap-2">
+              <ColorPickerChannelSlider channel="hue">
+                <ColorPickerChannelSliderTrack />
+                <ColorPickerChannelSliderThumb />
+              </ColorPickerChannelSlider>
+            </div>
+          </div>
+          <ColorPickerView format="rgba">
+            <ColorPickerChannelInput channel="hex" className="h-7 text-xs" />
+          </ColorPickerView>
+
+          <ColorPickerSwatchGroup>
+            {colors.map((color) => (
+              <ColorPickerSwatchTrigger key={color} value={color}>
+                <ColorPickerSwatch value={color}>
+                  <ColorPickerSwatchIndicator>✓</ColorPickerSwatchIndicator>
+                </ColorPickerSwatch>
+              </ColorPickerSwatchTrigger>
+            ))}
+          </ColorPickerSwatchGroup>
+        </ColorPickerContent>
+      </ColorPickerPositioner>
+      <ColorPickerHiddenInput />
+    </ColorPickerRoot>
   );
 };
 

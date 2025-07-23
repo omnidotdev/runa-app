@@ -3,7 +3,6 @@ fragment Project on Project {
   name
   slug
   description
-  color
   prefix
   projectColumnId
   columnIndex

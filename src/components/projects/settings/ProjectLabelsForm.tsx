@@ -6,13 +6,14 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { PlusIcon, TagIcon, Trash2Icon } from "lucide-react";
+import { PlusIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import * as z from "zod";
 
 import ColorSelector from "@/components/core/selectors/ColorSelector";
-import { Badge } from "@/components/ui/badge";
+import Label from "@/components/Label";
 import { Button } from "@/components/ui/button";
+import { parseColor } from "@/components/ui/color-picker";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -29,13 +30,12 @@ import {
 } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
 import labelsOptions from "@/lib/options/labels.options";
-import { getLabelClasses } from "@/lib/util/getLabelClasses";
 import { cn } from "@/lib/utils";
 
 import type { ColumnDef, RowData } from "@tanstack/react-table";
-import type { LabelFragment as Label } from "@/generated/graphql";
+import type { LabelFragment } from "@/generated/graphql";
 
-const columnHelper = createColumnHelper<Label>();
+const columnHelper = createColumnHelper<LabelFragment>();
 
 declare module "@tanstack/react-table" {
   // biome-ignore lint/correctness/noUnusedVariables: Not sure
@@ -45,7 +45,7 @@ declare module "@tanstack/react-table" {
 }
 
 // https://tanstack.com/table/v8/docs/framework/react/examples/editable-data
-const defaultColumn: Partial<ColumnDef<Label>> = {
+const defaultColumn: Partial<ColumnDef<LabelFragment>> = {
   cell: ({ getValue, row: { index }, column: { id }, table }) => {
     const initialValue = getValue();
     const [value, setValue] = useState(initialValue);
@@ -122,27 +122,33 @@ const ProjectLabelsForm = () => {
         header: "Color",
         cell: (info) => (
           <ColorSelector
-            value={[info.getValue() || "blue"]}
+            positioning={{
+              strategy: "fixed",
+              placement: "bottom",
+            }}
+            value={parseColor(info.getValue()) || "#09b8b5"}
             onValueChange={(details) => {
               updateLabel({
                 rowId: info.row.original.rowId!,
                 patch: {
-                  color: details.value[0],
+                  color: details.value.toString("hex"),
                 },
               });
             }}
-            triggerValue={info.getValue()}
           />
         ),
         footer: () => (
           <Field name="color">
             {(field) => (
               <ColorSelector
-                value={[field.state.value]}
-                onValueChange={(details) => {
-                  field.handleChange(details.value[0] || "blue");
+                positioning={{
+                  strategy: "fixed",
+                  placement: "bottom",
                 }}
-                triggerValue={field.state.value}
+                value={parseColor(field.state.value ?? "#09b8b5")}
+                onValueChange={({ value }) => {
+                  field.handleChange(value.toString("hex"));
+                }}
               />
             )}
           </Field>
@@ -239,21 +245,9 @@ const ProjectLabelsForm = () => {
       </h2>
 
       <div className="flex items-center gap-2">
-        {labels?.map((label) => {
-          const colors = getLabelClasses(label.color);
-
-          return (
-            <Badge
-              key={label.name}
-              size="sm"
-              variant="outline"
-              className={cn("border-border/50", colors.bg, colors.text)}
-            >
-              <TagIcon className={cn("!size-2.5", colors.icon)} />
-              <span className="font-medium text-[10px]">{label.name}</span>
-            </Badge>
-          );
-        })}
+        {labels?.map((label) => (
+          <Label key={label.rowId} label={label} />
+        ))}
       </div>
 
       <form

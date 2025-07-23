@@ -5,7 +5,7 @@ import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 
 import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
-import Labels from "@/components/Labels";
+import Label from "@/components/Label";
 import PriorityIcon from "@/components/tasks/PriorityIcon";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import { cn } from "@/lib/utils";
 
-import type { TaskFragment } from "@/generated/graphql";
+import type { LabelFragment, TaskFragment } from "@/generated/graphql";
 
 interface Props {
   task: TaskFragment;
@@ -73,7 +73,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
             }
           }}
           className={cn(
-            "group flex cursor-pointer flex-col gap-2 bg-background px-4 py-3 last:rounded-b-lg",
+            "group flex cursor-pointer flex-col gap-2 bg-background px-4 py-3 last:rounded-b-md",
             snapshot.isDragging ? "z-10 rounded-md border" : "",
           )}
         >
@@ -146,12 +146,14 @@ const ListItem = ({ task, index, displayId }: Props) => {
             >
               <TooltipTrigger asChild>
                 {task.taskLabels.nodes.length ? (
-                  <Labels
-                    labels={
-                      task.taskLabels.nodes?.map((label) => label?.label!) ?? []
-                    }
-                    className="flex flex-wrap gap-1"
-                  />
+                  <div className="flex flex-wrap gap-1">
+                    {task.taskLabels.nodes?.map(({ label }) => (
+                      <Label
+                        key={label?.rowId}
+                        label={label as LabelFragment}
+                      />
+                    ))}
+                  </div>
                 ) : (
                   <Badge
                     size="sm"

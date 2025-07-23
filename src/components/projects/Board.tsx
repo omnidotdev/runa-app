@@ -127,12 +127,12 @@ const Board = ({ tasks }: Props) => {
   return (
     <div
       ref={scrollContainerRef}
-      className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/20"
+      className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/20"
       style={{
-        backgroundColor: project?.color
+        backgroundColor: userPreferences?.color
           ? theme === "dark"
-            ? `${project?.color}12`
-            : `${project?.color}0D`
+            ? `${userPreferences?.color}12`
+            : `${userPreferences?.color}0D`
           : undefined,
       }}
       onMouseMove={handleMouseMove}
@@ -182,8 +182,8 @@ const Board = ({ tasks }: Props) => {
                       )}
                       style={{
                         backgroundColor:
-                          project?.color && snapshot.isDraggingOver
-                            ? `${project?.color}0D`
+                          userPreferences?.color && snapshot.isDraggingOver
+                            ? `${userPreferences?.color}0D`
                             : undefined,
                       }}
                     >

@@ -5,7 +5,6 @@ query Project($rowId: UUID!) {
     slug
     description
     prefix
-    color
     projectColumnId
     labels {
       nodes {

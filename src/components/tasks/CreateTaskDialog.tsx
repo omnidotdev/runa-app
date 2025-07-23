@@ -11,7 +11,6 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
-import Labels from "@/components/Labels";
 import CreateTaskAssignees from "@/components/tasks/CreateTaskAssignees";
 import CreateTaskDatePicker from "@/components/tasks/CreateTaskDatePicker";
 import CreateTaskPriority from "@/components/tasks/CreateTaskPriority";
@@ -44,6 +43,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
+import Label from "../Label";
 
 const CreateTaskDialog = () => {
   const { projectId } = useLoaderData({
@@ -311,11 +311,13 @@ const CreateTaskDialog = () => {
                       className="-ml-2 flex flex-wrap gap-1"
                     />
 
-                    <Labels
-                      labels={taskLabels.filter((l) => l.checked)}
-                      showFallback={false}
-                      className="flex flex-wrap gap-1"
-                    />
+                    <div className="flex flex-wrap gap-1">
+                      {taskLabels
+                        .filter((l) => l.checked)
+                        .map((label) => (
+                          <Label key={label.rowId} label={label} />
+                        ))}
+                    </div>
                   </div>
                 )}
               </form.Subscribe>

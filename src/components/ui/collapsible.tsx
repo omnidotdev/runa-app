@@ -10,7 +10,8 @@ const collapsibleVariants = tv({
     root: "w-full",
     trigger:
       "flex w-full items-center cursor-pointer justify-between rounded-md px-3 py-3 font-medium text-sm transition-transform [&[data-state=open]>svg]:rotate-180",
-    content: "overflow-hidden",
+    content:
+      "overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up ",
   },
 });
 
