@@ -45,11 +45,7 @@ import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
 
-interface Props {
-  columnId?: string;
-}
-
-const CreateTaskDialog = ({ columnId }: Props) => {
+const CreateTaskDialog = () => {
   const { projectId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
@@ -77,7 +73,7 @@ const CreateTaskDialog = ({ columnId }: Props) => {
 
   const defaultColumnId = project?.columns?.nodes?.[0].rowId!;
 
-  const { setColumnId } = useTaskStore();
+  const { columnId, setColumnId } = useTaskStore();
 
   useHotkeys(
     Hotkeys.CreateTask,

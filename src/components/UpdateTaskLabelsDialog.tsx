@@ -145,6 +145,8 @@ const UpdateTaskLabelsDialog = () => {
     },
   });
 
+  if (!taskId) return null;
+
   return (
     <DialogRoot
       open={isOpen}

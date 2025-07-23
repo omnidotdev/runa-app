@@ -10,7 +10,7 @@ import {
   SearchIcon,
   Settings2,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod";
@@ -37,7 +37,6 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import getSdk from "@/lib/graphql/getSdk";
 import useDragStore from "@/lib/hooks/store/useDragStore";
-import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
@@ -46,6 +45,7 @@ import seo from "@/lib/util/seo";
 
 import type { DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
+import type { TasksQueryVariables } from "@/generated/graphql";
 
 const projectSearchParamsSchema = z.object({
   search: z.string().default(""),
@@ -143,10 +143,8 @@ function ProjectPage() {
 
   const { queryClient } = Route.useRouteContext();
 
-  const { taskId, columnId } = useTaskStore();
-
-  const { data: tasks } = useSuspenseQuery({
-    ...tasksOptions({
+  const tasksVariables: TasksQueryVariables = useMemo(
+    () => ({
       projectId,
       search,
       assignees: assignees.length
@@ -157,6 +155,11 @@ function ProjectPage() {
         : undefined,
       priorities: priorities.length ? priorities : undefined,
     }),
+    [projectId, search, assignees, labels, priorities],
+  );
+
+  const { data: tasks } = useSuspenseQuery({
+    ...tasksOptions(tasksVariables),
     select: (data) => data?.tasks?.nodes ?? [],
   });
 
@@ -404,33 +407,13 @@ function ProjectPage() {
         setDraggableId(null);
 
         const { tasks: updatedTasks } = await queryClient.fetchQuery(
-          tasksOptions({
-            projectId,
-            search,
-            assignees: assignees.length
-              ? { some: { user: { rowId: { in: assignees } } } }
-              : undefined,
-            labels: labels.length
-              ? { some: { label: { rowId: { in: labels } } } }
-              : undefined,
-            priorities: priorities.length ? priorities : undefined,
-          }),
+          tasksOptions(tasksVariables),
         );
 
         setLocalTasks(updatedTasks?.nodes ?? []);
       }
     },
-    [
-      updateTask,
-      setDraggableId,
-      localTasks,
-      queryClient,
-      projectId,
-      search,
-      assignees,
-      labels,
-      priorities,
-    ],
+    [updateTask, setDraggableId, localTasks, queryClient, tasksVariables],
   );
 
   useHotkeys(
@@ -444,6 +427,9 @@ function ProjectPage() {
       }),
     [updateViewMode, userPreferences?.viewMode, projectId],
   );
+
+  // TODO: figure out a way to remove this... need to reset `localTasks` if i.e. search params change
+  useEffect(() => setLocalTasks(tasks), [tasks]);
 
   return (
     <div className="flex size-full">
@@ -601,10 +587,10 @@ function ProjectPage() {
         </DragDropContext>
       </div>
 
-      <CreateTaskDialog columnId={columnId ?? undefined} />
-      {taskId && <UpdateAssigneesDialog />}
-      {taskId && <UpdateDueDateDialog />}
-      {taskId && <UpdateTaskLabelsDialog />}
+      <CreateTaskDialog />
+      <UpdateAssigneesDialog />
+      <UpdateDueDateDialog />
+      <UpdateTaskLabelsDialog />
     </div>
   );
 }

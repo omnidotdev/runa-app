@@ -132,7 +132,10 @@ const Filter = () => {
 
           <div>
             <PopoverRoot positioning={{ placement: "right-start" }}>
-              <PopoverTrigger className="flex w-full cursor-pointer justify-between border-b px-3 py-2">
+              <PopoverTrigger
+                className="flex w-full cursor-pointer justify-between border-b px-3 py-2 disabled:opacity-50"
+                disabled={!project?.labels?.nodes?.length}
+              >
                 <div className="flex items-center gap-2">
                   <TagIcon className="size-4" />
                   <p>Labels</p>

@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { notFound, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { Grid2X2Icon, ListIcon, Plus, SearchIcon } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod";
@@ -299,6 +299,9 @@ function ProjectsOverviewPage() {
       search,
     ],
   );
+
+  // TODO: figure out a way to remove this... need to reset `localTasks` if i.e. search params change
+  useEffect(() => setLocalProjects(projects), [projects]);
 
   return (
     <div className="flex size-full">

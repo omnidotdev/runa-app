@@ -80,6 +80,8 @@ const UpdateDueDateDialog = () => {
     setIsOpen,
   ]);
 
+  if (!taskId) return null;
+
   return (
     <DialogRoot
       open={isOpen}

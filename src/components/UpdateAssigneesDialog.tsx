@@ -102,6 +102,8 @@ const UpdateAssigneesDialog = () => {
     },
   });
 
+  if (!taskId) return null;
+
   return (
     <DialogRoot
       open={isOpen}
