@@ -29,6 +29,7 @@
     "@epic-web/client-hints": "^1.3.7",
     "@hello-pangea/dnd": "^18.0.1",
     "@internationalized/date": "^3.8.2",
+    "@polar-sh/sdk": "^0.34.6",
     "@react-email/components": "^0.3.1",
     "@tailwindcss/vite": "^4.1.10",
     "@tanstack/react-form": "^1.12.3",
@@ -67,7 +68,7 @@
     "tw-animate-css": "^1.3.4",
     "usehooks-ts": "^3.1.1",
     "vite": "npm:rolldown-vite@latest",
-    "zod": "^4.0.5",
+    "zod": "3.25.76",
     "zustand": "^5.0.5"
   },
   "devDependencies": {

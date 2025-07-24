@@ -3,7 +3,7 @@ import { notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
-import * as z from "zod";
+import * as z from "zod/v4";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "@/components/core/Link";

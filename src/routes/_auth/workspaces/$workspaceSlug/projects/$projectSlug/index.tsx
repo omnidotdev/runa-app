@@ -13,7 +13,7 @@ import {
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
-import * as z from "zod";
+import * as z from "zod/v4";
 
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
@@ -438,7 +438,6 @@ function ProjectPage() {
     [updateViewMode, userPreferences?.viewMode, projectId],
   );
 
-  // TODO: figure out a way to remove this... need to reset `localTasks` if i.e. search params change
   useEffect(() => setLocalTasks(tasks), [tasks]);
 
   return (

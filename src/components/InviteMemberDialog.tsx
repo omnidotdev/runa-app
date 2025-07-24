@@ -8,7 +8,7 @@ import { PlusIcon } from "lucide-react";
 import ms from "ms";
 import { useRef, useState } from "react";
 import { Resend } from "resend";
-import * as z from "zod";
+import * as z from "zod/v4";
 
 import WorkspaceInvitation from "@/components/emails/WorkspaceInvitation";
 import { Button } from "@/components/ui/button";

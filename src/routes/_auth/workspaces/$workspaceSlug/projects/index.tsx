@@ -6,7 +6,7 @@ import { Grid2X2Icon, ListIcon, Plus, SearchIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
-import * as z from "zod";
+import * as z from "zod/v4";
 
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
@@ -293,7 +293,6 @@ function ProjectsOverviewPage() {
     [updateProject, setDraggableId, localProjects, queryClient],
   );
 
-  // TODO: figure out a way to remove this... need to reset `localTasks` if i.e. search params change
   useEffect(() => setLocalProjects(projects), [projects]);
 
   return (

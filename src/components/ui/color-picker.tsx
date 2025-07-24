@@ -288,9 +288,11 @@ const ColorPickerProvider = ArkColorPicker.RootProvider;
 
 export {
   ColorPickerRoot,
+  /** @knipignore */
   ColorPickerLabel,
   ColorPickerControl,
   ColorPickerChannelInput,
+  /** @knipignore */
   ColorPickerValueText,
   ColorPickerTrigger,
   ColorPickerValueSwatch,
@@ -305,13 +307,16 @@ export {
   ColorPickerSwatch,
   ColorPickerSwatchIndicator,
   ColorPickerTransparencyGrid,
+  /** @knipignore */
   ColorPickerFormatTrigger,
+  /** @knipignore */
   ColorPickerFormatSelect,
   ColorPickerView,
   ColorPickerEyeDropperTrigger,
   ColorPickerHiddenInput,
   ColorPickerChannelSliderTrack,
   ColorPickerChannelSliderThumb,
+  /** @knipignore */
   ColorPickerProvider,
   // Re-export parseColor for convenience in usage
   parseColor,

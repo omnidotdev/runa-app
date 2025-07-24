@@ -1,3 +1,4 @@
+import { createServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Check } from "lucide-react";
 
 import Link from "@/components/core/Link";
@@ -8,6 +9,10 @@ import {
   AccordionRoot,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { signIn } from "@/lib/auth/signIn";
+import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
+import polar from "@/lib/polar/polar";
+import RUNA_PRODUCT_IDS from "@/lib/polar/productIds";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 
@@ -29,28 +34,19 @@ const faqItems = [
   },
 ];
 
+// TODO: fetch from polar product info
 const pricingPlans = [
   {
-    id: "self-hosted",
-    name: "Self-Hosted",
+    id: "free",
+    name: "Free Tier",
     price: "$0",
     priceNote: "/forever",
     description:
-      "Host Runa on your own infrastructure with full control over your data.",
-    features: [
-      "Unlimited projects and tasks",
-      "Full source code access",
-      "Self-hosted deployment",
-      "Community support",
-    ],
+      "Try Runa for free and explore its features without any commitment.",
+    features: ["Limited projects and tasks", "Community support"],
     action: {
-      label: "View on GitHub",
-      href: "https://github.com/omnidotdev/runa",
+      label: "Get Started",
       disabled: false,
-      linkProps: {
-        target: "_blank",
-        rel: "noopener noreferrer",
-      },
     },
     highlight: false,
   },
@@ -77,14 +73,35 @@ const pricingPlans = [
   },
 ];
 
+const fetchRunaProducts = createServerFn().handler(async () => {
+  const {
+    result: { items: products },
+  } = await polar.products.list({
+    id: RUNA_PRODUCT_IDS,
+    sorting: ["price_amount"],
+  });
+
+  return { products };
+});
+
 export const Route = createFileRoute({
   head: () => ({
     meta: [...seo({ title: "Pricing" })],
   }),
+  loader: async () => {
+    const { products } = await fetchRunaProducts();
+
+    return { products };
+  },
   component: PricingPage,
 });
 
 function PricingPage() {
+  const { session } = Route.useRouteContext();
+  const { products } = Route.useLoaderData();
+
+  const navigate = Route.useNavigate();
+
   return (
     <div className="size-full pt-8">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -146,11 +163,23 @@ function PricingPage() {
                   ))}
                 </ul>
 
+                {/* TODO: fix implementation when support for multiple products is available. */}
                 {plan.action && (
-                  <Button size="lg" disabled={plan.action.disabled}>
-                    <a href={plan.action.href} {...plan.action.linkProps}>
-                      {plan.action.label}
-                    </a>
+                  <Button
+                    size="lg"
+                    disabled={plan.action.disabled}
+                    onClick={() => {
+                      if (session) {
+                        navigate({
+                          href: `${API_BASE_URL}/checkout?products=${products[0].id}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
+                          reloadDocument: true,
+                        });
+                      } else {
+                        signIn({ redirectUrl: `${BASE_URL}/pricing` });
+                      }
+                    }}
+                  >
+                    {plan.action.label}
                   </Button>
                 )}
               </div>

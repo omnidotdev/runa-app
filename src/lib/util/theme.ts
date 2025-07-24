@@ -4,7 +4,7 @@ import {
   getCookie,
   setCookie,
 } from "@tanstack/react-start/server";
-import * as z from "zod";
+import * as z from "zod/v4";
 
 import { isDevEnv } from "@/lib/config/env.config";
 
