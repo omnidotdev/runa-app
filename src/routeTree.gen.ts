@@ -19,6 +19,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AnonRouteImport } from './routes/_anon'
 import { Route as AnonIndexRouteImport } from './routes/_anon/index'
+import { Route as AuthConfirmationRouteImport } from './routes/_auth/confirmation'
 import { Route as AnonPricingRouteImport } from './routes/_anon/pricing'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
 import { Route as AuthProfileUserIdRouteImport } from './routes/_auth/profile/$userId'
@@ -43,6 +44,11 @@ const AnonIndexRoute = AnonIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AnonRoute,
+} as any)
+const AuthConfirmationRoute = AuthConfirmationRouteImport.update({
+  id: '/confirmation',
+  path: '/confirmation',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AnonPricingRoute = AnonPricingRouteImport.update({
   id: '/pricing',
@@ -97,6 +103,7 @@ const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/pricing': typeof AnonPricingRoute
+  '/confirmation': typeof AuthConfirmationRoute
   '/': typeof AnonIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/pricing': typeof AnonPricingRoute
+  '/confirmation': typeof AuthConfirmationRoute
   '/': typeof AnonIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/_anon': typeof AnonRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
   '/_anon/pricing': typeof AnonPricingRoute
+  '/_auth/confirmation': typeof AuthConfirmationRoute
   '/_anon/': typeof AnonIndexRoute
   '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
   '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/pricing'
+    | '/confirmation'
     | '/'
     | '/profile/$userId'
     | '/workspaces'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/pricing'
+    | '/confirmation'
     | '/'
     | '/profile/$userId'
     | '/workspaces'
@@ -159,6 +170,7 @@ export interface FileRouteTypes {
     | '/_anon'
     | '/_auth'
     | '/_anon/pricing'
+    | '/_auth/confirmation'
     | '/_anon/'
     | '/_auth/profile/$userId'
     | '/_auth/workspaces/'
@@ -217,6 +229,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/pricing'
       preLoaderRoute: typeof AnonPricingRouteImport
       parentRoute: typeof AnonRoute
+    }
+    '/_auth/confirmation': {
+      id: '/_auth/confirmation'
+      path: '/confirmation'
+      fullPath: '/confirmation'
+      preLoaderRoute: typeof AuthConfirmationRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_anon/': {
       id: '/_anon/'
@@ -303,6 +322,13 @@ declare module '@tanstack/react-start/server' {
       id: '/_anon/pricing'
       path: '/pricing'
       fullPath: '/pricing'
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/_auth/confirmation': {
+      id: '/_auth/confirmation'
+      path: '/confirmation'
+      fullPath: '/confirmation'
       preLoaderRoute: unknown
       parentRoute: typeof rootServerRouteImport
     }
@@ -420,6 +446,23 @@ declare module './routes/_anon/pricing' {
     ServerFileRoutesByPath['/_anon/pricing']['id'],
     ServerFileRoutesByPath['/_anon/pricing']['path'],
     ServerFileRoutesByPath['/_anon/pricing']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/_auth/confirmation' {
+  const createFileRoute: CreateFileRoute<
+    '/_auth/confirmation',
+    FileRoutesByPath['/_auth/confirmation']['parentRoute'],
+    FileRoutesByPath['/_auth/confirmation']['id'],
+    FileRoutesByPath['/_auth/confirmation']['path'],
+    FileRoutesByPath['/_auth/confirmation']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/_auth/confirmation']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/confirmation']['id'],
+    ServerFileRoutesByPath['/_auth/confirmation']['path'],
+    ServerFileRoutesByPath['/_auth/confirmation']['fullPath'],
     unknown
   >
 }
@@ -590,6 +633,7 @@ const AnonRouteChildren: AnonRouteChildren = {
 const AnonRouteWithChildren = AnonRoute._addFileChildren(AnonRouteChildren)
 
 interface AuthRouteChildren {
+  AuthConfirmationRoute: typeof AuthConfirmationRoute
   AuthProfileUserIdRoute: typeof AuthProfileUserIdRoute
   AuthWorkspacesIndexRoute: typeof AuthWorkspacesIndexRoute
   AuthWorkspacesWorkspaceSlugSettingsRoute: typeof AuthWorkspacesWorkspaceSlugSettingsRoute
@@ -600,6 +644,7 @@ interface AuthRouteChildren {
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthConfirmationRoute: AuthConfirmationRoute,
   AuthProfileUserIdRoute: AuthProfileUserIdRoute,
   AuthWorkspacesIndexRoute: AuthWorkspacesIndexRoute,
   AuthWorkspacesWorkspaceSlugSettingsRoute:
