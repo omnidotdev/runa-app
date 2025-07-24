@@ -109,7 +109,13 @@ export const Route = createFileRoute({
         data: session.user.hidraId!,
       });
 
-      if (customer?.activeSubscriptions.length) {
+      if (
+        // NB: with updated logic in polar to allow for multiple subscriptions (across Omni apps) we need to validate that the user indeed has a *Runa* specific subscription before redirecting
+        // TODO: update Backfeed to include similar logic
+        customer?.activeSubscriptions?.some((sub) =>
+          (RUNA_PRODUCT_IDS as string[]).includes(sub.productId),
+        )
+      ) {
         throw redirect({
           to: "/profile/$userId",
           params: { userId: session.user.hidraId! },
