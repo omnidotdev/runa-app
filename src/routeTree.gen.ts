@@ -21,6 +21,7 @@ import { Route as AnonRouteImport } from './routes/_anon'
 import { Route as AnonIndexRouteImport } from './routes/_anon/index'
 import { Route as AnonPricingRouteImport } from './routes/_anon/pricing'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
+import { Route as AuthProfileUserIdRouteImport } from './routes/_auth/profile/$userId'
 import { Route as AuthWorkspacesWorkspaceSlugSettingsRouteImport } from './routes/_auth/workspaces/$workspaceSlug/settings'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/index'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/index'
@@ -51,6 +52,11 @@ const AnonPricingRoute = AnonPricingRouteImport.update({
 const AuthWorkspacesIndexRoute = AuthWorkspacesIndexRouteImport.update({
   id: '/workspaces/',
   path: '/workspaces/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthProfileUserIdRoute = AuthProfileUserIdRouteImport.update({
+  id: '/profile/$userId',
+  path: '/profile/$userId',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthWorkspacesWorkspaceSlugSettingsRoute =
@@ -92,6 +98,7 @@ const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
 export interface FileRoutesByFullPath {
   '/pricing': typeof AnonPricingRoute
   '/': typeof AnonIndexRoute
+  '/profile/$userId': typeof AuthProfileUserIdRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/pricing': typeof AnonPricingRoute
   '/': typeof AnonIndexRoute
+  '/profile/$userId': typeof AuthProfileUserIdRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_anon/pricing': typeof AnonPricingRoute
   '/_anon/': typeof AnonIndexRoute
+  '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
   '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
   '/_auth/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
   '/_auth/workspaces/$workspaceSlug/projects/': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/pricing'
     | '/'
+    | '/profile/$userId'
     | '/workspaces'
     | '/workspaces/$workspaceSlug/settings'
     | '/workspaces/$workspaceSlug/projects'
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
   to:
     | '/pricing'
     | '/'
+    | '/profile/$userId'
     | '/workspaces'
     | '/workspaces/$workspaceSlug/settings'
     | '/workspaces/$workspaceSlug/projects'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_anon/pricing'
     | '/_anon/'
+    | '/_auth/profile/$userId'
     | '/_auth/workspaces/'
     | '/_auth/workspaces/$workspaceSlug/settings'
     | '/_auth/workspaces/$workspaceSlug/projects/'
@@ -212,6 +224,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AnonIndexRouteImport
       parentRoute: typeof AnonRoute
+    }
+    '/_auth/profile/$userId': {
+      id: '/_auth/profile/$userId'
+      path: '/profile/$userId'
+      fullPath: '/profile/$userId'
+      preLoaderRoute: typeof AuthProfileUserIdRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -291,6 +310,13 @@ declare module '@tanstack/react-start/server' {
       id: '/_anon/'
       path: '/'
       fullPath: '/'
+      preLoaderRoute: unknown
+      parentRoute: typeof rootServerRouteImport
+    }
+    '/_auth/profile/$userId': {
+      id: '/_auth/profile/$userId'
+      path: '/profile/$userId'
+      fullPath: '/profile/$userId'
       preLoaderRoute: unknown
       parentRoute: typeof rootServerRouteImport
     }
@@ -411,6 +437,23 @@ declare module './routes/_anon/index' {
     ServerFileRoutesByPath['/_anon/']['id'],
     ServerFileRoutesByPath['/_anon/']['path'],
     ServerFileRoutesByPath['/_anon/']['fullPath'],
+    unknown
+  >
+}
+declare module './routes/_auth/profile/$userId' {
+  const createFileRoute: CreateFileRoute<
+    '/_auth/profile/$userId',
+    FileRoutesByPath['/_auth/profile/$userId']['parentRoute'],
+    FileRoutesByPath['/_auth/profile/$userId']['id'],
+    FileRoutesByPath['/_auth/profile/$userId']['path'],
+    FileRoutesByPath['/_auth/profile/$userId']['fullPath']
+  >
+
+  const createServerFileRoute: CreateServerFileRoute<
+    ServerFileRoutesByPath['/_auth/profile/$userId']['parentRoute'],
+    ServerFileRoutesByPath['/_auth/profile/$userId']['id'],
+    ServerFileRoutesByPath['/_auth/profile/$userId']['path'],
+    ServerFileRoutesByPath['/_auth/profile/$userId']['fullPath'],
     unknown
   >
 }
@@ -547,6 +590,7 @@ const AnonRouteChildren: AnonRouteChildren = {
 const AnonRouteWithChildren = AnonRoute._addFileChildren(AnonRouteChildren)
 
 interface AuthRouteChildren {
+  AuthProfileUserIdRoute: typeof AuthProfileUserIdRoute
   AuthWorkspacesIndexRoute: typeof AuthWorkspacesIndexRoute
   AuthWorkspacesWorkspaceSlugSettingsRoute: typeof AuthWorkspacesWorkspaceSlugSettingsRoute
   AuthWorkspacesWorkspaceSlugProjectsIndexRoute: typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
@@ -556,6 +600,7 @@ interface AuthRouteChildren {
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthProfileUserIdRoute: AuthProfileUserIdRoute,
   AuthWorkspacesIndexRoute: AuthWorkspacesIndexRoute,
   AuthWorkspacesWorkspaceSlugSettingsRoute:
     AuthWorkspacesWorkspaceSlugSettingsRoute,

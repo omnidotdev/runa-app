@@ -1,3 +1,4 @@
+import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Check } from "lucide-react";
 
@@ -84,10 +85,38 @@ const fetchRunaProducts = createServerFn().handler(async () => {
   return { products };
 });
 
+const fetchCustomerState = createServerFn()
+  .validator((hidraId: string) => hidraId)
+  .handler(async ({ data: hidraId }) => {
+    try {
+      const customer = await polar.customers.getStateExternal({
+        externalId: hidraId,
+      });
+
+      return customer;
+    } catch {
+      return null;
+    }
+  });
+
 export const Route = createFileRoute({
   head: () => ({
     meta: [...seo({ title: "Pricing" })],
   }),
+  beforeLoad: async ({ context: { session } }) => {
+    if (session) {
+      const customer = await fetchCustomerState({
+        data: session.user.hidraId!,
+      });
+
+      if (customer?.activeSubscriptions.length) {
+        throw redirect({
+          to: "/profile/$userId",
+          params: { userId: session.user.hidraId! },
+        });
+      }
+    }
+  },
   loader: async () => {
     const { products } = await fetchRunaProducts();
 
