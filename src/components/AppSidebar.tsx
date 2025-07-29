@@ -19,6 +19,7 @@ import {
   Settings2,
   SunIcon,
   Trash2Icon,
+  UserIcon,
 } from "lucide-react";
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -535,13 +536,50 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
 
             <SidebarMenuItem>
               <SidebarMenuButton
-                tooltip="Sign Out"
-                onClick={signOut}
-                className="hover: justify-start border bg-background text-red-600 shadow-xs hover:bg-accent hover:text-red-600 dark:border-input dark:bg-input/30 dark:text-red-400 dark:hover:bg-input/50 dark:hover:text-red-400"
+                tooltip="Profile"
+                className="justify-start border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50"
+                asChild
               >
-                <LogOutIcon />
-                <span>Sign Out</span>
+                <Link
+                  to="/profile/$userId"
+                  params={{ userId: session?.user.hidraId! }}
+                  className="has-[>svg]:px-2"
+                >
+                  {/* TODO: avatar */}
+                  <UserIcon className="size-4 p-0 text-foreground" />
+                  <span className="text-foreground">
+                    {session?.user.username}
+                  </span>
+                </Link>
               </SidebarMenuButton>
+
+              <MenuRoot
+                positioning={{
+                  strategy: "fixed",
+                  placement: isMobile ? "bottom-end" : "right-start",
+                }}
+              >
+                <MenuTrigger asChild>
+                  <SidebarMenuAction showOnHover>
+                    <MoreHorizontalIcon />
+                    <span className="sr-only">More</span>
+                  </SidebarMenuAction>
+                </MenuTrigger>
+
+                <MenuPositioner>
+                  <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
+                    <MenuItem
+                      value="signout"
+                      className="flex cursor-pointer items-center gap-2"
+                      variant="destructive"
+                      onClick={signOut}
+                    >
+                      <LogOutIcon />
+                      <span>Sign Out</span>
+                    </MenuItem>
+                  </MenuContent>
+                </MenuPositioner>
+              </MenuRoot>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
