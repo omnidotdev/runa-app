@@ -1,3 +1,4 @@
+import { ClientOnly } from "@tanstack/react-router";
 import { TaskItem, TaskList } from "@tiptap/extension-list";
 import { Placeholder } from "@tiptap/extensions";
 import { EditorContent, useEditor } from "@tiptap/react";
@@ -101,7 +102,9 @@ const RichTextEditor = ({
       }}
       className="prose prose-sm dark:prose-invert relative max-w-none"
     >
-      {editor ? (
+      <ClientOnly
+        fallback={<Skeleton className={cn("rounded-md", skeletonClassName)} />}
+      >
         <EditorContent
           editor={editor}
           className={cn(
@@ -113,11 +116,7 @@ const RichTextEditor = ({
           )}
           {...rest}
         />
-      ) : (
-        <Skeleton
-          className={cn("pointer-events-auto rounded-md", skeletonClassName)}
-        />
-      )}
+      </ClientOnly>
     </div>
   );
 };

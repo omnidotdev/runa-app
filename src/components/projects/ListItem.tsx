@@ -91,7 +91,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
                 <RichTextEditor
                   defaultContent={task?.content}
                   className="min-h-0 border-0 p-0 text-xs dark:bg-background"
-                  skeletonClassName="h-4 p-0 w-80"
+                  skeletonClassName="h-4 w-80"
                   editable={false}
                 />
               </div>
