@@ -1,6 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
-  Link,
   useLoaderData,
   useNavigate,
   useParams,
@@ -8,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import {
   BoxIcon,
+  MoreHorizontalIcon,
   Plus,
   PlusIcon,
   Settings2Icon,
@@ -16,9 +16,15 @@ import {
 import { useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import {
+  MenuContent,
+  MenuItem,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useDeleteProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -74,9 +80,9 @@ const Projects = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
+      <div className="flex flex-col">
+        <div className="mb-1 flex h-10 items-center justify-between">
+          <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
             Projects
           </h2>
 
@@ -88,7 +94,7 @@ const Projects = () => {
               className: "bg-background text-foreground border",
               children: (
                 <div className="inline-flex">
-                  Create Project
+                  Create project
                   <div className="ml-2 flex items-center gap-0.5">
                     <SidebarMenuShortcut>P</SidebarMenuShortcut>
                   </div>
@@ -100,122 +106,137 @@ const Projects = () => {
               variant="ghost"
               size="icon"
               aria-label="Add project"
+              className="mr-2 size-7"
               onClick={() => setIsCreateProjectOpen(true)}
+              disabled={!workspace?.projectColumns.nodes.length}
             >
-              <Plus size={12} />
+              <Plus />
             </Button>
           </Tooltip>
         </div>
 
-        {!!workspace?.projects.nodes.length && (
-          <div className="flex-1 rounded-md border">
-            <Table>
-              <TableBody>
-                {workspace?.projects.nodes.map((project) => {
-                  const completedTasks = project.columns?.nodes?.reduce(
-                    (acc, col) => acc + (col?.completedTasks.totalCount || 0),
-                    0,
-                  );
-                  const totalTasks = project.columns?.nodes?.reduce(
-                    (acc, col) => acc + (col?.allTasks.totalCount || 0),
-                    0,
-                  );
+        {workspace?.projects.nodes.length ? (
+          <div className="flex flex-col divide-y border-y px-2 lg:px-0">
+            {workspace?.projects.nodes.map((project) => {
+              const completedTasks = project.columns?.nodes?.reduce(
+                (acc, col) => acc + (col?.completedTasks.totalCount || 0),
+                0,
+              );
 
-                  return (
-                    <TableRow key={project?.rowId}>
-                      <TableCell className="flex items-center gap-3 p-1">
-                        <div className="ml-1 flex items-center gap-3">
-                          <div
-                            className={cn(
-                              "flex size-8 items-center justify-center rounded-full border bg-background font-medium text-sm uppercase shadow",
-                              project?.userPreferences.nodes?.[0].color &&
-                                "text-background",
-                            )}
-                            style={{
-                              backgroundColor:
-                                project?.userPreferences.nodes?.[0].color ??
-                                undefined,
+              const totalTasks = project.columns?.nodes?.reduce(
+                (acc, col) => acc + (col?.allTasks.totalCount || 0),
+                0,
+              );
+
+              return (
+                <div
+                  key={project?.rowId}
+                  className="group flex h-10 w-full items-center hover:bg-accent"
+                >
+                  <div className="flex items-center">
+                    <div className="flex size-10 items-center justify-center">
+                      <div
+                        className={cn(
+                          "flex size-6 items-center justify-center rounded-full border bg-background font-medium text-sm uppercase shadow",
+                          project?.userPreferences.nodes?.[0].color &&
+                            "text-background",
+                        )}
+                        style={{
+                          backgroundColor:
+                            project?.userPreferences.nodes?.[0].color ??
+                            undefined,
+                        }}
+                      >
+                        {project?.name[0]}
+                      </div>
+                    </div>
+
+                    <span className="px-3 text-xs md:text-sm">
+                      {project?.name}
+                    </span>
+
+                    <span className="text-base-600 text-sm dark:text-base-400">
+                      {project.projectColumn?.emoji}
+                    </span>
+                  </div>
+
+                  <div className="mr-2 ml-auto flex gap-1">
+                    <span className="flex items-center px-3 text-base-500 text-xs dark:text-base-400">
+                      {completedTasks}/{totalTasks} tasks
+                    </span>
+
+                    <MenuRoot
+                      positioning={{
+                        strategy: "fixed",
+                        placement: "left",
+                      }}
+                    >
+                      <MenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="size-7 text-base-400"
+                        >
+                          <MoreHorizontalIcon />
+                        </Button>
+                      </MenuTrigger>
+
+                      <MenuPositioner>
+                        <MenuContent className="focus-within:outline-none">
+                          <MenuItem
+                            value="view project"
+                            onClick={() => {
+                              navigate({
+                                to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+                                params: {
+                                  workspaceSlug,
+                                  projectSlug: project.slug,
+                                },
+                              });
                             }}
                           >
-                            {project?.name[0]}
-                          </div>
+                            <BoxIcon />
+                            <span> View Project </span>
+                          </MenuItem>
 
-                          <span className="text-sm">{project?.name}</span>
-
-                          <span className="text-base-600 text-sm dark:text-base-400">
-                            {project.projectColumn?.emoji}
-                          </span>
-                        </div>
-
-                        <div className="mr-1 ml-auto flex gap-1">
-                          <div className="hidden gap-1 lg:flex">
-                            <div className="flex h-7 items-center px-4">
-                              <span className="text-base-600 text-xs dark:text-base-400">
-                                {completedTasks}/{totalTasks} tasks
-                              </span>
-                            </div>
-
-                            <Tooltip tooltip="View project">
-                              <Link
-                                to="/workspaces/$workspaceSlug/projects/$projectSlug"
-                                params={{
+                          <MenuItem
+                            value="project settings"
+                            onClick={() => {
+                              navigate({
+                                to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+                                params: {
                                   workspaceSlug,
                                   projectSlug: project.slug,
-                                }}
-                                className={buttonVariants({
-                                  variant: "ghost",
-                                  size: "icon",
-                                  className: "h-7 w-7 p-1 text-base-400",
-                                })}
-                              >
-                                <BoxIcon className="size-4" />
-                              </Link>
-                            </Tooltip>
+                                },
+                              });
+                            }}
+                          >
+                            <Settings2Icon />
+                            <span> Project Settings </span>
+                          </MenuItem>
 
-                            <Tooltip tooltip="Project settings">
-                              <Link
-                                to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
-                                params={{
+                          <MenuItem
+                            value="delete"
+                            onClick={() => {
+                              navigate({
+                                to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+                                params: {
                                   workspaceSlug,
                                   projectSlug: project.slug,
-                                }}
-                                className={buttonVariants({
-                                  variant: "ghost",
-                                  size: "icon",
-                                  className: "h-7 w-7 p-1 text-base-400",
-                                })}
-                              >
-                                <Settings2Icon className="size-4" />
-                              </Link>
-                            </Tooltip>
+                                },
+                                search: {
+                                  createTask: true,
+                                },
+                              });
+                            }}
+                          >
+                            <PlusIcon />
+                            <span> Add Task </span>
+                          </MenuItem>
 
-                            <Tooltip tooltip="Add task">
-                              <Button
-                                variant="ghost"
-                                size="xs"
-                                className="h-7 w-7 p-1 text-base-400"
-                                onClick={() => {
-                                  navigate({
-                                    to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-                                    params: {
-                                      workspaceSlug,
-                                      projectSlug: project.slug,
-                                    },
-                                    search: {
-                                      createTask: true,
-                                    },
-                                  });
-                                }}
-                              >
-                                <PlusIcon className="size-4" />
-                              </Button>
-                            </Tooltip>
-                          </div>
-
-                          <Button
-                            variant="ghost"
-                            aria-label="Delete project"
-                            size="icon"
+                          <MenuItem
+                            value="delete"
+                            variant="destructive"
                             onClick={() => {
                               setIsDeleteProjectOpen(true);
                               setSelectedProject({
@@ -223,17 +244,23 @@ const Projects = () => {
                                 name: project.name,
                               });
                             }}
-                            className="h-7 w-7 p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
                           >
-                            <Trash2Icon className="size-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                            <Trash2Icon />
+                            <span> Delete </span>
+                          </MenuItem>
+                        </MenuContent>
+                      </MenuPositioner>
+                    </MenuRoot>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex items-center text-base-500 text-sm">
+            {!workspace?.projectColumns.nodes.length
+              ? "Please create workspace columns first"
+              : "No workspace projects"}
           </div>
         )}
       </div>

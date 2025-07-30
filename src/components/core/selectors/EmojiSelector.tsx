@@ -24,15 +24,15 @@ const EmojiSelector = ({ value, onChange, triggerProps }: Props) => {
 
   return (
     <PopoverRoot lazyMount>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled>
         <Button
           variant="ghost"
-          className="h-8 text-base-400 text-md hover:text-base-600 dark:hover:text-base-300"
+          className="text-base-400 text-md hover:text-base-600 dark:hover:text-base-300"
           {...triggerProps}
         >
           {value || " "}
 
-          <ChevronDownIcon size={4} />
+          <ChevronDownIcon className="icon text-base-400" />
         </Button>
       </PopoverTrigger>
       <PopoverPositioner>

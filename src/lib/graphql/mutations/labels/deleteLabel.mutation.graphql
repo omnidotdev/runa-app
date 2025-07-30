@@ -1,5 +1,9 @@
 mutation DeleteLabel($rowId: UUID!) {
   deleteLabel(input: { rowId: $rowId }) {
-    clientMutationId
+    label {
+      rowId
+      name
+      color
+    }
   }
 }

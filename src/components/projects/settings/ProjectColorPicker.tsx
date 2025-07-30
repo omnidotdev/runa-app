@@ -1,23 +1,35 @@
-import { parseColor } from "@ark-ui/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { MoreHorizontalIcon, UndoIcon } from "lucide-react";
+import { PipetteIcon } from "lucide-react";
 import { useState } from "react";
 
-import ColorSelector from "@/components/core/selectors/ColorSelector";
 import { Button } from "@/components/ui/button";
 import {
-  CollapsibleContent,
-  CollapsibleRoot,
-} from "@/components/ui/collapsible";
-import {
-  MenuContent,
-  MenuItem,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-} from "@/components/ui/menu";
+  ColorPickerArea,
+  ColorPickerAreaBackground,
+  ColorPickerAreaThumb,
+  ColorPickerChannelInput,
+  ColorPickerChannelSlider,
+  ColorPickerChannelSliderThumb,
+  ColorPickerChannelSliderTrack,
+  ColorPickerContent,
+  ColorPickerControl,
+  ColorPickerEyeDropperTrigger,
+  ColorPickerHiddenInput,
+  ColorPickerPositioner,
+  ColorPickerRoot,
+  ColorPickerSwatch,
+  ColorPickerSwatchGroup,
+  ColorPickerSwatchIndicator,
+  ColorPickerSwatchTrigger,
+  ColorPickerTransparencyGrid,
+  ColorPickerTrigger,
+  ColorPickerValueSwatch,
+  ColorPickerView,
+  parseColor,
+} from "@/components/ui/color-picker";
 import { useUpdateUserPreferenceMutation } from "@/generated/graphql";
+import { colors } from "@/lib/constants/colors";
 import useForm from "@/lib/hooks/useForm";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 
@@ -65,106 +77,123 @@ const ProjectColorPicker = () => {
   });
 
   return (
-    <div className="flex max-w-1/2 flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
-          Project Color
-        </h2>
-        <MenuRoot
-          positioning={{
-            strategy: "fixed",
-            placement: "top",
-          }}
-        >
-          <MenuTrigger asChild>
-            <Button variant="ghost" size="xs" className="size-5">
-              <MoreHorizontalIcon className="size-4" />
-            </Button>
-          </MenuTrigger>
-
-          <MenuPositioner>
-            <MenuContent className="focus-within:outline-none">
-              <MenuItem
-                value="reset"
-                className="flex cursor-pointer items-center gap-2"
-                onClick={() => {
-                  updateUserPreferences({
-                    rowId: userPreferences?.rowId!,
-                    patch: {
-                      color: "#09b8b5",
-                    },
-                  });
-                }}
-              >
-                <UndoIcon />
-                <span> Reset to defaults</span>
-              </MenuItem>
-            </MenuContent>
-          </MenuPositioner>
-        </MenuRoot>
-      </div>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          form.handleSubmit();
-        }}
-      >
-        <form.Field name="color">
-          {(field) => (
-            <ColorSelector
-              value={parseColor(field.state.value ?? "#09b8b5")}
-              onValueChange={({ value }) => {
-                setIsUpdatingColorPreferences(true);
-                field.handleChange(value.toString("hex"));
-              }}
-              inputProps={{
-                className: "border",
-              }}
-              colorPickerControlProps={{ className: "flex flex-row-reverse" }}
-              colorPickerProps={{
-                className: "h-9 w-9",
-              }}
-            />
-          )}
-        </form.Field>
-
-        <CollapsibleRoot
-          open={isUpdatingColorPreferences}
-          onOpenChange={({ open }) => setIsUpdatingColorPreferences(open)}
-        >
-          <CollapsibleContent className="mt-4 flex justify-end gap-2">
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setIsUpdatingColorPreferences(false);
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+      className="flex items-center gap-2"
+    >
+      <form.Field name="color">
+        {(field) => (
+          <ColorPickerRoot
+            positioning={{
+              strategy: "fixed",
+              placement: "bottom-start",
+            }}
+            value={parseColor(field.state.value ?? "#09b8b5")}
+            onValueChange={({ value }) => {
+              setIsUpdatingColorPreferences(true);
+              field.handleChange(value.toString("hex"));
+            }}
+            open={isUpdatingColorPreferences}
+            onOpenChange={(open) => {
+              if (!open) {
+                setIsUpdatingColorPreferences(open);
                 form.reset();
-              }}
-            >
-              Cancel
-            </Button>
+              }
+            }}
+            onPointerDownOutside={() => setIsUpdatingColorPreferences(false)}
+          >
+            <ColorPickerControl className="relative flex size-6 items-center disabled:cursor-default">
+              <ColorPickerTrigger
+                onClick={() =>
+                  setIsUpdatingColorPreferences(!isUpdatingColorPreferences)
+                }
+                className="size-6 disabled:cursor-default"
+              >
+                <ColorPickerTransparencyGrid />
+                <ColorPickerValueSwatch />
+              </ColorPickerTrigger>
+            </ColorPickerControl>
 
-            <form.Subscribe
-              selector={(state) => [
-                state.canSubmit,
-                state.isSubmitting,
-                state.isDirty,
-              ]}
-            >
-              {([canSubmit, isSubmitting, isDirty]) => (
-                <Button
-                  type="submit"
-                  disabled={!canSubmit || isSubmitting || !isDirty}
+            <ColorPickerPositioner>
+              <ColorPickerContent>
+                <ColorPickerArea>
+                  <ColorPickerAreaBackground />
+                  <ColorPickerAreaThumb />
+                </ColorPickerArea>
+
+                <div className="flex w-full items-center gap-4">
+                  <ColorPickerEyeDropperTrigger>
+                    <PipetteIcon size={14} />
+                  </ColorPickerEyeDropperTrigger>
+
+                  <div className="flex h-10 w-full flex-col items-center justify-center gap-2">
+                    <ColorPickerChannelSlider channel="hue">
+                      <ColorPickerChannelSliderTrack />
+                      <ColorPickerChannelSliderThumb />
+                    </ColorPickerChannelSlider>
+                  </div>
+                </div>
+                <ColorPickerView format="rgba">
+                  <ColorPickerChannelInput
+                    channel="hex"
+                    className="h-7 text-xs"
+                  />
+                </ColorPickerView>
+
+                <ColorPickerSwatchGroup>
+                  {colors.map((color) => (
+                    <ColorPickerSwatchTrigger key={color} value={color}>
+                      <ColorPickerSwatch value={color}>
+                        <ColorPickerSwatchIndicator>
+                          ✓
+                        </ColorPickerSwatchIndicator>
+                      </ColorPickerSwatch>
+                    </ColorPickerSwatchTrigger>
+                  ))}
+                </ColorPickerSwatchGroup>
+
+                <form.Subscribe
+                  selector={(state) => [
+                    state.canSubmit,
+                    state.isSubmitting,
+                    state.isDirty,
+                  ]}
                 >
-                  Update
-                </Button>
-              )}
-            </form.Subscribe>
-          </CollapsibleContent>
-        </CollapsibleRoot>
-      </form>
-    </div>
+                  {([canSubmit, isSubmitting, isDirty]) => (
+                    <div className="mt-2 flex items-center justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setIsUpdatingColorPreferences(false);
+                          form.reset();
+                        }}
+                        disabled={isSubmitting}
+                      >
+                        Cancel
+                      </Button>
+
+                      <Button
+                        type="submit"
+                        size="sm"
+                        disabled={!canSubmit || isSubmitting || !isDirty}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  )}
+                </form.Subscribe>
+              </ColorPickerContent>
+            </ColorPickerPositioner>
+            <ColorPickerHiddenInput />
+          </ColorPickerRoot>
+        )}
+      </form.Field>
+    </form>
   );
 };
 

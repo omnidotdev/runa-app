@@ -274,6 +274,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
                 >
                   <SidebarGroupAction
                     onClick={() => setIsCreateProjectOpen(true)}
+                    disabled={!workspace?.projectColumns.nodes.length}
                   >
                     <PlusIcon /> <span className="sr-only">Add Project</span>
                   </SidebarGroupAction>

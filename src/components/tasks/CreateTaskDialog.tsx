@@ -71,7 +71,7 @@ const CreateTaskDialog = () => {
     select: (data) => data?.project,
   });
 
-  const defaultColumnId = project?.columns?.nodes?.[0].rowId!;
+  const defaultColumnId = project?.columns?.nodes?.[0]?.rowId! ?? null;
 
   const { columnId, setColumnId } = useTaskStore();
 

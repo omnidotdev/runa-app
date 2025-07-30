@@ -1,13 +1,19 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { Plus, Trash2 } from "lucide-react";
+import { MoreHorizontalIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
 import InviteMemberDialog from "@/components/InviteMemberDialog";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  MenuContent,
+  MenuItem,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useDeleteWorkspaceUserMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -59,79 +65,102 @@ const Team = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
+      <div className="flex flex-col">
+        <div className="mb-1 flex h-10 items-center justify-between">
+          <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
             Team Members
           </h2>
 
           <Tooltip
+            tooltip="Invite team member"
             positioning={{
               placement: "left",
             }}
-            tooltip="Invite team member"
           >
             <Button
               variant="ghost"
               size="icon"
               aria-label="Invite team member"
+              className="mr-2 size-7"
               onClick={() => setIsInviteTeamMemberOpen(true)}
             >
-              <Plus />
+              <PlusIcon />
             </Button>
           </Tooltip>
         </div>
 
         {members?.nodes.length ? (
-          <div className="flex-1 rounded-md border">
-            <Table>
-              <TableBody>
-                {members?.nodes?.map((member) => {
-                  const completedTasks =
-                    member?.user?.completedTasks?.totalCount ?? 0;
-                  const totalTasks =
-                    member?.user?.assignedTasks?.totalCount ?? 0;
+          <div className="flex flex-col divide-y border-y">
+            {members?.nodes?.map((member) => {
+              const completedTasks =
+                member?.user?.completedTasks?.totalCount ?? 0;
+              const totalTasks = member?.user?.assignedTasks?.totalCount ?? 0;
 
-                  return (
-                    <TableRow key={member?.user?.rowId}>
-                      <TableCell className="flex items-center gap-3">
-                        <Avatar
-                          fallback={member.user?.name?.charAt(0)}
-                          src={member.user?.avatarUrl ?? undefined}
-                          alt={member.user?.name}
-                          className="size-8 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
-                        />
+              return (
+                <div
+                  key={member?.user?.rowId}
+                  className="group flex h-10 w-full items-center px-2 hover:bg-accent lg:px-0"
+                >
+                  <div className="flex w-full items-center">
+                    <div className="flex size-10 items-center justify-center">
+                      <Avatar
+                        fallback={member.user?.name?.charAt(0)}
+                        src={member.user?.avatarUrl ?? undefined}
+                        alt={member.user?.name}
+                        size="xs"
+                        className="size-6 rounded-full border bg-background font-medium text-sm uppercase shadow"
+                      />
+                    </div>
 
-                        <span className="text-foreground text-sm">
-                          {member?.user?.name}
-                        </span>
+                    <span className="px-3 text-xs md:text-sm">
+                      {member?.user?.name}
+                    </span>
 
-                        <div className="mr-1 ml-auto flex gap-1">
-                          <div className="flex h-7 items-center px-4">
-                            <span className="text-base-600 text-xs dark:text-base-400">
-                              {completedTasks}/{totalTasks} tasks
-                            </span>
-                          </div>
+                    <div className="mr-2 ml-auto flex gap-1">
+                      <span className="flex items-center px-3 text-base-600 text-xs dark:text-base-400">
+                        {completedTasks}/{totalTasks} tasks
+                      </span>
 
+                      <MenuRoot
+                        positioning={{
+                          strategy: "fixed",
+                          placement: "left",
+                        }}
+                      >
+                        <MenuTrigger asChild>
                           <Button
                             variant="ghost"
                             size="icon"
-                            aria-label="Remove team member"
-                            onClick={() => {
-                              setIsDeleteTeamMemberOpen(true);
-                              setSelectedMember(member.user!);
-                            }}
-                            className="mr-2 ml-auto h-7 w-7 p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
+                            className="size-7 text-base-400"
                           >
-                            <Trash2 />
+                            <MoreHorizontalIcon />
                           </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                        </MenuTrigger>
+
+                        <MenuPositioner>
+                          <MenuContent className="focus-within:outline-none">
+                            <MenuItem
+                              value="reset"
+                              variant="destructive"
+                              onClick={() => {
+                                setIsDeleteTeamMemberOpen(true);
+                                setSelectedMember(member.user!);
+                              }}
+                              disabled={
+                                member.user?.rowId === session?.user?.rowId
+                              }
+                            >
+                              <Trash2Icon />
+                              <span> Delete </span>
+                            </MenuItem>
+                          </MenuContent>
+                        </MenuPositioner>
+                      </MenuRoot>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div className="flex items-center text-base-500 text-sm">

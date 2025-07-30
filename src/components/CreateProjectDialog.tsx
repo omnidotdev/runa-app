@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -60,7 +61,9 @@ const CreateProjectDialog = () => {
   });
 
   const newProjectColumnId =
-    projectColumnId ?? currentWorkspace?.projectColumns?.nodes[0].rowId;
+    projectColumnId ??
+    currentWorkspace?.projectColumns?.nodes[0]?.rowId ??
+    null;
 
   const { data: projectColumnIndex } = useQuery({
     ...projectColumnsOptions({ workspaceId: workspaceId! }),
@@ -136,21 +139,28 @@ const CreateProjectDialog = () => {
       name: "",
       description: "",
       projectColumnId: newProjectColumnId,
-      projectColumnIndex: projectColumnIndex ?? 0,
+      columnIndex: projectColumnIndex ?? 0,
     },
     onSubmit: async ({ value, formApi }) => {
-      await createNewProject({
-        input: {
-          project: {
-            workspaceId: workspaceId!,
-            name: value.name,
-            slug: generateSlug(value.name),
-            description: value.description,
-            projectColumnId: value.projectColumnId!,
-            columnIndex: value.projectColumnIndex,
+      toast.promise(
+        createNewProject({
+          input: {
+            project: {
+              workspaceId: workspaceId!,
+              name: value.name,
+              slug: generateSlug(value.name),
+              description: value.description,
+              projectColumnId: value.projectColumnId!,
+              columnIndex: value.columnIndex,
+            },
           },
+        }),
+        {
+          loading: "Creating Project...",
+          success: "Project created successfully!",
+          error: "Something went wrong! Please try again.",
         },
-      });
+      );
 
       setIsCreateProjectOpen(false);
       setProjectColumnId(null);

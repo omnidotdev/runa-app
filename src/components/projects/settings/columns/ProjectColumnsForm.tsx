@@ -22,23 +22,23 @@ import { PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import ConfirmDialog from "@/components/ConfirmDialog";
-import EmojiSelector from "@/components/core/selectors/EmojiSelector";
-import DraggableColumn from "@/components/projects/settings/columns/DraggableColumn";
+import ColumnForm from "@/components/projects/settings/columns/ColumnForm";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Tooltip } from "@/components/ui/tooltip";
 import {
-  useCreateColumnMutation,
   useDeleteColumnMutation,
   useUpdateColumnMutation,
 } from "@/generated/graphql";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
-import useForm from "@/lib/hooks/useForm";
 import columnsOptions from "@/lib/options/columns.options";
 
 import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
 import type { ColumnFragment as Column } from "@/generated/graphql";
 
-const ColumnsForm = () => {
+const ProjectColumnsForm = () => {
+  const [isCreatingColumn, setIsCreatingColumn] = useState(false);
+  const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
+
   const { projectId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
@@ -53,19 +53,7 @@ const ColumnsForm = () => {
   const [localColumns, setLocalColumns] = useState<Column[]>(columns ?? []);
   const [columnToDelete, setColumnToDelete] = useState<Column>();
 
-  const { mutate: createColumn } = useCreateColumnMutation({
-      meta: {
-        invalidates: [["all"]],
-      },
-      onSuccess: (data) => {
-        const newColumn = data?.createColumn?.column;
-
-        if (newColumn) {
-          setLocalColumns((prev) => [...prev, newColumn]);
-        }
-      },
-    }),
-    { mutate: updateColumn } = useUpdateColumnMutation({
+  const { mutate: updateColumn } = useUpdateColumnMutation({
       meta: {
         invalidates: [["all"]],
       },
@@ -79,28 +67,6 @@ const ColumnsForm = () => {
           prev.filter((column) => column.rowId !== variables.rowId),
         ),
     });
-
-  const { Field, Subscribe, handleSubmit } = useForm({
-    defaultValues: {
-      title: "",
-      emoji: "😀",
-      index: columns?.length ?? 0,
-    },
-    onSubmit: ({ value, formApi }) => {
-      createColumn({
-        input: {
-          column: {
-            projectId,
-            title: value.title,
-            index: value.index,
-            emoji: value.emoji,
-          },
-        },
-      });
-
-      formApi.reset();
-    },
-  });
 
   const dataIds = useMemo<UniqueIdentifier[]>(
     () => localColumns.map(({ rowId }) => rowId),
@@ -132,89 +98,102 @@ const ColumnsForm = () => {
     useSensor(KeyboardSensor, {}),
   );
 
+  const handleSetActiveColumn = (rowId: string | null) => {
+    setActiveColumnId(rowId);
+    if (rowId === null) {
+      setIsCreatingColumn(false);
+    }
+  };
+
+  const handleCreateNewColumn = () => {
+    setIsCreatingColumn(true);
+    setActiveColumnId("pending");
+  };
+
+  const hasColumns = !!localColumns?.length;
+  const showEmptyState = !hasColumns && !isCreatingColumn;
+  const hasActiveColumn = localColumns?.some(
+    (label) => label.rowId === activeColumnId,
+  );
+
   return (
     <>
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
+      <div className="flex flex-col">
+        <div className="mb-1 flex h-10 items-center justify-between">
+          <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
             Project Columns
           </h2>
-        </div>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleSubmit();
-          }}
-          className="flex items-center gap-2"
-        >
-          <Field name="emoji">
-            {(field) => (
-              <EmojiSelector
-                value={field.state.value}
-                onChange={(emoji) => field.handleChange(emoji)}
-                triggerProps={{
-                  variant: "outline",
-                  className: "h-9",
-                }}
-              />
-            )}
-          </Field>
 
-          <Field name="title">
-            {(field) => (
-              <Input
-                id="name"
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                placeholder="Enter a column name..."
-                className="border text-xs shadow-none placeholder:opacity-50 focus-visible:ring-0 disabled:opacity-100"
-              />
-            )}
-          </Field>
-
-          <div className="flex items-center justify-center">
-            <Subscribe
-              selector={(state) => [
-                state.canSubmit,
-                state.isSubmitting,
-                state.isDirty,
-              ]}
-            >
-              {([canSubmit, isSubmitting, isDirty]) => (
-                <Button
-                  size="icon"
-                  type="submit"
-                  disabled={!canSubmit || isSubmitting || !isDirty}
-                >
-                  <PlusIcon className="size-4" />
-                </Button>
-              )}
-            </Subscribe>
-          </div>
-        </form>
-
-        <DndContext
-          collisionDetection={closestCenter}
-          modifiers={[restrictToVerticalAxis, restrictToParentElement]}
-          onDragEnd={handleDragEnd}
-          sensors={sensors}
-        >
-          <SortableContext
-            items={dataIds}
-            strategy={verticalListSortingStrategy}
+          <Tooltip
+            tooltip="Create new column"
+            positioning={{
+              placement: "left",
+            }}
           >
-            <div className="flex flex-col gap-2">
-              {localColumns?.map((column) => (
-                <DraggableColumn
-                  key={column.rowId}
-                  column={column}
-                  setColumnToDelete={setColumnToDelete}
-                />
-              ))}
-            </div>
-          </SortableContext>
-        </DndContext>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="mr-2 size-7"
+              aria-label="Create new column"
+              onClick={handleCreateNewColumn}
+              disabled={activeColumnId !== null}
+            >
+              <PlusIcon />
+            </Button>
+          </Tooltip>
+        </div>
+
+        {isCreatingColumn && (
+          <ColumnForm
+            column={{
+              rowId: "pending",
+              title: "",
+              emoji: "😀",
+              index: localColumns.length,
+              tasks: { totalCount: 0 },
+            }}
+            isActive={true}
+            onSetActive={handleSetActiveColumn}
+            hasActiveColumn={hasActiveColumn || activeColumnId === "pending"}
+            setLocalColumns={setLocalColumns}
+            canDrag={false}
+          />
+        )}
+
+        {hasColumns ? (
+          <DndContext
+            collisionDetection={closestCenter}
+            modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+            onDragEnd={handleDragEnd}
+            sensors={sensors}
+          >
+            <SortableContext
+              items={dataIds}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="flex flex-col divide-y border-y">
+                {localColumns?.map((column) => (
+                  <ColumnForm
+                    key={column.rowId}
+                    column={column}
+                    isActive={activeColumnId === column.rowId}
+                    onSetActive={handleSetActiveColumn}
+                    hasActiveColumn={
+                      hasActiveColumn || activeColumnId === "pending"
+                    }
+                    setColumnToDelete={setColumnToDelete}
+                    setLocalColumns={setLocalColumns}
+                    canDrag={localColumns.length > 1}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
+        ) : showEmptyState ? (
+          <div className="flex items-center text-base-500 text-sm">
+            No project columns
+          </div>
+        ) : null}
       </div>
 
       <ConfirmDialog
@@ -262,4 +241,4 @@ const ColumnsForm = () => {
   );
 };
 
-export default ColumnsForm;
+export default ProjectColumnsForm;

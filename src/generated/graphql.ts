@@ -7948,7 +7948,7 @@ export type DeleteLabelMutationVariables = Exact<{
 }>;
 
 
-export type DeleteLabelMutation = { __typename?: 'Mutation', deleteLabel?: { __typename?: 'DeleteLabelPayload', clientMutationId?: string | null } | null };
+export type DeleteLabelMutation = { __typename?: 'Mutation', deleteLabel?: { __typename?: 'DeleteLabelPayload', label?: { __typename?: 'Label', rowId: string, name: string, color: string } | null } | null };
 
 export type UpdateLabelMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -8495,7 +8495,11 @@ useCreateLabelMutation.fetcher = (variables: CreateLabelMutationVariables, optio
 export const DeleteLabelDocument = `
     mutation DeleteLabel($rowId: UUID!) {
   deleteLabel(input: {rowId: $rowId}) {
-    clientMutationId
+    label {
+      rowId
+      name
+      color
+    }
   }
 }
     `;
@@ -9178,7 +9182,7 @@ useColumnsQuery.fetcher = (variables: ColumnsQueryVariables, options?: RequestIn
 
 export const LabelsDocument = `
     query Labels($projectId: UUID!) {
-  labels(condition: {projectId: $projectId}) {
+  labels(condition: {projectId: $projectId}, orderBy: NAME_ASC) {
     nodes {
       ...Label
     }

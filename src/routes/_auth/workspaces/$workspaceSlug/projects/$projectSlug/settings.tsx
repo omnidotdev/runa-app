@@ -9,9 +9,9 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
-import ProjectColumnsForm from "@/components/projects/settings/columns/ColumnsForm";
+import ProjectColumnsForm from "@/components/projects/settings/columns/ProjectColumnsForm";
+import ProjectLabelsForm from "@/components/projects/settings/labels/ProjectLabelsForm";
 import ProjectColorPicker from "@/components/projects/settings/ProjectColorPicker";
-import ProjectLabelsForm from "@/components/projects/settings/ProjectLabelsForm";
 import { Button } from "@/components/ui/button";
 import {
   useDeleteProjectMutation,
@@ -122,7 +122,7 @@ function RouteComponent() {
   const handleProjectUpdate = useDebounceCallback(updateProject, 300);
 
   return (
-    <div className="no-scrollbar relative h-full overflow-auto p-8 lg:p-12">
+    <div className="no-scrollbar relative h-full overflow-auto py-8 lg:p-12">
       {/* Header */}
       <div className="mb-10 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -134,8 +134,11 @@ function RouteComponent() {
           >
             <ArrowLeft className="size-4" />
           </Link>
+
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
+              <ProjectColorPicker />
+
               <RichTextEditor
                 defaultContent={project?.name}
                 className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
@@ -207,9 +210,7 @@ function RouteComponent() {
 
         <ProjectColumnsForm />
 
-        <ProjectColorPicker />
-
-        <div className="flex flex-col gap-4">
+        <div className="ml-2 flex flex-col gap-4 lg:ml-0">
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Danger Zone</h3>
 

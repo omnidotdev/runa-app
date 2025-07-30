@@ -19,7 +19,7 @@ const ListItem = ({ project }: Props) => {
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
   const navigate = useNavigate();

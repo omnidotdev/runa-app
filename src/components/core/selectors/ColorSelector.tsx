@@ -31,33 +31,40 @@ import type { ComponentProps } from "react";
 
 interface Props extends ComponentProps<typeof ArkColorPicker.Root> {
   inputProps?: ComponentProps<typeof Input>;
-  colorPickerProps?: ComponentProps<typeof ArkColorPicker.Trigger>;
+  colorPickerTriggerProps?: ComponentProps<typeof ArkColorPicker.Trigger>;
   colorPickerControlProps?: ComponentProps<typeof ArkColorPicker.Control>;
+  showChannelInput?: boolean;
 }
 
 const ColorSelector = ({
   inputProps,
-  colorPickerProps,
+  colorPickerTriggerProps,
   colorPickerControlProps,
+  showChannelInput = true,
   ...rest
 }: Props) => {
   return (
     <ColorPickerRoot {...rest}>
-      <ColorPickerControl className="px-3" {...colorPickerControlProps}>
+      <ColorPickerControl
+        className="flex items-center gap-2 px-3"
+        {...colorPickerControlProps}
+      >
         <ColorPickerTrigger
-          className="size-5 rounded-full"
-          {...colorPickerProps}
+          className="size-5 rounded-full disabled:cursor-not-allowed"
+          {...colorPickerTriggerProps}
         >
           <ColorPickerTransparencyGrid />
           <ColorPickerValueSwatch />
         </ColorPickerTrigger>
 
-        <ColorPickerChannelInput channel="hex" asChild>
-          <Input
-            className="rounded-none border-0 shadow-none focus-visible:ring-0"
-            {...inputProps}
-          />
-        </ColorPickerChannelInput>
+        {showChannelInput && (
+          <ColorPickerChannelInput channel="hex" asChild>
+            <Input
+              className="rounded-none border-0 shadow-none disabled:opacity-100"
+              {...inputProps}
+            />
+          </ColorPickerChannelInput>
+        )}
       </ColorPickerControl>
 
       <ColorPickerPositioner>

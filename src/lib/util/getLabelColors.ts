@@ -15,3 +15,20 @@ const getLabelColors = (color: string) => {
 };
 
 export default getLabelColors;
+
+// const darkBackgroundColor = `rgba(${r}, ${g}, ${b}, 0.25)`;
+// const darkTextColor = `rgba(${r}, ${g}, ${b}, 0 .85)`;
+
+// const labelColors = match(theme)
+//   .with("light", () => ({
+//     backgroundColor: lightBackgroundColor,
+//     textColor: lightTextColor,
+//   }))
+//   .with("dark", () => ({
+//     backgroundColor: darkBackgroundColor,
+//     textColor: darkTextColor,
+//   }))
+//   .otherwise(() => ({
+//     backgroundColor: lightBackgroundColor,
+//     textColor: lightTextColor,
+//   }));

@@ -9,6 +9,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import ClientHintCheck from "@/components/scripts/ClientHintCheck";
+import { Toaster } from "@/components/ui/sonner";
 import fetchSession from "@/lib/auth/fetchSession";
 import useTheme from "@/lib/hooks/useTheme";
 import { themeQueryKey } from "@/lib/options/theme.options";
@@ -77,6 +78,7 @@ function RootDocument({
       <body>
         {children}
 
+        <Toaster />
         {/* Dev Tools - only included in development */}
         <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools />

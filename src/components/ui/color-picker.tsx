@@ -12,11 +12,12 @@ const colorPickerVariants = tv({
   slots: {
     root: "flex flex-col gap-1.5",
     label: "font-medium text-foreground text-sm",
-    control: "flex items-center gap-2",
-    channelInput: "flex h-9 w-full rounded-md border bg-transparent px-3 py-1",
+    control: "flex items-center gap-2 h-10",
+    channelInput:
+      "flex h-auto w-full rounded-md border bg-transparent px-3 py-1",
     valueText: "text-muted-foreground text-sm",
     trigger:
-      "relative h-9 w-9 shrink-0 cursor-pointer overflow-hidden rounded-md border border-input",
+      "relative shrink-0 cursor-pointer overflow-hidden rounded-md border",
     valueSwatch: "h-full w-full",
     positioner: "z-50",
     content:

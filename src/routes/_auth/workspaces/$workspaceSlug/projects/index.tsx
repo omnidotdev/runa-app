@@ -374,6 +374,7 @@ function ProjectsOverviewPage() {
                   variant="outline"
                   size="icon"
                   onClick={() => setIsCreateProjectOpen(true)}
+                  disabled={!workspace?.projectColumns?.nodes?.length}
                 >
                   <Plus className="size-4" />
                 </Button>

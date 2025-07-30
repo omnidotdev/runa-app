@@ -10,7 +10,7 @@ import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
-import WorkspaceColumnsForm from "@/components/workspaces/settings/columns/ProjectColumnsForm";
+import WorkspaceColumnsForm from "@/components/workspaces/settings/columns/WorkspaceColumnsForm";
 import Projects from "@/components/workspaces/settings/Projects";
 import Team from "@/components/workspaces/settings/Team";
 import {
@@ -126,9 +126,9 @@ function SettingsPage() {
   const handleWorkspaceUpdate = useDebounceCallback(updateWorkspace, 300);
 
   return (
-    <div className="no-scrollbar relative h-full overflow-auto p-8 lg:p-12">
+    <div className="no-scrollbar relative h-full overflow-auto py-8 lg:p-12">
       {/* Header */}
-      <div className="mb-10 flex items-center justify-between">
+      <div className="mb-10 ml-2 flex items-center justify-between lg:ml-0">
         <div className="flex items-center gap-3">
           <Link
             to="/workspaces/$workspaceSlug/projects"
@@ -180,7 +180,7 @@ function SettingsPage() {
 
         <WorkspaceColumnsForm />
 
-        <div className="flex flex-col gap-4">
+        <div className="ml-2 flex flex-col gap-4 lg:ml-0">
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Danger Zone</h3>
 
