@@ -78,7 +78,7 @@ function RootDocument({
         {children}
 
         {/* Dev Tools - only included in development */}
-        <TanStackRouterDevtools position="top-right" />
+        <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools />
         <Scripts />
       </body>
