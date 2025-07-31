@@ -1,5 +1,4 @@
 import { redirect } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Check } from "lucide-react";
 
 import Link from "@/components/core/Link";
@@ -12,10 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth/signIn";
 import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
-import polar from "@/lib/polar/polar";
 import RUNA_PRODUCT_IDS from "@/lib/polar/productIds";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
+import { fetchCustomerState } from "@/server/fetchCustomerState";
+import { fetchRunaProducts } from "@/server/fetchRunaProducts";
 
 const faqItems = [
   {
@@ -73,31 +73,6 @@ const pricingPlans = [
     highlight: true,
   },
 ];
-
-const fetchRunaProducts = createServerFn().handler(async () => {
-  const {
-    result: { items: products },
-  } = await polar.products.list({
-    id: RUNA_PRODUCT_IDS,
-    sorting: ["price_amount"],
-  });
-
-  return { products };
-});
-
-const fetchCustomerState = createServerFn()
-  .validator((hidraId: string) => hidraId)
-  .handler(async ({ data: hidraId }) => {
-    try {
-      const customer = await polar.customers.getStateExternal({
-        externalId: hidraId,
-      });
-
-      return customer;
-    } catch {
-      return null;
-    }
-  });
 
 export const Route = createFileRoute({
   head: () => ({

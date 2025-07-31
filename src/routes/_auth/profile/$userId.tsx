@@ -21,20 +21,44 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import RUNA_PRODUCT_IDS from "@/lib/polar/productIds";
+import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import { fetchCustomerState } from "@/server/fetchCustomerState";
+import { fetchRunaProducts } from "@/server/fetchRunaProducts";
+
+import type { Product } from "@polar-sh/sdk/models/components/product.js";
 
 export const Route = createFileRoute({
+  loader: async ({ context: { session } }) => {
+    let currentProduct: Product | undefined;
+
+    const [customer, { products }] = await Promise.all([
+      fetchCustomerState({
+        data: session?.user.hidraId!,
+      }),
+      fetchRunaProducts(),
+    ]);
+
+    if (
+      // NB: with updated logic in polar to allow for multiple subscriptions (across Omni apps) we need to validate that the user indeed has a *Runa* specific subscription before redirecting
+      // TODO: update Backfeed to include similar logic
+      customer?.activeSubscriptions?.some((sub) =>
+        (RUNA_PRODUCT_IDS as string[]).includes(sub.productId),
+      )
+    ) {
+      const productId = customer.activeSubscriptions.find((sub) =>
+        RUNA_PRODUCT_IDS!.includes(sub.productId),
+      )?.productId;
+
+      currentProduct = products.find((product) => product.id === productId);
+    }
+
+    return {
+      currentProduct,
+    };
+  },
   component: RouteComponent,
 });
-
-// Mock user data
-const mockUser = {
-  id: "user-123",
-  name: "John Doe",
-  email: "john.doe@example.com",
-  avatar:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
-  plan: "Basic" as "Basic" | "Pro" | "Enterprise",
-};
 
 // Mock usage metrics
 const mockMetrics = {
@@ -52,6 +76,18 @@ const proLimits = {
 
 // Mock plan features
 const planFeatures = {
+  Free: [
+    {
+      title: "5 Projects",
+      description: "Create up to 15 projects",
+      icon: "📁",
+    },
+    {
+      title: "Basic Support",
+      description: "Email support within 48h",
+      icon: "💬",
+    },
+  ],
   Basic: [
     {
       title: "15 Projects",
@@ -116,17 +152,23 @@ const planFeatures = {
 };
 
 function RouteComponent() {
+  const { currentProduct } = Route.useLoaderData();
+
+  const { session } = Route.useRouteContext();
+
   const [activeTab, setActiveTab] = useState<
     "account" | "customization" | "contact"
   >("account");
 
   const getPlanBadgeVariant = (plan: string) => {
     switch (plan) {
-      case "Basic":
+      case "free":
         return "outline";
-      case "Pro":
+      case "basic":
+        return "outline";
+      case "pro":
         return "solid";
-      case "Enterprise":
+      case "enterprise":
         return "solid";
       default:
         return "outline";
@@ -143,26 +185,36 @@ function RouteComponent() {
             <div className="mb-8 flex flex-col items-center gap-6 rounded-2xl p-6">
               <div className="relative">
                 <AvatarRoot className="size-28 ring-4 ring-primary/10">
-                  <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
+                  <AvatarImage
+                    src={session?.user.image ?? ""}
+                    alt={session?.user.username}
+                  />
                   <AvatarFallback className="font-semibold text-2xl">
-                    {mockUser.name.charAt(0)}
+                    {session?.user.username?.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </AvatarRoot>
                 <div className="absolute right-1 bottom-1 size-6 rounded-full border-2 border-background bg-green-500"></div>
               </div>
               <div className="text-center">
                 <h2 className="font-bold text-xl tracking-tight">
-                  {mockUser.name}
+                  {session?.user.name}
                 </h2>
                 <p className="mt-1 text-muted-foreground text-sm">
-                  {mockUser.email}
+                  {session?.user.email}
                 </p>
-                <Badge
-                  variant={getPlanBadgeVariant(mockUser.plan)}
-                  className="mt-3 px-3 py-1 font-medium"
-                >
-                  {mockUser.plan} Plan
-                </Badge>
+                {currentProduct && (
+                  <Badge
+                    variant={getPlanBadgeVariant(
+                      currentProduct.metadata.title as string,
+                    )}
+                    className="mt-3 px-3 py-1 font-medium"
+                  >
+                    {firstLetterToUppercase(
+                      currentProduct.metadata.title as string,
+                    )}{" "}
+                    Plan
+                  </Badge>
+                )}
               </div>
             </div>
 
@@ -317,31 +369,42 @@ function RouteComponent() {
             {activeTab === "account" && (
               <div className="space-y-8">
                 {/* Plan Benefits */}
-                <div>
-                  <h3 className="mb-6 font-bold text-2xl tracking-tight">
-                    {mockUser.plan} Plan Benefits
-                  </h3>
-                  <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                    {planFeatures[mockUser.plan].map((feature) => (
-                      <Card
-                        key={feature.title}
-                        className="overflow-hidden border border-border/50 bg-gradient-to-br from-card to-card/80 transition-all duration-200 hover:scale-[1.02] hover:border-primary/30"
-                      >
-                        <CardContent className="p-6">
-                          <div className="text-center">
-                            <div className="mb-4 text-3xl">{feature.icon}</div>
-                            <h4 className="mb-3 font-semibold text-lg">
-                              {feature.title}
-                            </h4>
-                            <p className="text-muted-foreground text-sm leading-relaxed">
-                              {feature.description}
-                            </p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                {currentProduct && (
+                  <div>
+                    <h3 className="mb-6 font-bold text-2xl tracking-tight">
+                      {firstLetterToUppercase(
+                        currentProduct.metadata.title as string,
+                      )}{" "}
+                      Plan Benefits
+                    </h3>
+                    <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                      {planFeatures[
+                        firstLetterToUppercase(
+                          currentProduct.metadata.title as string,
+                        ) as "Free" | "Basic" | "Pro" | "Enterprise"
+                      ].map((feature) => (
+                        <Card
+                          key={feature.title}
+                          className="overflow-hidden border border-border/50 bg-gradient-to-br from-card to-card/80 transition-all duration-200 hover:scale-[1.02] hover:border-primary/30"
+                        >
+                          <CardContent className="p-6">
+                            <div className="text-center">
+                              <div className="mb-4 text-3xl">
+                                {feature.icon}
+                              </div>
+                              <h4 className="mb-3 font-semibold text-lg">
+                                {feature.title}
+                              </h4>
+                              <p className="text-muted-foreground text-sm leading-relaxed">
+                                {feature.description}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Action Buttons */}
                 <div className="flex flex-col gap-4 sm:flex-row">
@@ -350,7 +413,7 @@ function RouteComponent() {
                     className="flex items-center gap-2 border font-medium transition-all duration-200 hover:border-primary/40"
                   >
                     <CreditCard className="size-4" />
-                    Manage Subscription
+                    {currentProduct ? "Manage Subscription" : "Subscribe"}
                   </Button>
                   <Button
                     variant="destructive"
@@ -463,7 +526,7 @@ function RouteComponent() {
                           id="email"
                           type="email"
                           placeholder="Enter your email"
-                          defaultValue={mockUser.email}
+                          defaultValue={session?.user.email ?? undefined}
                           className="transition-all duration-200 focus:border-primary/60"
                         />
                       </div>
