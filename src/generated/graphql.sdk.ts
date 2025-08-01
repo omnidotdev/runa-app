@@ -8168,6 +8168,13 @@ export type UserPreferencesQueryVariables = Exact<{
 
 export type UserPreferencesQuery = { __typename?: 'Query', userPreferenceByUserIdAndProjectId?: { __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string, color?: string | null } | null };
 
+export type UsageMetricsQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+}>;
+
+
+export type UsageMetricsQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', totalCount: number } | null, projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, tasks?: { __typename?: 'TaskConnection', totalCount: number } | null };
+
 export type UserQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
@@ -8718,6 +8725,23 @@ export const UserPreferencesDocument = gql`
   }
 }
     `;
+export const UsageMetricsDocument = gql`
+    query UsageMetrics($userId: UUID!) {
+  workspaces(filter: {workspaceUsers: {some: {userId: {equalTo: $userId}}}}) {
+    totalCount
+  }
+  projects(
+    filter: {workspace: {workspaceUsers: {some: {userId: {equalTo: $userId}}}}}
+  ) {
+    totalCount
+  }
+  tasks(
+    filter: {project: {workspace: {workspaceUsers: {some: {userId: {equalTo: $userId}}}}}}
+  ) {
+    totalCount
+  }
+}
+    `;
 export const UserDocument = gql`
     query User($userId: UUID!) {
   user(rowId: $userId) {
@@ -8958,6 +8982,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UserPreferences(variables: UserPreferencesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserPreferencesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserPreferencesQuery>({ document: UserPreferencesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UserPreferences', 'query', variables);
+    },
+    UsageMetrics(variables: UsageMetricsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UsageMetricsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UsageMetricsQuery>({ document: UsageMetricsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UsageMetrics', 'query', variables);
     },
     User(variables: UserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserQuery>({ document: UserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'User', 'query', variables);

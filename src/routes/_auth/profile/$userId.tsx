@@ -1,3 +1,4 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   Building2,
   CheckSquare,
@@ -21,22 +22,27 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { signOut } from "@/lib/auth/signOut";
+import { API_BASE_URL } from "@/lib/config/env.config";
+import usageMetricsOptions from "@/lib/options/usageMetrics.options";
 import RUNA_PRODUCT_IDS from "@/lib/polar/productIds";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import { fetchCustomerState } from "@/server/fetchCustomerState";
-import { fetchRunaProducts } from "@/server/fetchRunaProducts";
+import { fetchProduct } from "@/server/fetchProduct";
 
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 
 export const Route = createFileRoute({
-  loader: async ({ context: { session } }) => {
+  loader: async ({ context: { queryClient, session } }) => {
     let currentProduct: Product | undefined;
 
-    const [customer, { products }] = await Promise.all([
+    const [customer] = await Promise.all([
       fetchCustomerState({
         data: session?.user.hidraId!,
       }),
-      fetchRunaProducts(),
+      queryClient.ensureQueryData(
+        usageMetricsOptions({ userId: session?.user.rowId! }),
+      ),
     ]);
 
     if (
@@ -50,10 +56,11 @@ export const Route = createFileRoute({
         RUNA_PRODUCT_IDS!.includes(sub.productId),
       )?.productId;
 
-      currentProduct = products.find((product) => product.id === productId);
+      currentProduct = await fetchProduct({ data: productId! });
     }
 
     return {
+      customer,
       currentProduct,
     };
   },
@@ -79,7 +86,7 @@ const planFeatures = {
   Free: [
     {
       title: "5 Projects",
-      description: "Create up to 15 projects",
+      description: "Create up to 5 projects",
       icon: "📁",
     },
     {
@@ -129,11 +136,6 @@ const planFeatures = {
       icon: "📞",
     },
     {
-      title: "100GB Storage",
-      description: "File and asset storage",
-      icon: "💾",
-    },
-    {
       title: "Custom Analytics",
       description: "Custom reports and insights",
       icon: "📊",
@@ -143,37 +145,26 @@ const planFeatures = {
       description: "SSO, audit logs, compliance",
       icon: "🔒",
     },
-    {
-      title: "Dedicated Manager",
-      description: "Personal customer success manager",
-      icon: "👤",
-    },
   ],
 };
 
 function RouteComponent() {
-  const { currentProduct } = Route.useLoaderData();
-
+  const { customer, currentProduct } = Route.useLoaderData();
   const { session } = Route.useRouteContext();
+  const navigate = Route.useNavigate();
+
+  const { data: metrics } = useSuspenseQuery({
+    ...usageMetricsOptions({ userId: session?.user.rowId! }),
+    select: (data) => ({
+      workspaces: data?.workspaces?.totalCount ?? 0,
+      projects: data?.projects?.totalCount ?? 0,
+      tasks: data?.tasks?.totalCount ?? 0,
+    }),
+  });
 
   const [activeTab, setActiveTab] = useState<
     "account" | "customization" | "contact"
   >("account");
-
-  const getPlanBadgeVariant = (plan: string) => {
-    switch (plan) {
-      case "free":
-        return "outline";
-      case "basic":
-        return "outline";
-      case "pro":
-        return "solid";
-      case "enterprise":
-        return "solid";
-      default:
-        return "outline";
-    }
-  };
 
   return (
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
@@ -186,7 +177,7 @@ function RouteComponent() {
               <div className="relative">
                 <AvatarRoot className="size-28 ring-4 ring-primary/10">
                   <AvatarImage
-                    src={session?.user.image ?? ""}
+                    src={session?.user.image ?? undefined}
                     alt={session?.user.username}
                   />
                   <AvatarFallback className="font-semibold text-2xl">
@@ -204,9 +195,7 @@ function RouteComponent() {
                 </p>
                 {currentProduct && (
                   <Badge
-                    variant={getPlanBadgeVariant(
-                      currentProduct.metadata.title as string,
-                    )}
+                    variant="outline"
                     className="mt-3 px-3 py-1 font-medium"
                   >
                     {firstLetterToUppercase(
@@ -219,12 +208,9 @@ function RouteComponent() {
             </div>
 
             {/* Usage Metrics Section */}
-            <Card className="mb-6 overflow-hidden border border-border/50 bg-gradient-to-br from-card to-card/80">
+            <Card className="mb-6 border">
               <CardHeader className="px-0">
-                <CardTitle className="flex items-center gap-3 font-semibold text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
-                    <Zap className="size-4 text-primary" />
-                  </div>
+                <CardTitle className="font-semibold text-lg">
                   Usage Metrics
                 </CardTitle>
               </CardHeader>
@@ -239,15 +225,14 @@ function RouteComponent() {
                       <span className="font-medium">Workspaces</span>
                     </div>
                     <span className="font-medium text-muted-foreground text-sm">
-                      {mockMetrics.workspaces.current}/
-                      {mockMetrics.workspaces.limit}
+                      {metrics.workspaces}/{mockMetrics.workspaces.limit}
                     </span>
                   </div>
                   <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
                     <div
-                      className="h-full rounded-full border border-blue-400/30 bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-500 ease-out"
+                      className="h-full rounded-full border border-blue-400/30 bg-blue-600"
                       style={{
-                        width: `${(mockMetrics.workspaces.current / mockMetrics.workspaces.limit) * 100}%`,
+                        width: `${(metrics.workspaces / mockMetrics.workspaces.limit) * 100}%`,
                       }}
                     />
                   </div>
@@ -263,15 +248,14 @@ function RouteComponent() {
                       <span className="font-medium">Projects</span>
                     </div>
                     <span className="font-medium text-muted-foreground text-sm">
-                      {mockMetrics.projects.current}/
-                      {mockMetrics.projects.limit}
+                      {metrics.projects}/{mockMetrics.projects.limit}
                     </span>
                   </div>
                   <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
                     <div
-                      className="h-full rounded-full border border-green-400/30 bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500 ease-out"
+                      className="h-full rounded-full border border-green-400/30 bg-green-600"
                       style={{
-                        width: `${(mockMetrics.projects.current / mockMetrics.projects.limit) * 100}%`,
+                        width: `${(metrics.projects / mockMetrics.projects.limit) * 100}%`,
                       }}
                     />
                   </div>
@@ -287,14 +271,14 @@ function RouteComponent() {
                       <span className="font-medium">Tasks</span>
                     </div>
                     <span className="font-medium text-muted-foreground text-sm">
-                      {mockMetrics.tasks.current}/{mockMetrics.tasks.limit}
+                      {metrics.tasks}/{mockMetrics.tasks.limit}
                     </span>
                   </div>
                   <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
                     <div
-                      className="h-full rounded-full border border-purple-400/30 bg-gradient-to-r from-purple-500 to-purple-600 transition-all duration-500 ease-out"
+                      className="h-full rounded-full border border-purple-400/30 bg-purple-600"
                       style={{
-                        width: `${(mockMetrics.tasks.current / mockMetrics.tasks.limit) * 100}%`,
+                        width: `${(metrics.tasks / mockMetrics.tasks.limit) * 100}%`,
                       }}
                     />
                   </div>
@@ -324,44 +308,29 @@ function RouteComponent() {
           {/* Right Content Area */}
           <div className="xl:col-span-8">
             {/* Tabs */}
-            <div className="mb-8 rounded-xl border border-border/40 bg-card/50 p-1">
+            <div className="mb-8 rounded-xl bg-muted p-1">
               <nav className="flex gap-1">
-                <button
-                  type="button"
+                <Button
                   onClick={() => setActiveTab("account")}
-                  className={`flex items-center gap-2 rounded-lg px-4 py-3 font-medium text-sm transition-all duration-200 ${
-                    activeTab === "account"
-                      ? "border border-primary/20 bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                  }`}
+                  variant={activeTab === "account" ? "solid" : "ghost"}
                 >
                   <User className="size-4" />
                   Account
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
                   onClick={() => setActiveTab("customization")}
-                  className={`flex items-center gap-2 rounded-lg px-4 py-3 font-medium text-sm transition-all duration-200 ${
-                    activeTab === "customization"
-                      ? "border border-primary/20 bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                  }`}
+                  variant={activeTab === "customization" ? "solid" : "ghost"}
                 >
                   <Settings className="size-4" />
                   Customization
-                </button>
-                <button
-                  type="button"
+                </Button>
+                <Button
                   onClick={() => setActiveTab("contact")}
-                  className={`flex items-center gap-2 rounded-lg px-4 py-3 font-medium text-sm transition-all duration-200 ${
-                    activeTab === "contact"
-                      ? "border border-primary/20 bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                  }`}
+                  variant={activeTab === "contact" ? "solid" : "ghost"}
                 >
                   <HelpCircle className="size-4" />
                   Contact Us
-                </button>
+                </Button>
               </nav>
             </div>
 
@@ -383,10 +352,7 @@ function RouteComponent() {
                           currentProduct.metadata.title as string,
                         ) as "Free" | "Basic" | "Pro" | "Enterprise"
                       ].map((feature) => (
-                        <Card
-                          key={feature.title}
-                          className="overflow-hidden border border-border/50 bg-gradient-to-br from-card to-card/80 transition-all duration-200 hover:scale-[1.02] hover:border-primary/30"
-                        >
+                        <Card key={feature.title} className="border">
                           <CardContent className="p-6">
                             <div className="text-center">
                               <div className="mb-4 text-3xl">
@@ -410,14 +376,24 @@ function RouteComponent() {
                 <div className="flex flex-col gap-4 sm:flex-row">
                   <Button
                     variant="outline"
-                    className="flex items-center gap-2 border font-medium transition-all duration-200 hover:border-primary/40"
+                    onClick={() => {
+                      if (customer && currentProduct) {
+                        navigate({
+                          href: `${API_BASE_URL}/portal?customerId=${customer.id}`,
+                          reloadDocument: true,
+                        });
+                      } else {
+                        navigate({ to: "/pricing" });
+                      }
+                    }}
                   >
                     <CreditCard className="size-4" />
                     {currentProduct ? "Manage Subscription" : "Subscribe"}
                   </Button>
                   <Button
                     variant="destructive"
-                    className="flex items-center gap-2 border border-destructive/20 font-medium transition-all duration-200 hover:border-destructive/40"
+                    className="text-background"
+                    onClick={signOut}
                   >
                     <LogOut className="size-4" />
                     Sign Out
@@ -436,7 +412,7 @@ function RouteComponent() {
 
                   <Button
                     variant="destructive"
-                    className="mt-4 flex w-fit items-center gap-2 border border-destructive/20 font-medium transition-all duration-200 hover:border-destructive/40"
+                    className="mt-4 text-background"
                   >
                     Delete Account
                   </Button>
@@ -445,128 +421,119 @@ function RouteComponent() {
             )}
 
             {activeTab === "customization" && (
-              <div className="space-y-6">
-                <Card className="overflow-hidden border border-border/50 bg-gradient-to-br from-card to-card/80">
-                  <CardHeader className="px-6 pt-6">
-                    <CardTitle className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
-                        <Settings className="size-4" />
-                      </div>
-                      Customization Settings
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="px-6 pb-6">
-                    <div className="p-8 text-center">
-                      <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-muted/50">
-                        <Settings className="size-8 text-muted-foreground" />
-                      </div>
-                      <h3 className="mb-3 font-bold text-xl">Coming Soon</h3>
-                      <p className="mx-auto max-w-md text-muted-foreground text-sm leading-relaxed">
-                        Customization options will be available in a future
-                        update. You'll be able to personalize your workspace,
-                        themes, and preferences.
-                      </p>
+              <Card className="border">
+                <CardHeader className="px-6 pt-6">
+                  <CardTitle className="flex items-center gap-3">
+                    <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
+                      <Settings className="size-4" />
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
+                    Customization Settings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-6 pb-6">
+                  <div className="p-8 text-center">
+                    <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-muted/50">
+                      <Settings className="size-8 text-muted-foreground" />
+                    </div>
+                    <h3 className="mb-3 font-bold text-xl">Coming Soon</h3>
+                    <p className="mx-auto max-w-md text-muted-foreground text-sm leading-relaxed">
+                      Customization options will be available in a future
+                      update. You'll be able to personalize your workspace,
+                      themes, and preferences.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
             {activeTab === "contact" && (
-              <div className="space-y-6">
-                <Card className="overflow-hidden border border-border/50 bg-gradient-to-br from-card to-card/80">
-                  <CardHeader className="px-6 pt-6">
-                    <CardTitle className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
-                        <Mail className="size-4" />
-                      </div>
-                      Contact Us
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="px-6 pb-6">
-                    <form className="space-y-6">
-                      <div className="grid gap-6 sm:grid-cols-2">
-                        <div className="space-y-2">
-                          <label
-                            htmlFor="firstName"
-                            className="block font-medium text-sm"
-                          >
-                            First Name
-                          </label>
-                          <Input
-                            id="firstName"
-                            placeholder="Enter your first name"
-                            defaultValue="John"
-                            className="transition-all duration-200 focus:border-primary/60"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label
-                            htmlFor="lastName"
-                            className="block font-medium text-sm"
-                          >
-                            Last Name
-                          </label>
-                          <Input
-                            id="lastName"
-                            placeholder="Enter your last name"
-                            defaultValue="Doe"
-                            className="transition-all duration-200 focus:border-primary/60"
-                          />
-                        </div>
-                      </div>
+              <Card className="border">
+                <CardHeader className="px-6 pt-6">
+                  <CardTitle className="flex items-center gap-3">
+                    <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
+                      <Mail className="size-4" />
+                    </div>
+                    Contact Us
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-6 pb-6">
+                  <form className="space-y-6">
+                    <div className="grid gap-6 sm:grid-cols-2">
                       <div className="space-y-2">
                         <label
-                          htmlFor="email"
+                          htmlFor="firstName"
                           className="block font-medium text-sm"
                         >
-                          Email
+                          First Name
                         </label>
                         <Input
-                          id="email"
-                          type="email"
-                          placeholder="Enter your email"
-                          defaultValue={session?.user.email ?? undefined}
+                          id="firstName"
+                          placeholder="Enter your first name"
+                          defaultValue="John"
                           className="transition-all duration-200 focus:border-primary/60"
                         />
                       </div>
                       <div className="space-y-2">
                         <label
-                          htmlFor="subject"
+                          htmlFor="lastName"
                           className="block font-medium text-sm"
                         >
-                          Subject
+                          Last Name
                         </label>
                         <Input
-                          id="subject"
-                          placeholder="How can we help you?"
+                          id="lastName"
+                          placeholder="Enter your last name"
+                          defaultValue="Doe"
                           className="transition-all duration-200 focus:border-primary/60"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="message"
-                          className="block font-medium text-sm"
-                        >
-                          Message
-                        </label>
-                        <textarea
-                          id="message"
-                          rows={6}
-                          className="flex w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 placeholder:text-muted-foreground focus:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                          placeholder="Describe your question or issue in detail..."
-                        />
-                      </div>
-                      <Button
-                        type="submit"
-                        className="w-full border border-primary/20 font-medium transition-all duration-200 hover:border-primary/40 sm:w-auto"
+                    </div>
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="email"
+                        className="block font-medium text-sm"
                       >
-                        Send Message
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
-              </div>
+                        Email
+                      </label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        defaultValue={session?.user.email ?? undefined}
+                        className="transition-all duration-200 focus:border-primary/60"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="subject"
+                        className="block font-medium text-sm"
+                      >
+                        Subject
+                      </label>
+                      <Input
+                        id="subject"
+                        placeholder="How can we help you?"
+                        className="transition-all duration-200 focus:border-primary/60"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="message"
+                        className="block font-medium text-sm"
+                      >
+                        Message
+                      </label>
+                      <textarea
+                        id="message"
+                        rows={6}
+                        className="flex w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 placeholder:text-muted-foreground focus:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="Describe your question or issue in detail..."
+                      />
+                    </div>
+                    <Button type="submit">Send Message</Button>
+                  </form>
+                </CardContent>
+              </Card>
             )}
           </div>
         </div>

@@ -1,11 +1,12 @@
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { TanstackDevtools } from "@tanstack/react-devtools";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
   HeadContent,
   Outlet,
   Scripts,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import ClientHintCheck from "@/components/scripts/ClientHintCheck";
@@ -80,8 +81,18 @@ function RootDocument({
 
         <Toaster />
         {/* Dev Tools - only included in development */}
-        <TanStackRouterDevtools position="bottom-right" />
-        <ReactQueryDevtools />
+        <TanstackDevtools
+          plugins={[
+            {
+              name: "Tanstack Query",
+              render: <ReactQueryDevtoolsPanel />,
+            },
+            {
+              name: "Tanstack Router",
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+          ]}
+        />
         <Scripts />
       </body>
     </html>

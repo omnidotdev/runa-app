@@ -8167,6 +8167,13 @@ export type UserPreferencesQueryVariables = Exact<{
 
 export type UserPreferencesQuery = { __typename?: 'Query', userPreferenceByUserIdAndProjectId?: { __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string, color?: string | null } | null };
 
+export type UsageMetricsQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+}>;
+
+
+export type UsageMetricsQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', totalCount: number } | null, projects?: { __typename?: 'ProjectConnection', totalCount: number } | null, tasks?: { __typename?: 'TaskConnection', totalCount: number } | null };
+
 export type UserQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
@@ -9636,6 +9643,66 @@ useInfiniteUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariabl
 
 
 useUserPreferencesQuery.fetcher = (variables: UserPreferencesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, variables, options);
+
+export const UsageMetricsDocument = `
+    query UsageMetrics($userId: UUID!) {
+  workspaces(filter: {workspaceUsers: {some: {userId: {equalTo: $userId}}}}) {
+    totalCount
+  }
+  projects(
+    filter: {workspace: {workspaceUsers: {some: {userId: {equalTo: $userId}}}}}
+  ) {
+    totalCount
+  }
+  tasks(
+    filter: {project: {workspace: {workspaceUsers: {some: {userId: {equalTo: $userId}}}}}}
+  ) {
+    totalCount
+  }
+}
+    `;
+
+export const useUsageMetricsQuery = <
+      TData = UsageMetricsQuery,
+      TError = unknown
+    >(
+      variables: UsageMetricsQueryVariables,
+      options?: Omit<UseQueryOptions<UsageMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UsageMetricsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<UsageMetricsQuery, TError, TData>(
+      {
+    queryKey: ['UsageMetrics', variables],
+    queryFn: graphqlFetch<UsageMetricsQuery, UsageMetricsQueryVariables>(UsageMetricsDocument, variables),
+    ...options
+  }
+    )};
+
+useUsageMetricsQuery.getKey = (variables: UsageMetricsQueryVariables) => ['UsageMetrics', variables];
+
+export const useInfiniteUsageMetricsQuery = <
+      TData = InfiniteData<UsageMetricsQuery>,
+      TError = unknown
+    >(
+      variables: UsageMetricsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<UsageMetricsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UsageMetricsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<UsageMetricsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['UsageMetrics.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<UsageMetricsQuery, UsageMetricsQueryVariables>(UsageMetricsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteUsageMetricsQuery.getKey = (variables: UsageMetricsQueryVariables) => ['UsageMetrics.infinite', variables];
+
+
+useUsageMetricsQuery.fetcher = (variables: UsageMetricsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UsageMetricsQuery, UsageMetricsQueryVariables>(UsageMetricsDocument, variables, options);
 
 export const UserDocument = `
     query User($userId: UUID!) {
