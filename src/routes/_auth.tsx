@@ -1,8 +1,8 @@
 import { notFound, Outlet, redirect } from "@tanstack/react-router";
 
-import { AppSidebar } from "@/components/AppSidebar";
 import CreateProjectDialog from "@/components/CreateProjectDialog";
 import CreateWorkspaceDialog from "@/components/CreateWorkspaceDialog";
+import AppSidebar from "@/components/core/sidebar/AppSidebar";
 import NotFound from "@/components/layout/NotFound";
 import { SidebarInset } from "@/components/ui/sidebar";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";

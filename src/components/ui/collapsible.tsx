@@ -7,11 +7,11 @@ import type { ComponentProps } from "react";
 
 const collapsibleVariants = tv({
   slots: {
-    root: "w-full",
+    root: "",
     trigger:
-      "flex w-full items-center cursor-pointer justify-between rounded-md px-3 py-3 font-medium text-sm transition-transform [&[data-state=open]>svg]:rotate-180",
+      "flex! w-full items-center cursor-pointer justify-between rounded-md px-3 py-3 font-medium text-sm transition-transform [&[data-state=open]>svg]:rotate-90",
     content:
-      "overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up ",
+      "overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up",
   },
 });
 
