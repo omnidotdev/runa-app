@@ -6,7 +6,6 @@ import ListTrigger from "@/components/shared/ListTrigger";
 import {
   CollapsibleContent,
   CollapsibleRoot,
-  CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import ListItem from "@/components/workspaces/overview/ListItem";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -50,22 +49,20 @@ const List = ({ projects }: Props) => {
           className="mb-4 rounded-lg border bg-background last:mb-0"
           defaultOpen
         >
-          <CollapsibleTrigger asChild>
-            <ListTrigger
-              title={column.title}
-              count={column.projects.totalCount}
-              tooltip={{
-                title: "Create Project",
-                shortCut: "P",
-              }}
-              emoji={column.emoji}
-              onCreate={(e) => {
-                e.preventDefault();
-                setProjectColumnId(column.rowId);
-                setIsCreateProjectDialogOpen(true);
-              }}
-            />
-          </CollapsibleTrigger>
+          <ListTrigger
+            title={column.title}
+            count={column.projects.totalCount}
+            tooltip={{
+              title: "Create Project",
+              shortCut: "P",
+            }}
+            emoji={column.emoji}
+            onCreate={(e) => {
+              e.preventDefault();
+              setProjectColumnId(column.rowId);
+              setIsCreateProjectDialogOpen(true);
+            }}
+          />
 
           <CollapsibleContent className="border-t">
             <Droppable droppableId={column.rowId}>

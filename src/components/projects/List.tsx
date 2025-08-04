@@ -12,7 +12,6 @@ import ListTrigger from "@/components/shared/ListTrigger";
 import {
   CollapsibleContent,
   CollapsibleRoot,
-  CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useTheme from "@/lib/hooks/useTheme";
@@ -123,33 +122,30 @@ const List = ({
               });
             }}
           >
-            <CollapsibleTrigger asChild>
-              <ListTrigger
-                title={column.title}
-                count={
-                  project?.columns?.nodes?.find(
-                    (c) => c?.rowId === column?.rowId,
-                  )?.tasks?.totalCount ?? 0
-                }
-                tooltip={{
-                  title: "Add Task",
-                  shortCut: "C",
-                }}
-                emoji={column.emoji}
-                onCreate={(e) => {
-                  e.preventDefault();
-                  setColumnId(column.rowId);
-                  navigate({
-                    search: (prev) => ({
-                      ...prev,
-                      createTask: true,
-                    }),
-                  });
-                }}
-              >
-                <ColumnMenu columnId={column.rowId} />
-              </ListTrigger>
-            </CollapsibleTrigger>
+            <ListTrigger
+              title={column.title}
+              count={
+                project?.columns?.nodes?.find((c) => c?.rowId === column?.rowId)
+                  ?.tasks?.totalCount ?? 0
+              }
+              tooltip={{
+                title: "Add Task",
+                shortCut: "C",
+              }}
+              emoji={column.emoji}
+              onCreate={(e) => {
+                e.preventDefault();
+                setColumnId(column.rowId);
+                navigate({
+                  search: (prev) => ({
+                    ...prev,
+                    createTask: true,
+                  }),
+                });
+              }}
+            >
+              <ColumnMenu columnId={column.rowId} />
+            </ListTrigger>
 
             <CollapsibleContent className="rounded-b-lg border-t">
               <Droppable droppableId={column.rowId}>

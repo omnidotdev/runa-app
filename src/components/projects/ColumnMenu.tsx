@@ -87,7 +87,7 @@ const ColumnMenu = ({ columnId }: Props) => {
           placement: "bottom-end",
         }}
       >
-        <MenuTrigger asChild>
+        <MenuTrigger asChild onClick={(e) => e.stopPropagation()}>
           <Button variant="ghost" size="xs" className="size-5">
             <MoreHorizontalIcon className="size-4" />
           </Button>

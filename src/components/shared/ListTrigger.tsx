@@ -1,8 +1,9 @@
-import { ChevronDownIcon, PlusIcon } from "lucide-react";
+import { ChevronRightIcon, PlusIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
+import { CollapsibleTrigger } from "../ui/collapsible";
 
 import type { MouseEventHandler, ReactNode } from "react";
 
@@ -27,7 +28,7 @@ const ListTrigger = ({
   children,
 }: Props) => {
   return (
-    <div className="flex items-center justify-between px-3 py-2">
+    <CollapsibleTrigger className="flex items-center justify-between px-3 py-2">
       <div className="flex items-center gap-2">
         <p className="text-xs">{emoji}</p>
 
@@ -70,8 +71,8 @@ const ListTrigger = ({
         </Tooltip>
       </div>
 
-      <ChevronDownIcon className="ml-2 size-4 text-base-400 transition-transform" />
-    </div>
+      <ChevronRightIcon className="ml-2 size-4 text-base-400 transition-transform" />
+    </CollapsibleTrigger>
   );
 };
 
