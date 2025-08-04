@@ -12,7 +12,9 @@ import {
   Zap,
 } from "lucide-react";
 import { useState } from "react";
+import { match, P } from "ts-pattern";
 
+import UpgradeSubscriptionDialog from "@/components/profile/UpgradeSubscriptionDialog";
 import {
   AvatarFallback,
   AvatarImage,
@@ -24,13 +26,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { signOut } from "@/lib/auth/signOut";
 import { API_BASE_URL } from "@/lib/config/env.config";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useSubscriptionStore from "@/lib/hooks/store/useSubscriptionStore";
 import usageMetricsOptions from "@/lib/options/usageMetrics.options";
-import RUNA_PRODUCT_IDS from "@/lib/polar/productIds";
+import RUNA_PRODUCT_IDS, {
+  SandboxFree,
+  SandboxMonthly,
+  SandboxYearly,
+} from "@/lib/polar/productIds";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import getEnumKeyByValue from "@/lib/util/getEnumKeyByValue";
 import { fetchCustomerState } from "@/server/fetchCustomerState";
 import { fetchProduct } from "@/server/fetchProduct";
 
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
+import type { Tier } from "@/lib/polar/productIds";
 
 export const Route = createFileRoute({
   loader: async ({ context: { queryClient, session } }) => {
@@ -62,6 +72,9 @@ export const Route = createFileRoute({
     return {
       customer,
       currentProduct,
+      subscription: customer?.activeSubscriptions.find((sub) =>
+        RUNA_PRODUCT_IDS!.includes(sub.productId),
+      ),
     };
   },
   component: RouteComponent,
@@ -148,8 +161,18 @@ const planFeatures = {
   ],
 };
 
+// TODO: revamp logic to handle monthly v yearly
+const nextAvailableTier = (currentTier: Tier) =>
+  match(currentTier)
+    .with(SandboxFree.Free, () => SandboxMonthly.Basic)
+    .with(
+      P.union(SandboxMonthly.Basic, SandboxYearly.Basic),
+      () => SandboxMonthly.Team,
+    )
+    .otherwise(() => null);
+
 function RouteComponent() {
-  const { customer, currentProduct } = Route.useLoaderData();
+  const { customer, currentProduct, subscription } = Route.useLoaderData();
   const { session } = Route.useRouteContext();
   const navigate = Route.useNavigate();
 
@@ -165,6 +188,11 @@ function RouteComponent() {
   const [activeTab, setActiveTab] = useState<
     "account" | "customization" | "contact"
   >("account");
+
+  const { setProductId, setSubscriptionId } = useSubscriptionStore();
+  const { setIsOpen: setIsUpgradeSubscriptionDialogOpen } = useDialogStore({
+    type: DialogType.UpgradeSubscription,
+  });
 
   return (
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
@@ -184,7 +212,13 @@ function RouteComponent() {
                     {session?.user.username?.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </AvatarRoot>
-                <div className="absolute right-1 bottom-1 size-6 rounded-full border-2 border-background bg-green-500"></div>
+                <Button
+                  variant="destructive"
+                  className="absolute right-0 bottom-0 size-8 rounded-full border-2 border-background p-0 text-background has-[>svg]:px-0"
+                  onClick={signOut}
+                >
+                  <LogOut className="size-4" />
+                </Button>
               </div>
               <div className="text-center">
                 <h2 className="font-bold text-xl tracking-tight">
@@ -287,7 +321,14 @@ function RouteComponent() {
                 {/* Upgrade CTA */}
                 <div className="mt-8 rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6">
                   <div className="text-center">
-                    <h4 className="mb-2 font-bold text-base">Upgrade to Pro</h4>
+                    <h4 className="mb-2 font-bold text-base">
+                      Upgrade to{" "}
+                      {getEnumKeyByValue(
+                        // TODO: make dynamic
+                        SandboxMonthly,
+                        nextAvailableTier(currentProduct?.id as Tier),
+                      )}
+                    </h4>
                     <p className="mb-4 text-muted-foreground text-sm leading-relaxed">
                       Get {proLimits.workspaces} workspaces,{" "}
                       {proLimits.projects} projects, and {proLimits.tasks} tasks
@@ -295,6 +336,13 @@ function RouteComponent() {
                     <Button
                       size="sm"
                       className="w-full border border-primary/20 font-medium transition-all duration-200 hover:border-primary/40"
+                      onClick={() => {
+                        setProductId(
+                          nextAvailableTier(currentProduct?.id as Tier),
+                        );
+                        setSubscriptionId(subscription?.id ?? null);
+                        setIsUpgradeSubscriptionDialogOpen(true);
+                      }}
                     >
                       <Zap className="mr-2 size-3" />
                       Upgrade Now
@@ -389,14 +437,6 @@ function RouteComponent() {
                   >
                     <CreditCard className="size-4" />
                     {currentProduct ? "Manage Subscription" : "Subscribe"}
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    className="text-background"
-                    onClick={signOut}
-                  >
-                    <LogOut className="size-4" />
-                    Sign Out
                   </Button>
                 </div>
 
@@ -538,6 +578,8 @@ function RouteComponent() {
           </div>
         </div>
       </div>
+
+      <UpgradeSubscriptionDialog />
     </div>
   );
 }

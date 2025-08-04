@@ -1,12 +1,36 @@
+import { isDevEnv } from "@/lib/config/env.config";
+
 import type { ProductsListRequest } from "@polar-sh/sdk/models/operations/productslist";
 
 type ProductIds = ProductsListRequest["id"];
 
+export type Tier = SandboxFree | SandboxMonthly | SandboxYearly;
+
+export enum SandboxFree {
+  Free = "203e19ff-534a-49dc-a455-6af007588e01",
+}
+
+export enum SandboxMonthly {
+  Basic = "c849cbd8-092e-4aee-9c4c-f7ff324dcb10",
+  Team = "acc33f3d-05a1-49e8-a61c-8f24f3f5f2ed",
+}
+
+export enum SandboxYearly {
+  Basic = "6a1cced5-e998-414e-84b8-bbe1e84d023c",
+  Team = "58d1f183-6f3f-42a0-bbf2-6609c266d0b7",
+}
+
 const sandboxProductIds = [
   // Runa Free (Monthly)
-  "203e19ff-534a-49dc-a455-6af007588e01",
+  SandboxFree.Free,
+  ...Object.values(SandboxMonthly),
+  ...Object.values(SandboxYearly),
 ];
 
-const RUNA_PRODUCT_IDS: ProductIds = [...sandboxProductIds];
+const productionProductIds: string[] = [];
+
+const RUNA_PRODUCT_IDS: ProductIds = isDevEnv
+  ? [...sandboxProductIds]
+  : [...productionProductIds];
 
 export default RUNA_PRODUCT_IDS;

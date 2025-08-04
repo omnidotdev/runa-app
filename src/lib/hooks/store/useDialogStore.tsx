@@ -15,6 +15,7 @@ export enum DialogType {
   DeleteColumn = "delete_column",
   DeleteColumnTasks = "delete_column_tasks",
   DeleteProjectColumn = "delete_project_column",
+  UpgradeSubscription = "upgrade_subscription",
 }
 
 interface DialogState {
