@@ -352,6 +352,7 @@ function TaskPage() {
                   size="sm"
                   onClick={handleAddComment}
                   disabled={!newComment.trim()}
+                  className="active:scale-[0.97]"
                 >
                   <SendIcon className="size-3" />
                   Comment

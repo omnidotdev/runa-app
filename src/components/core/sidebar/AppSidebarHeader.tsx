@@ -92,7 +92,7 @@ const AppSidebarHeader = () => {
       ) : (
         <Button
           onClick={() => setIsCreateWorkspaceOpen(true)}
-          className="text-foreground"
+          className="text-foreground active:scale-[0.97]"
         >
           <PlusIcon />
           Create Workspace

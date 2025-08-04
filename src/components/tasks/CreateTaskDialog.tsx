@@ -245,6 +245,7 @@ const CreateTaskDialog = () => {
                       ? `${project?.prefix}-${totalTasks}`
                       : `PROJ-${totalTasks}`}
                   </span>
+
                   <Input
                     ref={titleRef}
                     className="border-none shadow-none focus-visible:ring-0 dark:bg-transparent"

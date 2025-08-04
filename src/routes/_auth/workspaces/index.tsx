@@ -44,7 +44,7 @@ function WorkspacesOverviewPage() {
 
           <Button
             variant="outline"
-            className="flex w-full border-primary border-dashed bg-primary/5 p-12 hover:bg-primary/5"
+            className="flex w-full border-primary border-dashed bg-primary/5 p-12 hover:bg-primary/5 active:scale-[0.99]"
             onClick={() => setIsCreateWorkspaceOpen(true)}
           >
             <PlusIcon className="size-4" />

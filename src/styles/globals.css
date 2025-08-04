@@ -182,7 +182,7 @@ html.dark {
   --secondary-foreground: var(--color-black);
   --muted: var(--base-900);
   --muted-foreground: var(--base-400);
-  --accent: var(--base-800);
+  --accent: var(--base-900);
   --accent-foreground: var(--base-200);
   --destructive: oklch(0.704 0.191 22.216);
   --border: var(--base-800);
