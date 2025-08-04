@@ -50,29 +50,12 @@ const AppSidebarHeader = () => {
       {workspaces?.length ? (
         <MenuRoot>
           <MenuTrigger asChild>
-            <SidebarMenuButton size="lg" className="bg-sidebar-accent">
-              <div
-                className={cn(
-                  "flex aspect-square size-6 items-center justify-center rounded-md transition-transform group-data-[collapsible=icon]:size-8",
-                  workspace
-                    ? "bg-primary text-primary-foreground dark:bg-primary-400"
-                    : "dark:bg-primary-400",
-                )}
-              >
-                {workspace ? (
-                  workspace.name[0]
-                ) : (
-                  <ChevronsUpDown className="size-4" />
-                )}
-              </div>
+            <SidebarMenuButton className="bg-sidebar-accent">
+              <ChevronsUpDown />
 
-              <span className="truncate font-medium group-data-[collapsible=icon]:hidden">
+              <span className="flex w-full items-center group-data-[collapsible=icon]:hidden">
                 {workspace?.name ?? "Select Workspace"}
               </span>
-
-              {workspace && (
-                <ChevronsUpDown className="ml-auto group-data-[collapsible=icon]:hidden" />
-              )}
             </SidebarMenuButton>
           </MenuTrigger>
 

@@ -70,7 +70,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
   const { session } = useRouteContext({ strict: false });
   const { workspaceSlug } = useParams({ strict: false });
   const navigate = useNavigate();
-  const pathname = useLocation();
+  const { pathname } = useLocation();
   const queryClient = getQueryClient();
 
   const [isProjectMenuOpen, setProjectMenuOpen] = useState(false);
@@ -120,14 +120,14 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
 
   const sidebarMenuItems: SidebarMenuItemType[] = [
     {
-      isActive: pathname.pathname === `/workspaces/${workspaceSlug}/settings`,
+      isActive: pathname === `/workspaces/${workspaceSlug}/settings`,
       tooltip: "Workspace Settings",
       to: "/workspaces/$workspaceSlug/settings",
       icon: Settings2Icon,
       label: "Settings",
     },
     {
-      isActive: pathname.pathname === `/workspaces/${workspaceSlug}/projects`,
+      isActive: pathname === `/workspaces/${workspaceSlug}/projects`,
       tooltip: "Project Overview",
       to: "/workspaces/$workspaceSlug/projects",
       icon: LayersIcon,
@@ -136,7 +136,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
   ];
 
   return (
-    <SidebarContent className="mt-4 gap-4 group-data-[collapsible=icon]:gap-0">
+    <SidebarContent className="pt-2 group-data-[collapsible=icon]:gap-0">
       {workspaceSlug && (
         <>
           <SidebarMenu className="ml-2 hidden gap-1 group-data-[collapsible=icon]:flex">
@@ -191,7 +191,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                           project?.userPreferences?.nodes?.[0];
 
                         const isWorkspaceProjectSelected =
-                          pathname.pathname ===
+                          pathname ===
                           `/workspaces/${workspaceSlug}/projects/${project.slug}`;
                         return (
                           <MenuItem
@@ -245,7 +245,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
             <SidebarGroup>
               <CollapsibleTrigger className="gap-2 p-0 px-1">
                 <SidebarGroupLabel>Workspace</SidebarGroupLabel>
-                <ChevronRightIcon className="mr-auto size-4 text-base-400" />
+                <ChevronRightIcon size={12} className="mr-auto text-base-400" />
 
                 <Tooltip
                   positioning={{ placement: "right" }}
@@ -262,7 +262,10 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                   }}
                 >
                   <SidebarGroupAction
-                    onClick={() => setIsCreateWorkspaceOpen(true)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsCreateWorkspaceOpen(true);
+                    }}
                   >
                     <PlusIcon />
                   </SidebarGroupAction>
@@ -271,7 +274,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
             </SidebarGroup>
 
             <CollapsibleContent>
-              <SidebarMenu className="mt-1 px-2">
+              <SidebarMenu className="my-1 px-2">
                 {sidebarMenuItems.map((item) => (
                   <SidebarMenuItem key={item.to}>
                     <SidebarMenuButton
@@ -300,7 +303,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
             <SidebarGroup>
               <CollapsibleTrigger className="gap-2 p-0 px-1">
                 <SidebarGroupLabel>Projects</SidebarGroupLabel>
-                <ChevronRightIcon className="mr-auto size-4 text-base-400" />
+                <ChevronRightIcon size={12} className="mr-auto text-base-400" />
 
                 <Tooltip
                   disabled={!workspace?.projectColumns.nodes.length}
@@ -318,7 +321,10 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                   }}
                 >
                   <SidebarGroupAction
-                    onClick={() => setIsCreateProjectOpen(true)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsCreateProjectOpen(true);
+                    }}
                     // disabled={!workspace?.projectColumns.nodes.length}
                   >
                     <PlusIcon />
@@ -327,8 +333,8 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                 </Tooltip>
               </CollapsibleTrigger>
 
-              <CollapsibleContent>
-                <SidebarMenu>
+              <CollapsibleContent className="-mx-2">
+                <SidebarMenu className="my-1 px-2">
                   {workspace?.projects.nodes.map((project) => {
                     const userPreferences =
                       project?.userPreferences?.nodes?.[0];
@@ -337,7 +343,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                       <SidebarMenuItem key={project?.rowId}>
                         <SidebarMenuButton
                           isActive={
-                            pathname.pathname ===
+                            pathname ===
                             `/workspaces/${workspaceSlug}/projects/${project.slug}`
                           }
                           tooltip={project?.name}
@@ -380,16 +386,16 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                           <MenuTrigger asChild>
                             <SidebarMenuAction
                               isActive={
-                                pathname.pathname ===
+                                pathname ===
                                 `/workspaces/${workspaceSlug}/projects/${project.slug}`
                               }
                               showOnHover
-                              onClick={() => {
+                              onClick={() =>
                                 setSelectedProject({
                                   rowId: project.rowId,
                                   name: project.name,
-                                });
-                              }}
+                                })
+                              }
                             >
                               <MoreHorizontalIcon />
                               <span className="sr-only">More</span>
@@ -400,7 +406,6 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                             <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
                               <MenuItem
                                 value="settings"
-                                className="flex cursor-pointer items-center gap-2"
                                 onClick={() => {
                                   navigate({
                                     to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
@@ -417,7 +422,6 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
 
                               <MenuItem
                                 value="viewMode"
-                                className="flex cursor-pointer items-center gap-2"
                                 onClick={() =>
                                   updateViewMode({
                                     rowId:
@@ -451,7 +455,6 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
 
                               <MenuItem
                                 value="delete"
-                                className="flex cursor-pointer items-center gap-2"
                                 variant="destructive"
                                 onClick={() => {
                                   setSelectedProject({

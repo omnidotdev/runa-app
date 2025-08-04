@@ -48,6 +48,22 @@ const AppSidebarFooter = () => {
   return (
     <SidebarFooter className="flex justify-center border-t">
       <SidebarMenu className="gap-1 group-data-[collapsible=icon]:w-fit">
+        {/* TODO: Uncomment when runa project is added to backfeed */}
+        {/* <SidebarMenuItem>
+          <SidebarMenuButton
+            tooltip="Feedback"
+            onClick={() =>
+              navigate({
+                href: "https://backfeed.omni.dev/organizations/omni/projects/runa",
+                
+              })
+            }
+          >
+            <SendIcon />
+            <span className="flex w-full items-center">Feedback</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem> */}
+
         <SidebarMenuItem>
           <SidebarMenuButton
             tooltip="Expand Sidebar"
@@ -87,7 +103,7 @@ const AppSidebarFooter = () => {
               })
             }
           >
-            <UserIcon size={12} />
+            <UserIcon />
             <span>{session?.user.username}</span>
           </SidebarMenuButton>
 
@@ -98,7 +114,12 @@ const AppSidebarFooter = () => {
             }}
           >
             <MenuTrigger asChild>
-              <SidebarMenuAction showOnHover>
+              <SidebarMenuAction
+                isActive={
+                  pathname.pathname === `/profile/${session?.user.hidraId}`
+                }
+                showOnHover
+              >
                 <MoreHorizontalIcon />
                 <span className="sr-only">More</span>
               </SidebarMenuAction>
