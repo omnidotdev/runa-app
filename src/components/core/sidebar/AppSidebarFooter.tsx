@@ -126,7 +126,7 @@ const AppSidebarFooter = () => {
               placement: isMobile ? "bottom-end" : "right-start",
             }}
           >
-            <MenuTrigger asChild>
+            <MenuTrigger asChild className="[&[data-state=open]>svg]:rotate-0">
               <SidebarMenuAction
                 isActive={
                   pathname.pathname === `/profile/${session?.user.hidraId}`

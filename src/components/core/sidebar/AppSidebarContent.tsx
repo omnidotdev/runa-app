@@ -366,7 +366,10 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                             placement: isMobile ? "bottom-end" : "right-start",
                           }}
                         >
-                          <MenuTrigger asChild>
+                          <MenuTrigger
+                            asChild
+                            className="[&[data-state=open]>svg]:rotate-0"
+                          >
                             <SidebarMenuAction
                               isActive={
                                 pathname ===

@@ -87,7 +87,11 @@ const ColumnMenu = ({ columnId }: Props) => {
           placement: "bottom-end",
         }}
       >
-        <MenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+        <MenuTrigger
+          asChild
+          onClick={(e) => e.stopPropagation()}
+          className="[&[data-state=open]>svg]:rotate-0"
+        >
           <Button variant="ghost" size="xs" className="size-5">
             <MoreHorizontalIcon className="size-4" />
           </Button>
