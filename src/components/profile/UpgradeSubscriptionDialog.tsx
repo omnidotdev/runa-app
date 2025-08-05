@@ -1,6 +1,12 @@
-import { useRouteContext, useRouter } from "@tanstack/react-router";
+import {
+  useLoaderData,
+  useRouteContext,
+  useRouter,
+} from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
 import { toast } from "sonner";
+import { match, P } from "ts-pattern";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,9 +18,22 @@ import {
   DialogRoot,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  TabsContent,
+  TabsList,
+  TabsRoot,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useSubscriptionStore from "@/lib/hooks/store/useSubscriptionStore";
+import {
+  SandboxFree,
+  SandboxMonthly,
+  SandboxYearly,
+} from "@/lib/polar/productIds";
 import { upgradeSubscription } from "@/server/upgradeSubscription";
+
+import type { Tier } from "@/lib/polar/productIds";
 
 const UpgradeSubscriptionDialog = () => {
   const handleUpgradeSubscription = useServerFn(upgradeSubscription);
@@ -23,28 +42,47 @@ const UpgradeSubscriptionDialog = () => {
     from: "/_auth/profile/$userId",
   });
 
+  const { currentProduct } = useLoaderData({
+    from: "/_auth/profile/$userId",
+  });
+
+  // TODO: refactor for prod when prod IDs are available
+  const upgradeTier = match(currentProduct?.id)
+    .with(undefined, () => ({
+      monthly: SandboxFree.Free,
+      yearly: SandboxFree.Free,
+    }))
+    .with(SandboxFree.Free, () => ({
+      monthly: SandboxMonthly.Basic,
+      yearly: SandboxYearly.Basic,
+    }))
+    .with(P.union(SandboxMonthly.Basic, SandboxYearly.Basic), () => ({
+      monthly: SandboxMonthly.Team,
+      yearly: SandboxYearly.Team,
+    }))
+    .otherwise(() => ({
+      monthly: null,
+      yearly: null,
+    }));
+
+  const [productId, setProductId] = useState<Tier | null>(upgradeTier?.monthly);
+
   const router = useRouter();
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.UpgradeSubscription,
   });
 
-  const {
-    subscriptionId,
-    setSubscriptionId,
-    productId,
-    setProductId,
-    setIsProductUpdating,
-  } = useSubscriptionStore();
+  const { subscriptionId, setSubscriptionId, setIsProductUpdating } =
+    useSubscriptionStore();
 
-  if (!productId || !subscriptionId) return null;
+  if (!subscriptionId) return null;
 
   return (
     <DialogRoot
       open={isOpen}
       onOpenChange={({ open }) => setIsOpen(open)}
       onExitComplete={() => {
-        setProductId(null);
         setSubscriptionId(null);
       }}
     >
@@ -58,12 +96,33 @@ const UpgradeSubscriptionDialog = () => {
           </DialogDescription>
 
           <div className="flex flex-col gap-4">
-            <p>TODO: list of upgraded benefits</p>
+            <TabsRoot
+              defaultValue="monthly"
+              onValueChange={({ value }) => {
+                if (value === "monthly") {
+                  setProductId(upgradeTier?.monthly);
+                } else if (value === "yearly") {
+                  setProductId(upgradeTier?.yearly);
+                }
+              }}
+            >
+              <TabsList>
+                <TabsTrigger value="monthly">Monthly</TabsTrigger>
+                <TabsTrigger value="yearly">Yearly</TabsTrigger>
+              </TabsList>
+              <TabsContent value="monthly">
+                <p>TODO: list of upgraded benefits</p>
+              </TabsContent>
+              <TabsContent value="yearly">
+                <p>TODO: list of upgraded benefits</p>
+              </TabsContent>
+            </TabsRoot>
             <div className="flex items-center gap-2 place-self-end">
               <DialogCloseTrigger asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogCloseTrigger>
               <Button
+                disabled={!productId}
                 onClick={async () => {
                   setIsProductUpdating(true);
 
@@ -73,7 +132,7 @@ const UpgradeSubscriptionDialog = () => {
                     data: {
                       hidraId: session?.user.hidraId!,
                       subscriptionId,
-                      productId,
+                      productId: productId!,
                     },
                   });
 

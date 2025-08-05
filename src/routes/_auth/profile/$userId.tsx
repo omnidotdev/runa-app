@@ -4,14 +4,11 @@ import {
   CheckSquare,
   CreditCard,
   FolderOpen,
-  HelpCircle,
   LogOut,
   Mail,
   Settings,
-  User,
   Zap,
 } from "lucide-react";
-import { useState } from "react";
 import { match, P } from "ts-pattern";
 
 import UpgradeSubscriptionDialog from "@/components/profile/UpgradeSubscriptionDialog";
@@ -24,6 +21,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  TabsContent,
+  TabsList,
+  TabsRoot,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { signOut } from "@/lib/auth/signOut";
 import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -188,12 +191,7 @@ function RouteComponent() {
     }),
   });
 
-  const [activeTab, setActiveTab] = useState<
-    "account" | "customization" | "contact"
-  >("account");
-
-  const { setProductId, setSubscriptionId, isProductUpdating } =
-    useSubscriptionStore();
+  const { setSubscriptionId, isProductUpdating } = useSubscriptionStore();
   const { setIsOpen: setIsUpgradeSubscriptionDialogOpen } = useDialogStore({
     type: DialogType.UpgradeSubscription,
   });
@@ -343,9 +341,6 @@ function RouteComponent() {
                       className="w-full border border-primary/20 font-medium transition-all duration-200 hover:border-primary/40"
                       disabled={isProductUpdating || !paymentId}
                       onClick={() => {
-                        setProductId(
-                          nextAvailableTier(currentProduct?.id as Tier),
-                        );
                         setSubscriptionId(subscription?.id ?? null);
                         setIsUpgradeSubscriptionDialogOpen(true);
                       }}
@@ -367,228 +362,208 @@ function RouteComponent() {
 
           {/* Right Content Area */}
           <div className="xl:col-span-8">
-            {/* Tabs */}
-            <div className="mb-8 rounded-xl bg-muted p-1">
-              <nav className="flex gap-1">
-                <Button
-                  onClick={() => setActiveTab("account")}
-                  variant={activeTab === "account" ? "solid" : "ghost"}
-                >
-                  <User className="size-4" />
-                  Account
-                </Button>
-                <Button
-                  onClick={() => setActiveTab("customization")}
-                  variant={activeTab === "customization" ? "solid" : "ghost"}
-                >
-                  <Settings className="size-4" />
-                  Customization
-                </Button>
-                <Button
-                  onClick={() => setActiveTab("contact")}
-                  variant={activeTab === "contact" ? "solid" : "ghost"}
-                >
-                  <HelpCircle className="size-4" />
-                  Contact Us
-                </Button>
-              </nav>
-            </div>
-
-            {/* Tab Content */}
-            {activeTab === "account" && (
-              <div className="space-y-8">
-                {/* Plan Benefits */}
-                {currentProduct && (
-                  <div>
-                    <h3 className="mb-6 font-bold text-2xl tracking-tight">
-                      {firstLetterToUppercase(
-                        currentProduct.metadata.title as string,
-                      )}{" "}
-                      Plan Benefits
-                    </h3>
-                    <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                      {planFeatures[
-                        firstLetterToUppercase(
+            <TabsRoot defaultValue="account">
+              <TabsList className="w-full justify-start">
+                <TabsTrigger value="account">Account</TabsTrigger>
+                <TabsTrigger value="customization">Customization</TabsTrigger>
+                <TabsTrigger value="contact">Contact</TabsTrigger>
+              </TabsList>
+              <TabsContent value="account">
+                <div className="space-y-8">
+                  {/* Plan Benefits */}
+                  {currentProduct && (
+                    <div>
+                      <h3 className="mb-6 font-bold text-2xl tracking-tight">
+                        {firstLetterToUppercase(
                           currentProduct.metadata.title as string,
-                        ) as "Free" | "Basic" | "Pro" | "Enterprise"
-                      ].map((feature) => (
-                        <Card key={feature.title} className="border">
-                          <CardContent className="p-6">
-                            <div className="text-center">
-                              <div className="mb-4 text-3xl">
-                                {feature.icon}
+                        )}{" "}
+                        Plan Benefits
+                      </h3>
+                      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                        {planFeatures[
+                          firstLetterToUppercase(
+                            currentProduct.metadata.title as string,
+                          ) as "Free" | "Basic" | "Pro" | "Enterprise"
+                        ].map((feature) => (
+                          <Card key={feature.title} className="border">
+                            <CardContent className="p-6">
+                              <div className="text-center">
+                                <div className="mb-4 text-3xl">
+                                  {feature.icon}
+                                </div>
+                                <h4 className="mb-3 font-semibold text-lg">
+                                  {feature.title}
+                                </h4>
+                                <p className="text-muted-foreground text-sm leading-relaxed">
+                                  {feature.description}
+                                </p>
                               </div>
-                              <h4 className="mb-3 font-semibold text-lg">
-                                {feature.title}
-                              </h4>
-                              <p className="text-muted-foreground text-sm leading-relaxed">
-                                {feature.description}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-4 sm:flex-row">
-                  <Button variant="outline" asChild>
-                    <a
-                      href={
-                        customer && currentProduct
-                          ? `${API_BASE_URL}/portal?customerId=${customer.id}`
-                          : `${BASE_URL}/pricing`
-                      }
-                      target={customer && currentProduct ? "_blank" : undefined}
-                      rel={
-                        customer && currentProduct
-                          ? "noopener noreferrer"
-                          : undefined
-                      }
+                  {/* Action Buttons */}
+                  <div className="flex flex-col gap-4 sm:flex-row">
+                    <Button variant="outline" asChild>
+                      <a
+                        href={
+                          customer && currentProduct
+                            ? `${API_BASE_URL}/portal?customerId=${customer.id}`
+                            : `${BASE_URL}/pricing`
+                        }
+                        target={
+                          customer && currentProduct ? "_blank" : undefined
+                        }
+                        rel={
+                          customer && currentProduct
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
+                      >
+                        <CreditCard className="size-4" />
+                        {currentProduct ? "Manage Subscription" : "Subscribe"}
+                      </a>
+                    </Button>
+                  </div>
+
+                  <div className="mt-16 rounded-xl border border-destructive/20 bg-destructive/5 p-6">
+                    <div className="flex flex-col gap-4">
+                      <h3 className="font-bold text-destructive text-xl">
+                        Danger Zone
+                      </h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        Permanently delete all of your associated data
+                      </p>
+                    </div>
+
+                    <Button
+                      variant="destructive"
+                      className="mt-4 text-background"
+                      disabled
                     >
-                      <CreditCard className="size-4" />
-                      {currentProduct ? "Manage Subscription" : "Subscribe"}
-                    </a>
-                  </Button>
-                </div>
-
-                <div className="mt-16 rounded-xl border border-destructive/20 bg-destructive/5 p-6">
-                  <div className="flex flex-col gap-4">
-                    <h3 className="font-bold text-destructive text-xl">
-                      Danger Zone
-                    </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Permanently delete all of your associated data
-                    </p>
+                      Delete Account
+                    </Button>
                   </div>
-
-                  <Button
-                    variant="destructive"
-                    className="mt-4 text-background"
-                  >
-                    Delete Account
-                  </Button>
                 </div>
-              </div>
-            )}
-
-            {activeTab === "customization" && (
-              <Card className="border">
-                <CardHeader className="px-6 pt-6">
-                  <CardTitle className="flex items-center gap-3">
-                    <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
-                      <Settings className="size-4" />
+              </TabsContent>
+              <TabsContent value="customization">
+                <Card className="border">
+                  <CardHeader className="px-6 pt-6">
+                    <CardTitle className="flex items-center gap-3">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
+                        <Settings className="size-4" />
+                      </div>
+                      Customization Settings
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="px-6 pb-6">
+                    <div className="p-8 text-center">
+                      <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-muted/50">
+                        <Settings className="size-8 text-muted-foreground" />
+                      </div>
+                      <h3 className="mb-3 font-bold text-xl">Coming Soon</h3>
+                      <p className="mx-auto max-w-md text-muted-foreground text-sm leading-relaxed">
+                        Customization options will be available in a future
+                        update. You'll be able to personalize your workspace,
+                        themes, and preferences.
+                      </p>
                     </div>
-                    Customization Settings
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="px-6 pb-6">
-                  <div className="p-8 text-center">
-                    <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-muted/50">
-                      <Settings className="size-8 text-muted-foreground" />
-                    </div>
-                    <h3 className="mb-3 font-bold text-xl">Coming Soon</h3>
-                    <p className="mx-auto max-w-md text-muted-foreground text-sm leading-relaxed">
-                      Customization options will be available in a future
-                      update. You'll be able to personalize your workspace,
-                      themes, and preferences.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {activeTab === "contact" && (
-              <Card className="border">
-                <CardHeader className="px-6 pt-6">
-                  <CardTitle className="flex items-center gap-3">
-                    <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
-                      <Mail className="size-4" />
-                    </div>
-                    Contact Us
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="px-6 pb-6">
-                  <form className="space-y-6">
-                    <div className="grid gap-6 sm:grid-cols-2">
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="contact">
+                <Card className="border">
+                  <CardHeader className="px-6 pt-6">
+                    <CardTitle className="flex items-center gap-3">
+                      <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
+                        <Mail className="size-4" />
+                      </div>
+                      Contact Us
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="px-6 pb-6">
+                    <form className="space-y-6">
+                      <div className="grid gap-6 sm:grid-cols-2">
+                        <div className="space-y-2">
+                          <label
+                            htmlFor="firstName"
+                            className="block font-medium text-sm"
+                          >
+                            First Name
+                          </label>
+                          <Input
+                            id="firstName"
+                            placeholder="Enter your first name"
+                            defaultValue="John"
+                            className="transition-all duration-200 focus:border-primary/60"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label
+                            htmlFor="lastName"
+                            className="block font-medium text-sm"
+                          >
+                            Last Name
+                          </label>
+                          <Input
+                            id="lastName"
+                            placeholder="Enter your last name"
+                            defaultValue="Doe"
+                            className="transition-all duration-200 focus:border-primary/60"
+                          />
+                        </div>
+                      </div>
                       <div className="space-y-2">
                         <label
-                          htmlFor="firstName"
+                          htmlFor="email"
                           className="block font-medium text-sm"
                         >
-                          First Name
+                          Email
                         </label>
                         <Input
-                          id="firstName"
-                          placeholder="Enter your first name"
-                          defaultValue="John"
+                          id="email"
+                          type="email"
+                          placeholder="Enter your email"
+                          defaultValue={session?.user.email ?? undefined}
                           className="transition-all duration-200 focus:border-primary/60"
                         />
                       </div>
                       <div className="space-y-2">
                         <label
-                          htmlFor="lastName"
+                          htmlFor="subject"
                           className="block font-medium text-sm"
                         >
-                          Last Name
+                          Subject
                         </label>
                         <Input
-                          id="lastName"
-                          placeholder="Enter your last name"
-                          defaultValue="Doe"
+                          id="subject"
+                          placeholder="How can we help you?"
                           className="transition-all duration-200 focus:border-primary/60"
                         />
                       </div>
-                    </div>
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="email"
-                        className="block font-medium text-sm"
-                      >
-                        Email
-                      </label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        defaultValue={session?.user.email ?? undefined}
-                        className="transition-all duration-200 focus:border-primary/60"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="subject"
-                        className="block font-medium text-sm"
-                      >
-                        Subject
-                      </label>
-                      <Input
-                        id="subject"
-                        placeholder="How can we help you?"
-                        className="transition-all duration-200 focus:border-primary/60"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="message"
-                        className="block font-medium text-sm"
-                      >
-                        Message
-                      </label>
-                      <textarea
-                        id="message"
-                        rows={6}
-                        className="flex w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 placeholder:text-muted-foreground focus:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        placeholder="Describe your question or issue in detail..."
-                      />
-                    </div>
-                    <Button type="submit">Send Message</Button>
-                  </form>
-                </CardContent>
-              </Card>
-            )}
+                      <div className="space-y-2">
+                        <label
+                          htmlFor="message"
+                          className="block font-medium text-sm"
+                        >
+                          Message
+                        </label>
+                        <textarea
+                          id="message"
+                          rows={6}
+                          className="flex w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 placeholder:text-muted-foreground focus:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          placeholder="Describe your question or issue in detail..."
+                        />
+                      </div>
+                      <Button type="submit">Send Message</Button>
+                    </form>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </TabsRoot>
           </div>
         </div>
       </div>
