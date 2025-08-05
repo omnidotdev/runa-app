@@ -98,7 +98,12 @@ const MenuItem = ({
 }) => (
   <ArkMenu.Item
     data-variant={variant}
-    className={cn(item(), className)}
+    className={cn(
+      item(),
+      variant === "destructive" &&
+        "data-[highlighted]:bg-destructive/10 data-[highlighted]:text-destructive",
+      className,
+    )}
     {...rest}
   >
     {children}
