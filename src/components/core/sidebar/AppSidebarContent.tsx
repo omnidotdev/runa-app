@@ -400,7 +400,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                                 }}
                               >
                                 <Settings2 />
-                                <span>Settings</span>
+                                Settings
                               </MenuItem>
 
                               <MenuItem

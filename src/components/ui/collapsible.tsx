@@ -9,7 +9,7 @@ const collapsibleVariants = tv({
   slots: {
     root: "",
     trigger:
-      "flex w-full outline-hidden focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-[2px] items-center cursor-pointer justify-between rounded-md px-3 py-3 font-medium text-sm transition-transform [&[data-state=open]>svg]:rotate-90",
+      "flex w-full outline-none outline-hidden focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 items-center cursor-pointer justify-between rounded-md px-3 py-3 font-medium text-sm transition-transform [&[data-state=open]>svg]:rotate-90",
     content:
       "overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up duration-300 ease-in-out",
   },

@@ -11,16 +11,11 @@ const buttonVariants = tv({
   variants: {
     variant: {
       solid: "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
-      secondary:
-        "bg-base-100 dark:bg-base-700 text-foreground hover:bg-base-200 dark:hover:bg-base-800",
       outline:
         "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
-      muted:
-        "bg-muted border-none text-muted-foreground shadow-xs hover:bg-muted/80",
       ghost: "hover:bg-accent hover:text-accent-foreground",
-      link: "text-primary underline-offset-4 hover:underline",
       destructive:
-        "bg-red-500 text-destructive-foreground shadow-xs hover:bg-destructive/90",
+        "bg-red-500 text-destructive-foreground shadow-xs hover:bg-destructive/90 focus-visible:ring-red-500/20 aria-invalid:ring-red-500/20 dark:aria-invalid:ring-red-500/40",
     },
     size: {
       xs: "h-7 gap-1 rounded-sm px-2.5 has-[>svg]:px-2",

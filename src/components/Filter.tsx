@@ -7,8 +7,6 @@ import {
 } from "@tanstack/react-router";
 import {
   AlignJustifyIcon,
-  CheckIcon,
-  ChevronRight,
   CircleAlertIcon,
   ListFilter,
   TagIcon,
@@ -20,18 +18,15 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  CheckboxControl,
-  CheckboxHiddenInput,
-  CheckboxIndicator,
-  CheckboxLabel,
-  CheckboxRoot,
-} from "@/components/ui/checkbox";
-import {
-  PopoverContent,
-  PopoverPositioner,
-  PopoverRoot,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  MenuCheckboxItem,
+  MenuContent,
+  MenuItemIndicator,
+  MenuItemText,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+  MenuTriggerItem,
+} from "@/components/ui/menu";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useUpdateUserPreferenceMutation } from "@/generated/graphql";
@@ -92,7 +87,7 @@ const Filter = () => {
   ]);
 
   return (
-    <PopoverRoot
+    <MenuRoot
       positioning={{
         strategy: "fixed",
         placement: "bottom",
@@ -103,15 +98,13 @@ const Filter = () => {
       onOpenChange={({ open }) => {
         setIsFilterOpen(open);
       }}
-      closeOnInteractOutside={true}
-      closeOnEscape={true}
     >
       <Tooltip
         positioning={{ placement: "bottom" }}
         tooltip="Filter"
         shortcut="F"
       >
-        <PopoverTrigger ref={popoverButtonRef} asChild>
+        <MenuTrigger ref={popoverButtonRef} asChild>
           <Button
             variant="outline"
             size="icon"
@@ -119,37 +112,35 @@ const Filter = () => {
           >
             <ListFilter />
           </Button>
-        </PopoverTrigger>
+        </MenuTrigger>
       </Tooltip>
 
-      <PopoverPositioner>
-        <PopoverContent className="p-0">
+      <MenuPositioner>
+        <MenuContent className="w-48 p-0">
           <div className="flex w-full items-center justify-between border-b p-2">
             <p className="text-base-500 text-sm">Filter</p>
             <SidebarMenuShortcut>F</SidebarMenuShortcut>
           </div>
 
-          <div className="flex flex-col gap-0.5">
-            <PopoverRoot positioning={{ placement: "right-start" }}>
-              <PopoverTrigger
-                className="flex w-full cursor-pointer justify-between px-3 py-2 disabled:opacity-50"
-                disabled={!project?.labels?.nodes?.length}
-              >
-                <div className="flex items-center gap-2">
-                  <TagIcon className="size-4" />
-                  <p className="text-sm">Labels</p>
-                </div>
-                <ChevronRight className="size-3 text-base-400" />
-              </PopoverTrigger>
+          <div className="flex flex-col gap-0.5 p-2">
+            <MenuRoot
+              positioning={{ placement: "right-start" }}
+              closeOnSelect={false}
+            >
+              <MenuTriggerItem>
+                <TagIcon className="mr-2" />
+                Labels
+              </MenuTriggerItem>
 
-              <PopoverPositioner>
-                <PopoverContent className="flex w-48 flex-col gap-2 p-2">
+              <MenuPositioner>
+                <MenuContent className="ml-1 flex w-48 flex-col gap-0.5 rounded-lg">
                   {project?.labels?.nodes?.map((label) => (
-                    <CheckboxRoot
+                    <MenuCheckboxItem
                       key={label.rowId}
-                      className="group flex cursor-pointer items-center justify-between p-0.5"
+                      closeOnSelect={false}
+                      value={label.rowId}
                       checked={labels.includes(label.rowId)}
-                      onCheckedChange={({ checked }) => {
+                      onCheckedChange={(checked) => {
                         if (checked) {
                           navigate({
                             search: (prev) => ({
@@ -169,42 +160,38 @@ const Filter = () => {
                         }
                       }}
                     >
-                      <CheckboxLabel className="ml-0 flex items-center gap-2">
+                      <MenuItemText className="flex items-center gap-2">
                         <div
                           className="size-4 rounded-full"
                           style={{ backgroundColor: label.color }}
                         />
-                        <p className="font-light text-sm">{label.name}</p>
-                      </CheckboxLabel>
-                      <CheckboxHiddenInput />
-                      <CheckboxControl>
-                        <CheckboxIndicator>
-                          <CheckIcon className="size-4" />
-                        </CheckboxIndicator>
-                      </CheckboxControl>
-                    </CheckboxRoot>
+                        {label.name}
+                      </MenuItemText>
+                      <MenuItemIndicator />
+                    </MenuCheckboxItem>
                   ))}
-                </PopoverContent>
-              </PopoverPositioner>
-            </PopoverRoot>
+                </MenuContent>
+              </MenuPositioner>
+            </MenuRoot>
 
-            <PopoverRoot positioning={{ placement: "right-start" }}>
-              <PopoverTrigger className="flex w-full cursor-pointer justify-between px-3 py-2">
-                <div className="flex items-center gap-2">
-                  <UserPlusIcon className="size-4" />
-                  <p className="text-sm">Assignees</p>
-                </div>
-                <ChevronRight className="size-3 text-base-400" />
-              </PopoverTrigger>
+            <MenuRoot
+              positioning={{ placement: "right-start" }}
+              closeOnSelect={false}
+            >
+              <MenuTriggerItem>
+                <UserPlusIcon className="mr-2" />
+                Assignees
+              </MenuTriggerItem>
 
-              <PopoverPositioner>
-                <PopoverContent className="flex w-48 flex-col gap-2 p-2">
+              <MenuPositioner>
+                <MenuContent className="ml-1 flex w-48 flex-col gap-0.5 rounded-lg">
                   {users?.map((user) => (
-                    <CheckboxRoot
+                    <MenuCheckboxItem
                       key={user?.rowId}
-                      className="group flex cursor-pointer items-center justify-between p-0.5"
+                      closeOnSelect={false}
+                      value={user?.rowId!}
                       checked={assignees.includes(user?.rowId!)}
-                      onCheckedChange={({ checked }) => {
+                      onCheckedChange={(checked) => {
                         if (checked) {
                           navigate({
                             search: (prev) => ({
@@ -227,44 +214,42 @@ const Filter = () => {
                         }
                       }}
                     >
-                      <CheckboxLabel className="-ml-2 flex h-8 items-center gap-2">
-                        <Avatar
-                          src={user?.avatarUrl ?? undefined}
-                          alt={user?.name}
-                          fallback={user?.name?.charAt(0)}
-                          className="size-6 rounded-full"
-                        />
+                      <MenuItemText className="ml-0 flex items-center gap-2">
+                        <div className="flex h-6 items-center">
+                          <Avatar
+                            src={user?.avatarUrl ?? undefined}
+                            alt={user?.name}
+                            fallback={user?.name?.charAt(0)}
+                            className="size-4 rounded-full"
+                          />
+                        </div>
                         <p className="-ml-2 font-light text-sm">{user?.name}</p>
-                      </CheckboxLabel>
-                      <CheckboxHiddenInput />
-                      <CheckboxControl>
-                        <CheckboxIndicator>
-                          <CheckIcon className="size-4" />
-                        </CheckboxIndicator>
-                      </CheckboxControl>
-                    </CheckboxRoot>
+                      </MenuItemText>
+                      <MenuItemIndicator />
+                    </MenuCheckboxItem>
                   ))}
-                </PopoverContent>
-              </PopoverPositioner>
-            </PopoverRoot>
+                </MenuContent>
+              </MenuPositioner>
+            </MenuRoot>
 
-            <PopoverRoot positioning={{ placement: "right-start" }}>
-              <PopoverTrigger className="flex w-full cursor-pointer justify-between px-3 py-2">
-                <div className="flex items-center gap-2">
-                  <CircleAlertIcon className="size-4" />
-                  <p className="text-sm">Priorities</p>
-                </div>
-                <ChevronRight className="size-3 text-base-400" />
-              </PopoverTrigger>
+            <MenuRoot
+              positioning={{ placement: "right-start" }}
+              closeOnSelect={false}
+            >
+              <MenuTriggerItem>
+                <CircleAlertIcon className="mr-2" />
+                Priorities Priorities
+              </MenuTriggerItem>
 
-              <PopoverPositioner>
-                <PopoverContent className="flex w-48 flex-col gap-2 p-2">
+              <MenuPositioner>
+                <MenuContent className="ml-1 flex w-48 flex-col gap-0.5 rounded-lg">
                   {(["low", "medium", "high"] as const).map((priority) => (
-                    <CheckboxRoot
+                    <MenuCheckboxItem
                       key={priority}
-                      className="group flex cursor-pointer items-center justify-between p-0.5"
+                      closeOnSelect={false}
+                      value={priority}
                       checked={priorities.includes(priority)}
-                      onCheckedChange={({ checked }) => {
+                      onCheckedChange={(checked) => {
                         if (checked) {
                           navigate({
                             search: (prev) => ({
@@ -287,7 +272,7 @@ const Filter = () => {
                         }
                       }}
                     >
-                      <CheckboxLabel className="ml-0 flex items-center gap-2">
+                      <MenuItemText className="ml-0 flex items-center gap-2">
                         <div
                           className={cn(
                             "size-4 rounded-full",
@@ -299,36 +284,32 @@ const Filter = () => {
                         <p className="font-light text-sm first-letter:uppercase">
                           {priority}
                         </p>
-                      </CheckboxLabel>
-                      <CheckboxHiddenInput />
-                      <CheckboxControl>
-                        <CheckboxIndicator>
-                          <CheckIcon className="size-4" />
-                        </CheckboxIndicator>
-                      </CheckboxControl>
-                    </CheckboxRoot>
+                      </MenuItemText>
+                      <MenuItemIndicator />
+                    </MenuCheckboxItem>
                   ))}
-                </PopoverContent>
-              </PopoverPositioner>
-            </PopoverRoot>
+                </MenuContent>
+              </MenuPositioner>
+            </MenuRoot>
 
-            <PopoverRoot positioning={{ placement: "right-start" }}>
-              <PopoverTrigger className="flex w-full cursor-pointer justify-between px-3 py-2">
-                <div className="flex items-center gap-2">
-                  <AlignJustifyIcon className="size-4 rotate-90" />
-                  <p className="text-sm">Columns</p>
-                </div>
-                <ChevronRight className="size-3 text-base-400" />
-              </PopoverTrigger>
+            <MenuRoot
+              positioning={{ placement: "right-start" }}
+              closeOnSelect={false}
+            >
+              <MenuTriggerItem>
+                <AlignJustifyIcon className="mr-2 rotate-90" />
+                Columns
+              </MenuTriggerItem>
 
-              <PopoverPositioner>
-                <PopoverContent className="flex w-48 flex-col gap-2 p-2">
+              <MenuPositioner>
+                <MenuContent className="ml-1 flex w-48 flex-col gap-0.5 rounded-lg">
                   {project?.columns.nodes.map((column) => (
-                    <CheckboxRoot
+                    <MenuCheckboxItem
                       key={column.rowId}
-                      className="group flex cursor-pointer items-center justify-between p-0.5"
+                      closeOnSelect={false}
+                      value={column.rowId}
                       checked={userHiddenColumns.includes(column.rowId)}
-                      onCheckedChange={({ checked }) => {
+                      onCheckedChange={(checked) => {
                         if (checked) {
                           updateUserPreferences({
                             rowId: userPreferences?.rowId!,
@@ -351,29 +332,24 @@ const Filter = () => {
                         }
                       }}
                     >
-                      <CheckboxLabel className="ml-0 flex items-center gap-2">
+                      <MenuItemText className="ml-0 flex items-center gap-2">
                         <div className="flex items-center gap-2">
                           <p>{column.emoji ?? "😀"}</p>
                           <p className="font-light text-sm first-letter:uppercase">
                             {column.title}
                           </p>
                         </div>
-                      </CheckboxLabel>
-                      <CheckboxHiddenInput />
-                      <CheckboxControl>
-                        <CheckboxIndicator>
-                          <CheckIcon className="size-4" />
-                        </CheckboxIndicator>
-                      </CheckboxControl>
-                    </CheckboxRoot>
+                      </MenuItemText>
+                      <MenuItemIndicator />
+                    </MenuCheckboxItem>
                   ))}
-                </PopoverContent>
-              </PopoverPositioner>
-            </PopoverRoot>
+                </MenuContent>
+              </MenuPositioner>
+            </MenuRoot>
           </div>
-        </PopoverContent>
-      </PopoverPositioner>
-    </PopoverRoot>
+        </MenuContent>
+      </MenuPositioner>
+    </MenuRoot>
   );
 };
 

@@ -9,6 +9,7 @@ import {
   MoreHorizontalIcon,
   PanelLeftCloseIcon,
   PanelLeftIcon,
+  SendIcon,
   SunIcon,
   UserIcon,
 } from "lucide-react";
@@ -49,21 +50,19 @@ const AppSidebarFooter = () => {
   return (
     <SidebarFooter className="flex justify-center border-t">
       <SidebarMenu className="gap-1 group-data-[collapsible=icon]:w-fit">
-        {/* TODO: Uncomment when runa project is added to backfeed */}
-        {/* <SidebarMenuItem>
+        <SidebarMenuItem>
           <SidebarMenuButton
             tooltip="Feedback"
             onClick={() =>
               navigate({
                 href: "https://backfeed.omni.dev/organizations/omni/projects/runa",
-                
               })
             }
           >
             <SendIcon />
             <span className="flex w-full items-center">Feedback</span>
           </SidebarMenuButton>
-        </SidebarMenuItem> */}
+        </SidebarMenuItem>
 
         <SidebarMenuItem>
           <SidebarMenuButton
