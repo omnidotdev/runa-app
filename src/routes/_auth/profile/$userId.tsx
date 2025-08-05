@@ -86,20 +86,6 @@ export const Route = createFileRoute({
   component: RouteComponent,
 });
 
-// Mock usage metrics
-const mockMetrics = {
-  workspaces: { current: 3, limit: 5 },
-  projects: { current: 12, limit: 15 },
-  tasks: { current: 87, limit: 100 },
-};
-
-// Pro tier limits
-const proLimits = {
-  workspaces: 25,
-  projects: 100,
-  tasks: 1000,
-};
-
 // Mock plan features
 const planFeatures = {
   Free: [
@@ -261,14 +247,16 @@ function RouteComponent() {
                       <span className="font-medium">Workspaces</span>
                     </div>
                     <span className="font-medium text-muted-foreground text-sm">
-                      {metrics.workspaces}/{mockMetrics.workspaces.limit}
+                      {/* TODO: dynamic limits */}
+                      {metrics.workspaces}/5
                     </span>
                   </div>
                   <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
                     <div
                       className="h-full rounded-full border border-blue-400/30 bg-blue-600"
                       style={{
-                        width: `${(metrics.workspaces / mockMetrics.workspaces.limit) * 100}%`,
+                        // TODO: dynamic limits
+                        width: `${(metrics.workspaces / 5) * 100}%`,
                       }}
                     />
                   </div>
@@ -284,14 +272,16 @@ function RouteComponent() {
                       <span className="font-medium">Projects</span>
                     </div>
                     <span className="font-medium text-muted-foreground text-sm">
-                      {metrics.projects}/{mockMetrics.projects.limit}
+                      {/* TODO: dynamic limits */}
+                      {metrics.projects}/{25}
                     </span>
                   </div>
                   <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
                     <div
                       className="h-full rounded-full border border-green-400/30 bg-green-600"
                       style={{
-                        width: `${(metrics.projects / mockMetrics.projects.limit) * 100}%`,
+                        // TODO: dynamic limits
+                        width: `${(metrics.projects / 25) * 100}%`,
                       }}
                     />
                   </div>
@@ -307,14 +297,16 @@ function RouteComponent() {
                       <span className="font-medium">Tasks</span>
                     </div>
                     <span className="font-medium text-muted-foreground text-sm">
-                      {metrics.tasks}/{mockMetrics.tasks.limit}
+                      {/* TODO: dynamic limits */}
+                      {metrics.tasks}/{1000}
                     </span>
                   </div>
                   <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
                     <div
                       className="h-full rounded-full border border-purple-400/30 bg-purple-600"
                       style={{
-                        width: `${(metrics.tasks / mockMetrics.tasks.limit) * 100}%`,
+                        // TODO: dynamic limits
+                        width: `${(metrics.tasks / 1000) * 100}%`,
                       }}
                     />
                   </div>
@@ -332,13 +324,13 @@ function RouteComponent() {
                       )}
                     </h4>
                     <p className="mb-4 text-muted-foreground text-sm leading-relaxed">
-                      Get {proLimits.workspaces} workspaces,{" "}
-                      {proLimits.projects} projects, and {proLimits.tasks} tasks
+                      {/* TODO: dynamic limits */}
+                      Get 20 workspaces, 100 projects, and 5000 tasks
                     </p>
                     {/* TODO: better UI/UX when user doesn't have a default payment method on file */}
                     <Button
                       size="sm"
-                      className="w-full border border-primary/20 font-medium transition-all duration-200 hover:border-primary/40"
+                      className="w-full border border-primary/20 font-medium duration-200 hover:border-primary/40 hover:transition-colors"
                       disabled={isProductUpdating || !paymentId}
                       onClick={() => {
                         setSubscriptionId(subscription?.id ?? null);
@@ -369,7 +361,7 @@ function RouteComponent() {
                 <TabsTrigger value="contact">Contact</TabsTrigger>
               </TabsList>
               <TabsContent value="account">
-                <div className="space-y-8">
+                <div className="mt-4 space-y-8">
                   {/* Plan Benefits */}
                   {currentProduct && (
                     <div>
@@ -450,7 +442,7 @@ function RouteComponent() {
                 </div>
               </TabsContent>
               <TabsContent value="customization">
-                <Card className="border">
+                <Card className="mt-4 border">
                   <CardHeader className="px-6 pt-6">
                     <CardTitle className="flex items-center gap-3">
                       <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
@@ -475,7 +467,7 @@ function RouteComponent() {
                 </Card>
               </TabsContent>
               <TabsContent value="contact">
-                <Card className="border">
+                <Card className="mt-4 border">
                   <CardHeader className="px-6 pt-6">
                     <CardTitle className="flex items-center gap-3">
                       <div className="flex size-8 items-center justify-center rounded-lg bg-muted">

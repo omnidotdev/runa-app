@@ -11,10 +11,14 @@ import {
   PanelLeftIcon,
   SendIcon,
   SunIcon,
-  UserIcon,
 } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import {
   MenuContent,
   MenuItem,
@@ -104,7 +108,15 @@ const AppSidebarFooter = () => {
               })
             }
           >
-            <UserIcon />
+            <AvatarRoot className="size-4">
+              <AvatarImage
+                src={session?.user.image ?? undefined}
+                alt={session?.user.username}
+              />
+              <AvatarFallback className="font-semibold text-xs">
+                {session?.user.username?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </AvatarRoot>
             <span>{session?.user.username}</span>
           </SidebarMenuButton>
 

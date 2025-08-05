@@ -97,6 +97,7 @@ const UpgradeSubscriptionDialog = () => {
 
           <div className="flex flex-col gap-4">
             <TabsRoot
+              deselectable={false}
               defaultValue="monthly"
               onValueChange={({ value }) => {
                 if (value === "monthly") {

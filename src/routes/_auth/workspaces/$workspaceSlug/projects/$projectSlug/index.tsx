@@ -159,7 +159,7 @@ function ProjectPage() {
 
   const [localTasks, setLocalTasks] = useState(tasks);
 
-  const { setDraggableId } = useDragStore();
+  const { setIsDragging, setDraggableId } = useDragStore();
 
   const handleSearch = useDebounceCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -286,6 +286,8 @@ function ProjectPage() {
 
   const onDragEnd = useCallback(
     async (result: DropResult) => {
+      setIsDragging(false);
+
       const { destination, source, draggableId } = result;
 
       // Exit early if dropped outside a droppable area or in the same position
@@ -415,14 +417,15 @@ function ProjectPage() {
         });
       }
     },
-    [updateTask, setDraggableId, localTasks, queryClient],
+    [updateTask, setDraggableId, localTasks, queryClient, setIsDragging],
   );
 
   const onDragStart = useCallback(
     (start: DragStart) => {
+      setIsDragging(true);
       setDraggableId(start.draggableId);
     },
-    [setDraggableId],
+    [setDraggableId, setIsDragging],
   );
 
   useHotkeys(

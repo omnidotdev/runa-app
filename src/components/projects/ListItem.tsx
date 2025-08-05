@@ -11,6 +11,7 @@ import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip } from "@/components/ui/tooltip";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +30,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
+  const { isDragging } = useDragStore();
   const { setTaskId } = useTaskStore();
   const { isOpen: isUpdateAssigneesDialogOpen } = useDialogStore({
     type: DialogType.UpdateAssignees,
@@ -46,14 +48,19 @@ const ListItem = ({ task, index, displayId }: Props) => {
     isUpdateTaskLabelsDialogOpen;
 
   return (
-    <Draggable key={task.rowId} draggableId={task.rowId} index={index}>
+    <Draggable draggableId={task.rowId} index={index}>
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          onMouseEnter={() => setTaskId(task.rowId)}
-          onMouseLeave={() => !isUpdateDialogOpen && setTaskId(null)}
+          // NB: tracking global `isDragging` is important to not trigger these handlers while a user is dragging a task
+          onMouseEnter={() =>
+            !isUpdateDialogOpen && !isDragging && setTaskId(task.rowId)
+          }
+          onMouseLeave={() =>
+            !isUpdateDialogOpen && !isDragging && setTaskId(null)
+          }
           onClick={() => {
             if (!snapshot.isDragging) {
               navigate({

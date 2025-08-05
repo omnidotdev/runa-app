@@ -11,7 +11,9 @@ import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip } from "@/components/ui/tooltip";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import { cn } from "@/lib/utils";
 
 import type { LabelFragment, TaskFragment } from "@/generated/graphql";
 
@@ -28,6 +30,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
+  const { isDragging } = useDragStore();
   const { setTaskId } = useTaskStore();
   const { isOpen: isUpdateAssigneesDialogOpen } = useDialogStore({
       type: DialogType.UpdateAssignees,
@@ -45,14 +48,19 @@ const BoardItem = ({ task, index, displayId }: Props) => {
     isUpdateTaskLabelsDialogOpen;
 
   return (
-    <Draggable key={task.rowId} draggableId={task.rowId} index={index}>
+    <Draggable draggableId={task.rowId} index={index}>
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          onMouseEnter={() => !isUpdateDialogOpen && setTaskId(task.rowId)}
-          onMouseLeave={() => !isUpdateDialogOpen && setTaskId(null)}
+          // NB: tracking global `isDragging` is important to not trigger these handlers while a user is dragging a task
+          onMouseEnter={() =>
+            !isUpdateDialogOpen && !isDragging && setTaskId(task.rowId)
+          }
+          onMouseLeave={() =>
+            !isUpdateDialogOpen && !isDragging && setTaskId(null)
+          }
           onClick={() => {
             if (!snapshot.isDragging) {
               navigate({
@@ -65,7 +73,10 @@ const BoardItem = ({ task, index, displayId }: Props) => {
               });
             }
           }}
-          className="mb-2 cursor-pointer rounded-lg border bg-background p-3 outline-hidden hover:bg-accent hover:shadow-sm focus-visible:border-ring focus-visible:ring-[2px] focus-visible:ring-ring dark:border-border"
+          className={cn(
+            "mb-2 cursor-pointer rounded-lg border bg-background p-3 outline-hidden focus-visible:border-ring focus-visible:ring-[2px] focus-visible:ring-ring dark:border-border",
+            !snapshot.isDragging && "hover:bg-accent hover:shadow-sm",
+          )}
         >
           <div className="flex flex-col gap-1">
             <div className="flex items-start gap-2">
