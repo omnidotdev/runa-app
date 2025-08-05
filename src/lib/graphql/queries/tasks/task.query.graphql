@@ -1,6 +1,7 @@
 query Task($rowId: UUID!) {
   task(rowId: $rowId) {
     rowId
+    projectId
     columnId
     columnIndex
     content
