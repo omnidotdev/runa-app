@@ -238,7 +238,7 @@ const Filter = () => {
             >
               <MenuTriggerItem>
                 <CircleAlertIcon className="mr-2" />
-                Priorities Priorities
+                Priorities
               </MenuTriggerItem>
 
               <MenuPositioner>
