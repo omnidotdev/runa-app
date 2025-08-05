@@ -8,6 +8,8 @@ interface SubscriptionStoreState {
   setSubscriptionId: (subscriptionId: string | null) => void;
   productId: Tier | null;
   setProductId: (productId: Tier | null) => void;
+  isProductUpdating: boolean;
+  setIsProductUpdating: (isProductUpdating: boolean) => void;
 }
 
 const useSubscriptionStore = createWithEqualityFn<SubscriptionStoreState>(
@@ -16,6 +18,8 @@ const useSubscriptionStore = createWithEqualityFn<SubscriptionStoreState>(
     setSubscriptionId: (subscriptionId) => set({ subscriptionId }),
     productId: null,
     setProductId: (productId) => set({ productId }),
+    isProductUpdating: false,
+    setIsProductUpdating: (isProductUpdating) => set({ isProductUpdating }),
   }),
   shallow,
 );

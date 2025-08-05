@@ -189,7 +189,8 @@ function RouteComponent() {
     "account" | "customization" | "contact"
   >("account");
 
-  const { setProductId, setSubscriptionId } = useSubscriptionStore();
+  const { setProductId, setSubscriptionId, isProductUpdating } =
+    useSubscriptionStore();
   const { setIsOpen: setIsUpgradeSubscriptionDialogOpen } = useDialogStore({
     type: DialogType.UpgradeSubscription,
   });
@@ -336,6 +337,7 @@ function RouteComponent() {
                     <Button
                       size="sm"
                       className="w-full border border-primary/20 font-medium transition-all duration-200 hover:border-primary/40"
+                      disabled={isProductUpdating}
                       onClick={() => {
                         setProductId(
                           nextAvailableTier(currentProduct?.id as Tier),
@@ -345,7 +347,7 @@ function RouteComponent() {
                       }}
                     >
                       <Zap className="mr-2 size-3" />
-                      Upgrade Now
+                      {isProductUpdating ? "Upgrading..." : "Upgrade Now"}
                     </Button>
                   </div>
                 </div>
