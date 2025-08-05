@@ -67,8 +67,8 @@ const UpgradeSubscriptionDialog = () => {
                     },
                   });
 
-                  // TODO: determine why this does not properly retrigger the `loader` in order to get the updated customer state. Still need to manually refresh
-                  router.invalidate();
+                  // TODO: figure out best way to approach this. If router is invalidated right away, polar endpoints aren't invalidated / updated yet so customer state is stale
+                  setTimeout(() => router.invalidate(), 1500);
 
                   setIsOpen(false);
                 }}
