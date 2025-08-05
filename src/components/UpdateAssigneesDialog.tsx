@@ -57,6 +57,7 @@ const UpdateAssigneesDialog = () => {
       invalidates: [["all"]],
     },
   });
+
   const { mutate: removeAssignee } = useDeleteAssigneeMutation({
     meta: {
       invalidates: [["all"]],
@@ -130,6 +131,7 @@ const UpdateAssigneesDialog = () => {
               e.stopPropagation();
               form.handleSubmit();
             }}
+            className="flex flex-col gap-2"
           >
             <UpdateAssignees
               form={form}
@@ -139,24 +141,28 @@ const UpdateAssigneesDialog = () => {
               }}
             />
 
-            <form.Subscribe
-              selector={(state) => [
-                state.canSubmit,
-                state.isSubmitting,
-                state.isDirty,
-              ]}
-            >
-              {([canSubmit, isSubmitting, isDirty]) => (
-                <Button
-                  type="submit"
-                  disabled={!canSubmit || isSubmitting || !isDirty}
-                  size="sm"
-                  className="mt-4 w-full"
-                >
-                  Update Assignees
-                </Button>
-              )}
-            </form.Subscribe>
+            <div className="mt-4 flex justify-end gap-2">
+              <DialogCloseTrigger asChild>
+                <Button variant="outline">Cancel</Button>
+              </DialogCloseTrigger>
+
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isSubmitting,
+                  state.isDirty,
+                ]}
+              >
+                {([canSubmit, isSubmitting, isDirty]) => (
+                  <Button
+                    type="submit"
+                    disabled={!canSubmit || isSubmitting || !isDirty}
+                  >
+                    Update Assignees
+                  </Button>
+                )}
+              </form.Subscribe>
+            </div>
           </form>
         </DialogContent>
       </DialogPositioner>

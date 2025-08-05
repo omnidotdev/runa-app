@@ -40,7 +40,6 @@ import type { ComponentProps, CSSProperties } from "react";
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
-const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const MIN_SIDEBAR_WIDTH = "14rem";
 const MAX_SIDEBAR_WIDTH = "22rem";
@@ -215,12 +214,7 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-          style={
-            {
-              "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-            } as CSSProperties
-          }
+          className="w-1/2 bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
           side={side}
         >
           <div className="sr-only">
@@ -501,8 +495,6 @@ function SidebarGroupAction({
       data-sidebar="group-action"
       className={cn(
         "flex size-5 cursor-pointer items-center justify-center rounded-md p-0 text-base-400 outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 [&>svg]:size-3 [&>svg]:shrink-0",
-        // Increases the hit area of the button on mobile.
-        "after:-inset-2 after:absolute md:after:hidden",
         "group-data-[collapsible=icon]:hidden",
         className,
       )}
@@ -576,7 +568,7 @@ function SidebarMenuButton({
   ...rest
 }: ComponentProps<typeof ark.button> & {
   isActive?: boolean;
-  tooltip?: string | ComponentProps<typeof TooltipContent>;
+  tooltip?: string;
   shortcut?: Hotkeys;
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const { isMobile, state } = useSidebar();
@@ -601,22 +593,10 @@ function SidebarMenuButton({
     return button;
   }
 
-  if (typeof tooltip === "string") {
-    tooltip = {
-      children: (
-        <div className="flex items-center justify-between gap-2">
-          <span>{tooltip}</span>
-          {shortcut && (
-            <SidebarMenuShortcut>{shortcut.toUpperCase()}</SidebarMenuShortcut>
-          )}
-        </div>
-      ),
-    };
-  }
-
   return (
     <Tooltip
       tooltip={tooltip}
+      shortcut={shortcut?.toUpperCase()}
       positioning={{
         placement: "right",
         offset: {
@@ -691,7 +671,7 @@ function SidebarMenuShortcut({ className, ...rest }: ComponentProps<"span">) {
       data-slot="sidebar-menu-shortcut"
       data-sidebar="menu-shortcut"
       className={cn(
-        "ml-auto flex size-4 items-center justify-center gap-0.5 rounded-md border bg-base-100 p-0.5 font-medium text-[11px] text-muted-foreground tracking-widest dark:bg-base-700",
+        "ml-auto flex size-5 items-center justify-center gap-0.5 rounded-md border bg-background font-medium text-[10px] text-foreground",
         className,
       )}
       {...rest}

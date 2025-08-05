@@ -1,7 +1,6 @@
 import { ChevronRightIcon, PlusIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { CollapsibleTrigger } from "../ui/collapsible";
 
@@ -43,22 +42,9 @@ const ListTrigger = ({
         {children}
 
         <Tooltip
-          positioning={{ placement: "top", gutter: 11 }}
-          tooltip={{
-            className: "bg-background text-foreground border",
-            children: (
-              <div className="inline-flex">
-                {tooltip.title}
-                {tooltip.shortCut && (
-                  <div className="ml-2 flex items-center gap-0.5">
-                    <SidebarMenuShortcut>
-                      {tooltip.shortCut}
-                    </SidebarMenuShortcut>
-                  </div>
-                )}
-              </div>
-            ),
-          }}
+          positioning={{ placement: "left", gutter: 11 }}
+          tooltip={tooltip.title}
+          shortcut={tooltip.shortCut}
         >
           <Button
             variant="ghost"

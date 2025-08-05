@@ -64,7 +64,9 @@ const List = ({ projects }: Props) => {
             }}
           />
 
-          <CollapsibleContent className="border-t">
+          <CollapsibleContent className="rounded-b-lg">
+            {/* NB: Fade in the top border to avoid clashing with the parent border during animation */}
+            <div className="border-t transition-opacity ease-in-out" />
             <Droppable droppableId={column.rowId}>
               {(provided, snapshot) => (
                 <div

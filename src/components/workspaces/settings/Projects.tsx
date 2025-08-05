@@ -24,7 +24,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useDeleteProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -90,17 +89,8 @@ const Projects = () => {
             positioning={{
               placement: "left",
             }}
-            tooltip={{
-              className: "bg-background text-foreground border",
-              children: (
-                <div className="inline-flex">
-                  Create project
-                  <div className="ml-2 flex items-center gap-0.5">
-                    <SidebarMenuShortcut>P</SidebarMenuShortcut>
-                  </div>
-                </div>
-              ),
-            }}
+            tooltip="Create Project"
+            shortcut="P"
           >
             <Button
               variant="ghost"
@@ -257,7 +247,7 @@ const Projects = () => {
             })}
           </div>
         ) : (
-          <div className="flex items-center text-base-500 text-sm">
+          <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
             {!workspace?.projectColumns.nodes.length
               ? "Please create workspace columns first"
               : "No workspace projects"}

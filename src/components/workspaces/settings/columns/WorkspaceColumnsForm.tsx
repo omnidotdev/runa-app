@@ -192,7 +192,7 @@ const ProjectColumnsForm = () => {
             </SortableContext>
           </DndContext>
         ) : showEmptyState ? (
-          <div className="flex items-center text-base-500 text-sm">
+          <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
             No workspace columns
           </div>
         ) : null}

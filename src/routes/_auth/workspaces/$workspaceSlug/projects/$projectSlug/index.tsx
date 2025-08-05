@@ -27,7 +27,6 @@ import UpdateDueDateDialog from "@/components/UpdateDueDateDialog";
 import UpdateTaskLabelsDialog from "@/components/UpdateTaskLabelsDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
   useUpdateProjectMutation,
@@ -503,19 +502,12 @@ function ProjectPage() {
 
               <Tooltip
                 positioning={{ placement: "bottom" }}
-                tooltip={{
-                  className: "bg-background text-foreground border",
-                  children: (
-                    <div className="inline-flex">
-                      {userPreferences?.viewMode === "list"
-                        ? "Board View"
-                        : "List View"}
-                      <div className="ml-2 flex items-center gap-0.5">
-                        <SidebarMenuShortcut>V</SidebarMenuShortcut>
-                      </div>
-                    </div>
-                  ),
-                }}
+                shortcut="V"
+                tooltip={
+                  userPreferences?.viewMode === "list"
+                    ? "Board View"
+                    : "List View"
+                }
               >
                 <Button
                   variant="outline"
@@ -542,10 +534,7 @@ function ProjectPage() {
 
               <Tooltip
                 positioning={{ placement: "bottom" }}
-                tooltip={{
-                  className: "bg-background text-foreground border",
-                  children: "Project Settings",
-                }}
+                tooltip="Project Settings"
               >
                 <Link
                   to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
@@ -565,10 +554,7 @@ function ProjectPage() {
               {userPreferences?.viewMode === "list" && (
                 <Tooltip
                   positioning={{ placement: "bottom" }}
-                  tooltip={{
-                    className: "bg-background text-foreground border",
-                    children: isForceClosed ? "Expand Lists" : "Collapse Lists",
-                  }}
+                  tooltip={isForceClosed ? "Expand Lists" : "Collapse Lists"}
                 >
                   <Button
                     variant="outline"

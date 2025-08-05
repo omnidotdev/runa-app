@@ -149,12 +149,7 @@ const List = ({
 
             <CollapsibleContent className="rounded-b-lg">
               {/* NB: Fade in the top border to avoid clashing with the parent border during animation */}
-              <div
-                className={cn(
-                  "border-t transition-opacity ease-in-out",
-                  openStates[index] ? "opacity-100" : "opacity-0",
-                )}
-              />
+              <div className="border-t transition-opacity ease-in-out" />
               <Droppable droppableId={column.rowId}>
                 {(provided, snapshot) => (
                   <div

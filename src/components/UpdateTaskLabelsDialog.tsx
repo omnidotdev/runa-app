@@ -173,27 +173,32 @@ const UpdateTaskLabelsDialog = () => {
               e.stopPropagation();
               form.handleSubmit();
             }}
+            className="flex flex-col gap-2"
           >
             <TaskLabelsForm form={form} />
 
-            <form.Subscribe
-              selector={(state) => [
-                state.canSubmit,
-                state.isSubmitting,
-                state.isDirty,
-              ]}
-            >
-              {([canSubmit, isSubmitting, isDirty]) => (
-                <Button
-                  type="submit"
-                  disabled={!canSubmit || isSubmitting || !isDirty}
-                  size="sm"
-                  className="mt-4 w-full"
-                >
-                  Update Labels
-                </Button>
-              )}
-            </form.Subscribe>
+            <div className="mt-4 flex justify-end gap-2">
+              <DialogCloseTrigger asChild>
+                <Button variant="outline">Cancel</Button>
+              </DialogCloseTrigger>
+
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isSubmitting,
+                  state.isDirty,
+                ]}
+              >
+                {([canSubmit, isSubmitting, isDirty]) => (
+                  <Button
+                    type="submit"
+                    disabled={!canSubmit || isSubmitting || !isDirty}
+                  >
+                    Update Labels
+                  </Button>
+                )}
+              </form.Subscribe>
+            </div>
           </form>
         </DialogContent>
       </DialogPositioner>

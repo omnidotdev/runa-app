@@ -57,24 +57,23 @@ const BoardItem = ({ project }: Props) => {
       }
       className="cursor-pointer rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
     >
-      <div className="mb-3 flex items-center gap-2">
-        <p className="text-base-600 text-sm dark:text-base-400">
+      <div className="flex flex-col gap-1">
+        <p className="text-base-600 text-xs dark:text-base-400">
           #{project.prefix ?? "PROJ"}
         </p>
+
+        <p className="font-medium text-md">{project.name}</p>
+
+        <p className="text-muted-foreground text-sm">{project.description}</p>
       </div>
 
-      <p className="mb-1 font-medium text-sm">{project.name}</p>
-
-      <p className="mb-2 text-muted-foreground text-sm">
-        {project.description}
-      </p>
-
-      <div>
-        <div className="mb-1 flex justify-end text-sm">
+      <div className="mt-3">
+        <div className="mb-1 flex justify-end text-xs">
           <span className="text-base-900 dark:text-base-100">
             {completedTasks}/{totalTasks} tasks
           </span>
         </div>
+
         <div className="h-2 w-full rounded-full bg-base-200 dark:bg-base-700">
           <div
             className="h-2 rounded-full bg-primary transition-all"

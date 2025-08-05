@@ -11,7 +11,6 @@ import * as z from "zod/v4";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import Board from "@/components/workspaces/overview/Board";
 import List from "@/components/workspaces/overview/List";
@@ -321,19 +320,10 @@ function ProjectsOverviewPage() {
 
               <Tooltip
                 positioning={{ placement: "bottom" }}
-                tooltip={{
-                  className: "bg-background text-foreground border",
-                  children: (
-                    <div className="inline-flex">
-                      {workspace?.viewMode === "list"
-                        ? "Board View"
-                        : "List View"}
-                      <div className="ml-2 flex items-center gap-0.5">
-                        <SidebarMenuShortcut>V</SidebarMenuShortcut>
-                      </div>
-                    </div>
-                  ),
-                }}
+                tooltip={
+                  workspace?.viewMode === "list" ? "Board View" : "List View"
+                }
+                shortcut="V"
               >
                 <Button
                   variant="outline"
@@ -358,17 +348,8 @@ function ProjectsOverviewPage() {
 
               <Tooltip
                 positioning={{ placement: "bottom" }}
-                tooltip={{
-                  className: "bg-background text-foreground border",
-                  children: (
-                    <div className="inline-flex">
-                      Create Project
-                      <div className="ml-2 flex items-center gap-0.5">
-                        <SidebarMenuShortcut>P</SidebarMenuShortcut>
-                      </div>
-                    </div>
-                  ),
-                }}
+                tooltip="Create Project"
+                shortcut="P"
               >
                 <Button
                   variant="outline"

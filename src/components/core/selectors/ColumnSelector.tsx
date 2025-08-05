@@ -54,9 +54,14 @@ const ColumnSelector = ({
         )}
       >
         {triggerEmoji && (
-          <p className="font-semibold text-xs">{triggerEmoji}</p>
+          <p className={cn("", size === "xs" ? "text-xs" : "text-sm")}>
+            {triggerEmoji}
+          </p>
         )}
-        <p className="font-semibold text-xs">{triggerLabel}</p>
+
+        <p className={cn(size === "xs" ? "text-xs" : "text-sm")}>
+          {triggerLabel}
+        </p>
       </SelectTrigger>
       <SelectContent>
         <SelectItemGroup className="space-y-1">

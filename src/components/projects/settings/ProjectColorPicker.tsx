@@ -83,7 +83,7 @@ const ProjectColorPicker = () => {
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="flex items-center gap-2"
+      className="flex flex-col gap-2"
     >
       <form.Field name="color">
         {(field) => (
@@ -137,6 +137,7 @@ const ProjectColorPicker = () => {
                     </ColorPickerChannelSlider>
                   </div>
                 </div>
+
                 <ColorPickerView format="rgba">
                   <ColorPickerChannelInput
                     channel="hex"
@@ -164,7 +165,7 @@ const ProjectColorPicker = () => {
                   ]}
                 >
                   {([canSubmit, isSubmitting, isDirty]) => (
-                    <div className="mt-2 flex items-center justify-end gap-2">
+                    <div className="mt-4 flex justify-end gap-2">
                       <Button
                         variant="outline"
                         size="sm"

@@ -9,13 +9,7 @@ import Label from "@/components/Label";
 import PriorityIcon from "@/components/tasks/PriorityIcon";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { SidebarMenuShortcut } from "@/components/ui/sidebar";
-import {
-  TooltipContent,
-  TooltipPositioner,
-  TooltipRoot,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 
@@ -71,7 +65,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
               });
             }
           }}
-          className="mb-2 cursor-pointer rounded-lg border bg-background p-3"
+          className="mb-2 cursor-pointer rounded-lg border bg-background p-3 outline-hidden hover:bg-accent hover:shadow-sm focus-visible:border-ring focus-visible:ring-[2px] focus-visible:ring-ring dark:border-border"
         >
           <div className="flex flex-col gap-1">
             <div className="flex items-start gap-2">
@@ -80,6 +74,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                   <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
                     {displayId}
                   </span>
+
                   <PriorityIcon
                     priority={task.priority}
                     className="scale-75 opacity-50"
@@ -96,122 +91,91 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                 </div>
               </div>
 
-              <TooltipRoot
+              <Tooltip
                 positioning={{
                   placement: "bottom-end",
                   gutter: -4,
                 }}
+                tooltip="Update Assignees"
+                shortcut="A"
               >
-                <TooltipTrigger asChild>
-                  <div className="-mt-2.5 -mr-2 flex items-center gap-1">
-                    {task.assignees.nodes.length ? (
-                      <Assignees
-                        assignees={task?.assignees.nodes.map(
-                          (assignee) => assignee.user?.rowId!,
-                        )}
-                        className="-space-x-5.5 flex"
-                      />
-                    ) : (
-                      <AvatarRoot
-                        aria-label="No Assignees"
-                        className="mt-2.5 mr-2 size-5.5"
-                      >
-                        <AvatarFallback className="border border-border border-dashed bg-transparent p-1 text-muted-foreground">
-                          <UserIcon />
-                        </AvatarFallback>
-                      </AvatarRoot>
-                    )}
-                  </div>
-                </TooltipTrigger>
-                <TooltipPositioner>
-                  <TooltipContent className="border bg-background text-foreground">
-                    <div className="inline-flex">
-                      Update Assignees
-                      <div className="ml-2 flex items-center gap-0.5">
-                        <SidebarMenuShortcut>A</SidebarMenuShortcut>
-                      </div>
-                    </div>
-                  </TooltipContent>
-                </TooltipPositioner>
-              </TooltipRoot>
+                <div className="-mt-2.5 -mr-2 flex items-center gap-1">
+                  {task.assignees.nodes.length ? (
+                    <Assignees
+                      assignees={task?.assignees.nodes.map(
+                        (assignee) => assignee.user?.rowId!,
+                      )}
+                      className="-space-x-5.5 flex"
+                    />
+                  ) : (
+                    <AvatarRoot
+                      aria-label="No Assignees"
+                      className="mt-2.5 mr-2 size-5.5"
+                    >
+                      <AvatarFallback className="border border-border border-dashed bg-transparent p-1 text-muted-foreground">
+                        <UserIcon />
+                      </AvatarFallback>
+                    </AvatarRoot>
+                  )}
+                </div>
+              </Tooltip>
             </div>
 
             <div className="grid grid-cols-4">
               <div className="-m-3 col-span-3 flex items-end p-2.5">
-                <TooltipRoot
+                <Tooltip
                   positioning={{
                     placement: "top-start",
                     shift: -6,
                   }}
+                  tooltip="Update Labels"
+                  shortcut="L"
                 >
-                  <TooltipTrigger asChild>
-                    {task.taskLabels.nodes.length ? (
-                      <div className="flex flex-wrap gap-1">
-                        {task.taskLabels.nodes?.map(({ label }) => (
-                          <Label
-                            key={label?.rowId}
-                            label={label as LabelFragment}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <Badge
-                        size="sm"
-                        variant="outline"
-                        className="border-border border-dashed"
-                      >
-                        <TagIcon className="!size-2.5" />
-                      </Badge>
-                    )}
-                  </TooltipTrigger>
-                  <TooltipPositioner>
-                    <TooltipContent className="border bg-background text-foreground">
-                      <div className="inline-flex">
-                        Update Labels
-                        <div className="ml-2 flex items-center gap-0.5">
-                          <SidebarMenuShortcut>L</SidebarMenuShortcut>
-                        </div>
-                      </div>
-                    </TooltipContent>
-                  </TooltipPositioner>
-                </TooltipRoot>
-              </div>
-
-              <TooltipRoot
-                positioning={{
-                  placement: "top-end",
-                  shift: -8,
-                }}
-              >
-                <TooltipTrigger asChild>
-                  {task?.dueDate ? (
-                    <div className="col-span-1 mr-1 flex h-5 items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
-                      <CalendarIcon className="h-3 w-3" />
-                      {/* TODO: timezone handling */}
-                      <span>{format(new Date(task.dueDate), "MMM d")}</span>
+                  {task.taskLabels.nodes.length ? (
+                    <div className="flex flex-wrap gap-1">
+                      {task.taskLabels.nodes?.map(({ label }) => (
+                        <Label
+                          key={label?.rowId}
+                          label={label as LabelFragment}
+                        />
+                      ))}
                     </div>
                   ) : (
                     <Badge
                       size="sm"
                       variant="outline"
-                      className="h-5 w-fit place-self-end border-border border-dashed"
+                      className="border-border border-dashed"
                     >
-                      <CalendarIcon className="!size-2.5" />
+                      <TagIcon className="!size-2.5" />
                     </Badge>
                   )}
-                </TooltipTrigger>
+                </Tooltip>
+              </div>
 
-                <TooltipPositioner>
-                  <TooltipContent className="border bg-background text-foreground">
-                    <div className="inline-flex">
-                      Update Due Date
-                      <div className="ml-2 flex items-center gap-0.5">
-                        <SidebarMenuShortcut>D</SidebarMenuShortcut>
-                      </div>
-                    </div>
-                  </TooltipContent>
-                </TooltipPositioner>
-              </TooltipRoot>
+              <Tooltip
+                positioning={{
+                  placement: "top-end",
+                  shift: -8,
+                }}
+                tooltip="Update Due Date"
+                shortcut="D"
+              >
+                {task?.dueDate ? (
+                  <div className="col-span-1 mr-1 flex h-5 items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
+                    <CalendarIcon className="h-3 w-3" />
+                    {/* TODO: timezone handling */}
+                    <span>{format(new Date(task.dueDate), "MMM d")}</span>
+                  </div>
+                ) : (
+                  <Badge
+                    size="sm"
+                    variant="outline"
+                    className="h-5 w-fit place-self-end border-border border-dashed"
+                  >
+                    <CalendarIcon className="!size-2.5" />
+                  </Badge>
+                )}
+              </Tooltip>
             </div>
           </div>
         </div>

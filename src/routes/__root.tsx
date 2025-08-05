@@ -79,7 +79,7 @@ function RootDocument({
       <body>
         {children}
 
-        <Toaster />
+        <Toaster position="top-center" richColors />
         {/* Dev Tools - only included in development */}
         <TanstackDevtools
           plugins={[

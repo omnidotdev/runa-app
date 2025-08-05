@@ -165,6 +165,7 @@ const InviteMemberDialog = () => {
       <DialogBackdrop />
       <DialogPositioner>
         <DialogContent>
+          <DialogCloseTrigger />
           <DialogTitle>Invite Team Member</DialogTitle>
           <DialogDescription>
             Invite a new team member for the{" "}
@@ -178,6 +179,7 @@ const InviteMemberDialog = () => {
               e.stopPropagation();
               form.handleSubmit();
             }}
+            className="flex flex-col gap-2"
           >
             <form.Field name="recipientEmail" mode="array">
               {(field) => (
@@ -256,7 +258,7 @@ const InviteMemberDialog = () => {
             <div className="mt-4 flex justify-end gap-2">
               <DialogCloseTrigger asChild>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   onClick={() => {
                     form.reset();
                     setIsInviteTeamMemberOpen(false);

@@ -3,6 +3,7 @@ import { Tooltip as ArkTooltip } from "@ark-ui/react/tooltip";
 import { tv } from "tailwind-variants";
 
 import { cn } from "@/lib/utils";
+import { SidebarMenuShortcut } from "./sidebar";
 
 import type { ComponentProps, ReactNode } from "react";
 
@@ -60,12 +61,13 @@ const TooltipArrowTip = ({
 
 interface Props extends ComponentProps<typeof TooltipRoot> {
   children?: ReactNode;
-  tooltip?: string | ComponentProps<typeof TooltipContent>;
+  tooltip?: string;
+  shortcut?: string;
 }
 
-const Tooltip = ({ tooltip, children, ...rest }: Props) => {
-  const tooltipProps =
-    typeof tooltip === "string" ? { children: tooltip } : tooltip;
+const Tooltip = ({ tooltip, children, shortcut, ...rest }: Props) => {
+  // const tooltipProps =
+  //   typeof tooltip === "string" ? { children: tooltip } : tooltip;
 
   return (
     <TooltipRoot
@@ -82,10 +84,16 @@ const Tooltip = ({ tooltip, children, ...rest }: Props) => {
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <Portal>
         <TooltipPositioner>
-          <TooltipContent
-            className="border bg-background text-foreground"
-            {...tooltipProps}
-          />
+          <TooltipContent className="border bg-background text-foreground">
+            <div className="flex items-center gap-2">
+              {tooltip}
+              {shortcut && (
+                <div className="ml-2 flex items-center gap-0.5">
+                  <SidebarMenuShortcut>{shortcut}</SidebarMenuShortcut>
+                </div>
+              )}
+            </div>
+          </TooltipContent>
         </TooltipPositioner>
       </Portal>
     </TooltipRoot>

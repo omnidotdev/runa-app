@@ -14,6 +14,7 @@ import {
   LayersIcon,
   ListIcon,
   MoreHorizontalIcon,
+  PackageOpenIcon,
   PlusIcon,
   Settings2,
   Settings2Icon,
@@ -163,7 +164,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                 <MenuRoot
                   positioning={{
                     strategy: "fixed",
-                    placement: "right-start",
+                    placement: "bottom-start",
                     getAnchorRect: () =>
                       menuButtonRef.current?.getBoundingClientRect() ?? null,
                   }}
@@ -180,7 +181,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                       onClick={() => setProjectMenuOpen(!isProjectMenuOpen)}
                       className="text-sidebar-foreground/70"
                     >
-                      <BoxIcon />
+                      {isProjectMenuOpen ? <PackageOpenIcon /> : <BoxIcon />}
                     </MenuTrigger>
                   </SidebarMenuButton>
 
@@ -249,17 +250,8 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
 
                 <Tooltip
                   positioning={{ placement: "right" }}
-                  tooltip={{
-                    className: "bg-background text-foreground border",
-                    children: (
-                      <div className="inline-flex">
-                        Create Workspace
-                        <div className="ml-2 flex items-center">
-                          <SidebarMenuShortcut>W</SidebarMenuShortcut>
-                        </div>
-                      </div>
-                    ),
-                  }}
+                  tooltip="Create Workspace"
+                  shortcut="W"
                 >
                   <SidebarGroupAction
                     onClick={(e) => {
@@ -308,17 +300,8 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                 <Tooltip
                   disabled={!workspace?.projectColumns.nodes.length}
                   positioning={{ placement: "right" }}
-                  tooltip={{
-                    className: "bg-background text-foreground border",
-                    children: (
-                      <div className="inline-flex">
-                        Create Project
-                        <div className="ml-2 flex items-center">
-                          <SidebarMenuShortcut>P</SidebarMenuShortcut>
-                        </div>
-                      </div>
-                    ),
-                  }}
+                  tooltip="Create Project"
+                  shortcut="P"
                 >
                   <SidebarGroupAction
                     onClick={(e) => {

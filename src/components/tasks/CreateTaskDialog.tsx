@@ -8,6 +8,7 @@ import {
 import { TagIcon, TypeIcon } from "lucide-react";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { toast } from "sonner";
 
 import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
@@ -109,6 +110,203 @@ const CreateTaskDialog = () => {
   const { mutateAsync: updateProjectLabel } = useCreateLabelMutation();
   const { mutateAsync: createTaskLabel } = useCreateTaskLabelMutation();
 
+  // const form = useForm({
+  //   defaultValues: {
+  //     ...taskFormDefaults,
+  //     labels: projectLabels,
+  //     columnId: columnId ?? defaultColumnId,
+  //   },
+  //   onSubmit: async ({ value, formApi }) => {
+  //     const allTaskLabels = value.labels.filter((l) => l.checked);
+
+  //     const newLabels = value.labels.filter((l) => l.rowId === "pending");
+
+  //     const data = await Promise.all(
+  //       newLabels.map((label) =>
+  //         updateProjectLabel({
+  //           input: {
+  //             label: {
+  //               name: label.name,
+  //               color: label.color,
+  //               projectId,
+  //             },
+  //           },
+  //         }),
+  //       ),
+  //     );
+
+  //     const newlyAddedLabels = data.map(
+  //       (mutation) => mutation.createLabel?.label!,
+  //     );
+  //     const restOfTaskLabels = allTaskLabels.filter(
+  //       (label) => label.rowId !== "pending",
+  //     );
+
+  //     const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
+
+  //     const [{ createTask }] = await Promise.all([
+  //       addNewTask({
+  //         input: {
+  //           task: {
+  //             content: value.title,
+  //             description: value.description,
+  //             projectId,
+  //             columnId: value.columnId,
+  //             authorId: session?.user?.rowId!,
+  //             dueDate: value.dueDate.length
+  //               ? new Date(value.dueDate)
+  //               : undefined,
+  //             priority: value.priority,
+  //             columnIndex: totalTasks ?? 0,
+  //           },
+  //         },
+  //       }),
+  //     ]);
+
+  //     const taskId = createTask?.task?.rowId!;
+
+  //     await Promise.all(
+  //       newTaskLabels.map((label) =>
+  //         createTaskLabel({
+  //           input: {
+  //             taskLabel: {
+  //               labelId: label.rowId,
+  //               taskId,
+  //             },
+  //           },
+  //         }),
+  //       ),
+  //     );
+
+  //     if (createTask && value.assignees.length) {
+  //       for (const assignee of value.assignees) {
+  //         addNewAssignee({
+  //           input: {
+  //             assignee: {
+  //               userId: assignee,
+  //               taskId: createTask.task?.rowId!,
+  //             },
+  //           },
+  //         });
+  //       }
+  //     }
+
+  //     queryClient.invalidateQueries();
+  //     formApi.reset();
+  //     // Allow for dialog close animation to finish
+  //     setTimeout(() => setColumnId(null), 350);
+  //     navigate({
+  //       search: (prev) => ({
+  //         ...prev,
+  //         createTask: false,
+  //       }),
+  //     });
+  //   },
+  // });
+
+  // const form = useForm({
+  //   defaultValues: {
+  //     ...taskFormDefaults,
+  //     labels: projectLabels,
+  //     columnId: columnId ?? defaultColumnId,
+  //   },
+  //   onSubmit: async ({ value, formApi }) => {
+  //     // toast.promise(
+  //     //   (async () => {
+  //     const allTaskLabels = value.labels.filter((l) => l.checked);
+
+  //     const newLabels = value.labels.filter((l) => l.rowId === "pending");
+
+  //     const data = await Promise.all(
+  //       newLabels.map((label) =>
+  //         updateProjectLabel({
+  //           input: {
+  //             label: {
+  //               name: label.name,
+  //               color: label.color,
+  //               projectId,
+  //             },
+  //           },
+  //         }),
+  //       ),
+  //     );
+
+  //     const newlyAddedLabels = data.map(
+  //       (mutation) => mutation.createLabel?.label!,
+  //     );
+  //     const restOfTaskLabels = allTaskLabels.filter(
+  //       (label) => label.rowId !== "pending",
+  //     );
+
+  //     const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
+
+  //     const [{ createTask }] = await Promise.all([
+  //       addNewTask({
+  //         input: {
+  //           task: {
+  //             content: value.title,
+  //             description: value.description,
+  //             projectId,
+  //             columnId: value.columnId,
+  //             authorId: session?.user?.rowId!,
+  //             dueDate: value.dueDate.length
+  //               ? new Date(value.dueDate)
+  //               : undefined,
+  //             priority: value.priority,
+  //             columnIndex: totalTasks ?? 0,
+  //           },
+  //         },
+  //       }),
+  //     ]);
+
+  //     const taskId = createTask?.task?.rowId!;
+
+  //     await Promise.all(
+  //       newTaskLabels.map((label) =>
+  //         createTaskLabel({
+  //           input: {
+  //             taskLabel: {
+  //               labelId: label.rowId,
+  //               taskId,
+  //             },
+  //           },
+  //         }),
+  //       ),
+  //     );
+
+  //     if (createTask && value.assignees.length) {
+  //       for (const assignee of value.assignees) {
+  //         addNewAssignee({
+  //           input: {
+  //             assignee: {
+  //               userId: assignee,
+  //               taskId: createTask.task?.rowId!,
+  //             },
+  //           },
+  //         });
+  //       }
+  //     }
+
+  //     //   })(),
+  //     //   {
+  //     //     loading: "Creating task...",
+  //     //     success: "Task created successfully!",
+  //     //     error: "Failed to create task. Please try again.",
+  //     //   },
+  //     // );
+
+  //     queryClient.invalidateQueries();
+  //     formApi.reset();
+  //     setTimeout(() => setColumnId(null), 350);
+  //     navigate({
+  //       search: (prev) => ({
+  //         ...prev,
+  //         createTask: false,
+  //       }),
+  //     });
+  //   },
+  // });
+
   const form = useForm({
     defaultValues: {
       ...taskFormDefaults,
@@ -116,83 +314,93 @@ const CreateTaskDialog = () => {
       columnId: columnId ?? defaultColumnId,
     },
     onSubmit: async ({ value, formApi }) => {
-      const allTaskLabels = value.labels.filter((l) => l.checked);
+      const createTaskOperation = async () => {
+        const allTaskLabels = value.labels.filter((l) => l.checked);
 
-      const newLabels = value.labels.filter((l) => l.rowId === "pending");
+        const newLabels = value.labels.filter((l) => l.rowId === "pending");
 
-      const data = await Promise.all(
-        newLabels.map((label) =>
-          updateProjectLabel({
+        const data = await Promise.all(
+          newLabels.map((label) =>
+            updateProjectLabel({
+              input: {
+                label: {
+                  name: label.name,
+                  color: label.color,
+                  projectId,
+                },
+              },
+            }),
+          ),
+        );
+
+        const newlyAddedLabels = data.map(
+          (mutation) => mutation.createLabel?.label!,
+        );
+        const restOfTaskLabels = allTaskLabels.filter(
+          (label) => label.rowId !== "pending",
+        );
+
+        const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
+
+        const [{ createTask }] = await Promise.all([
+          addNewTask({
             input: {
-              label: {
-                name: label.name,
-                color: label.color,
+              task: {
+                content: value.title,
+                description: value.description,
                 projectId,
+                columnId: value.columnId,
+                authorId: session?.user?.rowId!,
+                dueDate: value.dueDate.length
+                  ? new Date(value.dueDate)
+                  : undefined,
+                priority: value.priority,
+                columnIndex: totalTasks ?? 0,
               },
             },
           }),
-        ),
-      );
+        ]);
 
-      const newlyAddedLabels = data.map(
-        (mutation) => mutation.createLabel?.label!,
-      );
-      const restOfTaskLabels = allTaskLabels.filter(
-        (label) => label.rowId !== "pending",
-      );
+        const taskId = createTask?.task?.rowId!;
 
-      const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
-
-      const [{ createTask }] = await Promise.all([
-        addNewTask({
-          input: {
-            task: {
-              content: value.title,
-              description: value.description,
-              projectId,
-              columnId: value.columnId,
-              authorId: session?.user?.rowId!,
-              dueDate: value.dueDate.length
-                ? new Date(value.dueDate)
-                : undefined,
-              priority: value.priority,
-              columnIndex: totalTasks ?? 0,
-            },
-          },
-        }),
-      ]);
-
-      const taskId = createTask?.task?.rowId!;
-
-      await Promise.all(
-        newTaskLabels.map((label) =>
-          createTaskLabel({
-            input: {
-              taskLabel: {
-                labelId: label.rowId,
-                taskId,
+        await Promise.all(
+          newTaskLabels.map((label) =>
+            createTaskLabel({
+              input: {
+                taskLabel: {
+                  labelId: label.rowId,
+                  taskId,
+                },
               },
-            },
-          }),
-        ),
-      );
+            }),
+          ),
+        );
 
-      if (createTask && value.assignees.length) {
-        for (const assignee of value.assignees) {
-          addNewAssignee({
-            input: {
-              assignee: {
-                userId: assignee,
-                taskId: createTask.task?.rowId!,
-              },
-            },
-          });
+        if (createTask && value.assignees.length) {
+          await Promise.all(
+            value.assignees.map((assignee) =>
+              addNewAssignee({
+                input: {
+                  assignee: {
+                    userId: assignee,
+                    taskId: createTask.task?.rowId!,
+                  },
+                },
+              }),
+            ),
+          );
         }
-      }
 
-      queryClient.invalidateQueries();
+        queryClient.invalidateQueries();
+      };
+
+      toast.promise(createTaskOperation(), {
+        loading: "Creating task...",
+        success: "Task created successfully!",
+        error: "Failed to create task. Please try again.",
+      });
+
       formApi.reset();
-      // Allow for dialog close animation to finish
       setTimeout(() => setColumnId(null), 350);
       navigate({
         search: (prev) => ({
@@ -230,12 +438,12 @@ const CreateTaskDialog = () => {
           <DialogCloseTrigger />
 
           <form
-            className="flex flex-col gap-2"
             onSubmit={(e) => {
               e.preventDefault();
               e.stopPropagation();
               form.handleSubmit();
             }}
+            className="flex flex-col gap-2"
           >
             <form.Field name="title">
               {(field) => (
@@ -297,34 +505,32 @@ const CreateTaskDialog = () => {
               />
             </div>
 
-            <div className="py-1">
-              <form.Subscribe
-                selector={(state) => ({
-                  taskLabels: state.values.labels,
-                  assignees: state.values.assignees,
-                })}
-              >
-                {({ taskLabels, assignees }) => (
-                  <div className="flex flex-col gap-2">
-                    <Assignees
-                      assignees={assignees}
-                      showUsername={true}
-                      className="-ml-2 flex flex-wrap gap-1"
-                    />
+            <form.Subscribe
+              selector={(state) => ({
+                taskLabels: state.values.labels,
+                assignees: state.values.assignees,
+              })}
+            >
+              {({ taskLabels, assignees }) => (
+                <div className="flex flex-col gap-2">
+                  <Assignees
+                    assignees={assignees}
+                    showUsername={true}
+                    className="-ml-2 flex flex-wrap gap-1"
+                  />
 
-                    <div className="flex flex-wrap gap-1">
-                      {taskLabels
-                        .filter((l) => l.checked)
-                        .map((label) => (
-                          <Label key={label.rowId} label={label} />
-                        ))}
-                    </div>
+                  <div className="flex flex-wrap gap-1">
+                    {taskLabels
+                      .filter((l) => l.checked)
+                      .map((label) => (
+                        <Label key={label.rowId} label={label} />
+                      ))}
                   </div>
-                )}
-              </form.Subscribe>
-            </div>
+                </div>
+              )}
+            </form.Subscribe>
 
-            <div className="flex justify-end gap-2">
+            <div className="mt-4 flex justify-end gap-2">
               <DialogCloseTrigger asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogCloseTrigger>

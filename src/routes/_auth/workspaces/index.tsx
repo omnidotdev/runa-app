@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { ContainerIcon, PlusIcon } from "lucide-react";
+import { LayersIcon, PlusIcon } from "lucide-react";
 
 import Link from "@/components/core/Link";
 import { Avatar } from "@/components/ui/avatar";
@@ -35,7 +35,7 @@ function WorkspacesOverviewPage() {
     <div className="flex h-full items-center justify-center p-12">
       <div className="w-full max-w-4xl">
         <div className="mb-12 flex flex-col items-center justify-center gap-4">
-          <ContainerIcon className="size-12 text-base-500 dark:text-base-400" />
+          <LayersIcon className="size-12 text-base-500 dark:text-base-400" />
           <h1 className="text-pretty text-center font-semibold text-2xl text-base-900 dark:text-base-100">
             {recentWorkspaces?.length
               ? "Select a workspace or create a new one to get started"

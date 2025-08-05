@@ -23,7 +23,6 @@ import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
-import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
   useCreatePostMutation,
@@ -214,17 +213,8 @@ function TaskPage() {
 
               <Tooltip
                 positioning={{ placement: "top" }}
-                tooltip={{
-                  className: "bg-background text-foreground border",
-                  children: (
-                    <div className="inline-flex">
-                      Update Due Date
-                      <div className="ml-2 flex items-center gap-0.5">
-                        <SidebarMenuShortcut>D</SidebarMenuShortcut>
-                      </div>
-                    </div>
-                  ),
-                }}
+                tooltip="Update Due Date"
+                shortcut="D"
               >
                 <Button
                   onClick={() => setIsUpdateDueDateDialogOpen(true)}
@@ -237,7 +227,7 @@ function TaskPage() {
                       {format(new Date(task.dueDate), "MMM d, yyyy")}
                     </div>
                   ) : (
-                    <p>Set due date</p>
+                    <p className="text-xs">Set due date</p>
                   )}
                 </Button>
               </Tooltip>

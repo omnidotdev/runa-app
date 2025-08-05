@@ -1,6 +1,7 @@
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,10 +21,9 @@ import {
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useForm from "@/lib/hooks/useForm";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
-
-import type { FormEvent } from "react";
 
 const DEFAULT_PROJECT_COLUMNS = [
   { title: "Planned", index: 0, emoji: "🗓️" },
@@ -47,8 +47,6 @@ const CreateWorkspaceDialog = () => {
     () => setIsCreateWorkspaceOpen(!isCreateWorkspaceOpen),
     [setIsCreateWorkspaceOpen, isCreateWorkspaceOpen],
   );
-
-  const [newWorkspaceName, setNewWorkspaceName] = useState("");
 
   const { mutate: createTeamMember } = useCreateWorkspaceUserMutation();
 
@@ -93,22 +91,33 @@ const CreateWorkspaceDialog = () => {
     },
   });
 
-  const handleCreateWorkspace = async (e?: FormEvent) => {
-    e?.preventDefault();
-    if (!newWorkspaceName.trim()) return;
+  const form = useForm({
+    defaultValues: {
+      name: "",
+    },
+    onSubmit: ({ value, formApi }) => {
+      if (!value.name.trim()) return;
 
-    await createNewWorkspace({
-      input: {
-        workspace: {
-          name: newWorkspaceName,
-          slug: generateSlug(newWorkspaceName),
+      toast.promise(
+        createNewWorkspace({
+          input: {
+            workspace: {
+              name: value.name,
+              slug: generateSlug(value.name),
+            },
+          },
+        }),
+        {
+          loading: "Creating Workspace...",
+          success: "Workspace created successfully!",
+          error: "Something went wrong! Please try again.",
         },
-      },
-    });
+      );
 
-    setNewWorkspaceName("");
-    setIsCreateWorkspaceOpen(false);
-  };
+      setIsCreateWorkspaceOpen(false);
+      formApi.reset();
+    },
+  });
 
   return (
     <DialogRoot
@@ -123,29 +132,53 @@ const CreateWorkspaceDialog = () => {
           <DialogTitle>Create Workspace</DialogTitle>
           <DialogDescription>Create a new workspace</DialogDescription>
 
-          <form onSubmit={handleCreateWorkspace} className="p-2">
-            <Input
-              ref={nameRef}
-              type="text"
-              value={newWorkspaceName}
-              onChange={(e) => setNewWorkspaceName(e.target.value)}
-              placeholder="Workspace name"
-            />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+            className="flex flex-col gap-2"
+          >
+            <form.Field name="name">
+              {(field) => (
+                <Input
+                  ref={nameRef}
+                  type="text"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Workspace name"
+                />
+              )}
+            </form.Field>
 
             <div className="mt-4 flex justify-end gap-2">
               <Button
                 onClick={() => {
-                  setNewWorkspaceName("");
                   setIsCreateWorkspaceOpen(false);
+                  form.reset();
                 }}
-                variant="ghost"
+                variant="outline"
               >
                 Cancel
               </Button>
 
-              <Button type="submit" disabled={!newWorkspaceName.trim()}>
-                Create
-              </Button>
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isSubmitting,
+                  state.isDirty,
+                ]}
+              >
+                {([canSubmit, isSubmitting, isDirty]) => (
+                  <Button
+                    type="submit"
+                    disabled={!canSubmit || isSubmitting || !isDirty}
+                  >
+                    Create
+                  </Button>
+                )}
+              </form.Subscribe>
             </div>
           </form>
         </DialogContent>

@@ -7,7 +7,7 @@ import type { ComponentProps } from "react";
 
 const checkboxVariants = tv({
   slots: {
-    root: "flex items-center",
+    root: "flex items-center outline-hidden focus-visible:border-ring focus-visible:ring-[1px] focus-visible:ring-ring",
     label:
       "ml-2 font-medium text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
     control:

@@ -42,7 +42,12 @@ const PrioritySelector = ({
       >
         <PriorityIcon priority={triggerValue} />
 
-        <p className="font-semibold text-xs first-letter:uppercase">
+        <p
+          className={cn(
+            "first-letter:uppercase",
+            size === "xs" ? "text-xs" : "text-sm",
+          )}
+        >
           {triggerValue}
         </p>
       </SelectTrigger>

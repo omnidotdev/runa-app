@@ -100,47 +100,48 @@ const Filter = () => {
           popoverButtonRef.current?.getBoundingClientRect() ?? null,
       }}
       open={isFilterOpen}
-      onOpenChange={({ open }) => setIsFilterOpen(open)}
+      onOpenChange={({ open }) => {
+        setIsFilterOpen(open);
+      }}
+      closeOnInteractOutside={true}
+      closeOnEscape={true}
     >
       <Tooltip
         positioning={{ placement: "bottom" }}
-        tooltip={{
-          className: "bg-background text-foreground border",
-          children: (
-            <div className="inline-flex">
-              Filter
-              <div className="ml-2 flex items-center gap-0.5">
-                <SidebarMenuShortcut>F</SidebarMenuShortcut>
-              </div>
-            </div>
-          ),
-        }}
+        tooltip="Filter"
+        shortcut="F"
       >
         <PopoverTrigger ref={popoverButtonRef} asChild>
-          <Button variant="outline" size="icon">
+          <Button
+            variant="outline"
+            size="icon"
+            className="transition-transform [&[data-state=open]>svg]:rotate-none"
+          >
             <ListFilter />
           </Button>
         </PopoverTrigger>
       </Tooltip>
+
       <PopoverPositioner>
         <PopoverContent className="p-0">
-          <div className="inline-flex w-full items-center justify-between border-b p-2">
+          <div className="flex w-full items-center justify-between border-b p-2">
             <p className="text-base-500 text-sm">Filter</p>
             <SidebarMenuShortcut>F</SidebarMenuShortcut>
           </div>
 
-          <div>
+          <div className="flex flex-col gap-0.5">
             <PopoverRoot positioning={{ placement: "right-start" }}>
               <PopoverTrigger
-                className="flex w-full cursor-pointer justify-between border-b px-3 py-2 disabled:opacity-50"
+                className="flex w-full cursor-pointer justify-between px-3 py-2 disabled:opacity-50"
                 disabled={!project?.labels?.nodes?.length}
               >
                 <div className="flex items-center gap-2">
                   <TagIcon className="size-4" />
-                  <p>Labels</p>
+                  <p className="text-sm">Labels</p>
                 </div>
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="size-3 text-base-400" />
               </PopoverTrigger>
+
               <PopoverPositioner>
                 <PopoverContent className="flex w-48 flex-col gap-2 p-2">
                   {project?.labels?.nodes?.map((label) => (
@@ -188,15 +189,16 @@ const Filter = () => {
             </PopoverRoot>
 
             <PopoverRoot positioning={{ placement: "right-start" }}>
-              <PopoverTrigger className="flex w-full cursor-pointer justify-between border-b px-3 py-2">
+              <PopoverTrigger className="flex w-full cursor-pointer justify-between px-3 py-2">
                 <div className="flex items-center gap-2">
                   <UserPlusIcon className="size-4" />
-                  <p>Assignees</p>
+                  <p className="text-sm">Assignees</p>
                 </div>
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="size-3 text-base-400" />
               </PopoverTrigger>
+
               <PopoverPositioner>
-                <PopoverContent className="flex w-48 flex-col p-2">
+                <PopoverContent className="flex w-48 flex-col gap-2 p-2">
                   {users?.map((user) => (
                     <CheckboxRoot
                       key={user?.rowId}
@@ -247,13 +249,14 @@ const Filter = () => {
             </PopoverRoot>
 
             <PopoverRoot positioning={{ placement: "right-start" }}>
-              <PopoverTrigger className="flex w-full cursor-pointer justify-between border-b px-3 py-2">
+              <PopoverTrigger className="flex w-full cursor-pointer justify-between px-3 py-2">
                 <div className="flex items-center gap-2">
                   <CircleAlertIcon className="size-4" />
-                  <p>Priorities</p>
+                  <p className="text-sm">Priorities</p>
                 </div>
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="size-3 text-base-400" />
               </PopoverTrigger>
+
               <PopoverPositioner>
                 <PopoverContent className="flex w-48 flex-col gap-2 p-2">
                   {(["low", "medium", "high"] as const).map((priority) => (
@@ -310,13 +313,14 @@ const Filter = () => {
             </PopoverRoot>
 
             <PopoverRoot positioning={{ placement: "right-start" }}>
-              <PopoverTrigger className="flex w-full cursor-pointer justify-between border-b px-3 py-2">
+              <PopoverTrigger className="flex w-full cursor-pointer justify-between px-3 py-2">
                 <div className="flex items-center gap-2">
                   <AlignJustifyIcon className="size-4 rotate-90" />
-                  <p>Hidden Columns</p>
+                  <p className="text-sm">Columns</p>
                 </div>
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="size-3 text-base-400" />
               </PopoverTrigger>
+
               <PopoverPositioner>
                 <PopoverContent className="flex w-48 flex-col gap-2 p-2">
                   {project?.columns.nodes.map((column) => (

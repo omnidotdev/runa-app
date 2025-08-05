@@ -7,6 +7,7 @@ import {
   LogOutIcon,
   MoonIcon,
   MoreHorizontalIcon,
+  PanelLeftCloseIcon,
   PanelLeftIcon,
   SunIcon,
   UserIcon,
@@ -70,7 +71,8 @@ const AppSidebarFooter = () => {
             shortcut={Hotkeys.ToggleSidebar}
             onClick={() => setOpen(!open)}
           >
-            <PanelLeftIcon />
+            {open ? <PanelLeftCloseIcon /> : <PanelLeftIcon />}
+
             <span className="flex w-full items-center">
               Collapse Sidebar
               <SidebarMenuShortcut>B</SidebarMenuShortcut>
@@ -87,7 +89,7 @@ const AppSidebarFooter = () => {
             {theme === "dark" ? <MoonIcon /> : <SunIcon />}
             <span className="flex w-full items-center">
               Toggle Theme
-              <SidebarMenuShortcut>T</SidebarMenuShortcut>
+              <SidebarMenuShortcut className="ml-auto">T</SidebarMenuShortcut>
             </span>
           </SidebarMenuButton>
         </SidebarMenuItem>
