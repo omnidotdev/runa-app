@@ -1,6 +1,5 @@
 import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,8 +24,6 @@ const UpgradeSubscriptionDialog = () => {
   });
 
   const router = useRouter();
-
-  const [toastId, setToastId] = useState<string | number | undefined>();
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.UpgradeSubscription,
@@ -71,7 +68,6 @@ const UpgradeSubscriptionDialog = () => {
                   setIsProductUpdating(true);
 
                   const toastId = toast.loading("Upgrading subscription...");
-                  setToastId(toastId);
 
                   await handleUpgradeSubscription({
                     data: {

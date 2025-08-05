@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { signOut } from "@/lib/auth/signOut";
-import { API_BASE_URL } from "@/lib/config/env.config";
+import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useSubscriptionStore from "@/lib/hooks/store/useSubscriptionStore";
 import usageMetricsOptions from "@/lib/options/usageMetrics.options";
@@ -36,6 +36,7 @@ import RUNA_PRODUCT_IDS, {
 } from "@/lib/polar/productIds";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import getEnumKeyByValue from "@/lib/util/getEnumKeyByValue";
+import { fetchAuthenticatedCustomer } from "@/server/fetchAuthenticatedCustomer";
 import { fetchCustomerState } from "@/server/fetchCustomerState";
 import { fetchProduct } from "@/server/fetchProduct";
 
@@ -46,10 +47,11 @@ export const Route = createFileRoute({
   loader: async ({ context: { queryClient, session } }) => {
     let currentProduct: Product | undefined;
 
-    const [customer] = await Promise.all([
+    const [customer, payment] = await Promise.all([
       fetchCustomerState({
         data: session?.user.hidraId!,
       }),
+      fetchAuthenticatedCustomer({ data: { hidraId: session?.user.hidraId! } }),
       queryClient.ensureQueryData(
         usageMetricsOptions({ userId: session?.user.rowId! }),
       ),
@@ -75,6 +77,7 @@ export const Route = createFileRoute({
       subscription: customer?.activeSubscriptions.find((sub) =>
         RUNA_PRODUCT_IDS!.includes(sub.productId),
       ),
+      paymentId: payment?.defaultPaymentMethodId,
     };
   },
   component: RouteComponent,
@@ -172,9 +175,9 @@ const nextAvailableTier = (currentTier: Tier) =>
     .otherwise(() => null);
 
 function RouteComponent() {
-  const { customer, currentProduct, subscription } = Route.useLoaderData();
+  const { customer, currentProduct, subscription, paymentId } =
+    Route.useLoaderData();
   const { session } = Route.useRouteContext();
-  const navigate = Route.useNavigate();
 
   const { data: metrics } = useSuspenseQuery({
     ...usageMetricsOptions({ userId: session?.user.rowId! }),
@@ -334,10 +337,11 @@ function RouteComponent() {
                       Get {proLimits.workspaces} workspaces,{" "}
                       {proLimits.projects} projects, and {proLimits.tasks} tasks
                     </p>
+                    {/* TODO: better UI/UX when user doesn't have a default payment method on file */}
                     <Button
                       size="sm"
                       className="w-full border border-primary/20 font-medium transition-all duration-200 hover:border-primary/40"
-                      disabled={isProductUpdating}
+                      disabled={isProductUpdating || !paymentId}
                       onClick={() => {
                         setProductId(
                           nextAvailableTier(currentProduct?.id as Tier),
@@ -349,6 +353,12 @@ function RouteComponent() {
                       <Zap className="mr-2 size-3" />
                       {isProductUpdating ? "Upgrading..." : "Upgrade Now"}
                     </Button>
+
+                    {!paymentId && (
+                      <p className="mt-2 text-xs">
+                        Please add a payment method to upgrade.
+                      </p>
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -424,21 +434,23 @@ function RouteComponent() {
 
                 {/* Action Buttons */}
                 <div className="flex flex-col gap-4 sm:flex-row">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      if (customer && currentProduct) {
-                        navigate({
-                          href: `${API_BASE_URL}/portal?customerId=${customer.id}`,
-                          reloadDocument: true,
-                        });
-                      } else {
-                        navigate({ to: "/pricing" });
+                  <Button variant="outline" asChild>
+                    <a
+                      href={
+                        customer && currentProduct
+                          ? `${API_BASE_URL}/portal?customerId=${customer.id}`
+                          : `${BASE_URL}/pricing`
                       }
-                    }}
-                  >
-                    <CreditCard className="size-4" />
-                    {currentProduct ? "Manage Subscription" : "Subscribe"}
+                      target={customer && currentProduct ? "_blank" : undefined}
+                      rel={
+                        customer && currentProduct
+                          ? "noopener noreferrer"
+                          : undefined
+                      }
+                    >
+                      <CreditCard className="size-4" />
+                      {currentProduct ? "Manage Subscription" : "Subscribe"}
+                    </a>
                   </Button>
                 </div>
 

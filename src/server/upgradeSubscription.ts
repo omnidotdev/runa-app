@@ -11,7 +11,6 @@ const upgradeSubscriptionSchema = z.object({
 
 type UpgradeSubscription = z.infer<typeof upgradeSubscriptionSchema>;
 
-// TODO: properly handle upgrades when user is on Free tier and there is no payment method on file
 export const upgradeSubscription = createServerFn({
   method: "POST",
 })
