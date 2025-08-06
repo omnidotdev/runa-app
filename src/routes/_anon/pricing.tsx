@@ -88,7 +88,7 @@ export const Route = createFileRoute({
         // NB: with updated logic in polar to allow for multiple subscriptions (across Omni apps) we need to validate that the user indeed has a *Runa* specific subscription before redirecting
         // TODO: update Backfeed to include similar logic
         customer?.activeSubscriptions?.some((sub) =>
-          (RUNA_PRODUCT_IDS as string[]).includes(sub.productId),
+          RUNA_PRODUCT_IDS.includes(sub.productId),
         )
       ) {
         throw redirect({

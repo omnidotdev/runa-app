@@ -32,7 +32,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { signOut } from "@/lib/auth/signOut";
-import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
+import { API_BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useSubscriptionStore from "@/lib/hooks/store/useSubscriptionStore";
 import usageMetricsOptions from "@/lib/options/usageMetrics.options";
@@ -42,6 +42,7 @@ import RUNA_PRODUCT_IDS, {
   SandboxYearly,
 } from "@/lib/polar/productIds";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import { cn } from "@/lib/utils";
 import { fetchAuthenticatedCustomer } from "@/server/fetchAuthenticatedCustomer";
 import { fetchCustomerState } from "@/server/fetchCustomerState";
 import { fetchProduct } from "@/server/fetchProduct";
@@ -77,11 +78,11 @@ export const Route = createFileRoute({
       // NB: with updated logic in polar to allow for multiple subscriptions (across Omni apps) we need to validate that the user indeed has a *Runa* specific subscription before redirecting
       // TODO: update Backfeed to include similar logic
       customer?.activeSubscriptions?.some((sub) =>
-        (RUNA_PRODUCT_IDS as string[]).includes(sub.productId),
+        RUNA_PRODUCT_IDS.includes(sub.productId),
       )
     ) {
       const productId = customer.activeSubscriptions.find((sub) =>
-        RUNA_PRODUCT_IDS!.includes(sub.productId),
+        RUNA_PRODUCT_IDS.includes(sub.productId),
       )?.productId;
 
       currentProduct = await fetchProduct({ data: productId! });
@@ -102,7 +103,7 @@ export const Route = createFileRoute({
       currentProduct,
       upgradeProduct,
       subscription: customer?.activeSubscriptions.find((sub) =>
-        RUNA_PRODUCT_IDS!.includes(sub.productId),
+        RUNA_PRODUCT_IDS.includes(sub.productId),
       ),
       paymentId: payment?.defaultPaymentMethodId,
     };
@@ -114,6 +115,7 @@ function RouteComponent() {
   const { customer, currentProduct, upgradeProduct, subscription, paymentId } =
     Route.useLoaderData();
   const { session } = Route.useRouteContext();
+  const navigate = Route.useNavigate();
 
   const { data: metrics } = useSuspenseQuery({
     ...usageMetricsOptions({ userId: session?.user.rowId! }),
@@ -156,7 +158,8 @@ function RouteComponent() {
   const upgradeTier = match(currentProduct?.metadata?.title)
     .with("free", () => "Basic")
     .with("basic", () => "Team")
-    .otherwise(() => null);
+    .with("team", () => null)
+    .otherwise(() => "Free");
 
   return (
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
@@ -213,106 +216,117 @@ function RouteComponent() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 p-0">
-                {/* Workspaces Metric */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center rounded-lg bg-blue-500/10">
-                        <Building2 className="size-4 text-blue-600" />
+                {currentProduct && (
+                  <>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="flex size-8 items-center justify-center rounded-lg bg-blue-500/10">
+                            <Building2 className="size-4 text-blue-600" />
+                          </div>
+                          <span className="font-medium">Workspaces</span>
+                        </div>
+                        <span className="font-medium text-muted-foreground text-sm">
+                          {metrics.workspaces}/
+                          {Number.isInteger(Number(metricLimits.workspaces))
+                            ? metricLimits.workspaces
+                            : "∞"}
+                        </span>
                       </div>
-                      <span className="font-medium">Workspaces</span>
+                      <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
+                        <div
+                          className="h-full rounded-full border border-blue-400/30 bg-blue-600"
+                          style={{
+                            width: Number.isInteger(
+                              Number(metricLimits.workspaces),
+                            )
+                              ? `${
+                                  (metrics.workspaces /
+                                    Number(metricLimits.workspaces)) *
+                                  100
+                                }%`
+                              : "100%",
+                          }}
+                        />
+                      </div>
                     </div>
-                    <span className="font-medium text-muted-foreground text-sm">
-                      {metrics.workspaces}/
-                      {Number.isInteger(Number(metricLimits.workspaces))
-                        ? metricLimits.workspaces
-                        : "∞"}
-                    </span>
-                  </div>
-                  <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
-                    <div
-                      className="h-full rounded-full border border-blue-400/30 bg-blue-600"
-                      style={{
-                        width: Number.isInteger(Number(metricLimits.workspaces))
-                          ? `${
-                              (metrics.workspaces /
-                                Number(metricLimits.workspaces)) *
-                              100
-                            }%`
-                          : "100%",
-                      }}
-                    />
-                  </div>
-                </div>
 
-                {/* Projects Metric */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center rounded-lg bg-green-500/10">
-                        <FolderOpen className="size-4 text-green-600" />
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="flex size-8 items-center justify-center rounded-lg bg-green-500/10">
+                            <FolderOpen className="size-4 text-green-600" />
+                          </div>
+                          <span className="font-medium">Projects</span>
+                        </div>
+                        <span className="font-medium text-muted-foreground text-sm">
+                          {metrics.projects}/
+                          {Number.isInteger(Number(metricLimits.projects))
+                            ? metricLimits.projects
+                            : "∞"}
+                        </span>
                       </div>
-                      <span className="font-medium">Projects</span>
+                      <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
+                        <div
+                          className="h-full rounded-full border border-green-400/30 bg-green-600"
+                          style={{
+                            width: Number.isInteger(
+                              Number(metricLimits.projects),
+                            )
+                              ? `${
+                                  (metrics.projects /
+                                    Number(metricLimits.projects)) *
+                                  100
+                                }%`
+                              : "100%",
+                          }}
+                        />
+                      </div>
                     </div>
-                    <span className="font-medium text-muted-foreground text-sm">
-                      {metrics.projects}/
-                      {Number.isInteger(Number(metricLimits.projects))
-                        ? metricLimits.projects
-                        : "∞"}
-                    </span>
-                  </div>
-                  <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
-                    <div
-                      className="h-full rounded-full border border-green-400/30 bg-green-600"
-                      style={{
-                        width: Number.isInteger(Number(metricLimits.projects))
-                          ? `${
-                              (metrics.projects /
-                                Number(metricLimits.projects)) *
-                              100
-                            }%`
-                          : "100%",
-                      }}
-                    />
-                  </div>
-                </div>
 
-                {/* Tasks Metric */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center rounded-lg bg-purple-500/10">
-                        <CheckSquare className="size-4 text-purple-600" />
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="flex size-8 items-center justify-center rounded-lg bg-purple-500/10">
+                            <CheckSquare className="size-4 text-purple-600" />
+                          </div>
+                          <span className="font-medium">Tasks</span>
+                        </div>
+                        <span className="font-medium text-muted-foreground text-sm">
+                          {metrics.tasks}/
+                          {Number.isInteger(Number(metricLimits.tasks))
+                            ? metricLimits.tasks
+                            : "∞"}
+                        </span>
                       </div>
-                      <span className="font-medium">Tasks</span>
+                      <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
+                        <div
+                          className="h-full rounded-full border border-purple-400/30 bg-purple-600"
+                          style={{
+                            width: Number.isInteger(Number(metricLimits.tasks))
+                              ? `${
+                                  (metrics.tasks / Number(metricLimits.tasks)) *
+                                  100
+                                }%`
+                              : "100%",
+                          }}
+                        />
+                      </div>
                     </div>
-                    <span className="font-medium text-muted-foreground text-sm">
-                      {metrics.tasks}/
-                      {Number.isInteger(Number(metricLimits.tasks))
-                        ? metricLimits.tasks
-                        : "∞"}
-                    </span>
-                  </div>
-                  <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
-                    <div
-                      className="h-full rounded-full border border-purple-400/30 bg-purple-600"
-                      style={{
-                        width: Number.isInteger(Number(metricLimits.tasks))
-                          ? `${
-                              (metrics.tasks / Number(metricLimits.tasks)) * 100
-                            }%`
-                          : "100%",
-                      }}
-                    />
-                  </div>
-                </div>
+                  </>
+                )}
 
                 {/* Upgrade CTA */}
                 {upgradeTier && (
-                  <div className="mt-8 rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6">
+                  <div
+                    className={cn(
+                      "rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6",
+                      currentProduct && "mt-8",
+                    )}
+                  >
                     <div className="text-center">
                       <h4 className="mb-2 font-bold text-base">
-                        Upgrade to {upgradeTier}
+                        Upgrade to {upgradeTier} Tier
                       </h4>
                       <p className="mb-4 text-muted-foreground text-sm leading-relaxed">
                         Get {upgradeLimits.workspaces?.toLowerCase()}{" "}
@@ -320,20 +334,38 @@ function RouteComponent() {
                         projects, and {upgradeLimits.tasks?.toLowerCase()} tasks
                       </p>
                       {/* TODO: better UI/UX when user doesn't have a default payment method on file */}
-                      <Button
-                        size="sm"
-                        className="w-full border border-primary/20 font-medium duration-200 hover:border-primary/40 hover:transition-colors"
-                        disabled={isProductUpdating || !paymentId}
-                        onClick={() => {
-                          setSubscriptionId(subscription?.id ?? null);
-                          setIsUpgradeSubscriptionDialogOpen(true);
-                        }}
-                      >
-                        <Zap className="mr-2 size-3" />
-                        {isProductUpdating ? "Upgrading..." : "Upgrade Now"}
-                      </Button>
+                      {customer ? (
+                        <Button
+                          size="sm"
+                          className="w-full font-medium duration-200 hover:border-primary/40 hover:transition-colors"
+                          disabled={
+                            isProductUpdating || (currentProduct && !paymentId)
+                          }
+                          onClick={() => {
+                            setSubscriptionId(subscription?.id ?? null);
+                            setIsUpgradeSubscriptionDialogOpen(true);
+                          }}
+                        >
+                          <Zap className="mr-2 size-3" />
+                          {isProductUpdating ? "Upgrading..." : "Upgrade Now"}
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          className="w-full font-medium duration-200 hover:border-primary/40 hover:transition-colors"
+                          onClick={() =>
+                            navigate({
+                              href: `${API_BASE_URL}/checkout?products=${SandboxFree.Free}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
+                              reloadDocument: true,
+                            })
+                          }
+                        >
+                          <Zap className="mr-2 size-3" />
+                          Upgrade Now
+                        </Button>
+                      )}
 
-                      {!paymentId && (
+                      {currentProduct && !paymentId && (
                         <p className="mt-2 text-xs">
                           Please add a payment method to upgrade.
                         </p>
@@ -356,9 +388,8 @@ function RouteComponent() {
               </TabsList>
               <TabsContent value="account">
                 <div className="mt-4 space-y-8">
-                  {/* Plan Benefits */}
-                  {currentProduct && (
-                    <div>
+                  {currentProduct ? (
+                    <>
                       <h3 className="mb-6 font-bold text-2xl tracking-tight">
                         {firstLetterToUppercase(
                           currentProduct.metadata.title as string,
@@ -386,34 +417,49 @@ function RouteComponent() {
                           </CardRoot>
                         ))}
                       </div>
-                    </div>
-                  )}
-
-                  {/* Action Buttons */}
-                  <div className="flex flex-col gap-4 sm:flex-row">
-                    <Button variant="outline" asChild>
-                      <a
-                        href={
-                          customer && currentProduct
-                            ? `${API_BASE_URL}/portal?customerId=${customer.id}`
-                            : `${BASE_URL}/pricing`
-                        }
-                        target={
-                          customer && currentProduct ? "_blank" : undefined
-                        }
-                        rel={
-                          customer && currentProduct
-                            ? "noopener noreferrer"
-                            : undefined
+                      {/* TODO: determine best way to go about `Manage Subscription` to only showcase Runa products */}
+                      <Button variant="outline" asChild>
+                        <a
+                          href={`${API_BASE_URL}/portal?customerId=${customer?.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <CreditCard className="size-4" />
+                          Manage Subscription
+                        </a>
+                      </Button>
+                    </>
+                  ) : (
+                    <div className="flex min-h-48 w-full flex-col items-center justify-center gap-6 rounded-xl border-2 border-gray-200 border-dashed bg-primary-300/5 p-8 dark:border-gray-700 dark:bg-primary-800/5">
+                      <div className="flex flex-col items-center gap-3 text-center">
+                        <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20">
+                          <CreditCard className="size-6 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900 text-lg/6 dark:text-gray-100">
+                            No Active Subscription
+                          </h3>
+                          <p className="text-gray-600 text-sm/5 dark:text-gray-400">
+                            Get started with a subscription to unlock features
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        onClick={() =>
+                          navigate({
+                            href: `${API_BASE_URL}/checkout?${RUNA_PRODUCT_IDS.map((id) => `products=${id}`).join("&")}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
+                            reloadDocument: true,
+                          })
                         }
                       >
                         <CreditCard className="size-4" />
-                        {currentProduct ? "Manage Subscription" : "Subscribe"}
-                      </a>
-                    </Button>
-                  </div>
+                        Subscribe
+                      </Button>
+                    </div>
+                  )}
 
-                  <div className="mt-16 rounded-xl border border-destructive/20 bg-destructive/5 p-6">
+                  <div className="mt-8 rounded-xl border border-destructive/20 bg-destructive/5 p-6">
                     <div className="flex flex-col gap-4">
                       <h3 className="font-bold text-destructive text-xl">
                         Danger Zone
