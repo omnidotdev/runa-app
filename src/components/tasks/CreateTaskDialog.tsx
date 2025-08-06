@@ -10,8 +10,9 @@ import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
 
-import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
+import Assignees from "@/components/shared/Assignees";
+import Label from "@/components/shared/Label";
 import CreateTaskAssignees from "@/components/tasks/CreateTaskAssignees";
 import CreateTaskDatePicker from "@/components/tasks/CreateTaskDatePicker";
 import CreateTaskPriority from "@/components/tasks/CreateTaskPriority";
@@ -44,7 +45,6 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import getQueryClient from "@/lib/util/getQueryClient";
-import Label from "../Label";
 
 const CreateTaskDialog = () => {
   const { projectId } = useLoaderData({

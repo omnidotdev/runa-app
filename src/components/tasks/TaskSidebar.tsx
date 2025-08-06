@@ -3,8 +3,8 @@ import { useParams } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
-import Assignees from "@/components/Assignees";
-import Label from "@/components/Label";
+import Assignees from "@/components/shared/Assignees";
+import Label from "@/components/shared/Label";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";

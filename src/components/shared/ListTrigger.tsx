@@ -1,8 +1,8 @@
 import { ChevronRightIcon, PlusIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip } from "@/components/ui/tooltip";
-import { CollapsibleTrigger } from "../ui/collapsible";
 
 import type { MouseEventHandler, ReactNode } from "react";
 

@@ -3,10 +3,10 @@ import { useLoaderData } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
+import LabelForm from "@/components/projects/settings/labels/LabelForm";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import labelsOptions from "@/lib/options/labels.options";
-import LabelForm from "./LabelForm";
 
 import type { LabelFragment as Label } from "@/generated/graphql";
 

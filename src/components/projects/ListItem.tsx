@@ -4,9 +4,9 @@ import { format } from "date-fns";
 import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
-import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
-import Label from "@/components/Label";
+import Assignees from "@/components/shared/Assignees";
+import Label from "@/components/shared/Label";
 import PriorityIcon from "@/components/tasks/PriorityIcon";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";

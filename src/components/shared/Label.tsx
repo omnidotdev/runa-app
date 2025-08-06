@@ -1,9 +1,9 @@
 import { useColorPicker } from "@ark-ui/react/color-picker";
 import { TagIcon } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { parseColor } from "@/components/ui/color-picker";
 import getLabelColors from "@/lib/util/getLabelColors";
-import { Badge } from "./ui/badge";
 
 import type { LabelFragment } from "@/generated/graphql";
 

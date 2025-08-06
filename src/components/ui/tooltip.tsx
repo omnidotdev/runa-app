@@ -2,8 +2,8 @@ import { Portal } from "@ark-ui/react/portal";
 import { Tooltip as ArkTooltip } from "@ark-ui/react/tooltip";
 import { tv } from "tailwind-variants";
 
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import { SidebarMenuShortcut } from "./sidebar";
 
 import type { ComponentProps, ReactNode } from "react";
 
