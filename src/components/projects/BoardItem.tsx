@@ -2,6 +2,7 @@ import { Draggable } from "@hello-pangea/dnd";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
+import { useRef, useState } from "react";
 
 import Assignees from "@/components/Assignees";
 import RichTextEditor from "@/components/core/RichTextEditor";
@@ -25,13 +26,15 @@ interface Props {
 
 const BoardItem = ({ task, index, displayId }: Props) => {
   const navigate = useNavigate();
-
   const { workspaceSlug, projectSlug } = useParams({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
+  const [isHovered, setIsHovered] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const { isDragging } = useDragStore();
-  const { setTaskId } = useTaskStore();
+  const { taskId, setTaskId } = useTaskStore();
   const { isOpen: isUpdateAssigneesDialogOpen } = useDialogStore({
       type: DialogType.UpdateAssignees,
     }),
@@ -47,6 +50,33 @@ const BoardItem = ({ task, index, displayId }: Props) => {
     isUpdateDueDateDialogOpen ||
     isUpdateTaskLabelsDialogOpen;
 
+  const handleOnMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setIsHovered(true);
+      // NB: tracking global `isDragging` is important to not trigger these handlers while a user is dragging a task
+      if (!isUpdateDialogOpen && !isDragging && !taskId) {
+        setTaskId(task.rowId);
+      }
+    }, 300);
+  };
+
+  const handleOnMouseLeave = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    if (isHovered) {
+      setIsHovered(false);
+      if (!isUpdateDialogOpen && !isDragging && !!taskId) {
+        setTaskId(null);
+      }
+    }
+  };
+
   return (
     <Draggable draggableId={task.rowId} index={index}>
       {(provided, snapshot) => (
@@ -54,13 +84,8 @@ const BoardItem = ({ task, index, displayId }: Props) => {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          // NB: tracking global `isDragging` is important to not trigger these handlers while a user is dragging a task
-          onMouseEnter={() =>
-            !isUpdateDialogOpen && !isDragging && setTaskId(task.rowId)
-          }
-          onMouseLeave={() =>
-            !isUpdateDialogOpen && !isDragging && setTaskId(null)
-          }
+          onMouseEnter={handleOnMouseEnter}
+          onMouseLeave={handleOnMouseLeave}
           onClick={() => {
             if (!snapshot.isDragging) {
               navigate({
