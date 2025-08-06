@@ -212,13 +212,13 @@ const CreateProjectDialog = () => {
       open={isCreateProjectOpen}
       onOpenChange={({ open }) => {
         setIsCreateProjectOpen(open);
+        form.reset();
 
         if (!open) {
           setProjectColumnId(null);
         }
       }}
       initialFocusEl={() => nameRef.current}
-      onInteractOutside={() => form.reset()}
     >
       <DialogBackdrop />
       <DialogPositioner>

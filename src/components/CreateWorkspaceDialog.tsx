@@ -158,9 +158,11 @@ const CreateWorkspaceDialog = () => {
   return (
     <DialogRoot
       open={isCreateWorkspaceOpen}
-      onOpenChange={({ open }) => setIsCreateWorkspaceOpen(open)}
+      onOpenChange={({ open }) => {
+        setIsCreateWorkspaceOpen(open);
+        form.reset();
+      }}
       initialFocusEl={() => nameRef.current}
-      onInteractOutside={() => form.reset()}
     >
       <DialogBackdrop />
       <DialogPositioner>

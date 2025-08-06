@@ -138,6 +138,7 @@ const UpdateTaskLabelsDialog = () => {
       open={isOpen}
       onOpenChange={({ open }) => {
         setIsOpen(open);
+        form.reset();
 
         if (!open) {
           setTaskId(null);

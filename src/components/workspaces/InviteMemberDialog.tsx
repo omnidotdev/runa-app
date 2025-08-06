@@ -158,7 +158,10 @@ const InviteMemberDialog = () => {
   return (
     <DialogRoot
       open={isInviteTeamMemberOpen}
-      onOpenChange={({ open }) => setIsInviteTeamMemberOpen(open)}
+      onOpenChange={({ open }) => {
+        setIsInviteTeamMemberOpen(open);
+        form.reset();
+      }}
       // TODO: this isnt working.
       initialFocusEl={() => emailRef.current}
     >
