@@ -18,7 +18,13 @@ import {
 } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardRoot,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   TabsContent,
   TabsList,
@@ -36,13 +42,22 @@ import RUNA_PRODUCT_IDS, {
   SandboxYearly,
 } from "@/lib/polar/productIds";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
-import getEnumKeyByValue from "@/lib/util/getEnumKeyByValue";
 import { fetchAuthenticatedCustomer } from "@/server/fetchAuthenticatedCustomer";
 import { fetchCustomerState } from "@/server/fetchCustomerState";
 import { fetchProduct } from "@/server/fetchProduct";
 
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { Tier } from "@/lib/polar/productIds";
+
+// TODO: revamp logic to handle monthly v yearly
+const nextAvailableTier = (currentTier: Tier | undefined) =>
+  match(currentTier)
+    .with(SandboxFree.Free, () => SandboxMonthly.Basic)
+    .with(
+      P.union(SandboxMonthly.Basic, SandboxYearly.Basic),
+      () => SandboxMonthly.Team,
+    )
+    .otherwise(() => null);
 
 export const Route = createFileRoute({
   loader: async ({ context: { queryClient, session } }) => {
@@ -72,9 +87,20 @@ export const Route = createFileRoute({
       currentProduct = await fetchProduct({ data: productId! });
     }
 
+    const upgradeProduct = currentProduct
+      ? currentProduct.metadata?.title !== "team"
+        ? await fetchProduct({
+            data: nextAvailableTier(currentProduct.id as Tier)!,
+          })
+        : null
+      : await fetchProduct({
+          data: SandboxFree.Free,
+        });
+
     return {
       customer,
       currentProduct,
+      upgradeProduct,
       subscription: customer?.activeSubscriptions.find((sub) =>
         RUNA_PRODUCT_IDS!.includes(sub.productId),
       ),
@@ -84,85 +110,8 @@ export const Route = createFileRoute({
   component: RouteComponent,
 });
 
-// Mock plan features
-const planFeatures = {
-  Free: [
-    {
-      title: "5 Projects",
-      description: "Create up to 5 projects",
-      icon: "📁",
-    },
-    {
-      title: "Basic Support",
-      description: "Email support within 48h",
-      icon: "💬",
-    },
-  ],
-  Basic: [
-    {
-      title: "15 Projects",
-      description: "Create up to 15 projects",
-      icon: "📁",
-    },
-    {
-      title: "Basic Support",
-      description: "Email support within 48h",
-      icon: "💬",
-    },
-  ],
-  Pro: [
-    {
-      title: "Unlimited Projects",
-      description: "Create unlimited projects",
-      icon: "📁",
-    },
-    {
-      title: "Advanced Analytics",
-      description: "Detailed project insights",
-      icon: "📊",
-    },
-    {
-      title: "Team Collaboration",
-      description: "Invite up to 10 team members",
-      icon: "👥",
-    },
-  ],
-  Enterprise: [
-    {
-      title: "Unlimited Everything",
-      description: "No limits on projects or users",
-      icon: "♾️",
-    },
-    {
-      title: "24/7 Support",
-      description: "Phone, email & chat support",
-      icon: "📞",
-    },
-    {
-      title: "Custom Analytics",
-      description: "Custom reports and insights",
-      icon: "📊",
-    },
-    {
-      title: "Advanced Security",
-      description: "SSO, audit logs, compliance",
-      icon: "🔒",
-    },
-  ],
-};
-
-// TODO: revamp logic to handle monthly v yearly
-const nextAvailableTier = (currentTier: Tier) =>
-  match(currentTier)
-    .with(SandboxFree.Free, () => SandboxMonthly.Basic)
-    .with(
-      P.union(SandboxMonthly.Basic, SandboxYearly.Basic),
-      () => SandboxMonthly.Team,
-    )
-    .otherwise(() => null);
-
 function RouteComponent() {
-  const { customer, currentProduct, subscription, paymentId } =
+  const { customer, currentProduct, upgradeProduct, subscription, paymentId } =
     Route.useLoaderData();
   const { session } = Route.useRouteContext();
 
@@ -179,6 +128,35 @@ function RouteComponent() {
   const { setIsOpen: setIsUpgradeSubscriptionDialogOpen } = useDialogStore({
     type: DialogType.UpgradeSubscription,
   });
+
+  const metricLimits = {
+    workspaces: currentProduct?.benefits
+      ?.find((b) => b.description.includes("workspace"))
+      ?.description?.split(" ")[0],
+    projects: currentProduct?.benefits
+      ?.find((b) => b.description.includes("project"))
+      ?.description?.split(" ")[0],
+    tasks: currentProduct?.benefits
+      ?.find((b) => b.description.includes("task"))
+      ?.description?.split(" ")[0],
+  };
+
+  const upgradeLimits = {
+    workspaces: upgradeProduct?.benefits
+      ?.find((b) => b.description.includes("workspace"))
+      ?.description?.split(" ")[0],
+    projects: upgradeProduct?.benefits
+      ?.find((b) => b.description.includes("project"))
+      ?.description?.split(" ")[0],
+    tasks: upgradeProduct?.benefits
+      ?.find((b) => b.description.includes("task"))
+      ?.description?.split(" ")[0],
+  };
+
+  const upgradeTier = match(currentProduct?.metadata?.title)
+    .with("free", () => "Basic")
+    .with("basic", () => "Team")
+    .otherwise(() => null);
 
   return (
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
@@ -245,16 +223,23 @@ function RouteComponent() {
                       <span className="font-medium">Workspaces</span>
                     </div>
                     <span className="font-medium text-muted-foreground text-sm">
-                      {/* TODO: dynamic limits */}
-                      {metrics.workspaces}/5
+                      {metrics.workspaces}/
+                      {Number.isInteger(Number(metricLimits.workspaces))
+                        ? metricLimits.workspaces
+                        : "∞"}
                     </span>
                   </div>
                   <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
                     <div
                       className="h-full rounded-full border border-blue-400/30 bg-blue-600"
                       style={{
-                        // TODO: dynamic limits
-                        width: `${(metrics.workspaces / 5) * 100}%`,
+                        width: Number.isInteger(Number(metricLimits.workspaces))
+                          ? `${
+                              (metrics.workspaces /
+                                Number(metricLimits.workspaces)) *
+                              100
+                            }%`
+                          : "100%",
                       }}
                     />
                   </div>
@@ -270,16 +255,23 @@ function RouteComponent() {
                       <span className="font-medium">Projects</span>
                     </div>
                     <span className="font-medium text-muted-foreground text-sm">
-                      {/* TODO: dynamic limits */}
-                      {metrics.projects}/{25}
+                      {metrics.projects}/
+                      {Number.isInteger(Number(metricLimits.projects))
+                        ? metricLimits.projects
+                        : "∞"}
                     </span>
                   </div>
                   <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
                     <div
                       className="h-full rounded-full border border-green-400/30 bg-green-600"
                       style={{
-                        // TODO: dynamic limits
-                        width: `${(metrics.projects / 25) * 100}%`,
+                        width: Number.isInteger(Number(metricLimits.projects))
+                          ? `${
+                              (metrics.projects /
+                                Number(metricLimits.projects)) *
+                              100
+                            }%`
+                          : "100%",
                       }}
                     />
                   </div>
@@ -295,57 +287,60 @@ function RouteComponent() {
                       <span className="font-medium">Tasks</span>
                     </div>
                     <span className="font-medium text-muted-foreground text-sm">
-                      {/* TODO: dynamic limits */}
-                      {metrics.tasks}/{1000}
+                      {metrics.tasks}/
+                      {Number.isInteger(Number(metricLimits.tasks))
+                        ? metricLimits.tasks
+                        : "∞"}
                     </span>
                   </div>
                   <div className="h-2.5 w-full overflow-hidden rounded-full bg-muted/50">
                     <div
                       className="h-full rounded-full border border-purple-400/30 bg-purple-600"
                       style={{
-                        // TODO: dynamic limits
-                        width: `${(metrics.tasks / 1000) * 100}%`,
+                        width: Number.isInteger(Number(metricLimits.tasks))
+                          ? `${
+                              (metrics.tasks / Number(metricLimits.tasks)) * 100
+                            }%`
+                          : "100%",
                       }}
                     />
                   </div>
                 </div>
 
                 {/* Upgrade CTA */}
-                <div className="mt-8 rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6">
-                  <div className="text-center">
-                    <h4 className="mb-2 font-bold text-base">
-                      Upgrade to{" "}
-                      {getEnumKeyByValue(
-                        // TODO: make dynamic
-                        SandboxMonthly,
-                        nextAvailableTier(currentProduct?.id as Tier),
-                      )}
-                    </h4>
-                    <p className="mb-4 text-muted-foreground text-sm leading-relaxed">
-                      {/* TODO: dynamic limits */}
-                      Get 20 workspaces, 100 projects, and 5000 tasks
-                    </p>
-                    {/* TODO: better UI/UX when user doesn't have a default payment method on file */}
-                    <Button
-                      size="sm"
-                      className="w-full border border-primary/20 font-medium duration-200 hover:border-primary/40 hover:transition-colors"
-                      disabled={isProductUpdating || !paymentId}
-                      onClick={() => {
-                        setSubscriptionId(subscription?.id ?? null);
-                        setIsUpgradeSubscriptionDialogOpen(true);
-                      }}
-                    >
-                      <Zap className="mr-2 size-3" />
-                      {isProductUpdating ? "Upgrading..." : "Upgrade Now"}
-                    </Button>
-
-                    {!paymentId && (
-                      <p className="mt-2 text-xs">
-                        Please add a payment method to upgrade.
+                {upgradeTier && (
+                  <div className="mt-8 rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6">
+                    <div className="text-center">
+                      <h4 className="mb-2 font-bold text-base">
+                        Upgrade to {upgradeTier}
+                      </h4>
+                      <p className="mb-4 text-muted-foreground text-sm leading-relaxed">
+                        Get {upgradeLimits.workspaces?.toLowerCase()}{" "}
+                        workspaces, {upgradeLimits.projects?.toLowerCase()}{" "}
+                        projects, and {upgradeLimits.tasks?.toLowerCase()} tasks
                       </p>
-                    )}
+                      {/* TODO: better UI/UX when user doesn't have a default payment method on file */}
+                      <Button
+                        size="sm"
+                        className="w-full border border-primary/20 font-medium duration-200 hover:border-primary/40 hover:transition-colors"
+                        disabled={isProductUpdating || !paymentId}
+                        onClick={() => {
+                          setSubscriptionId(subscription?.id ?? null);
+                          setIsUpgradeSubscriptionDialogOpen(true);
+                        }}
+                      >
+                        <Zap className="mr-2 size-3" />
+                        {isProductUpdating ? "Upgrading..." : "Upgrade Now"}
+                      </Button>
+
+                      {!paymentId && (
+                        <p className="mt-2 text-xs">
+                          Please add a payment method to upgrade.
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -355,7 +350,9 @@ function RouteComponent() {
             <TabsRoot defaultValue="account">
               <TabsList>
                 <TabsTrigger value="account">Account</TabsTrigger>
-                <TabsTrigger value="customization">Customization</TabsTrigger>
+                <TabsTrigger value="customization" disabled>
+                  Customization
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="account">
                 <div className="mt-4 space-y-8">
@@ -369,26 +366,24 @@ function RouteComponent() {
                         Plan Benefits
                       </h3>
                       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                        {planFeatures[
-                          firstLetterToUppercase(
-                            currentProduct.metadata.title as string,
-                          ) as "Free" | "Basic" | "Pro" | "Enterprise"
-                        ].map((feature) => (
-                          <Card key={feature.title} className="border">
-                            <CardContent className="p-6">
-                              <div className="text-center">
-                                <div className="mb-4 text-3xl">
-                                  {feature.icon}
-                                </div>
-                                <h4 className="mb-3 font-semibold text-lg">
-                                  {feature.title}
-                                </h4>
-                                <p className="text-muted-foreground text-sm leading-relaxed">
-                                  {feature.description}
-                                </p>
-                              </div>
+                        {/* TODO: clean this up with better list of dynamic benefits. Shouldn't need to reiterate the limit benefits because they are described in the usage metrics, show other benefits from current subscription */}
+                        {currentProduct.benefits.map((benefit) => (
+                          <CardRoot key={benefit.id}>
+                            <CardContent className="flex flex-col items-center justify-between pt-6 text-center">
+                              {benefit.description.includes("workspace") && (
+                                <Building2 className="mb-4 text-3xl text-primary" />
+                              )}
+                              {benefit.description.includes("project") && (
+                                <FolderOpen className="mb-4 text-3xl text-primary" />
+                              )}
+                              {benefit.description.includes("task") && (
+                                <CheckSquare className="mb-4 text-3xl text-primary" />
+                              )}
+                              <h4 className="mb-3 font-semibold text-lg">
+                                {benefit.description}
+                              </h4>
                             </CardContent>
-                          </Card>
+                          </CardRoot>
                         ))}
                       </div>
                     </div>
