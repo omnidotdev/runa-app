@@ -12,7 +12,7 @@ import {
   Trash2Icon,
   XIcon,
 } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import EmojiSelector from "@/components/core/selectors/EmojiSelector";
 import { Button } from "@/components/ui/button";
@@ -67,6 +67,8 @@ const ColumnForm = ({
   const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
+
+  const [isHovering, setIsHovering] = useState(false);
 
   const {
     attributes,
@@ -222,6 +224,8 @@ const ColumnForm = ({
     <form
       ref={setNodeRef}
       style={style}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -288,6 +292,7 @@ const ColumnForm = ({
               variant="ghost"
               size="icon"
               className="size-7 text-base-400 opacity-0 group-hover:opacity-100"
+              tabIndex={isHovering ? 0 : -1}
             >
               <MoreHorizontalIcon />
             </Button>

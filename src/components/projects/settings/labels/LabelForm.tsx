@@ -7,7 +7,7 @@ import {
   Trash2Icon,
   XIcon,
 } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -75,6 +75,8 @@ const LabelForm = ({
   const { projectId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
+
+  const [isHovering, setIsHovering] = useState(false);
 
   const { mutate: updateLabel } = useUpdateLabelMutation({
       meta: {
@@ -162,6 +164,8 @@ const LabelForm = ({
 
   return (
     <form
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -262,6 +266,7 @@ const LabelForm = ({
               variant="ghost"
               size="icon"
               className="size-7 text-base-400 opacity-0 group-hover:opacity-100"
+              tabIndex={isHovering ? 0 : -1}
             >
               <MoreHorizontalIcon />
             </Button>
