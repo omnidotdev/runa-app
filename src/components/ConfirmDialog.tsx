@@ -83,6 +83,9 @@ const ConfirmDialog = ({
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               placeholder="Enter confirmation text..."
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck="false"
               {...inputProps}
             />
           </div>

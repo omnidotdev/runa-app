@@ -6,10 +6,12 @@ import {
   CalendarIcon,
   MoreHorizontalIcon,
   SendIcon,
+  Trash2Icon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
 
+import ConfirmDialog from "@/components/ConfirmDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import ColumnSelector from "@/components/core/selectors/ColumnSelector";
@@ -26,6 +28,7 @@ import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
   useCreatePostMutation,
+  useDeleteTaskMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -65,6 +68,7 @@ export const Route = createFileRoute({
 });
 
 function TaskPage() {
+  const navigate = Route.useNavigate();
   const { session } = Route.useRouteContext();
   const { projectId } = Route.useLoaderData();
   const { workspaceSlug, projectSlug, taskId } = Route.useParams();
@@ -91,6 +95,18 @@ function TaskPage() {
   const { mutate: addComment } = useCreatePostMutation({
     meta: {
       invalidates: [taskOptions({ rowId: taskId }).queryKey],
+    },
+  });
+  const { mutate: deleteTask } = useDeleteTaskMutation({
+    meta: {
+      invalidates: [["all"]],
+    },
+    onSuccess: () => {
+      navigate({
+        to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+        params: { workspaceSlug, projectSlug },
+        replace: true,
+      });
     },
   });
 
@@ -128,6 +144,10 @@ function TaskPage() {
 
   const { setIsOpen: setIsUpdateDueDateDialogOpen } = useDialogStore({
     type: DialogType.UpdateDueDate,
+  });
+
+  const { setIsOpen: setIsDeleteTaskDialogOpen } = useDialogStore({
+    type: DialogType.DeleteTask,
   });
 
   useEffect(() => {
@@ -181,6 +201,14 @@ function TaskPage() {
 
           <div className="w-full">
             <div className="no-scrollbar flex items-center gap-2 overflow-x-scroll">
+              <Button
+                variant="ghost"
+                className="size-7 justify-self-end text-red-500 hover:text-red-500/80"
+                onClick={() => setIsDeleteTaskDialogOpen(true)}
+              >
+                <Trash2Icon className="size-4" />
+              </Button>
+
               <ColumnSelector
                 projectId={projectId}
                 defaultValue={[task?.columnId!]}
@@ -360,6 +388,17 @@ function TaskPage() {
       <UpdateAssigneesDialog />
       <UpdateDueDateDialog />
       <UpdateTaskLabelsDialog />
+      <ConfirmDialog
+        title="Delete Task"
+        description="This will permanently delete this task.
+        This action cannot be undone."
+        onConfirm={() => deleteTask({ rowId: taskId })}
+        dialogType={DialogType.DeleteTask}
+        confirmation="permanently delete this task"
+        inputProps={{
+          className: "focus-visible:ring-red-500 focus-visible:border-border",
+        }}
+      />
     </>
   );
 }
