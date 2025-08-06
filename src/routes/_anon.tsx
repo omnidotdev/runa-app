@@ -1,7 +1,7 @@
 import { Outlet } from "@tanstack/react-router";
 
 import Link from "@/components/core/Link";
-import ThemeToggle from "@/components/ThemeToggle";
+import ThemeToggle from "@/components/core/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
