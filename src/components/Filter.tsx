@@ -91,14 +91,12 @@ const Filter = () => {
     isFilterOpen,
   ]);
 
-  // Determine if any filters are active
   const areFiltersActive =
     assignees.length > 0 ||
     labels.length > 0 ||
     priorities.length > 0 ||
     userHiddenColumns.length > 0;
 
-  // Function to clear all filters
   const clearAllFilters = () => {
     navigate({
       search: (prev) => ({
@@ -380,47 +378,6 @@ const Filter = () => {
                         </MenuCheckboxItem>
                       );
                     })}
-                    {/* {project?.columns.nodes.map((column) => (
-                      <MenuCheckboxItem
-                        key={column.rowId}
-                        closeOnSelect={false}
-                        value={column.rowId}
-                        defaultChecked={true}
-                        checked={userHiddenColumns.includes(column.rowId)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            updateUserPreferences({
-                              rowId: userPreferences?.rowId!,
-                              patch: {
-                                hiddenColumnIds: [
-                                  ...userHiddenColumns,
-                                  column.rowId,
-                                ],
-                              },
-                            });
-                          } else {
-                            updateUserPreferences({
-                              rowId: userPreferences?.rowId!,
-                              patch: {
-                                hiddenColumnIds: userHiddenColumns.filter(
-                                  (id) => id !== column.rowId,
-                                ),
-                              },
-                            });
-                          }
-                        }}
-                      >
-                        <MenuItemText className="ml-0 flex items-center gap-2">
-                          <div className="flex items-center gap-2">
-                            <p>{column.emoji ?? "😀"}</p>
-                            <p className="font-light text-sm first-letter:uppercase">
-                              {column.title}
-                            </p>
-                          </div>
-                        </MenuItemText>
-                        <MenuItemIndicator />
-                      </MenuCheckboxItem>
-                    ))} */}
                   </MenuContent>
                 </MenuPositioner>
               </MenuRoot>
