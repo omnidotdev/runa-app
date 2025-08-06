@@ -191,7 +191,7 @@ const LabelForm = ({
             disabled={!isActive}
           >
             <ColorPickerControl className="ml-5.5 flex items-center disabled:cursor-default">
-              <ColorPickerTrigger className="size-4 rounded-full disabled:cursor-default">
+              <ColorPickerTrigger className="size-4 rounded-full outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-default">
                 <ColorPickerTransparencyGrid />
                 <ColorPickerValueSwatch />
               </ColorPickerTrigger>
@@ -249,7 +249,7 @@ const LabelForm = ({
             onChange={(e) => field.handleChange(e.target.value)}
             disabled={!isActive}
             placeholder="Enter a label name..."
-            className=" ml-3 border-0 shadow-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 disabled:cursor-default disabled:opacity-100"
+            className="ml-3 rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
           />
         )}
       </form.Field>
@@ -304,7 +304,7 @@ const LabelForm = ({
           ]}
         >
           {([canSubmit, isSubmitting, isDirty]) => (
-            <div className="flex items-center justify-center">
+            <div className="ml-2 flex items-center justify-center">
               <Tooltip tooltip="Cancel">
                 <Button
                   variant="ghost"
@@ -314,6 +314,7 @@ const LabelForm = ({
                     form.reset();
                   }}
                   disabled={isSubmitting}
+                  className="focus-visible:ring-offset-0"
                 >
                   <XIcon />
                 </Button>
@@ -325,6 +326,7 @@ const LabelForm = ({
                   variant="ghost"
                   size="icon"
                   disabled={!canSubmit || isSubmitting || !isDirty}
+                  className="focus-visible:ring-offset-0"
                 >
                   <CheckIcon />
                 </Button>

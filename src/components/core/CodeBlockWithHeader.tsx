@@ -46,6 +46,7 @@ const CodeBlockComponent: React.FC<ReactNodeViewProps> = ({ node }) => {
         </div>
       </div>
       <pre className="overflow-x-auto rounded-b-lg border-x border-b bg-base-50 p-4 text-sm dark:bg-base-950">
+        {/* @ts-ignore: Todo */}
         <NodeViewContent as="code" />
       </pre>
     </NodeViewWrapper>

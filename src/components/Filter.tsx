@@ -1,12 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useLoaderData, useNavigate, useSearch } from "@tanstack/react-router";
 import {
-  useLoaderData,
-  useNavigate,
-  useRouteContext,
-  useSearch,
-} from "@tanstack/react-router";
-import {
-  AlignJustifyIcon,
   CircleAlertIcon,
   FunnelXIcon,
   ListFilter,
@@ -34,19 +28,13 @@ import {
 } from "@/components/ui/menu";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
-import { useUpdateUserPreferenceMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";
-import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 
 const Filter = () => {
   const { workspaceId, projectId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
-  });
-
-  const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
@@ -58,7 +46,7 @@ const Filter = () => {
     from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });
 
-  const popoverButtonRef = useRef<HTMLButtonElement | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const { data: project } = useSuspenseQuery({
@@ -71,31 +59,12 @@ const Filter = () => {
     select: (data) => data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
   });
 
-  const { data: userPreferences } = useSuspenseQuery({
-    ...userPreferencesOptions({
-      userId: session?.user?.rowId!,
-      projectId,
-    }),
-    select: (data) => data?.userPreferenceByUserIdAndProjectId,
-  });
-
-  const userHiddenColumns = userPreferences?.hiddenColumnIds ?? [];
-
-  const { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
-    meta: {
-      invalidates: [["all"]],
-    },
-  });
-
   useHotkeys(Hotkeys.ToggleFilter, () => setIsFilterOpen(!isFilterOpen), [
     isFilterOpen,
   ]);
 
   const areFiltersActive =
-    assignees.length > 0 ||
-    labels.length > 0 ||
-    priorities.length > 0 ||
-    userHiddenColumns.length > 0;
+    assignees.length > 0 || labels.length > 0 || priorities.length > 0;
 
   const clearAllFilters = () => {
     navigate({
@@ -106,13 +75,6 @@ const Filter = () => {
         priorities: [],
       }),
     });
-
-    updateUserPreferences({
-      rowId: userPreferences?.rowId!,
-      patch: {
-        hiddenColumnIds: [],
-      },
-    });
   };
 
   return (
@@ -121,7 +83,7 @@ const Filter = () => {
         strategy: "fixed",
         placement: "bottom",
         getAnchorRect: () =>
-          popoverButtonRef.current?.getBoundingClientRect() ?? null,
+          menuButtonRef.current?.getBoundingClientRect() ?? null,
       }}
       open={isFilterOpen}
       onOpenChange={({ open }) => {
@@ -133,7 +95,7 @@ const Filter = () => {
         tooltip="Filter"
         shortcut="F"
       >
-        <MenuTrigger ref={popoverButtonRef} asChild>
+        <MenuTrigger ref={menuButtonRef} asChild>
           <Button variant="outline" size="icon">
             <ListFilter />
           </Button>
@@ -317,67 +279,6 @@ const Filter = () => {
                         <MenuItemIndicator />
                       </MenuCheckboxItem>
                     ))}
-                  </MenuContent>
-                </MenuPositioner>
-              </MenuRoot>
-
-              <MenuRoot
-                positioning={{ placement: "right-start" }}
-                closeOnSelect={false}
-              >
-                <MenuTriggerItem>
-                  <AlignJustifyIcon className="rotate-90" />
-                  Columns
-                </MenuTriggerItem>
-
-                <MenuPositioner>
-                  <MenuContent className="w-48">
-                    {project?.columns.nodes.map((column) => {
-                      const isHidden = userHiddenColumns.includes(column.rowId);
-
-                      return (
-                        <MenuCheckboxItem
-                          key={column.rowId}
-                          closeOnSelect={false}
-                          value={column.rowId}
-                          checked={!isHidden} // ✅ checked when visible
-                          onCheckedChange={(checked) => {
-                            if (checked === false) {
-                              // ✅ Checkbox was unchecked → hide column
-                              updateUserPreferences({
-                                rowId: userPreferences?.rowId!,
-                                patch: {
-                                  hiddenColumnIds: [
-                                    ...userHiddenColumns,
-                                    column.rowId,
-                                  ],
-                                },
-                              });
-                            } else {
-                              // ✅ Checkbox was checked → show column
-                              updateUserPreferences({
-                                rowId: userPreferences?.rowId!,
-                                patch: {
-                                  hiddenColumnIds: userHiddenColumns.filter(
-                                    (id) => id !== column.rowId,
-                                  ),
-                                },
-                              });
-                            }
-                          }}
-                        >
-                          <MenuItemText className="ml-0 flex items-center gap-2">
-                            <div className="flex items-center gap-2">
-                              <p>{column.emoji ?? "😀"}</p>
-                              <p className="font-light text-sm first-letter:uppercase">
-                                {column.title}
-                              </p>
-                            </div>
-                          </MenuItemText>
-                          <MenuItemIndicator />
-                        </MenuCheckboxItem>
-                      );
-                    })}
                   </MenuContent>
                 </MenuPositioner>
               </MenuRoot>

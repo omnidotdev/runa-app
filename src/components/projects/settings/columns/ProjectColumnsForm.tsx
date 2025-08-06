@@ -17,20 +17,37 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData } from "@tanstack/react-router";
-import { PlusIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { AlignJustifyIcon, MoreHorizontalIcon, PlusIcon } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import ColumnForm from "@/components/projects/settings/columns/ColumnForm";
 import { Button } from "@/components/ui/button";
+import {
+  MenuCheckboxItem,
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuItemIndicator,
+  MenuItemText,
+  MenuPositioner,
+  MenuRoot,
+  MenuSeparator,
+  MenuTrigger,
+  MenuTriggerItem,
+} from "@/components/ui/menu";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
   useDeleteColumnMutation,
   useUpdateColumnMutation,
+  useUpdateUserPreferenceMutation,
 } from "@/generated/graphql";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import columnsOptions from "@/lib/options/columns.options";
+import projectOptions from "@/lib/options/project.options";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
 
 import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
 import type { ColumnFragment as Column } from "@/generated/graphql";
@@ -43,6 +60,10 @@ const ProjectColumnsForm = () => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+  });
+
   const { data: columns } = useSuspenseQuery({
     ...columnsOptions({
       projectId,
@@ -50,8 +71,24 @@ const ProjectColumnsForm = () => {
     select: (data) => data?.columns?.nodes,
   });
 
+  const { data: project } = useSuspenseQuery({
+    ...projectOptions({ rowId: projectId }),
+    select: (data) => data?.project,
+  });
+
+  const { data: userPreferences } = useSuspenseQuery({
+    ...userPreferencesOptions({
+      userId: session?.user?.rowId!,
+      projectId,
+    }),
+    select: (data) => data?.userPreferenceByUserIdAndProjectId,
+  });
+
+  const userHiddenColumns = userPreferences?.hiddenColumnIds ?? [];
+
   const [localColumns, setLocalColumns] = useState<Column[]>(columns ?? []);
   const [columnToDelete, setColumnToDelete] = useState<Column>();
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const { mutate: updateColumn } = useUpdateColumnMutation({
       meta: {
@@ -66,6 +103,11 @@ const ProjectColumnsForm = () => {
         setLocalColumns((prev) =>
           prev.filter((column) => column.rowId !== variables.rowId),
         ),
+    }),
+    { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
+      meta: {
+        invalidates: [["all"]],
+      },
     });
 
   const dataIds = useMemo<UniqueIdentifier[]>(
@@ -124,23 +166,115 @@ const ProjectColumnsForm = () => {
             Project Columns
           </h2>
 
-          <Tooltip
-            tooltip="Create new column"
+          <MenuRoot
             positioning={{
-              placement: "left",
+              placement: "right-start",
+              getAnchorRect: () =>
+                menuButtonRef.current?.getBoundingClientRect() ?? null,
             }}
+            closeOnSelect={false}
           >
-            <Button
-              variant="ghost"
-              size="icon"
-              className="mr-2 size-7"
-              aria-label="Create new column"
-              onClick={handleCreateNewColumn}
-              disabled={activeColumnId !== null}
+            <Tooltip
+              positioning={{ placement: "left" }}
+              tooltip="Column options"
             >
-              <PlusIcon />
-            </Button>
-          </Tooltip>
+              <MenuTrigger ref={menuButtonRef} asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Create new label"
+                  className="mr-2 size-7"
+                >
+                  <MoreHorizontalIcon className="size-4" />
+                </Button>
+              </MenuTrigger>
+            </Tooltip>
+
+            <MenuPositioner>
+              <MenuContent className="w-48 p-0">
+                <MenuItemGroup>
+                  <MenuItemGroupLabel>Column options</MenuItemGroupLabel>
+
+                  <MenuSeparator />
+
+                  <div className="mt-1 flex flex-col gap-0.5">
+                    <MenuItem
+                      value="new-column"
+                      onSelect={handleCreateNewColumn}
+                      disabled={activeColumnId !== null}
+                    >
+                      <PlusIcon />
+                      Add New Column
+                    </MenuItem>
+
+                    <MenuRoot
+                      positioning={{ placement: "right-start" }}
+                      closeOnSelect={false}
+                    >
+                      <MenuTriggerItem>
+                        <AlignJustifyIcon className="rotate-90" />
+                        Columns
+                      </MenuTriggerItem>
+
+                      <MenuPositioner>
+                        <MenuContent className="w-48">
+                          {project?.columns.nodes.map((column) => {
+                            const isHidden = userHiddenColumns.includes(
+                              column.rowId,
+                            );
+
+                            return (
+                              <MenuCheckboxItem
+                                key={column.rowId}
+                                closeOnSelect={false}
+                                value={column.rowId}
+                                checked={!isHidden} // ✅ checked when visible
+                                onCheckedChange={(checked) => {
+                                  if (checked === false) {
+                                    // ✅ Checkbox was unchecked → hide column
+                                    updateUserPreferences({
+                                      rowId: userPreferences?.rowId!,
+                                      patch: {
+                                        hiddenColumnIds: [
+                                          ...userHiddenColumns,
+                                          column.rowId,
+                                        ],
+                                      },
+                                    });
+                                  } else {
+                                    // ✅ Checkbox was checked → show column
+                                    updateUserPreferences({
+                                      rowId: userPreferences?.rowId!,
+                                      patch: {
+                                        hiddenColumnIds:
+                                          userHiddenColumns.filter(
+                                            (id) => id !== column.rowId,
+                                          ),
+                                      },
+                                    });
+                                  }
+                                }}
+                              >
+                                <MenuItemText className="ml-0 flex items-center gap-2">
+                                  <div className="flex items-center gap-2">
+                                    <p>{column.emoji ?? "😀"}</p>
+                                    <p className="font-light text-sm first-letter:uppercase">
+                                      {column.title}
+                                    </p>
+                                  </div>
+                                </MenuItemText>
+                                <MenuItemIndicator />
+                              </MenuCheckboxItem>
+                            );
+                          })}
+                        </MenuContent>
+                      </MenuPositioner>
+                    </MenuRoot>
+                  </div>
+                </MenuItemGroup>
+              </MenuContent>
+            </MenuPositioner>
+          </MenuRoot>
         </div>
 
         {isCreatingColumn && (
