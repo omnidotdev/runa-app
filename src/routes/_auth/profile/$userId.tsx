@@ -39,6 +39,10 @@ import {
   TabsRoot,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import {
+  useCreateWorkspaceUserMutation,
+  useDeleteInvitationMutation,
+} from "@/generated/graphql";
 import { signOut } from "@/lib/auth/signOut";
 import { API_BASE_URL, isDevEnv } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -145,6 +149,13 @@ function RouteComponent() {
     ...invitationsOptions({ email: session?.user.email! }),
     select: (data) => data?.invitations?.nodes ?? [],
   });
+
+  const { mutateAsync: deleteInvation } = useDeleteInvitationMutation({
+    meta: {
+      invalidates: [["all"]],
+    },
+  });
+  const { mutateAsync: acceptInvitation } = useCreateWorkspaceUserMutation();
 
   const { setSubscriptionId, isProductUpdating } = useSubscriptionStore();
   const { setIsOpen: setIsUpgradeSubscriptionDialogOpen } = useDialogStore({
@@ -564,7 +575,21 @@ function RouteComponent() {
                                     variant="outline"
                                     size="sm"
                                     className="hover:border-green-200 hover:bg-green-50 hover:text-green-700 dark:hover:border-green-800 dark:hover:bg-green-950 dark:hover:text-green-300"
-                                    // onClick={() => handleAcceptInvitation(invitation.id)}
+                                    onClick={async () => {
+                                      await acceptInvitation({
+                                        input: {
+                                          workspaceUser: {
+                                            userId: session?.user.rowId!,
+                                            workspaceId:
+                                              invitation.workspace?.rowId!,
+                                          },
+                                        },
+                                      });
+
+                                      await deleteInvation({
+                                        rowId: invitation.rowId,
+                                      });
+                                    }}
                                   >
                                     Accept
                                   </Button>
@@ -572,7 +597,11 @@ function RouteComponent() {
                                     variant="outline"
                                     size="sm"
                                     className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
-                                    // onClick={() => handleRejectInvitation(invitation.id)}
+                                    onClick={async () =>
+                                      await deleteInvation({
+                                        rowId: invitation.rowId,
+                                      })
+                                    }
                                   >
                                     Reject
                                   </Button>

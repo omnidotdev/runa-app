@@ -7936,6 +7936,13 @@ export type CreateInvitationMutationVariables = Exact<{
 
 export type CreateInvitationMutation = { __typename?: 'Mutation', createInvitation?: { __typename?: 'CreateInvitationPayload', invitation?: { __typename?: 'Invitation', rowId: string } | null } | null };
 
+export type DeleteInvitationMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteInvitationMutation = { __typename?: 'Mutation', deleteInvitation?: { __typename?: 'DeleteInvitationPayload', invitation?: { __typename?: 'Invitation', rowId: string } | null } | null };
+
 export type CreateLabelMutationVariables = Exact<{
   input: CreateLabelInput;
 }>;
@@ -8475,6 +8482,34 @@ useCreateInvitationMutation.getKey = () => ['CreateInvitation'];
 
 
 useCreateInvitationMutation.fetcher = (variables: CreateInvitationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateInvitationMutation, CreateInvitationMutationVariables>(CreateInvitationDocument, variables, options);
+
+export const DeleteInvitationDocument = `
+    mutation DeleteInvitation($rowId: UUID!) {
+  deleteInvitation(input: {rowId: $rowId}) {
+    invitation {
+      rowId
+    }
+  }
+}
+    `;
+
+export const useDeleteInvitationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteInvitationMutation, TError, DeleteInvitationMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteInvitationMutation, TError, DeleteInvitationMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteInvitation'],
+    mutationFn: (variables?: DeleteInvitationMutationVariables) => graphqlFetch<DeleteInvitationMutation, DeleteInvitationMutationVariables>(DeleteInvitationDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteInvitationMutation.getKey = () => ['DeleteInvitation'];
+
+
+useDeleteInvitationMutation.fetcher = (variables: DeleteInvitationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteInvitationMutation, DeleteInvitationMutationVariables>(DeleteInvitationDocument, variables, options);
 
 export const CreateLabelDocument = `
     mutation CreateLabel($input: CreateLabelInput!) {

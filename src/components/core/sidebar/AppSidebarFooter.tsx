@@ -125,7 +125,7 @@ const AppSidebarFooter = () => {
               </AvatarFallback>
             </AvatarRoot>
             <span>{session?.user.username}</span>
-            {invitations.length && (
+            {!!invitations.length && (
               <div className="absolute top-2 left-5 size-1.5 rounded-full bg-red-500" />
             )}
           </SidebarMenuButton>

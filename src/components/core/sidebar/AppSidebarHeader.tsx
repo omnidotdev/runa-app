@@ -7,7 +7,6 @@ import {
 } from "@tanstack/react-router";
 import { CheckIcon, ChevronsUpDown, PlusIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import {
   MenuContent,
   MenuItem,
@@ -90,15 +89,10 @@ const AppSidebarHeader = () => {
           </MenuPositioner>
         </MenuRoot>
       ) : (
-        <Button
-          onClick={() => setIsCreateWorkspaceOpen(true)}
-          className="text-foreground active:scale-[0.97]"
-          variant="outline"
-          size="sm"
-        >
+        <SidebarMenuButton onClick={() => setIsCreateWorkspaceOpen(true)}>
           <PlusIcon />
-          Create Workspace
-        </Button>
+          <span>Create Workspace</span>
+        </SidebarMenuButton>
       )}
     </SidebarHeader>
   );
