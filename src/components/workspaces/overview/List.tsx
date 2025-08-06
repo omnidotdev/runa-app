@@ -100,7 +100,7 @@ const List = ({ projects }: Props) => {
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             className={cn(
-                              "group cursor-pointer bg-background",
+                              "group cursor-pointer bg-background outline-hidden last:rounded-b-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
                               snapshot.isDragging
                                 ? "z-10 shadow-lg"
                                 : "hover:bg-base-50/50 dark:hover:bg-background/90",

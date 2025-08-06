@@ -45,7 +45,7 @@ const ListItem = ({ project }: Props) => {
 
   return (
     <div
-      className="cursor-pointer border-base-200 border-b bg-card p-4 last:border-b-0 dark:border-base-700"
+      className="cursor-pointer border-base-200 border-b p-4 last:border-b-0 dark:border-base-700"
       onClick={() =>
         navigate({
           to: "/workspaces/$workspaceSlug/projects/$projectSlug",

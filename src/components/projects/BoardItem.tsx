@@ -74,7 +74,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
             }
           }}
           className={cn(
-            "mb-2 cursor-pointer rounded-lg border bg-background p-3 outline-hidden focus-visible:border-ring focus-visible:ring-[2px] focus-visible:ring-ring dark:border-border",
+            "mb-2 cursor-pointer rounded-lg border bg-background p-3 outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-border",
             !snapshot.isDragging && "hover:bg-accent hover:shadow-sm",
           )}
         >

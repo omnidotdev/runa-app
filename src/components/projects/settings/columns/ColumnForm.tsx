@@ -245,7 +245,7 @@ const ColumnForm = ({
         {...listeners}
         aria-describedby={`DndDescribedBy-${column.rowId}`}
         className={cn(
-          "cursor-move items-center justify-center outline-none outline-hidden focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50",
+          "mr-1 cursor-move items-center justify-center rounded-sm outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           canDrag ? "flex" : "invisible",
         )}
       >

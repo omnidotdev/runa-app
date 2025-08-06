@@ -84,7 +84,7 @@ const Board = ({ projects }: Props) => {
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className="my-1 rounded-lg outline-none outline-hidden focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                className="my-1 rounded-lg outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                               >
                                 <BoardItem project={project} />
                               </div>

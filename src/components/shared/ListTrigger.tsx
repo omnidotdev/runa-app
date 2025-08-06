@@ -27,8 +27,12 @@ const ListTrigger = ({
   children,
 }: Props) => {
   return (
-    <CollapsibleTrigger asChild>
-      <div className="flex items-center justify-between px-3 py-2">
+    <CollapsibleTrigger
+      asChild
+      tabIndex={0}
+      className="focus-visible:ring-inset"
+    >
+      <div className="flex items-center justify-between px-3 py-2 ">
         <div className="flex items-center gap-2">
           <p className="text-xs">{emoji}</p>
 

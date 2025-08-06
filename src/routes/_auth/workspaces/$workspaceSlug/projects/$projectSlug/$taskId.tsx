@@ -17,7 +17,7 @@ import RichTextEditor from "@/components/core/RichTextEditor";
 import ColumnSelector from "@/components/core/selectors/ColumnSelector";
 import PrioritySelector from "@/components/core/selectors/PrioritySelector";
 import NotFound from "@/components/layout/NotFound";
-import TaskSidebar from "@/components/TaskSidebar";
+import TaskSidebar from "@/components/tasks/TaskSidebar";
 import UpdateAssigneesDialog from "@/components/UpdateAssigneesDialog";
 import UpdateDueDateDialog from "@/components/UpdateDueDateDialog";
 import UpdateTaskLabelsDialog from "@/components/UpdateTaskLabelsDialog";
@@ -171,6 +171,7 @@ function TaskPage() {
               }}
               variant="ghost"
               size="icon"
+              className="ml-1"
             >
               <ArrowLeftIcon className="size-4" />
             </Link>
@@ -200,7 +201,7 @@ function TaskPage() {
           </div>
 
           <div className="w-full">
-            <div className="no-scrollbar flex items-center gap-2 overflow-x-scroll">
+            <div className="no-scrollbar flex items-center gap-2 overflow-x-scroll p-1">
               <Button
                 variant="ghost"
                 className="size-7 justify-self-end text-red-500 hover:text-red-500/80"
@@ -388,6 +389,7 @@ function TaskPage() {
       <UpdateAssigneesDialog />
       <UpdateDueDateDialog />
       <UpdateTaskLabelsDialog />
+
       <DestructiveActionDialog
         title="Delete Task"
         description="This will permanently delete this task.
