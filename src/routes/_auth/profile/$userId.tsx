@@ -8,7 +8,7 @@ import {
   Settings,
   Zap,
 } from "lucide-react";
-import { match } from "ts-pattern";
+import { match, P } from "ts-pattern";
 
 import UpgradeSubscriptionDialog from "@/components/profile/UpgradeSubscriptionDialog";
 import {
@@ -32,11 +32,15 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { signOut } from "@/lib/auth/signOut";
-import { API_BASE_URL } from "@/lib/config/env.config";
+import { API_BASE_URL, isDevEnv } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useSubscriptionStore from "@/lib/hooks/store/useSubscriptionStore";
 import usageMetricsOptions from "@/lib/options/usageMetrics.options";
-import RUNA_PRODUCT_IDS, { SandboxFree } from "@/lib/polar/productIds";
+import RUNA_PRODUCT_IDS, {
+  SandboxFree,
+  SandboxMonthly,
+  SandboxYearly,
+} from "@/lib/polar/productIds";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import { cn } from "@/lib/utils";
 import { fetchAuthenticatedCustomer } from "@/server/fetchAuthenticatedCustomer";
@@ -108,6 +112,17 @@ function RouteComponent() {
   // NB: used when monthly v yearly pricing does not matter
   const upgradeProductDetails = upgradeProducts?.[0];
 
+  // TODO: update for prod when productIds are added
+  const isTeamTier = match({ productId: currentProduct?.id, isDevEnv })
+    .with(
+      {
+        productId: P.union(SandboxMonthly.Team, SandboxYearly.Team),
+        isDevEnv: true,
+      },
+      () => true,
+    )
+    .otherwise(() => false);
+
   const { data: metrics } = useSuspenseQuery({
     ...usageMetricsOptions({ userId: session?.user.rowId! }),
     select: (data) => ({
@@ -149,7 +164,7 @@ function RouteComponent() {
   const upgradeTier = match(currentProduct?.metadata?.title)
     .with("free", () => "Basic")
     .with("basic", () => "Team")
-    .with("team", () => null)
+    .with("team", () => "Enterprise")
     .otherwise(() => "Free");
 
   return (
@@ -307,88 +322,100 @@ function RouteComponent() {
                   </>
                 )}
 
-                {/* Upgrade CTA */}
-                {upgradeTier && (
-                  <div
-                    className={cn(
-                      "rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6",
-                      currentProduct && "mt-8",
-                    )}
-                  >
-                    <div className="text-center">
-                      <h4 className="mb-2 font-bold text-base">
-                        {upgradeTier === "Free"
-                          ? "Get Started for Free"
-                          : `Upgrade to ${upgradeTier} Tier`}
-                      </h4>
+                <div
+                  className={cn(
+                    "rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-6",
+                    currentProduct && "mt-8",
+                    isTeamTier &&
+                      "border-gray-800/20 bg-gradient-to-r from-gray-800/5 via-gray-800/10 to-gray-800/5",
+                  )}
+                >
+                  <div className="text-center">
+                    <h4 className="mb-2 font-bold text-base">
+                      {upgradeTier === "Free"
+                        ? "Get Started for Free"
+                        : `Upgrade to ${upgradeTier} Tier`}
+                    </h4>
+                    {isTeamTier ? (
+                      <p className="mb-4 text-muted-foreground text-sm leading-relaxed">
+                        Currently under development
+                      </p>
+                    ) : (
                       <p className="mb-4 text-muted-foreground text-sm leading-relaxed">
                         Get {upgradeLimits.workspaces?.toLowerCase()}{" "}
                         workspaces, {upgradeLimits.projects?.toLowerCase()}{" "}
                         projects, and {upgradeLimits.tasks?.toLowerCase()} tasks
                       </p>
-                      {customer ? (
-                        <Button
-                          size="sm"
-                          className="w-full font-medium duration-200 hover:border-primary/40 hover:transition-colors"
-                          disabled={
-                            isProductUpdating || (currentProduct && !paymentId)
-                          }
-                          onClick={() => {
-                            if (currentProduct) {
-                              setSubscriptionId(subscription?.id ?? null);
-                              setIsUpgradeSubscriptionDialogOpen(true);
-                            } else {
-                              navigate({
-                                href: `${API_BASE_URL}/checkout?products=${SandboxFree.Free}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
-                                reloadDocument: true,
-                              });
-                            }
-                          }}
-                        >
-                          <Zap className="mr-2 size-3" />
-                          {isProductUpdating
-                            ? "Upgrading..."
-                            : upgradeTier === "Free"
-                              ? "Get Started"
-                              : "Upgrade Now"}
-                        </Button>
-                      ) : (
-                        <Button
-                          size="sm"
-                          className="w-full font-medium duration-200 hover:border-primary/40 hover:transition-colors"
-                          onClick={() =>
+                    )}
+                    {customer ? (
+                      <Button
+                        size="sm"
+                        className={cn(
+                          "w-full font-medium duration-200 hover:border-primary/40 hover:transition-colors",
+                          isTeamTier && "border bg-muted text-muted-foreground",
+                        )}
+                        disabled={
+                          isProductUpdating ||
+                          isTeamTier ||
+                          (currentProduct && !paymentId)
+                        }
+                        onClick={() => {
+                          if (currentProduct) {
+                            setSubscriptionId(subscription?.id ?? null);
+                            setIsUpgradeSubscriptionDialogOpen(true);
+                          } else {
                             navigate({
                               href: `${API_BASE_URL}/checkout?products=${SandboxFree.Free}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
                               reloadDocument: true,
-                            })
+                            });
                           }
-                        >
-                          <Zap className="mr-2 size-3" />
-                          Get Started
-                        </Button>
-                      )}
+                        }}
+                      >
+                        <Zap className="mr-2 size-3" />
+                        {isProductUpdating
+                          ? "Upgrading..."
+                          : upgradeTier === "Free"
+                            ? "Get Started"
+                            : isTeamTier
+                              ? "Coming Soon"
+                              : "Upgrade Now"}
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        className="w-full font-medium duration-200 hover:border-primary/40 hover:transition-colors"
+                        onClick={() =>
+                          navigate({
+                            href: `${API_BASE_URL}/checkout?products=${SandboxFree.Free}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
+                            reloadDocument: true,
+                          })
+                        }
+                      >
+                        <Zap className="mr-2 size-3" />
+                        Get Started
+                      </Button>
+                    )}
 
-                      {/* TODO: determine best way to go about managing customer portal to only showcase Runa products */}
-                      {currentProduct && !paymentId && (
-                        <p className="mt-2 text-xs">
-                          Please add a payment method to upgrade. This can be
-                          done through the Settings tab of your{" "}
-                          <span>
-                            <a
-                              href={`${API_BASE_URL}/portal?customerId=${customer?.id}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary underline"
-                            >
-                              customer portal
-                            </a>
-                          </span>
-                          .
-                        </p>
-                      )}
-                    </div>
+                    {/* TODO: determine best way to go about managing customer portal to only showcase Runa products */}
+                    {currentProduct && !paymentId && (
+                      <p className="mt-2 text-xs">
+                        Please add a payment method to upgrade. This can be done
+                        through the Settings tab of your{" "}
+                        <span>
+                          <a
+                            href={`${API_BASE_URL}/portal?customerId=${customer?.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary underline"
+                          >
+                            customer portal
+                          </a>
+                        </span>
+                        .
+                      </p>
+                    )}
                   </div>
-                )}
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -48,8 +48,12 @@ const UpgradeSubscriptionDialog = ({ products }: Props) => {
     type: DialogType.UpgradeSubscription,
   });
 
-  const { subscriptionId, setSubscriptionId, setIsProductUpdating } =
-    useSubscriptionStore();
+  const {
+    subscriptionId,
+    setSubscriptionId,
+    isProductUpdating,
+    setIsProductUpdating,
+  } = useSubscriptionStore();
 
   if (!subscriptionId) return null;
 
@@ -138,7 +142,7 @@ const UpgradeSubscriptionDialog = ({ products }: Props) => {
                 <Button variant="outline">Cancel</Button>
               </DialogCloseTrigger>
               <Button
-                disabled={!productId}
+                disabled={!productId || isProductUpdating}
                 onClick={async () => {
                   setIsProductUpdating(true);
 
