@@ -1,4 +1,4 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   useLoaderData,
   useNavigate,
@@ -61,8 +61,9 @@ const CreateProjectDialog = () => {
     select: (data) => data?.workspace,
   });
 
-  const { data: projects } = useSuspenseQuery({
+  const { data: projects } = useQuery({
     ...projectsOptions({ workspaceId: workspaceId! }),
+    enabled: !!workspaceId,
     select: (data) => data?.projects?.nodes ?? [],
   });
 
