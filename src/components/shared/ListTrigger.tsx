@@ -30,7 +30,7 @@ const ListTrigger = ({
     <CollapsibleTrigger
       asChild
       tabIndex={0}
-      className="focus-visible:ring-inset"
+      className="rounded-t-lg focus-visible:ring-inset"
     >
       <div className="flex items-center justify-between px-3 py-2 ">
         <div className="flex items-center gap-2">

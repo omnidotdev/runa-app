@@ -4,7 +4,6 @@ import { MoreHorizontalIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
-import InviteMemberDialog from "@/components/InviteMemberDialog";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +14,7 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import { Tooltip } from "@/components/ui/tooltip";
+import InviteMemberDialog from "@/components/workspaces/InviteMemberDialog";
 import { useDeleteWorkspaceUserMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";

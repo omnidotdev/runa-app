@@ -17,14 +17,14 @@ import * as z from "zod/v4";
 
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
-import Filter from "@/components/Filter";
 import NotFound from "@/components/layout/NotFound";
 import Board from "@/components/projects/Board";
 import List from "@/components/projects/List";
 import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
-import UpdateAssigneesDialog from "@/components/UpdateAssigneesDialog";
-import UpdateDueDateDialog from "@/components/UpdateDueDateDialog";
-import UpdateTaskLabelsDialog from "@/components/UpdateTaskLabelsDialog";
+import Filter from "@/components/tasks/Filter";
+import UpdateAssigneesDialog from "@/components/tasks/UpdateAssigneesDialog";
+import UpdateDueDateDialog from "@/components/tasks/UpdateDueDateDialog";
+import UpdateTaskLabelsDialog from "@/components/tasks/UpdateTaskLabelsDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip } from "@/components/ui/tooltip";
