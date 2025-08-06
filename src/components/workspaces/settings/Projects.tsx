@@ -206,7 +206,7 @@ const Projects = () => {
                           </MenuItem>
 
                           <MenuItem
-                            value="delete"
+                            value="add task"
                             onClick={() => {
                               navigate({
                                 to: "/workspaces/$workspaceSlug/projects/$projectSlug",

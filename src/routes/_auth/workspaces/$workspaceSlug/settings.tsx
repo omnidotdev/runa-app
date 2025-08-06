@@ -207,6 +207,7 @@ function SettingsPage() {
           }
           onConfirm={() => {
             deleteWorkspace({ rowId: workspace?.rowId! });
+            navigate({ to: "/workspaces", replace: true });
           }}
           dialogType={DialogType.DeleteWorkspace}
           confirmation={`Permanently delete ${workspace?.name}`}

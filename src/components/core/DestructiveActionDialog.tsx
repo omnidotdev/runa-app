@@ -1,5 +1,5 @@
 import { AlertTriangle } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import useDialogStore from "@/lib/hooks/store/useDialogStore";
+import useForm from "@/lib/hooks/useForm";
 
 import type { ComponentProps, ReactNode } from "react";
 import type { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -36,16 +37,22 @@ const DestructiveActionDialog = ({
   ...rest
 }: DestructiveActionDialogProps) => {
   const { isOpen, setIsOpen } = useDialogStore({ type: dialogType });
-  const [userInput, setUserInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleConfirm = () => {
-    if (userInput === confirmation) {
+  const form = useForm({
+    defaultValues: {
+      confirmationInput: "",
+    },
+    validators: {
+      onChangeAsync: async ({ value }) =>
+        value.confirmationInput !== confirmation,
+    },
+    onSubmit: async ({ formApi }) => {
       onConfirm();
-      setUserInput("");
+      formApi.reset();
       setIsOpen(false);
-    }
-  };
+    },
+  });
 
   return (
     <DialogRoot
@@ -63,45 +70,74 @@ const DestructiveActionDialog = ({
           <DialogCloseTrigger />
 
           <div className="mb-4 flex flex-col gap-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+            <div className="flex size-10 items-center justify-center rounded-full border border-destructive bg-destructive/10">
+              <AlertTriangle className="size-5 text-destructive" />
             </div>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
           </div>
 
-          <div className="grid gap-2">
-            <label className="text-foreground text-sm" htmlFor="confirmation">
-              Type <strong className="text-destructive">{confirmation}</strong>{" "}
-              to confirm deletion
-            </label>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+            className="flex flex-col gap-2"
+          >
+            <form.Field name="confirmationInput">
+              {(field) => (
+                <div className="flex flex-col gap-2">
+                  <label
+                    className="text-foreground text-sm"
+                    htmlFor="confirmationInput"
+                  >
+                    Type{" "}
+                    <strong className="text-destructive">{confirmation}</strong>{" "}
+                    to confirm deletion
+                  </label>
 
-            <Input
-              ref={inputRef}
-              id="confirmation"
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              placeholder="Enter confirmation text..."
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck="false"
-              variant="destructive"
-            />
-          </div>
+                  <Input
+                    ref={inputRef}
+                    id="confirmationInput"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Enter confirmation text..."
+                    autoComplete="off"
+                    autoCorrect="off"
+                    spellCheck="false"
+                    variant="destructive"
+                  />
+                </div>
+              )}
+            </form.Field>
 
-          <div className="flex justify-end gap-2">
-            <DialogCloseTrigger asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogCloseTrigger>
+            <div className="mt-4 flex justify-end gap-2">
+              <DialogCloseTrigger asChild>
+                <Button variant="outline" onClick={() => form.reset()}>
+                  Cancel
+                </Button>
+              </DialogCloseTrigger>
 
-            <Button
-              onClick={handleConfirm}
-              disabled={userInput !== confirmation}
-              variant="destructive"
-            >
-              Delete
-            </Button>
-          </div>
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isSubmitting,
+                  state.isDirty,
+                ]}
+              >
+                {([canSubmit, isSubmitting, isDirty]) => (
+                  <Button
+                    type="submit"
+                    variant="destructive"
+                    disabled={!canSubmit || isSubmitting || !isDirty}
+                  >
+                    Delete
+                  </Button>
+                )}
+              </form.Subscribe>
+            </div>
+          </form>
         </DialogContent>
       </DialogPositioner>
     </DialogRoot>

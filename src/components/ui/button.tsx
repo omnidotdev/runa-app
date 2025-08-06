@@ -15,7 +15,7 @@ const buttonVariants = tv({
         "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
       ghost: "hover:bg-accent hover:text-accent-foreground",
       destructive:
-        "bg-red-500 text-destructive-foreground shadow-xs hover:bg-destructive/90 focus-visible:ring-red-500 aria-invalid:ring-red-500/20 dark:aria-invalid:ring-red-500/40",
+        "bg-red-500 text-white dark:text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-red-500 aria-invalid:ring-red-500/20 dark:aria-invalid:ring-red-500/40",
     },
     size: {
       xs: "h-7 gap-1 rounded-sm px-2.5 has-[>svg]:px-2",

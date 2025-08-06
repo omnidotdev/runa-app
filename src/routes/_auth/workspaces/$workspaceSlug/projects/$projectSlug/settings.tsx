@@ -216,7 +216,7 @@ function RouteComponent() {
 
             <Button
               variant="destructive"
-              className="w-fit text-background"
+              className="w-fit"
               onClick={() => setIsDeleteProjectOpen(true)}
             >
               Delete Project
@@ -241,6 +241,10 @@ function RouteComponent() {
           }
           onConfirm={() => {
             deleteWorkspace({ rowId: project?.rowId! });
+            navigate({
+              to: "/workspaces/$workspaceSlug/projects",
+              params: { workspaceSlug },
+            });
           }}
           dialogType={DialogType.DeleteProject}
           confirmation={`Delete ${project?.name}`}
