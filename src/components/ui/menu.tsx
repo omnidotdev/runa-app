@@ -9,8 +9,7 @@ import type { ComponentProps } from "react";
 
 const menuVariants = tv({
   slots: {
-    trigger:
-      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-hidden",
+    trigger: "",
     positioner: "",
     content:
       "bg-background outline-none data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=closed]:animate-out data-[state=open]:animate-in flex flex-col gap-0.5",
@@ -30,7 +29,7 @@ const menuVariants = tv({
     radioItemGroup: "",
     separator: "-mx-1 py-0 h-px",
     triggerItem:
-      "relative [&>svg]:size-4 outline-none focus-visible:border-ring data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 flex cursor-default select-none items-center rounded-sm gap-2 px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative [&>svg]:size-4 outline-none focus-visible:border-ring data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground focus-visible:ring-ring/50 focus-visible:ring-[3px] flex cursor-default select-none items-center rounded-sm gap-2 px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
   },
 });
 
@@ -210,7 +209,6 @@ export {
   MenuItemText,
   MenuItemIndicator,
   MenuPositioner,
-  /** @knipignore */
   MenuProvider,
   MenuRoot,
   MenuSeparator,

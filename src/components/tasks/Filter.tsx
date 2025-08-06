@@ -1,3 +1,4 @@
+import { useMenu } from "@ark-ui/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useNavigate, useSearch } from "@tanstack/react-router";
 import {
@@ -21,6 +22,7 @@ import {
   MenuItemIndicator,
   MenuItemText,
   MenuPositioner,
+  MenuProvider,
   MenuRoot,
   MenuSeparator,
   MenuTrigger,
@@ -65,6 +67,37 @@ const Filter = () => {
 
   const areFiltersActive =
     assignees.length > 0 || labels.length > 0 || priorities.length > 0;
+
+  const labelsMenu = useMenu({
+    positioning: { placement: "right-start" },
+    closeOnSelect: false,
+    onOpenChange: ({ open }) => {
+      if (open) {
+        assigneesMenu.api.setOpen(false);
+        prioritiesMenu.api.setOpen(false);
+      }
+    },
+  });
+  const assigneesMenu = useMenu({
+    positioning: { placement: "right-start" },
+    closeOnSelect: false,
+    onOpenChange: ({ open }) => {
+      if (open) {
+        labelsMenu.api.setOpen(false);
+        prioritiesMenu.api.setOpen(false);
+      }
+    },
+  });
+  const prioritiesMenu = useMenu({
+    positioning: { placement: "right-start" },
+    closeOnSelect: false,
+    onOpenChange: ({ open }) => {
+      if (open) {
+        labelsMenu.api.setOpen(false);
+        assigneesMenu.api.setOpen(false);
+      }
+    },
+  });
 
   const clearAllFilters = () => {
     navigate({
@@ -112,10 +145,7 @@ const Filter = () => {
             <MenuSeparator />
 
             <div className="mt-1 flex flex-col gap-0.5">
-              <MenuRoot
-                positioning={{ placement: "right-start" }}
-                closeOnSelect={false}
-              >
+              <MenuProvider value={labelsMenu}>
                 <MenuTriggerItem>
                   <TagIcon />
                   Labels
@@ -161,12 +191,9 @@ const Filter = () => {
                     ))}
                   </MenuContent>
                 </MenuPositioner>
-              </MenuRoot>
+              </MenuProvider>
 
-              <MenuRoot
-                positioning={{ placement: "right-start" }}
-                closeOnSelect={false}
-              >
+              <MenuProvider value={assigneesMenu}>
                 <MenuTriggerItem>
                   <UserPlusIcon />
                   Assignees
@@ -221,12 +248,9 @@ const Filter = () => {
                     ))}
                   </MenuContent>
                 </MenuPositioner>
-              </MenuRoot>
+              </MenuProvider>
 
-              <MenuRoot
-                positioning={{ placement: "right-start" }}
-                closeOnSelect={false}
-              >
+              <MenuProvider value={prioritiesMenu}>
                 <MenuTriggerItem>
                   <CircleAlertIcon />
                   Priorities
@@ -281,7 +305,7 @@ const Filter = () => {
                     ))}
                   </MenuContent>
                 </MenuPositioner>
-              </MenuRoot>
+              </MenuProvider>
 
               <MenuItem
                 value="clear"

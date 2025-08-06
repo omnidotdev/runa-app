@@ -100,7 +100,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
           }}
           className={cn(
             "mb-2 cursor-pointer rounded-lg border bg-background p-3 outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-border",
-            !snapshot.isDragging && "hover:bg-accent hover:shadow-sm",
+            !snapshot.isDragging && "hover:shadow-sm dark:shadow-gray-400/10",
           )}
         >
           <div className="flex flex-col gap-1">
