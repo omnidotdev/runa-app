@@ -8112,6 +8112,13 @@ export type ColumnsQueryVariables = Exact<{
 
 export type ColumnsQuery = { __typename?: 'Query', columns?: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
 
+export type InvitationsQueryVariables = Exact<{
+  email?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type InvitationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', nodes: Array<{ __typename?: 'Invitation', rowId: string, workspace?: { __typename?: 'Workspace', rowId: string, name: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } } | null }> } | null };
+
 export type LabelsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -8569,6 +8576,22 @@ export const ColumnsDocument = gql`
   }
 }
     ${ColumnFragmentDoc}`;
+export const InvitationsDocument = gql`
+    query Invitations($email: String) {
+  invitations(condition: {email: $email}) {
+    nodes {
+      rowId
+      workspace {
+        rowId
+        name
+        workspaceUsers {
+          totalCount
+        }
+      }
+    }
+  }
+}
+    `;
 export const LabelsDocument = gql`
     query Labels($projectId: UUID!) {
   labels(condition: {projectId: $projectId}, orderBy: NAME_ASC) {
@@ -8962,6 +8985,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Columns(variables: ColumnsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ColumnsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ColumnsQuery>({ document: ColumnsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Columns', 'query', variables);
+    },
+    Invitations(variables?: InvitationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<InvitationsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<InvitationsQuery>({ document: InvitationsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Invitations', 'query', variables);
     },
     Labels(variables: LabelsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<LabelsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<LabelsQuery>({ document: LabelsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Labels', 'query', variables);

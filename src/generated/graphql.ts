@@ -8111,6 +8111,13 @@ export type ColumnsQueryVariables = Exact<{
 
 export type ColumnsQuery = { __typename?: 'Query', columns?: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
 
+export type InvitationsQueryVariables = Exact<{
+  email?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type InvitationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', nodes: Array<{ __typename?: 'Invitation', rowId: string, workspace?: { __typename?: 'Workspace', rowId: string, name: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } } | null }> } | null };
+
 export type LabelsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -9186,6 +9193,65 @@ useInfiniteColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['Columns
 
 
 useColumnsQuery.fetcher = (variables: ColumnsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ColumnsQuery, ColumnsQueryVariables>(ColumnsDocument, variables, options);
+
+export const InvitationsDocument = `
+    query Invitations($email: String) {
+  invitations(condition: {email: $email}) {
+    nodes {
+      rowId
+      workspace {
+        rowId
+        name
+        workspaceUsers {
+          totalCount
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useInvitationsQuery = <
+      TData = InvitationsQuery,
+      TError = unknown
+    >(
+      variables?: InvitationsQueryVariables,
+      options?: Omit<UseQueryOptions<InvitationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<InvitationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<InvitationsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['Invitations'] : ['Invitations', variables],
+    queryFn: graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables),
+    ...options
+  }
+    )};
+
+useInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['Invitations'] : ['Invitations', variables];
+
+export const useInfiniteInvitationsQuery = <
+      TData = InfiniteData<InvitationsQuery>,
+      TError = unknown
+    >(
+      variables: InvitationsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<InvitationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<InvitationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<InvitationsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Invitations.infinite'] : ['Invitations.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['Invitations.infinite'] : ['Invitations.infinite', variables];
+
+
+useInvitationsQuery.fetcher = (variables?: InvitationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables, options);
 
 export const LabelsDocument = `
     query Labels($projectId: UUID!) {

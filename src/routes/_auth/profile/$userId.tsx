@@ -26,6 +26,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
   TabsContent,
   TabsList,
   TabsRoot,
@@ -35,6 +43,7 @@ import { signOut } from "@/lib/auth/signOut";
 import { API_BASE_URL, isDevEnv } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useSubscriptionStore from "@/lib/hooks/store/useSubscriptionStore";
+import invitationsOptions from "@/lib/options/invitations.options";
 import usageMetricsOptions from "@/lib/options/usageMetrics.options";
 import RUNA_PRODUCT_IDS, {
   SandboxFree,
@@ -132,6 +141,11 @@ function RouteComponent() {
     }),
   });
 
+  const { data: invitations } = useSuspenseQuery({
+    ...invitationsOptions({ email: session?.user.email! }),
+    select: (data) => data?.invitations?.nodes ?? [],
+  });
+
   const { setSubscriptionId, isProductUpdating } = useSubscriptionStore();
   const { setIsOpen: setIsUpgradeSubscriptionDialogOpen } = useDialogStore({
     type: DialogType.UpgradeSubscription,
@@ -171,9 +185,7 @@ function RouteComponent() {
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-12">
-          {/* Left Sidebar */}
           <div className="xl:col-span-4">
-            {/* User Profile Section */}
             <div className="mb-8 flex flex-col items-center gap-6 rounded-2xl p-6">
               <div className="relative">
                 <AvatarRoot className="size-28 ring-4 ring-primary/10">
@@ -214,7 +226,6 @@ function RouteComponent() {
               </div>
             </div>
 
-            {/* Usage Metrics Section */}
             <Card className="mb-6 border">
               <CardHeader className="px-0">
                 <CardTitle className="font-semibold text-lg">
@@ -420,7 +431,6 @@ function RouteComponent() {
             </Card>
           </div>
 
-          {/* Right Content Area */}
           <div className="xl:col-span-8">
             <TabsRoot defaultValue="account">
               <TabsList>
@@ -499,6 +509,79 @@ function RouteComponent() {
                         <CreditCard className="size-4" />
                         Subscribe
                       </Button>
+                    </div>
+                  )}
+
+                  {!!invitations.length && (
+                    <div className="space-y-4">
+                      <h2 className="font-bold text-lg">
+                        Workspace Invitations
+                      </h2>
+                      <Table containerProps="rounded-md border">
+                        <TableHeader>
+                          <TableRow className="bg-muted hover:bg-muted">
+                            <TableHead className="pl-3 font-semibold">
+                              Workspace
+                            </TableHead>
+                            <TableHead className="font-semibold">
+                              Members
+                            </TableHead>
+                            <TableHead className="pr-3 text-right font-semibold">
+                              Actions
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {invitations.map((invitation) => (
+                            <TableRow
+                              key={invitation.rowId}
+                              className="hover:bg-background"
+                            >
+                              <TableCell className="py-4 pl-3">
+                                <div className="flex items-center gap-3">
+                                  <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
+                                    <Building2 className="size-4 text-primary" />
+                                  </div>
+                                  <span className="font-medium">
+                                    {invitation.workspace?.name}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell className="py-4 pl-1">
+                                <span className="text-muted-foreground text-sm">
+                                  {invitation.workspace?.workspaceUsers
+                                    .totalCount ?? 0}{" "}
+                                  member
+                                  {invitation.workspace?.workspaceUsers
+                                    .totalCount === 1
+                                    ? ""
+                                    : "s"}
+                                </span>
+                              </TableCell>
+                              <TableCell className="py-4 pr-3 text-right">
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="hover:border-green-200 hover:bg-green-50 hover:text-green-700 dark:hover:border-green-800 dark:hover:bg-green-950 dark:hover:text-green-300"
+                                    // onClick={() => handleAcceptInvitation(invitation.id)}
+                                  >
+                                    Accept
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
+                                    // onClick={() => handleRejectInvitation(invitation.id)}
+                                  >
+                                    Reject
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     </div>
                   )}
 

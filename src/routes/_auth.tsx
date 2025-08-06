@@ -5,6 +5,7 @@ import NotFound from "@/components/layout/NotFound";
 import CreateWorkspaceDialog from "@/components/shared/CreateWorkspaceDialog";
 import { SidebarInset } from "@/components/ui/sidebar";
 import CreateProjectDialog from "@/components/workspaces/CreateProjectDialog";
+import invitationsOptions from "@/lib/options/invitations.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
@@ -81,9 +82,15 @@ export const Route = createFileRoute({
       return { workspaceBySlug: undefined, userPreferences: undefined };
     }
   },
-  loader: ({ context }) => ({
-    workspaceId: context.workspaceBySlug?.rowId,
-  }),
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(
+      invitationsOptions({ email: context.session?.user.email! }),
+    );
+
+    return {
+      workspaceId: context.workspaceBySlug?.rowId,
+    };
+  },
   notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,
   component: AuthenticatedLayout,
 });

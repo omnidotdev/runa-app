@@ -1,3 +1,4 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   useLocation,
   useNavigate,
@@ -38,6 +39,7 @@ import {
 import { signOut } from "@/lib/auth/signOut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useTheme from "@/lib/hooks/useTheme";
+import invitationsOptions from "@/lib/options/invitations.options";
 
 const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
@@ -51,20 +53,24 @@ const AppSidebarFooter = () => {
 
   useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
 
+  const { data: invitations } = useSuspenseQuery({
+    ...invitationsOptions({ email: session?.user.email! }),
+    select: (data) => data?.invitations?.nodes ?? [],
+  });
+
   return (
     <SidebarFooter className="flex justify-center border-t">
       <SidebarMenu className="gap-1 group-data-[collapsible=icon]:w-fit">
         <SidebarMenuItem>
-          <SidebarMenuButton
-            tooltip="Feedback"
-            onClick={() =>
-              navigate({
-                href: "https://backfeed.omni.dev/organizations/omni/projects/runa",
-              })
-            }
-          >
-            <SendIcon />
-            <span className="flex w-full items-center">Feedback</span>
+          <SidebarMenuButton tooltip="Feedback" asChild>
+            <a
+              href="https://backfeed.omni.dev/organizations/omni/projects/runa"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <SendIcon />
+              <span className="flex w-full items-center">Feedback</span>
+            </a>
           </SidebarMenuButton>
         </SidebarMenuItem>
 
@@ -99,6 +105,7 @@ const AppSidebarFooter = () => {
 
         <SidebarMenuItem>
           <SidebarMenuButton
+            className="relative"
             isActive={pathname.pathname === `/profile/${session?.user.hidraId}`}
             tooltip="Profile"
             onClick={() =>
@@ -118,6 +125,9 @@ const AppSidebarFooter = () => {
               </AvatarFallback>
             </AvatarRoot>
             <span>{session?.user.username}</span>
+            {invitations.length && (
+              <div className="absolute top-2 left-5 size-1.5 rounded-full bg-red-500" />
+            )}
           </SidebarMenuButton>
 
           <MenuRoot
