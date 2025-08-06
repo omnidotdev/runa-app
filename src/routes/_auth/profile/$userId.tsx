@@ -5,7 +5,6 @@ import {
   CreditCard,
   FolderOpen,
   LogOut,
-  Mail,
   Settings,
   Zap,
 } from "lucide-react";
@@ -20,7 +19,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   TabsContent,
   TabsList,
@@ -355,10 +353,9 @@ function RouteComponent() {
           {/* Right Content Area */}
           <div className="xl:col-span-8">
             <TabsRoot defaultValue="account">
-              <TabsList className="w-full justify-start">
+              <TabsList>
                 <TabsTrigger value="account">Account</TabsTrigger>
                 <TabsTrigger value="customization">Customization</TabsTrigger>
-                <TabsTrigger value="contact">Contact</TabsTrigger>
               </TabsList>
               <TabsContent value="account">
                 <div className="mt-4 space-y-8">
@@ -463,95 +460,6 @@ function RouteComponent() {
                         themes, and preferences.
                       </p>
                     </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              <TabsContent value="contact">
-                <Card className="mt-4 border">
-                  <CardHeader className="px-6 pt-6">
-                    <CardTitle className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
-                        <Mail className="size-4" />
-                      </div>
-                      Contact Us
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="px-6 pb-6">
-                    <form className="space-y-6">
-                      <div className="grid gap-6 sm:grid-cols-2">
-                        <div className="space-y-2">
-                          <label
-                            htmlFor="firstName"
-                            className="block font-medium text-sm"
-                          >
-                            First Name
-                          </label>
-                          <Input
-                            id="firstName"
-                            placeholder="Enter your first name"
-                            defaultValue="John"
-                            className="transition-all duration-200 focus:border-primary/60"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label
-                            htmlFor="lastName"
-                            className="block font-medium text-sm"
-                          >
-                            Last Name
-                          </label>
-                          <Input
-                            id="lastName"
-                            placeholder="Enter your last name"
-                            defaultValue="Doe"
-                            className="transition-all duration-200 focus:border-primary/60"
-                          />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="email"
-                          className="block font-medium text-sm"
-                        >
-                          Email
-                        </label>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="Enter your email"
-                          defaultValue={session?.user.email ?? undefined}
-                          className="transition-all duration-200 focus:border-primary/60"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="subject"
-                          className="block font-medium text-sm"
-                        >
-                          Subject
-                        </label>
-                        <Input
-                          id="subject"
-                          placeholder="How can we help you?"
-                          className="transition-all duration-200 focus:border-primary/60"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label
-                          htmlFor="message"
-                          className="block font-medium text-sm"
-                        >
-                          Message
-                        </label>
-                        <textarea
-                          id="message"
-                          rows={6}
-                          className="flex w-full rounded-md border bg-transparent px-3 py-2 text-sm transition-all duration-200 placeholder:text-muted-foreground focus:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                          placeholder="Describe your question or issue in detail..."
-                        />
-                      </div>
-                      <Button type="submit">Send Message</Button>
-                    </form>
                   </CardContent>
                 </Card>
               </TabsContent>

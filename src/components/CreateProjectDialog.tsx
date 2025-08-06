@@ -81,8 +81,8 @@ const CreateProjectDialog = () => {
 
   useHotkeys(
     Hotkeys.CreateProject,
-    () => setIsCreateProjectOpen(!isCreateProjectOpen),
-    [setIsCreateProjectOpen, isCreateProjectOpen],
+    () => !!workspaceSlug && setIsCreateProjectOpen(!isCreateProjectOpen),
+    [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug],
   );
 
   const { mutateAsync: createColumn } = useCreateColumnMutation();
@@ -167,6 +167,8 @@ const CreateProjectDialog = () => {
       formApi.reset();
     },
   });
+
+  if (!workspaceSlug) return null;
 
   return (
     <DialogRoot

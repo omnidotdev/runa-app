@@ -82,14 +82,10 @@ const DestructiveActionDialog = ({
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               placeholder="Enter confirmation text..."
-<<<<<<< Updated upstream:src/components/ConfirmDialog.tsx
               autoComplete="off"
               autoCorrect="off"
               spellCheck="false"
-              {...inputProps}
-=======
               variant="destructive"
->>>>>>> Stashed changes:src/components/core/destructiveAction/DestructiveActionDialog.tsx
             />
           </div>
 

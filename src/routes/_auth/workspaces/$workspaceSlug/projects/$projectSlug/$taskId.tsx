@@ -11,7 +11,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
 
-import ConfirmDialog from "@/components/ConfirmDialog";
+import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import ColumnSelector from "@/components/core/selectors/ColumnSelector";
@@ -388,16 +388,13 @@ function TaskPage() {
       <UpdateAssigneesDialog />
       <UpdateDueDateDialog />
       <UpdateTaskLabelsDialog />
-      <ConfirmDialog
+      <DestructiveActionDialog
         title="Delete Task"
         description="This will permanently delete this task.
         This action cannot be undone."
         onConfirm={() => deleteTask({ rowId: taskId })}
         dialogType={DialogType.DeleteTask}
         confirmation="permanently delete this task"
-        inputProps={{
-          className: "focus-visible:ring-red-500 focus-visible:border-border",
-        }}
       />
     </>
   );
