@@ -180,7 +180,7 @@ const ColumnForm = ({
         {...listeners}
         aria-describedby={`DndDescribedBy-${column.rowId}`}
         className={cn(
-          "mr-1 h-9 cursor-move items-center justify-center rounded-sm outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 focus-visible:ring-offset-background",
+          "mr-1 h-9 cursor-move items-center justify-center rounded-sm outline-hidden transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 focus-visible:ring-offset-background",
           canDrag ? "flex" : "invisible",
         )}
       >
@@ -195,7 +195,7 @@ const ColumnForm = ({
             triggerProps={{
               variant: "outline",
               className:
-                "flex justify-between dark:bg-inherit border-0 shadow-none bg-inherit disabled:opacity-100 [&_.icon]:hidden focus-visible:ring-offset-0",
+                "flex justify-between dark:bg-inherit border-0 shadow-none bg-inherit disabled:opacity-100 [&_.icon]:hidden focus-visible:ring-offset-0 transition-[color,box-shadow]",
               disabled: !isActive,
             }}
           />

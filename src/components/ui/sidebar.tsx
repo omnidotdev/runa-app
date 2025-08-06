@@ -552,7 +552,7 @@ function SidebarMenuButton({
       data-active={isActive}
       className={cn(
         // Base layout and spacing
-        "peer/menu-button flex h-8 w-full items-center gap-2 overflow-hidden rounded-md px-2 text-left text-sm transition-[width,height,padding]",
+        "peer/menu-button flex h-8 w-full items-center gap-2 overflow-hidden rounded-md px-2 text-left text-sm transition-[width,height,padding,color,box-shadow]",
         // Typography and base text color
         "font-medium text-sidebar-foreground/70",
         // Hover styles
@@ -617,7 +617,7 @@ function SidebarMenuAction({
       data-sidebar="menu-action"
       data-active={isActive}
       className={cn(
-        "absolute top-1.5 right-1 flex aspect-square w-5 cursor-pointer items-center justify-center rounded-md p-0 text-sidebar-foreground outline-none outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring! focus-visible:ring-offset-2 peer-hover/menu-button:text-sidebar-accent-foreground data-[active=true]:text-sidebar-accent-foreground data-[active=true]:hover:bg-accent data-[active=true]:dark:hover:bg-base-700 [&>svg]:size-4 [&>svg]:shrink-0",
+        "absolute top-1.5 right-1 flex aspect-square w-5 cursor-pointer items-center justify-center rounded-md p-0 text-sidebar-foreground outline-none outline-hidden ring-sidebar-ring transition-[color,box-shadow] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring! focus-visible:ring-offset-2 peer-hover/menu-button:text-sidebar-accent-foreground data-[active=true]:text-sidebar-accent-foreground data-[active=true]:hover:bg-accent data-[active=true]:dark:hover:bg-base-700 [&>svg]:size-4 [&>svg]:shrink-0",
         "after:-inset-2 after:absolute md:after:hidden",
         "peer-data-[size=sm]/menu-button:top-1",
         "peer-data-[size=default]/menu-button:top-1.5",

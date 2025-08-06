@@ -17,7 +17,7 @@ const dialogVariants = tv({
     title: "font-semibold text-lg leading-none tracking-tight",
     description: "text-muted-foreground text-sm",
     closeTrigger:
-      "cursor-pointer absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none",
+      "cursor-pointer absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none transition-[color,box-shadow]",
   },
 });
 

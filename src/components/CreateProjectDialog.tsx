@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import {
   useLoaderData,
   useNavigate,
@@ -30,6 +30,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useForm from "@/lib/hooks/useForm";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import generateSlug from "@/lib/util/generateSlug";
 
@@ -58,6 +59,11 @@ const CreateProjectDialog = () => {
     }),
     enabled: !!workspaceId,
     select: (data) => data?.workspace,
+  });
+
+  const { data: projects } = useSuspenseQuery({
+    ...projectsOptions({ workspaceId: workspaceId! }),
+    select: (data) => data?.projects?.nodes ?? [],
   });
 
   const newProjectColumnId =
@@ -134,12 +140,43 @@ const CreateProjectDialog = () => {
     },
   });
 
+  const isProjectNameAvailable = async (name: string) => {
+    if (!projects) return true;
+
+    return !projects.some(
+      (project) => project.name.toLowerCase() === name.toLowerCase(),
+    );
+  };
+
   const form = useForm({
     defaultValues: {
       name: "",
       description: "",
       projectColumnId: newProjectColumnId,
       columnIndex: projectColumnIndex ?? 0,
+    },
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        if (value.name.trim().length < 3) {
+          return {
+            fields: {
+              name: "Project name must be at least 3 characters long",
+            },
+          };
+        }
+
+        const isAvailable = await isProjectNameAvailable(value.name);
+
+        if (!isAvailable) {
+          return {
+            fields: {
+              name: "This project name is already taken",
+            },
+          };
+        }
+
+        return null;
+      },
     },
     onSubmit: async ({ value, formApi }) => {
       toast.promise(
@@ -181,6 +218,7 @@ const CreateProjectDialog = () => {
         }
       }}
       initialFocusEl={() => nameRef.current}
+      onInteractOutside={() => form.reset()}
     >
       <DialogBackdrop />
       <DialogPositioner>
@@ -203,13 +241,22 @@ const CreateProjectDialog = () => {
           >
             <form.Field name="name">
               {(field) => (
-                <Input
-                  ref={nameRef}
-                  type="text"
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Project Name"
-                />
+                <div className="flex flex-col gap-2">
+                  <Input
+                    ref={nameRef}
+                    type="text"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Project Name"
+                  />
+
+                  {field.state.meta.errors.map((error, index) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: Allow index key for error messages
+                    <p key={index} className="text-destructive text-xs">
+                      {error}
+                    </p>
+                  ))}
+                </div>
               )}
             </form.Field>
 

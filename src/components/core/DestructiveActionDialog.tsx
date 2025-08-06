@@ -62,6 +62,7 @@ const DestructiveActionDialog = ({
         onOpenChange?.(details);
       }}
       initialFocusEl={() => inputRef.current}
+      onInteractOutside={() => form.reset()}
       {...rest}
     >
       <DialogBackdrop />

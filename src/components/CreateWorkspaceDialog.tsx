@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -8,7 +9,6 @@ import {
   DialogBackdrop,
   DialogCloseTrigger,
   DialogContent,
-  DialogDescription,
   DialogPositioner,
   DialogRoot,
   DialogTitle,
@@ -91,9 +91,45 @@ const CreateWorkspaceDialog = () => {
     },
   });
 
+  const { data: workspaces } = useQuery({
+    ...workspacesOptions({ userId: session?.user.rowId! }),
+    select: (data) => data.workspaces?.nodes,
+  });
+
+  const isWorkspaceNameAvailable = async (name: string) => {
+    if (!workspaces) return true;
+
+    return !workspaces.some(
+      (workspace) => workspace.name.toLowerCase() === name.toLowerCase(),
+    );
+  };
+
   const form = useForm({
     defaultValues: {
       name: "",
+    },
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        if (value.name.trim().length < 3) {
+          return {
+            fields: {
+              name: "Workspace name must be at least 3 characters long",
+            },
+          };
+        }
+
+        const isAvailable = await isWorkspaceNameAvailable(value.name);
+
+        if (!isAvailable) {
+          return {
+            fields: {
+              name: "This workspace name is already taken",
+            },
+          };
+        }
+
+        return null;
+      },
     },
     onSubmit: ({ value, formApi }) => {
       if (!value.name.trim()) return;
@@ -124,13 +160,13 @@ const CreateWorkspaceDialog = () => {
       open={isCreateWorkspaceOpen}
       onOpenChange={({ open }) => setIsCreateWorkspaceOpen(open)}
       initialFocusEl={() => nameRef.current}
+      onInteractOutside={() => form.reset()}
     >
       <DialogBackdrop />
       <DialogPositioner>
         <DialogContent>
           <DialogCloseTrigger />
           <DialogTitle>Create Workspace</DialogTitle>
-          <DialogDescription>Create a new workspace</DialogDescription>
 
           <form
             onSubmit={(e) => {
@@ -138,17 +174,32 @@ const CreateWorkspaceDialog = () => {
               e.stopPropagation();
               form.handleSubmit();
             }}
-            className="flex flex-col gap-2"
+            className="mt-4 flex flex-col gap-2"
           >
             <form.Field name="name">
               {(field) => (
-                <Input
-                  ref={nameRef}
-                  type="text"
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Workspace name"
-                />
+                <div className="flex flex-col gap-2">
+                  <label className="text-foreground text-sm" htmlFor="name">
+                    Name
+                  </label>
+
+                  <Input
+                    ref={nameRef}
+                    type="text"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="Workspace name"
+                  />
+
+                  <div className="h-4">
+                    {field.state.meta.errors.map((error, index) => (
+                      // biome-ignore lint/suspicious/noArrayIndexKey: Allow index key for error messages
+                      <p key={index} className="text-destructive text-xs">
+                        {error}
+                      </p>
+                    ))}
+                  </div>
+                </div>
               )}
             </form.Field>
 

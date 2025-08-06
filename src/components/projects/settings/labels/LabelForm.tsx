@@ -191,7 +191,7 @@ const LabelForm = ({
             disabled={!isActive}
           >
             <ColorPickerControl className="ml-5.5 flex items-center disabled:cursor-default">
-              <ColorPickerTrigger className="size-4 rounded-full outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-default">
+              <ColorPickerTrigger className="size-4 rounded-full outline-none transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-default">
                 <ColorPickerTransparencyGrid />
                 <ColorPickerValueSwatch />
               </ColorPickerTrigger>

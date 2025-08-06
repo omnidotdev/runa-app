@@ -265,7 +265,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
               </CollapsibleTrigger>
             </SidebarGroup>
 
-            <CollapsibleContent>
+            <CollapsibleContent className="mt-1">
               <SidebarMenu className="my-1 px-2">
                 {sidebarMenuItems.map((item) => (
                   <SidebarMenuItem key={item.to}>
