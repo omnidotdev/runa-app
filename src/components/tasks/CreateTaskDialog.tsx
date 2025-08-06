@@ -286,7 +286,12 @@ const CreateTaskDialog = () => {
             <div className="flex gap-3 py-2">
               <CreateTaskAssignees form={form} />
 
-              <PopoverRoot>
+              <PopoverRoot
+                positioning={{
+                  strategy: "fixed",
+                  placement: "top-start",
+                }}
+              >
                 <PopoverTrigger asChild>
                   <Button variant="outline">
                     <TagIcon className="size-4" />
@@ -295,7 +300,7 @@ const CreateTaskDialog = () => {
                 </PopoverTrigger>
 
                 <PopoverPositioner>
-                  <PopoverContent className="flex min-w-80 flex-col gap-2 p-0">
+                  <PopoverContent className="flex min-w-fit flex-col gap-2 p-0">
                     <TaskLabelsForm form={form} />
                   </PopoverContent>
                 </PopoverPositioner>

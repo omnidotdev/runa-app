@@ -80,8 +80,6 @@ const InviteMemberDialog = () => {
   const { workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
-  const emailRef = useRef<HTMLInputElement>(null);
-
   const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
@@ -104,6 +102,7 @@ const InviteMemberDialog = () => {
   });
 
   const [numberOfToasts, setNumberOfToasts] = useState(0);
+  const emailRef = useRef<HTMLInputElement>(null);
 
   const rateLimiter = useRateLimiter(setNumberOfToasts, {
     limit: 2,
@@ -160,6 +159,7 @@ const InviteMemberDialog = () => {
     <DialogRoot
       open={isInviteTeamMemberOpen}
       onOpenChange={({ open }) => setIsInviteTeamMemberOpen(open)}
+      // TODO: this isnt working.
       initialFocusEl={() => emailRef.current}
     >
       <DialogBackdrop />

@@ -219,7 +219,7 @@ const CreateProjectDialog = () => {
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Project Description (optional)"
-                  className="field-sizing-content flex min-h-16 w-full rounded-md border border-input px-3 py-2 text-xs shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:aria-invalid:ring-destructive/40"
+                  className="field-sizing-content flex min-h-16 w-full rounded-md border border-input px-3 py-2 text-xs shadow-xs outline-none outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:aria-invalid:ring-destructive/40"
                 />
               )}
             </form.Field>

@@ -180,7 +180,7 @@ const ColumnForm = ({
         {...listeners}
         aria-describedby={`DndDescribedBy-${column.rowId}`}
         className={cn(
-          "mr-1 cursor-move items-center justify-center rounded-sm outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          "mr-1 h-9 cursor-move items-center justify-center rounded-sm outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 focus-visible:ring-offset-background",
           canDrag ? "flex" : "invisible",
         )}
       >
@@ -195,7 +195,7 @@ const ColumnForm = ({
             triggerProps={{
               variant: "outline",
               className:
-                "size-10 flex justify-center items-center dark:bg-inherit border-0 shadow-none bg-inherit disabled:opacity-100 [&_.icon]:hidden rounded-none",
+                "flex justify-between dark:bg-inherit border-0 shadow-none bg-inherit disabled:opacity-100 [&_.icon]:hidden focus-visible:ring-offset-0",
               disabled: !isActive,
             }}
           />
@@ -210,7 +210,7 @@ const ColumnForm = ({
             onChange={(e) => field.handleChange(e.target.value)}
             disabled={!isActive}
             placeholder="Enter a column name..."
-            className="border-0 shadow-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 disabled:cursor-default disabled:opacity-100"
+            className="rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
           />
         )}
       </form.Field>
@@ -266,17 +266,17 @@ const ColumnForm = ({
           ]}
         >
           {([canSubmit, isSubmitting, isDirty]) => (
-            <div className="flex items-center justify-center">
+            <div className="ml-2 flex items-center justify-center">
               <Tooltip tooltip="Cancel">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-8"
                   onClick={() => {
                     onSetActive(null);
                     form.reset();
                   }}
                   disabled={isSubmitting}
+                  className="focus-visible:ring-offset-0"
                 >
                   <XIcon size={12} />
                 </Button>
@@ -287,8 +287,8 @@ const ColumnForm = ({
                   type="submit"
                   variant="ghost"
                   size="icon"
-                  className="size-8"
                   disabled={!canSubmit || isSubmitting || !isDirty}
+                  className="focus-visible:ring-offset-0"
                 >
                   <CheckIcon size={12} />
                 </Button>

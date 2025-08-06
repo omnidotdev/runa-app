@@ -46,11 +46,11 @@ const ColorSelector = ({
   return (
     <ColorPickerRoot {...rest}>
       <ColorPickerControl
-        className="flex items-center gap-2 px-3"
+        className="flex items-center gap-2 px-3 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         {...colorPickerControlProps}
       >
         <ColorPickerTrigger
-          className="size-5 rounded-full disabled:cursor-not-allowed"
+          className="size-5 rounded-full outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed"
           {...colorPickerTriggerProps}
         >
           <ColorPickerTransparencyGrid />
@@ -60,7 +60,7 @@ const ColorSelector = ({
         {showChannelInput && (
           <ColorPickerChannelInput channel="hex" asChild>
             <Input
-              className="rounded-none border-0 shadow-none disabled:opacity-100"
+              className="rounded border-0 shadow-none disabled:opacity-100"
               {...inputProps}
             />
           </ColorPickerChannelInput>
@@ -86,6 +86,7 @@ const ColorSelector = ({
               </ColorPickerChannelSlider>
             </div>
           </div>
+
           <ColorPickerView format="rgba">
             <ColorPickerChannelInput channel="hex" className="h-7 text-xs" />
           </ColorPickerView>

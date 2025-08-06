@@ -25,7 +25,7 @@ const TaskLabelsForm = withForm({
               <div className="flex items-center gap-2">
                 <div
                   className={cn(
-                    "relative flex w-full",
+                    "relative flex w-full divide-x",
                     !!field.state.value.length && "border-b",
                   )}
                 >
@@ -43,9 +43,9 @@ const TaskLabelsForm = withForm({
                     }}
                   />
 
-                  <div className="flex w-full items-center justify-between">
+                  <div className="ml-3 flex w-full items-center justify-between gap-2">
                     <Input
-                      className="rounded-none border-0 border-l shadow-none focus-visible:ring-0"
+                      className="h-7 rounded border-0 shadow-none"
                       placeholder="Add new label..."
                       value={newLabel.name}
                       onChange={(e) =>
@@ -81,7 +81,7 @@ const TaskLabelsForm = withForm({
                       variant="ghost"
                       size="icon"
                       disabled={!newLabel.name || !newLabel.color}
-                      className="mr-1 h-7 w-7"
+                      className="mr-2 h-7 w-7"
                       onClick={() =>
                         field.pushValue({
                           name: newLabel.name,
