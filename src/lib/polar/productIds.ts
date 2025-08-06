@@ -1,7 +1,5 @@
 import { isDevEnv } from "@/lib/config/env.config";
 
-export type Tier = SandboxFree | SandboxMonthly | SandboxYearly;
-
 export enum SandboxFree {
   Free = "203e19ff-534a-49dc-a455-6af007588e01",
 }

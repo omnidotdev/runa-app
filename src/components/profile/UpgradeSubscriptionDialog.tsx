@@ -1,12 +1,9 @@
-import {
-  useLoaderData,
-  useRouteContext,
-  useRouter,
-} from "@tanstack/react-router";
+import { Format } from "@ark-ui/react";
+import { useRouteContext, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { CheckIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { match, P } from "ts-pattern";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,46 +23,24 @@ import {
 } from "@/components/ui/tabs";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useSubscriptionStore from "@/lib/hooks/store/useSubscriptionStore";
-import {
-  SandboxFree,
-  SandboxMonthly,
-  SandboxYearly,
-} from "@/lib/polar/productIds";
+import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import { upgradeSubscription } from "@/server/upgradeSubscription";
 
-import type { Tier } from "@/lib/polar/productIds";
+import type { Product } from "@polar-sh/sdk/models/components/product.js";
+import type { ProductPriceFixed } from "@polar-sh/sdk/models/components/productpricefixed.js";
 
-const UpgradeSubscriptionDialog = () => {
+interface Props {
+  products: Product[];
+}
+
+const UpgradeSubscriptionDialog = ({ products }: Props) => {
   const handleUpgradeSubscription = useServerFn(upgradeSubscription);
 
   const { session } = useRouteContext({
     from: "/_auth/profile/$userId",
   });
 
-  const { currentProduct } = useLoaderData({
-    from: "/_auth/profile/$userId",
-  });
-
-  // TODO: refactor for prod when prod IDs are available
-  const upgradeTier = match(currentProduct?.id)
-    .with(undefined, () => ({
-      monthly: SandboxFree.Free,
-      yearly: SandboxFree.Free,
-    }))
-    .with(SandboxFree.Free, () => ({
-      monthly: SandboxMonthly.Basic,
-      yearly: SandboxYearly.Basic,
-    }))
-    .with(P.union(SandboxMonthly.Basic, SandboxYearly.Basic), () => ({
-      monthly: SandboxMonthly.Team,
-      yearly: SandboxYearly.Team,
-    }))
-    .otherwise(() => ({
-      monthly: null,
-      yearly: null,
-    }));
-
-  const [productId, setProductId] = useState<Tier | null>(upgradeTier?.monthly);
+  const [productId, setProductId] = useState(products[0].id);
 
   const router = useRouter();
 
@@ -98,25 +73,65 @@ const UpgradeSubscriptionDialog = () => {
           <div className="flex flex-col gap-4">
             <TabsRoot
               deselectable={false}
-              defaultValue="monthly"
-              onValueChange={({ value }) => {
-                if (value === "monthly") {
-                  setProductId(upgradeTier?.monthly);
-                } else if (value === "yearly") {
-                  setProductId(upgradeTier?.yearly);
-                }
-              }}
+              defaultValue={products[0].id}
+              onValueChange={({ value }) => setProductId(value)}
             >
-              <TabsList>
-                <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                <TabsTrigger value="yearly">Yearly</TabsTrigger>
+              <TabsList className="mb-2 w-full">
+                {products.map((product) => (
+                  <TabsTrigger
+                    key={product.id}
+                    value={product.id}
+                    className="flex-1"
+                  >{`${firstLetterToUppercase(product.recurringInterval!)}ly`}</TabsTrigger>
+                ))}
               </TabsList>
-              <TabsContent value="monthly">
-                <p>TODO: list of upgraded benefits</p>
-              </TabsContent>
-              <TabsContent value="yearly">
-                <p>TODO: list of upgraded benefits</p>
-              </TabsContent>
+              {products.map((product) => (
+                <TabsContent key={product.id} value={product.id}>
+                  <div className="space-y-4">
+                    <div className="flex items-end justify-between">
+                      <div>
+                        <h2 className="font-semibold text-lg">
+                          {product.name}
+                        </h2>
+                        <p className="text-muted-foreground text-sm">
+                          {product.description}
+                        </p>
+                      </div>
+
+                      <div className="flex text-sm">
+                        <Format.Number
+                          value={
+                            (product.prices[0] as ProductPriceFixed)
+                              .priceAmount / 100
+                          }
+                          style="currency"
+                          currency="USD"
+                        />
+                        <p>{`/${product.recurringInterval}`}</p>
+                      </div>
+                    </div>
+
+                    <div className="rounded-lg border bg-primary-300/5 p-4 dark:bg-primary-950/5">
+                      <h4 className="mb-3 font-semibold">Benefits</h4>
+                      <ul className="space-y-2">
+                        {product.benefits.map((benefit) => (
+                          <li
+                            key={benefit.id}
+                            className="flex items-start gap-3"
+                          >
+                            <div className="mt-0.5 flex-shrink-0">
+                              <CheckIcon className="size-4 text-green-500" />
+                            </div>
+                            <span className="text-muted-foreground text-sm">
+                              {benefit.description}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </TabsContent>
+              ))}
             </TabsRoot>
             <div className="flex items-center gap-2 place-self-end">
               <DialogCloseTrigger asChild>

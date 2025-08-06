@@ -8,7 +8,7 @@ import {
   Settings,
   Zap,
 } from "lucide-react";
-import { match, P } from "ts-pattern";
+import { match } from "ts-pattern";
 
 import UpgradeSubscriptionDialog from "@/components/profile/UpgradeSubscriptionDialog";
 import {
@@ -36,39 +36,26 @@ import { API_BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useSubscriptionStore from "@/lib/hooks/store/useSubscriptionStore";
 import usageMetricsOptions from "@/lib/options/usageMetrics.options";
-import RUNA_PRODUCT_IDS, {
-  SandboxFree,
-  SandboxMonthly,
-  SandboxYearly,
-} from "@/lib/polar/productIds";
+import RUNA_PRODUCT_IDS, { SandboxFree } from "@/lib/polar/productIds";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import { cn } from "@/lib/utils";
 import { fetchAuthenticatedCustomer } from "@/server/fetchAuthenticatedCustomer";
 import { fetchCustomerState } from "@/server/fetchCustomerState";
 import { fetchProduct } from "@/server/fetchProduct";
+import { fetchRunaProducts } from "@/server/fetchRunaProducts";
 
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
-import type { Tier } from "@/lib/polar/productIds";
-
-// TODO: revamp logic to handle monthly v yearly
-const nextAvailableTier = (currentTier: Tier | undefined) =>
-  match(currentTier)
-    .with(SandboxFree.Free, () => SandboxMonthly.Basic)
-    .with(
-      P.union(SandboxMonthly.Basic, SandboxYearly.Basic),
-      () => SandboxMonthly.Team,
-    )
-    .otherwise(() => null);
 
 export const Route = createFileRoute({
   loader: async ({ context: { queryClient, session } }) => {
     let currentProduct: Product | undefined;
 
-    const [customer, payment] = await Promise.all([
+    const [customer, payment, { products }] = await Promise.all([
       fetchCustomerState({
         data: session?.user.hidraId!,
       }),
       fetchAuthenticatedCustomer({ data: { hidraId: session?.user.hidraId! } }),
+      fetchRunaProducts(),
       queryClient.ensureQueryData(
         usageMetricsOptions({ userId: session?.user.rowId! }),
       ),
@@ -88,20 +75,21 @@ export const Route = createFileRoute({
       currentProduct = await fetchProduct({ data: productId! });
     }
 
-    const upgradeProduct = currentProduct
+    const upgradeProducts = currentProduct
       ? currentProduct.metadata?.title !== "team"
-        ? await fetchProduct({
-            data: nextAvailableTier(currentProduct.id as Tier)!,
-          })
+        ? products.filter((product) =>
+            match(currentProduct.metadata.title)
+              .with("free", () => product.metadata.title === "basic")
+              .with("basic", () => product.metadata.title === "team")
+              .otherwise(() => product.metadata.title === "free"),
+          )
         : null
-      : await fetchProduct({
-          data: SandboxFree.Free,
-        });
+      : products.filter((product) => product.metadata.title === "free");
 
     return {
       customer,
       currentProduct,
-      upgradeProduct,
+      upgradeProducts,
       subscription: customer?.activeSubscriptions.find((sub) =>
         RUNA_PRODUCT_IDS.includes(sub.productId),
       ),
@@ -112,10 +100,13 @@ export const Route = createFileRoute({
 });
 
 function RouteComponent() {
-  const { customer, currentProduct, upgradeProduct, subscription, paymentId } =
+  const { customer, currentProduct, upgradeProducts, subscription, paymentId } =
     Route.useLoaderData();
   const { session } = Route.useRouteContext();
   const navigate = Route.useNavigate();
+
+  // NB: used when monthly v yearly pricing does not matter
+  const upgradeProductDetails = upgradeProducts?.[0];
 
   const { data: metrics } = useSuspenseQuery({
     ...usageMetricsOptions({ userId: session?.user.rowId! }),
@@ -144,13 +135,13 @@ function RouteComponent() {
   };
 
   const upgradeLimits = {
-    workspaces: upgradeProduct?.benefits
+    workspaces: upgradeProductDetails?.benefits
       ?.find((b) => b.description.includes("workspace"))
       ?.description?.split(" ")[0],
-    projects: upgradeProduct?.benefits
+    projects: upgradeProductDetails?.benefits
       ?.find((b) => b.description.includes("project"))
       ?.description?.split(" ")[0],
-    tasks: upgradeProduct?.benefits
+    tasks: upgradeProductDetails?.benefits
       ?.find((b) => b.description.includes("task"))
       ?.description?.split(" ")[0],
   };
@@ -326,14 +317,15 @@ function RouteComponent() {
                   >
                     <div className="text-center">
                       <h4 className="mb-2 font-bold text-base">
-                        Upgrade to {upgradeTier} Tier
+                        {upgradeTier === "Free"
+                          ? "Get Started for Free"
+                          : `Upgrade to ${upgradeTier} Tier`}
                       </h4>
                       <p className="mb-4 text-muted-foreground text-sm leading-relaxed">
                         Get {upgradeLimits.workspaces?.toLowerCase()}{" "}
                         workspaces, {upgradeLimits.projects?.toLowerCase()}{" "}
                         projects, and {upgradeLimits.tasks?.toLowerCase()} tasks
                       </p>
-                      {/* TODO: better UI/UX when user doesn't have a default payment method on file */}
                       {customer ? (
                         <Button
                           size="sm"
@@ -342,12 +334,23 @@ function RouteComponent() {
                             isProductUpdating || (currentProduct && !paymentId)
                           }
                           onClick={() => {
-                            setSubscriptionId(subscription?.id ?? null);
-                            setIsUpgradeSubscriptionDialogOpen(true);
+                            if (currentProduct) {
+                              setSubscriptionId(subscription?.id ?? null);
+                              setIsUpgradeSubscriptionDialogOpen(true);
+                            } else {
+                              navigate({
+                                href: `${API_BASE_URL}/checkout?products=${SandboxFree.Free}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
+                                reloadDocument: true,
+                              });
+                            }
                           }}
                         >
                           <Zap className="mr-2 size-3" />
-                          {isProductUpdating ? "Upgrading..." : "Upgrade Now"}
+                          {isProductUpdating
+                            ? "Upgrading..."
+                            : upgradeTier === "Free"
+                              ? "Get Started"
+                              : "Upgrade Now"}
                         </Button>
                       ) : (
                         <Button
@@ -361,13 +364,26 @@ function RouteComponent() {
                           }
                         >
                           <Zap className="mr-2 size-3" />
-                          Upgrade Now
+                          Get Started
                         </Button>
                       )}
 
+                      {/* TODO: determine best way to go about managing customer portal to only showcase Runa products */}
                       {currentProduct && !paymentId && (
                         <p className="mt-2 text-xs">
-                          Please add a payment method to upgrade.
+                          Please add a payment method to upgrade. This can be
+                          done through the Settings tab of your{" "}
+                          <span>
+                            <a
+                              href={`${API_BASE_URL}/portal?customerId=${customer?.id}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary underline"
+                            >
+                              customer portal
+                            </a>
+                          </span>
+                          .
                         </p>
                       )}
                     </div>
@@ -417,7 +433,7 @@ function RouteComponent() {
                           </CardRoot>
                         ))}
                       </div>
-                      {/* TODO: determine best way to go about `Manage Subscription` to only showcase Runa products */}
+                      {/* TODO: determine best way to go about managing customer portal to only showcase Runa products */}
                       <Button variant="outline" asChild>
                         <a
                           href={`${API_BASE_URL}/portal?customerId=${customer?.id}`}
@@ -425,7 +441,7 @@ function RouteComponent() {
                           rel="noopener noreferrer"
                         >
                           <CreditCard className="size-4" />
-                          Manage Subscription
+                          Customer Portal
                         </a>
                       </Button>
                     </>
@@ -509,7 +525,9 @@ function RouteComponent() {
         </div>
       </div>
 
-      <UpgradeSubscriptionDialog />
+      {upgradeProducts && (
+        <UpgradeSubscriptionDialog products={upgradeProducts} />
+      )}
     </div>
   );
 }
