@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
 
-import ConfirmDialog from "@/components/ConfirmDialog";
+import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
@@ -224,7 +224,7 @@ function RouteComponent() {
           </div>
         </div>
 
-        <ConfirmDialog
+        <DestructiveActionDialog
           title="Danger Zone"
           description={
             <span>
@@ -244,9 +244,6 @@ function RouteComponent() {
           }}
           dialogType={DialogType.DeleteProject}
           confirmation={`Delete ${project?.name}`}
-          inputProps={{
-            className: "focus-visible:ring-red-500",
-          }}
         />
       </div>
     </div>

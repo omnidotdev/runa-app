@@ -17,25 +17,24 @@ import useDialogStore from "@/lib/hooks/store/useDialogStore";
 import type { ComponentProps, ReactNode } from "react";
 import type { DialogType } from "@/lib/hooks/store/useDialogStore";
 
-interface ConfirmDialogProps extends ComponentProps<typeof DialogRoot> {
+interface DestructiveActionDialogProps
+  extends ComponentProps<typeof DialogRoot> {
   title: string;
   description: string | ReactNode;
   onConfirm: () => void;
   dialogType: DialogType;
   confirmation?: string;
-  inputProps?: ComponentProps<typeof Input>;
 }
 
-const ConfirmDialog = ({
+const DestructiveActionDialog = ({
   title,
   description,
   onConfirm,
   dialogType,
   confirmation = "",
-  inputProps,
   onOpenChange,
   ...rest
-}: ConfirmDialogProps) => {
+}: DestructiveActionDialogProps) => {
   const { isOpen, setIsOpen } = useDialogStore({ type: dialogType });
   const [userInput, setUserInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -83,10 +82,14 @@ const ConfirmDialog = ({
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               placeholder="Enter confirmation text..."
+<<<<<<< Updated upstream:src/components/ConfirmDialog.tsx
               autoComplete="off"
               autoCorrect="off"
               spellCheck="false"
               {...inputProps}
+=======
+              variant="destructive"
+>>>>>>> Stashed changes:src/components/core/destructiveAction/DestructiveActionDialog.tsx
             />
           </div>
 
@@ -98,7 +101,7 @@ const ConfirmDialog = ({
             <Button
               onClick={handleConfirm}
               disabled={userInput !== confirmation}
-              className="rounded-md bg-red-500 px-4 py-2 font-medium text-sm text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+              variant="destructive"
             >
               Delete
             </Button>
@@ -109,4 +112,4 @@ const ConfirmDialog = ({
   );
 };
 
-export default ConfirmDialog;
+export default DestructiveActionDialog;

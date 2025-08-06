@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import ConfirmDialog from "@/components/ConfirmDialog";
+import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import { Button } from "@/components/ui/button";
 import {
   MenuContent,
@@ -255,7 +255,7 @@ const Projects = () => {
         )}
       </div>
 
-      <ConfirmDialog
+      <DestructiveActionDialog
         title="Danger Zone"
         description={`This will delete the project "${selectedProject?.name}" from ${workspace?.name} workspace. This action cannot be undone.`}
         onConfirm={() => {
@@ -263,9 +263,6 @@ const Projects = () => {
         }}
         dialogType={DialogType.DeleteProject}
         confirmation={`permanently delete ${selectedProject?.name}`}
-        inputProps={{
-          className: "focus-visible:ring-red-500",
-        }}
       />
     </>
   );

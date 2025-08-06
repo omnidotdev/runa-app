@@ -110,203 +110,6 @@ const CreateTaskDialog = () => {
   const { mutateAsync: updateProjectLabel } = useCreateLabelMutation();
   const { mutateAsync: createTaskLabel } = useCreateTaskLabelMutation();
 
-  // const form = useForm({
-  //   defaultValues: {
-  //     ...taskFormDefaults,
-  //     labels: projectLabels,
-  //     columnId: columnId ?? defaultColumnId,
-  //   },
-  //   onSubmit: async ({ value, formApi }) => {
-  //     const allTaskLabels = value.labels.filter((l) => l.checked);
-
-  //     const newLabels = value.labels.filter((l) => l.rowId === "pending");
-
-  //     const data = await Promise.all(
-  //       newLabels.map((label) =>
-  //         updateProjectLabel({
-  //           input: {
-  //             label: {
-  //               name: label.name,
-  //               color: label.color,
-  //               projectId,
-  //             },
-  //           },
-  //         }),
-  //       ),
-  //     );
-
-  //     const newlyAddedLabels = data.map(
-  //       (mutation) => mutation.createLabel?.label!,
-  //     );
-  //     const restOfTaskLabels = allTaskLabels.filter(
-  //       (label) => label.rowId !== "pending",
-  //     );
-
-  //     const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
-
-  //     const [{ createTask }] = await Promise.all([
-  //       addNewTask({
-  //         input: {
-  //           task: {
-  //             content: value.title,
-  //             description: value.description,
-  //             projectId,
-  //             columnId: value.columnId,
-  //             authorId: session?.user?.rowId!,
-  //             dueDate: value.dueDate.length
-  //               ? new Date(value.dueDate)
-  //               : undefined,
-  //             priority: value.priority,
-  //             columnIndex: totalTasks ?? 0,
-  //           },
-  //         },
-  //       }),
-  //     ]);
-
-  //     const taskId = createTask?.task?.rowId!;
-
-  //     await Promise.all(
-  //       newTaskLabels.map((label) =>
-  //         createTaskLabel({
-  //           input: {
-  //             taskLabel: {
-  //               labelId: label.rowId,
-  //               taskId,
-  //             },
-  //           },
-  //         }),
-  //       ),
-  //     );
-
-  //     if (createTask && value.assignees.length) {
-  //       for (const assignee of value.assignees) {
-  //         addNewAssignee({
-  //           input: {
-  //             assignee: {
-  //               userId: assignee,
-  //               taskId: createTask.task?.rowId!,
-  //             },
-  //           },
-  //         });
-  //       }
-  //     }
-
-  //     queryClient.invalidateQueries();
-  //     formApi.reset();
-  //     // Allow for dialog close animation to finish
-  //     setTimeout(() => setColumnId(null), 350);
-  //     navigate({
-  //       search: (prev) => ({
-  //         ...prev,
-  //         createTask: false,
-  //       }),
-  //     });
-  //   },
-  // });
-
-  // const form = useForm({
-  //   defaultValues: {
-  //     ...taskFormDefaults,
-  //     labels: projectLabels,
-  //     columnId: columnId ?? defaultColumnId,
-  //   },
-  //   onSubmit: async ({ value, formApi }) => {
-  //     // toast.promise(
-  //     //   (async () => {
-  //     const allTaskLabels = value.labels.filter((l) => l.checked);
-
-  //     const newLabels = value.labels.filter((l) => l.rowId === "pending");
-
-  //     const data = await Promise.all(
-  //       newLabels.map((label) =>
-  //         updateProjectLabel({
-  //           input: {
-  //             label: {
-  //               name: label.name,
-  //               color: label.color,
-  //               projectId,
-  //             },
-  //           },
-  //         }),
-  //       ),
-  //     );
-
-  //     const newlyAddedLabels = data.map(
-  //       (mutation) => mutation.createLabel?.label!,
-  //     );
-  //     const restOfTaskLabels = allTaskLabels.filter(
-  //       (label) => label.rowId !== "pending",
-  //     );
-
-  //     const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
-
-  //     const [{ createTask }] = await Promise.all([
-  //       addNewTask({
-  //         input: {
-  //           task: {
-  //             content: value.title,
-  //             description: value.description,
-  //             projectId,
-  //             columnId: value.columnId,
-  //             authorId: session?.user?.rowId!,
-  //             dueDate: value.dueDate.length
-  //               ? new Date(value.dueDate)
-  //               : undefined,
-  //             priority: value.priority,
-  //             columnIndex: totalTasks ?? 0,
-  //           },
-  //         },
-  //       }),
-  //     ]);
-
-  //     const taskId = createTask?.task?.rowId!;
-
-  //     await Promise.all(
-  //       newTaskLabels.map((label) =>
-  //         createTaskLabel({
-  //           input: {
-  //             taskLabel: {
-  //               labelId: label.rowId,
-  //               taskId,
-  //             },
-  //           },
-  //         }),
-  //       ),
-  //     );
-
-  //     if (createTask && value.assignees.length) {
-  //       for (const assignee of value.assignees) {
-  //         addNewAssignee({
-  //           input: {
-  //             assignee: {
-  //               userId: assignee,
-  //               taskId: createTask.task?.rowId!,
-  //             },
-  //           },
-  //         });
-  //       }
-  //     }
-
-  //     //   })(),
-  //     //   {
-  //     //     loading: "Creating task...",
-  //     //     success: "Task created successfully!",
-  //     //     error: "Failed to create task. Please try again.",
-  //     //   },
-  //     // );
-
-  //     queryClient.invalidateQueries();
-  //     formApi.reset();
-  //     setTimeout(() => setColumnId(null), 350);
-  //     navigate({
-  //       search: (prev) => ({
-  //         ...prev,
-  //         createTask: false,
-  //       }),
-  //     });
-  //   },
-  // });
-
   const form = useForm({
     defaultValues: {
       ...taskFormDefaults,
@@ -465,6 +268,21 @@ const CreateTaskDialog = () => {
               )}
             </form.Field>
 
+            <div className="prose prose-sm dark:prose-invert w-full max-w-none">
+              <div className="mb-2 flex items-center gap-2">
+                <TypeIcon className="h-4 w-4 text-base-500 dark:text-base-400" />
+                <h3 className="m-0 font-medium text-base-700 text-sm dark:text-base-300">
+                  Description
+                </h3>
+              </div>
+
+              <RichTextEditor
+                onUpdate={({ editor }) =>
+                  form.setFieldValue("description", editor.getHTML())
+                }
+              />
+            </div>
+
             <div className="flex gap-3 py-2">
               <CreateTaskAssignees form={form} />
 
@@ -488,21 +306,6 @@ const CreateTaskDialog = () => {
               <TaskColumnForm form={form} />
 
               <CreateTaskPriority form={form} />
-            </div>
-
-            <div className="prose prose-sm dark:prose-invert w-full max-w-none">
-              <div className="mb-2 flex items-center gap-2">
-                <TypeIcon className="h-4 w-4 text-base-500 dark:text-base-400" />
-                <h3 className="m-0 font-medium text-base-700 text-sm dark:text-base-300">
-                  Description
-                </h3>
-              </div>
-
-              <RichTextEditor
-                onUpdate={({ editor }) =>
-                  form.setFieldValue("description", editor.getHTML())
-                }
-              />
             </div>
 
             <form.Subscribe

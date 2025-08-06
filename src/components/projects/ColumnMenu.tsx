@@ -2,7 +2,7 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { EyeOffIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 
-import ConfirmDialog from "@/components/ConfirmDialog";
+import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import { Button } from "@/components/ui/button";
 import {
   MenuContent,
@@ -136,7 +136,7 @@ const ColumnMenu = ({ columnId }: Props) => {
       </MenuRoot>
 
       {storedColumnId === columnId && (
-        <ConfirmDialog
+        <DestructiveActionDialog
           title="Danger Zone"
           description={`This will delete all tasks from ${column?.title}. This action cannot be undone`}
           confirmation={`Permanently delete ${column?.title} tasks`}
@@ -154,9 +154,6 @@ const ColumnMenu = ({ columnId }: Props) => {
             if (!open) {
               setStoredColumnId(null);
             }
-          }}
-          inputProps={{
-            className: "focus-visible:ring-red-500",
           }}
         />
       )}

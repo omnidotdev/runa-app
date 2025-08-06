@@ -3,7 +3,7 @@ import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { MoreHorizontalIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
-import ConfirmDialog from "@/components/ConfirmDialog";
+import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import InviteMemberDialog from "@/components/InviteMemberDialog";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -169,7 +169,7 @@ const Team = () => {
         )}
       </div>
 
-      <ConfirmDialog
+      <DestructiveActionDialog
         title="Danger Zone"
         description={`This will delete ${selectedMember?.name} from ${workspace?.name} workspace. This action cannot be undone.`}
         onConfirm={() =>
@@ -177,9 +177,6 @@ const Team = () => {
         }
         dialogType={DialogType.DeleteTeamMember}
         confirmation={selectedMember?.name}
-        inputProps={{
-          className: "focus-visible:ring-red-500",
-        }}
       />
 
       <InviteMemberDialog />

@@ -179,7 +179,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                     <MenuTrigger
                       ref={menuButtonRef}
                       onClick={() => setProjectMenuOpen(!isProjectMenuOpen)}
-                      className="text-sidebar-foreground/70"
+                      className="text-sidebar-foreground/70 [&[data-state=open]>svg]:rotate-none"
                     >
                       {isProjectMenuOpen ? <PackageOpenIcon /> : <BoxIcon />}
                     </MenuTrigger>

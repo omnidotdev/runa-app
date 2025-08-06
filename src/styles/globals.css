@@ -223,6 +223,26 @@ html.dark {
     pointer-events: none;
     height: 0;
   }
+
+  /* handle autofill states on light mode */
+  :is(input, textarea, select):-webkit-autofill:is(:hover, :focus, :active, :not(:hover):not(:focus):not(:active)) {
+    -webkit-box-shadow: 0 0 0px 1000px var(--color-white) inset !important;
+    box-shadow: 0 0 0px 1000px var(--color-white) inset !important;
+    -webkit-text-fill-color: var(--base-800) !important;
+    color: var(--base-800) !important;
+    caret-color: var(--base-800) !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+  }
+
+  /* handle autofill states on dark mode */
+  .dark :is(input, textarea, select):-webkit-autofill:is(:hover, :focus, :active, :not(:hover):not(:focus):not(:active)) {
+    -webkit-box-shadow: 0 0 0px 1000px var(--base-950) inset !important;
+    box-shadow: 0 0 0px 1000px var(--base-950) inset !important;
+    -webkit-text-fill-color: var(--base-200) !important;
+    color: var(--base-200) !important;
+    caret-color: var(--base-200) !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+  }
 }
 
 @layer utilities {

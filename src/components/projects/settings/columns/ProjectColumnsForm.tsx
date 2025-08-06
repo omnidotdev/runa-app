@@ -21,7 +21,7 @@ import { useLoaderData } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import ConfirmDialog from "@/components/ConfirmDialog";
+import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import ColumnForm from "@/components/projects/settings/columns/ColumnForm";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -196,7 +196,7 @@ const ProjectColumnsForm = () => {
         ) : null}
       </div>
 
-      <ConfirmDialog
+      <DestructiveActionDialog
         title="Danger Zone"
         description={
           <span>
@@ -233,9 +233,6 @@ const ProjectColumnsForm = () => {
         }}
         dialogType={DialogType.DeleteColumn}
         confirmation={`Delete ${columnToDelete?.title}`}
-        inputProps={{
-          className: "focus-visible:ring-red-500",
-        }}
       />
     </>
   );

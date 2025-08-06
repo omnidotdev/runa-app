@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { useState } from "react";
 
-import ConfirmDialog from "@/components/ConfirmDialog";
+import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import AppSidebarContent from "@/components/core/sidebar/AppSidebarContent";
 import AppSidebarFooter from "@/components/core/sidebar/AppSidebarFooter";
 import AppSidebarHeader from "@/components/core/sidebar/AppSidebarHeader";
@@ -67,7 +67,7 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
       </Sidebar>
 
       {/* Delete Project */}
-      <ConfirmDialog
+      <DestructiveActionDialog
         title="Danger Zone"
         description={`This will delete the project "${selectedProject?.name}" from ${workspace?.name} workspace. This action cannot be undone.`}
         onConfirm={() => {
@@ -79,9 +79,6 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
         }}
         dialogType={DialogType.DeleteProject}
         confirmation={`Permanently delete ${selectedProject?.name}`}
-        inputProps={{
-          className: "focus-visible:ring-red-500",
-        }}
       />
     </>
   );
