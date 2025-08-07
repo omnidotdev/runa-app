@@ -62,19 +62,6 @@ const AppSidebarFooter = () => {
     <SidebarFooter className="flex justify-center border-t">
       <SidebarMenu className="gap-1 group-data-[collapsible=icon]:w-fit">
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Feedback" asChild>
-            <a
-              href="https://backfeed.omni.dev/organizations/omni/projects/runa"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <SendIcon />
-              <span className="flex w-full items-center">Feedback</span>
-            </a>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-
-        <SidebarMenuItem>
           <SidebarMenuButton
             tooltip="Expand Sidebar"
             shortcut={Hotkeys.ToggleSidebar}
@@ -100,6 +87,19 @@ const AppSidebarFooter = () => {
               Toggle Theme
               <SidebarMenuShortcut className="ml-auto">T</SidebarMenuShortcut>
             </span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+
+        <SidebarMenuItem>
+          <SidebarMenuButton tooltip="Feedback" asChild>
+            <a
+              href="https://backfeed.omni.dev/organizations/omni/projects/runa"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <SendIcon />
+              <span className="flex w-full items-center">Feedback</span>
+            </a>
           </SidebarMenuButton>
         </SidebarMenuItem>
 
