@@ -89,8 +89,6 @@ const Comments = () => {
                         </span>
                       </div>
 
-                      {comment.rowId}
-
                       {isUsersPost ? (
                         <UpdateCommentForm
                           post={{
