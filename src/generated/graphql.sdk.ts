@@ -8124,7 +8124,7 @@ export type InvitationsQueryVariables = Exact<{
 }>;
 
 
-export type InvitationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', nodes: Array<{ __typename?: 'Invitation', rowId: string, workspace?: { __typename?: 'Workspace', rowId: string, name: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } } | null }> } | null };
+export type InvitationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', nodes: Array<{ __typename?: 'Invitation', rowId: string, workspace?: { __typename?: 'Workspace', rowId: string, name: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string }> }, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number } } | null }> } | null };
 
 export type LabelsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -8600,6 +8600,11 @@ export const InvitationsDocument = gql`
       workspace {
         rowId
         name
+        projects {
+          nodes {
+            rowId
+          }
+        }
         workspaceUsers {
           totalCount
         }

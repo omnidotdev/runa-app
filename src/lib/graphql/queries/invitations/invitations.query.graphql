@@ -5,6 +5,11 @@ query Invitations($email: String) {
       workspace {
         rowId
         name
+        projects {
+          nodes {
+            rowId
+          }
+        }
         workspaceUsers {
           totalCount
         }

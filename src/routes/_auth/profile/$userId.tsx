@@ -40,6 +40,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import {
+  useCreateUserPreferenceMutation,
   useCreateWorkspaceUserMutation,
   useDeleteInvitationMutation,
 } from "@/generated/graphql";
@@ -150,6 +151,8 @@ function RouteComponent() {
     select: (data) => data?.invitations?.nodes ?? [],
   });
 
+  const { mutateAsync: createUserPreferences } =
+    useCreateUserPreferenceMutation();
   const { mutateAsync: deleteInvation } = useDeleteInvitationMutation({
     meta: {
       invalidates: [["all"]],
@@ -576,15 +579,28 @@ function RouteComponent() {
                                     size="sm"
                                     className="hover:border-green-200 hover:bg-green-50 hover:text-green-700 dark:hover:border-green-800 dark:hover:bg-green-950 dark:hover:text-green-300"
                                     onClick={async () => {
-                                      await acceptInvitation({
-                                        input: {
-                                          workspaceUser: {
-                                            userId: session?.user.rowId!,
-                                            workspaceId:
-                                              invitation.workspace?.rowId!,
+                                      await Promise.all([
+                                        acceptInvitation({
+                                          input: {
+                                            workspaceUser: {
+                                              userId: session?.user.rowId!,
+                                              workspaceId:
+                                                invitation.workspace?.rowId!,
+                                            },
                                           },
-                                        },
-                                      });
+                                        }),
+                                        invitation.workspace?.projects.nodes.map(
+                                          (project) =>
+                                            createUserPreferences({
+                                              input: {
+                                                userPreference: {
+                                                  userId: session?.user.rowId!,
+                                                  projectId: project.rowId,
+                                                },
+                                              },
+                                            }),
+                                        ),
+                                      ]);
 
                                       await deleteInvation({
                                         rowId: invitation.rowId,

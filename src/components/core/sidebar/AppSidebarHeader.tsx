@@ -89,7 +89,10 @@ const AppSidebarHeader = () => {
           </MenuPositioner>
         </MenuRoot>
       ) : (
-        <SidebarMenuButton onClick={() => setIsCreateWorkspaceOpen(true)}>
+        <SidebarMenuButton
+          onClick={() => setIsCreateWorkspaceOpen(true)}
+          className="border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
+        >
           <PlusIcon />
           <span>Create Workspace</span>
         </SidebarMenuButton>
