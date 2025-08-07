@@ -259,7 +259,7 @@ const CreateTaskDialog = () => {
 
                   <Input
                     ref={titleRef}
-                    className="border-none shadow-none focus-visible:ring-0 dark:bg-transparent"
+                    className="border-none shadow-none transition-none focus-visible:ring-0 dark:bg-transparent"
                     placeholder="Task Title"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}

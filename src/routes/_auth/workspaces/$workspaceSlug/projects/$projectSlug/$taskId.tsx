@@ -5,10 +5,9 @@ import {
   ArrowLeftIcon,
   CalendarIcon,
   MoreHorizontalIcon,
-  SendIcon,
   Trash2Icon,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
@@ -17,17 +16,17 @@ import RichTextEditor from "@/components/core/RichTextEditor";
 import ColumnSelector from "@/components/core/selectors/ColumnSelector";
 import PrioritySelector from "@/components/core/selectors/PrioritySelector";
 import NotFound from "@/components/layout/NotFound";
+import Comments from "@/components/tasks/Comments";
+import CreateComment from "@/components/tasks/CreateComment";
 import TaskSidebar from "@/components/tasks/TaskSidebar";
 import UpdateAssigneesDialog from "@/components/tasks/UpdateAssigneesDialog";
 import UpdateDueDateDialog from "@/components/tasks/UpdateDueDateDialog";
 import UpdateTaskLabelsDialog from "@/components/tasks/UpdateTaskLabelsDialog";
-import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
-  useCreatePostMutation,
   useDeleteTaskMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
@@ -35,8 +34,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import seo from "@/lib/util/seo";
-
-import type { EditorApi } from "@/components/core/RichTextEditor";
 
 export const Route = createFileRoute({
   loader: async ({
@@ -69,13 +66,10 @@ export const Route = createFileRoute({
 
 function TaskPage() {
   const navigate = Route.useNavigate();
-  const { session } = Route.useRouteContext();
   const { projectId } = Route.useLoaderData();
   const { workspaceSlug, projectSlug, taskId } = Route.useParams();
   const matches = useMediaQuery("(min-width: 1024px)");
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
-
-  const commentEditorApiRef = useRef<EditorApi | null>(null);
 
   const { data: task } = useSuspenseQuery({
     ...taskOptions({ rowId: taskId }),
@@ -92,11 +86,7 @@ function TaskPage() {
       invalidates: [["all"]],
     },
   });
-  const { mutate: addComment } = useCreatePostMutation({
-    meta: {
-      invalidates: [taskOptions({ rowId: taskId }).queryKey],
-    },
-  });
+
   const { mutate: deleteTask } = useDeleteTaskMutation({
     meta: {
       invalidates: [["all"]],
@@ -111,27 +101,6 @@ function TaskPage() {
   });
 
   const handleTaskUpdate = useDebounceCallback(updateTask, 300);
-
-  const [newComment, setNewComment] = useState("");
-
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      addComment({
-        input: {
-          post: {
-            taskId,
-            authorId: session?.user?.rowId!,
-            description: newComment,
-          },
-        },
-      });
-      setNewComment("");
-
-      if (commentEditorApiRef.current) {
-        commentEditorApiRef.current.clearContent();
-      }
-    }
-  };
 
   const taskIndex = project?.columns?.nodes
     ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
@@ -306,79 +275,9 @@ function TaskPage() {
             </CardContent>
           </CardRoot>
 
-          <CardRoot className="overflow-hidden p-0 shadow-none">
-            <CardHeader className="flex h-10 flex-row items-center justify-between bg-base-50 px-3 dark:bg-base-800">
-              <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
-                Comments
-              </h3>
-            </CardHeader>
+          <Comments />
 
-            <CardContent className="flex items-center p-0">
-              {task?.posts?.nodes?.length ? (
-                <div>
-                  {task?.posts?.nodes?.map((comment) => (
-                    <div key={comment?.rowId} className="flex gap-2 p-2">
-                      <Avatar
-                        fallback={comment?.author?.name.charAt(0)}
-                        src={comment?.author?.avatarUrl ?? undefined}
-                        alt={comment?.author?.name}
-                        size="sm"
-                        className="rounded-full border-2 border-base-100 dark:border-base-900"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-baseline gap-3">
-                          <span className="font-medium text-base text-base-900 dark:text-base-100">
-                            {comment?.author?.name}
-                          </span>
-                          <span className="text-base-500 text-xs dark:text-base-400">
-                            {format(
-                              new Date(comment.createdAt!),
-                              "MMM d, yyyy 'at' h:mm a",
-                            )}
-                          </span>
-                        </div>
-
-                        <RichTextEditor
-                          defaultContent={comment.description!}
-                          className="min-h-0 border-0 p-0 py-2 text-sm leading-relaxed"
-                          skeletonClassName="h-[38.75px]"
-                          editable={false}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="mx-auto flex place-self-center p-4 text-muted-foreground text-sm">
-                  No Comment. Add a comment to start the discussion.
-                </p>
-              )}
-            </CardContent>
-          </CardRoot>
-
-          {/* Add comment */}
-          <div className="mb-8 flex gap-4">
-            <div className="flex-1 space-y-3">
-              <RichTextEditor
-                editorApi={commentEditorApiRef}
-                className="min-h-0 border-solid p-2 text-sm dark:bg-background"
-                skeletonClassName="h-[38px]"
-                onUpdate={({ editor }) => setNewComment(editor.getHTML())}
-                placeholder="Add a comment..."
-              />
-              <div className="flex justify-end">
-                <Button
-                  size="sm"
-                  onClick={handleAddComment}
-                  disabled={!newComment.trim()}
-                  className="active:scale-[0.97]"
-                >
-                  <SendIcon className="size-3" />
-                  Comment
-                </Button>
-              </div>
-            </div>
-          </div>
+          <CreateComment />
         </div>
 
         <div className="hidden lg:mt-38 lg:block">
