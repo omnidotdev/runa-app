@@ -1,27 +1,11 @@
 import { useForm } from "@tanstack/react-form";
 import { useParams, useRouteContext } from "@tanstack/react-router";
-import {
-  CheckIcon,
-  MoreHorizontalIcon,
-  PenLineIcon,
-  Trash2Icon,
-  XIcon,
-} from "lucide-react";
+import { useEffect, useRef } from "react";
 
-import { Input } from "@/components/ui/input";
-import {
-  MenuContent,
-  MenuItem,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-} from "@/components/ui/menu";
+import { Button } from "@/components/ui/button";
 import { useUpdatePostMutation } from "@/generated/graphql";
-import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import taskOptions from "@/lib/options/task.options";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
-import { Tooltip } from "../ui/tooltip";
 
 interface Props {
   post: {
@@ -31,15 +15,11 @@ interface Props {
   };
   isActive: boolean;
   onSetActive: (rowId: string | null) => void;
-  setCommentToDelete: (rowId: string | null) => void;
 }
 
-const UpdateCommentForm = ({
-  post,
-  isActive,
-  onSetActive,
-  setCommentToDelete,
-}: Props) => {
+const UpdateCommentForm = ({ post, isActive, onSetActive }: Props) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
   const { taskId } = useParams({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
@@ -52,10 +32,6 @@ const UpdateCommentForm = ({
     meta: {
       invalidates: [taskOptions({ rowId: taskId }).queryKey],
     },
-  });
-
-  const { setIsOpen: setIsDeleteCommentDialogOpen } = useDialogStore({
-    type: DialogType.DeleteComment,
   });
 
   const form = useForm({
@@ -79,6 +55,18 @@ const UpdateCommentForm = ({
     },
   });
 
+  useEffect(() => {
+    if (isActive && textareaRef.current) {
+      requestAnimationFrame(() => {
+        textareaRef.current?.focus({ preventScroll: true });
+        textareaRef.current?.setSelectionRange(
+          textareaRef.current.value.length,
+          textareaRef.current.value.length,
+        );
+      });
+    }
+  }, [isActive]);
+
   return (
     <form
       onSubmit={(e) => {
@@ -86,19 +74,45 @@ const UpdateCommentForm = ({
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="flex w-full items-center gap-2"
+      className="flex flex-col gap-2"
     >
       <form.Field name="comment">
         {(field) => (
-          <Input
-            type="text"
+          <textarea
+            ref={(el) => {
+              textareaRef.current = el;
+
+              if (el) {
+                // Reset height when inactive
+                if (!isActive) {
+                  el.style.height = "auto";
+                  el.style.minHeight = "";
+                } else {
+                  el.style.height = "auto";
+                  el.style.height = `${el.scrollHeight}px`;
+                  // prevent shrinking
+                  el.style.minHeight = `${el.scrollHeight}px`;
+                }
+              }
+            }}
             value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
+            onChange={(e) => {
+              field.handleChange(e.target.value);
+
+              if (isActive && textareaRef.current) {
+                const el = textareaRef.current;
+                el.style.height = "auto";
+                el.style.height = `${el.scrollHeight}px`;
+                // prevent shrinking
+                el.style.minHeight = `${el.scrollHeight}px`;
+              }
+            }}
             placeholder="Add a comment..."
             className={cn(
-              "w-full",
-              !isActive &&
-                "pointer-events-none border-0 shadow-none transition-none focus-visible:ring-0",
+              "field-sizing-content mt-1 flex h-auto w-full rounded-xl px-3 py-2 text-sm outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
+              !isActive
+                ? "pointer-events-none resize-none border-0 shadow-none transition-none focus-visible:ring-0"
+                : "bg-background",
             )}
             tabIndex={isActive ? 0 : -1}
             readOnly={!isActive}
@@ -106,83 +120,37 @@ const UpdateCommentForm = ({
         )}
       </form.Field>
 
-      {!isActive ? (
-        <MenuRoot
-          positioning={{
-            strategy: "fixed",
-            placement: "left",
-          }}
-        >
-          <MenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-7 text-base-400"
-            >
-              <MoreHorizontalIcon />
-            </Button>
-          </MenuTrigger>
+      {isActive && (
+        <div className="mt-4 flex justify-end gap-2">
+          <Button
+            onClick={() => {
+              onSetActive(null);
+              form.reset();
+            }}
+            variant="outline"
+            tabIndex={0}
+          >
+            Cancel
+          </Button>
 
-          <MenuPositioner>
-            <MenuContent className="focus-within:outline-none">
-              <MenuItem value="edit" onClick={() => onSetActive(post.rowId!)}>
-                <PenLineIcon />
-                <span> Edit</span>
-              </MenuItem>
-
-              <MenuItem
-                value="delete"
-                variant="destructive"
-                onClick={() => {
-                  setCommentToDelete?.(post.rowId!);
-                  setIsDeleteCommentDialogOpen(true);
-                }}
+          <form.Subscribe
+            selector={(state) => [
+              state.canSubmit,
+              state.isSubmitting,
+              state.isDirty,
+            ]}
+          >
+            {([canSubmit, isSubmitting, isDirty]) => (
+              <Button
+                type="submit"
+                disabled={!canSubmit || isSubmitting || !isDirty}
+                tabIndex={0}
               >
-                <Trash2Icon />
-                <span> Delete </span>
-              </MenuItem>
-            </MenuContent>
-          </MenuPositioner>
-        </MenuRoot>
-      ) : (
-        <form.Subscribe
-          selector={(state) => [
-            state.canSubmit,
-            state.isSubmitting,
-            state.isDirty,
-          ]}
-        >
-          {([canSubmit, isSubmitting, isDirty]) => (
-            <div className="ml-2 flex items-center justify-center">
-              <Tooltip tooltip="Cancel">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => {
-                    onSetActive(null);
-                    form.reset();
-                  }}
-                  disabled={isSubmitting}
-                  className="focus-visible:ring-offset-0"
-                >
-                  <XIcon />
-                </Button>
-              </Tooltip>
-
-              <Tooltip tooltip="Save">
-                <Button
-                  type="submit"
-                  variant="ghost"
-                  size="icon"
-                  disabled={!canSubmit || isSubmitting || !isDirty}
-                  className="focus-visible:ring-offset-0"
-                >
-                  <CheckIcon />
-                </Button>
-              </Tooltip>
-            </div>
-          )}
-        </form.Subscribe>
+                Update
+              </Button>
+            )}
+          </form.Subscribe>
+        </div>
       )}
     </form>
   );

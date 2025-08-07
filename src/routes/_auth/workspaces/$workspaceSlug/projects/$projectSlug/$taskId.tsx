@@ -18,12 +18,12 @@ import PrioritySelector from "@/components/core/selectors/PrioritySelector";
 import NotFound from "@/components/layout/NotFound";
 import Comments from "@/components/tasks/Comments";
 import CreateComment from "@/components/tasks/CreateComment";
+import TaskDescription from "@/components/tasks/TaskDescription";
 import TaskSidebar from "@/components/tasks/TaskSidebar";
 import UpdateAssigneesDialog from "@/components/tasks/UpdateAssigneesDialog";
 import UpdateDueDateDialog from "@/components/tasks/UpdateDueDateDialog";
 import UpdateTaskLabelsDialog from "@/components/tasks/UpdateTaskLabelsDialog";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
@@ -128,8 +128,8 @@ function TaskPage() {
   return (
     <>
       {/* Main content */}
-      <div className="grid flex-1 grid-cols-4 gap-8 overflow-hidden p-12">
-        <div className="no-scrollbar col-span-4 flex flex-col gap-8 overflow-auto lg:col-span-3">
+      <div className="grid h-full grid-cols-1 overflow-hidden lg:grid-cols-[3fr_1fr]">
+        <div className="no-scrollbar flex flex-1 flex-col gap-8 overflow-y-auto px-6 py-12">
           {/* Header */}
           <div className="flex items-center gap-3">
             <Link
@@ -161,16 +161,15 @@ function TaskPage() {
                 }
               />
 
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-base-400 text-sm dark:text-base-500">
-                  {`${project?.prefix ? project.prefix : "PROJ"}-${taskIndex}`}
-                </span>
+              <div className="flex items-center gap-2 font-mono text-base-400 text-sm dark:text-base-500">
+                {`${project?.prefix ? project.prefix : "PROJ"}-${taskIndex}`}
               </div>
             </div>
           </div>
 
+          {/* Task Controls */}
           <div className="w-full">
-            <div className="no-scrollbar flex items-center gap-2 overflow-x-scroll p-1">
+            <div className="no-scrollbar flex items-center gap-2 overflow-x-auto p-1">
               <Button
                 variant="ghost"
                 className="size-7 justify-self-end text-red-500 hover:text-red-500/80"
@@ -249,38 +248,19 @@ function TaskPage() {
             </div>
           </div>
 
-          {/* Description */}
-          <CardRoot className="overflow-hidden p-0 shadow-none">
-            <CardHeader className="flex h-10 flex-row items-center justify-between bg-base-50 px-3 dark:bg-base-800">
-              <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
-                Description
-              </h3>
-            </CardHeader>
-            <CardContent className="p-0">
-              <RichTextEditor
-                defaultContent={task?.description}
-                className="border-0"
-                skeletonClassName="h-[120px] rounded-t-none"
-                onUpdate={({ editor }) => {
-                  !editor.isEmpty &&
-                    handleTaskUpdate({
-                      rowId: taskId,
-                      patch: {
-                        // TODO: discuss if description should be nullable. Current schema structure doesn't allow it
-                        description: editor.getHTML(),
-                      },
-                    });
-                }}
-              />
-            </CardContent>
-          </CardRoot>
-
+          {/* Task Details */}
+          <TaskDescription
+            task={{
+              description: task?.description,
+              rowId: taskId,
+            }}
+          />
           <Comments />
-
           <CreateComment />
         </div>
 
-        <div className="hidden lg:mt-38 lg:block">
+        {/* Sidebar (Sticky, hidden on mobile) */}
+        <div className="hidden lg:mt-52 lg:flex lg:pr-12">
           <TaskSidebar />
         </div>
       </div>
@@ -288,7 +268,6 @@ function TaskPage() {
       <UpdateAssigneesDialog />
       <UpdateDueDateDialog />
       <UpdateTaskLabelsDialog />
-
       <DestructiveActionDialog
         title="Delete Task"
         description="This will permanently delete this task.

@@ -841,6 +841,39 @@ export type CreateColumnPayloadColumnEdgeArgs = {
   orderBy?: Array<ColumnOrderBy>;
 };
 
+/** All input for the create `Emoji` mutation. */
+export type CreateEmojiInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `Emoji` to be created by this mutation. */
+  emoji: EmojiInput;
+};
+
+/** The output of our create `Emoji` mutation. */
+export type CreateEmojiPayload = {
+  __typename?: 'CreateEmojiPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Emoji` that was created by this mutation. */
+  emoji?: Maybe<Emoji>;
+  /** An edge for our `Emoji`. May be used by Relay 1. */
+  emojiEdge?: Maybe<EmojiEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `Emoji` mutation. */
+export type CreateEmojiPayloadEmojiEdgeArgs = {
+  orderBy?: Array<EmojiOrderBy>;
+};
+
 /** All input for the create `Invitation` mutation. */
 export type CreateInvitationInput = {
   /**
@@ -1316,6 +1349,50 @@ export type DeleteColumnPayload = {
 /** The output of our delete `Column` mutation. */
 export type DeleteColumnPayloadColumnEdgeArgs = {
   orderBy?: Array<ColumnOrderBy>;
+};
+
+/** All input for the `deleteEmojiById` mutation. */
+export type DeleteEmojiByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Emoji` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteEmoji` mutation. */
+export type DeleteEmojiInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `Emoji` mutation. */
+export type DeleteEmojiPayload = {
+  __typename?: 'DeleteEmojiPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedEmojiId?: Maybe<Scalars['ID']['output']>;
+  /** The `Emoji` that was deleted by this mutation. */
+  emoji?: Maybe<Emoji>;
+  /** An edge for our `Emoji`. May be used by Relay 1. */
+  emojiEdge?: Maybe<EmojiEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Emoji` mutation. */
+export type DeleteEmojiPayloadEmojiEdgeArgs = {
+  orderBy?: Array<EmojiOrderBy>;
 };
 
 /** All input for the `deleteInvitationById` mutation. */
@@ -1864,6 +1941,249 @@ export type DeleteWorkspaceUserPayload = {
 /** The output of our delete `WorkspaceUser` mutation. */
 export type DeleteWorkspaceUserPayloadWorkspaceUserEdgeArgs = {
   orderBy?: Array<WorkspaceUserOrderBy>;
+};
+
+export type Emoji = Node & {
+  __typename?: 'Emoji';
+  createdAt: Scalars['Datetime']['output'];
+  emoji?: Maybe<Scalars['String']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  /** Reads a single `Post` that is related to this `Emoji`. */
+  post?: Maybe<Post>;
+  postId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+  /** Reads a single `User` that is related to this `Emoji`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+};
+
+export type EmojiAggregates = {
+  __typename?: 'EmojiAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<EmojiDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Emoji` object types. */
+export type EmojiAggregatesFilter = {
+  /** Distinct count aggregate over matching `Emoji` objects. */
+  distinctCount?: InputMaybe<EmojiDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Emoji` object to be included within the aggregate. */
+  filter?: InputMaybe<EmojiFilter>;
+};
+
+/** A condition to be used against `Emoji` object types. All fields are tested for equality and combined with a logical ‘and.’ */
+export type EmojiCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `emoji` field. */
+  emoji?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `postId` field. */
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `Emoji` values. */
+export type EmojiConnection = {
+  __typename?: 'EmojiConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<EmojiAggregates>;
+  /** A list of edges which contains the `Emoji` and cursor to aid in pagination. */
+  edges: Array<EmojiEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<EmojiAggregates>>;
+  /** A list of `Emoji` objects. */
+  nodes: Array<Emoji>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Emoji` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Emoji` values. */
+export type EmojiConnectionGroupedAggregatesArgs = {
+  groupBy: Array<EmojiGroupBy>;
+  having?: InputMaybe<EmojiHavingInput>;
+};
+
+export type EmojiDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  emoji?: InputMaybe<BigIntFilter>;
+  postId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type EmojiDistinctCountAggregates = {
+  __typename?: 'EmojiDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of emoji across the matching connection */
+  emoji?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of postId across the matching connection */
+  postId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Emoji` edge in the connection. */
+export type EmojiEdge = {
+  __typename?: 'EmojiEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Emoji` at the end of the edge. */
+  node: Emoji;
+};
+
+/** A filter to be used against `Emoji` object types. All fields are combined with a logical ‘and.’ */
+export type EmojiFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<EmojiFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `emoji` field. */
+  emoji?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<EmojiFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<EmojiFilter>>;
+  /** Filter by the object’s `post` relation. */
+  post?: InputMaybe<PostFilter>;
+  /** Filter by the object’s `postId` field. */
+  postId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `Emoji` for usage during aggregation. */
+export enum EmojiGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Emoji = 'EMOJI',
+  PostId = 'POST_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type EmojiHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Emoji` aggregates. */
+export type EmojiHavingInput = {
+  AND?: InputMaybe<Array<EmojiHavingInput>>;
+  OR?: InputMaybe<Array<EmojiHavingInput>>;
+  average?: InputMaybe<EmojiHavingAverageInput>;
+  distinctCount?: InputMaybe<EmojiHavingDistinctCountInput>;
+  max?: InputMaybe<EmojiHavingMaxInput>;
+  min?: InputMaybe<EmojiHavingMinInput>;
+  stddevPopulation?: InputMaybe<EmojiHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<EmojiHavingStddevSampleInput>;
+  sum?: InputMaybe<EmojiHavingSumInput>;
+  variancePopulation?: InputMaybe<EmojiHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<EmojiHavingVarianceSampleInput>;
+};
+
+export type EmojiHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type EmojiHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `Emoji` */
+export type EmojiInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  emoji?: InputMaybe<Scalars['String']['input']>;
+  postId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId: Scalars['UUID']['input'];
+};
+
+/** Methods to use when ordering `Emoji`. */
+export enum EmojiOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  EmojiAsc = 'EMOJI_ASC',
+  EmojiDesc = 'EMOJI_DESC',
+  Natural = 'NATURAL',
+  PostIdAsc = 'POST_ID_ASC',
+  PostIdDesc = 'POST_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `Emoji`. Fields that are set will be updated. */
+export type EmojiPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  emoji?: InputMaybe<Scalars['String']['input']>;
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type HavingDatetimeFilter = {
@@ -2427,6 +2747,8 @@ export type Mutation = {
   createAssignee?: Maybe<CreateAssigneePayload>;
   /** Creates a single `Column`. */
   createColumn?: Maybe<CreateColumnPayload>;
+  /** Creates a single `Emoji`. */
+  createEmoji?: Maybe<CreateEmojiPayload>;
   /** Creates a single `Invitation`. */
   createInvitation?: Maybe<CreateInvitationPayload>;
   /** Creates a single `Label`. */
@@ -2457,6 +2779,10 @@ export type Mutation = {
   deleteColumn?: Maybe<DeleteColumnPayload>;
   /** Deletes a single `Column` using its globally unique id. */
   deleteColumnById?: Maybe<DeleteColumnPayload>;
+  /** Deletes a single `Emoji` using a unique key. */
+  deleteEmoji?: Maybe<DeleteEmojiPayload>;
+  /** Deletes a single `Emoji` using its globally unique id. */
+  deleteEmojiById?: Maybe<DeleteEmojiPayload>;
   /** Deletes a single `Invitation` using a unique key. */
   deleteInvitation?: Maybe<DeleteInvitationPayload>;
   /** Deletes a single `Invitation` using its globally unique id. */
@@ -2521,6 +2847,10 @@ export type Mutation = {
   updateColumn?: Maybe<UpdateColumnPayload>;
   /** Updates a single `Column` using its globally unique id and a patch. */
   updateColumnById?: Maybe<UpdateColumnPayload>;
+  /** Updates a single `Emoji` using a unique key and a patch. */
+  updateEmoji?: Maybe<UpdateEmojiPayload>;
+  /** Updates a single `Emoji` using its globally unique id and a patch. */
+  updateEmojiById?: Maybe<UpdateEmojiPayload>;
   /** Updates a single `Invitation` using a unique key and a patch. */
   updateInvitation?: Maybe<UpdateInvitationPayload>;
   /** Updates a single `Invitation` using its globally unique id and a patch. */
@@ -2589,6 +2919,12 @@ export type MutationCreateAssigneeArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateColumnArgs = {
   input: CreateColumnInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateEmojiArgs = {
+  input: CreateEmojiInput;
 };
 
 
@@ -2679,6 +3015,18 @@ export type MutationDeleteColumnArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteColumnByIdArgs = {
   input: DeleteColumnByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteEmojiArgs = {
+  input: DeleteEmojiInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteEmojiByIdArgs = {
+  input: DeleteEmojiByIdInput;
 };
 
 
@@ -2875,6 +3223,18 @@ export type MutationUpdateColumnByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateEmojiArgs = {
+  input: UpdateEmojiInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateEmojiByIdArgs = {
+  input: UpdateEmojiByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateInvitationArgs = {
   input: UpdateInvitationInput;
 };
@@ -3067,6 +3427,8 @@ export type Post = Node & {
   authorId: Scalars['UUID']['output'];
   createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
+  /** Reads and enables pagination through a set of `Emoji`. */
+  emojis: EmojiConnection;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   rowId: Scalars['UUID']['output'];
@@ -3075,6 +3437,18 @@ export type Post = Node & {
   taskId: Scalars['UUID']['output'];
   title?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['Datetime']['output'];
+};
+
+
+export type PostEmojisArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<EmojiCondition>;
+  filter?: InputMaybe<EmojiFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EmojiOrderBy>>;
 };
 
 export type PostAggregates = {
@@ -3183,6 +3557,10 @@ export type PostFilter = {
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `description` field. */
   description?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `emojis` relation. */
+  emojis?: InputMaybe<PostToManyEmojiFilter>;
+  /** Some related `emojis` exist. */
+  emojisExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Negates the expression. */
   not?: InputMaybe<PostFilter>;
   /** Checks for any expressions in this list. */
@@ -3292,6 +3670,20 @@ export enum PostOrderBy {
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
   DescriptionDesc = 'DESCRIPTION_DESC',
+  EmojisCountAsc = 'EMOJIS_COUNT_ASC',
+  EmojisCountDesc = 'EMOJIS_COUNT_DESC',
+  EmojisDistinctCountCreatedAtAsc = 'EMOJIS_DISTINCT_COUNT_CREATED_AT_ASC',
+  EmojisDistinctCountCreatedAtDesc = 'EMOJIS_DISTINCT_COUNT_CREATED_AT_DESC',
+  EmojisDistinctCountEmojiAsc = 'EMOJIS_DISTINCT_COUNT_EMOJI_ASC',
+  EmojisDistinctCountEmojiDesc = 'EMOJIS_DISTINCT_COUNT_EMOJI_DESC',
+  EmojisDistinctCountPostIdAsc = 'EMOJIS_DISTINCT_COUNT_POST_ID_ASC',
+  EmojisDistinctCountPostIdDesc = 'EMOJIS_DISTINCT_COUNT_POST_ID_DESC',
+  EmojisDistinctCountRowIdAsc = 'EMOJIS_DISTINCT_COUNT_ROW_ID_ASC',
+  EmojisDistinctCountRowIdDesc = 'EMOJIS_DISTINCT_COUNT_ROW_ID_DESC',
+  EmojisDistinctCountUpdatedAtAsc = 'EMOJIS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  EmojisDistinctCountUpdatedAtDesc = 'EMOJIS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  EmojisDistinctCountUserIdAsc = 'EMOJIS_DISTINCT_COUNT_USER_ID_ASC',
+  EmojisDistinctCountUserIdDesc = 'EMOJIS_DISTINCT_COUNT_USER_ID_DESC',
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
@@ -3314,6 +3706,18 @@ export type PostPatch = {
   taskId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A filter to be used against many `Emoji` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyEmojiFilter = {
+  /** Aggregates across related `Emoji` match the filter criteria. */
+  aggregates?: InputMaybe<EmojiAggregatesFilter>;
+  /** Every related `Emoji` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<EmojiFilter>;
+  /** No related `Emoji` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<EmojiFilter>;
+  /** Some related `Emoji` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<EmojiFilter>;
 };
 
 export type Project = Node & {
@@ -4415,6 +4819,12 @@ export type Query = Node & {
   columnById?: Maybe<Column>;
   /** Reads and enables pagination through a set of `Column`. */
   columns?: Maybe<ColumnConnection>;
+  /** Get a single `Emoji`. */
+  emoji?: Maybe<Emoji>;
+  /** Reads a single `Emoji` using its globally unique `ID`. */
+  emojiById?: Maybe<Emoji>;
+  /** Reads and enables pagination through a set of `Emoji`. */
+  emojis?: Maybe<EmojiConnection>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
   /** Get a single `Invitation`. */
@@ -4552,6 +4962,31 @@ export type QueryColumnsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ColumnOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryEmojiArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryEmojiByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryEmojisArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<EmojiCondition>;
+  filter?: InputMaybe<EmojiFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EmojiOrderBy>>;
 };
 
 
@@ -5922,6 +6357,53 @@ export type UpdateColumnPayloadColumnEdgeArgs = {
   orderBy?: Array<ColumnOrderBy>;
 };
 
+/** All input for the `updateEmojiById` mutation. */
+export type UpdateEmojiByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Emoji` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `Emoji` being updated. */
+  patch: EmojiPatch;
+};
+
+/** All input for the `updateEmoji` mutation. */
+export type UpdateEmojiInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Emoji` being updated. */
+  patch: EmojiPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `Emoji` mutation. */
+export type UpdateEmojiPayload = {
+  __typename?: 'UpdateEmojiPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Emoji` that was updated by this mutation. */
+  emoji?: Maybe<Emoji>;
+  /** An edge for our `Emoji`. May be used by Relay 1. */
+  emojiEdge?: Maybe<EmojiEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `Emoji` mutation. */
+export type UpdateEmojiPayloadEmojiEdgeArgs = {
+  orderBy?: Array<EmojiOrderBy>;
+};
+
 /** All input for the `updateInvitationById` mutation. */
 export type UpdateInvitationByIdInput = {
   /**
@@ -6526,6 +7008,8 @@ export type User = Node & {
   avatarUrl?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['Datetime']['output'];
   email: Scalars['String']['output'];
+  /** Reads and enables pagination through a set of `Emoji`. */
+  emojis: EmojiConnection;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   identityProviderId: Scalars['UUID']['output'];
@@ -6572,6 +7056,18 @@ export type UserAuthoredTasksArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<TaskOrderBy>>;
+};
+
+
+export type UserEmojisArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<EmojiCondition>;
+  filter?: InputMaybe<EmojiFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<EmojiOrderBy>>;
 };
 
 
@@ -6696,6 +7192,10 @@ export type UserFilter = {
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `email` field. */
   email?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `emojis` relation. */
+  emojis?: InputMaybe<UserToManyEmojiFilter>;
+  /** Some related `emojis` exist. */
+  emojisExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `identityProviderId` field. */
   identityProviderId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `name` field. */
@@ -6879,6 +7379,20 @@ export enum UserOrderBy {
   CreatedAtDesc = 'CREATED_AT_DESC',
   EmailAsc = 'EMAIL_ASC',
   EmailDesc = 'EMAIL_DESC',
+  EmojisCountAsc = 'EMOJIS_COUNT_ASC',
+  EmojisCountDesc = 'EMOJIS_COUNT_DESC',
+  EmojisDistinctCountCreatedAtAsc = 'EMOJIS_DISTINCT_COUNT_CREATED_AT_ASC',
+  EmojisDistinctCountCreatedAtDesc = 'EMOJIS_DISTINCT_COUNT_CREATED_AT_DESC',
+  EmojisDistinctCountEmojiAsc = 'EMOJIS_DISTINCT_COUNT_EMOJI_ASC',
+  EmojisDistinctCountEmojiDesc = 'EMOJIS_DISTINCT_COUNT_EMOJI_DESC',
+  EmojisDistinctCountPostIdAsc = 'EMOJIS_DISTINCT_COUNT_POST_ID_ASC',
+  EmojisDistinctCountPostIdDesc = 'EMOJIS_DISTINCT_COUNT_POST_ID_DESC',
+  EmojisDistinctCountRowIdAsc = 'EMOJIS_DISTINCT_COUNT_ROW_ID_ASC',
+  EmojisDistinctCountRowIdDesc = 'EMOJIS_DISTINCT_COUNT_ROW_ID_DESC',
+  EmojisDistinctCountUpdatedAtAsc = 'EMOJIS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  EmojisDistinctCountUpdatedAtDesc = 'EMOJIS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  EmojisDistinctCountUserIdAsc = 'EMOJIS_DISTINCT_COUNT_USER_ID_ASC',
+  EmojisDistinctCountUserIdDesc = 'EMOJIS_DISTINCT_COUNT_USER_ID_DESC',
   IdentityProviderIdAsc = 'IDENTITY_PROVIDER_ID_ASC',
   IdentityProviderIdDesc = 'IDENTITY_PROVIDER_ID_DESC',
   NameAsc = 'NAME_ASC',
@@ -7207,6 +7721,18 @@ export type UserToManyAssigneeFilter = {
   none?: InputMaybe<AssigneeFilter>;
   /** Some related `Assignee` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<AssigneeFilter>;
+};
+
+/** A filter to be used against many `Emoji` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyEmojiFilter = {
+  /** Aggregates across related `Emoji` match the filter criteria. */
+  aggregates?: InputMaybe<EmojiAggregatesFilter>;
+  /** Every related `Emoji` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<EmojiFilter>;
+  /** No related `Emoji` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<EmojiFilter>;
+  /** Some related `Emoji` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<EmojiFilter>;
 };
 
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
@@ -7930,6 +8456,27 @@ export type UpdateColumnMutationVariables = Exact<{
 
 export type UpdateColumnMutation = { __typename?: 'Mutation', updateColumn?: { __typename?: 'UpdateColumnPayload', column?: { __typename?: 'Column', rowId: string } | null } | null };
 
+export type CreatePostEmojiMutationVariables = Exact<{
+  input: CreateEmojiInput;
+}>;
+
+
+export type CreatePostEmojiMutation = { __typename?: 'Mutation', createEmoji?: { __typename?: 'CreateEmojiPayload', emoji?: { __typename?: 'Emoji', rowId: string } | null } | null };
+
+export type DeletePostEmojiMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeletePostEmojiMutation = { __typename?: 'Mutation', deleteEmoji?: { __typename?: 'DeleteEmojiPayload', emoji?: { __typename?: 'Emoji', rowId: string } | null } | null };
+
+export type UpdatePostEmojiMutationVariables = Exact<{
+  input: UpdateEmojiInput;
+}>;
+
+
+export type UpdatePostEmojiMutation = { __typename?: 'Mutation', updateEmoji?: { __typename?: 'UpdateEmojiPayload', emoji?: { __typename?: 'Emoji', rowId: string } | null } | null };
+
 export type CreateInvitationMutationVariables = Exact<{
   input: CreateInvitationInput;
 }>;
@@ -8132,6 +8679,14 @@ export type ColumnsQueryVariables = Exact<{
 
 
 export type ColumnsQuery = { __typename?: 'Query', columns?: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
+
+export type PostEmojisQueryVariables = Exact<{
+  postId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+}>;
+
+
+export type PostEmojisQuery = { __typename?: 'Query', emojis?: { __typename?: 'EmojiConnection', groupedAggregates?: Array<{ __typename?: 'EmojiAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'EmojiDistinctCountAggregates', emoji?: string | null, rowId?: string | null } | null }> | null } | null, users?: { __typename?: 'UserConnection', nodes: Array<{ __typename?: 'User', emojis: { __typename?: 'EmojiConnection', nodes: Array<{ __typename?: 'Emoji', emoji?: string | null, rowId: string, postId: string }> } }> } | null };
 
 export type InvitationsQueryVariables = Exact<{
   email?: InputMaybe<Scalars['String']['input']>;
@@ -8369,6 +8924,33 @@ export const UpdateColumnDocument = gql`
     mutation UpdateColumn($rowId: UUID!, $patch: ColumnPatch!) {
   updateColumn(input: {rowId: $rowId, patch: $patch}) {
     column {
+      rowId
+    }
+  }
+}
+    `;
+export const CreatePostEmojiDocument = gql`
+    mutation CreatePostEmoji($input: CreateEmojiInput!) {
+  createEmoji(input: $input) {
+    emoji {
+      rowId
+    }
+  }
+}
+    `;
+export const DeletePostEmojiDocument = gql`
+    mutation DeletePostEmoji($rowId: UUID!) {
+  deleteEmoji(input: {rowId: $rowId}) {
+    emoji {
+      rowId
+    }
+  }
+}
+    `;
+export const UpdatePostEmojiDocument = gql`
+    mutation UpdatePostEmoji($input: UpdateEmojiInput!) {
+  updateEmoji(input: $input) {
+    emoji {
       rowId
     }
   }
@@ -8624,6 +9206,30 @@ export const ColumnsDocument = gql`
   }
 }
     ${ColumnFragmentDoc}`;
+export const PostEmojisDocument = gql`
+    query PostEmojis($postId: UUID!, $userId: UUID!) {
+  emojis(condition: {postId: $postId}, orderBy: CREATED_AT_ASC) {
+    groupedAggregates(groupBy: EMOJI) {
+      distinctCount {
+        emoji
+        rowId
+      }
+      keys
+    }
+  }
+  users(condition: {rowId: $userId}) {
+    nodes {
+      emojis(condition: {postId: $postId}) {
+        nodes {
+          emoji
+          rowId
+          postId
+        }
+      }
+    }
+  }
+}
+    `;
 export const InvitationsDocument = gql`
     query Invitations($email: String) {
   invitations(condition: {email: $email}) {
@@ -8968,6 +9574,15 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     UpdateColumn(variables: UpdateColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateColumnMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateColumnMutation>({ document: UpdateColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateColumn', 'mutation', variables);
     },
+    CreatePostEmoji(variables: CreatePostEmojiMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreatePostEmojiMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreatePostEmojiMutation>({ document: CreatePostEmojiDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreatePostEmoji', 'mutation', variables);
+    },
+    DeletePostEmoji(variables: DeletePostEmojiMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DeletePostEmojiMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeletePostEmojiMutation>({ document: DeletePostEmojiDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DeletePostEmoji', 'mutation', variables);
+    },
+    UpdatePostEmoji(variables: UpdatePostEmojiMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdatePostEmojiMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdatePostEmojiMutation>({ document: UpdatePostEmojiDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdatePostEmoji', 'mutation', variables);
+    },
     CreateInvitation(variables: CreateInvitationMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateInvitationMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateInvitationMutation>({ document: CreateInvitationDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateInvitation', 'mutation', variables);
     },
@@ -9051,6 +9666,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Columns(variables: ColumnsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ColumnsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ColumnsQuery>({ document: ColumnsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Columns', 'query', variables);
+    },
+    PostEmojis(variables: PostEmojisQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<PostEmojisQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PostEmojisQuery>({ document: PostEmojisDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'PostEmojis', 'query', variables);
     },
     Invitations(variables?: InvitationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<InvitationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<InvitationsQuery>({ document: InvitationsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Invitations', 'query', variables);

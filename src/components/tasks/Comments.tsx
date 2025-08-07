@@ -1,7 +1,15 @@
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouteContext } from "@tanstack/react-router";
 import { format } from "date-fns";
-import { useState } from "react";
+import {
+  MoreHorizontalIcon,
+  PenLineIcon,
+  SmilePlusIcon,
+  Trash2Icon,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import RichTextEditor from "@/components/core/RichTextEditor";
 import UpdateCommentForm from "@/components/tasks/UpdateCommentForm";
@@ -17,11 +25,32 @@ import {
   DialogRoot,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useDeletePostMutation } from "@/generated/graphql";
+import {
+  MenuContent,
+  MenuItem,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@/components/ui/menu";
+import {
+  PopoverContent,
+  PopoverPositioner,
+  PopoverRoot,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  useCreatePostEmojiMutation,
+  useDeletePostMutation,
+} from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useTheme from "@/lib/hooks/useTheme";
 import taskOptions from "@/lib/options/task.options";
+import { cn } from "@/lib/utils";
+import PostEmojis from "./PostEmojis";
 
 const Comments = () => {
+  const { theme } = useTheme();
+
   const { taskId } = useParams({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
@@ -38,11 +67,19 @@ const Comments = () => {
     select: (data) => data?.task,
   });
 
+  const endRef = useRef<HTMLDivElement | null>(null);
+  const prevLengthRef = useRef<number>(task?.posts?.nodes?.length ?? 0);
+
   const { mutate: deletePost } = useDeletePostMutation({
-    meta: {
-      invalidates: [["all"]],
-    },
-  });
+      meta: {
+        invalidates: [["all"]],
+      },
+    }),
+    { mutate: createPostEmoji } = useCreatePostEmojiMutation({
+      meta: {
+        invalidates: [["all"]],
+      },
+    });
 
   const {
     isOpen: isDeleteCommentDialogOpen,
@@ -51,67 +88,178 @@ const Comments = () => {
     type: DialogType.DeleteComment,
   });
 
+  useEffect(() => {
+    const currentLength = task?.posts?.nodes?.length ?? 0;
+
+    // Only scroll if a comment was added (length increased)
+    if (currentLength > prevLengthRef.current) {
+      endRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Update previous length
+    prevLengthRef.current = currentLength;
+  }, [task?.posts?.nodes?.length]);
+
   return (
     <>
-      <CardRoot className="overflow-hidden p-0 shadow-none">
-        <CardHeader className="flex h-10 flex-row items-center justify-between bg-base-50 px-3 dark:bg-base-800">
+      <CardRoot className="p-0 shadow-none">
+        <CardHeader className="flex h-10 flex-row items-center justify-between rounded-t-xl border-b bg-base-50 px-3 dark:bg-base-800">
           <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
             Comments
           </h3>
         </CardHeader>
 
-        <CardContent className="flex items-center p-0">
+        <CardContent className="no-scrollbar max-h-120 overflow-auto p-0">
           {task?.posts?.nodes?.length ? (
-            <div className="w-full">
-              {task?.posts?.nodes?.map((comment) => {
-                const isUsersPost = comment.authorId === session?.user?.rowId;
+            <div className="grid gap-0">
+              {task?.posts?.nodes?.map((post, index) => {
+                const isUsersPost = post.authorId === session?.user?.rowId;
 
                 return (
-                  <div key={comment?.rowId} className="flex w-full gap-2 p-2">
-                    <Avatar
-                      fallback={comment?.author?.name.charAt(0)}
-                      src={comment?.author?.avatarUrl ?? undefined}
-                      alt={comment?.author?.name}
-                      size="sm"
-                      className="rounded-full border-2 border-base-100 dark:border-base-900"
-                    />
+                  <div
+                    key={post?.rowId}
+                    className={cn(
+                      "group relative flex w-full p-3",
+                      index === task.posts.nodes.length - 1
+                        ? "border-0"
+                        : "border-b",
+                    )}
+                  >
+                    <div className="flex flex-1 flex-col gap-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Avatar
+                          fallback={post?.author?.name.charAt(0)}
+                          src={post?.author?.avatarUrl ?? undefined}
+                          alt={post?.author?.name}
+                          size="xs"
+                          className="size-6! border"
+                        />
+                        <span className="font-medium text-base-900 text-sm dark:text-base-100">
+                          {post?.author?.name}
+                        </span>
 
-                    <div className="flex flex-1 flex-col gap-2">
-                      <div className="flex items-baseline gap-3">
-                        <span className="font-medium text-base text-base-900 dark:text-base-100">
-                          {comment?.author?.name}
-                        </span>
                         <span className="text-base-500 text-xs dark:text-base-400">
-                          {format(
-                            new Date(comment.createdAt!),
-                            "MMM d, yyyy 'at' h:mm a",
-                          )}
+                          {format(new Date(post.createdAt!), "MMM d, yy")}
                         </span>
+
+                        <div className="ml-auto flex items-center gap-2 opacity-0 group-hover:opacity-100">
+                          <PopoverRoot
+                            lazyMount
+                            positioning={{
+                              strategy: "fixed",
+                              placement: "top",
+                            }}
+                          >
+                            <PopoverTrigger asChild>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="size-7 text-base-400"
+                              >
+                                <SmilePlusIcon className="size-4" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverPositioner>
+                              <PopoverContent className="h-full w-full rounded-xl border-0 p-0">
+                                <Picker
+                                  navPosition="none"
+                                  previewPosition="none"
+                                  skinTonePosition="none"
+                                  emojiButtonRadius="6px"
+                                  autoFocus={true}
+                                  data={data}
+                                  theme={theme === "dark" ? "dark" : "light"}
+                                  emojiSize={20}
+                                  emojiButtonSize={30}
+                                  perLine={10}
+                                  // biome-ignore lint/suspicious/noExplicitAny: Todo create type
+                                  onEmojiSelect={(emoji: any) => {
+                                    createPostEmoji({
+                                      input: {
+                                        emoji: {
+                                          postId: post.rowId!,
+                                          userId: session?.user?.rowId!,
+                                          emoji: emoji.native,
+                                        },
+                                      },
+                                    });
+                                  }}
+                                />
+                              </PopoverContent>
+                            </PopoverPositioner>
+                          </PopoverRoot>
+
+                          {isUsersPost && (
+                            <MenuRoot
+                              positioning={{
+                                strategy: "fixed",
+                                placement: "left",
+                              }}
+                            >
+                              <MenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="size-7 text-base-400"
+                                >
+                                  <MoreHorizontalIcon />
+                                </Button>
+                              </MenuTrigger>
+
+                              <MenuPositioner>
+                                <MenuContent className="focus-within:outline-none">
+                                  <MenuItem
+                                    value="edit"
+                                    onClick={() => setActivePostId(post.rowId!)}
+                                  >
+                                    <PenLineIcon />
+                                    <span> Edit</span>
+                                  </MenuItem>
+
+                                  <MenuItem
+                                    value="delete"
+                                    variant="destructive"
+                                    onClick={() => {
+                                      setCommentToDelete?.(post.rowId!);
+                                      setIsDeleteCommentDialogOpen(true);
+                                    }}
+                                  >
+                                    <Trash2Icon />
+                                    <span> Delete </span>
+                                  </MenuItem>
+                                </MenuContent>
+                              </MenuPositioner>
+                            </MenuRoot>
+                          )}
+                        </div>
                       </div>
 
                       {isUsersPost ? (
                         <UpdateCommentForm
                           post={{
-                            authorId: comment.authorId,
-                            description: comment.description!,
-                            rowId: comment.rowId,
+                            authorId: post.authorId,
+                            description: post.description!,
+                            rowId: post.rowId,
                           }}
-                          isActive={activePostId === comment.rowId}
+                          isActive={activePostId === post.rowId}
                           onSetActive={(id) => setActivePostId(id)}
-                          setCommentToDelete={setCommentToDelete}
                         />
                       ) : (
                         <RichTextEditor
-                          defaultContent={comment.description!}
-                          className="min-h-0 border-0 p-0 py-2 text-sm leading-relaxed"
+                          defaultContent={post.description!}
+                          className="min-h-0 border-0 p-0 px-3 py-2 text-foreground text-sm"
                           skeletonClassName="h-[38.75px]"
                           editable={false}
                         />
                       )}
+
+                      <PostEmojis postId={post.rowId!} />
                     </div>
                   </div>
                 );
               })}
+
+              <div ref={endRef} />
             </div>
           ) : (
             <p className="mx-auto flex place-self-center p-4 text-muted-foreground text-sm">

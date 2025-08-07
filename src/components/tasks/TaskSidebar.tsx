@@ -34,7 +34,7 @@ const TaskSidebar = () => {
     });
 
   return (
-    <div className="no-scrollbar sticky top-0 col-span-4 flex flex-col gap-8 lg:col-span-1">
+    <div className="no-scrollbar sticky top-0 col-span-4 flex w-full flex-col gap-8 lg:col-span-1">
       {/* TODO: better name for this, it sucks */}
       <CardHeader className="mt-4 p-0 lg:hidden">Management Panel</CardHeader>
 
