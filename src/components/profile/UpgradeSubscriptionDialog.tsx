@@ -145,6 +145,7 @@ const UpgradeSubscriptionDialog = ({ products }: Props) => {
                 disabled={!productId || isProductUpdating}
                 onClick={async () => {
                   setIsProductUpdating(true);
+                  setIsOpen(false);
 
                   const toastId = toast.loading("Upgrading subscription...");
 
@@ -164,7 +165,6 @@ const UpgradeSubscriptionDialog = ({ products }: Props) => {
                     });
                     await router.invalidate({ sync: true });
                     setIsProductUpdating(false);
-                    setIsOpen(false);
                   }, 1500);
                 }}
               >
