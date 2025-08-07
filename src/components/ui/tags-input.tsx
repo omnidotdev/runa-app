@@ -10,9 +10,9 @@ const tagsInputVariants = tv({
   slots: {
     label: "font-medium text-foreground text-sm",
     control:
-      "flex flex-wrap gap-2 rounded-md bg-background px-3 py-2 text-sm outline-none focus-visible:outline-none focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      "flex flex-wrap gap-2 rounded-md bg-background px-3 py-2 text-sm outline-none focus-visible:outline-none",
     input:
-      "h-9 flex-1 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground outline-none focus-visible:outline-none focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      "h-9 flex-1 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground",
     item: "flex w-fit items-center justify-center gap-1 rounded-md border bg-transparent px-3 font-medium text-foreground text-sm",
     itemText: "px-2 py-0.5",
     itemInput: "w-full bg-transparent px-2 py-0.5 text-foreground outline-none",

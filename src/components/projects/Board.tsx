@@ -127,7 +127,7 @@ const Board = ({ tasks }: Props) => {
   return (
     <div
       ref={scrollContainerRef}
-      className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/20"
+      className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/15"
       style={{
         backgroundColor: userPreferences?.color
           ? theme === "dark"

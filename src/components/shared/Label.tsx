@@ -21,22 +21,23 @@ const Label = ({ label }: Props) => {
   );
 
   return (
-    <Badge
-      key={label.name}
-      size="sm"
-      variant="outline"
-      className="border-border/50"
-      style={{
-        backgroundColor,
-        color: textColor,
-      }}
-    >
-      <TagIcon
-        className="!size-2.5"
-        style={{ color: colorPicker.value.toString("css") }}
-      />
-      <span className="font-medium text-[10px]">{label.name}</span>
-    </Badge>
+    <div className="size-fit rounded-md dark:bg-zinc-950">
+      <Badge
+        key={label.name}
+        variant="outline"
+        className="border-none"
+        style={{
+          backgroundColor,
+          color: textColor,
+        }}
+      >
+        <TagIcon
+          className="!size-2.5"
+          style={{ color: colorPicker.value.toString("css") }}
+        />
+        <span className="font-medium text-[10px]">{label.name}</span>
+      </Badge>
+    </div>
   );
 };
 

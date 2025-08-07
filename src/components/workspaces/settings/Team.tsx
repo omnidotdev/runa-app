@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { MoreHorizontalIcon, PlusIcon, Trash2Icon } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import { Avatar } from "@/components/ui/avatar";
@@ -21,6 +21,8 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 
 const Team = () => {
+  const inviteRef = useRef<HTMLButtonElement>(null);
+
   const { workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
@@ -72,7 +74,8 @@ const Team = () => {
           </h2>
 
           <Tooltip
-            tooltip="Invite team member"
+            tooltip="Invite Member"
+            shortcut="I"
             positioning={{
               placement: "left",
             }}
@@ -83,6 +86,7 @@ const Team = () => {
               aria-label="Invite team member"
               className="mr-2 size-7"
               onClick={() => setIsInviteTeamMemberOpen(true)}
+              ref={inviteRef}
             >
               <PlusIcon />
             </Button>
@@ -179,7 +183,7 @@ const Team = () => {
         confirmation={selectedMember?.name}
       />
 
-      <InviteMemberDialog />
+      <InviteMemberDialog triggerRef={inviteRef} />
     </>
   );
 };

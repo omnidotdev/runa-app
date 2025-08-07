@@ -7,6 +7,7 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { PlusIcon } from "lucide-react";
 import ms from "ms";
 import { useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Resend } from "resend";
 import * as z from "zod/v4";
 
@@ -36,10 +37,13 @@ import {
 } from "@/components/ui/tags-input";
 import { useCreateInvitationMutation } from "@/generated/graphql";
 import { BASE_URL, isDevEnv } from "@/lib/config/env.config";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import userOptions from "@/lib/options/user.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+
+import type { RefObject } from "react";
 
 const MAX_NUMBER_OF_INVITES = 10;
 
@@ -76,7 +80,11 @@ const sendInviteEmail = createServerFn({ method: "POST", response: "raw" })
     return Response.json({ email });
   });
 
-const InviteMemberDialog = () => {
+interface Props {
+  triggerRef?: RefObject<HTMLButtonElement | null>;
+}
+
+const InviteMemberDialog = ({ triggerRef }: Props) => {
   const { workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
@@ -90,6 +98,12 @@ const InviteMemberDialog = () => {
   } = useDialogStore({
     type: DialogType.InviteTeamMember,
   });
+
+  useHotkeys(
+    Hotkeys.InviteMember,
+    () => setIsInviteTeamMemberOpen(!isInviteTeamMemberOpen),
+    [setIsInviteTeamMemberOpen, isInviteTeamMemberOpen],
+  );
 
   const { data: currentWorkspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
@@ -162,8 +176,9 @@ const InviteMemberDialog = () => {
         setIsInviteTeamMemberOpen(open);
         form.reset();
       }}
-      // TODO: this isnt working.
       initialFocusEl={() => emailRef.current}
+      finalFocusEl={triggerRef ? () => triggerRef.current : undefined}
+      trapFocus
     >
       <DialogBackdrop />
       <DialogPositioner>
@@ -228,7 +243,7 @@ const InviteMemberDialog = () => {
                     {({ value }) => (
                       <>
                         <TagsInputLabel>Email(s)</TagsInputLabel>
-                        <div className="mt-2 grid rounded-md border">
+                        <div className="mt-2 grid rounded-md border focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background">
                           {!!value.length && (
                             <TagsInputControl>
                               {value.map((value, index) => (
@@ -248,9 +263,12 @@ const InviteMemberDialog = () => {
                               ))}
                             </TagsInputControl>
                           )}
-                          <TagsInputInput placeholder="hello@omni.dev" />
+                          <TagsInputInput
+                            ref={emailRef}
+                            placeholder="hello@omni.dev"
+                          />
                         </div>
-                        <TagsInputClearTrigger />
+                        <TagsInputClearTrigger tabIndex={0} />
                       </>
                     )}
                   </TagsInputContext>
@@ -266,6 +284,7 @@ const InviteMemberDialog = () => {
                     form.reset();
                     setIsInviteTeamMemberOpen(false);
                   }}
+                  tabIndex={0}
                 >
                   Cancel
                 </Button>
@@ -282,6 +301,7 @@ const InviteMemberDialog = () => {
                   <Button
                     type="submit"
                     disabled={!canSubmit || isSubmitting || !isDirty}
+                    tabIndex={0}
                   >
                     <PlusIcon />
                     Invite Member

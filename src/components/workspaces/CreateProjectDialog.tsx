@@ -220,6 +220,7 @@ const CreateProjectDialog = () => {
         }
       }}
       initialFocusEl={() => nameRef.current}
+      trapFocus
     >
       <DialogBackdrop />
       <DialogPositioner>
@@ -279,6 +280,7 @@ const CreateProjectDialog = () => {
                   form.reset();
                 }}
                 variant="outline"
+                tabIndex={0}
               >
                 Cancel
               </Button>
@@ -294,6 +296,7 @@ const CreateProjectDialog = () => {
                   <Button
                     type="submit"
                     disabled={!canSubmit || isSubmitting || !isDirty}
+                    tabIndex={0}
                   >
                     Create
                   </Button>
