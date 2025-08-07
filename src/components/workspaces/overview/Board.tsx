@@ -57,7 +57,7 @@ const Board = ({ projects }: Props) => {
                 }}
               />
 
-              <div className="no-scrollbar flex h-full overflow-y-auto">
+              <div className="flex h-full overflow-hidden">
                 <Droppable droppableId={column.rowId}>
                   {(provided, snapshot) => (
                     <div
@@ -69,29 +69,32 @@ const Board = ({ projects }: Props) => {
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
                     >
-                      {projects
-                        .filter(
-                          (project) => project.projectColumnId === column.rowId,
-                        )
-                        .map((project, index) => (
-                          <Draggable
-                            key={project.rowId}
-                            draggableId={project.rowId}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="my-1 rounded-lg outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                              >
-                                <BoardItem project={project} />
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                      {provided.placeholder}
+                      <div className="no-scrollbar flex h-full flex-col overflow-y-auto">
+                        {projects
+                          .filter(
+                            (project) =>
+                              project.projectColumnId === column.rowId,
+                          )
+                          .map((project, index) => (
+                            <Draggable
+                              key={project.rowId}
+                              draggableId={project.rowId}
+                              index={index}
+                            >
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className="my-1 rounded-lg outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                >
+                                  <BoardItem project={project} />
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                      </div>
                     </div>
                   )}
                 </Droppable>

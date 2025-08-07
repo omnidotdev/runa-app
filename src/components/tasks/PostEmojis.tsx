@@ -1,8 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 
+import CommentEmojiPicker from "@/components/tasks/CommentEmojiPicker";
 import { Button } from "@/components/ui/button";
-import { Tooltip } from "@/components/ui/tooltip";
 import {
   useCreatePostEmojiMutation,
   useDeletePostEmojiMutation,
@@ -58,44 +58,38 @@ const PostEmojis = ({ postId }: Props) => {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {postEmojis.groupedEmojis.map(({ emoji, count, userEmoji }) => (
-        <Tooltip
-          key={emoji}
-          disabled={!userEmoji}
-          tooltip={userEmoji && "You've reacted with this emoji"}
-          positioning={{
-            placement: "bottom",
-            strategy: "fixed",
-          }}
-        >
-          <Button
-            variant="ghost"
-            size="xs"
-            onClick={() => {
-              if (userEmoji) {
-                deleteEmoji({ rowId: userEmoji.rowId });
-              } else {
-                createPostEmoji({
-                  input: {
-                    emoji: {
-                      userId: session?.user?.rowId!,
-                      postId,
-                      emoji,
-                    },
-                  },
-                });
-              }
-            }}
-            className={cn(
-              "gap-2 rounded-full active:scale-[0.95]",
-              userEmoji && "bg-accent",
-            )}
-          >
-            <span className="text-xl">{emoji}</span>
+      <CommentEmojiPicker postId={postId} />
 
-            {count > 1 && <span className="tabular-nums">{count}</span>}
-          </Button>
-        </Tooltip>
+      {postEmojis.groupedEmojis.map(({ emoji, count, userEmoji }) => (
+        <Button
+          key={emoji}
+          variant="ghost"
+          size="xs"
+          onClick={() => {
+            if (userEmoji) {
+              deleteEmoji({ rowId: userEmoji.rowId });
+            } else {
+              createPostEmoji({
+                input: {
+                  emoji: {
+                    userId: session?.user?.rowId!,
+                    postId,
+                    emoji,
+                  },
+                },
+              });
+            }
+          }}
+          className={cn(
+            "gap-2 rounded-full transition-transform active:scale-[0.95]",
+            userEmoji &&
+              "inset-ring-1 inset-ring-primary-200 bg-primary-50 dark:inset-ring-primary-900 dark:bg-primary-950/80",
+          )}
+        >
+          <span>{emoji}</span>
+
+          {count > 1 && <span className="tabular-nums">{count}</span>}
+        </Button>
       ))}
     </div>
   );

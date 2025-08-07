@@ -5,19 +5,16 @@ import {
   useNavigate,
   useRouteContext,
 } from "@tanstack/react-router";
-import { useCallback, useRef } from "react";
 
 import BoardItem from "@/components/projects/BoardItem";
 import ColumnMenu from "@/components/projects/ColumnMenu";
 import ColumnHeader from "@/components/shared/ColumnHeader";
-import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useTheme from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
 
-import type { MouseEvent } from "react";
 import type { TaskFragment } from "@/generated/graphql";
 
 interface Props {
@@ -40,10 +37,6 @@ const Board = ({ tasks }: Props) => {
   });
 
   const { setColumnId } = useTaskStore();
-  const { draggableId } = useDragStore();
-
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const { data: userPreferences } = useSuspenseQuery({
     ...userPreferencesOptions({
@@ -68,52 +61,6 @@ const Board = ({ tasks }: Props) => {
     }),
   });
 
-  const startAutoScroll = useCallback((direction: "left" | "right") => {
-    if (autoScrollIntervalRef.current) return;
-
-    autoScrollIntervalRef.current = setInterval(() => {
-      if (scrollContainerRef.current) {
-        const scrollAmount = direction === "left" ? -10 : 10;
-        scrollContainerRef.current.scrollLeft += scrollAmount;
-      }
-    }, 16); // ~60fps
-  }, []);
-
-  const stopAutoScroll = useCallback(() => {
-    if (autoScrollIntervalRef.current) {
-      clearInterval(autoScrollIntervalRef.current);
-      autoScrollIntervalRef.current = null;
-    }
-  }, []);
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      // Only enable auto-scroll when a task is being dragged
-      if (!draggableId || !scrollContainerRef.current) {
-        stopAutoScroll();
-        return;
-      }
-
-      const container = scrollContainerRef.current;
-      const rect = container.getBoundingClientRect();
-      const scrollZone = 100; // pixels from edge to trigger scroll
-
-      const mouseX = e.clientX - rect.left;
-
-      if (mouseX < scrollZone && container.scrollLeft > 0) {
-        startAutoScroll("left");
-      } else if (
-        mouseX > rect.width - scrollZone &&
-        container.scrollLeft < container.scrollWidth - container.clientWidth
-      ) {
-        startAutoScroll("right");
-      } else {
-        stopAutoScroll();
-      }
-    },
-    [draggableId, startAutoScroll, stopAutoScroll],
-  );
-
   const taskIndex = (taskId: string) =>
     project?.columns?.nodes
       ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
@@ -126,7 +73,6 @@ const Board = ({ tasks }: Props) => {
 
   return (
     <div
-      ref={scrollContainerRef}
       className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/15"
       style={{
         backgroundColor: userPreferences?.color
@@ -135,7 +81,6 @@ const Board = ({ tasks }: Props) => {
             : `${userPreferences?.color}0D`
           : undefined,
       }}
-      onMouseMove={handleMouseMove}
     >
       <div className="h-full min-w-fit p-4">
         <div className="flex h-full gap-3">
@@ -169,7 +114,7 @@ const Board = ({ tasks }: Props) => {
                 <ColumnMenu columnId={column.rowId} />
               </ColumnHeader>
 
-              <div className="no-scrollbar flex h-full overflow-y-auto">
+              <div className="flex h-full overflow-hidden">
                 <Droppable droppableId={column.rowId}>
                   {(provided, snapshot) => (
                     <div
@@ -187,23 +132,25 @@ const Board = ({ tasks }: Props) => {
                             : undefined,
                       }}
                     >
-                      {tasks
-                        .filter((task) => task.columnId === column.rowId)
-                        .map((task, index) => {
-                          const displayId = `${project?.prefix ?? "PROJ"}-${taskIndex(
-                            task.rowId,
-                          )}`;
+                      <div className="no-scrollbar flex h-full flex-col overflow-y-auto">
+                        {tasks
+                          .filter((task) => task.columnId === column.rowId)
+                          .map((task, index) => {
+                            const displayId = `${project?.prefix ?? "PROJ"}-${taskIndex(
+                              task.rowId,
+                            )}`;
 
-                          return (
-                            <BoardItem
-                              key={task.rowId}
-                              task={task}
-                              index={index}
-                              displayId={displayId}
-                            />
-                          );
-                        })}
-                      {provided.placeholder}
+                            return (
+                              <BoardItem
+                                key={task.rowId}
+                                task={task}
+                                index={index}
+                                displayId={displayId}
+                              />
+                            );
+                          })}
+                        {provided.placeholder}
+                      </div>
                     </div>
                   )}
                 </Droppable>

@@ -1,15 +1,8 @@
-import data from "@emoji-mart/data";
-import Picker from "@emoji-mart/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouteContext } from "@tanstack/react-router";
 import { format } from "date-fns";
-import {
-  MoreHorizontalIcon,
-  PenLineIcon,
-  SmilePlusIcon,
-  Trash2Icon,
-} from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { MoreHorizontalIcon, PenLineIcon, Trash2Icon } from "lucide-react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import RichTextEditor from "@/components/core/RichTextEditor";
 import UpdateCommentForm from "@/components/tasks/UpdateCommentForm";
@@ -32,25 +25,14 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import {
-  PopoverContent,
-  PopoverPositioner,
-  PopoverRoot,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  useCreatePostEmojiMutation,
-  useDeletePostMutation,
-} from "@/generated/graphql";
+import { useDeletePostMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import useTheme from "@/lib/hooks/useTheme";
 import taskOptions from "@/lib/options/task.options";
 import { cn } from "@/lib/utils";
+import CommentEmojiPicker from "./CommentEmojiPicker";
 import PostEmojis from "./PostEmojis";
 
 const Comments = () => {
-  const { theme } = useTheme();
-
   const { taskId } = useParams({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
@@ -71,15 +53,10 @@ const Comments = () => {
   const prevLengthRef = useRef<number>(task?.posts?.nodes?.length ?? 0);
 
   const { mutate: deletePost } = useDeletePostMutation({
-      meta: {
-        invalidates: [["all"]],
-      },
-    }),
-    { mutate: createPostEmoji } = useCreatePostEmojiMutation({
-      meta: {
-        invalidates: [["all"]],
-      },
-    });
+    meta: {
+      invalidates: [["all"]],
+    },
+  });
 
   const {
     isOpen: isDeleteCommentDialogOpen,
@@ -139,56 +116,10 @@ const Comments = () => {
                         </span>
 
                         <span className="text-base-500 text-xs dark:text-base-400">
-                          {format(new Date(post.createdAt!), "MMM d, yy")}
+                          {format(new Date(post.createdAt!), "MMM d, yyyy")}
                         </span>
 
-                        <div className="ml-auto flex items-center gap-2 opacity-0 group-hover:opacity-100">
-                          <PopoverRoot
-                            lazyMount
-                            positioning={{
-                              strategy: "fixed",
-                              placement: "top",
-                            }}
-                          >
-                            <PopoverTrigger asChild>
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                className="size-7 text-base-400"
-                              >
-                                <SmilePlusIcon className="size-4" />
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverPositioner>
-                              <PopoverContent className="h-full w-full rounded-xl border-0 p-0">
-                                <Picker
-                                  navPosition="none"
-                                  previewPosition="none"
-                                  skinTonePosition="none"
-                                  emojiButtonRadius="6px"
-                                  autoFocus={true}
-                                  data={data}
-                                  theme={theme === "dark" ? "dark" : "light"}
-                                  emojiSize={20}
-                                  emojiButtonSize={30}
-                                  perLine={10}
-                                  // biome-ignore lint/suspicious/noExplicitAny: Todo create type
-                                  onEmojiSelect={(emoji: any) => {
-                                    createPostEmoji({
-                                      input: {
-                                        emoji: {
-                                          postId: post.rowId!,
-                                          userId: session?.user?.rowId!,
-                                          emoji: emoji.native,
-                                        },
-                                      },
-                                    });
-                                  }}
-                                />
-                              </PopoverContent>
-                            </PopoverPositioner>
-                          </PopoverRoot>
-
+                        <div className="ml-auto flex items-center gap-2">
                           {isUsersPost && (
                             <MenuRoot
                               positioning={{
@@ -253,7 +184,11 @@ const Comments = () => {
                         />
                       )}
 
-                      <PostEmojis postId={post.rowId!} />
+                      <Suspense
+                        fallback={<CommentEmojiPicker postId={post.rowId!} />}
+                      >
+                        <PostEmojis postId={post.rowId!} />
+                      </Suspense>
                     </div>
                   </div>
                 );
