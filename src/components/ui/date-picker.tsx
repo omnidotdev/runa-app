@@ -24,9 +24,9 @@ const datePickerVariants = tv({
       "flex items-center justify-center rounded-md px-2 py-1 font-medium text-sm",
     table: "-m-1 w-full border-separate border-spacing-1",
     tableHeader: "h-10 font-semibold text-sm",
-    tableCell: "text-center",
+    tableCell: "text-center ",
     tableCellTrigger:
-      "size-full flex cursor-pointer items-center justify-center data-[selected]:bg-primary-200 data-[selected]:dark:bg-primary-950",
+      "size-full flex border text-xs rounded cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background items-center justify-center data-[selected]:bg-primary-200 data-[selected]:dark:bg-primary-950",
   },
 });
 

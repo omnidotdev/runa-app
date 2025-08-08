@@ -49,6 +49,7 @@ const CreateTaskDatePicker = withForm({
                   )
                 : field.handleChange("")
             }
+            autoFocus
           >
             <DatePickerControl>
               <DatePickerTrigger asChild className="ml-0 h-9 w-fit">
@@ -63,7 +64,7 @@ const CreateTaskDatePicker = withForm({
             </DatePickerControl>
 
             <DatePickerPositioner>
-              <DatePickerContent>
+              <DatePickerContent className="bg-background">
                 <DatePickerView className="flex flex-col gap-3" view="day">
                   <DatePickerContext>
                     {(datePicker) => (
@@ -108,9 +109,9 @@ const CreateTaskDatePicker = withForm({
                                     // biome-ignore lint/suspicious/noArrayIndexKey: simple index
                                     key={id}
                                     value={day}
-                                    className="size-8 border"
+                                    className="size-8"
                                   >
-                                    <DatePickerTableCellTrigger className="hover:bg-primary-50 data-[outside-range]:opacity-40 hover:data-[outside-range]:bg-transparent dark:hover:bg-primary-950">
+                                    <DatePickerTableCellTrigger className=" hover:bg-primary-50 data-[outside-range]:opacity-40 hover:data-[outside-range]:bg-transparent dark:hover:bg-primary-950">
                                       {day.day}
                                     </DatePickerTableCellTrigger>
                                   </DatePickerTableCell>
