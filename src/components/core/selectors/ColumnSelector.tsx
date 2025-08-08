@@ -20,14 +20,12 @@ interface Props extends Omit<ComponentProps<typeof Select>, "collection"> {
   projectId: string;
   triggerLabel?: string;
   triggerEmoji?: string;
-  size?: "xs" | "sm" | "default";
 }
 
 const ColumnSelector = ({
   projectId,
   triggerLabel,
   triggerEmoji,
-  size = "default",
   ...rest
 }: Props) => {
   const { data: project } = useQuery({
@@ -47,21 +45,14 @@ const ColumnSelector = ({
   return (
     <Select collection={columnCollection} {...rest}>
       <SelectTrigger
-        size={size}
         className={cn(
           buttonVariants({ variant: "outline" }),
           "w-full [&[data-state=open]>svg]:rotate-0 [&_svg:not([class*='text-'])]:text-foreground",
         )}
       >
-        {triggerEmoji && (
-          <p className={cn("", size === "xs" ? "text-xs" : "text-sm")}>
-            {triggerEmoji}
-          </p>
-        )}
+        {triggerEmoji && <p className="text-sm">{triggerEmoji}</p>}
 
-        <p className={cn(size === "xs" ? "text-xs" : "text-sm")}>
-          {triggerLabel}
-        </p>
+        <p className="text-sm">{triggerLabel}</p>
       </SelectTrigger>
       <SelectContent>
         <SelectItemGroup className="space-y-1">

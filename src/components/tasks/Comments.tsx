@@ -198,7 +198,7 @@ const Comments = () => {
             </div>
           ) : (
             <p className="mx-auto flex place-self-center p-4 text-muted-foreground text-sm">
-              No Comment. Add a comment to start the discussion.
+              Add a comment to start the discussion
             </p>
           )}
         </CardContent>

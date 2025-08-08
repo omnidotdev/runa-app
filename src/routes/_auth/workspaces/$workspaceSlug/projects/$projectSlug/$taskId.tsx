@@ -171,8 +171,8 @@ function TaskPage() {
           <div className="w-full">
             <div className="no-scrollbar flex items-center gap-2 overflow-x-auto p-1">
               <Button
-                variant="ghost"
-                className="size-7 justify-self-end text-red-500 hover:text-red-500/80"
+                variant="outline"
+                className="justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20"
                 onClick={() => setIsDeleteTaskDialogOpen(true)}
               >
                 <Trash2Icon className="size-4" />
@@ -183,7 +183,6 @@ function TaskPage() {
                 defaultValue={[task?.columnId!]}
                 triggerLabel={task?.column?.title}
                 triggerEmoji={task?.column?.emoji ?? undefined}
-                size="xs"
                 onValueChange={({ value }) =>
                   updateTask({
                     rowId: taskId,
@@ -197,7 +196,6 @@ function TaskPage() {
               <PrioritySelector
                 defaultValue={[task?.priority!]}
                 triggerValue={task?.priority}
-                size="xs"
                 onValueChange={({ value }) =>
                   updateTask({
                     rowId: taskId,
@@ -216,7 +214,6 @@ function TaskPage() {
                 <Button
                   onClick={() => setIsUpdateDueDateDialogOpen(true)}
                   variant="outline"
-                  className="h-7"
                 >
                   {task?.dueDate ? (
                     <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
@@ -224,7 +221,7 @@ function TaskPage() {
                       {format(new Date(task.dueDate), "MMM d, yyyy")}
                     </div>
                   ) : (
-                    <p className="text-xs">Set due date</p>
+                    <p className="text-sm">Set due date</p>
                   )}
                 </Button>
               </Tooltip>
@@ -236,7 +233,7 @@ function TaskPage() {
                   onOpenChange={({ open }) => setIsTaskSidebarOpen(open)}
                 >
                   <SheetTrigger asChild className="">
-                    <Button variant="outline" size="icon" className="h-7 w-7">
+                    <Button variant="outline" size="icon">
                       <MoreHorizontalIcon className="size-4" />
                     </Button>
                   </SheetTrigger>

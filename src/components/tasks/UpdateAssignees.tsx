@@ -10,6 +10,8 @@ import {
   ComboboxControl,
   ComboboxInput,
   ComboboxItem,
+  ComboboxItemIndicator,
+  ComboboxItemText,
   ComboboxPositioner,
   ComboboxRoot,
   ComboboxTrigger,
@@ -84,12 +86,14 @@ const UpdateAssignees = withForm({
                   <ComboboxContent>
                     {usersCollection.items.map((user) => (
                       <ComboboxItem key={user.value} item={user}>
-                        {user.label}
+                        <ComboboxItemText>{user.label}</ComboboxItemText>
+                        <ComboboxItemIndicator />
                       </ComboboxItem>
                     ))}
                   </ComboboxContent>
                 </ComboboxPositioner>
               </ComboboxRoot>
+
               <div className="flex flex-col gap-1 p-1">
                 {field.state.value.length ? (
                   field.state.value.map((assignee, index) => {
@@ -118,6 +122,7 @@ const UpdateAssignees = withForm({
                         <Button
                           variant="ghost"
                           size="icon"
+                          className="size-6 justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20"
                           onClick={() => field.removeValue(index)}
                         >
                           <TrashIcon className="size-3" />
