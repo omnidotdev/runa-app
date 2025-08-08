@@ -49,7 +49,7 @@ const AppSidebarHeader = () => {
       {workspaces?.length ? (
         <MenuRoot>
           <MenuTrigger asChild>
-            <SidebarMenuButton className="bg-sidebar-accent">
+            <SidebarMenuButton className="bg-sidebar-accent focus-visible:ring-offset-background">
               <ChevronsUpDown />
 
               <span className="flex w-full items-center group-data-[collapsible=icon]:hidden">

@@ -102,10 +102,10 @@ const TaskLabelsForm = withForm({
                   {field.state.value.map((label, i) => (
                     <form.Field key={label.name} name={`labels[${i}]`}>
                       {(subField) => (
-                        <div
-                          // NB: styles are mimicking the select item styles
+                        <Button
+                          variant="ghost"
                           className={cn(
-                            "cursor-pointer rounded-sm px-2 py-1.5 text-sm hover:bg-accent dark:hover:bg-accent/50",
+                            "flex items-start justify-start",
                             subField.state.value.checked
                               ? "bg-base-100 text-foreground hover:bg-base-200 dark:bg-base-700 dark:text-foreground dark:hover:bg-base-800"
                               : "text-muted-foreground",
@@ -129,7 +129,7 @@ const TaskLabelsForm = withForm({
                               {subField.state.value.name}
                             </p>
                           </div>
-                        </div>
+                        </Button>
                       )}
                     </form.Field>
                   ))}

@@ -162,7 +162,9 @@ const UpdateTaskLabelsDialog = () => {
             }}
             className="flex flex-col gap-2"
           >
-            <TaskLabelsForm form={form} />
+            <div className="rounded border">
+              <TaskLabelsForm form={form} />
+            </div>
 
             <div className="mt-4 flex justify-end gap-2">
               <DialogCloseTrigger asChild>

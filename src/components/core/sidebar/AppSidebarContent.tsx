@@ -242,7 +242,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
             className="group-data-[collapsible=icon]:hidden"
           >
             <SidebarGroup>
-              <CollapsibleTrigger className="gap-2 p-0 px-1">
+              <CollapsibleTrigger className="mt-1 gap-2 p-0 px-1">
                 <SidebarGroupLabel>Workspace</SidebarGroupLabel>
                 <ChevronRightIcon size={12} className="mr-auto text-base-400" />
 
@@ -262,8 +262,8 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                 </Tooltip>
               </CollapsibleTrigger>
 
-              <CollapsibleContent className="mt-1 animate-none" asChild>
-                <SidebarMenu className="my-1">
+              <CollapsibleContent className="-mx-2 animate-none">
+                <SidebarMenu className="my-1 px-2">
                   {sidebarMenuItems.map((item) => (
                     <SidebarMenuItem key={item.to}>
                       <SidebarMenuButton
@@ -291,7 +291,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
             className="group-data-[collapsible=icon]:hidden"
           >
             <SidebarGroup>
-              <CollapsibleTrigger className="gap-2 p-0 px-1">
+              <CollapsibleTrigger className="mt-1 gap-2 p-0 px-1">
                 <SidebarGroupLabel>Projects</SidebarGroupLabel>
                 <ChevronRightIcon size={12} className="mr-auto text-base-400" />
 
@@ -365,7 +365,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                         >
                           <MenuTrigger
                             asChild
-                            className="[&[data-state=open]>svg]:rotate-0"
+                            className="focus-visible:ring-offset-background [&[data-state=open]>svg]:rotate-0"
                           >
                             <SidebarMenuAction
                               isActive={

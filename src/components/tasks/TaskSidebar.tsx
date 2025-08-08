@@ -39,8 +39,16 @@ const TaskSidebar = () => {
       <CardHeader className="mt-4 p-0 lg:hidden">Management Panel</CardHeader>
 
       <CardRoot
+        tabIndex={0}
+        role="button"
         onClick={() => setIsUpdateAssigneesDialogOpen(true)}
-        className="cursor-pointer overflow-hidden p-0 shadow-none"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setIsUpdateAssigneesDialogOpen(true);
+          }
+        }}
+        className="cursor-pointer overflow-hidden p-0 shadow-none outline-none outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <CardHeader className="flex h-10 flex-row items-center justify-between bg-base-50 px-3 dark:bg-base-800">
           <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
@@ -67,8 +75,16 @@ const TaskSidebar = () => {
       </CardRoot>
 
       <CardRoot
+        tabIndex={0}
+        role="button"
         onClick={() => setIsUpdateTaskLabelsDialogOpen(true)}
-        className="cursor-pointer overflow-hidden p-0 shadow-none"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setIsUpdateTaskLabelsDialogOpen(true);
+          }
+        }}
+        className="cursor-pointer overflow-hidden p-0 shadow-none outline-none outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <CardHeader className="flex h-10 flex-row items-center justify-between bg-base-50 px-3 dark:bg-base-800">
           <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
@@ -78,11 +94,17 @@ const TaskSidebar = () => {
         </CardHeader>
 
         <CardContent className="space-y-4 p-4">
-          <div className="flex flex-wrap gap-2">
-            {task?.taskLabels.nodes?.map(({ label }) => (
-              <Label key={label?.rowId} label={label as LabelFragment} />
-            ))}
-          </div>
+          {task?.taskLabels?.nodes?.length ? (
+            <div className="flex flex-wrap gap-2">
+              {task?.taskLabels.nodes?.map(({ label }) => (
+                <Label key={label?.rowId} label={label as LabelFragment} />
+              ))}
+            </div>
+          ) : (
+            <p className="mx-auto flex place-self-center text-muted-foreground text-sm">
+              No Labels
+            </p>
+          )}
         </CardContent>
       </CardRoot>
 
