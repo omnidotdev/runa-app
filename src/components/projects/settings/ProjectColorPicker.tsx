@@ -111,7 +111,7 @@ const ProjectColorPicker = () => {
                 onClick={() =>
                   setIsUpdatingColorPreferences(!isUpdatingColorPreferences)
                 }
-                className="size-6 disabled:cursor-default"
+                className="size-6 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-default"
               >
                 <ColorPickerTransparencyGrid />
                 <ColorPickerValueSwatch />
