@@ -73,7 +73,7 @@ const Board = ({ tasks }: Props) => {
 
   return (
     <div
-      className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
+      className="custom-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
       style={{
         backgroundColor: userPreferences?.color
           ? theme === "dark"
