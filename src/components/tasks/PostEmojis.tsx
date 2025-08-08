@@ -81,9 +81,9 @@ const PostEmojis = ({ postId }: Props) => {
             }
           }}
           className={cn(
-            "gap-2 rounded-full transition-transform active:scale-[0.95] disabled:opacity-100",
+            "inset-ring-1 inset-ring-border gap-2 rounded-full transition-transform active:scale-[0.95] disabled:opacity-100",
             userEmoji &&
-              "inset-ring-1 inset-ring-primary-200 bg-primary-50 dark:inset-ring-primary-900 dark:bg-primary-950/80",
+              "inset-ring-primary-200 bg-primary-50 dark:inset-ring-primary-900 dark:bg-primary-950/80",
           )}
         >
           <span>{emoji}</span>

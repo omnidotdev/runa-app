@@ -169,16 +169,14 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                       menuButtonRef.current?.getBoundingClientRect() ?? null,
                   }}
                   open={isProjectMenuOpen}
-                  onOpenChange={({ open }) => {
-                    if (!open) {
-                      setProjectMenuOpen(false);
-                    }
-                  }}
+                  onOpenChange={({ open }) => setProjectMenuOpen(open)}
                 >
-                  <SidebarMenuButton tooltip="Project List" asChild>
+                  <SidebarMenuButton
+                    tooltip={!isProjectMenuOpen ? "Project List" : undefined}
+                    asChild
+                  >
                     <MenuTrigger
                       ref={menuButtonRef}
-                      onClick={() => setProjectMenuOpen(!isProjectMenuOpen)}
                       className="text-sidebar-foreground/70"
                     >
                       {isProjectMenuOpen ? <PackageOpenIcon /> : <BoxIcon />}
@@ -263,29 +261,29 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                   </SidebarGroupAction>
                 </Tooltip>
               </CollapsibleTrigger>
-            </SidebarGroup>
 
-            <CollapsibleContent className="mt-1">
-              <SidebarMenu className="my-1 px-2">
-                {sidebarMenuItems.map((item) => (
-                  <SidebarMenuItem key={item.to}>
-                    <SidebarMenuButton
-                      isActive={item.isActive}
-                      tooltip={item.tooltip}
-                      onClick={() =>
-                        navigate({
-                          to: item.to,
-                          params: { workspaceSlug },
-                        })
-                      }
-                    >
-                      <item.icon />
-                      <span className="w-full truncate">{item.label}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </CollapsibleContent>
+              <CollapsibleContent className="mt-1 animate-none" asChild>
+                <SidebarMenu className="my-1">
+                  {sidebarMenuItems.map((item) => (
+                    <SidebarMenuItem key={item.to}>
+                      <SidebarMenuButton
+                        isActive={item.isActive}
+                        tooltip={item.tooltip}
+                        onClick={() =>
+                          navigate({
+                            to: item.to,
+                            params: { workspaceSlug },
+                          })
+                        }
+                      >
+                        <item.icon />
+                        <span className="w-full truncate">{item.label}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </CollapsibleContent>
+            </SidebarGroup>
           </CollapsibleRoot>
 
           <CollapsibleRoot
@@ -308,7 +306,6 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                       e.stopPropagation();
                       setIsCreateProjectOpen(true);
                     }}
-                    // disabled={!workspace?.projectColumns.nodes.length}
                   >
                     <PlusIcon />
                     <span className="sr-only">Add Project</span>
@@ -316,7 +313,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                 </Tooltip>
               </CollapsibleTrigger>
 
-              <CollapsibleContent className="-mx-2">
+              <CollapsibleContent className="-mx-2 animate-none">
                 <SidebarMenu className="my-1 px-2">
                   {workspace?.projects.nodes.map((project) => {
                     const userPreferences =

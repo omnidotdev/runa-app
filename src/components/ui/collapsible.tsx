@@ -10,8 +10,7 @@ const collapsibleVariants = tv({
     root: "",
     trigger:
       "flex w-full outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-background focus-visible:ring-ring focus-visible:ring-offset-2 items-center cursor-pointer justify-between rounded-md px-3 py-3 font-medium text-sm transition-transform [&[data-state=open]>svg]:rotate-90 transition-[color,box-shadow]",
-    content:
-      "overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up duration-300 ease-in-out",
+    content: "overflow-hidden",
   },
 });
 

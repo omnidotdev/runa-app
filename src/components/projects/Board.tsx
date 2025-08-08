@@ -73,7 +73,7 @@ const Board = ({ tasks }: Props) => {
 
   return (
     <div
-      className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/15"
+      className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
       style={{
         backgroundColor: userPreferences?.color
           ? theme === "dark"
@@ -132,7 +132,7 @@ const Board = ({ tasks }: Props) => {
                             : undefined,
                       }}
                     >
-                      <div className="no-scrollbar flex h-full flex-col overflow-y-auto">
+                      <div className="no-scrollbar flex h-full flex-col overflow-y-auto p-1">
                         {tasks
                           .filter((task) => task.columnId === column.rowId)
                           .map((task, index) => {

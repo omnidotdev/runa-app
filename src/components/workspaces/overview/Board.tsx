@@ -1,6 +1,11 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useSearch } from "@tanstack/react-router";
+import {
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useSearch,
+} from "@tanstack/react-router";
 
 import ColumnHeader from "@/components/shared/ColumnHeader";
 import BoardItem from "@/components/workspaces/overview/BoardItem";
@@ -16,10 +21,14 @@ interface Props {
 }
 
 const Board = ({ projects }: Props) => {
-  const { workspaceId } = useLoaderData({
+  const navigate = useNavigate();
+  const { workspaceSlug } = useParams({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
+  const { workspaceId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
+  });
   const { search } = useSearch({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
@@ -36,7 +45,7 @@ const Board = ({ projects }: Props) => {
 
   return (
     <div className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/20">
-      <div className="h-full min-w-fit p-4">
+      <div className="h-full min-w-fit">
         <div className="flex h-full gap-3">
           {projectColumns?.map((column) => (
             <div
@@ -69,7 +78,7 @@ const Board = ({ projects }: Props) => {
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
                     >
-                      <div className="no-scrollbar flex h-full flex-col overflow-y-auto">
+                      <div className="no-scrollbar flex h-full flex-col overflow-y-auto p-1">
                         {projects
                           .filter(
                             (project) =>
@@ -86,7 +95,18 @@ const Board = ({ projects }: Props) => {
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
-                                  className="my-1 rounded-lg outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                  className="rounded-lg outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                  onKeyDown={(evt) => {
+                                    if (evt.key === "Enter") {
+                                      navigate({
+                                        to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+                                        params: {
+                                          workspaceSlug,
+                                          projectSlug: project.slug,
+                                        },
+                                      });
+                                    }
+                                  }}
                                 >
                                   <BoardItem project={project} />
                                 </div>

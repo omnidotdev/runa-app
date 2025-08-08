@@ -50,7 +50,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
     isUpdateDueDateDialogOpen ||
     isUpdateTaskLabelsDialogOpen;
 
-  const handleOnMouseEnter = () => {
+  const handleSetTaskId = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
@@ -64,7 +64,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
     }, 300);
   };
 
-  const handleOnMouseLeave = () => {
+  const handleClearTaskId = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
@@ -84,8 +84,22 @@ const BoardItem = ({ task, index, displayId }: Props) => {
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          onMouseEnter={handleOnMouseEnter}
-          onMouseLeave={handleOnMouseLeave}
+          onMouseEnter={handleSetTaskId}
+          onMouseLeave={handleClearTaskId}
+          onFocus={handleSetTaskId}
+          onBlur={handleClearTaskId}
+          onKeyDown={(evt) => {
+            if (evt.key === "Enter") {
+              navigate({
+                to: "/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+                params: {
+                  workspaceSlug,
+                  projectSlug,
+                  taskId: task.rowId,
+                },
+              });
+            }
+          }}
           onClick={() => {
             if (!snapshot.isDragging) {
               navigate({
