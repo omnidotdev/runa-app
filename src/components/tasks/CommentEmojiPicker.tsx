@@ -1,7 +1,9 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { SmilePlusIcon } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,17 +14,25 @@ import {
 } from "@/components/ui/popover";
 import { useCreatePostEmojiMutation } from "@/generated/graphql";
 import useTheme from "@/lib/hooks/useTheme";
+import userEmojisOptions from "@/lib/options/userEmojis.options";
 
 interface Props {
   postId: string;
 }
 
 const CommentEmojiPicker = ({ postId }: Props) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
   const { theme } = useTheme();
+
+  const { data: userEmojis } = useQuery({
+    ...userEmojisOptions({ postId, userId: session?.user.rowId! }),
+    select: (data) => data?.emojis?.nodes.map((e) => e.emoji) ?? [],
+  });
 
   const { mutate: createPostEmoji } = useCreatePostEmojiMutation({
     meta: {
@@ -37,6 +47,9 @@ const CommentEmojiPicker = ({ postId }: Props) => {
         strategy: "fixed",
         placement: "top",
       }}
+      open={isOpen}
+      onOpenChange={({ open }) => setIsOpen(open)}
+      modal
     >
       <PopoverTrigger asChild>
         <Button size="icon" variant="ghost" className="size-7 text-base-400">
@@ -56,17 +69,20 @@ const CommentEmojiPicker = ({ postId }: Props) => {
             emojiSize={20}
             emojiButtonSize={30}
             perLine={10}
-            // biome-ignore lint/suspicious/noExplicitAny: Todo create type
-            onEmojiSelect={(emoji: any) => {
-              createPostEmoji({
-                input: {
-                  emoji: {
-                    postId,
-                    userId: session?.user?.rowId!,
-                    emoji: emoji.native,
+            onEmojiSelect={(emoji: { native: string }) => {
+              if (!userEmojis?.includes(emoji.native)) {
+                createPostEmoji({
+                  input: {
+                    emoji: {
+                      postId,
+                      userId: session?.user?.rowId!,
+                      emoji: emoji.native,
+                    },
                   },
-                },
-              });
+                });
+              }
+
+              setIsOpen(false);
             }}
           />
         </PopoverContent>

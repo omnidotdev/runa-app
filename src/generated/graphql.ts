@@ -8687,6 +8687,14 @@ export type PostEmojisQueryVariables = Exact<{
 
 export type PostEmojisQuery = { __typename?: 'Query', emojis?: { __typename?: 'EmojiConnection', groupedAggregates?: Array<{ __typename?: 'EmojiAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'EmojiDistinctCountAggregates', emoji?: string | null, rowId?: string | null } | null }> | null } | null, users?: { __typename?: 'UserConnection', nodes: Array<{ __typename?: 'User', emojis: { __typename?: 'EmojiConnection', nodes: Array<{ __typename?: 'Emoji', emoji?: string | null, rowId: string, postId: string }> } }> } | null };
 
+export type UserEmojisQueryVariables = Exact<{
+  postId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+}>;
+
+
+export type UserEmojisQuery = { __typename?: 'Query', emojis?: { __typename?: 'EmojiConnection', nodes: Array<{ __typename?: 'Emoji', emoji?: string | null }> } | null };
+
 export type InvitationsQueryVariables = Exact<{
   email?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -10004,6 +10012,58 @@ useInfinitePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['P
 
 
 usePostEmojisQuery.fetcher = (variables: PostEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<PostEmojisQuery, PostEmojisQueryVariables>(PostEmojisDocument, variables, options);
+
+export const UserEmojisDocument = `
+    query UserEmojis($postId: UUID!, $userId: UUID!) {
+  emojis(condition: {userId: $userId, postId: $postId}) {
+    nodes {
+      emoji
+    }
+  }
+}
+    `;
+
+export const useUserEmojisQuery = <
+      TData = UserEmojisQuery,
+      TError = unknown
+    >(
+      variables: UserEmojisQueryVariables,
+      options?: Omit<UseQueryOptions<UserEmojisQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<UserEmojisQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<UserEmojisQuery, TError, TData>(
+      {
+    queryKey: ['UserEmojis', variables],
+    queryFn: graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, variables),
+    ...options
+  }
+    )};
+
+useUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojis', variables];
+
+export const useInfiniteUserEmojisQuery = <
+      TData = InfiniteData<UserEmojisQuery>,
+      TError = unknown
+    >(
+      variables: UserEmojisQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<UserEmojisQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<UserEmojisQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<UserEmojisQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['UserEmojis.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojis.infinite', variables];
+
+
+useUserEmojisQuery.fetcher = (variables: UserEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, variables, options);
 
 export const InvitationsDocument = `
     query Invitations($email: String) {

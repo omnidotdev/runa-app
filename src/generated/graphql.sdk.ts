@@ -8688,6 +8688,14 @@ export type PostEmojisQueryVariables = Exact<{
 
 export type PostEmojisQuery = { __typename?: 'Query', emojis?: { __typename?: 'EmojiConnection', groupedAggregates?: Array<{ __typename?: 'EmojiAggregates', keys?: Array<string | null> | null, distinctCount?: { __typename?: 'EmojiDistinctCountAggregates', emoji?: string | null, rowId?: string | null } | null }> | null } | null, users?: { __typename?: 'UserConnection', nodes: Array<{ __typename?: 'User', emojis: { __typename?: 'EmojiConnection', nodes: Array<{ __typename?: 'Emoji', emoji?: string | null, rowId: string, postId: string }> } }> } | null };
 
+export type UserEmojisQueryVariables = Exact<{
+  postId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+}>;
+
+
+export type UserEmojisQuery = { __typename?: 'Query', emojis?: { __typename?: 'EmojiConnection', nodes: Array<{ __typename?: 'Emoji', emoji?: string | null }> } | null };
+
 export type InvitationsQueryVariables = Exact<{
   email?: InputMaybe<Scalars['String']['input']>;
 }>;
@@ -9230,6 +9238,15 @@ export const PostEmojisDocument = gql`
   }
 }
     `;
+export const UserEmojisDocument = gql`
+    query UserEmojis($postId: UUID!, $userId: UUID!) {
+  emojis(condition: {userId: $userId, postId: $postId}) {
+    nodes {
+      emoji
+    }
+  }
+}
+    `;
 export const InvitationsDocument = gql`
     query Invitations($email: String) {
   invitations(condition: {email: $email}) {
@@ -9669,6 +9686,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     PostEmojis(variables: PostEmojisQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<PostEmojisQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<PostEmojisQuery>({ document: PostEmojisDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'PostEmojis', 'query', variables);
+    },
+    UserEmojis(variables: UserEmojisQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserEmojisQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UserEmojisQuery>({ document: UserEmojisDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UserEmojis', 'query', variables);
     },
     Invitations(variables?: InvitationsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<InvitationsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<InvitationsQuery>({ document: InvitationsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Invitations', 'query', variables);

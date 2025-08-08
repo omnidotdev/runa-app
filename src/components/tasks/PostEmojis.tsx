@@ -1,3 +1,4 @@
+import { Format } from "@ark-ui/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 
@@ -41,20 +42,18 @@ const PostEmojis = ({ postId }: Props) => {
     },
   });
 
-  const { mutate: deleteEmoji } = useDeletePostEmojiMutation({
-      meta: {
-        invalidates: [["all"]],
-      },
-    }),
-    { mutate: createPostEmoji } = useCreatePostEmojiMutation({
-      meta: {
-        invalidates: [["all"]],
-      },
-    });
-
-  if (!postEmojis) {
-    return null;
-  }
+  const { mutate: deleteEmoji, isPending: isDeleteEmojiPending } =
+      useDeletePostEmojiMutation({
+        meta: {
+          invalidates: [["all"]],
+        },
+      }),
+    { mutate: createPostEmoji, isPending: isCreatePostEmojiPending } =
+      useCreatePostEmojiMutation({
+        meta: {
+          invalidates: [["all"]],
+        },
+      });
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -65,6 +64,7 @@ const PostEmojis = ({ postId }: Props) => {
           key={emoji}
           variant="ghost"
           size="xs"
+          disabled={isCreatePostEmojiPending || isDeleteEmojiPending}
           onClick={() => {
             if (userEmoji) {
               deleteEmoji({ rowId: userEmoji.rowId });
@@ -81,14 +81,22 @@ const PostEmojis = ({ postId }: Props) => {
             }
           }}
           className={cn(
-            "gap-2 rounded-full transition-transform active:scale-[0.95]",
+            "gap-2 rounded-full transition-transform active:scale-[0.95] disabled:opacity-100",
             userEmoji &&
               "inset-ring-1 inset-ring-primary-200 bg-primary-50 dark:inset-ring-primary-900 dark:bg-primary-950/80",
           )}
         >
           <span>{emoji}</span>
 
-          {count > 1 && <span className="tabular-nums">{count}</span>}
+          {count > 1 && (
+            <span className="tabular-nums">
+              <Format.Number
+                value={count}
+                notation="compact"
+                compactDisplay="short"
+              />
+            </span>
+          )}
         </Button>
       ))}
     </div>
