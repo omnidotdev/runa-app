@@ -8,7 +8,7 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useDebounceCallback, useMediaQuery } from "usehooks-ts";
+import { useDebounceCallback } from "usehooks-ts";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
@@ -31,6 +31,7 @@ import {
   useUpdateTaskMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import seo from "@/lib/util/seo";
@@ -68,7 +69,7 @@ function TaskPage() {
   const navigate = Route.useNavigate();
   const { projectId } = Route.useLoaderData();
   const { workspaceSlug, projectSlug, taskId } = Route.useParams();
-  const matches = useMediaQuery("(min-width: 1024px)");
+  const matches = useViewportSize({ breakpoint: Breakpoint.Large });
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
 
   const { data: task } = useSuspenseQuery({
@@ -126,125 +127,125 @@ function TaskPage() {
   }, [matches, isTaskSidebarOpen]);
 
   return (
-    <>
-      {/* Main content */}
-      <div className="grid h-full grid-cols-1 overflow-hidden lg:grid-cols-[3fr_1fr]">
-        <div className="no-scrollbar flex flex-1 flex-col gap-8 overflow-y-auto px-6 py-12">
-          {/* Header */}
-          <div className="flex items-center gap-3">
-            <Link
-              to="/workspaces/$workspaceSlug/projects/$projectSlug"
-              params={{
-                workspaceSlug,
-                projectSlug,
-              }}
-              variant="ghost"
-              size="icon"
-              className="ml-1"
+    <div className="custom-scrollbar flex flex-col overflow-y-auto px-6 py-12">
+      {/* Header */}
+      <div className="mb-4 flex items-center gap-3">
+        <Link
+          to="/workspaces/$workspaceSlug/projects/$projectSlug"
+          params={{
+            workspaceSlug,
+            projectSlug,
+          }}
+          variant="ghost"
+          size="icon"
+          className="ml-1"
+        >
+          <ArrowLeftIcon className="size-4" />
+        </Link>
+
+        <div className="flex flex-col gap-2">
+          <RichTextEditor
+            defaultContent={task?.content}
+            className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
+            skeletonClassName="h-8 min-w-40"
+            onUpdate={({ editor }) =>
+              !editor.isEmpty &&
+              handleTaskUpdate({
+                rowId: taskId,
+                patch: {
+                  content: editor.getHTML(),
+                },
+              })
+            }
+          />
+
+          <div className="flex items-center gap-2 font-mono text-base-400 text-sm dark:text-base-500">
+            {`${project?.prefix ? project.prefix : "PROJ"}-${taskIndex}`}
+          </div>
+        </div>
+      </div>
+
+      {/* Task Controls */}
+      <div className="mb-12 w-full">
+        <div className="flex flex-wrap items-center gap-2 p-1">
+          <Button
+            variant="outline"
+            className="justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20"
+            onClick={() => setIsDeleteTaskDialogOpen(true)}
+          >
+            <Trash2Icon className="size-4" />
+          </Button>
+
+          <ColumnSelector
+            projectId={projectId}
+            defaultValue={[task?.columnId!]}
+            triggerLabel={task?.column?.title}
+            triggerEmoji={task?.column?.emoji ?? undefined}
+            onValueChange={({ value }) =>
+              updateTask({
+                rowId: taskId,
+                patch: {
+                  columnId: value[0],
+                },
+              })
+            }
+          />
+
+          <PrioritySelector
+            defaultValue={[task?.priority!]}
+            triggerValue={task?.priority}
+            onValueChange={({ value }) =>
+              updateTask({
+                rowId: taskId,
+                patch: {
+                  priority: value[0],
+                },
+              })
+            }
+          />
+
+          <Tooltip
+            positioning={{ placement: "top" }}
+            tooltip="Update Due Date"
+            shortcut="D"
+          >
+            <Button
+              onClick={() => setIsUpdateDueDateDialogOpen(true)}
+              variant="outline"
             >
-              <ArrowLeftIcon className="size-4" />
-            </Link>
+              {task?.dueDate ? (
+                <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
+                  <CalendarIcon className="size-3" />
+                  {format(new Date(task.dueDate), "MMM d, yyyy")}
+                </div>
+              ) : (
+                <p className="text-sm">Set due date</p>
+              )}
+            </Button>
+          </Tooltip>
 
-            <div className="flex flex-col gap-2">
-              <RichTextEditor
-                defaultContent={task?.content}
-                className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
-                skeletonClassName="h-8 min-w-40"
-                onUpdate={({ editor }) =>
-                  !editor.isEmpty &&
-                  handleTaskUpdate({
-                    rowId: taskId,
-                    patch: {
-                      content: editor.getHTML(),
-                    },
-                  })
-                }
-              />
-
-              <div className="flex items-center gap-2 font-mono text-base-400 text-sm dark:text-base-500">
-                {`${project?.prefix ? project.prefix : "PROJ"}-${taskIndex}`}
-              </div>
-            </div>
-          </div>
-
-          {/* Task Controls */}
-          <div className="w-full">
-            <div className="no-scrollbar flex items-center gap-2 overflow-x-auto p-1">
-              <Button
-                variant="outline"
-                className="justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20"
-                onClick={() => setIsDeleteTaskDialogOpen(true)}
-              >
-                <Trash2Icon className="size-4" />
-              </Button>
-
-              <ColumnSelector
-                projectId={projectId}
-                defaultValue={[task?.columnId!]}
-                triggerLabel={task?.column?.title}
-                triggerEmoji={task?.column?.emoji ?? undefined}
-                onValueChange={({ value }) =>
-                  updateTask({
-                    rowId: taskId,
-                    patch: {
-                      columnId: value[0],
-                    },
-                  })
-                }
-              />
-
-              <PrioritySelector
-                defaultValue={[task?.priority!]}
-                triggerValue={task?.priority}
-                onValueChange={({ value }) =>
-                  updateTask({
-                    rowId: taskId,
-                    patch: {
-                      priority: value[0],
-                    },
-                  })
-                }
-              />
-
-              <Tooltip
-                positioning={{ placement: "top" }}
-                tooltip="Update Due Date"
-                shortcut="D"
-              >
-                <Button
-                  onClick={() => setIsUpdateDueDateDialogOpen(true)}
-                  variant="outline"
-                >
-                  {task?.dueDate ? (
-                    <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
-                      <CalendarIcon className="size-3" />
-                      {format(new Date(task.dueDate), "MMM d, yyyy")}
-                    </div>
-                  ) : (
-                    <p className="text-sm">Set due date</p>
-                  )}
+          {/* TODO: Better position this for actual mobile */}
+          <div className="lg:hidden">
+            <SheetRoot
+              open={isTaskSidebarOpen}
+              onOpenChange={({ open }) => setIsTaskSidebarOpen(open)}
+            >
+              <SheetTrigger asChild className="">
+                <Button variant="outline" size="icon">
+                  <MoreHorizontalIcon className="size-4" />
                 </Button>
-              </Tooltip>
-
-              {/* TODO: Better position this for actual mobile */}
-              <div className="lg:hidden">
-                <SheetRoot
-                  open={isTaskSidebarOpen}
-                  onOpenChange={({ open }) => setIsTaskSidebarOpen(open)}
-                >
-                  <SheetTrigger asChild className="">
-                    <Button variant="outline" size="icon">
-                      <MoreHorizontalIcon className="size-4" />
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent className="w-2/3 p-3" side="right">
-                    <TaskSidebar />
-                  </SheetContent>
-                </SheetRoot>
-              </div>
-            </div>
+              </SheetTrigger>
+              <SheetContent className="w-2/3 p-3" side="right">
+                <TaskSidebar />
+              </SheetContent>
+            </SheetRoot>
           </div>
+        </div>
+      </div>
 
+      {/* Main content */}
+      <div className="grid h-full grid-cols-1 gap-4 lg:grid-cols-[5fr_3fr]">
+        <div className="flex h-full flex-1 flex-col gap-8">
           {/* Task Details */}
           <TaskDescription
             task={{
@@ -257,7 +258,7 @@ function TaskPage() {
         </div>
 
         {/* Sidebar (Sticky, hidden on mobile) */}
-        <div className="hidden lg:mt-52 lg:flex lg:pr-12">
+        <div className="hidden lg:flex">
           <TaskSidebar />
         </div>
       </div>
@@ -273,6 +274,6 @@ function TaskPage() {
         dialogType={DialogType.DeleteTask}
         confirmation="permanently delete this task"
       />
-    </>
+    </div>
   );
 }
