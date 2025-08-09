@@ -44,14 +44,13 @@ import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
-import getQueryClient from "@/lib/util/getQueryClient";
 
 const CreateTaskDialog = () => {
   const { projectId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
-  const { session } = useRouteContext({
+  const { session, queryClient } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
@@ -64,8 +63,6 @@ const CreateTaskDialog = () => {
   });
 
   const titleRef = useRef<HTMLInputElement>(null);
-
-  const queryClient = getQueryClient();
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),

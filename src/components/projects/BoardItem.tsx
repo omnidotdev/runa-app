@@ -148,6 +148,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                 }}
                 tooltip="Update Assignees"
                 shortcut="A"
+                openDelay={1000}
               >
                 <div className="-mt-2.5 -mr-2 flex items-center gap-1">
                   {task.assignees.nodes.length ? (
@@ -180,6 +181,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                   }}
                   tooltip="Update Labels"
                   shortcut="L"
+                  openDelay={1000}
                 >
                   {task.taskLabels.nodes.length ? (
                     <div className="flex flex-wrap gap-1">
@@ -209,6 +211,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                 }}
                 tooltip="Update Due Date"
                 shortcut="D"
+                openDelay={1000}
               >
                 {task?.dueDate ? (
                   <div className="col-span-1 mr-1 flex h-5 items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">

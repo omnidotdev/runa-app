@@ -51,7 +51,6 @@ import { useUpdateUserPreferenceMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import getQueryClient from "@/lib/util/getQueryClient";
 
 interface SidebarMenuItemType {
   isActive: boolean;
@@ -68,11 +67,10 @@ interface Props {
 
 const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
   const { workspaceId } = useLoaderData({ from: "/_auth" });
-  const { session } = useRouteContext({ strict: false });
+  const { session, queryClient } = useRouteContext({ from: "/_auth" });
   const { workspaceSlug } = useParams({ strict: false });
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const queryClient = getQueryClient();
 
   const [isProjectMenuOpen, setProjectMenuOpen] = useState(false);
 

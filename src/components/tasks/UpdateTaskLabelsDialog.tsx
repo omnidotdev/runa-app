@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useParams, useRouteContext } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
@@ -25,10 +25,9 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
-import getQueryClient from "@/lib/util/getQueryClient";
 
 const UpdateTaskLabelsDialog = () => {
-  const queryClient = getQueryClient();
+  const { queryClient } = useRouteContext({ from: "/_auth" });
 
   const { taskId: paramsTaskId } = useParams({
     strict: false,
