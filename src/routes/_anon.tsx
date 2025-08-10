@@ -30,10 +30,14 @@ function UnauthenticatedLayout() {
               variant="ghost"
               className="hover:bg-accent/0 dark:hover:bg-accent/0"
             >
-              <h1 className="font-bold text-primary-600 text-xl dark:text-primary-400">
-                Runa
-              </h1>
+              <img
+                src="/logo.png"
+                alt="Runa Logo"
+                className="h-6 w-6 md:h-8 md:w-8"
+              />
+              <h1 className="font-bold text-xl">Runa</h1>
             </Link>
+
             <div className="flex items-center space-x-6">
               <ThemeToggle />
               {/* TODO */}
