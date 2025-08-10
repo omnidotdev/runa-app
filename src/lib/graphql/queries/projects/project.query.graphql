@@ -1,0 +1,35 @@
+query Project($rowId: UUID!, $hiddenColumns: [UUID!]) {
+  project(rowId: $rowId) {
+    rowId
+    name
+    description
+    prefix
+    color
+    projectColumnId
+    labels {
+      nodes {
+        name
+        color
+        rowId
+      }
+    }
+    tasks {
+      totalCount
+    }
+    columns(filter: { rowId: { notIn: $hiddenColumns } }, orderBy: INDEX_ASC) {
+      nodes {
+        rowId
+        index
+        title
+        emoji
+        tasks {
+          totalCount
+          nodes {
+            rowId
+            createdAt
+          }
+        }
+      }
+    }
+  }
+}

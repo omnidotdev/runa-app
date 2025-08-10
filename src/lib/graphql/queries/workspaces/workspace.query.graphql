@@ -1,0 +1,55 @@
+query Workspace($rowId: UUID!, $userId: UUID!) {
+  workspace(rowId: $rowId) {
+    rowId
+    name
+    viewMode
+    projectColumns(orderBy: INDEX_ASC) {
+      nodes {
+        emoji
+        rowId
+        title
+        index
+      }
+    }
+    projects(orderBy: NAME_ASC) {
+      nodes {
+        rowId
+        name
+        color
+        prefix
+        userPreferences(condition: { userId: $userId }) {
+          nodes {
+            hiddenColumnIds
+            viewMode
+            rowId
+          }
+        }
+        projectColumn {
+          title
+          emoji
+        }
+        tasks {
+          totalCount
+        }
+        columns {
+          nodes {
+            allTasks: tasks {
+              totalCount
+            }
+
+            completedTasks: tasks(
+              filter: { column: { title: { equalTo: "Done" } } }
+            ) {
+              totalCount
+            }
+          }
+        }
+      }
+    }
+    workspaceUsers {
+      nodes {
+        userId
+      }
+    }
+  }
+}

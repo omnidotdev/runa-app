@@ -1,0 +1,19 @@
+query WorkspaceUsers($rowId: UUID!) {
+  workspaceUsers(condition: { workspaceId: $rowId }) {
+    nodes {
+      user {
+        name
+        avatarUrl
+        rowId
+        allTasks: authoredTasks {
+          totalCount
+        }
+        completedTasks: authoredTasks(
+          filter: { column: { title: { equalTo: "Done" } } }
+        ) {
+          totalCount
+        }
+      }
+    }
+  }
+}

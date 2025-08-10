@@ -1,0 +1,9 @@
+fragment ProjectColumn on ProjectColumn {
+  title
+  index
+  rowId
+  emoji
+  projects {
+    totalCount
+  }
+}

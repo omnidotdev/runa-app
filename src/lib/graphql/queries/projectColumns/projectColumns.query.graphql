@@ -1,0 +1,16 @@
+query ProjectColumns($workspaceId: UUID!, $search: String = "") {
+  projectColumns(condition: { workspaceId: $workspaceId }, orderBy: INDEX_ASC) {
+    nodes {
+      title
+      index
+      rowId
+      emoji
+      projects(filter: { name: { includesInsensitive: $search } }) {
+        totalCount
+        nodes {
+          ...Project
+        }
+      }
+    }
+  }
+}

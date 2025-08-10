@@ -1,0 +1,10 @@
+query Projects($workspaceId: UUID!, $search: String = "") {
+  projects(
+    condition: { workspaceId: $workspaceId }
+    filter: { name: { includesInsensitive: $search } }
+  ) {
+    nodes {
+      ...Project
+    }
+  }
+}

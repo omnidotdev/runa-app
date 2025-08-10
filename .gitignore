@@ -1,0 +1,28 @@
+node_modules
+
+# Tanstack
+.tanstack
+.nitro
+.output
+.vite
+
+# tests
+coverage
+
+# editor
+.vscode
+.zed
+.rules
+
+# TLS/HTTPS
+certificates
+
+# environment
+*.env*
+
+# below are safe to commit
+!.env
+!.env.development
+!.env.production
+!.env.test
+!.env.local.template

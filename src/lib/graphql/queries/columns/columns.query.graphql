@@ -1,0 +1,7 @@
+query Columns($projectId: UUID!) {
+  columns(condition: { projectId: $projectId }, orderBy: INDEX_ASC) {
+    nodes {
+      ...Column
+    }
+  }
+}

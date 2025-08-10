@@ -1,0 +1,7 @@
+mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+  createWorkspace(input: $input) {
+    workspace {
+      rowId
+    }
+  }
+}

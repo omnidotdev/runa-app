@@ -1,0 +1,7 @@
+mutation DeleteAssignee($rowId: UUID!) {
+  deleteAssignee(input: { rowId: $rowId }) {
+    assignee {
+      rowId
+    }
+  }
+}

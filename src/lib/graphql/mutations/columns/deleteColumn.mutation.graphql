@@ -1,0 +1,5 @@
+mutation DeleteColumn($rowId: UUID!) {
+  deleteColumn(input: { rowId: $rowId }) {
+    clientMutationId
+  }
+}

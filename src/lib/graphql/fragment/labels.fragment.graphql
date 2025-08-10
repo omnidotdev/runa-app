@@ -1,0 +1,5 @@
+fragment Label on Label {
+  color
+  name
+  rowId
+}

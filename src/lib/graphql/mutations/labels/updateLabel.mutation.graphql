@@ -1,0 +1,7 @@
+mutation UpdateLabel($rowId: UUID!, $patch: LabelPatch!) {
+  updateLabel(input: { rowId: $rowId, patch: $patch }) {
+    label {
+      rowId
+    }
+  }
+}

@@ -1,0 +1,5 @@
+mutation DeleteWorkspaceUser($userId: UUID!, $workspaceId: UUID!) {
+  deleteWorkspaceUser(input: { userId: $userId, workspaceId: $workspaceId }) {
+    clientMutationId
+  }
+}

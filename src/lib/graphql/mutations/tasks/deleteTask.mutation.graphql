@@ -1,0 +1,7 @@
+mutation DeleteTask($rowId: UUID!) {
+  deleteTask(input: { rowId: $rowId }) {
+    task {
+      rowId
+    }
+  }
+}

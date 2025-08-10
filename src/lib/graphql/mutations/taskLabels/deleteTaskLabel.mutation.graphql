@@ -1,0 +1,5 @@
+mutation DeleteTaskLabel($rowId: UUID!) {
+  deleteTaskLabel(input: { rowId: $rowId }) {
+    clientMutationId
+  }
+}
