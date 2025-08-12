@@ -276,6 +276,8 @@ const ColumnForm = ({
             disabled={!isActive}
             placeholder="Enter a column name..."
             className="rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+            id="column-name-input"
+            autoComplete="off"
           />
         )}
       </form.Field>

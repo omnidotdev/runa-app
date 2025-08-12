@@ -142,6 +142,8 @@ const ProjectColorPicker = () => {
                   <ColorPickerChannelInput
                     channel="hex"
                     className="h-7 text-xs"
+                    id="color-picker-input"
+                    autoComplete="off"
                   />
                 </ColorPickerView>
 

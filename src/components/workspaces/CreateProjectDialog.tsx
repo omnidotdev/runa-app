@@ -246,10 +246,12 @@ const CreateProjectDialog = () => {
                 <div className="flex flex-col gap-2">
                   <Input
                     ref={nameRef}
+                    name="name"
                     type="text"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="Project Name"
+                    autoComplete="off"
                   />
 
                   {field.state.meta.errors.map((error, index) => (
@@ -265,6 +267,8 @@ const CreateProjectDialog = () => {
             <form.Field name="description">
               {(field) => (
                 <textarea
+                  name="description"
+                  autoComplete="off"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Project Description (optional)"

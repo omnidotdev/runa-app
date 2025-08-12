@@ -188,6 +188,8 @@ const CreateWorkspaceDialog = () => {
                   <Input
                     ref={nameRef}
                     type="text"
+                    id="name"
+                    autoComplete="off"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="Workspace name"

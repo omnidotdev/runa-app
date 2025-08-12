@@ -256,6 +256,8 @@ const CreateTaskDialog = () => {
 
                   <Input
                     ref={titleRef}
+                    id="title"
+                    autoComplete="off"
                     className="border-none shadow-none transition-none focus-visible:ring-0 dark:bg-transparent"
                     placeholder="Task Title"
                     value={field.state.value}

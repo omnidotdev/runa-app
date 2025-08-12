@@ -61,6 +61,8 @@ const ColorSelector = ({
           <ColorPickerChannelInput channel="hex" asChild>
             <Input
               className="rounded border-0 shadow-none disabled:opacity-100"
+              id="color-picker-input"
+              autoComplete="off"
               {...inputProps}
             />
           </ColorPickerChannelInput>
@@ -88,7 +90,12 @@ const ColorSelector = ({
           </div>
 
           <ColorPickerView format="rgba">
-            <ColorPickerChannelInput channel="hex" className="h-7 text-xs" />
+            <ColorPickerChannelInput
+              channel="hex"
+              className="h-7 text-xs"
+              id="color-picker-input-view"
+              autoComplete="off"
+            />
           </ColorPickerView>
 
           <ColorPickerSwatchGroup>

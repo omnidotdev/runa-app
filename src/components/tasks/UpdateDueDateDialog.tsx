@@ -135,6 +135,8 @@ const UpdateDueDateDialog = () => {
                       }
                     }}
                     placeholder="Try: tomorrow, in 2 days, next wednesday"
+                    id="due-date-input"
+                    autoComplete="off"
                   />
                 )}
               </form.Field>

@@ -315,6 +315,8 @@ function ProjectsOverviewPage() {
                   onChange={handleSearch}
                   placeholder="Search projects..."
                   className="pl-10"
+                  id="project-search-input"
+                  autoComplete="off"
                 />
               </div>
 

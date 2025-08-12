@@ -45,6 +45,8 @@ const TaskLabelsForm = withForm({
 
                   <div className="ml-3 flex w-full items-center justify-between gap-2">
                     <Input
+                      id="label-name"
+                      autoComplete="off"
                       className="h-7 rounded border-0 shadow-none"
                       placeholder="Add new label..."
                       value={newLabel.name}

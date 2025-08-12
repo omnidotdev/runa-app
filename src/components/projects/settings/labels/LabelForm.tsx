@@ -220,6 +220,8 @@ const LabelForm = ({
                   <ColorPickerChannelInput
                     channel="hex"
                     className="h-7 text-xs"
+                    id="color-picker-input-view"
+                    autoComplete="off"
                   />
                 </ColorPickerView>
 
@@ -250,6 +252,8 @@ const LabelForm = ({
             disabled={!isActive}
             placeholder="Enter a label name..."
             className="ml-3 rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+            id="label-name-input"
+            autoComplete="off"
           />
         )}
       </form.Field>

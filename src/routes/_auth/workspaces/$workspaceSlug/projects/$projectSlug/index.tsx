@@ -502,6 +502,8 @@ function ProjectPage() {
               <div className="relative flex-1 sm:flex-none">
                 <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-base-400" />
                 <Input
+                  id="search-tasks"
+                  autoComplete="off"
                   defaultValue={search}
                   onChange={handleSearch}
                   placeholder="Search tasks..."
