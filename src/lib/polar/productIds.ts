@@ -1,7 +1,7 @@
 import { isDevEnv } from "@/lib/config/env.config";
 
 export enum SandboxFree {
-  Free = "203e19ff-534a-49dc-a455-6af007588e01",
+  Free = "6c5584d3-3e28-4895-99c0-4fb4a1056fa5",
 }
 
 export enum SandboxMonthly {

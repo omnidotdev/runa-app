@@ -1,3 +1,5 @@
+import { Format } from "@ark-ui/react";
+import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
 import { redirect } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 
@@ -9,13 +11,29 @@ import {
   AccordionRoot,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import {
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardRoot,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  TabsContent,
+  TabsList,
+  TabsRoot,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { signIn } from "@/lib/auth/signIn";
 import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import RUNA_PRODUCT_IDS from "@/lib/polar/productIds";
+import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import seo from "@/lib/util/seo";
-import { cn } from "@/lib/utils";
 import { fetchCustomerState } from "@/server/fetchCustomerState";
 import { fetchRunaProducts } from "@/server/fetchRunaProducts";
+
+import type { ProductPriceFixed } from "@polar-sh/sdk/models/components/productpricefixed.js";
 
 const faqItems = [
   {
@@ -32,45 +50,6 @@ const faqItems = [
     question: "What happens to my data if I cancel?",
     answer:
       "You can export all your data at any time. After cancellation, your data will be retained for 30 days before being permanently deleted.",
-  },
-];
-
-// TODO: fetch from polar product info
-const pricingPlans = [
-  {
-    id: "free",
-    name: "Free Tier",
-    price: "$0",
-    priceNote: "/forever",
-    description:
-      "Try Runa for free and explore its features without any commitment.",
-    features: ["Limited projects and tasks", "Community support"],
-    action: {
-      label: "Get Started",
-      disabled: false,
-    },
-    highlight: false,
-  },
-  {
-    id: "cloud",
-    name: "Cloud",
-    price: "$8",
-    priceNote: "/user/month",
-    description:
-      "Let us handle the infrastructure while you focus on your projects.",
-    features: [
-      "Everything in Self-Hosted",
-      "Managed cloud hosting",
-      "Automatic backups & updates",
-      "Priority support",
-      "30-day free trial",
-    ],
-    action: {
-      label: "Start Free Trial",
-      href: "/signup",
-      disabled: true,
-    },
-    highlight: true,
   },
 ];
 
@@ -112,6 +91,25 @@ function PricingPage() {
 
   const navigate = Route.useNavigate();
 
+  const freeTier = products.find(
+    (product) => product.metadata.title === "free",
+  );
+
+  const monthlyTiers = [
+    freeTier,
+    ...products.filter(
+      (product) =>
+        product.recurringInterval === SubscriptionRecurringInterval.Month,
+    ),
+  ];
+  const yearlyTiers = [
+    freeTier,
+    ...products.filter(
+      (product) =>
+        product.recurringInterval === SubscriptionRecurringInterval.Year,
+    ),
+  ];
+
   return (
     <div className="size-full pt-8">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -136,66 +134,77 @@ function PricingPage() {
           </p>
         </div>
 
-        <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-2">
-          {pricingPlans.map((plan) => (
-            <div
-              key={plan.id}
-              className={cn(
-                "rounded-lg bg-white shadow-lg dark:bg-muted",
-                plan.highlight && "border-2 border-primary-500",
-              )}
-            >
-              <div className="flex h-full flex-col p-8">
-                <h2 className="mb-4 font-bold text-2xl text-foreground">
-                  {plan.name}
-                </h2>
-
-                <div className="mb-8 flex items-baseline">
-                  <span className="font-bold text-4xl text-foreground">
-                    {plan.price}
-                  </span>
-
-                  <span className="ml-1 text-foreground">{plan.priceNote}</span>
-                </div>
-
-                <p className="mb-8 text-foreground">{plan.description}</p>
-
-                <ul className="mb-8 flex-1 space-y-4">
-                  {plan.features.map((feature, i) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: Allow for simplicity
-                    <li key={i} className="flex items-center gap-2">
-                      <Check
-                        size={20}
-                        className="flex-shrink-0 text-green-500"
+        <TabsRoot defaultValue="monthly">
+          <TabsList>
+            <TabsTrigger value="monthly">Monthly</TabsTrigger>
+            <TabsTrigger value="yearly">Yearly</TabsTrigger>
+          </TabsList>
+          {(["monthly", "yearly"] as const).map((tab) => (
+            <TabsContent key={tab} value={tab} className="flex gap-2">
+              {(tab === "monthly" ? monthlyTiers : yearlyTiers).map((tier) => (
+                <CardRoot key={tier?.id} className="flex-1">
+                  <CardHeader>
+                    <CardTitle>
+                      {firstLetterToUppercase(tier?.metadata?.title as string)}{" "}
+                      Tier
+                    </CardTitle>
+                    <CardDescription>{tier?.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-baseline font-semibold text-xl">
+                      <Format.Number
+                        value={
+                          tier?.prices?.[0]?.amountType === "free"
+                            ? 0
+                            : (tier?.prices[0] as ProductPriceFixed)
+                                .priceAmount / 100
+                        }
+                        style="currency"
+                        currency="USD"
                       />
-                      <span className="text-muted-foreground">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                      <p className="font-normal text-sm">{`/${tier?.recurringInterval ?? "forever"}`}</p>
+                    </div>
 
-                {/* TODO: fix implementation when support for multiple products is available. */}
-                {plan.action && (
-                  <Button
-                    size="lg"
-                    disabled={plan.action.disabled}
-                    onClick={() => {
-                      if (session) {
-                        navigate({
-                          href: `${API_BASE_URL}/checkout?products=${products[0].id}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
-                          reloadDocument: true,
-                        });
-                      } else {
-                        signIn({ redirectUrl: `${BASE_URL}/pricing` });
-                      }
-                    }}
-                  >
-                    {plan.action.label}
-                  </Button>
-                )}
-              </div>
-            </div>
+                    <ul className="mt-8 flex-1 space-y-4">
+                      {tier?.benefits.map((benefit) => (
+                        <li
+                          key={benefit.id}
+                          className="flex items-center gap-2"
+                        >
+                          <Check
+                            size={20}
+                            className="flex-shrink-0 text-green-500"
+                          />
+                          <span className="text-muted-foreground">
+                            {benefit.description}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                  <CardFooter>
+                    <Button
+                      size="lg"
+                      className="w-full"
+                      onClick={() => {
+                        if (session) {
+                          navigate({
+                            href: `${API_BASE_URL}/checkout?products=${tier?.id}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
+                            reloadDocument: true,
+                          });
+                        } else {
+                          signIn({ redirectUrl: `${BASE_URL}/pricing` });
+                        }
+                      }}
+                    >
+                      Get Started
+                    </Button>
+                  </CardFooter>
+                </CardRoot>
+              ))}
+            </TabsContent>
           ))}
-        </div>
+        </TabsRoot>
 
         <div className="mt-16 text-center">
           <h2 className="mb-4 font-bold text-2xl text-foreground">
