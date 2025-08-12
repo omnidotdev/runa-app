@@ -112,7 +112,7 @@ const Comments = () => {
                           className="size-6! border"
                         />
                         <span className="font-medium text-base-900 text-sm dark:text-base-100">
-                          {post?.author?.name}
+                          {post?.author?.name ?? "Anonymous"}
                         </span>
 
                         <span className="text-base-500 text-xs dark:text-base-400">
@@ -168,7 +168,7 @@ const Comments = () => {
                       {isUsersPost ? (
                         <UpdateCommentForm
                           post={{
-                            authorId: post.authorId,
+                            authorId: post.authorId!,
                             description: post.description!,
                             rowId: post.rowId,
                           }}

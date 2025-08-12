@@ -3423,7 +3423,7 @@ export type Post = Node & {
   __typename?: 'Post';
   /** Reads a single `User` that is related to this `Post`. */
   author?: Maybe<User>;
-  authorId: Scalars['UUID']['output'];
+  authorId?: Maybe<Scalars['UUID']['output']>;
   createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Emoji`. */
@@ -3550,6 +3550,8 @@ export type PostFilter = {
   and?: InputMaybe<Array<PostFilter>>;
   /** Filter by the object’s `author` relation. */
   author?: InputMaybe<UserFilter>;
+  /** A related `author` exists. */
+  authorExists?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `authorId` field. */
   authorId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `createdAt` field. */
@@ -3652,7 +3654,7 @@ export type PostHavingVarianceSampleInput = {
 
 /** An input for mutations affecting `Post` */
 export type PostInput = {
-  authorId: Scalars['UUID']['input'];
+  authorId?: InputMaybe<Scalars['UUID']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -5433,7 +5435,7 @@ export type Task = Node & {
   assignees: AssigneeConnection;
   /** Reads a single `User` that is related to this `Task`. */
   author?: Maybe<User>;
-  authorId: Scalars['UUID']['output'];
+  authorId?: Maybe<Scalars['UUID']['output']>;
   /** Reads a single `Column` that is related to this `Task`. */
   column?: Maybe<Column>;
   columnId: Scalars['UUID']['output'];
@@ -5658,6 +5660,8 @@ export type TaskFilter = {
   assigneesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `author` relation. */
   author?: InputMaybe<UserFilter>;
+  /** A related `author` exists. */
+  authorExists?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `authorId` field. */
   authorId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `column` relation. */
@@ -5798,7 +5802,7 @@ export type TaskHavingVarianceSampleInput = {
 
 /** An input for mutations affecting `Task` */
 export type TaskInput = {
-  authorId: Scalars['UUID']['input'];
+  authorId?: InputMaybe<Scalars['UUID']['input']>;
   columnId: Scalars['UUID']['input'];
   columnIndex?: InputMaybe<Scalars['Int']['input']>;
   content: Scalars['String']['input'];
@@ -8628,6 +8632,13 @@ export type UpdateUserPreferenceMutationVariables = Exact<{
 
 export type UpdateUserPreferenceMutation = { __typename?: 'Mutation', updateUserPreference?: { __typename?: 'UpdateUserPreferencePayload', userPreference?: { __typename?: 'UserPreference', rowId: string } | null } | null };
 
+export type DeleteUserMutationVariables = Exact<{
+  hidraId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteUserMutation = { __typename?: 'Mutation', deleteUserByIdentityProviderId?: { __typename?: 'DeleteUserPayload', clientMutationId?: string | null } | null };
+
 export type CreateWorkspaceUserMutationVariables = Exact<{
   input: CreateWorkspaceUserInput;
 }>;
@@ -8737,7 +8748,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', rowId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId: string, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, emoji?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', rowId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, emoji?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -9702,6 +9713,32 @@ useUpdateUserPreferenceMutation.getKey = () => ['UpdateUserPreference'];
 
 
 useUpdateUserPreferenceMutation.fetcher = (variables: UpdateUserPreferenceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateUserPreferenceMutation, UpdateUserPreferenceMutationVariables>(UpdateUserPreferenceDocument, variables, options);
+
+export const DeleteUserDocument = `
+    mutation DeleteUser($hidraId: UUID!) {
+  deleteUserByIdentityProviderId(input: {identityProviderId: $hidraId}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useDeleteUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteUserMutation, TError, DeleteUserMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteUserMutation, TError, DeleteUserMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteUser'],
+    mutationFn: (variables?: DeleteUserMutationVariables) => graphqlFetch<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteUserMutation.getKey = () => ['DeleteUser'];
+
+
+useDeleteUserMutation.fetcher = (variables: DeleteUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, variables, options);
 
 export const CreateWorkspaceUserDocument = `
     mutation CreateWorkspaceUser($input: CreateWorkspaceUserInput!) {

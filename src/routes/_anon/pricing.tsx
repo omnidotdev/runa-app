@@ -100,7 +100,8 @@ function PricingPage() {
     freeTier,
     ...products.filter(
       (product) =>
-        product.recurringInterval === SubscriptionRecurringInterval.Month,
+        product.recurringInterval === SubscriptionRecurringInterval.Month &&
+        !product.metadata.isFree,
     ),
   ];
   const yearlyTiers = [
@@ -186,7 +187,10 @@ function PricingPage() {
                           currency="USD"
                         />
                         <span className="ml-1 font-medium text-lg text-muted-foreground">
-                          /{tier?.recurringInterval ?? "forever"}
+                          /
+                          {tier?.prices?.[0]?.amountType === "free"
+                            ? "forever"
+                            : tier?.recurringInterval}
                         </span>
                       </div>
                       {tier?.recurringInterval ===

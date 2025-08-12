@@ -119,7 +119,7 @@ const TaskSidebar = () => {
           <div className="flex items-center justify-between text-xs">
             <span className="text-base-500 dark:text-base-400">Author</span>
             <span className="text-base-900 dark:text-base-100">
-              {task?.author?.name}
+              {task?.author?.name ?? "Anonymous"}
             </span>
           </div>
 

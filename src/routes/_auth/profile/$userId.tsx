@@ -1,5 +1,7 @@
+import { CustomerCancellationReason } from "@polar-sh/sdk/models/components/customercancellationreason.js";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
+  AlertTriangle,
   Building2,
   CheckSquare,
   CreditCard,
@@ -8,6 +10,7 @@ import {
   Settings,
   Zap,
 } from "lucide-react";
+import { useState } from "react";
 import { match, P } from "ts-pattern";
 
 import UpgradeSubscriptionDialog from "@/components/profile/UpgradeSubscriptionDialog";
@@ -25,6 +28,24 @@ import {
   CardRoot,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  RadioGroupIndicator,
+  RadioGroupItem,
+  RadioGroupItemControl,
+  RadioGroupItemHiddenInput,
+  RadioGroupItemText,
+  RadioGroupRoot,
+} from "@/components/ui/radio-group";
 import {
   Table,
   TableBody,
@@ -57,6 +78,7 @@ import RUNA_PRODUCT_IDS, {
 } from "@/lib/polar/productIds";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import { cn } from "@/lib/utils";
+import { deleteUserData } from "@/server/deleteUserData";
 import { fetchAuthenticatedCustomer } from "@/server/fetchAuthenticatedCustomer";
 import { fetchCustomerState } from "@/server/fetchCustomerState";
 import { fetchProduct } from "@/server/fetchProduct";
@@ -118,6 +140,12 @@ export const Route = createFileRoute({
 });
 
 function RouteComponent() {
+  const [reasonForLeaving, setReasonForLeaving] = useState<
+    CustomerCancellationReason | undefined
+  >(undefined);
+  const [reasonForLeavingComment, setReasonForLeavingComment] =
+    useState<string>("");
+
   const { customer, currentProduct, upgradeProducts, subscription, paymentId } =
     Route.useLoaderData();
   const { session } = Route.useRouteContext();
@@ -226,6 +254,7 @@ function RouteComponent() {
                 <p className="mt-1 text-muted-foreground text-sm">
                   {session?.user.email}
                 </p>
+
                 {currentProduct && (
                   <Badge
                     variant="outline"
@@ -640,13 +669,119 @@ function RouteComponent() {
                       </p>
                     </div>
 
-                    <Button
-                      variant="destructive"
-                      className="mt-4 text-background"
-                      disabled
-                    >
-                      Delete Account
-                    </Button>
+                    <DialogRoot>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="destructive"
+                          className="mt-4 text-background"
+                          disabled={!subscription}
+                        >
+                          Delete Account
+                        </Button>
+                      </DialogTrigger>
+                      <DialogBackdrop />
+                      <DialogPositioner>
+                        <DialogContent className="w-full max-w-md rounded-lg bg-background">
+                          <DialogCloseTrigger />
+
+                          <div className="mb-1 flex flex-col gap-4">
+                            <div className="flex size-10 items-center justify-center rounded-full border border-destructive bg-destructive/10">
+                              <AlertTriangle className="size-5 text-destructive" />
+                            </div>
+                            <DialogTitle>Are you absolutely sure?</DialogTitle>
+                            <DialogDescription>
+                              This will permanently cancel your subscription and
+                              delete all associated data. This action cannot be
+                              undone. If you are sure, please provide a reason
+                              for leaving.
+                            </DialogDescription>
+                          </div>
+
+                          <RadioGroupRoot
+                            value={reasonForLeaving}
+                            onValueChange={({ value }) =>
+                              setReasonForLeaving(
+                                value as CustomerCancellationReason,
+                              )
+                            }
+                          >
+                            <RadioGroupIndicator />
+                            {Object.values(CustomerCancellationReason).map(
+                              (reason) => (
+                                <RadioGroupItem key={reason} value={reason}>
+                                  <RadioGroupItemControl
+                                    className="ring-destructive data-[state=checked]:bg-destructive"
+                                    tabIndex={0}
+                                  />
+                                  <RadioGroupItemText>
+                                    {reason
+                                      .split("_")
+                                      .filter(Boolean)
+                                      .map((word) =>
+                                        firstLetterToUppercase(word),
+                                      )
+                                      .join(" ")}
+                                  </RadioGroupItemText>
+                                  <RadioGroupItemHiddenInput />
+                                </RadioGroupItem>
+                              ),
+                            )}
+                          </RadioGroupRoot>
+
+                          {reasonForLeaving ===
+                            CustomerCancellationReason.Other && (
+                            <textarea
+                              className="rounded-md border p-1.5 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                              placeholder="Reason for leaving..."
+                              value={reasonForLeavingComment}
+                              onChange={(e) =>
+                                e.target.value.length
+                                  ? setReasonForLeavingComment(e.target.value)
+                                  : setReasonForLeavingComment("")
+                              }
+                            />
+                          )}
+
+                          <div className="mt-4 flex justify-end gap-2">
+                            <DialogCloseTrigger asChild>
+                              <Button variant="outline">Cancel</Button>
+                            </DialogCloseTrigger>
+
+                            <DialogCloseTrigger asChild>
+                              <Button
+                                type="submit"
+                                variant="destructive"
+                                disabled={
+                                  !subscription ||
+                                  (reasonForLeaving ===
+                                    CustomerCancellationReason.Other &&
+                                    !reasonForLeavingComment)
+                                }
+                                onClick={async () => {
+                                  if (!subscription) return;
+
+                                  await deleteUserData({
+                                    data: {
+                                      hidraId: session?.user.hidraId!,
+                                      subscriptionId: subscription.id,
+                                      cancellationReason: reasonForLeaving,
+                                      cancellationComment:
+                                        reasonForLeaving ===
+                                        CustomerCancellationReason.Other
+                                          ? reasonForLeavingComment
+                                          : undefined,
+                                    },
+                                  });
+                                  await signOut();
+                                }}
+                              >
+                                Delete Account
+                              </Button>
+                            </DialogCloseTrigger>
+                          </div>
+                        </DialogContent>
+                      </DialogPositioner>
+                    </DialogRoot>
                   </div>
                 </div>
               </TabsContent>
