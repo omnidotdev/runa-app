@@ -86,11 +86,13 @@ const UpgradeSubscriptionDialog = ({ products }: Props) => {
                     key={product.id}
                     value={product.id}
                     className="flex-1"
+                    tabIndex={0}
                   >{`${firstLetterToUppercase(product.recurringInterval!)}ly`}</TabsTrigger>
                 ))}
               </TabsList>
               {products.map((product) => (
-                <TabsContent key={product.id} value={product.id}>
+                // TODO: figure out why the tabIndex is not applying
+                <TabsContent key={product.id} value={product.id} tabIndex={-1}>
                   <div className="space-y-4">
                     <div className="flex items-end justify-between">
                       <div>
