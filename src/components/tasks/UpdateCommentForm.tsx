@@ -2,10 +2,13 @@ import { useForm } from "@tanstack/react-form";
 import { useParams, useRouteContext } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
+import RichTextEditor from "@/components/core/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { useUpdatePostMutation } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
 import { cn } from "@/lib/utils";
+
+import type { EditorApi } from "@/components/core/RichTextEditor";
 
 interface Props {
   post: {
@@ -18,30 +21,58 @@ interface Props {
 }
 
 const UpdateCommentForm = ({ post, isActive, onSetActive }: Props) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorApi = useRef<EditorApi | null>(null);
 
   const { taskId } = useParams({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
-  const { session } = useRouteContext({
+  const { session, queryClient } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
-  const { mutate: updateComment } = useUpdatePostMutation({
+  const { mutateAsync: updateComment } = useUpdatePostMutation({
     meta: {
-      invalidates: [taskOptions({ rowId: taskId }).queryKey],
+      invalidates: [["all"]],
+    },
+    onMutate: (variables) => {
+      queryClient.setQueryData(
+        taskOptions({ rowId: taskId }).queryKey,
+        // @ts-ignore TODO type properly
+        (prev) => ({
+          ...prev,
+          task: {
+            ...prev?.task,
+            posts: {
+              nodes: prev?.task?.posts.nodes.map((p) => {
+                if (p.rowId === post.rowId) {
+                  return {
+                    ...p,
+                    description: variables.input.patch.description,
+                  };
+                }
+
+                return p;
+              }),
+            },
+          },
+        }),
+      );
+    },
+    onSettled: () => {
+      onSetActive(null);
+      form.reset();
     },
   });
 
   const form = useForm({
     defaultValues: {
-      comment: post.description ?? "",
+      comment: post.description,
     },
-    onSubmit: ({ value, formApi }) => {
+    onSubmit: async ({ value }) => {
       if (post.authorId !== session?.user?.rowId) return;
 
-      updateComment({
+      await updateComment({
         input: {
           rowId: post.rowId!,
           patch: {
@@ -49,21 +80,13 @@ const UpdateCommentForm = ({ post, isActive, onSetActive }: Props) => {
           },
         },
       });
-
-      onSetActive(null);
-      formApi.reset();
     },
   });
 
   useEffect(() => {
-    if (isActive && textareaRef.current) {
-      requestAnimationFrame(() => {
-        textareaRef.current?.focus({ preventScroll: true });
-        textareaRef.current?.setSelectionRange(
-          textareaRef.current.value.length,
-          textareaRef.current.value.length,
-        );
-      });
+    if (isActive) {
+      // NB: when `isActive` changes, `editor` from `RichTextEditor` can re-mounted, so we set a small delay before focusing the element
+      setTimeout(() => editorApi.current?.focus(), 200);
     }
   }, [isActive]);
 
@@ -78,45 +101,22 @@ const UpdateCommentForm = ({ post, isActive, onSetActive }: Props) => {
     >
       <form.Field name="comment">
         {(field) => (
-          // TODO: use RichTextEditor
-          <textarea
-            ref={(el) => {
-              textareaRef.current = el;
-
-              if (el) {
-                // Reset height when inactive
-                if (!isActive) {
-                  el.style.height = "auto";
-                  el.style.minHeight = "";
-                } else {
-                  el.style.height = "auto";
-                  el.style.height = `${el.scrollHeight}px`;
-                  // prevent shrinking
-                  el.style.minHeight = `${el.scrollHeight}px`;
-                }
-              }
+          <RichTextEditor
+            editorApi={editorApi}
+            // NB: important to not use `field.state.value` for default content, because the `editor` uses `defaultContent` in the dependency array
+            defaultContent={post.description}
+            onUpdate={({ editor }) => {
+              field.handleChange(editor.getHTML());
             }}
-            value={field.state.value}
-            onChange={(e) => {
-              field.handleChange(e.target.value);
-
-              if (isActive && textareaRef.current) {
-                const el = textareaRef.current;
-                el.style.height = "auto";
-                el.style.height = `${el.scrollHeight}px`;
-                // prevent shrinking
-                el.style.minHeight = `${el.scrollHeight}px`;
-              }
-            }}
-            placeholder="Add a comment..."
             className={cn(
-              "field-sizing-content mt-1 flex h-auto w-full rounded-xl px-3 py-2 text-sm outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
+              "field-sizing-content mt-1 flex h-auto min-h-9 w-full rounded-xl px-3 py-2 text-sm outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
               !isActive
                 ? "pointer-events-none resize-none border-0 shadow-none transition-none focus-visible:ring-0"
                 : "bg-background",
             )}
+            skeletonClassName="mt-1 h-9 w-full"
             tabIndex={isActive ? 0 : -1}
-            readOnly={!isActive}
+            editable={isActive}
           />
         )}
       </form.Field>
