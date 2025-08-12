@@ -30,6 +30,7 @@ import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import RUNA_PRODUCT_IDS from "@/lib/polar/productIds";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import seo from "@/lib/util/seo";
+import { cn } from "@/lib/utils";
 import { fetchCustomerState } from "@/server/fetchCustomerState";
 import { fetchRunaProducts } from "@/server/fetchRunaProducts";
 
@@ -140,52 +141,87 @@ function PricingPage() {
             <TabsTrigger value="yearly">Yearly</TabsTrigger>
           </TabsList>
           {(["monthly", "yearly"] as const).map((tab) => (
-            <TabsContent key={tab} value={tab} className="flex gap-2">
+            <TabsContent key={tab} value={tab} className="flex gap-4">
               {(tab === "monthly" ? monthlyTiers : yearlyTiers).map((tier) => (
-                <CardRoot key={tier?.id} className="flex-1">
-                  <CardHeader>
-                    <CardTitle>
-                      {firstLetterToUppercase(tier?.metadata?.title as string)}{" "}
-                      Tier
+                <CardRoot
+                  key={tier?.id}
+                  className={cn(
+                    "relative flex flex-1 flex-col border-2",
+                    tier?.metadata?.isRecommended &&
+                      "border-primary bg-primary-50 shadow-primary/20 dark:bg-primary-1000",
+                  )}
+                >
+                  {tier?.metadata?.isRecommended && (
+                    <div className="-top-3 -translate-x-1/2 absolute left-1/2">
+                      <span className="rounded-full bg-primary px-3 py-1 font-medium text-primary-foreground text-sm">
+                        Recommended
+                      </span>
+                    </div>
+                  )}
+                  <CardHeader
+                    className={cn(
+                      "mb-4 rounded-xl rounded-b-none bg-muted pb-8 text-center",
+                      tier?.metadata?.isRecommended &&
+                        "bg-primary-400/10 dark:bg-primary-950/80",
+                    )}
+                  >
+                    <CardTitle className="font-bold text-2xl">
+                      {firstLetterToUppercase(tier?.metadata?.title as string)}
                     </CardTitle>
-                    <CardDescription>{tier?.description}</CardDescription>
+                    <CardDescription className="mt-2 text-muted-foreground">
+                      {tier?.description}
+                    </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="flex items-baseline font-semibold text-xl">
-                      <Format.Number
-                        value={
-                          tier?.prices?.[0]?.amountType === "free"
-                            ? 0
-                            : (tier?.prices[0] as ProductPriceFixed)
-                                .priceAmount / 100
-                        }
-                        style="currency"
-                        currency="USD"
-                      />
-                      <p className="font-normal text-sm">{`/${tier?.recurringInterval ?? "forever"}`}</p>
+                  <CardContent className="pb-8 text-center">
+                    <div className="mb-8">
+                      <div className="flex items-baseline justify-center font-bold text-4xl">
+                        <Format.Number
+                          value={
+                            tier?.prices?.[0]?.amountType === "free"
+                              ? 0
+                              : (tier?.prices[0] as ProductPriceFixed)
+                                  .priceAmount / 100
+                          }
+                          style="currency"
+                          currency="USD"
+                        />
+                        <span className="ml-1 font-medium text-lg text-muted-foreground">
+                          /{tier?.recurringInterval ?? "forever"}
+                        </span>
+                      </div>
+                      {tier?.recurringInterval ===
+                        SubscriptionRecurringInterval.Year && (
+                        <p className="mt-1 font-medium text-green-600 text-sm">
+                          Save 25%
+                        </p>
+                      )}
                     </div>
 
-                    <ul className="mt-8 flex-1 space-y-4">
+                    <ul className="space-y-4 text-left">
                       {tier?.benefits.map((benefit) => (
-                        <li
-                          key={benefit.id}
-                          className="flex items-center gap-2"
-                        >
-                          <Check
-                            size={20}
-                            className="flex-shrink-0 text-green-500"
-                          />
-                          <span className="text-muted-foreground">
+                        <li key={benefit.id} className="flex items-start gap-3">
+                          <div className="rounded-full bg-green-100 p-1 dark:bg-green-900">
+                            <Check
+                              size={14}
+                              className="text-green-600 dark:text-green-400"
+                            />
+                          </div>
+                          <span className="text-foreground leading-6">
                             {benefit.description}
                           </span>
                         </li>
                       ))}
                     </ul>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="mt-auto pt-8">
                     <Button
                       size="lg"
-                      className="w-full"
+                      className={cn(
+                        "w-full font-semibold",
+                        tier?.metadata?.isRecommended
+                          ? "bg-primary hover:bg-primary/90"
+                          : "variant-outline hover:bg-primary hover:text-primary-foreground",
+                      )}
                       onClick={() => {
                         if (session) {
                           navigate({
@@ -197,7 +233,9 @@ function PricingPage() {
                         }
                       }}
                     >
-                      Get Started
+                      {tier?.metadata?.title === "free"
+                        ? "Start for Free"
+                        : "Get Started"}
                     </Button>
                   </CardFooter>
                 </CardRoot>
@@ -206,7 +244,7 @@ function PricingPage() {
           ))}
         </TabsRoot>
 
-        <div className="mt-16 text-center">
+        <div className="mt-24 text-center">
           <h2 className="mb-4 font-bold text-2xl text-foreground">
             Frequently Asked Questions
           </h2>
