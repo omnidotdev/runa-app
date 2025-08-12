@@ -68,7 +68,7 @@ export const Route = createFileRoute({
   }),
   loader: async ({
     deps: { search, assignees, labels, priorities },
-    context: { queryClient, workspaceBySlug },
+    context: { session, queryClient, workspaceBySlug },
   }) => {
     if (!workspaceBySlug || !workspaceBySlug.projects.nodes.length) {
       throw notFound();
@@ -83,6 +83,12 @@ export const Route = createFileRoute({
       queryClient.ensureQueryData(
         projectOptions({
           rowId: projectId,
+        }),
+      ),
+      queryClient.ensureQueryData(
+        userPreferencesOptions({
+          userId: session?.user.rowId!,
+          projectId,
         }),
       ),
       queryClient.ensureQueryData(

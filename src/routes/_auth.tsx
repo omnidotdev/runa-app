@@ -6,7 +6,6 @@ import CreateWorkspaceDialog from "@/components/shared/CreateWorkspaceDialog";
 import { SidebarInset } from "@/components/ui/sidebar";
 import CreateProjectDialog from "@/components/workspaces/CreateProjectDialog";
 import invitationsOptions from "@/lib/options/invitations.options";
-import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
@@ -61,25 +60,13 @@ export const Route = createFileRoute({
 
       if (!workspaceUsers?.nodes.length) throw notFound();
 
-      if (workspaceBySlug.projects.nodes.length) {
-        const { userPreferenceByUserIdAndProjectId: userPreferences } =
-          await queryClient.ensureQueryData(
-            userPreferencesOptions({
-              userId: session.user.rowId!,
-              projectId: workspaceBySlug.projects.nodes[0].rowId,
-            }),
-          );
-
-        return { workspaceBySlug, userPreferences };
-      }
-
-      return { workspaceBySlug, userPreferences: undefined };
+      return { workspaceBySlug };
     } else {
       await queryClient.ensureQueryData(
         workspacesOptions({ userId: session?.user.rowId! }),
       );
 
-      return { workspaceBySlug: undefined, userPreferences: undefined };
+      return { workspaceBySlug: undefined };
     }
   },
   loader: async ({ context }) => {

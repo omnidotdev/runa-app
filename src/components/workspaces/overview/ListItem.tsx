@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   useNavigate,
   useParams,
@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-router";
 
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
+import { cn } from "@/lib/utils";
 
 import type { ProjectFragment } from "@/generated/graphql";
 
@@ -35,7 +36,7 @@ const ListItem = ({ project }: Props) => {
   const progressPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  const { data: userPreferences } = useSuspenseQuery({
+  const { data: userPreferences } = useQuery({
     ...userPreferencesOptions({
       userId: session?.user?.rowId!,
       projectId: project.rowId,
@@ -83,7 +84,10 @@ const ListItem = ({ project }: Props) => {
               </div>
               <div className="h-2 w-full rounded-full bg-base-200 dark:bg-base-700">
                 <div
-                  className="h-2 rounded-full bg-primary transition-all"
+                  className={cn(
+                    "h-2 rounded-full bg-primary transition-all",
+                    !userPreferences && "bg-transparent",
+                  )}
                   style={{
                     width: `${progressPercentage}%`,
                     backgroundColor: userPreferences?.color ?? undefined,
