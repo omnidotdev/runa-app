@@ -78,6 +78,7 @@ const UpdateCommentForm = ({ post, isActive, onSetActive }: Props) => {
     >
       <form.Field name="comment">
         {(field) => (
+          // TODO: use RichTextEditor
           <textarea
             ref={(el) => {
               textareaRef.current = el;

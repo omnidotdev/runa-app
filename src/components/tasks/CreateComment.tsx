@@ -53,6 +53,7 @@ const CreateComment = () => {
     >
       <form.Field name="comment">
         {(field) => (
+          // TODO: use RichTextEditor
           <textarea
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
