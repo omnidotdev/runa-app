@@ -46,10 +46,11 @@ const ColorSelector = ({
   return (
     <ColorPickerRoot {...rest}>
       <ColorPickerControl
-        className="flex items-center gap-2 px-3 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="flex items-center gap-2 px-3 outline-none "
         {...colorPickerControlProps}
       >
         <ColorPickerTrigger
+          autoFocus
           className="size-5 rounded-full outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed"
           {...colorPickerTriggerProps}
         >

@@ -156,7 +156,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                       assignees={task?.assignees.nodes.map(
                         (assignee) => assignee.user?.rowId!,
                       )}
-                      className="-space-x-5.5 flex"
+                      className="-space-x-4 flex w-fit items-center"
                     />
                   ) : (
                     <AvatarRoot

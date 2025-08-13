@@ -3,15 +3,22 @@ import { useLoaderData } from "@tanstack/react-router";
 
 import { Avatar } from "@/components/ui/avatar";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
+import { cn } from "@/lib/utils";
 
 import type { ComponentProps } from "react";
 
 interface Props extends ComponentProps<"div"> {
   assignees?: string[];
   showUsername?: boolean;
+  maxVisible?: number;
 }
 
-const Assignees = ({ assignees, showUsername = false, ...rest }: Props) => {
+const Assignees = ({
+  assignees,
+  showUsername = false,
+  maxVisible = 3,
+  ...rest
+}: Props) => {
   const { workspaceId } = useLoaderData({ from: "/_auth" });
 
   const { data: workspaceUsers } = useQuery({
@@ -24,22 +31,46 @@ const Assignees = ({ assignees, showUsername = false, ...rest }: Props) => {
     assignees?.includes(user?.rowId!),
   );
 
-  if (!assignees?.length) return null;
+  if (!assignees?.length || !assignedUsers?.length) return null;
+
+  const extraCount =
+    assignedUsers.length > maxVisible
+      ? assignedUsers.length - (maxVisible - 1)
+      : 0;
+
+  const visibleUsers = extraCount
+    ? assignedUsers.slice(0, maxVisible - 1)
+    : assignedUsers;
 
   return (
     <div {...rest}>
-      {assignedUsers?.map((user) => (
-        <div key={user?.rowId} className="flex items-center gap-0">
-          <Avatar
-            fallback={user?.name?.charAt(0)}
-            src={user?.avatarUrl ?? undefined}
-            alt={user?.name}
-            className="size-6 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
-          />
+      <div
+        className={cn(
+          "flex items-center",
+          showUsername ? "flex-col gap-1" : "-space-x-6",
+        )}
+      >
+        {visibleUsers.map((user) => (
+          <div key={user?.rowId} className="flex items-center gap-0">
+            <Avatar
+              fallback={user?.name?.charAt(0)}
+              src={user?.avatarUrl ?? undefined}
+              alt={user?.name}
+              className="size-6 rounded-full border-2 bg-background font-medium text-xs"
+            />
 
-          {showUsername && <p className="text-xs">{user?.name}</p>}
+            {showUsername && (
+              <p className="hidden text-xs md:flex">{user?.name}</p>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {extraCount > 0 && (
+        <div className="z-50 flex size-6 items-center justify-center rounded-full border-2 bg-background font-medium text-[10px]">
+          +{extraCount}
         </div>
-      ))}
+      )}
     </div>
   );
 };

@@ -1,15 +1,24 @@
+import { useRef } from "react";
+
+import PopoverWithTooltip from "@/components/core/PopoverWithTooltip";
 import PriorityIcon from "@/components/tasks/PriorityIcon";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   createListCollection,
   Select,
   SelectContent,
+  SelectControl,
   SelectItem,
   SelectItemGroup,
+  SelectItemIndicator,
   SelectItemText,
+  SelectPositioner,
   SelectTrigger,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
+import { TooltipTrigger } from "@/components/ui/tooltip";
+import { Hotkeys } from "@/lib/constants/hotkeys";
+import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 
 import type { ComponentProps } from "react";
 
@@ -18,6 +27,8 @@ interface Props extends Omit<ComponentProps<typeof Select>, "collection"> {
 }
 
 const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
+  const selectButtonRef = useRef<HTMLButtonElement | null>(null);
+
   const priorityCollection = createListCollection({
     items: [
       { label: "Low", value: "low" },
@@ -27,31 +38,54 @@ const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
   });
 
   return (
-    <Select collection={priorityCollection} {...rest}>
-      <SelectTrigger
-        className={cn(
-          buttonVariants({ variant: "outline" }),
-          "w-full [&[data-state=open]>svg]:rotate-0 [&_svg:not([class*='text-'])]:text-foreground",
-        )}
-        aria-label="Select Priority"
-      >
-        <PriorityIcon priority={triggerValue} />
+    <PopoverWithTooltip
+      triggerRef={selectButtonRef}
+      tooltip="Adjust Priority"
+      shortcut={Hotkeys.UpdateTaskPriority.toUpperCase()}
+    >
+      <Select collection={priorityCollection} loopFocus {...rest}>
+        <SelectControl>
+          <SelectTrigger
+            aria-label="Select Priority"
+            ref={selectButtonRef}
+            asChild
+          >
+            <TooltipTrigger asChild>
+              <Button variant="outline" className="w-fit">
+                <PriorityIcon priority={triggerValue} />
 
-        <p className="text-sm first-letter:uppercase">{triggerValue}</p>
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItemGroup className="space-y-1">
-          {priorityCollection.items.map((column) => (
-            <SelectItem key={column.value} item={column}>
-              <SelectItemText>
-                <PriorityIcon priority={column.label} />
-                {column.label}
-              </SelectItemText>
-            </SelectItem>
-          ))}
-        </SelectItemGroup>
-      </SelectContent>
-    </Select>
+                <p className="hidden text-sm md:flex">
+                  {firstLetterToUppercase(triggerValue!)}
+                </p>
+              </Button>
+            </TooltipTrigger>
+          </SelectTrigger>
+        </SelectControl>
+
+        <SelectPositioner>
+          <SelectContent className="w-48 p-0">
+            <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
+              Priority{" "}
+              <SidebarMenuShortcut className="w-fit px-1">
+                {Hotkeys.UpdateTaskPriority.toUpperCase()}
+              </SidebarMenuShortcut>
+            </div>
+
+            <SelectItemGroup className="space-y-1 p-1">
+              {priorityCollection.items.map((column) => (
+                <SelectItem key={column.value} item={column}>
+                  <SelectItemText>
+                    <PriorityIcon priority={column.label} />
+                    {column.label}
+                  </SelectItemText>
+                  <SelectItemIndicator />
+                </SelectItem>
+              ))}
+            </SelectItemGroup>
+          </SelectContent>
+        </SelectPositioner>
+      </Select>
+    </PopoverWithTooltip>
   );
 };
 

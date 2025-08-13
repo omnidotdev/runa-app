@@ -1,17 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
+import { useRef } from "react";
 
-import { buttonVariants } from "@/components/ui/button";
+import PopoverWithTooltip from "@/components/core/PopoverWithTooltip";
+import { Button } from "@/components/ui/button";
 import {
   createListCollection,
   Select,
   SelectContent,
+  SelectControl,
   SelectItem,
   SelectItemGroup,
+  SelectItemIndicator,
   SelectItemText,
+  SelectPositioner,
   SelectTrigger,
 } from "@/components/ui/select";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
+import { TooltipTrigger } from "@/components/ui/tooltip";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";
-import { cn } from "@/lib/utils";
 
 import type { ComponentProps } from "react";
 
@@ -33,6 +40,8 @@ const ColumnSelector = ({
     select: (data) => data?.project,
   });
 
+  const selectButtonRef = useRef<HTMLButtonElement | null>(null);
+
   const columnCollection = createListCollection({
     items:
       project?.columns?.nodes?.map((column) => ({
@@ -43,32 +52,58 @@ const ColumnSelector = ({
   });
 
   return (
-    <Select collection={columnCollection} {...rest}>
-      <SelectTrigger
-        className={cn(
-          buttonVariants({ variant: "outline" }),
-          "w-full [&[data-state=open]>svg]:rotate-0 [&_svg:not([class*='text-'])]:text-foreground",
-        )}
+    <PopoverWithTooltip
+      triggerRef={selectButtonRef}
+      tooltip="Adjust status"
+      shortcut={Hotkeys.UpdateTaskStatus.toUpperCase()}
+    >
+      <Select
+        collection={columnCollection}
+        positioning={{
+          getAnchorRect: () =>
+            selectButtonRef.current?.getBoundingClientRect() ?? null,
+        }}
+        loopFocus
         aria-label="Select Column"
+        {...rest}
       >
-        {triggerEmoji && <p className="text-sm">{triggerEmoji}</p>}
+        <SelectControl>
+          <SelectTrigger ref={selectButtonRef} asChild>
+            <TooltipTrigger asChild>
+              <Button variant="outline" className="w-fit">
+                {triggerEmoji && <p className="text-lg">{triggerEmoji}</p>}
 
-        <p className="text-sm">{triggerLabel}</p>
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItemGroup className="space-y-1">
-          {columnCollection.items.map((column) => (
-            <SelectItem key={column.value} item={column}>
-              <SelectItemText>
-                {column.emoji}
+                <p className="hidden text-sm md:flex">{triggerLabel}</p>
+              </Button>
+            </TooltipTrigger>
+          </SelectTrigger>
+        </SelectControl>
 
-                <p className="ml-1">{column.label}</p>
-              </SelectItemText>
-            </SelectItem>
-          ))}
-        </SelectItemGroup>
-      </SelectContent>
-    </Select>
+        <SelectPositioner>
+          <SelectContent className="w-48 p-0">
+            <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
+              Status{" "}
+              <SidebarMenuShortcut>
+                {Hotkeys.UpdateTaskStatus.toUpperCase()}
+              </SidebarMenuShortcut>
+            </div>
+
+            <SelectItemGroup className="space-y-1 p-1">
+              {columnCollection.items.map((column) => (
+                <SelectItem key={column.value} item={column}>
+                  <SelectItemText>
+                    {column.emoji}
+
+                    <p className="ml-1">{column.label}</p>
+                  </SelectItemText>
+                  <SelectItemIndicator />
+                </SelectItem>
+              ))}
+            </SelectItemGroup>
+          </SelectContent>
+        </SelectPositioner>
+      </Select>
+    </PopoverWithTooltip>
   );
 };
 

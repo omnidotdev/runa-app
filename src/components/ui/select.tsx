@@ -1,6 +1,5 @@
-import { Portal } from "@ark-ui/react/portal";
 import { Select as ArkSelect } from "@ark-ui/react/select";
-import { ChevronDownIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { tv } from "tailwind-variants";
 
 import { cn } from "@/lib/utils";
@@ -21,16 +20,16 @@ const selectVariants = tv({
     valueText: "line-clamp-1 flex items-center gap-2",
     indicator: "size-4 transition-transform",
     clearTrigger:
-      "cursor-pointer opacity-70 hover:opacity-100 transition-opacity",
+      "w-full outline-none focus-visible:outline-none focus-visible:bg-accent",
     positioner: "",
     content:
-      "no-scrollbar w-fit p-2 !max-h-80 overflow-auto data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-[var(--available-height)] min-w-[8rem] origin-[var(--transform-origin)] overflow-y-auto overflow-x-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=closed]:animate-out data-[state=open]:animate-in",
+      "no-scrollbar w-fit p-2 !max-h-80 outline-none overflow-auto data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-[var(--available-height)] min-w-[8rem] origin-[var(--transform-origin)] overflow-y-auto overflow-x-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=closed]:animate-out data-[state=open]:animate-in",
     itemGroup: "",
     itemGroupLabel: "px-2 py-1.5 text-muted-foreground text-xs font-semibold",
-    item: "group relative flex w-full cursor-pointer select-none items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[state=checked]:bg-base-100 data-[state=checked]:text-foreground data-[state=checked]:hover:bg-base-200 data-[state=checked]:dark:bg-base-700 data-[state=checked]:dark:hover:bg-base-800 data-[state=unchecked]:hover:bg-accent data-[state=unchecked]:hover:text-accent-foreground data-[state=unchecked]:dark:hover:bg-accent/50",
+    item: "[&[data-state=checked][data-highlighted]]:bg-sidebar-accent/80 focus:bg-accent hover:bg-accent focus:text-accent-foreground data-[state=checked]:bg-accent data-[state=checked]:text-accent-foreground data-[state=checked]:hover:bg-sidebar-accent/80  relative data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground relative flex cursor-default items-center gap-2 rounded px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     itemText: "flex items-center gap-2",
     itemIndicator:
-      "absolute right-2 inline-flex items-center justify-center p-1",
+      "text-green-500 flex ml-auto flex h-3.5 w-3.5 items-center justify-center",
     separator: "-mx-1 pointer-events-none my-1 h-px bg-border",
   },
   variants: {
@@ -138,13 +137,9 @@ const SelectContent = ({
   children,
   ...rest
 }: ComponentProps<typeof ArkSelect.Content>) => (
-  <Portal>
-    <SelectPositioner>
-      <ArkSelect.Content className={cn(content(), className)} {...rest}>
-        {children}
-      </ArkSelect.Content>
-    </SelectPositioner>
-  </Portal>
+  <ArkSelect.Content className={cn(content(), className)} {...rest}>
+    {children}
+  </ArkSelect.Content>
 );
 
 const SelectItemGroup = ({
@@ -187,7 +182,7 @@ const SelectItemIndicator = ({
   ...rest
 }: ComponentProps<typeof ArkSelect.ItemIndicator>) => (
   <ArkSelect.ItemIndicator className={cn(itemIndicator(), className)} {...rest}>
-    {children}
+    <CheckIcon className="size-4" />
   </ArkSelect.ItemIndicator>
 );
 
@@ -200,24 +195,18 @@ const SelectSeparator = ({
 
 export {
   Select,
-  /** @knipignore */
   SelectRoot,
-  /** @knipignore */
   SelectRootProvider,
   /** @knipignore */
   SelectContext,
   /** @knipignore */
   SelectLabel,
-  /** @knipignore */
   SelectControl,
   SelectTrigger,
   /** @knipignore */
   SelectValueText,
-  /** @knipignore */
   SelectIndicator,
-  /** @knipignore */
   SelectClearTrigger,
-  /** @knipignore */
   SelectPositioner,
   SelectContent,
   SelectItemGroup,
@@ -225,7 +214,6 @@ export {
   SelectItemGroupLabel,
   SelectItem,
   SelectItemText,
-  /** @knipignore */
   SelectItemIndicator,
   /** @knipignore */
   SelectSeparator,

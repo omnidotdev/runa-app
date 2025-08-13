@@ -3,13 +3,13 @@ import { useParams } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
-import Assignees from "@/components/shared/Assignees";
 import Label from "@/components/shared/Label";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import taskOptions from "@/lib/options/task.options";
+import { Avatar } from "../ui/avatar";
 
 import type { LabelFragment } from "@/generated/graphql";
 
@@ -59,13 +59,20 @@ const TaskSidebar = () => {
 
         <CardContent className="flex max-h-80 overflow-y-auto p-0">
           {task?.assignees?.nodes?.length ? (
-            <Assignees
-              assignees={task?.assignees.nodes.map(
-                (assignee) => assignee.user?.rowId!,
-              )}
-              showUsername={true}
-              className="flex flex-col gap-0"
-            />
+            <div>
+              {task?.assignees?.nodes?.map(({ user }) => (
+                <div key={user?.rowId} className="flex items-center gap-0">
+                  <Avatar
+                    fallback={user?.name?.charAt(0)}
+                    src={user?.avatarUrl ?? undefined}
+                    alt={user?.name}
+                    className="size-6 rounded-full border-2 bg-background font-medium text-xs"
+                  />
+
+                  <p className="text-xs">{user?.name}</p>
+                </div>
+              ))}
+            </div>
           ) : (
             <p className="mx-auto flex place-self-center p-4 text-muted-foreground text-sm">
               No Assignees

@@ -75,8 +75,7 @@ const WorkspaceInvitation = ({
         <Container className="mx-auto my-10 max-w-md rounded border border-subtle border-solid p-5">
           <Section className="mt-8">
             <Img
-              // TODO: update accordingly when logo is ready
-              src="https://runa.omni.dev/img/logo.png"
+              src="https://runa.omni.dev/logo.png"
               alt="Runa logo"
               width={80}
               height={40}

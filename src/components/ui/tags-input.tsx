@@ -1,5 +1,5 @@
 import { TagsInput as ArkTagsInput } from "@ark-ui/react/tags-input";
-import { FiX } from "react-icons/fi";
+import { XIcon } from "lucide-react";
 import { tv } from "tailwind-variants";
 
 import { cn } from "@/lib/utils";
@@ -99,7 +99,7 @@ const TagsInputItemDeleteTrigger = ({
         className={cn(itemDeleteTrigger(), className)}
         {...rest}
       >
-        <FiX className="h-4 w-4" />
+        <XIcon className="h-4 w-4" />
         <span className="sr-only">Delete</span>
       </ArkTagsInput.ItemDeleteTrigger>
     );

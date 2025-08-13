@@ -1,6 +1,6 @@
 // TODO: remove `use client` from registry build
 import { DatePicker as ArkDatePicker } from "@ark-ui/react/date-picker";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { tv } from "tailwind-variants";
 
 import { Button } from "@/components/ui/button";
@@ -134,7 +134,7 @@ const DatePickerPrevTrigger = ({
 }: ComponentProps<typeof ArkDatePicker.PrevTrigger>) => (
   <ArkDatePicker.PrevTrigger asChild {...rest}>
     <Button variant="ghost" size="icon" className={cn(className)}>
-      <FiChevronLeft className="h-4 w-4" />
+      <ChevronLeftIcon className="size-4" />
     </Button>
   </ArkDatePicker.PrevTrigger>
 );
@@ -145,7 +145,7 @@ const DatePickerNextTrigger = ({
 }: ComponentProps<typeof ArkDatePicker.NextTrigger>) => (
   <ArkDatePicker.NextTrigger asChild {...rest}>
     <Button variant="ghost" size="icon" className={cn(className)}>
-      <FiChevronRight className="h-4 w-4" />
+      <ChevronRightIcon className="size-4" />
     </Button>
   </ArkDatePicker.NextTrigger>
 );

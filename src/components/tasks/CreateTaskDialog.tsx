@@ -5,19 +5,16 @@ import {
   useRouteContext,
   useSearch,
 } from "@tanstack/react-router";
-import { TagIcon, TypeIcon } from "lucide-react";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
 
 import RichTextEditor from "@/components/core/RichTextEditor";
-import Assignees from "@/components/shared/Assignees";
-import Label from "@/components/shared/Label";
 import CreateTaskAssignees from "@/components/tasks/CreateTaskAssignees";
 import CreateTaskDatePicker from "@/components/tasks/CreateTaskDatePicker";
+import CreateTaskLabels from "@/components/tasks/CreateTaskLabels";
 import CreateTaskPriority from "@/components/tasks/CreateTaskPriority";
 import TaskColumnForm from "@/components/tasks/TaskColumnForm";
-import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -27,12 +24,6 @@ import {
   DialogRoot,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import {
-  PopoverContent,
-  PopoverPositioner,
-  PopoverRoot,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   useCreateAssigneeMutation,
   useCreateLabelMutation,
@@ -202,6 +193,7 @@ const CreateTaskDialog = () => {
 
       formApi.reset();
       setTimeout(() => setColumnId(null), 350);
+
       navigate({
         search: (prev) => ({
           ...prev,
@@ -234,8 +226,15 @@ const CreateTaskDialog = () => {
     >
       <DialogBackdrop />
       <DialogPositioner>
-        <DialogContent className="max-w-fit">
+        {/* Fix width issue on task property changes */}
+        <DialogContent className="flex min-w-fit flex-col items-start">
           <DialogCloseTrigger />
+
+          <span className="text-nowrap font-medium font-mono text-base-400 dark:text-base-500">
+            {project?.prefix
+              ? `${project?.prefix}-${totalTasks}`
+              : `PROJ-${totalTasks}`}
+          </span>
 
           <form
             onSubmit={(e) => {
@@ -243,67 +242,13 @@ const CreateTaskDialog = () => {
               e.stopPropagation();
               form.handleSubmit();
             }}
-            className="flex flex-col gap-2"
+            className="flex w-full flex-1 flex-col gap-2"
           >
-            <form.Field name="title">
-              {(field) => (
-                <div className="-mt-3 flex items-center gap-2 border-b py-1 pr-8">
-                  <span className="mt-0.5 text-nowrap font-medium font-mono text-base-400 text-xs dark:text-base-500">
-                    {project?.prefix
-                      ? `${project?.prefix}-${totalTasks}`
-                      : `PROJ-${totalTasks}`}
-                  </span>
-
-                  <Input
-                    ref={titleRef}
-                    id="title"
-                    autoComplete="off"
-                    className="border-none shadow-none transition-none focus-visible:ring-0 dark:bg-transparent"
-                    placeholder="Task Title"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                </div>
-              )}
-            </form.Field>
-
-            <div className="prose prose-sm dark:prose-invert w-full max-w-none">
-              <div className="mb-2 flex items-center gap-2">
-                <TypeIcon className="h-4 w-4 text-base-500 dark:text-base-400" />
-                <h3 className="m-0 font-medium text-base-700 text-sm dark:text-base-300">
-                  Description
-                </h3>
-              </div>
-
-              <RichTextEditor
-                onUpdate={({ editor }) =>
-                  form.setFieldValue("description", editor.getHTML())
-                }
-              />
-            </div>
-
+            {/* Tasks properties */}
             <div className="flex gap-3 py-2">
               <CreateTaskAssignees form={form} />
 
-              <PopoverRoot
-                positioning={{
-                  strategy: "fixed",
-                  placement: "top-start",
-                }}
-              >
-                <PopoverTrigger asChild>
-                  <Button variant="outline">
-                    <TagIcon className="size-4" />
-                    Add labels
-                  </Button>
-                </PopoverTrigger>
-
-                <PopoverPositioner>
-                  <PopoverContent className="flex min-w-fit flex-col gap-2 p-0">
-                    <TaskLabelsForm form={form} />
-                  </PopoverContent>
-                </PopoverPositioner>
-              </PopoverRoot>
+              <CreateTaskLabels form={form} />
 
               <CreateTaskDatePicker form={form} />
 
@@ -312,30 +257,27 @@ const CreateTaskDialog = () => {
               <CreateTaskPriority form={form} />
             </div>
 
-            <form.Subscribe
-              selector={(state) => ({
-                taskLabels: state.values.labels,
-                assignees: state.values.assignees,
-              })}
-            >
-              {({ taskLabels, assignees }) => (
-                <div className="flex flex-col gap-2">
-                  <Assignees
-                    assignees={assignees}
-                    showUsername={true}
-                    className="-ml-2 flex flex-wrap gap-1"
+            <form.Field name="title">
+              {(field) => (
+                <div className="flex items-center gap-2 py-1">
+                  <Input
+                    ref={titleRef}
+                    className="border-base-300 border-dashed shadow-none transition-none placeholder:text-base-400 hover:border-base-400 focus-visible:ring-0 dark:border-base-600 dark:bg-transparent dark:hover:border-base-500"
+                    placeholder="Task title..."
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
                   />
-
-                  <div className="flex flex-wrap gap-1">
-                    {taskLabels
-                      .filter((l) => l.checked)
-                      .map((label) => (
-                        <Label key={label.rowId} label={label} />
-                      ))}
-                  </div>
                 </div>
               )}
-            </form.Subscribe>
+            </form.Field>
+
+            <RichTextEditor
+              className="min-h-[160px] text-xs placeholder:text-xs md:min-h-[120px] md:text-sm"
+              placeholder="Task description..."
+              onUpdate={({ editor }) =>
+                form.setFieldValue("description", editor.getHTML())
+              }
+            />
 
             <div className="mt-4 flex justify-end gap-2">
               <DialogCloseTrigger asChild>

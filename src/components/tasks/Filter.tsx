@@ -29,11 +29,12 @@ import {
   MenuTriggerItem,
 } from "@/components/ui/menu";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
-import { Tooltip } from "@/components/ui/tooltip";
+import { TooltipTrigger } from "@/components/ui/tooltip";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
+import PopoverWithTooltip from "../core/PopoverWithTooltip";
 
 const Filter = () => {
   const { workspaceId, projectId } = useLoaderData({
@@ -111,215 +112,205 @@ const Filter = () => {
   };
 
   return (
-    <MenuRoot
-      positioning={{
-        strategy: "fixed",
-        placement: "bottom",
-        getAnchorRect: () =>
-          menuButtonRef.current?.getBoundingClientRect() ?? null,
-      }}
-      open={isFilterOpen}
-      onOpenChange={({ open }) => {
-        setIsFilterOpen(open);
-      }}
-    >
-      <Tooltip
-        positioning={{ placement: "bottom" }}
-        tooltip="Filter"
-        shortcut="F"
+    <PopoverWithTooltip triggerRef={menuButtonRef} tooltip="Filter">
+      <MenuRoot
+        open={isFilterOpen}
+        onOpenChange={({ open }) => setIsFilterOpen(open)}
       >
         <MenuTrigger ref={menuButtonRef} asChild>
-          <Button variant="outline" size="icon" aria-label="Filter">
-            <ListFilter />
-          </Button>
+          <TooltipTrigger asChild>
+            <Button variant="outline" size="icon">
+              <ListFilter />
+            </Button>
+          </TooltipTrigger>
         </MenuTrigger>
-      </Tooltip>
 
-      <MenuPositioner>
-        <MenuContent className="w-48 p-0">
-          <MenuItemGroup>
-            <MenuItemGroupLabel>
-              Filter <SidebarMenuShortcut>F</SidebarMenuShortcut>
-            </MenuItemGroupLabel>
+        <MenuPositioner>
+          <MenuContent className="w-48 p-0">
+            <MenuItemGroup>
+              <MenuItemGroupLabel>
+                Filter <SidebarMenuShortcut>F</SidebarMenuShortcut>
+              </MenuItemGroupLabel>
 
-            <MenuSeparator />
+              <MenuSeparator />
 
-            <div className="mt-1 flex flex-col gap-0.5">
-              <MenuProvider value={labelsMenu}>
-                <MenuTriggerItem>
-                  <TagIcon />
-                  Labels
-                </MenuTriggerItem>
+              <div className="mt-1 flex flex-col gap-0.5">
+                <MenuProvider value={labelsMenu}>
+                  <MenuTriggerItem>
+                    <TagIcon />
+                    Labels
+                  </MenuTriggerItem>
 
-                <MenuPositioner>
-                  <MenuContent className="w-48">
-                    {project?.labels?.nodes?.map((label) => (
-                      <MenuCheckboxItem
-                        key={label.rowId}
-                        closeOnSelect={false}
-                        value={label.rowId}
-                        checked={labels.includes(label.rowId)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            navigate({
-                              search: (prev) => ({
-                                ...prev,
-                                labels: [...(prev.labels ?? []), label.rowId],
-                              }),
-                            });
-                          } else {
-                            navigate({
-                              search: (prev) => ({
-                                ...prev,
-                                labels: prev.labels?.filter(
-                                  (id) => id !== label.rowId,
-                                ),
-                              }),
-                            });
-                          }
-                        }}
-                      >
-                        <MenuItemText className="flex items-center gap-2">
-                          <div
-                            className="size-4 rounded-full"
-                            style={{ backgroundColor: label.color }}
-                          />
-                          {label.name}
-                        </MenuItemText>
-                        <MenuItemIndicator />
-                      </MenuCheckboxItem>
-                    ))}
-                  </MenuContent>
-                </MenuPositioner>
-              </MenuProvider>
-
-              <MenuProvider value={assigneesMenu}>
-                <MenuTriggerItem>
-                  <UserPlusIcon />
-                  Assignees
-                </MenuTriggerItem>
-
-                <MenuPositioner>
-                  <MenuContent className="w-48">
-                    {users?.map((user) => (
-                      <MenuCheckboxItem
-                        key={user?.rowId}
-                        closeOnSelect={false}
-                        value={user?.rowId!}
-                        checked={assignees.includes(user?.rowId!)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            navigate({
-                              search: (prev) => ({
-                                ...prev,
-                                assignees: [
-                                  ...(prev.assignees ?? []),
-                                  user?.rowId!,
-                                ],
-                              }),
-                            });
-                          } else {
-                            navigate({
-                              search: (prev) => ({
-                                ...prev,
-                                assignees: prev.assignees?.filter(
-                                  (id) => id !== user?.rowId!,
-                                ),
-                              }),
-                            });
-                          }
-                        }}
-                      >
-                        <MenuItemText className="ml-0 flex items-center gap-2">
-                          <div className="flex h-6 items-center">
-                            <Avatar
-                              src={user?.avatarUrl ?? undefined}
-                              alt={user?.name}
-                              fallback={user?.name?.charAt(0)}
+                  <MenuPositioner>
+                    <MenuContent className="w-48">
+                      {project?.labels?.nodes?.map((label) => (
+                        <MenuCheckboxItem
+                          key={label.rowId}
+                          closeOnSelect={false}
+                          value={label.rowId}
+                          checked={labels.includes(label.rowId)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              navigate({
+                                search: (prev) => ({
+                                  ...prev,
+                                  labels: [...(prev.labels ?? []), label.rowId],
+                                }),
+                              });
+                            } else {
+                              navigate({
+                                search: (prev) => ({
+                                  ...prev,
+                                  labels: prev.labels?.filter(
+                                    (id) => id !== label.rowId,
+                                  ),
+                                }),
+                              });
+                            }
+                          }}
+                        >
+                          <MenuItemText className="flex items-center gap-2">
+                            <div
                               className="size-4 rounded-full"
+                              style={{ backgroundColor: label.color }}
                             />
-                          </div>
-                          <p className="-ml-2 font-light text-sm">
-                            {user?.name}
-                          </p>
-                        </MenuItemText>
-                        <MenuItemIndicator />
-                      </MenuCheckboxItem>
-                    ))}
-                  </MenuContent>
-                </MenuPositioner>
-              </MenuProvider>
+                            {label.name}
+                          </MenuItemText>
+                          <MenuItemIndicator />
+                        </MenuCheckboxItem>
+                      ))}
+                    </MenuContent>
+                  </MenuPositioner>
+                </MenuProvider>
 
-              <MenuProvider value={prioritiesMenu}>
-                <MenuTriggerItem>
-                  <CircleAlertIcon />
-                  Priorities
-                </MenuTriggerItem>
+                <MenuProvider value={assigneesMenu}>
+                  <MenuTriggerItem>
+                    <UserPlusIcon />
+                    Assignees
+                  </MenuTriggerItem>
 
-                <MenuPositioner>
-                  <MenuContent className="w-48">
-                    {(["low", "medium", "high"] as const).map((priority) => (
-                      <MenuCheckboxItem
-                        key={priority}
-                        closeOnSelect={false}
-                        value={priority}
-                        checked={priorities.includes(priority)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            navigate({
-                              search: (prev) => ({
-                                ...prev,
-                                priorities: [
-                                  ...(prev.priorities ?? []),
-                                  priority,
-                                ],
-                              }),
-                            });
-                          } else {
-                            navigate({
-                              search: (prev) => ({
-                                ...prev,
-                                priorities: prev.priorities?.filter(
-                                  (p) => p !== priority,
-                                ),
-                              }),
-                            });
-                          }
-                        }}
-                      >
-                        <MenuItemText className="ml-0 flex items-center gap-2">
-                          <div
-                            className={cn(
-                              "size-4 rounded-full",
-                              priority === "high" && "bg-red-500",
-                              priority === "medium" && "bg-yellow-500",
-                              priority === "low" && "bg-green-500",
-                            )}
-                          />
-                          <p className="font-light text-sm first-letter:uppercase">
-                            {priority}
-                          </p>
-                        </MenuItemText>
-                        <MenuItemIndicator />
-                      </MenuCheckboxItem>
-                    ))}
-                  </MenuContent>
-                </MenuPositioner>
-              </MenuProvider>
+                  <MenuPositioner>
+                    <MenuContent className="w-48">
+                      {users?.map((user) => (
+                        <MenuCheckboxItem
+                          key={user?.rowId}
+                          closeOnSelect={false}
+                          value={user?.rowId!}
+                          checked={assignees.includes(user?.rowId!)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              navigate({
+                                search: (prev) => ({
+                                  ...prev,
+                                  assignees: [
+                                    ...(prev.assignees ?? []),
+                                    user?.rowId!,
+                                  ],
+                                }),
+                              });
+                            } else {
+                              navigate({
+                                search: (prev) => ({
+                                  ...prev,
+                                  assignees: prev.assignees?.filter(
+                                    (id) => id !== user?.rowId!,
+                                  ),
+                                }),
+                              });
+                            }
+                          }}
+                        >
+                          <MenuItemText className="ml-0 flex items-center gap-2">
+                            <div className="flex h-6 items-center">
+                              <Avatar
+                                src={user?.avatarUrl ?? undefined}
+                                alt={user?.name}
+                                fallback={user?.name?.charAt(0)}
+                                className="size-4 rounded-full"
+                              />
+                            </div>
+                            <p className="-ml-2 font-light text-sm">
+                              {user?.name}
+                            </p>
+                          </MenuItemText>
+                          <MenuItemIndicator />
+                        </MenuCheckboxItem>
+                      ))}
+                    </MenuContent>
+                  </MenuPositioner>
+                </MenuProvider>
 
-              <MenuItem
-                value="clear"
-                onClick={clearAllFilters}
-                disabled={!areFiltersActive}
-              >
-                <FunnelXIcon />
-                Clear
-              </MenuItem>
-            </div>
-          </MenuItemGroup>
-        </MenuContent>
-      </MenuPositioner>
-    </MenuRoot>
+                <MenuProvider value={prioritiesMenu}>
+                  <MenuTriggerItem>
+                    <CircleAlertIcon />
+                    Priorities
+                  </MenuTriggerItem>
+
+                  <MenuPositioner>
+                    <MenuContent className="w-48">
+                      {(["low", "medium", "high"] as const).map((priority) => (
+                        <MenuCheckboxItem
+                          key={priority}
+                          closeOnSelect={false}
+                          value={priority}
+                          checked={priorities.includes(priority)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              navigate({
+                                search: (prev) => ({
+                                  ...prev,
+                                  priorities: [
+                                    ...(prev.priorities ?? []),
+                                    priority,
+                                  ],
+                                }),
+                              });
+                            } else {
+                              navigate({
+                                search: (prev) => ({
+                                  ...prev,
+                                  priorities: prev.priorities?.filter(
+                                    (p) => p !== priority,
+                                  ),
+                                }),
+                              });
+                            }
+                          }}
+                        >
+                          <MenuItemText className="ml-0 flex items-center gap-2">
+                            <div
+                              className={cn(
+                                "size-4 rounded-full",
+                                priority === "high" && "bg-red-500",
+                                priority === "medium" && "bg-yellow-500",
+                                priority === "low" && "bg-green-500",
+                              )}
+                            />
+                            <p className="font-light text-sm first-letter:uppercase">
+                              {priority}
+                            </p>
+                          </MenuItemText>
+                          <MenuItemIndicator />
+                        </MenuCheckboxItem>
+                      ))}
+                    </MenuContent>
+                  </MenuPositioner>
+                </MenuProvider>
+
+                <MenuItem
+                  value="clear"
+                  onClick={clearAllFilters}
+                  disabled={!areFiltersActive}
+                >
+                  <FunnelXIcon />
+                  Clear
+                </MenuItem>
+              </div>
+            </MenuItemGroup>
+          </MenuContent>
+        </MenuPositioner>
+      </MenuRoot>
+    </PopoverWithTooltip>
   );
 };
 

@@ -78,7 +78,7 @@ const Board = ({ projects }: Props) => {
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
                     >
-                      <div className="no-scrollbar flex h-full flex-col overflow-y-auto p-1">
+                      <div className="no-scrollbar flex h-full flex-col gap-2 overflow-y-auto p-1">
                         {projects
                           .filter(
                             (project) =>
