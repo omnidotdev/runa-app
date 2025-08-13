@@ -77,6 +77,7 @@ import RUNA_PRODUCT_IDS, {
   SandboxYearly,
 } from "@/lib/polar/productIds";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 import { deleteUserData } from "@/server/deleteUserData";
 import { fetchAuthenticatedCustomer } from "@/server/fetchAuthenticatedCustomer";
@@ -87,6 +88,9 @@ import { fetchRunaProducts } from "@/server/fetchRunaProducts";
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 
 export const Route = createFileRoute({
+  head: () => ({
+    meta: [...seo({ title: "Profile" })],
+  }),
   loader: async ({ context: { queryClient, session } }) => {
     let currentProduct: Product | undefined;
 
