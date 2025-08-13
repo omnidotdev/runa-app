@@ -1,4 +1,5 @@
 import { Outlet } from "@tanstack/react-router";
+import { Image } from "@unpic/react";
 
 import Link from "@/components/core/Link";
 import ThemeToggle from "@/components/core/ThemeToggle";
@@ -33,9 +34,11 @@ function UnauthenticatedLayout() {
               variant="ghost"
               className="hover:bg-accent/0 dark:hover:bg-accent/0"
             >
-              <img
+              <Image
+                layout="fullWidth"
                 src="/logo.png"
                 alt="Runa Logo"
+                priority
                 className="h-6 w-6 md:h-8 md:w-8"
               />
               <h1 className="font-bold text-xl">Runa</h1>
