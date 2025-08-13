@@ -135,6 +135,7 @@ function SettingsPage() {
             params={{ workspaceSlug: workspaceSlug }}
             variant="ghost"
             size="icon"
+            aria-label="Back to projects"
           >
             <ArrowLeft className="size-4" />
           </Link>

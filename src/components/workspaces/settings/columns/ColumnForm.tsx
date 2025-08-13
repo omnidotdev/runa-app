@@ -178,11 +178,14 @@ const ColumnForm = ({
       <div
         {...attributes}
         {...listeners}
+        role="button"
+        tabIndex={0}
         aria-describedby={`DndDescribedBy-${column.rowId}`}
         className={cn(
           "mr-1 h-9 cursor-move items-center justify-center rounded-sm outline-hidden transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 focus-visible:ring-offset-background",
           canDrag ? "flex" : "invisible",
         )}
+        aria-label="Drag handle"
       >
         <GripVerticalIcon className="size-3 text-muted-foreground" />
       </div>
@@ -230,6 +233,7 @@ const ColumnForm = ({
               size="icon"
               className="size-7 text-base-400 opacity-0 group-hover:opacity-100"
               tabIndex={isHovering ? 0 : -1}
+              aria-label="More column options"
             >
               <MoreHorizontalIcon />
             </Button>
@@ -279,6 +283,7 @@ const ColumnForm = ({
                   }}
                   disabled={isSubmitting}
                   className="focus-visible:ring-offset-0"
+                  aria-label="Cancel"
                 >
                   <XIcon size={12} />
                 </Button>
@@ -291,6 +296,7 @@ const ColumnForm = ({
                   size="icon"
                   disabled={!canSubmit || isSubmitting || !isDirty}
                   className="focus-visible:ring-offset-0"
+                  aria-label="Save"
                 >
                   <CheckIcon size={12} />
                 </Button>

@@ -52,7 +52,12 @@ const CommentEmojiPicker = ({ postId }: Props) => {
       modal
     >
       <PopoverTrigger asChild>
-        <Button size="icon" variant="ghost" className="size-7 text-base-400">
+        <Button
+          size="icon"
+          variant="ghost"
+          className="size-7 text-base-400"
+          aria-label="Select Emoji"
+        >
           <SmilePlusIcon className="size-4" />
         </Button>
       </PopoverTrigger>

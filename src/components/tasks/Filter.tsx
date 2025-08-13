@@ -129,7 +129,7 @@ const Filter = () => {
         shortcut="F"
       >
         <MenuTrigger ref={menuButtonRef} asChild>
-          <Button variant="outline" size="icon">
+          <Button variant="outline" size="icon" aria-label="Filter">
             <ListFilter />
           </Button>
         </MenuTrigger>

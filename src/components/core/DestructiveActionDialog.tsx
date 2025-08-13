@@ -91,7 +91,7 @@ const DestructiveActionDialog = ({
                 <div className="flex flex-col gap-2">
                   <label
                     className="text-foreground text-sm"
-                    htmlFor="confirmationInput"
+                    htmlFor={`confirmationInput-${confirmation}`}
                   >
                     Type{" "}
                     <strong className="text-destructive">{confirmation}</strong>{" "}
@@ -100,7 +100,7 @@ const DestructiveActionDialog = ({
 
                   <Input
                     ref={inputRef}
-                    id="confirmationInput"
+                    id={`confirmationInput-${confirmation}`}
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder="Enter confirmation text..."

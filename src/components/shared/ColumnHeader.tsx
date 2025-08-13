@@ -50,6 +50,7 @@ const ColumnHeader = ({
             size="xs"
             className="size-5"
             onClick={onCreate}
+            aria-label={`Create ${title} Task`}
           >
             <PlusIcon className="size-4" />
           </Button>

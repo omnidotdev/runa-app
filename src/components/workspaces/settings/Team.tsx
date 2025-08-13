@@ -136,6 +136,7 @@ const Team = () => {
                             variant="ghost"
                             size="icon"
                             className="size-7 text-base-400"
+                            aria-label="More team member options"
                           >
                             <MoreHorizontalIcon />
                           </Button>

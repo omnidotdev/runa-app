@@ -139,6 +139,7 @@ function TaskPage() {
           variant="ghost"
           size="icon"
           className="ml-1"
+          aria-label="Go back"
         >
           <ArrowLeftIcon className="size-4" />
         </Link>
@@ -159,7 +160,7 @@ function TaskPage() {
             }
           />
 
-          <div className="flex items-center gap-2 font-mono text-base-400 text-sm dark:text-base-500">
+          <div className="flex items-center gap-2 font-mono text-base-500 text-sm dark:text-base-400">
             {`${project?.prefix ? project.prefix : "PROJ"}-${taskIndex}`}
           </div>
         </div>
@@ -172,6 +173,7 @@ function TaskPage() {
             variant="outline"
             className="justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20"
             onClick={() => setIsDeleteTaskDialogOpen(true)}
+            aria-label="Delete Task"
           >
             <Trash2Icon className="size-4" />
           </Button>

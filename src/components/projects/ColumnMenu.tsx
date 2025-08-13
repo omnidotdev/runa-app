@@ -88,7 +88,12 @@ const ColumnMenu = ({ columnId }: Props) => {
         }}
       >
         <MenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-          <Button variant="ghost" size="xs" className="size-5">
+          <Button
+            variant="ghost"
+            size="xs"
+            className="size-7"
+            aria-label={`More Actions for ${column?.title}`}
+          >
             <MoreHorizontalIcon className="size-4" />
           </Button>
         </MenuTrigger>

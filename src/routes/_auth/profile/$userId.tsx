@@ -243,6 +243,7 @@ function RouteComponent() {
                   variant="destructive"
                   className="absolute right-0 bottom-0 size-8 rounded-full border-2 border-background p-0 text-background has-[>svg]:px-0"
                   onClick={signOut}
+                  aria-label="Sign out"
                 >
                   <LogOut className="size-4" />
                 </Button>
@@ -385,11 +386,11 @@ function RouteComponent() {
                   )}
                 >
                   <div className="text-center">
-                    <h4 className="mb-2 font-bold text-base">
+                    <h3 className="mb-2 font-bold text-base">
                       {upgradeTier === "Free"
                         ? "Get Started for Free"
                         : `Upgrade to ${upgradeTier} Tier`}
-                    </h4>
+                    </h3>
                     {isTeamTier ? (
                       <p className="mb-4 text-muted-foreground text-sm leading-relaxed">
                         Currently under development
@@ -405,7 +406,7 @@ function RouteComponent() {
                       <Button
                         size="sm"
                         className={cn(
-                          "w-full font-medium duration-200 hover:border-primary/40 hover:transition-colors",
+                          "w-full bg-primary-700 font-medium text-background duration-200 hover:border-primary/40 hover:transition-colors",
                           isTeamTier && "border bg-muted text-muted-foreground",
                         )}
                         disabled={

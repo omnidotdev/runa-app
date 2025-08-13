@@ -132,6 +132,7 @@ const Comments = () => {
                                   variant="ghost"
                                   size="icon"
                                   className="size-7 text-base-400"
+                                  aria-label="More options"
                                 >
                                   <MoreHorizontalIcon />
                                 </Button>

@@ -300,9 +300,9 @@ function ProjectsOverviewPage() {
         <div className="border-b px-6 py-4">
           <div className="flex flex-col gap-4">
             <div>
-              <h1 className="mb-1 font-bold text-2xl text-base-800 sm:mb-2 sm:text-3xl dark:text-base-100">
+              <h2 className="mb-1 font-bold text-2xl text-base-800 sm:mb-2 sm:text-3xl dark:text-base-100">
                 Projects
-              </h1>
+              </h2>
               <p className="text-base-600 text-sm sm:text-base dark:text-base-300">
                 Manage and track all your projects in one place
               </p>
@@ -339,6 +339,9 @@ function ProjectsOverviewPage() {
                       },
                     })
                   }
+                  aria-label={
+                    workspace?.viewMode === "list" ? "Board View" : "List View"
+                  }
                 >
                   {workspace?.viewMode === "list" ? (
                     <Grid2X2Icon />
@@ -358,6 +361,7 @@ function ProjectsOverviewPage() {
                   size="icon"
                   onClick={() => setIsCreateProjectOpen(true)}
                   disabled={!workspace?.projectColumns?.nodes?.length}
+                  aria-label="Create Project"
                 >
                   <Plus className="size-4" />
                 </Button>

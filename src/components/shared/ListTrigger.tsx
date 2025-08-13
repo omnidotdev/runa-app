@@ -29,10 +29,13 @@ const ListTrigger = ({
   return (
     <CollapsibleTrigger
       asChild
-      tabIndex={0}
       className="rounded-t-lg focus-visible:ring-inset"
     >
-      <div className="flex items-center justify-between px-3 py-2 ">
+      <div
+        role="button"
+        tabIndex={0}
+        className="flex items-center justify-between px-3 py-2"
+      >
         <div className="flex items-center gap-2">
           <p className="text-xs">{emoji}</p>
 
@@ -43,7 +46,7 @@ const ListTrigger = ({
           </span>
         </div>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="mr-2 ml-auto flex items-center gap-4">
           {children}
 
           <Tooltip
@@ -54,15 +57,16 @@ const ListTrigger = ({
             <Button
               variant="ghost"
               size="xs"
-              className="size-5"
+              className="size-7"
               onClick={onCreate}
+              aria-label="Create"
             >
               <PlusIcon className="size-4" />
             </Button>
           </Tooltip>
         </div>
 
-        <ChevronRightIcon className="ml-2 size-4 text-base-400 transition-transform" />
+        <ChevronRightIcon className="ml-2 size-5 text-base-400 transition-transform" />
       </div>
     </CollapsibleTrigger>
   );

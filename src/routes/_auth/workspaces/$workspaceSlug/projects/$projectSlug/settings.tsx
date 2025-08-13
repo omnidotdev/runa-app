@@ -131,6 +131,7 @@ function RouteComponent() {
             params={{ workspaceSlug, projectSlug }}
             variant="ghost"
             size="icon"
+            aria-label="Back to project"
           >
             <ArrowLeft className="size-4" />
           </Link>

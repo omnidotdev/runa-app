@@ -49,6 +49,7 @@ const ColumnSelector = ({
           buttonVariants({ variant: "outline" }),
           "w-full [&[data-state=open]>svg]:rotate-0 [&_svg:not([class*='text-'])]:text-foreground",
         )}
+        aria-label="Select Column"
       >
         {triggerEmoji && <p className="text-sm">{triggerEmoji}</p>}
 

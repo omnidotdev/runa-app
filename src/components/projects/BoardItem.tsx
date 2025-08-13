@@ -121,7 +121,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
             <div className="flex items-start gap-2">
               <div className="mt-0.5 min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-500">
+                  <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-400">
                     {displayId}
                   </span>
 

@@ -523,6 +523,7 @@ function ProjectPage() {
                 <Button
                   variant="outline"
                   size="icon"
+                  aria-label="Switch View Mode"
                   onClick={() =>
                     updateViewMode({
                       rowId: userPreferences?.rowId!,
@@ -555,6 +556,7 @@ function ProjectPage() {
                   }}
                   variant="outline"
                   size="icon"
+                  aria-label="Project Settings"
                 >
                   <Settings2 />
                 </Link>
@@ -571,6 +573,9 @@ function ProjectPage() {
                     variant="outline"
                     size="icon"
                     onClick={isForceClosed ? handleOpenAll : handleCloseAll}
+                    aria-label={
+                      isForceClosed ? "Expand Lists" : "Collapse Lists"
+                    }
                   >
                     {isForceClosed ? <Maximize2Icon /> : <Minimize2Icon />}
                   </Button>

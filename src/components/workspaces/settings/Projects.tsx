@@ -166,6 +166,7 @@ const Projects = () => {
                           variant="ghost"
                           size="icon"
                           className="size-7 text-base-400"
+                          aria-label="More project options"
                         >
                           <MoreHorizontalIcon />
                         </Button>

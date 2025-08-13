@@ -106,7 +106,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
         >
           <div className="flex items-center">
             <div className="flex flex-col">
-              <div className="flex items-center gap-2 text-base-400 text-xs dark:text-base-500">
+              <div className="flex items-center gap-2 text-base-400 text-xs dark:text-base-400">
                 <span className="font-mono">{displayId}</span>
                 <PriorityIcon
                   priority={task.priority}

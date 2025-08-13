@@ -33,6 +33,7 @@ const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
           buttonVariants({ variant: "outline" }),
           "w-full [&[data-state=open]>svg]:rotate-0 [&_svg:not([class*='text-'])]:text-foreground",
         )}
+        aria-label="Select Priority"
       >
         <PriorityIcon priority={triggerValue} />
 
