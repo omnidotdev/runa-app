@@ -406,7 +406,7 @@ function RouteComponent() {
                       <Button
                         size="sm"
                         className={cn(
-                          "w-full bg-primary-700 font-medium text-background duration-200 hover:border-primary/40 hover:transition-colors",
+                          "w-full bg-primary-700 font-medium text-background duration-200 hover:border-primary/40 hover:transition-colors dark:bg-primary",
                           isTeamTier && "border bg-muted text-muted-foreground",
                         )}
                         disabled={

@@ -44,7 +44,10 @@ function UnauthenticatedLayout() {
             <div className="flex items-center gap-4">
               <ThemeToggle />
 
-              <Button onClick={() => signIn({ redirectUrl: BASE_URL })}>
+              <Button
+                onClick={() => signIn({ redirectUrl: BASE_URL })}
+                className="bg-primary-700 dark:bg-primary"
+              >
                 Sign In
               </Button>
             </div>

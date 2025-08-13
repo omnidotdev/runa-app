@@ -149,12 +149,12 @@ function PricingPage() {
                   className={cn(
                     "relative flex flex-1 flex-col border-2",
                     tier?.metadata?.isRecommended &&
-                      "border-primary bg-primary-50 shadow-primary/20 dark:bg-primary-1000",
+                      "border-primary-700 bg-primary-50 shadow-primary/20 dark:border-primary dark:bg-primary-1000",
                   )}
                 >
                   {tier?.metadata?.isRecommended && (
                     <div className="-top-3 -translate-x-1/2 absolute left-1/2">
-                      <span className="rounded-full bg-primary px-3 py-1 font-medium text-primary-foreground text-sm">
+                      <span className="rounded-full bg-primary-700 px-3 py-1 font-medium text-primary-foreground text-sm dark:bg-primary">
                         Recommended
                       </span>
                     </div>
@@ -220,12 +220,7 @@ function PricingPage() {
                   <CardFooter className="mt-auto pt-8">
                     <Button
                       size="lg"
-                      className={cn(
-                        "w-full font-semibold",
-                        tier?.metadata?.isRecommended
-                          ? "bg-primary hover:bg-primary/90"
-                          : "variant-outline hover:bg-primary hover:text-primary-foreground",
-                      )}
+                      className="w-full bg-primary-700 font-semibold dark:bg-primary"
                       onClick={() => {
                         if (session) {
                           navigate({
