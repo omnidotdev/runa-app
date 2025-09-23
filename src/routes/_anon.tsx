@@ -38,7 +38,6 @@ function UnauthenticatedLayout() {
                 layout="fullWidth"
                 src="/logo.png"
                 alt="Runa Logo"
-                priority
                 className="h-6 w-6 md:h-8 md:w-8"
               />
               <h1 className="font-bold text-xl">Runa</h1>
