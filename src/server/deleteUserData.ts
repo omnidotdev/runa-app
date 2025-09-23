@@ -17,7 +17,7 @@ type DeleteUserData = z.infer<typeof deleteUserDataSchema>;
 export const deleteUserData = createServerFn({
   method: "POST",
 })
-  .validator((data: DeleteUserData) => deleteUserDataSchema.parse(data))
+  .inputValidator((data: DeleteUserData) => deleteUserDataSchema.parse(data))
   .handler(async ({ data }) => {
     const sdk = await getSdk();
 

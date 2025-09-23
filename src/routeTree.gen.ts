@@ -8,13 +8,6 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import type { CreateFileRoute, FileRoutesByPath } from '@tanstack/react-router'
-import type {
-  CreateServerFileRoute,
-  ServerFileRoutesByPath,
-} from '@tanstack/react-start/server'
-import { createServerRootRoute } from '@tanstack/react-start/server'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AnonRouteImport } from './routes/_anon'
@@ -28,9 +21,6 @@ import { Route as AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport } from './
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/index'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
-import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
-
-const rootServerRouteImport = createServerRootRoute()
 
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
@@ -95,11 +85,6 @@ const AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute =
     path: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId',
     getParentRoute: () => AuthRoute,
   } as any)
-const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
-  getParentRoute: () => rootServerRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/pricing': typeof AnonPricingRoute
@@ -185,37 +170,9 @@ export interface RootRouteChildren {
   AnonRoute: typeof AnonRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
 }
-export interface FileServerRoutesByFullPath {
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
-}
-export interface FileServerRoutesByTo {
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
-}
-export interface FileServerRoutesById {
-  __root__: typeof rootServerRouteImport
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
-}
-export interface FileServerRouteTypes {
-  fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/auth/$'
-  fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/auth/$'
-  id: '__root__' | '/api/auth/$'
-  fileServerRoutesById: FileServerRoutesById
-}
-export interface RootServerRouteChildren {
-  ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
-}
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_anon': {
-      id: '/_anon'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AnonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -223,11 +180,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_anon/pricing': {
-      id: '/_anon/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof AnonPricingRouteImport
+    '/_anon': {
+      id: '/_anon'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AnonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_anon/': {
+      id: '/_anon/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AnonIndexRouteImport
       parentRoute: typeof AnonRoute
     }
     '/_auth/confirmation': {
@@ -237,32 +201,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthConfirmationRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_anon/': {
-      id: '/_anon/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AnonIndexRouteImport
+    '/_anon/pricing': {
+      id: '/_anon/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof AnonPricingRouteImport
       parentRoute: typeof AnonRoute
-    }
-    '/_auth/profile/$userId': {
-      id: '/_auth/profile/$userId'
-      path: '/profile/$userId'
-      fullPath: '/profile/$userId'
-      preLoaderRoute: typeof AuthProfileUserIdRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: ''
-      fullPath: '/api/auth/$'
-      preLoaderRoute: unknown
-      parentRoute: typeof rootRouteImport
     }
     '/_auth/workspaces/': {
       id: '/_auth/workspaces/'
       path: '/workspaces'
       fullPath: '/workspaces'
       preLoaderRoute: typeof AuthWorkspacesIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/profile/$userId': {
+      id: '/_auth/profile/$userId'
+      path: '/profile/$userId'
+      fullPath: '/profile/$userId'
+      preLoaderRoute: typeof AuthProfileUserIdRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/workspaces/$workspaceSlug/settings': {
@@ -279,11 +236,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': {
-      id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
-      path: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
-      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
-      preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport
+    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/': {
+      id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/'
+      path: '/workspaces/$workspaceSlug/projects/$projectSlug'
+      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug'
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings': {
@@ -293,331 +250,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/': {
-      id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/'
-      path: '/workspaces/$workspaceSlug/projects/$projectSlug'
-      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug'
-      preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
-  }
-}
-declare module '@tanstack/react-start/server' {
-  interface ServerFileRoutesByPath {
-    '/_anon': {
-      id: '/_anon'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/_anon/pricing': {
-      id: '/_anon/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/_auth/confirmation': {
-      id: '/_auth/confirmation'
-      path: '/confirmation'
-      fullPath: '/confirmation'
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/_anon/': {
-      id: '/_anon/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/_auth/profile/$userId': {
-      id: '/_auth/profile/$userId'
-      path: '/profile/$userId'
-      fullPath: '/profile/$userId'
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatServerRouteImport
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/_auth/workspaces/': {
-      id: '/_auth/workspaces/'
-      path: '/workspaces'
-      fullPath: '/workspaces'
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/_auth/workspaces/$workspaceSlug/settings': {
-      id: '/_auth/workspaces/$workspaceSlug/settings'
-      path: '/workspaces/$workspaceSlug/settings'
-      fullPath: '/workspaces/$workspaceSlug/settings'
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/_auth/workspaces/$workspaceSlug/projects/': {
-      id: '/_auth/workspaces/$workspaceSlug/projects/'
-      path: '/workspaces/$workspaceSlug/projects'
-      fullPath: '/workspaces/$workspaceSlug/projects'
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
-    }
     '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': {
       id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
       path: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
       fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings': {
-      id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings'
-      path: '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
-      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
-    }
-    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/': {
-      id: '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/'
-      path: '/workspaces/$workspaceSlug/projects/$projectSlug'
-      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug'
-      preLoaderRoute: unknown
-      parentRoute: typeof rootServerRouteImport
+      preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport
+      parentRoute: typeof AuthRoute
     }
   }
-}
-
-declare module './routes/_anon' {
-  const createFileRoute: CreateFileRoute<
-    '/_anon',
-    FileRoutesByPath['/_anon']['parentRoute'],
-    FileRoutesByPath['/_anon']['id'],
-    FileRoutesByPath['/_anon']['path'],
-    FileRoutesByPath['/_anon']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_anon']['parentRoute'],
-    ServerFileRoutesByPath['/_anon']['id'],
-    ServerFileRoutesByPath['/_anon']['path'],
-    ServerFileRoutesByPath['/_anon']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/_auth' {
-  const createFileRoute: CreateFileRoute<
-    '/_auth',
-    FileRoutesByPath['/_auth']['parentRoute'],
-    FileRoutesByPath['/_auth']['id'],
-    FileRoutesByPath['/_auth']['path'],
-    FileRoutesByPath['/_auth']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth']['parentRoute'],
-    ServerFileRoutesByPath['/_auth']['id'],
-    ServerFileRoutesByPath['/_auth']['path'],
-    ServerFileRoutesByPath['/_auth']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/_anon/pricing' {
-  const createFileRoute: CreateFileRoute<
-    '/_anon/pricing',
-    FileRoutesByPath['/_anon/pricing']['parentRoute'],
-    FileRoutesByPath['/_anon/pricing']['id'],
-    FileRoutesByPath['/_anon/pricing']['path'],
-    FileRoutesByPath['/_anon/pricing']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_anon/pricing']['parentRoute'],
-    ServerFileRoutesByPath['/_anon/pricing']['id'],
-    ServerFileRoutesByPath['/_anon/pricing']['path'],
-    ServerFileRoutesByPath['/_anon/pricing']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/_auth/confirmation' {
-  const createFileRoute: CreateFileRoute<
-    '/_auth/confirmation',
-    FileRoutesByPath['/_auth/confirmation']['parentRoute'],
-    FileRoutesByPath['/_auth/confirmation']['id'],
-    FileRoutesByPath['/_auth/confirmation']['path'],
-    FileRoutesByPath['/_auth/confirmation']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/confirmation']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/confirmation']['id'],
-    ServerFileRoutesByPath['/_auth/confirmation']['path'],
-    ServerFileRoutesByPath['/_auth/confirmation']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/_anon/index' {
-  const createFileRoute: CreateFileRoute<
-    '/_anon/',
-    FileRoutesByPath['/_anon/']['parentRoute'],
-    FileRoutesByPath['/_anon/']['id'],
-    FileRoutesByPath['/_anon/']['path'],
-    FileRoutesByPath['/_anon/']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_anon/']['parentRoute'],
-    ServerFileRoutesByPath['/_anon/']['id'],
-    ServerFileRoutesByPath['/_anon/']['path'],
-    ServerFileRoutesByPath['/_anon/']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/_auth/profile/$userId' {
-  const createFileRoute: CreateFileRoute<
-    '/_auth/profile/$userId',
-    FileRoutesByPath['/_auth/profile/$userId']['parentRoute'],
-    FileRoutesByPath['/_auth/profile/$userId']['id'],
-    FileRoutesByPath['/_auth/profile/$userId']['path'],
-    FileRoutesByPath['/_auth/profile/$userId']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/profile/$userId']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/profile/$userId']['id'],
-    ServerFileRoutesByPath['/_auth/profile/$userId']['path'],
-    ServerFileRoutesByPath['/_auth/profile/$userId']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/api/auth/$' {
-  const createFileRoute: CreateFileRoute<
-    '/api/auth/$',
-    FileRoutesByPath['/api/auth/$']['parentRoute'],
-    FileRoutesByPath['/api/auth/$']['id'],
-    FileRoutesByPath['/api/auth/$']['path'],
-    FileRoutesByPath['/api/auth/$']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/api/auth/$']['parentRoute'],
-    ServerFileRoutesByPath['/api/auth/$']['id'],
-    ServerFileRoutesByPath['/api/auth/$']['path'],
-    ServerFileRoutesByPath['/api/auth/$']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/_auth/workspaces/index' {
-  const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/',
-    FileRoutesByPath['/_auth/workspaces/']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/']['id'],
-    FileRoutesByPath['/_auth/workspaces/']['path'],
-    FileRoutesByPath['/_auth/workspaces/']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/_auth/workspaces/$workspaceSlug/settings' {
-  const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/$workspaceSlug/settings',
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['id'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['path'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/settings']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/_auth/workspaces/$workspaceSlug/projects/index' {
-  const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/$workspaceSlug/projects/',
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['id'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['path'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId' {
-  const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId',
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['id'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['path'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings' {
-  const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings',
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['id'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['path'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings']['fullPath'],
-    unknown
-  >
-}
-declare module './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/index' {
-  const createFileRoute: CreateFileRoute<
-    '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/',
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['parentRoute'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['id'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['path'],
-    FileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['fullPath']
-  >
-
-  const createServerFileRoute: CreateServerFileRoute<
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['parentRoute'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['id'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['path'],
-    ServerFileRoutesByPath['/_auth/workspaces/$workspaceSlug/projects/$projectSlug/']['fullPath'],
-    unknown
-  >
 }
 
 interface AnonRouteChildren {
@@ -668,9 +308,11 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-const rootServerRouteChildren: RootServerRouteChildren = {
-  ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
 }
-export const serverRouteTree = rootServerRouteImport
-  ._addFileChildren(rootServerRouteChildren)
-  ._addFileTypes<FileServerRouteTypes>()

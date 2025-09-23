@@ -1,5 +1,6 @@
 import { CustomerCancellationReason } from "@polar-sh/sdk/models/components/customercancellationreason.js";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   AlertTriangle,
   Building2,
@@ -87,7 +88,7 @@ import { fetchRunaProducts } from "@/server/fetchRunaProducts";
 
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 
-export const Route = createFileRoute({
+export const Route = createFileRoute("/_auth/profile/$userId")({
   head: () => ({
     meta: [...seo({ title: "Profile" })],
   }),

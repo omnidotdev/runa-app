@@ -14,7 +14,7 @@ type UpgradeSubscription = z.infer<typeof upgradeSubscriptionSchema>;
 export const upgradeSubscription = createServerFn({
   method: "POST",
 })
-  .validator((data: UpgradeSubscription) =>
+  .inputValidator((data: UpgradeSubscription) =>
     upgradeSubscriptionSchema.parse(data),
   )
   .handler(async ({ data }) => {

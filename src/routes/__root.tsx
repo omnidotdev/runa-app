@@ -1,4 +1,5 @@
-import { TanstackDevtools } from "@tanstack/react-devtools";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { FormDevtoolsPlugin } from "@tanstack/react-form-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
@@ -111,16 +112,17 @@ function RootDocument({
 
         <Toaster position="top-center" richColors />
         {/* Dev Tools - only included in development */}
-        <TanstackDevtools
+        <TanStackDevtools
           plugins={[
-            {
-              name: "Tanstack Query",
-              render: <ReactQueryDevtoolsPanel />,
-            },
             {
               name: "Tanstack Router",
               render: <TanStackRouterDevtoolsPanel />,
             },
+            {
+              name: "Tanstack Query",
+              render: <ReactQueryDevtoolsPanel />,
+            },
+            FormDevtoolsPlugin(),
           ]}
         />
         <Scripts />

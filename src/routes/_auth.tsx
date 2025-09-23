@@ -1,4 +1,9 @@
-import { notFound, Outlet, redirect } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  Outlet,
+  redirect,
+} from "@tanstack/react-router";
 
 import AppSidebar from "@/components/core/sidebar/AppSidebar";
 import NotFound from "@/components/layout/NotFound";
@@ -12,7 +17,7 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import SidebarProvider from "@/providers/SidebarProvider";
 
-export const Route = createFileRoute({
+export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { queryClient, session } }) => {
     if (!session) throw redirect({ to: "/" });
 

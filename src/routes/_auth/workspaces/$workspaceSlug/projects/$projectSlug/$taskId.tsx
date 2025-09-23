@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
   ArrowLeftIcon,
@@ -36,7 +36,9 @@ import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import seo from "@/lib/util/seo";
 
-export const Route = createFileRoute({
+export const Route = createFileRoute(
+  "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+)({
   loader: async ({
     params: { taskId },
     context: { queryClient, workspaceBySlug },

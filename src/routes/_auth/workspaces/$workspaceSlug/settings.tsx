@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
@@ -25,7 +25,9 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
-export const Route = createFileRoute({
+export const Route = createFileRoute(
+  "/_auth/workspaces/$workspaceSlug/settings",
+)({
   loader: async ({ context: { queryClient, workspaceBySlug } }) => {
     if (!workspaceBySlug) {
       throw notFound();

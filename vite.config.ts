@@ -1,6 +1,7 @@
 import tailwindcss from "@tailwindcss/vite";
+import { devtools } from "@tanstack/devtools-vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import react from "@vitejs/plugin-react-oxc";
+import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import tsConfigPaths from "vite-tsconfig-paths";
@@ -19,15 +20,12 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     plugins: [
+      devtools(),
       // NB: command is `serve` in development, `build` in production
       command === "serve" && mkcert(),
       tailwindcss(),
       tsConfigPaths({ projects: ["./tsconfig.json"] }),
-      tanstackStart({
-        customViteReactPlugin: true,
-        tsr: { verboseFileRoutes: false },
-        target: "node-server",
-      }),
+      tanstackStart(),
       react(),
     ],
   };

@@ -1,6 +1,6 @@
-import { redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute({
+export const Route = createFileRoute("/_auth/confirmation")({
   beforeLoad: async ({ context: { session } }) => {
     throw redirect({
       to: "/profile/$userId",

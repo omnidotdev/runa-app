@@ -1,6 +1,6 @@
 import { Format } from "@ark-ui/react";
 import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
-import { redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 
 import Link from "@/components/core/Link";
@@ -54,7 +54,7 @@ const faqItems = [
   },
 ];
 
-export const Route = createFileRoute({
+export const Route = createFileRoute("/_anon/pricing")({
   head: () => ({
     meta: [...seo({ title: "Pricing" })],
   }),

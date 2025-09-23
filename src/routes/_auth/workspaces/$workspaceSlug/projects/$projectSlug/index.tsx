@@ -1,6 +1,10 @@
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { notFound, stripSearchParams } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  stripSearchParams,
+} from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import {
   Grid2X2Icon,
@@ -55,7 +59,9 @@ const projectSearchParamsSchema = z.object({
   createTask: z.boolean().default(false),
 });
 
-export const Route = createFileRoute({
+export const Route = createFileRoute(
+  "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+)({
   // TODO: scaffold out. `loader` work takes longer than the preload of `intent` so without the `pendingComponent` we get flash of content
   // pendingComponent: () => (
   //   <div className="flex size-full items-center justify-center">Loading...</div>

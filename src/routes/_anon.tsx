@@ -1,4 +1,4 @@
-import { Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
 
 import Link from "@/components/core/Link";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
 
-export const Route = createFileRoute({
+export const Route = createFileRoute("/_anon")({
   component: UnauthenticatedLayout,
 });
 

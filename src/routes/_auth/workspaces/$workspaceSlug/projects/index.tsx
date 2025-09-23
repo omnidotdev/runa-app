@@ -1,6 +1,10 @@
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { notFound, stripSearchParams } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  stripSearchParams,
+} from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { Grid2X2Icon, ListIcon, Plus, SearchIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -33,7 +37,9 @@ const projectsSearchSchema = z.object({
   search: z.string().default(""),
 });
 
-export const Route = createFileRoute({
+export const Route = createFileRoute(
+  "/_auth/workspaces/$workspaceSlug/projects/",
+)({
   validateSearch: zodValidator(projectsSearchSchema),
   search: {
     middlewares: [stripSearchParams({ search: "" })],

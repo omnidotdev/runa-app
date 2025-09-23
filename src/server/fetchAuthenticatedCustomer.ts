@@ -12,7 +12,7 @@ type AuthenticatedCustomer = z.infer<typeof customerSchema>;
 export const fetchAuthenticatedCustomer = createServerFn({
   method: "POST",
 })
-  .validator((data: AuthenticatedCustomer) => customerSchema.parse(data))
+  .inputValidator((data: AuthenticatedCustomer) => customerSchema.parse(data))
   .handler(async ({ data }) => {
     try {
       const session = await polar.customerSessions.create({

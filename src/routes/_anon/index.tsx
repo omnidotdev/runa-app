@@ -1,4 +1,4 @@
-import { redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
   ArrowRightIcon,
   ChartNoAxesColumnIncreasingIcon,
@@ -58,7 +58,7 @@ const features: Feature[] = [
   },
 ];
 
-export const Route = createFileRoute({
+export const Route = createFileRoute("/_anon/")({
   beforeLoad: ({ context: { session } }) => {
     if (session) throw redirect({ to: "/workspaces" });
   },
