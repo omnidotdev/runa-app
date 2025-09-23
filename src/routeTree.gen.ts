@@ -15,6 +15,7 @@ import { Route as AnonIndexRouteImport } from './routes/_anon/index'
 import { Route as AuthConfirmationRouteImport } from './routes/_auth/confirmation'
 import { Route as AnonPricingRouteImport } from './routes/_anon/pricing'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthProfileUserIdRouteImport } from './routes/_auth/profile/$userId'
 import { Route as AuthWorkspacesWorkspaceSlugSettingsRouteImport } from './routes/_auth/workspaces/$workspaceSlug/settings'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/index'
@@ -49,6 +50,11 @@ const AuthWorkspacesIndexRoute = AuthWorkspacesIndexRouteImport.update({
   id: '/workspaces/',
   path: '/workspaces/',
   getParentRoute: () => AuthRoute,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthProfileUserIdRoute = AuthProfileUserIdRouteImport.update({
   id: '/profile/$userId',
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/confirmation': typeof AuthConfirmationRoute
   '/': typeof AnonIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/confirmation': typeof AuthConfirmationRoute
   '/': typeof AnonIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/_auth/confirmation': typeof AuthConfirmationRoute
   '/_anon/': typeof AnonIndexRoute
   '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
   '/_auth/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
   '/_auth/workspaces/$workspaceSlug/projects/': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/confirmation'
     | '/'
     | '/profile/$userId'
+    | '/api/auth/$'
     | '/workspaces'
     | '/workspaces/$workspaceSlug/settings'
     | '/workspaces/$workspaceSlug/projects'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/confirmation'
     | '/'
     | '/profile/$userId'
+    | '/api/auth/$'
     | '/workspaces'
     | '/workspaces/$workspaceSlug/settings'
     | '/workspaces/$workspaceSlug/projects'
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
     | '/_auth/confirmation'
     | '/_anon/'
     | '/_auth/profile/$userId'
+    | '/api/auth/$'
     | '/_auth/workspaces/'
     | '/_auth/workspaces/$workspaceSlug/settings'
     | '/_auth/workspaces/$workspaceSlug/projects/'
@@ -169,6 +181,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AnonRoute: typeof AnonRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -214,6 +227,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/workspaces'
       preLoaderRoute: typeof AuthWorkspacesIndexRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_auth/profile/$userId': {
       id: '/_auth/profile/$userId'
@@ -304,6 +324,7 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AnonRoute: AnonRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
