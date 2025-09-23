@@ -2,7 +2,7 @@
   "name": "@omnidotdev/runa-app",
   "type": "module",
   "scripts": {
-    "dev": "concurrently --kill-others --names \"GRAPHQL-CODEGEN,CLIENT\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run graphql:generate:watch\" \"vite dev\"",
+    "dev": "concurrently --kill-others --names \"GRAPHQL-CODEGEN,CLIENT\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run graphql:generate:watch\" \"bun --env-file .env.local --env-file .env.development vite dev\"",
     "build": "vite build",
     "start": "bun run .output/server/index.mjs",
     "check": "biome check --diagnostic-level=error src",
