@@ -47,8 +47,6 @@ import type { RefObject } from "react";
 
 const MAX_NUMBER_OF_INVITES = 10;
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const inviteSchema = z.object({
   inviterEmail: z.email(),
   inviterUsername: z.string(),
@@ -56,9 +54,11 @@ const inviteSchema = z.object({
   workspaceName: z.string(),
 });
 
-const sendInviteEmail = createServerFn({ method: "POST", response: "raw" })
-  .validator(zodValidator(inviteSchema))
+const sendInviteEmail = createServerFn({ method: "POST" })
+  .inputValidator(zodValidator(inviteSchema))
   .handler(async ({ data }) => {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     const { inviterEmail, inviterUsername, recipientEmail, workspaceName } =
       data;
 
@@ -77,7 +77,7 @@ const sendInviteEmail = createServerFn({ method: "POST", response: "raw" })
 
     if (error) throw new Error(error.message);
 
-    return Response.json({ email });
+    return { email };
   });
 
 interface Props {
