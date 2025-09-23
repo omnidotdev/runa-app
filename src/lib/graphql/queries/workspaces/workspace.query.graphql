@@ -4,6 +4,7 @@ query Workspace($rowId: UUID!, $userId: UUID!) {
     name
     slug
     viewMode
+    tier
     projectColumns(orderBy: INDEX_ASC) {
       nodes {
         emoji

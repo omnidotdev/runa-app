@@ -648,9 +648,9 @@ export const mockUpdateUserPreferenceMutation = (resolver: GraphQLResponseResolv
  * @example
  * mockDeleteUserMutation(
  *   ({ query, variables }) => {
- *     const { hidraId } = variables;
+ *     const { id } = variables;
  *     return HttpResponse.json({
- *       data: { deleteUserByIdentityProviderId }
+ *       data: { deleteUser }
  *     })
  *   },
  *   requestOptions

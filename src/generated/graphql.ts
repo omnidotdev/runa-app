@@ -1405,17 +1405,6 @@ export type DeleteInvitationByIdInput = {
   id: Scalars['ID']['input'];
 };
 
-/** All input for the `deleteInvitationByWorkspaceIdAndEmail` mutation. */
-export type DeleteInvitationByWorkspaceIdAndEmailInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  email: Scalars['String']['input'];
-  workspaceId: Scalars['UUID']['input'];
-};
-
 /** All input for the `deleteInvitation` mutation. */
 export type DeleteInvitationInput = {
   /**
@@ -1546,17 +1535,6 @@ export type DeleteProjectByIdInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** The globally unique `ID` which will identify a single `Project` to be deleted. */
   id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteProjectBySlugAndWorkspaceId` mutation. */
-export type DeleteProjectBySlugAndWorkspaceIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  slug: Scalars['String']['input'];
-  workspaceId: Scalars['UUID']['input'];
 };
 
 /** All input for the `deleteProjectColumnById` mutation. */
@@ -1724,16 +1702,6 @@ export type DeleteTaskPayloadTaskEdgeArgs = {
   orderBy?: Array<TaskOrderBy>;
 };
 
-/** All input for the `deleteUserByEmail` mutation. */
-export type DeleteUserByEmailInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  email: Scalars['String']['input'];
-};
-
 /** All input for the `deleteUserById` mutation. */
 export type DeleteUserByIdInput = {
   /**
@@ -1743,16 +1711,6 @@ export type DeleteUserByIdInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** The globally unique `ID` which will identify a single `User` to be deleted. */
   id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteUserByIdentityProviderId` mutation. */
-export type DeleteUserByIdentityProviderIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  identityProviderId: Scalars['UUID']['input'];
 };
 
 /** All input for the `deleteUser` mutation. */
@@ -1799,17 +1757,6 @@ export type DeleteUserPreferenceByIdInput = {
   id: Scalars['ID']['input'];
 };
 
-/** All input for the `deleteUserPreferenceByUserIdAndProjectId` mutation. */
-export type DeleteUserPreferenceByUserIdAndProjectIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  projectId: Scalars['UUID']['input'];
-  userId: Scalars['UUID']['input'];
-};
-
 /** All input for the `deleteUserPreference` mutation. */
 export type DeleteUserPreferenceInput = {
   /**
@@ -1852,16 +1799,6 @@ export type DeleteWorkspaceByIdInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** The globally unique `ID` which will identify a single `Workspace` to be deleted. */
   id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteWorkspaceBySlug` mutation. */
-export type DeleteWorkspaceBySlugInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  slug: Scalars['String']['input'];
 };
 
 /** All input for the `deleteWorkspace` mutation. */
@@ -2786,8 +2723,6 @@ export type Mutation = {
   deleteInvitation?: Maybe<DeleteInvitationPayload>;
   /** Deletes a single `Invitation` using its globally unique id. */
   deleteInvitationById?: Maybe<DeleteInvitationPayload>;
-  /** Deletes a single `Invitation` using a unique key. */
-  deleteInvitationByWorkspaceIdAndEmail?: Maybe<DeleteInvitationPayload>;
   /** Deletes a single `Label` using a unique key. */
   deleteLabel?: Maybe<DeleteLabelPayload>;
   /** Deletes a single `Label` using its globally unique id. */
@@ -2800,8 +2735,6 @@ export type Mutation = {
   deleteProject?: Maybe<DeleteProjectPayload>;
   /** Deletes a single `Project` using its globally unique id. */
   deleteProjectById?: Maybe<DeleteProjectPayload>;
-  /** Deletes a single `Project` using a unique key. */
-  deleteProjectBySlugAndWorkspaceId?: Maybe<DeleteProjectPayload>;
   /** Deletes a single `ProjectColumn` using a unique key. */
   deleteProjectColumn?: Maybe<DeleteProjectColumnPayload>;
   /** Deletes a single `ProjectColumn` using its globally unique id. */
@@ -2816,24 +2749,16 @@ export type Mutation = {
   deleteTaskLabelById?: Maybe<DeleteTaskLabelPayload>;
   /** Deletes a single `User` using a unique key. */
   deleteUser?: Maybe<DeleteUserPayload>;
-  /** Deletes a single `User` using a unique key. */
-  deleteUserByEmail?: Maybe<DeleteUserPayload>;
   /** Deletes a single `User` using its globally unique id. */
   deleteUserById?: Maybe<DeleteUserPayload>;
-  /** Deletes a single `User` using a unique key. */
-  deleteUserByIdentityProviderId?: Maybe<DeleteUserPayload>;
   /** Deletes a single `UserPreference` using a unique key. */
   deleteUserPreference?: Maybe<DeleteUserPreferencePayload>;
   /** Deletes a single `UserPreference` using its globally unique id. */
   deleteUserPreferenceById?: Maybe<DeleteUserPreferencePayload>;
-  /** Deletes a single `UserPreference` using a unique key. */
-  deleteUserPreferenceByUserIdAndProjectId?: Maybe<DeleteUserPreferencePayload>;
   /** Deletes a single `Workspace` using a unique key. */
   deleteWorkspace?: Maybe<DeleteWorkspacePayload>;
   /** Deletes a single `Workspace` using its globally unique id. */
   deleteWorkspaceById?: Maybe<DeleteWorkspacePayload>;
-  /** Deletes a single `Workspace` using a unique key. */
-  deleteWorkspaceBySlug?: Maybe<DeleteWorkspacePayload>;
   /** Deletes a single `WorkspaceUser` using a unique key. */
   deleteWorkspaceUser?: Maybe<DeleteWorkspaceUserPayload>;
   /** Deletes a single `WorkspaceUser` using its globally unique id. */
@@ -2854,8 +2779,6 @@ export type Mutation = {
   updateInvitation?: Maybe<UpdateInvitationPayload>;
   /** Updates a single `Invitation` using its globally unique id and a patch. */
   updateInvitationById?: Maybe<UpdateInvitationPayload>;
-  /** Updates a single `Invitation` using a unique key and a patch. */
-  updateInvitationByWorkspaceIdAndEmail?: Maybe<UpdateInvitationPayload>;
   /** Updates a single `Label` using a unique key and a patch. */
   updateLabel?: Maybe<UpdateLabelPayload>;
   /** Updates a single `Label` using its globally unique id and a patch. */
@@ -2868,8 +2791,6 @@ export type Mutation = {
   updateProject?: Maybe<UpdateProjectPayload>;
   /** Updates a single `Project` using its globally unique id and a patch. */
   updateProjectById?: Maybe<UpdateProjectPayload>;
-  /** Updates a single `Project` using a unique key and a patch. */
-  updateProjectBySlugAndWorkspaceId?: Maybe<UpdateProjectPayload>;
   /** Updates a single `ProjectColumn` using a unique key and a patch. */
   updateProjectColumn?: Maybe<UpdateProjectColumnPayload>;
   /** Updates a single `ProjectColumn` using its globally unique id and a patch. */
@@ -2884,24 +2805,16 @@ export type Mutation = {
   updateTaskLabelById?: Maybe<UpdateTaskLabelPayload>;
   /** Updates a single `User` using a unique key and a patch. */
   updateUser?: Maybe<UpdateUserPayload>;
-  /** Updates a single `User` using a unique key and a patch. */
-  updateUserByEmail?: Maybe<UpdateUserPayload>;
   /** Updates a single `User` using its globally unique id and a patch. */
   updateUserById?: Maybe<UpdateUserPayload>;
-  /** Updates a single `User` using a unique key and a patch. */
-  updateUserByIdentityProviderId?: Maybe<UpdateUserPayload>;
   /** Updates a single `UserPreference` using a unique key and a patch. */
   updateUserPreference?: Maybe<UpdateUserPreferencePayload>;
   /** Updates a single `UserPreference` using its globally unique id and a patch. */
   updateUserPreferenceById?: Maybe<UpdateUserPreferencePayload>;
-  /** Updates a single `UserPreference` using a unique key and a patch. */
-  updateUserPreferenceByUserIdAndProjectId?: Maybe<UpdateUserPreferencePayload>;
   /** Updates a single `Workspace` using a unique key and a patch. */
   updateWorkspace?: Maybe<UpdateWorkspacePayload>;
   /** Updates a single `Workspace` using its globally unique id and a patch. */
   updateWorkspaceById?: Maybe<UpdateWorkspacePayload>;
-  /** Updates a single `Workspace` using a unique key and a patch. */
-  updateWorkspaceBySlug?: Maybe<UpdateWorkspacePayload>;
   /** Updates a single `WorkspaceUser` using a unique key and a patch. */
   updateWorkspaceUser?: Maybe<UpdateWorkspaceUserPayload>;
   /** Updates a single `WorkspaceUser` using its globally unique id and a patch. */
@@ -3042,12 +2955,6 @@ export type MutationDeleteInvitationByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteInvitationByWorkspaceIdAndEmailArgs = {
-  input: DeleteInvitationByWorkspaceIdAndEmailInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteLabelArgs = {
   input: DeleteLabelInput;
 };
@@ -3080,12 +2987,6 @@ export type MutationDeleteProjectArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteProjectByIdArgs = {
   input: DeleteProjectByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteProjectBySlugAndWorkspaceIdArgs = {
-  input: DeleteProjectBySlugAndWorkspaceIdInput;
 };
 
 
@@ -3132,20 +3033,8 @@ export type MutationDeleteUserArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteUserByEmailArgs = {
-  input: DeleteUserByEmailInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUserByIdArgs = {
   input: DeleteUserByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteUserByIdentityProviderIdArgs = {
-  input: DeleteUserByIdentityProviderIdInput;
 };
 
 
@@ -3162,12 +3051,6 @@ export type MutationDeleteUserPreferenceByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteUserPreferenceByUserIdAndProjectIdArgs = {
-  input: DeleteUserPreferenceByUserIdAndProjectIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteWorkspaceArgs = {
   input: DeleteWorkspaceInput;
 };
@@ -3176,12 +3059,6 @@ export type MutationDeleteWorkspaceArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteWorkspaceByIdArgs = {
   input: DeleteWorkspaceByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteWorkspaceBySlugArgs = {
-  input: DeleteWorkspaceBySlugInput;
 };
 
 
@@ -3246,12 +3123,6 @@ export type MutationUpdateInvitationByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateInvitationByWorkspaceIdAndEmailArgs = {
-  input: UpdateInvitationByWorkspaceIdAndEmailInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateLabelArgs = {
   input: UpdateLabelInput;
 };
@@ -3284,12 +3155,6 @@ export type MutationUpdateProjectArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateProjectByIdArgs = {
   input: UpdateProjectByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateProjectBySlugAndWorkspaceIdArgs = {
-  input: UpdateProjectBySlugAndWorkspaceIdInput;
 };
 
 
@@ -3336,20 +3201,8 @@ export type MutationUpdateUserArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateUserByEmailArgs = {
-  input: UpdateUserByEmailInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateUserByIdArgs = {
   input: UpdateUserByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateUserByIdentityProviderIdArgs = {
-  input: UpdateUserByIdentityProviderIdInput;
 };
 
 
@@ -3366,12 +3219,6 @@ export type MutationUpdateUserPreferenceByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateUserPreferenceByUserIdAndProjectIdArgs = {
-  input: UpdateUserPreferenceByUserIdAndProjectIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateWorkspaceArgs = {
   input: UpdateWorkspaceInput;
 };
@@ -3380,12 +3227,6 @@ export type MutationUpdateWorkspaceArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateWorkspaceByIdArgs = {
   input: UpdateWorkspaceByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateWorkspaceBySlugArgs = {
-  input: UpdateWorkspaceBySlugInput;
 };
 
 
@@ -6240,6 +6081,38 @@ export type TaskVarianceSampleAggregates = {
   columnIndex?: Maybe<Scalars['BigFloat']['output']>;
 };
 
+export enum Tier {
+  Basic = 'basic',
+  Free = 'free',
+  Team = 'team'
+}
+
+/** A filter to be used against Tier fields. All fields are combined with a logical ‘and.’ */
+export type TierFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Tier>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Tier>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Tier>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Tier>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Tier>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Tier>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Tier>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Tier>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Tier>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Tier>>;
+};
+
 /** A filter to be used against UUID fields. All fields are combined with a logical ‘and.’ */
 export type UuidFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -6420,19 +6293,6 @@ export type UpdateInvitationByIdInput = {
   patch: InvitationPatch;
 };
 
-/** All input for the `updateInvitationByWorkspaceIdAndEmail` mutation. */
-export type UpdateInvitationByWorkspaceIdAndEmailInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  email: Scalars['String']['input'];
-  /** An object where the defined keys will be set on the `Invitation` being updated. */
-  patch: InvitationPatch;
-  workspaceId: Scalars['UUID']['input'];
-};
-
 /** All input for the `updateInvitation` mutation. */
 export type UpdateInvitationInput = {
   /**
@@ -6572,19 +6432,6 @@ export type UpdateProjectByIdInput = {
   id: Scalars['ID']['input'];
   /** An object where the defined keys will be set on the `Project` being updated. */
   patch: ProjectPatch;
-};
-
-/** All input for the `updateProjectBySlugAndWorkspaceId` mutation. */
-export type UpdateProjectBySlugAndWorkspaceIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `Project` being updated. */
-  patch: ProjectPatch;
-  slug: Scalars['String']['input'];
-  workspaceId: Scalars['UUID']['input'];
 };
 
 /** All input for the `updateProjectColumnById` mutation. */
@@ -6762,18 +6609,6 @@ export type UpdateTaskPayloadTaskEdgeArgs = {
   orderBy?: Array<TaskOrderBy>;
 };
 
-/** All input for the `updateUserByEmail` mutation. */
-export type UpdateUserByEmailInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  email: Scalars['String']['input'];
-  /** An object where the defined keys will be set on the `User` being updated. */
-  patch: UserPatch;
-};
-
 /** All input for the `updateUserById` mutation. */
 export type UpdateUserByIdInput = {
   /**
@@ -6783,18 +6618,6 @@ export type UpdateUserByIdInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** The globally unique `ID` which will identify a single `User` to be updated. */
   id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `User` being updated. */
-  patch: UserPatch;
-};
-
-/** All input for the `updateUserByIdentityProviderId` mutation. */
-export type UpdateUserByIdentityProviderIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  identityProviderId: Scalars['UUID']['input'];
   /** An object where the defined keys will be set on the `User` being updated. */
   patch: UserPatch;
 };
@@ -6846,19 +6669,6 @@ export type UpdateUserPreferenceByIdInput = {
   patch: UserPreferencePatch;
 };
 
-/** All input for the `updateUserPreferenceByUserIdAndProjectId` mutation. */
-export type UpdateUserPreferenceByUserIdAndProjectIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `UserPreference` being updated. */
-  patch: UserPreferencePatch;
-  projectId: Scalars['UUID']['input'];
-  userId: Scalars['UUID']['input'];
-};
-
 /** All input for the `updateUserPreference` mutation. */
 export type UpdateUserPreferenceInput = {
   /**
@@ -6904,18 +6714,6 @@ export type UpdateWorkspaceByIdInput = {
   id: Scalars['ID']['input'];
   /** An object where the defined keys will be set on the `Workspace` being updated. */
   patch: WorkspacePatch;
-};
-
-/** All input for the `updateWorkspaceBySlug` mutation. */
-export type UpdateWorkspaceBySlugInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `Workspace` being updated. */
-  patch: WorkspacePatch;
-  slug: Scalars['String']['input'];
 };
 
 /** All input for the `updateWorkspace` mutation. */
@@ -7800,6 +7598,7 @@ export type Workspace = Node & {
   projects: ProjectConnection;
   rowId: Scalars['UUID']['output'];
   slug: Scalars['String']['output'];
+  tier: Tier;
   updatedAt: Scalars['Datetime']['output'];
   viewMode: Scalars['String']['output'];
   /** Reads and enables pagination through a set of `WorkspaceUser`. */
@@ -7874,6 +7673,8 @@ export type WorkspaceCondition = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `slug` field. */
   slug?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `tier` field. */
+  tier?: InputMaybe<Tier>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `viewMode` field. */
@@ -7914,6 +7715,8 @@ export type WorkspaceDistinctCountAggregates = {
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of slug across the matching connection */
   slug?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of tier across the matching connection */
+  tier?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of viewMode across the matching connection */
@@ -7957,6 +7760,8 @@ export type WorkspaceFilter = {
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `slug` field. */
   slug?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `tier` field. */
+  tier?: InputMaybe<TierFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `viewMode` field. */
@@ -7973,6 +7778,7 @@ export enum WorkspaceGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Name = 'NAME',
+  Tier = 'TIER',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
@@ -8045,6 +7851,7 @@ export type WorkspaceInput = {
   name: Scalars['String']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug: Scalars['String']['input'];
+  tier?: InputMaybe<Tier>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
 };
@@ -8144,6 +7951,8 @@ export enum WorkspaceOrderBy {
   RowIdDesc = 'ROW_ID_DESC',
   SlugAsc = 'SLUG_ASC',
   SlugDesc = 'SLUG_DESC',
+  TierAsc = 'TIER_ASC',
+  TierDesc = 'TIER_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   ViewModeAsc = 'VIEW_MODE_ASC',
@@ -8164,6 +7973,7 @@ export type WorkspacePatch = {
   name?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
+  tier?: InputMaybe<Tier>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
 };
@@ -8633,11 +8443,11 @@ export type UpdateUserPreferenceMutationVariables = Exact<{
 export type UpdateUserPreferenceMutation = { __typename?: 'Mutation', updateUserPreference?: { __typename?: 'UpdateUserPreferencePayload', userPreference?: { __typename?: 'UserPreference', rowId: string } | null } | null };
 
 export type DeleteUserMutationVariables = Exact<{
-  hidraId: Scalars['UUID']['input'];
+  id: Scalars['UUID']['input'];
 }>;
 
 
-export type DeleteUserMutation = { __typename?: 'Mutation', deleteUserByIdentityProviderId?: { __typename?: 'DeleteUserPayload', clientMutationId?: string | null } | null };
+export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser?: { __typename?: 'DeleteUserPayload', clientMutationId?: string | null } | null };
 
 export type CreateWorkspaceUserMutationVariables = Exact<{
   input: CreateWorkspaceUserInput;
@@ -8804,7 +8614,7 @@ export type WorkspaceQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, slug: string, viewMode: string, projectColumns: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', emoji?: string | null, rowId: string, title: string, index: number }> }, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string, color?: string | null }> }, projectColumn?: { __typename?: 'ProjectColumn', title: string, emoji?: string | null } | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, name: string, slug: string, viewMode: string, tier: Tier, projectColumns: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', emoji?: string | null, rowId: string, title: string, index: number }> }, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string, color?: string | null }> }, projectColumn?: { __typename?: 'ProjectColumn', title: string, emoji?: string | null } | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } } | null };
 
 export type WorkspaceBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -9715,8 +9525,8 @@ useUpdateUserPreferenceMutation.getKey = () => ['UpdateUserPreference'];
 useUpdateUserPreferenceMutation.fetcher = (variables: UpdateUserPreferenceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateUserPreferenceMutation, UpdateUserPreferenceMutationVariables>(UpdateUserPreferenceDocument, variables, options);
 
 export const DeleteUserDocument = `
-    mutation DeleteUser($hidraId: UUID!) {
-  deleteUserByIdentityProviderId(input: {identityProviderId: $hidraId}) {
+    mutation DeleteUser($id: UUID!) {
+  deleteUser(input: {rowId: $id}) {
     clientMutationId
   }
 }
@@ -10863,6 +10673,7 @@ export const WorkspaceDocument = `
     name
     slug
     viewMode
+    tier
     projectColumns(orderBy: INDEX_ASC) {
       nodes {
         emoji

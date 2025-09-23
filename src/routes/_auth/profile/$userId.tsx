@@ -768,7 +768,7 @@ function RouteComponent() {
 
                                   await deleteUserData({
                                     data: {
-                                      hidraId: session?.user.hidraId!,
+                                      rowId: session?.user.rowId!,
                                       subscriptionId: subscription.id,
                                       cancellationReason: reasonForLeaving,
                                       cancellationComment:

@@ -6,7 +6,7 @@ import getSdk from "@/lib/graphql/getSdk";
 import polar from "@/lib/polar/polar";
 
 const deleteUserDataSchema = z.object({
-  hidraId: z.guid(),
+  rowId: z.guid(),
   subscriptionId: z.guid(),
   cancellationReason: z.enum(CustomerCancellationReason).optional(),
   cancellationComment: z.string().optional(),
@@ -34,7 +34,7 @@ export const deleteUserData = createServerFn({
           customerCancellationComment: data.cancellationComment,
         },
       }),
-      sdk.DeleteUser({ hidraId: data.hidraId }),
+      sdk.DeleteUser({ id: data.rowId }),
     ]);
 
     return result;
