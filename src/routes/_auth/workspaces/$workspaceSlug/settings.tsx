@@ -9,6 +9,7 @@ import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import WorkspaceColumnsForm from "@/components/workspaces/settings/columns/WorkspaceColumnsForm";
 import Projects from "@/components/workspaces/settings/Projects";
@@ -173,6 +174,9 @@ function SettingsPage() {
               <p className="mt-1 text-red-500 text-sm">{nameError}</p>
             )}
           </div>
+          <Badge variant="subtle">
+            <p className="first-letter:uppercase">{workspace?.tier}</p>
+          </Badge>
         </div>
       </div>
 

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/menu";
 import { Tooltip } from "@/components/ui/tooltip";
 import InviteMemberDialog from "@/components/workspaces/InviteMemberDialog";
-import { useDeleteWorkspaceUserMutation } from "@/generated/graphql";
+import { Tier, useDeleteWorkspaceUserMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
@@ -86,6 +86,8 @@ const Team = () => {
               aria-label="Invite team member"
               className="mr-2 size-7"
               onClick={() => setIsInviteTeamMemberOpen(true)}
+              // TODO: add tooltip when disabled? Also conditionalize disabled prop for other tiers
+              disabled={workspace?.tier === Tier.Free}
               ref={inviteRef}
             >
               <PlusIcon />
