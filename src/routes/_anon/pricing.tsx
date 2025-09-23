@@ -220,7 +220,7 @@ function PricingPage() {
                   <CardFooter className="mt-auto pt-8">
                     <Button
                       size="lg"
-                      className="w-full bg-primary-700 font-semibold dark:bg-primary"
+                      className="w-full font-semibold"
                       onClick={() => {
                         if (session) {
                           navigate({

@@ -262,6 +262,7 @@ const CreateTaskDialog = () => {
                 <div className="flex items-center gap-2 py-1">
                   <Input
                     ref={titleRef}
+                    id="task-title"
                     className="border-base-300 border-dashed shadow-none transition-none placeholder:text-base-400 hover:border-base-400 focus-visible:ring-0 dark:border-base-600 dark:bg-transparent dark:hover:border-base-500"
                     placeholder="Task title..."
                     value={field.state.value}

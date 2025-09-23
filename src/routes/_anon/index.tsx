@@ -91,7 +91,7 @@ function HomePage() {
 
             <div className="flex flex-col gap-5 sm:flex-row">
               <Button
-                className="group h-full bg-primary-700 px-6 py-4 has-[>svg]:px-6 dark:bg-primary"
+                className="group h-full px-6 py-4 has-[>svg]:px-6"
                 onClick={() => signIn({ redirectUrl: BASE_URL })}
               >
                 Get Started{" "}

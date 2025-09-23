@@ -10,7 +10,8 @@ const buttonVariants = tv({
   base: "inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 whitespace-nowrap outline-none focus-visible:outline-none focus-visible:ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md font-medium text-sm outline-hidden transition-transform disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0 transition-[color,box-shadow]",
   variants: {
     variant: {
-      solid: "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+      solid:
+        "bg-primary-700 dark:bg-primary text-primary-foreground shadow-xs hover:bg-primary-700/90 dark:hover:bg-primary/90",
       outline:
         "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground",
       ghost: "hover:bg-accent hover:text-accent-foreground",
