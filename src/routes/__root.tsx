@@ -1,5 +1,4 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import { FormDevtoolsPlugin } from "@tanstack/react-form-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
@@ -122,7 +121,23 @@ function RootDocument({
               name: "Tanstack Query",
               render: <ReactQueryDevtoolsPanel />,
             },
-            FormDevtoolsPlugin(),
+            // TODO: configure appropriately. Get max listeners warning on certain pages
+            // FormDevtoolsPlugin(),
+            {
+              name: "Studio",
+              render: () => (
+                <iframe
+                  title="Drizzle Studio"
+                  src="https://local.drizzle.studio"
+                  style={{
+                    flexGrow: 1,
+                    width: "100%",
+                    height: "100%",
+                    border: 0,
+                  }}
+                />
+              ),
+            },
           ]}
         />
         <Scripts />
