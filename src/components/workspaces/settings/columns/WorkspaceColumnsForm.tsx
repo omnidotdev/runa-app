@@ -17,7 +17,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData } from "@tanstack/react-router";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -26,11 +26,14 @@ import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import ColumnForm from "@/components/workspaces/settings/columns/ColumnForm";
 import {
+  Role,
   useDeleteProjectColumnMutation,
   useUpdateProjectColumnMutation,
 } from "@/generated/graphql";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import workspaceOptions from "@/lib/options/workspace.options";
+import { cn } from "@/lib/utils";
 
 import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
 import type { ProjectColumnFragment as ProjectColumn } from "@/generated/graphql";
@@ -42,6 +45,20 @@ const ProjectColumnsForm = () => {
   const { workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
+
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
+  });
+
+  const { data: workspace } = useSuspenseQuery({
+    ...workspaceOptions({
+      rowId: workspaceId,
+      userId: session?.user?.rowId!,
+    }),
+    select: (data) => data?.workspace,
+  });
+
+  const isMember = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
 
   const { data: projectColumns } = useSuspenseQuery({
     ...projectColumnsOptions({
@@ -136,7 +153,7 @@ const ProjectColumnsForm = () => {
               variant="ghost"
               size="icon"
               aria-label="Create new column"
-              className="mr-2 size-7"
+              className={cn("mr-2 hidden size-7", !isMember && "inline-flex")}
               onClick={handleCreateNewColumn}
               disabled={activeColumnId !== null}
             >

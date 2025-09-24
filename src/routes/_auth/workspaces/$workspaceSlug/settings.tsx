@@ -15,6 +15,7 @@ import WorkspaceColumnsForm from "@/components/workspaces/settings/columns/Works
 import Projects from "@/components/workspaces/settings/Projects";
 import Team from "@/components/workspaces/settings/Team";
 import {
+  Role,
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
@@ -25,6 +26,7 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
@@ -66,6 +68,8 @@ function SettingsPage() {
     }),
     select: (data) => data?.workspace,
   });
+
+  const isOwner = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Owner;
 
   const editNameSchema = z
     .object({
@@ -187,7 +191,12 @@ function SettingsPage() {
 
         <WorkspaceColumnsForm />
 
-        <div className="ml-2 flex flex-col gap-4 lg:ml-0">
+        <div
+          className={cn(
+            "ml-2 hidden flex-col gap-4 lg:ml-0",
+            isOwner && "flex",
+          )}
+        >
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Danger Zone</h3>
 

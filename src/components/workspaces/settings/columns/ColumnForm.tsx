@@ -1,6 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useLoaderData } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import {
   CheckIcon,
   GripVerticalIcon,
@@ -23,11 +24,13 @@ import {
 } from "@/components/ui/menu";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
+  Role,
   useCreateProjectColumnMutation,
   useUpdateProjectColumnMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
+import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
@@ -57,6 +60,20 @@ const ColumnForm = ({
   const { workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
+
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
+  });
+
+  const { data: workspace } = useSuspenseQuery({
+    ...workspaceOptions({
+      rowId: workspaceId,
+      userId: session?.user?.rowId!,
+    }),
+    select: (data) => data?.workspace,
+  });
+
+  const isMember = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
 
   const [isHovering, setIsHovering] = useState(false);
 
@@ -184,6 +201,7 @@ const ColumnForm = ({
         className={cn(
           "mr-1 h-9 cursor-move items-center justify-center rounded-sm outline-hidden transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 focus-visible:ring-offset-background",
           canDrag ? "flex" : "invisible",
+          isMember && "hidden",
         )}
         aria-label="Drag handle"
       >
@@ -231,7 +249,10 @@ const ColumnForm = ({
             <Button
               variant="ghost"
               size="icon"
-              className="size-7 text-base-400 opacity-0 group-hover:opacity-100"
+              className={cn(
+                "hidden size-7 text-base-400 opacity-0 group-hover:opacity-100",
+                !isMember && "inline-flex",
+              )}
               tabIndex={isHovering ? 0 : -1}
               aria-label="More column options"
             >

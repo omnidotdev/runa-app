@@ -5,6 +5,11 @@ query Workspace($rowId: UUID!, $userId: UUID!) {
     slug
     viewMode
     tier
+    workspaceUsers(condition: { userId: $userId }) {
+      nodes {
+        role
+      }
+    }
     projectColumns(orderBy: INDEX_ASC) {
       nodes {
         emoji

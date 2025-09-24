@@ -25,7 +25,7 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import { Tooltip } from "@/components/ui/tooltip";
-import { useDeleteProjectMutation } from "@/generated/graphql";
+import { Role, useDeleteProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
@@ -57,6 +57,8 @@ const Projects = () => {
     }),
     select: (data) => data?.workspace,
   });
+
+  const isMember = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
@@ -96,7 +98,7 @@ const Projects = () => {
               variant="ghost"
               size="icon"
               aria-label="Add project"
-              className="mr-2 size-7"
+              className={cn("mr-2 hidden size-7", !isMember && "inline-flex")}
               onClick={() => setIsCreateProjectOpen(true)}
               disabled={!workspace?.projectColumns.nodes.length}
             >
@@ -228,6 +230,7 @@ const Projects = () => {
                           <MenuItem
                             value="delete"
                             variant="destructive"
+                            className={cn("hidden", !isMember && "flex")}
                             onClick={() => {
                               setIsDeleteProjectOpen(true);
                               setSelectedProject({

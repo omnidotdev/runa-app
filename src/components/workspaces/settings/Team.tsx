@@ -15,10 +15,15 @@ import {
 } from "@/components/ui/menu";
 import { Tooltip } from "@/components/ui/tooltip";
 import InviteMemberDialog from "@/components/workspaces/InviteMemberDialog";
-import { Tier, useDeleteWorkspaceUserMutation } from "@/generated/graphql";
+import {
+  Role,
+  Tier,
+  useDeleteWorkspaceUserMutation,
+} from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
+import { cn } from "@/lib/utils";
 
 const Team = () => {
   const inviteRef = useRef<HTMLButtonElement>(null);
@@ -49,6 +54,8 @@ const Team = () => {
     ...workspaceUsersOptions({ workspaceId: workspaceId }),
     select: (data) => data?.workspaceUsers,
   });
+
+  const isOwner = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Owner;
 
   const { mutate: deleteMember } = useDeleteWorkspaceUserMutation({
     meta: {
@@ -84,7 +91,7 @@ const Team = () => {
               variant="ghost"
               size="icon"
               aria-label="Invite team member"
-              className="mr-2 size-7"
+              className={cn("mr-2 hidden size-7", isOwner && "inline-flex")}
               onClick={() => setIsInviteTeamMemberOpen(true)}
               // TODO: add tooltip when disabled? Also conditionalize disabled prop for other tiers
               disabled={workspace?.tier === Tier.Free}
@@ -137,7 +144,10 @@ const Team = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="size-7 text-base-400"
+                            className={cn(
+                              "hidden size-7 text-base-400",
+                              isOwner && "inline-flex",
+                            )}
                             aria-label="More team member options"
                           >
                             <MoreHorizontalIcon />
