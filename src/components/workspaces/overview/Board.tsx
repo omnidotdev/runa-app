@@ -13,6 +13,7 @@ import BoardItem from "@/components/workspaces/overview/BoardItem";
 import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
+import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
@@ -47,6 +48,8 @@ const Board = ({ projects }: Props) => {
 
   const isMember = role === Role.Member;
 
+  const maxProjectsReached = useMaxProjectsReached();
+
   const { data: projectColumns } = useSuspenseQuery({
     ...projectColumnsOptions({ workspaceId: workspaceId!, search }),
     select: (data) => data?.projectColumns?.nodes,
@@ -79,6 +82,8 @@ const Board = ({ projects }: Props) => {
                   setIsCreateProjectDialogOpen(true);
                 }}
                 className={cn("hidden", !isMember && "inline-flex")}
+                // TODO: update tooltip to handle disabled state
+                disabled={maxProjectsReached}
               />
 
               <div className="flex h-full overflow-hidden">

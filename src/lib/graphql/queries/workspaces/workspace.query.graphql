@@ -19,6 +19,7 @@ query Workspace($rowId: UUID!, $userId: UUID!) {
       }
     }
     projects(orderBy: NAME_ASC) {
+      totalCount
       nodes {
         rowId
         name

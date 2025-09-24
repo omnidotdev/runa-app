@@ -49,6 +49,7 @@ import {
 import { Tooltip } from "@/components/ui/tooltip";
 import { Role, useUpdateUserPreferenceMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
@@ -90,6 +91,8 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
   const isMember =
     workspace == null ||
     workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
+
+  const maxProjectsReached = useMaxProjectsReached();
 
   const { isMobile, open } = useSidebar();
 
@@ -306,7 +309,11 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                   shortcut="P"
                 >
                   <SidebarGroupAction
-                    className={cn("flex", isMember && "hidden")}
+                    className={cn(
+                      "flex",
+                      // TODO: adjust logic for `maxProjectsReached`. Make action disabled instead, but create a tooltip
+                      (isMember || maxProjectsReached) && "hidden",
+                    )}
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsCreateProjectOpen(true);

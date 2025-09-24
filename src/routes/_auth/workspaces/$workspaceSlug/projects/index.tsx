@@ -26,6 +26,7 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -91,6 +92,8 @@ function ProjectsOverviewPage() {
   });
 
   const isMember = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
+
+  const maxProjectsReached = useMaxProjectsReached();
 
   const { data: projects } = useSuspenseQuery({
     ...projectsOptions({ workspaceId, search }),
@@ -370,7 +373,8 @@ function ProjectsOverviewPage() {
                   variant="outline"
                   size="icon"
                   onClick={() => setIsCreateProjectOpen(true)}
-                  disabled={!workspace?.projectColumns?.nodes?.length}
+                  // TODO: update tooltip to handle disabled state
+                  disabled={maxProjectsReached}
                   aria-label="Create Project"
                   className={cn("hidden", !isMember && "inline-flex")}
                 >

@@ -30,6 +30,7 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useForm from "@/lib/hooks/useForm";
+import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -66,6 +67,8 @@ const CreateProjectDialog = () => {
   const isMember =
     currentWorkspace == null ||
     currentWorkspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
+
+  const maxProjectsReached = useMaxProjectsReached();
 
   const { data: projects } = useQuery({
     ...projectsOptions({ workspaceId: workspaceId! }),
@@ -213,7 +216,7 @@ const CreateProjectDialog = () => {
     },
   });
 
-  if (!workspaceSlug || isMember) return null;
+  if (!workspaceSlug || isMember || maxProjectsReached) return null;
 
   return (
     <DialogRoot

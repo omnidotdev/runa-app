@@ -27,6 +27,7 @@ import {
 import { Tooltip } from "@/components/ui/tooltip";
 import { Role, useDeleteProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
@@ -59,6 +60,8 @@ const Projects = () => {
   });
 
   const isMember = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
+
+  const maxProjectsReached = useMaxProjectsReached();
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
@@ -100,7 +103,8 @@ const Projects = () => {
               aria-label="Add project"
               className={cn("mr-2 hidden size-7", !isMember && "inline-flex")}
               onClick={() => setIsCreateProjectOpen(true)}
-              disabled={!workspace?.projectColumns.nodes.length}
+              // TODO: add tooltip for disabled state
+              disabled={maxProjectsReached}
             >
               <Plus />
             </Button>
