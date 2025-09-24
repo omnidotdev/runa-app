@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
+  Role,
   useDeleteTaskMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
@@ -34,7 +35,9 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import seo from "@/lib/util/seo";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
@@ -69,15 +72,26 @@ export const Route = createFileRoute(
 
 function TaskPage() {
   const navigate = Route.useNavigate();
-  const { projectId } = Route.useLoaderData();
+  const { projectId, workspaceId } = Route.useLoaderData();
+  const { session } = Route.useRouteContext();
   const { workspaceSlug, projectSlug, taskId } = Route.useParams();
+
   const matches = useViewportSize({ breakpoint: Breakpoint.Large });
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
+
+  const { data: role } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data?.workspace?.workspaceUsers?.nodes?.[0]?.role,
+  });
+
+  const isMember = role === Role.Member;
 
   const { data: task } = useSuspenseQuery({
     ...taskOptions({ rowId: taskId }),
     select: (data) => data?.task,
   });
+
+  const isAuthor = task?.author?.rowId === session?.user?.rowId;
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
@@ -151,6 +165,7 @@ function TaskPage() {
             defaultContent={task?.content}
             className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
             skeletonClassName="h-8 min-w-40"
+            editable={isAuthor || !isMember}
             onUpdate={({ editor }) =>
               !editor.isEmpty &&
               handleTaskUpdate({
@@ -173,7 +188,10 @@ function TaskPage() {
         <div className="flex flex-wrap items-center gap-2 p-1">
           <Button
             variant="outline"
-            className="justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20"
+            className={cn(
+              "justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20",
+              !isAuthor && isMember && "hidden",
+            )}
             onClick={() => setIsDeleteTaskDialogOpen(true)}
             aria-label="Delete Task"
           >
