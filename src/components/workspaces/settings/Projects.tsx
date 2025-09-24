@@ -134,11 +134,7 @@ const Projects = () => {
                   <div className="flex items-center">
                     <div className="flex size-10 items-center justify-center">
                       <div
-                        className={cn(
-                          "flex size-6 items-center justify-center rounded-full border bg-background font-medium text-sm uppercase shadow",
-                          project?.userPreferences.nodes?.[0].color &&
-                            "text-background",
-                        )}
+                        className="flex size-6 items-center justify-center rounded-full border bg-primary font-medium text-background text-sm uppercase shadow"
                         style={{
                           backgroundColor:
                             project?.userPreferences.nodes?.[0].color ??
