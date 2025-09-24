@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
+  Role,
   useUpdateProjectMutation,
   useUpdateTaskMutation,
   useUpdateUserPreferenceMutation,
@@ -43,6 +44,7 @@ import useDragStore from "@/lib/hooks/store/useDragStore";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 
@@ -140,7 +142,7 @@ export const Route = createFileRoute(
 function ProjectPage() {
   const { session } = Route.useRouteContext();
   const { projectSlug, workspaceSlug } = Route.useParams();
-  const { projectId } = Route.useLoaderData();
+  const { projectId, workspaceId } = Route.useLoaderData();
   const { search, assignees, labels, priorities } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
@@ -148,6 +150,12 @@ function ProjectPage() {
   const navigate = Route.useNavigate();
 
   const { queryClient } = Route.useRouteContext();
+
+  const { data: isOwner } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) =>
+      data?.workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Owner,
+  });
 
   const tasksVariables: TasksQueryVariables = useMemo(
     () => ({
@@ -462,6 +470,7 @@ function ProjectPage() {
             <RichTextEditor
               key={project?.name}
               defaultContent={project?.name}
+              editable={isOwner}
               className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
               skeletonClassName="h-8 max-w-80"
               onUpdate={async ({ editor }) => {
@@ -491,6 +500,7 @@ function ProjectPage() {
             <RichTextEditor
               key={project?.description}
               defaultContent={project?.description || ""}
+              editable={isOwner}
               className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
               placeholder="Add a short description..."
               skeletonClassName="h-5 max-w-40"
