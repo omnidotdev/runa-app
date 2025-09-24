@@ -1,4 +1,6 @@
 import { useField } from "@tanstack/react-form";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { CheckIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -6,8 +8,10 @@ import ColorSelector from "@/components/core/selectors/ColorSelector";
 import { Button } from "@/components/ui/button";
 import { parseColor } from "@/components/ui/color-picker";
 import { Input } from "@/components/ui/input";
+import { Role } from "@/generated/graphql";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
+import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 const TaskLabelsForm = withForm({
@@ -17,6 +21,25 @@ const TaskLabelsForm = withForm({
       name: "",
       color: "blue",
     });
+
+    const { workspaceId } = useLoaderData({
+      from: "/_auth",
+    });
+
+    const { session } = useRouteContext({
+      from: "/_auth",
+    });
+
+    const { data: role } = useSuspenseQuery({
+      // TODO: determine if the non-null assertion on `workspaceId` is ok
+      ...workspaceOptions({
+        rowId: workspaceId!,
+        userId: session?.user?.rowId!,
+      }),
+      select: (data) => data?.workspace?.workspaceUsers?.nodes?.[0]?.role,
+    });
+
+    const isMember = role === Role.Member;
 
     const field = useField({ form, name: "labels" });
 
@@ -38,7 +61,12 @@ const TaskLabelsForm = withForm({
         {(field) => {
           return (
             <div className="flex flex-col gap-0">
-              <div className="flex h-fit w-full items-center gap-2 divide-x">
+              <div
+                className={cn(
+                  "flex h-fit w-full items-center gap-2 divide-x",
+                  isMember && "hidden",
+                )}
+              >
                 <ColorSelector
                   showChannelInput={false}
                   positioning={{
