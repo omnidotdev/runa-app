@@ -4,14 +4,17 @@ import {
   useLoaderData,
   useNavigate,
   useParams,
+  useRouteContext,
   useSearch,
 } from "@tanstack/react-router";
 
 import ColumnHeader from "@/components/shared/ColumnHeader";
 import BoardItem from "@/components/workspaces/overview/BoardItem";
+import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 import type { ProjectFragment } from "@/generated/graphql";
@@ -26,12 +29,23 @@ const Board = ({ projects }: Props) => {
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
+  });
+
   const { workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
   const { search } = useSearch({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
+
+  const { data: role } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data.workspace?.workspaceUsers.nodes?.[0]?.role,
+  });
+
+  const isMember = role === Role.Member;
 
   const { data: projectColumns } = useSuspenseQuery({
     ...projectColumnsOptions({ workspaceId: workspaceId!, search }),
@@ -64,6 +78,7 @@ const Board = ({ projects }: Props) => {
                   setProjectColumnId(column.rowId);
                   setIsCreateProjectDialogOpen(true);
                 }}
+                className={cn("hidden", !isMember && "inline-flex")}
               />
 
               <div className="flex h-full overflow-hidden">
@@ -89,6 +104,7 @@ const Board = ({ projects }: Props) => {
                               key={project.rowId}
                               draggableId={project.rowId}
                               index={index}
+                              isDragDisabled={isMember}
                             >
                               {(provided) => (
                                 <div

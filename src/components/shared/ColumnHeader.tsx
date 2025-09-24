@@ -3,9 +3,9 @@ import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 
-import type { ReactNode } from "react";
+import type { ButtonProps } from "@/components/ui/button";
 
-interface Props {
+interface Props extends ButtonProps {
   title: string;
   count: number;
   tooltip: {
@@ -14,7 +14,6 @@ interface Props {
   };
   onCreate: () => void;
   emoji?: string | null;
-  children?: ReactNode;
 }
 
 const ColumnHeader = ({
@@ -24,6 +23,7 @@ const ColumnHeader = ({
   tooltip,
   onCreate,
   children,
+  ...rest
 }: Props) => {
   return (
     <div className="mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2 shadow-sm">
@@ -50,7 +50,8 @@ const ColumnHeader = ({
             size="xs"
             className="size-5"
             onClick={onCreate}
-            aria-label={`Create ${title} Task`}
+            aria-label={`Create ${title}`}
+            {...rest}
           >
             <PlusIcon className="size-4" />
           </Button>

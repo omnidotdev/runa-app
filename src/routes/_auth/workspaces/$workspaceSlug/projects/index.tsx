@@ -19,6 +19,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import Board from "@/components/workspaces/overview/Board";
 import List from "@/components/workspaces/overview/List";
 import {
+  Role,
   useUpdateProjectMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
@@ -29,6 +30,7 @@ import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import seo from "@/lib/util/seo";
+import { cn } from "@/lib/utils";
 
 import type { DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
@@ -87,6 +89,8 @@ function ProjectsOverviewPage() {
     }),
     select: (data) => data?.workspace,
   });
+
+  const isMember = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
 
   const { data: projects } = useSuspenseQuery({
     ...projectsOptions({ workspaceId, search }),
@@ -368,6 +372,7 @@ function ProjectsOverviewPage() {
                   onClick={() => setIsCreateProjectOpen(true)}
                   disabled={!workspace?.projectColumns?.nodes?.length}
                   aria-label="Create Project"
+                  className={cn("hidden", !isMember && "inline-flex")}
                 >
                   <Plus className="size-4" />
                 </Button>

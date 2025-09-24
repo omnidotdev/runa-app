@@ -32,11 +32,11 @@ const buttonVariants = tv({
   },
 });
 
-interface Props
+interface ButtonProps
   extends ComponentProps<typeof ark.button>,
     VariantProps<typeof buttonVariants> {}
 
-const Button = ({ className, variant, size, ...rest }: Props) => (
+const Button = ({ className, variant, size, ...rest }: ButtonProps) => (
   <ark.button
     type="button"
     className={cn(buttonVariants({ variant, size }), className)}
@@ -44,4 +44,4 @@ const Button = ({ className, variant, size, ...rest }: Props) => (
   />
 );
 
-export { Button, buttonVariants };
+export { Button, buttonVariants, type ButtonProps };
