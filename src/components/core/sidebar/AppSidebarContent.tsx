@@ -47,10 +47,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Tooltip } from "@/components/ui/tooltip";
-import { useUpdateUserPreferenceMutation } from "@/generated/graphql";
+import { Role, useUpdateUserPreferenceMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { cn } from "@/lib/utils";
 
 interface SidebarMenuItemType {
   isActive: boolean;
@@ -84,6 +85,11 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
     enabled: !!workspaceId,
     select: (data) => data.workspace,
   });
+
+  // Conditionalize on currentWorkspace existing since we use `useQuery` and it is not suspenseful
+  const isMember =
+    workspace == null ||
+    workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
 
   const { isMobile, open } = useSidebar();
 
@@ -300,6 +306,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                   shortcut="P"
                 >
                   <SidebarGroupAction
+                    className={cn("flex", isMember && "hidden")}
                     onClick={(e) => {
                       e.stopPropagation();
                       setIsCreateProjectOpen(true);
@@ -437,6 +444,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                               <MenuItem
                                 value="delete"
                                 variant="destructive"
+                                className={cn("flex", isMember && "hidden")}
                                 onClick={() => {
                                   setSelectedProject({
                                     rowId: project.rowId,

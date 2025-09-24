@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
+  Role,
   useCreateColumnMutation,
   useCreateProjectMutation,
   useCreateUserPreferenceMutation,
@@ -61,6 +62,11 @@ const CreateProjectDialog = () => {
     select: (data) => data?.workspace,
   });
 
+  // Conditionalize on currentWorkspace existing since we use `useQuery` and it is not suspenseful
+  const isMember =
+    currentWorkspace == null ||
+    currentWorkspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
+
   const { data: projects } = useQuery({
     ...projectsOptions({ workspaceId: workspaceId! }),
     enabled: !!workspaceId,
@@ -88,7 +94,8 @@ const CreateProjectDialog = () => {
 
   useHotkeys(
     Hotkeys.CreateProject,
-    () => !!workspaceSlug && setIsCreateProjectOpen(!isCreateProjectOpen),
+    () => setIsCreateProjectOpen(!isCreateProjectOpen),
+    { enabled: !!workspaceSlug },
     [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug],
   );
 
@@ -206,7 +213,7 @@ const CreateProjectDialog = () => {
     },
   });
 
-  if (!workspaceSlug) return null;
+  if (!workspaceSlug || isMember) return null;
 
   return (
     <DialogRoot
