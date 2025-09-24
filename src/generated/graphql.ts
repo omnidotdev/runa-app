@@ -8655,7 +8655,7 @@ export type WorkspaceUsersQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', user?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, assignedTasks: { __typename?: 'AssigneeConnection', totalCount: number }, completedTasks: { __typename?: 'AssigneeConnection', totalCount: number } } | null }> } | null };
+export type WorkspaceUsersQuery = { __typename?: 'Query', workspaceUsers?: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', role: Role, user?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, assignedTasks: { __typename?: 'AssigneeConnection', totalCount: number }, completedTasks: { __typename?: 'AssigneeConnection', totalCount: number } } | null }> } | null };
 
 export type WorkspaceQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -10653,6 +10653,7 @@ export const WorkspaceUsersDocument = `
     query WorkspaceUsers($workspaceId: UUID!, $filter: WorkspaceUserFilter) {
   workspaceUsers(condition: {workspaceId: $workspaceId}, filter: $filter) {
     nodes {
+      role
       user {
         name
         avatarUrl

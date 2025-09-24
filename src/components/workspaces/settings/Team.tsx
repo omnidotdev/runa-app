@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   MenuContent,
@@ -128,6 +129,10 @@ const Team = () => {
                     <span className="px-3 text-xs md:text-sm">
                       {member?.user?.name}
                     </span>
+
+                    <Badge size="sm" variant="outline">
+                      <p className="first-letter:uppercase">{member.role}</p>
+                    </Badge>
 
                     <div className="mr-2 ml-auto flex gap-1">
                       <span className="flex items-center px-3 text-base-600 text-xs dark:text-base-400">

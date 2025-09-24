@@ -1,6 +1,7 @@
 query WorkspaceUsers($workspaceId: UUID!, $filter: WorkspaceUserFilter) {
   workspaceUsers(condition: { workspaceId: $workspaceId }, filter: $filter) {
     nodes {
+      role
       user {
         name
         avatarUrl
