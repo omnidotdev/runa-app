@@ -151,6 +151,7 @@ function SettingsPage() {
               defaultContent={workspace?.name}
               className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
               skeletonClassName="h-8 w-80"
+              editable={isOwner}
               onUpdate={async ({ editor }) => {
                 const text = editor.getText().trim();
 
