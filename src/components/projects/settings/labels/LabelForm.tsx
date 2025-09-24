@@ -1,4 +1,5 @@
-import { useLoaderData } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import {
   CheckIcon,
   MoreHorizontalIcon,
@@ -44,12 +45,14 @@ import {
 } from "@/components/ui/menu";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
+  Role,
   useCreateLabelMutation,
   useDeleteLabelMutation,
   useUpdateLabelMutation,
 } from "@/generated/graphql";
 import { colors } from "@/lib/constants/colors";
 import useForm from "@/lib/hooks/useForm";
+import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 import type { Dispatch, SetStateAction } from "react";
@@ -72,9 +75,20 @@ const LabelForm = ({
 }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { projectId } = useLoaderData({
+  const { projectId, workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
+
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+  });
+
+  const { data: role } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data.workspace?.workspaceUsers?.nodes?.[0]?.role,
+  });
+
+  const isMember = role === Role.Member;
 
   const [isHovering, setIsHovering] = useState(false);
 
@@ -269,7 +283,10 @@ const LabelForm = ({
             <Button
               variant="ghost"
               size="icon"
-              className="size-7 text-base-400 opacity-0 group-hover:opacity-100"
+              className={cn(
+                "hidden size-7 text-base-400 opacity-0 group-hover:opacity-100",
+                !isMember && "inline-flex",
+              )}
               tabIndex={isHovering ? 0 : -1}
             >
               <MoreHorizontalIcon />

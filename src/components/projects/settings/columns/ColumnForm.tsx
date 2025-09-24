@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/menu";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
+  Role,
   useCreateColumnMutation,
   useCreateUserPreferenceMutation,
   useUpdateColumnMutation,
@@ -34,6 +35,7 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
@@ -60,13 +62,20 @@ const ColumnForm = ({
 }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { projectId } = useLoaderData({
+  const { projectId, workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
   const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
+
+  const { data: role } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data.workspace?.workspaceUsers?.nodes?.[0]?.role,
+  });
+
+  const isMember = role === Role.Member;
 
   const [isHovering, setIsHovering] = useState(false);
 
@@ -247,6 +256,7 @@ const ColumnForm = ({
         className={cn(
           "mr-1 h-9 cursor-move items-center justify-center rounded-sm outline-hidden transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           canDrag ? "flex" : "invisible",
+          isMember && "hidden",
         )}
       >
         <GripVerticalIcon className="flex size-3 text-muted-foreground" />
@@ -302,7 +312,11 @@ const ColumnForm = ({
 
           <MenuPositioner>
             <MenuContent className="focus-within:outline-none">
-              <MenuItem value="edit" onClick={() => onSetActive(column.rowId!)}>
+              <MenuItem
+                value="edit"
+                onClick={() => onSetActive(column.rowId!)}
+                className={cn("hidden", !isMember && "flex")}
+              >
                 <PenLineIcon />
                 <span> Edit</span>
               </MenuItem>
@@ -322,6 +336,7 @@ const ColumnForm = ({
               <MenuItem
                 value="delete"
                 variant="destructive"
+                className={cn("hidden", !isMember && "flex")}
                 onClick={() => {
                   setColumnToDelete?.(column);
                   setIsDeleteColumnDialogOpen(true);

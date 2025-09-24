@@ -33,7 +33,9 @@ import { colors } from "@/lib/constants/colors";
 import useForm from "@/lib/hooks/useForm";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 
-const ProjectColorPicker = () => {
+import type { ColorPickerProps } from "@/components/ui/color-picker";
+
+const ProjectColorPicker = (props: ColorPickerProps) => {
   const { projectId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
@@ -105,6 +107,7 @@ const ProjectColorPicker = () => {
               }
             }}
             onPointerDownOutside={() => setIsUpdatingColorPreferences(false)}
+            {...props}
           >
             <ColorPickerControl className="relative flex size-6 items-center disabled:cursor-default">
               <ColorPickerTrigger

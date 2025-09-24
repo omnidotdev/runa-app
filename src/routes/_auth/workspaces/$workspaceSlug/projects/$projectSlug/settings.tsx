@@ -14,6 +14,7 @@ import ProjectLabelsForm from "@/components/projects/settings/labels/ProjectLabe
 import ProjectColorPicker from "@/components/projects/settings/ProjectColorPicker";
 import { Button } from "@/components/ui/button";
 import {
+  Role,
   useDeleteProjectMutation,
   useUpdateProjectMutation,
 } from "@/generated/graphql";
@@ -22,8 +23,10 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
@@ -54,11 +57,20 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
+  const { session } = Route.useRouteContext();
   const { workspaceSlug, projectSlug } = Route.useParams();
 
-  const { projectId } = Route.useLoaderData();
+  const { projectId, workspaceId } = Route.useLoaderData();
 
   const navigate = Route.useNavigate();
+
+  const { data: role } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data.workspace?.workspaceUsers.nodes?.[0]?.role,
+  });
+
+  const isOwner = role === Role.Owner;
+  const isMember = role === Role.Member;
 
   const { data: project } = useSuspenseQuery({
     ...projectOptions({ rowId: projectId }),
@@ -109,7 +121,7 @@ function RouteComponent() {
         }
       },
     }),
-    { mutate: deleteWorkspace } = useDeleteProjectMutation({
+    { mutate: deleteProject } = useDeleteProjectMutation({
       meta: {
         invalidates: [["all"]],
       },
@@ -140,10 +152,11 @@ function RouteComponent() {
 
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <ProjectColorPicker />
+              <ProjectColorPicker disabled={isMember} />
 
               <RichTextEditor
                 defaultContent={project?.name}
+                editable={!isMember}
                 className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
                 skeletonClassName="h-8 w-80"
                 onUpdate={async ({ editor }) => {
@@ -171,6 +184,7 @@ function RouteComponent() {
                 </span>
                 <RichTextEditor
                   defaultContent={project?.prefix || "PROJ"}
+                  editable={!isMember}
                   className="min-h-0 border-0 bg-transparent p-0 font-mono text-base-400 text-sm dark:bg-transparent dark:text-base-500"
                   placeholder="prefix"
                   skeletonClassName="h-5 w-12"
@@ -192,6 +206,7 @@ function RouteComponent() {
 
             <RichTextEditor
               defaultContent={project?.description || ""}
+              editable={!isMember}
               className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
               placeholder="Add a short description..."
               skeletonClassName="h-5 max-w-40"
@@ -213,7 +228,12 @@ function RouteComponent() {
 
         <ProjectColumnsForm />
 
-        <div className="ml-2 flex flex-col gap-4 lg:ml-0">
+        <div
+          className={cn(
+            "ml-2 hidden flex-col gap-4 lg:ml-0",
+            isOwner && "flex",
+          )}
+        >
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Danger Zone</h3>
 
@@ -243,7 +263,7 @@ function RouteComponent() {
             </span>
           }
           onConfirm={() => {
-            deleteWorkspace({ rowId: project?.rowId! });
+            deleteProject({ rowId: project?.rowId! });
             navigate({
               to: "/workspaces/$workspaceSlug/projects",
               params: { workspaceSlug },

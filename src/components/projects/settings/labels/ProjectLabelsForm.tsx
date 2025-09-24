@@ -1,12 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
-import { useLoaderData } from "@tanstack/react-router";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
 import LabelForm from "@/components/projects/settings/labels/LabelForm";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
+import { Role } from "@/generated/graphql";
 import labelsOptions from "@/lib/options/labels.options";
+import workspaceOptions from "@/lib/options/workspace.options";
+import { cn } from "@/lib/utils";
 
 import type { LabelFragment as Label } from "@/generated/graphql";
 
@@ -14,9 +17,20 @@ const ProjectLabelsForm = () => {
   const [isCreatingLabel, setIsCreatingLabel] = useState(false);
   const [activeLabelId, setActiveLabelId] = useState<string | null>(null);
 
-  const { projectId } = useLoaderData({
+  const { projectId, workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
+
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+  });
+
+  const { data: role } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data.workspace?.workspaceUsers?.nodes?.[0]?.role,
+  });
+
+  const isMember = role === Role.Member;
 
   const { data: labels } = useQuery({
     ...labelsOptions({ projectId }),
@@ -60,7 +74,7 @@ const ProjectLabelsForm = () => {
             variant="ghost"
             size="icon"
             aria-label="Create new label"
-            className="mr-2 size-7"
+            className={cn("mr-2 hidden size-7", !isMember && "inline-flex")}
             onClick={handleCreateNewLabel}
             disabled={activeLabelId !== null}
           >

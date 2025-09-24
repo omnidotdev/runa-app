@@ -72,10 +72,9 @@ const {
   pickerView,
 } = colorPickerVariants();
 
-const ColorPickerRoot = ({
-  className,
-  ...rest
-}: ComponentProps<typeof ArkColorPicker.Root>) => (
+type ColorPickerProps = ComponentProps<typeof ArkColorPicker.Root>;
+
+const ColorPickerRoot = ({ className, ...rest }: ColorPickerProps) => (
   <ArkColorPicker.Root className={cn(root(), className)} {...rest} />
 );
 
@@ -321,4 +320,5 @@ export {
   ColorPickerProvider,
   // Re-export parseColor for convenience in usage
   parseColor,
+  type ColorPickerProps,
 };
