@@ -19,12 +19,13 @@ const useMaxProjectsReached = () => {
 
   const { data: tier } = useQuery({
     ...workspaceOptions({ rowId: workspaceId!, userId: session?.user.rowId! }),
-    enabled: !!workspaceId,
+    enabled: !!workspaceId && !!session?.user?.rowId,
     select: (data) => data.workspace?.tier,
   });
 
   const { data: totalProjects } = useQuery({
     ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
+    enabled: !!workspaceId && !!session?.user?.rowId,
     select: (data) => data?.workspace?.projects?.totalCount,
   });
 
