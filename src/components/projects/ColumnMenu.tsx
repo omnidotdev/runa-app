@@ -12,6 +12,7 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import {
+  Role,
   useDeleteTaskMutation,
   useUpdateUserPreferenceMutation,
 } from "@/generated/graphql";
@@ -20,13 +21,15 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import columnOptions from "@/lib/options/column.options";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
+import workspaceOptions from "@/lib/options/workspace.options";
+import { cn } from "@/lib/utils";
 
 interface Props {
   columnId: string;
 }
 
 const ColumnMenu = ({ columnId }: Props) => {
-  const { projectId } = useLoaderData({
+  const { projectId, workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
@@ -40,6 +43,13 @@ const ColumnMenu = ({ columnId }: Props) => {
 
   const { columnId: storedColumnId, setColumnId: setStoredColumnId } =
     useTaskStore();
+
+  const { data: role } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data.workspace?.workspaceUsers.nodes?.[0]?.role,
+  });
+
+  const isMember = role === Role.Member;
 
   const { data: userPreferences } = useSuspenseQuery({
     ...userPreferencesOptions({
@@ -121,7 +131,10 @@ const ColumnMenu = ({ columnId }: Props) => {
 
             <MenuItem
               value="delete"
-              className="flex cursor-pointer items-center gap-2"
+              className={cn(
+                "flex cursor-pointer items-center gap-2",
+                isMember && "hidden",
+              )}
               variant="destructive"
               disabled={!taskIds?.length}
               onClick={() => {
