@@ -271,8 +271,9 @@ function TaskPage() {
           {/* Task Details */}
           <TaskDescription
             task={{
-              description: task?.description,
               rowId: taskId,
+              isAuthor,
+              description: task?.description,
             }}
           />
           <Comments />

@@ -1,17 +1,36 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { useDebounceCallback } from "usehooks-ts";
 
 import RichTextEditor from "@/components/core/RichTextEditor";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
-import { useUpdateTaskMutation } from "@/generated/graphql";
+import { Role, useUpdateTaskMutation } from "@/generated/graphql";
+import workspaceOptions from "@/lib/options/workspace.options";
 
 interface Props {
   task: {
-    description?: string;
     rowId: string;
+    isAuthor: boolean;
+    description?: string;
   };
 }
 
 const TaskDescription = ({ task }: Props) => {
+  const { workspaceId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+  });
+
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+  });
+
+  const { data: role } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data.workspace?.workspaceUsers.nodes?.[0]?.role,
+  });
+
+  const isMember = role === Role.Member;
+
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
       invalidates: [["all"]],
@@ -30,6 +49,7 @@ const TaskDescription = ({ task }: Props) => {
       <CardContent className="p-0">
         <RichTextEditor
           defaultContent={task?.description}
+          editable={task.isAuthor || !isMember}
           className="border-0"
           skeletonClassName="h-[120px] rounded-t-none"
           onUpdate={({ editor }) => {
