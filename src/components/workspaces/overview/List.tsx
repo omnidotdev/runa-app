@@ -1,6 +1,10 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useSearch } from "@tanstack/react-router";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useLoaderData,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
 
 import ListTrigger from "@/components/shared/ListTrigger";
 import {
@@ -8,9 +12,11 @@ import {
   CollapsibleRoot,
 } from "@/components/ui/collapsible";
 import ListItem from "@/components/workspaces/overview/ListItem";
+import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 import type { ProjectFragment } from "@/generated/graphql";
@@ -24,9 +30,20 @@ const List = ({ projects }: Props) => {
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
+  });
+
   const { search } = useSearch({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
+
+  const { data: role } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data?.workspace?.workspaceUsers?.nodes?.[0]?.role,
+  });
+
+  const isMember = role === Role.Member;
 
   const { data: projectColumns } = useQuery({
     ...projectColumnsOptions({ workspaceId: workspaceId!, search }),
@@ -62,6 +79,7 @@ const List = ({ projects }: Props) => {
               setProjectColumnId(column.rowId);
               setIsCreateProjectDialogOpen(true);
             }}
+            className={cn("hidden", !isMember && "inline-flex")}
           />
 
           <CollapsibleContent className="rounded-b-lg">
@@ -93,6 +111,7 @@ const List = ({ projects }: Props) => {
                         key={project.rowId}
                         draggableId={project.rowId}
                         index={index}
+                        isDragDisabled={isMember}
                       >
                         {(provided, snapshot) => (
                           <div

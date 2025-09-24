@@ -3,10 +3,12 @@ import { ChevronRightIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
-import type { MouseEventHandler, ReactNode } from "react";
+import type { MouseEventHandler } from "react";
+import type { ButtonProps } from "@/components/ui/button";
 
-interface Props {
+interface Props extends ButtonProps {
   title: string;
   count: number;
   tooltip: {
@@ -15,7 +17,6 @@ interface Props {
   };
   onCreate: MouseEventHandler<HTMLButtonElement>;
   emoji?: string | null;
-  children?: ReactNode;
 }
 
 const ListTrigger = ({
@@ -25,6 +26,8 @@ const ListTrigger = ({
   tooltip,
   onCreate,
   children,
+  className,
+  ...rest
 }: Props) => {
   return (
     <CollapsibleTrigger
@@ -57,9 +60,10 @@ const ListTrigger = ({
             <Button
               variant="ghost"
               size="xs"
-              className="size-7"
+              className={cn("size-7", className)}
               onClick={onCreate}
               aria-label="Create"
+              {...rest}
             >
               <PlusIcon className="size-4" />
             </Button>
