@@ -14,6 +14,7 @@ import {
   CollapsibleRoot,
 } from "@/components/ui/collapsible";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import useTheme from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
@@ -73,6 +74,8 @@ const List = ({
       },
     }),
   });
+
+  const maxTasksReached = useMaxTasksReached();
 
   const taskIndex = (taskId: string) =>
     project?.columns?.nodes
@@ -143,6 +146,8 @@ const List = ({
                   }),
                 });
               }}
+              // TODO: tooltip for disabled state
+              disabled={maxTasksReached}
             >
               <ColumnMenu columnId={column.rowId} />
             </ListTrigger>

@@ -34,6 +34,7 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
+import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
 
 const CreateTaskDialog = () => {
@@ -64,6 +65,8 @@ const CreateTaskDialog = () => {
 
   const { columnId, setColumnId } = useTaskStore();
 
+  const maxTasksReached = useMaxTasksReached();
+
   useHotkeys(
     Hotkeys.CreateTask,
     () =>
@@ -73,7 +76,8 @@ const CreateTaskDialog = () => {
           createTask: !createTask,
         }),
       }),
-    [navigate, createTask],
+    { enabled: !maxTasksReached },
+    [navigate, createTask, maxTasksReached],
   );
 
   const totalTasks = project?.columns?.nodes?.flatMap((column) =>
@@ -202,6 +206,8 @@ const CreateTaskDialog = () => {
       });
     },
   });
+
+  if (maxTasksReached) return null;
 
   return (
     <DialogRoot

@@ -28,6 +28,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { Role, useDeleteProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
+import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
@@ -62,6 +63,7 @@ const Projects = () => {
   const isMember = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();
+  const maxTasksReached = useMaxTasksReached();
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
@@ -214,6 +216,8 @@ const Projects = () => {
 
                           <MenuItem
                             value="add task"
+                            // TODO: add tooltip description for disabled state
+                            disabled={maxTasksReached}
                             onClick={() => {
                               navigate({
                                 to: "/workspaces/$workspaceSlug/projects/$projectSlug",

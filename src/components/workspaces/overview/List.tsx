@@ -15,6 +15,7 @@ import ListItem from "@/components/workspaces/overview/ListItem";
 import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
+import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
@@ -44,6 +45,8 @@ const List = ({ projects }: Props) => {
   });
 
   const isMember = role === Role.Member;
+
+  const maxProjectsReached = useMaxProjectsReached();
 
   const { data: projectColumns } = useQuery({
     ...projectColumnsOptions({ workspaceId: workspaceId!, search }),
@@ -80,6 +83,8 @@ const List = ({ projects }: Props) => {
               setIsCreateProjectDialogOpen(true);
             }}
             className={cn("hidden", !isMember && "inline-flex")}
+            // TODO: tooltip for disabled state
+            disabled={maxProjectsReached}
           />
 
           <CollapsibleContent className="rounded-b-lg">
