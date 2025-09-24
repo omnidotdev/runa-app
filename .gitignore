@@ -14,12 +14,6 @@ coverage
 .zed
 .rules
 
-# Claude Code
-CLAUDE.md
-.claude/
-claude-*
-claude_*
-
 # TLS/HTTPS
 certificates
 
