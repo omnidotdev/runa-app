@@ -74,14 +74,14 @@ const CreateComment = () => {
           selector={(state) => [
             state.canSubmit,
             state.isSubmitting,
-            state.isDirty,
+            state.isDefaultValue,
           ]}
         >
-          {([canSubmit, isSubmitting, isDirty]) => (
+          {([canSubmit, isSubmitting, isDefaultValue]) => (
             <Button
               type="submit"
               size="sm"
-              disabled={!canSubmit || isSubmitting || !isDirty}
+              disabled={!canSubmit || isSubmitting || isDefaultValue}
               className="active:scale-[0.97]"
             >
               <SendIcon className="size-3" />

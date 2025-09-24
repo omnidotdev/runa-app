@@ -26,7 +26,7 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
 
 const DEFAULT_PROJECT_COLUMNS = [
-  { title: "Planned", index: 0, emoji: "🗓️" },
+  { title: "Planned", index: 0, emoji: "🗓" },
   { title: "In Progress", index: 1, emoji: "🚧" },
   { title: "Completed", index: 2, emoji: "✅" },
 ];
@@ -222,13 +222,13 @@ const CreateWorkspaceDialog = () => {
                 selector={(state) => [
                   state.canSubmit,
                   state.isSubmitting,
-                  state.isDirty,
+                  state.isDefaultValue,
                 ]}
               >
-                {([canSubmit, isSubmitting, isDirty]) => (
+                {([canSubmit, isSubmitting, isDefaultValue]) => (
                   <Button
                     type="submit"
-                    disabled={!canSubmit || isSubmitting || !isDirty}
+                    disabled={!canSubmit || isSubmitting || isDefaultValue}
                   >
                     Create
                   </Button>

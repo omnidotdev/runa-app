@@ -124,14 +124,14 @@ const DestructiveActionDialog = ({
                 selector={(state) => [
                   state.canSubmit,
                   state.isSubmitting,
-                  state.isDirty,
+                  state.isDefaultValue,
                 ]}
               >
-                {([canSubmit, isSubmitting, isDirty]) => (
+                {([canSubmit, isSubmitting, isDefaultValue]) => (
                   <Button
                     type="submit"
                     variant="destructive"
-                    disabled={!canSubmit || isSubmitting || !isDirty}
+                    disabled={!canSubmit || isSubmitting || isDefaultValue}
                   >
                     Delete
                   </Button>

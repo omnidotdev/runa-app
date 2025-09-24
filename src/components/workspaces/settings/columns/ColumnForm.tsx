@@ -268,10 +268,10 @@ const ColumnForm = ({
           selector={(state) => [
             state.canSubmit,
             state.isSubmitting,
-            state.isDirty,
+            state.isDefaultValue,
           ]}
         >
-          {([canSubmit, isSubmitting, isDirty]) => (
+          {([canSubmit, isSubmitting, isDefaultValue]) => (
             <div className="ml-2 flex items-center justify-center">
               <Tooltip tooltip="Cancel">
                 <Button
@@ -294,7 +294,7 @@ const ColumnForm = ({
                   type="submit"
                   variant="ghost"
                   size="icon"
-                  disabled={!canSubmit || isSubmitting || !isDirty}
+                  disabled={!canSubmit || isSubmitting || isDefaultValue}
                   className="focus-visible:ring-offset-0"
                   aria-label="Save"
                 >

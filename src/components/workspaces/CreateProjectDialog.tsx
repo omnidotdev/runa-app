@@ -293,13 +293,13 @@ const CreateProjectDialog = () => {
                 selector={(state) => [
                   state.canSubmit,
                   state.isSubmitting,
-                  state.isDirty,
+                  state.isDefaultValue,
                 ]}
               >
-                {([canSubmit, isSubmitting, isDirty]) => (
+                {([canSubmit, isSubmitting, isDefaultValue]) => (
                   <Button
                     type="submit"
-                    disabled={!canSubmit || isSubmitting || !isDirty}
+                    disabled={!canSubmit || isSubmitting || isDefaultValue}
                     tabIndex={0}
                   >
                     Create

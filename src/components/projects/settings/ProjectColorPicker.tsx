@@ -163,10 +163,10 @@ const ProjectColorPicker = () => {
                   selector={(state) => [
                     state.canSubmit,
                     state.isSubmitting,
-                    state.isDirty,
+                    state.isDefaultValue,
                   ]}
                 >
-                  {([canSubmit, isSubmitting, isDirty]) => (
+                  {([canSubmit, isSubmitting, isDefaultValue]) => (
                     <div className="mt-4 flex justify-end gap-2">
                       <Button
                         variant="outline"
@@ -183,7 +183,7 @@ const ProjectColorPicker = () => {
                       <Button
                         type="submit"
                         size="sm"
-                        disabled={!canSubmit || isSubmitting || !isDirty}
+                        disabled={!canSubmit || isSubmitting || isDefaultValue}
                       >
                         Save
                       </Button>
