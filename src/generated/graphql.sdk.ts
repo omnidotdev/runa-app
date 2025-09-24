@@ -5153,6 +5153,38 @@ export type QueryWorkspacesArgs = {
   orderBy?: InputMaybe<Array<WorkspaceOrderBy>>;
 };
 
+export enum Role {
+  Admin = 'admin',
+  Member = 'member',
+  Owner = 'owner'
+}
+
+/** A filter to be used against Role fields. All fields are combined with a logical ‘and.’ */
+export type RoleFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Role>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Role>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Role>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Role>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Role>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Role>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Role>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Role>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Role>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Role>>;
+};
+
 /** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
 export type StringFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -7228,6 +7260,8 @@ export enum UserOrderBy {
   WorkspaceUsersCountDesc = 'WORKSPACE_USERS_COUNT_DESC',
   WorkspaceUsersDistinctCountCreatedAtAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_CREATED_AT_ASC',
   WorkspaceUsersDistinctCountCreatedAtDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_CREATED_AT_DESC',
+  WorkspaceUsersDistinctCountRoleAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_ROLE_ASC',
+  WorkspaceUsersDistinctCountRoleDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_ROLE_DESC',
   WorkspaceUsersDistinctCountUserIdAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_USER_ID_ASC',
   WorkspaceUsersDistinctCountUserIdDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_USER_ID_DESC',
   WorkspaceUsersDistinctCountWorkspaceIdAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
@@ -7962,6 +7996,8 @@ export enum WorkspaceOrderBy {
   WorkspaceUsersCountDesc = 'WORKSPACE_USERS_COUNT_DESC',
   WorkspaceUsersDistinctCountCreatedAtAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_CREATED_AT_ASC',
   WorkspaceUsersDistinctCountCreatedAtDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_CREATED_AT_DESC',
+  WorkspaceUsersDistinctCountRoleAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_ROLE_ASC',
+  WorkspaceUsersDistinctCountRoleDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_ROLE_DESC',
   WorkspaceUsersDistinctCountUserIdAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_USER_ID_ASC',
   WorkspaceUsersDistinctCountUserIdDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_USER_ID_DESC',
   WorkspaceUsersDistinctCountWorkspaceIdAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
@@ -8032,6 +8068,7 @@ export type WorkspaceUser = Node & {
   createdAt: Scalars['Datetime']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+  role: Role;
   /** Reads a single `User` that is related to this `WorkspaceUser`. */
   user?: Maybe<User>;
   userId: Scalars['UUID']['output'];
@@ -8062,6 +8099,8 @@ export type WorkspaceUserAggregatesFilter = {
 export type WorkspaceUserCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `role` field. */
+  role?: InputMaybe<Role>;
   /** Checks for equality with the object’s `userId` field. */
   userId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `workspaceId` field. */
@@ -8094,6 +8133,7 @@ export type WorkspaceUserConnectionGroupedAggregatesArgs = {
 
 export type WorkspaceUserDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
+  role?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
   workspaceId?: InputMaybe<BigIntFilter>;
 };
@@ -8102,6 +8142,8 @@ export type WorkspaceUserDistinctCountAggregates = {
   __typename?: 'WorkspaceUserDistinctCountAggregates';
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of role across the matching connection */
+  role?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of userId across the matching connection */
   userId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of workspaceId across the matching connection */
@@ -8127,6 +8169,8 @@ export type WorkspaceUserFilter = {
   not?: InputMaybe<WorkspaceUserFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<WorkspaceUserFilter>>;
+  /** Filter by the object’s `role` field. */
+  role?: InputMaybe<RoleFilter>;
   /** Filter by the object’s `user` relation. */
   user?: InputMaybe<UserFilter>;
   /** Filter by the object’s `userId` field. */
@@ -8142,6 +8186,7 @@ export enum WorkspaceUserGroupBy {
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Role = 'ROLE',
   UserId = 'USER_ID',
   WorkspaceId = 'WORKSPACE_ID'
 }
@@ -8200,6 +8245,7 @@ export type WorkspaceUserHavingVarianceSampleInput = {
 /** An input for mutations affecting `WorkspaceUser` */
 export type WorkspaceUserInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  role?: InputMaybe<Role>;
   userId: Scalars['UUID']['input'];
   workspaceId: Scalars['UUID']['input'];
 };
@@ -8211,6 +8257,8 @@ export enum WorkspaceUserOrderBy {
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RoleAsc = 'ROLE_ASC',
+  RoleDesc = 'ROLE_DESC',
   UserIdAsc = 'USER_ID_ASC',
   UserIdDesc = 'USER_ID_DESC',
   WorkspaceIdAsc = 'WORKSPACE_ID_ASC',
@@ -8220,6 +8268,7 @@ export enum WorkspaceUserOrderBy {
 /** Represents an update to a `WorkspaceUser`. Fields that are set will be updated. */
 export type WorkspaceUserPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  role?: InputMaybe<Role>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };

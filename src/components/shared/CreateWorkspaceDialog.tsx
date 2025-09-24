@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
+  Role,
   useCreateProjectColumnMutation,
   useCreateWorkspaceMutation,
   useCreateWorkspaceUserMutation,
@@ -73,6 +74,7 @@ const CreateWorkspaceDialog = () => {
             workspaceUser: {
               userId: session?.user?.rowId!,
               workspaceId: createWorkspace?.workspace?.rowId!,
+              role: Role.Owner,
             },
           },
         }),
