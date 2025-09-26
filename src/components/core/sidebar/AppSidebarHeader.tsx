@@ -15,7 +15,6 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import { SidebarHeader, SidebarMenuButton } from "@/components/ui/sidebar";
-import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import { cn } from "@/lib/utils";
@@ -38,10 +37,6 @@ const AppSidebarHeader = () => {
     }),
     enabled: !!workspaceId,
     select: (data) => data.workspace,
-  });
-
-  const { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
-    type: DialogType.CreateWorkspace,
   });
 
   return (
@@ -90,7 +85,11 @@ const AppSidebarHeader = () => {
         </MenuRoot>
       ) : (
         <SidebarMenuButton
-          onClick={() => setIsCreateWorkspaceOpen(true)}
+          onClick={() => {
+            navigate({
+              to: "/workspaces/create",
+            });
+          }}
           className="border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
         >
           <PlusIcon />

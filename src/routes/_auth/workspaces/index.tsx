@@ -4,8 +4,6 @@ import { LayersIcon, PlusIcon } from "lucide-react";
 
 import Link from "@/components/core/Link";
 import { Avatar } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import seo from "@/lib/util/seo";
 
@@ -28,10 +26,6 @@ function WorkspacesOverviewPage() {
     select: (data) => data?.workspaces?.nodes,
   });
 
-  const { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
-    type: DialogType.CreateWorkspace,
-  });
-
   return (
     <div className="flex h-full items-center justify-center p-12">
       <div className="w-full max-w-4xl">
@@ -43,14 +37,14 @@ function WorkspacesOverviewPage() {
               : "Create a workspace to get started"}
           </h1>
 
-          <Button
+          <Link
+            to="/workspaces/create"
             variant="outline"
             className="flex w-full border-primary border-dashed bg-primary/5 p-12 hover:bg-primary/5 active:scale-[0.99]"
-            onClick={() => setIsCreateWorkspaceOpen(true)}
           >
             <PlusIcon className="size-4" />
             Create New Workspace
-          </Button>
+          </Link>
         </div>
 
         {!!recentWorkspaces?.length && (

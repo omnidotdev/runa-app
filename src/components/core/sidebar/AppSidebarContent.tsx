@@ -119,9 +119,6 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
   const { setIsOpen: setIsCreateProjectOpen } = useDialogStore({
       type: DialogType.CreateProject,
     }),
-    { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
-      type: DialogType.CreateWorkspace,
-    }),
     { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({
       type: DialogType.DeleteProject,
     });
@@ -261,7 +258,9 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                   <SidebarGroupAction
                     onClick={(e) => {
                       e.stopPropagation();
-                      setIsCreateWorkspaceOpen(true);
+                      navigate({
+                        to: "/workspaces/create",
+                      });
                     }}
                   >
                     <PlusIcon />
