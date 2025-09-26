@@ -7895,7 +7895,6 @@ export type WorkspaceInput = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug: Scalars['String']['input'];
   subscriptionId?: InputMaybe<Scalars['UUID']['input']>;
-  tier?: InputMaybe<Tier>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
 };
@@ -8022,7 +8021,6 @@ export type WorkspacePatch = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   subscriptionId?: InputMaybe<Scalars['UUID']['input']>;
-  tier?: InputMaybe<Tier>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
 };
