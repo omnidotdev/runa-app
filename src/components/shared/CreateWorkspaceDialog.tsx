@@ -49,7 +49,7 @@ const CreateWorkspaceDialog = () => {
     [setIsCreateWorkspaceOpen, isCreateWorkspaceOpen],
   );
 
-  const { mutate: createTeamMember } = useCreateWorkspaceUserMutation();
+  const { mutateAsync: createTeamMember } = useCreateWorkspaceUserMutation();
 
   const { mutateAsync: createNewWorkspace } = useCreateWorkspaceMutation({
     meta: {
@@ -58,6 +58,17 @@ const CreateWorkspaceDialog = () => {
       ],
     },
     onSuccess: async ({ createWorkspace }) => {
+      // NB: important to create team member first, as being an "owner" is required to create project columns
+      await createTeamMember({
+        input: {
+          workspaceUser: {
+            userId: session?.user?.rowId!,
+            workspaceId: createWorkspace?.workspace?.rowId!,
+            role: Role.Owner,
+          },
+        },
+      });
+
       await Promise.all([
         ...DEFAULT_PROJECT_COLUMNS.map((column) =>
           createProjectColumn({
@@ -69,15 +80,6 @@ const CreateWorkspaceDialog = () => {
             },
           }),
         ),
-        createTeamMember({
-          input: {
-            workspaceUser: {
-              userId: session?.user?.rowId!,
-              workspaceId: createWorkspace?.workspace?.rowId!,
-              role: Role.Owner,
-            },
-          },
-        }),
       ]);
 
       navigate({

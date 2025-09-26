@@ -7632,6 +7632,7 @@ export type Workspace = Node & {
   projects: ProjectConnection;
   rowId: Scalars['UUID']['output'];
   slug: Scalars['String']['output'];
+  subscriptionId?: Maybe<Scalars['UUID']['output']>;
   tier: Tier;
   updatedAt: Scalars['Datetime']['output'];
   viewMode: Scalars['String']['output'];
@@ -7707,6 +7708,8 @@ export type WorkspaceCondition = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `slug` field. */
   slug?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `subscriptionId` field. */
+  subscriptionId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `tier` field. */
   tier?: InputMaybe<Tier>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -7749,6 +7752,8 @@ export type WorkspaceDistinctCountAggregates = {
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of slug across the matching connection */
   slug?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of subscriptionId across the matching connection */
+  subscriptionId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of tier across the matching connection */
   tier?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -7794,6 +7799,8 @@ export type WorkspaceFilter = {
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `slug` field. */
   slug?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `subscriptionId` field. */
+  subscriptionId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `tier` field. */
   tier?: InputMaybe<TierFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -7812,6 +7819,7 @@ export enum WorkspaceGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Name = 'NAME',
+  SubscriptionId = 'SUBSCRIPTION_ID',
   Tier = 'TIER',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -7885,6 +7893,7 @@ export type WorkspaceInput = {
   name: Scalars['String']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug: Scalars['String']['input'];
+  subscriptionId?: InputMaybe<Scalars['UUID']['input']>;
   tier?: InputMaybe<Tier>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
@@ -7985,6 +7994,8 @@ export enum WorkspaceOrderBy {
   RowIdDesc = 'ROW_ID_DESC',
   SlugAsc = 'SLUG_ASC',
   SlugDesc = 'SLUG_DESC',
+  SubscriptionIdAsc = 'SUBSCRIPTION_ID_ASC',
+  SubscriptionIdDesc = 'SUBSCRIPTION_ID_DESC',
   TierAsc = 'TIER_ASC',
   TierDesc = 'TIER_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -8009,6 +8020,7 @@ export type WorkspacePatch = {
   name?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
+  subscriptionId?: InputMaybe<Scalars['UUID']['input']>;
   tier?: InputMaybe<Tier>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
