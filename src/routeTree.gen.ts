@@ -16,7 +16,6 @@ import { Route as AuthConfirmationRouteImport } from './routes/_auth/confirmatio
 import { Route as AnonPricingRouteImport } from './routes/_anon/pricing'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as AuthWorkspacesCreateRouteImport } from './routes/_auth/workspaces/create'
 import { Route as AuthProfileUserIdRouteImport } from './routes/_auth/profile/$userId'
 import { Route as AuthWorkspacesWorkspaceSlugSettingsRouteImport } from './routes/_auth/workspaces/$workspaceSlug/settings'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/index'
@@ -56,11 +55,6 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthWorkspacesCreateRoute = AuthWorkspacesCreateRouteImport.update({
-  id: '/workspaces/create',
-  path: '/workspaces/create',
-  getParentRoute: () => AuthRoute,
 } as any)
 const AuthProfileUserIdRoute = AuthProfileUserIdRouteImport.update({
   id: '/profile/$userId',
@@ -103,7 +97,6 @@ export interface FileRoutesByFullPath {
   '/confirmation': typeof AuthConfirmationRoute
   '/': typeof AnonIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
-  '/workspaces/create': typeof AuthWorkspacesCreateRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
@@ -117,7 +110,6 @@ export interface FileRoutesByTo {
   '/confirmation': typeof AuthConfirmationRoute
   '/': typeof AnonIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
-  '/workspaces/create': typeof AuthWorkspacesCreateRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
@@ -134,7 +126,6 @@ export interface FileRoutesById {
   '/_auth/confirmation': typeof AuthConfirmationRoute
   '/_anon/': typeof AnonIndexRoute
   '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
-  '/_auth/workspaces/create': typeof AuthWorkspacesCreateRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
   '/_auth/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
@@ -150,7 +141,6 @@ export interface FileRouteTypes {
     | '/confirmation'
     | '/'
     | '/profile/$userId'
-    | '/workspaces/create'
     | '/api/auth/$'
     | '/workspaces'
     | '/workspaces/$workspaceSlug/settings'
@@ -164,7 +154,6 @@ export interface FileRouteTypes {
     | '/confirmation'
     | '/'
     | '/profile/$userId'
-    | '/workspaces/create'
     | '/api/auth/$'
     | '/workspaces'
     | '/workspaces/$workspaceSlug/settings'
@@ -180,7 +169,6 @@ export interface FileRouteTypes {
     | '/_auth/confirmation'
     | '/_anon/'
     | '/_auth/profile/$userId'
-    | '/_auth/workspaces/create'
     | '/api/auth/$'
     | '/_auth/workspaces/'
     | '/_auth/workspaces/$workspaceSlug/settings'
@@ -247,13 +235,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/workspaces/create': {
-      id: '/_auth/workspaces/create'
-      path: '/workspaces/create'
-      fullPath: '/workspaces/create'
-      preLoaderRoute: typeof AuthWorkspacesCreateRouteImport
-      parentRoute: typeof AuthRoute
-    }
     '/_auth/profile/$userId': {
       id: '/_auth/profile/$userId'
       path: '/profile/$userId'
@@ -314,7 +295,6 @@ const AnonRouteWithChildren = AnonRoute._addFileChildren(AnonRouteChildren)
 interface AuthRouteChildren {
   AuthConfirmationRoute: typeof AuthConfirmationRoute
   AuthProfileUserIdRoute: typeof AuthProfileUserIdRoute
-  AuthWorkspacesCreateRoute: typeof AuthWorkspacesCreateRoute
   AuthWorkspacesIndexRoute: typeof AuthWorkspacesIndexRoute
   AuthWorkspacesWorkspaceSlugSettingsRoute: typeof AuthWorkspacesWorkspaceSlugSettingsRoute
   AuthWorkspacesWorkspaceSlugProjectsIndexRoute: typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
@@ -326,7 +306,6 @@ interface AuthRouteChildren {
 const AuthRouteChildren: AuthRouteChildren = {
   AuthConfirmationRoute: AuthConfirmationRoute,
   AuthProfileUserIdRoute: AuthProfileUserIdRoute,
-  AuthWorkspacesCreateRoute: AuthWorkspacesCreateRoute,
   AuthWorkspacesIndexRoute: AuthWorkspacesIndexRoute,
   AuthWorkspacesWorkspaceSlugSettingsRoute:
     AuthWorkspacesWorkspaceSlugSettingsRoute,
