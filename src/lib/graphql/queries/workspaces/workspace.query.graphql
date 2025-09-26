@@ -5,6 +5,7 @@ query Workspace($rowId: UUID!, $userId: UUID!) {
     slug
     viewMode
     tier
+    subscriptionId
     workspaceUsers(condition: { userId: $userId }) {
       nodes {
         role

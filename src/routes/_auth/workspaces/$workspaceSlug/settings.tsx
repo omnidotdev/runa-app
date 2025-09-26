@@ -205,6 +205,7 @@ function SettingsPage() {
               variant="destructive"
               className="w-fit text-background"
               onClick={() => setIsDeleteWorkspaceOpen(true)}
+              disabled={!workspace?.subscriptionId}
             >
               Delete Workspace
             </Button>
