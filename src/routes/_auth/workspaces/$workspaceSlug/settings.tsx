@@ -27,6 +27,7 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
+import { getSubscription } from "@/server/getSubscription";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
@@ -36,13 +37,20 @@ export const Route = createFileRoute(
       throw notFound();
     }
 
-    await queryClient.ensureQueryData(
-      projectColumnsOptions({
-        workspaceId: workspaceBySlug.rowId!,
-      }),
-    );
+    const [subscription] = await Promise.all([
+      getSubscription({ data: { id: workspaceBySlug.subscriptionId! } }),
+      queryClient.ensureQueryData(
+        projectColumnsOptions({
+          workspaceId: workspaceBySlug.rowId!,
+        }),
+      ),
+    ]);
 
-    return { name: workspaceBySlug.name, workspaceId: workspaceBySlug.rowId };
+    return {
+      name: workspaceBySlug.name,
+      workspaceId: workspaceBySlug.rowId,
+      subscription,
+    };
   },
   head: ({ loaderData }) => ({
     meta: loaderData
@@ -55,10 +63,10 @@ export const Route = createFileRoute(
 
 function SettingsPage() {
   const { session } = Route.useRouteContext();
-  const { workspaceId } = Route.useLoaderData();
-
+  const { workspaceId, subscription } = Route.useLoaderData();
   const { workspaceSlug } = Route.useParams();
   const navigate = Route.useNavigate();
+
   const [nameError, setNameError] = useState<string | null>(null);
 
   const { data: workspace } = useSuspenseQuery({
@@ -194,10 +202,32 @@ function SettingsPage() {
 
         <div
           className={cn(
-            "ml-2 hidden flex-col gap-4 lg:ml-0",
+            "ml-2 hidden flex-col gap-8 lg:ml-0",
             isOwner && "flex",
           )}
         >
+          <div className="flex flex-col gap-4">
+            <h3 className="font-medium text-sm">Manage Subscription</h3>
+
+            <div className="rounded-lg border border-border bg-card p-4">
+              <h4 className="mb-3 font-medium text-muted-foreground text-sm">
+                Current Plan Benefits
+              </h4>
+              <ul className="space-y-2">
+                {subscription.product.benefits.map((benefit) => (
+                  <li key={benefit.id} className="flex items-center gap-2">
+                    <div className="size-1.5 flex-shrink-0 rounded-full bg-primary" />
+                    <span className="text-sm leading-relaxed">
+                      {benefit.description}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/** TODO: add logic for managing subscription. Any updates required for the `tier` in the db should be done in the webhook handler */}
+            <Button className="w-fit">Upgrade Subscription</Button>
+          </div>
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Danger Zone</h3>
 

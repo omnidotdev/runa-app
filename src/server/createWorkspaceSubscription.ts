@@ -14,6 +14,7 @@ export const createWorkspaceSubscription = createServerFn({ method: "POST" })
   .inputValidator((data) => createWorkspaceSubscriptionSchema.parse(data))
   .handler(async ({ data }) => {
     const checkout = await polar.checkouts.create({
+      // TODO: conditionalize
       products: [SandboxFree.Free],
       externalCustomerId: data.hidraId,
       metadata: {

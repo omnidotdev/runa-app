@@ -8679,7 +8679,7 @@ export type WorkspaceBySlugQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceBySlugQuery = { __typename?: 'Query', workspaceBySlug?: { __typename?: 'Workspace', name: string, rowId: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string }> } } | null };
+export type WorkspaceBySlugQuery = { __typename?: 'Query', workspaceBySlug?: { __typename?: 'Workspace', name: string, rowId: string, subscriptionId?: string | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string }> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -10831,6 +10831,7 @@ export const WorkspaceBySlugDocument = `
   workspaceBySlug(slug: $slug) {
     name
     rowId
+    subscriptionId
     projects(condition: {slug: $projectSlug}) {
       nodes {
         name
