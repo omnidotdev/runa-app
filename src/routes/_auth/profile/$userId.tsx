@@ -14,7 +14,6 @@ import {
 import { useState } from "react";
 import { match, P } from "ts-pattern";
 
-import UpgradeSubscriptionDialog from "@/components/profile/UpgradeSubscriptionDialog";
 import {
   AvatarFallback,
   AvatarImage,
@@ -821,9 +820,9 @@ function RouteComponent() {
         </div>
       </div>
 
-      {upgradeProducts && (
-        <UpgradeSubscriptionDialog products={upgradeProducts} />
-      )}
+      {/* {upgradeProducts && ( */}
+      {/*   <UpgradeSubscriptionDialog products={upgradeProducts} /> */}
+      {/* )} */}
     </div>
   );
 }

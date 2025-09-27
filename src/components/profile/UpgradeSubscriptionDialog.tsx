@@ -28,16 +28,18 @@ import { upgradeSubscription } from "@/server/upgradeSubscription";
 
 import type { Product } from "@polar-sh/sdk/models/components/product.js";
 import type { ProductPriceFixed } from "@polar-sh/sdk/models/components/productpricefixed.js";
+import type { Subscription } from "@polar-sh/sdk/models/components/subscription.js";
 
 interface Props {
+  subscription: Subscription;
   products: Product[];
 }
 
-const UpgradeSubscriptionDialog = ({ products }: Props) => {
+const UpgradeSubscriptionDialog = ({ subscription, products }: Props) => {
   const handleUpgradeSubscription = useServerFn(upgradeSubscription);
 
   const { session } = useRouteContext({
-    from: "/_auth/profile/$userId",
+    from: "/_auth",
   });
 
   const [productId, setProductId] = useState(products[0].id);
@@ -48,23 +50,11 @@ const UpgradeSubscriptionDialog = ({ products }: Props) => {
     type: DialogType.UpgradeSubscription,
   });
 
-  const {
-    subscriptionId,
-    setSubscriptionId,
-    isProductUpdating,
-    setIsProductUpdating,
-  } = useSubscriptionStore();
+  const { isProductUpdating, setIsProductUpdating } = useSubscriptionStore();
 
-  if (!subscriptionId) return null;
-
+  // TODO: revamp how products are displayed and handled with updates to moving subscription management to workspace level
   return (
-    <DialogRoot
-      open={isOpen}
-      onOpenChange={({ open }) => setIsOpen(open)}
-      onExitComplete={() => {
-        setSubscriptionId(null);
-      }}
-    >
+    <DialogRoot open={isOpen} onOpenChange={({ open }) => setIsOpen(open)}>
       <DialogBackdrop />
       <DialogPositioner>
         <DialogContent>
@@ -154,7 +144,7 @@ const UpgradeSubscriptionDialog = ({ products }: Props) => {
                   await handleUpgradeSubscription({
                     data: {
                       hidraId: session?.user.hidraId!,
-                      subscriptionId,
+                      subscriptionId: subscription.id,
                       productId: productId!,
                     },
                   });

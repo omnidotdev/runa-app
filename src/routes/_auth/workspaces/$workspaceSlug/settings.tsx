@@ -9,6 +9,7 @@ import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
+import UpgradeSubscriptionDialog from "@/components/profile/UpgradeSubscriptionDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import WorkspaceColumnsForm from "@/components/workspaces/settings/columns/WorkspaceColumnsForm";
@@ -27,6 +28,7 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
+import { fetchRunaProducts } from "@/server/fetchRunaProducts";
 import { getSubscription } from "@/server/getSubscription";
 
 export const Route = createFileRoute(
@@ -37,8 +39,9 @@ export const Route = createFileRoute(
       throw notFound();
     }
 
-    const [subscription] = await Promise.all([
+    const [subscription, { products }] = await Promise.all([
       getSubscription({ data: { id: workspaceBySlug.subscriptionId! } }),
+      fetchRunaProducts(),
       queryClient.ensureQueryData(
         projectColumnsOptions({
           workspaceId: workspaceBySlug.rowId!,
@@ -50,6 +53,7 @@ export const Route = createFileRoute(
       name: workspaceBySlug.name,
       workspaceId: workspaceBySlug.rowId,
       subscription,
+      products,
     };
   },
   head: ({ loaderData }) => ({
@@ -63,7 +67,7 @@ export const Route = createFileRoute(
 
 function SettingsPage() {
   const { session } = Route.useRouteContext();
-  const { workspaceId, subscription } = Route.useLoaderData();
+  const { workspaceId, subscription, products } = Route.useLoaderData();
   const { workspaceSlug } = Route.useParams();
   const navigate = Route.useNavigate();
 
@@ -121,6 +125,10 @@ function SettingsPage() {
 
   const { setIsOpen: setIsDeleteWorkspaceOpen } = useDialogStore({
     type: DialogType.DeleteWorkspace,
+  });
+
+  const { setIsOpen: setIsUpgradeSubscriptionOpen } = useDialogStore({
+    type: DialogType.UpgradeSubscription,
   });
 
   const { mutate: updateWorkspace } = useUpdateWorkspaceMutation({
@@ -225,8 +233,13 @@ function SettingsPage() {
               </ul>
             </div>
 
-            {/** TODO: add logic for managing subscription. Any updates required for the `tier` in the db should be done in the webhook handler */}
-            <Button className="w-fit">Upgrade Subscription</Button>
+            {/** TODO: adjust logic for managing subscription. Any updates required for the `tier` in the db should be done in the webhook handler */}
+            <Button
+              className="w-fit"
+              onClick={() => setIsUpgradeSubscriptionOpen(true)}
+            >
+              Update Subscription
+            </Button>
           </div>
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Danger Zone</h3>
@@ -259,6 +272,11 @@ function SettingsPage() {
           }}
           dialogType={DialogType.DeleteWorkspace}
           confirmation={`Permanently delete ${workspace?.name}`}
+        />
+
+        <UpgradeSubscriptionDialog
+          subscription={subscription}
+          products={products}
         />
       </div>
     </div>
