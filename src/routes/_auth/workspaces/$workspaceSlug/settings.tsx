@@ -20,6 +20,7 @@ import {
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
+import { API_BASE_URL } from "@/lib/config/env.config";
 import getSdk from "@/lib/graphql/getSdk";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
@@ -28,18 +29,20 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
+import { fetchAuthenticatedCustomer } from "@/server/fetchAuthenticatedCustomer";
 import { fetchRunaProducts } from "@/server/fetchRunaProducts";
 import { getSubscription } from "@/server/getSubscription";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
 )({
-  loader: async ({ context: { queryClient, workspaceBySlug } }) => {
+  loader: async ({ context: { queryClient, workspaceBySlug, session } }) => {
     if (!workspaceBySlug) {
       throw notFound();
     }
 
-    const [subscription, { products }] = await Promise.all([
+    const [customer, subscription, { products }] = await Promise.all([
+      fetchAuthenticatedCustomer({ data: { hidraId: session?.user.hidraId! } }),
       getSubscription({ data: { id: workspaceBySlug.subscriptionId! } }),
       fetchRunaProducts(),
       queryClient.ensureQueryData(
@@ -54,6 +57,7 @@ export const Route = createFileRoute(
       workspaceId: workspaceBySlug.rowId,
       subscription,
       products,
+      customer,
     };
   },
   head: ({ loaderData }) => ({
@@ -67,7 +71,8 @@ export const Route = createFileRoute(
 
 function SettingsPage() {
   const { session } = Route.useRouteContext();
-  const { workspaceId, subscription, products } = Route.useLoaderData();
+  const { workspaceId, customer, subscription, products } =
+    Route.useLoaderData();
   const { workspaceSlug } = Route.useParams();
   const navigate = Route.useNavigate();
 
@@ -237,9 +242,30 @@ function SettingsPage() {
             <Button
               className="w-fit"
               onClick={() => setIsUpgradeSubscriptionOpen(true)}
+              disabled={
+                !customer?.defaultPaymentMethodId || !customer?.billingAddress
+              }
             >
               Update Subscription
             </Button>
+            {(!customer?.defaultPaymentMethodId ||
+              !customer.billingAddress) && (
+              <p className="mt-2 text-xs">
+                Please add a payment method to update your subscription. This
+                can be done through the Billing tab of your{" "}
+                <span>
+                  <a
+                    href={`${API_BASE_URL}/portal?customerId=${customer?.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary underline"
+                  >
+                    customer portal
+                  </a>
+                </span>
+                .
+              </p>
+            )}
           </div>
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Danger Zone</h3>

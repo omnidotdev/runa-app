@@ -152,7 +152,6 @@ const UpgradeSubscriptionDialog = ({ subscription, products }: Props) => {
     );
   };
 
-  // TODO: revamp how products are displayed and handled with updates to moving subscription management to workspace level
   return (
     <DialogRoot open={isOpen} onOpenChange={({ open }) => setIsOpen(open)}>
       <DialogBackdrop />
@@ -168,7 +167,6 @@ const UpgradeSubscriptionDialog = ({ subscription, products }: Props) => {
             <TabsRoot
               deselectable={false}
               defaultValue={currentSubscription.tier || "Free"}
-              value={selectedTier || undefined}
               onValueChange={({ value }) => {
                 const tier = value as "Free" | "Basic" | "Team";
                 setSelectedTier(tier);
@@ -222,15 +220,10 @@ const UpgradeSubscriptionDialog = ({ subscription, products }: Props) => {
                         <div className="flex items-center gap-3">
                           <RadioGroupItemControl />
                           <RadioGroupItemText>
-                            <div>
-                              <p className="font-medium">
-                                Free{" "}
-                                {isCurrentSubscription("Free") && "(Current)"}
-                              </p>
-                              <p className="text-muted-foreground text-sm">
-                                Forever free
-                              </p>
-                            </div>
+                            <p className="font-medium">
+                              Free{" "}
+                              {isCurrentSubscription("Free") && "(Current)"}
+                            </p>
                           </RadioGroupItemText>
                         </div>
                         <div className="text-right">
@@ -533,6 +526,7 @@ const UpgradeSubscriptionDialog = ({ subscription, products }: Props) => {
 
                   const toastId = toast.loading("Upgrading subscription...");
 
+                  // TODO: figure out the issue with this. Keep getting SDK error
                   await handleUpgradeSubscription({
                     data: {
                       hidraId: session?.user.hidraId!,

@@ -23,7 +23,7 @@ export const fetchAuthenticatedCustomer = createServerFn({
         customerSession: session.token,
       });
 
-      return { defaultPaymentMethodId: result.defaultPaymentMethodId };
+      return result;
     } catch {
       return null;
     }
