@@ -44,7 +44,7 @@ interface Props {
 const UpgradeSubscriptionDialog = ({ subscription, products }: Props) => {
   const handleUpgradeSubscription = useServerFn(upgradeSubscription);
 
-  const { session } = useRouteContext({
+  const { session, queryClient } = useRouteContext({
     from: "/_auth",
   });
 
@@ -543,6 +543,7 @@ const UpgradeSubscriptionDialog = ({ subscription, products }: Props) => {
                     });
                     await router.invalidate({ sync: true });
                     setIsProductUpdating(false);
+                    queryClient.invalidateQueries();
                   }, 1500);
                 }}
               >

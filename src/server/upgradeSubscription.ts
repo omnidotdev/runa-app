@@ -18,19 +18,12 @@ export const upgradeSubscription = createServerFn({
     upgradeSubscriptionSchema.parse(data),
   )
   .handler(async ({ data }) => {
-    const session = await polar.customerSessions.create({
-      externalCustomerId: data.hidraId,
-    });
-
-    const result = await polar.customerPortal.subscriptions.update(
-      { customerSession: session.token },
-      {
-        id: data.subscriptionId,
-        customerSubscriptionUpdate: {
-          productId: data.productId,
-        },
+    const result = await polar.subscriptions.update({
+      id: data.subscriptionId,
+      subscriptionUpdate: {
+        productId: data.productId,
       },
-    );
+    });
 
     return result;
   });
