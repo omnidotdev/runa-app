@@ -4,6 +4,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AlertTriangle, Building2, LogOut, Settings } from "lucide-react";
 import { useState } from "react";
 
+import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
+import Link from "@/components/core/Link";
 import {
   AvatarFallback,
   AvatarImage,
@@ -49,12 +51,16 @@ import {
   useCreateUserPreferenceMutation,
   useCreateWorkspaceUserMutation,
   useDeleteInvitationMutation,
+  useDeleteWorkspaceMutation,
 } from "@/generated/graphql";
 import { signOut } from "@/lib/auth/signOut";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import invitationsOptions from "@/lib/options/invitations.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import seo from "@/lib/util/seo";
+
+import type { Workspace } from "@/generated/graphql";
 
 export const Route = createFileRoute("/_auth/profile/$userId")({
   head: () => ({
@@ -69,8 +75,15 @@ function RouteComponent() {
   >(undefined);
   const [reasonForLeavingComment, setReasonForLeavingComment] =
     useState<string>("");
+  const [workspaceToDelete, setWorkspaceToDelete] = useState<
+    Partial<Workspace> | undefined
+  >(undefined);
 
   const { session } = Route.useRouteContext();
+
+  const { setIsOpen: setIsDeleteWorkspaceOpen } = useDialogStore({
+    type: DialogType.DeleteWorkspace,
+  });
 
   const { data: invitations } = useSuspenseQuery({
     ...invitationsOptions({ email: session?.user.email! }),
@@ -90,6 +103,14 @@ function RouteComponent() {
     },
   });
   const { mutateAsync: acceptInvitation } = useCreateWorkspaceUserMutation();
+  const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
+    meta: {
+      invalidates: [
+        workspacesOptions({ userId: session?.user.rowId! }).queryKey,
+      ],
+    },
+    onSettled: () => setIsDeleteWorkspaceOpen(false),
+  });
 
   return (
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
@@ -130,9 +151,7 @@ function RouteComponent() {
             <TabsRoot defaultValue="account">
               <TabsList>
                 <TabsTrigger value="account">Account</TabsTrigger>
-                <TabsTrigger value="customization" disabled>
-                  Customization
-                </TabsTrigger>
+                <TabsTrigger value="customization">Customization</TabsTrigger>
               </TabsList>
               <TabsContent value="account">
                 <div className="mt-4 space-y-8">
@@ -178,22 +197,33 @@ function RouteComponent() {
                               </TableCell>
                               <TableCell className="py-4 pr-3 text-right">
                                 <div className="flex justify-end gap-2">
-                                  <Button
+                                  <Link
+                                    to="/workspaces/$workspaceSlug/settings"
+                                    params={{ workspaceSlug: workspace.slug }}
                                     variant="outline"
                                     size="sm"
                                     className="hover:border-green-200 hover:bg-green-50 hover:text-green-700 dark:hover:border-green-800 dark:hover:bg-green-950 dark:hover:text-green-300"
                                   >
                                     Settings
-                                  </Button>
+                                  </Link>
                                   {workspace.currentUser.nodes[0].role ===
                                     Role.Owner && (
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
-                                    >
-                                      Remove
-                                    </Button>
+                                    <div className="justify-center">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
+                                        onClick={() => {
+                                          // TODO: figure out coercion issues here. This is way too verbose and at the end of the day, unsafe. We should not have to define fragments for every use case where we need to set an explicit type
+                                          setWorkspaceToDelete(
+                                            workspace as unknown as Partial<Workspace>,
+                                          );
+                                          setIsDeleteWorkspaceOpen(true);
+                                        }}
+                                      >
+                                        Remove
+                                      </Button>
+                                    </div>
                                   )}
                                 </div>
                               </TableCell>
@@ -434,7 +464,7 @@ function RouteComponent() {
                       <h3 className="mb-3 font-bold text-xl">Coming Soon</h3>
                       <p className="mx-auto max-w-md text-muted-foreground text-sm leading-relaxed">
                         Customization options will be available in a future
-                        update. You'll be able to personalize your workspace,
+                        update. You'll be able to personalize your workspaces,
                         themes, and preferences.
                       </p>
                     </div>
@@ -445,6 +475,27 @@ function RouteComponent() {
           </div>
         </div>
       </div>
+      {workspaceToDelete && (
+        <DestructiveActionDialog
+          title="Danger Zone"
+          description={
+            <span>
+              This will delete{" "}
+              <strong className="font-medium text-base-900 dark:text-base-100">
+                {workspaceToDelete?.name}
+              </strong>{" "}
+              and all associated data. This action cannot be undone.
+            </span>
+          }
+          onConfirm={() => {
+            deleteWorkspace({
+              rowId: workspaceToDelete?.rowId!,
+            });
+          }}
+          dialogType={DialogType.DeleteWorkspace}
+          confirmation={`Permanently delete ${workspaceToDelete?.name}`}
+        />
+      )}
     </div>
   );
 }
