@@ -9,6 +9,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -44,12 +45,14 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import {
+  Role,
   useCreateUserPreferenceMutation,
   useCreateWorkspaceUserMutation,
   useDeleteInvitationMutation,
 } from "@/generated/graphql";
 import { signOut } from "@/lib/auth/signOut";
 import invitationsOptions from "@/lib/options/invitations.options";
+import workspacesOptions from "@/lib/options/workspaces.options";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import seo from "@/lib/util/seo";
 
@@ -74,6 +77,11 @@ function RouteComponent() {
     select: (data) => data?.invitations?.nodes ?? [],
   });
 
+  const { data: workspaces } = useSuspenseQuery({
+    ...workspacesOptions({ userId: session?.user.rowId! }),
+    select: (data) => data.workspaces?.nodes,
+  });
+
   const { mutateAsync: createUserPreferences } =
     useCreateUserPreferenceMutation();
   const { mutateAsync: deleteInvation } = useDeleteInvitationMutation({
@@ -89,25 +97,15 @@ function RouteComponent() {
         <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-12">
           <div className="xl:col-span-4">
             <div className="mb-8 flex flex-col items-center gap-6 rounded-2xl p-6">
-              <div className="relative">
-                <AvatarRoot className="size-28 ring-4 ring-primary/10">
-                  <AvatarImage
-                    src={session?.user.image ?? undefined}
-                    alt={session?.user.username}
-                  />
-                  <AvatarFallback className="font-semibold text-2xl">
-                    {session?.user.username?.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </AvatarRoot>
-                <Button
-                  variant="destructive"
-                  className="absolute right-0 bottom-0 size-8 rounded-full border-2 border-background p-0 text-background has-[>svg]:px-0"
-                  onClick={signOut}
-                  aria-label="Sign out"
-                >
-                  <LogOut className="size-4" />
-                </Button>
-              </div>
+              <AvatarRoot className="size-28 ring-4 ring-primary/10">
+                <AvatarImage
+                  src={session?.user.image ?? undefined}
+                  alt={session?.user.username}
+                />
+                <AvatarFallback className="font-semibold text-2xl">
+                  {session?.user.username?.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </AvatarRoot>
               <div className="text-center">
                 <h2 className="font-bold text-xl tracking-tight">
                   {session?.user.name}
@@ -115,6 +113,15 @@ function RouteComponent() {
                 <p className="mt-1 text-muted-foreground text-sm">
                   {session?.user.email}
                 </p>
+                <Button
+                  variant="destructive"
+                  className="mt-4"
+                  onClick={signOut}
+                  aria-label="Sign out"
+                >
+                  <LogOut className="size-4" />
+                  Sign Out
+                </Button>
               </div>
             </div>
           </div>
@@ -129,11 +136,79 @@ function RouteComponent() {
               </TabsList>
               <TabsContent value="account">
                 <div className="mt-4 space-y-8">
-                  {!!invitations.length && (
-                    <div className="space-y-4">
-                      <h2 className="font-bold text-lg">
-                        Workspace Invitations
-                      </h2>
+                  <div className="space-y-4">
+                    <h2 className="font-bold text-lg">Current Workspaces</h2>
+                    {workspaces?.length ? (
+                      <Table containerProps="rounded-md border">
+                        <TableHeader>
+                          <TableRow className="bg-muted hover:bg-muted">
+                            <TableHead className="pl-3 font-semibold">
+                              Workspace
+                            </TableHead>
+                            <TableHead className="font-semibold">
+                              Role
+                            </TableHead>
+                            <TableHead className="pr-3 text-right font-semibold">
+                              Actions
+                            </TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {workspaces.map((workspace) => (
+                            <TableRow
+                              key={workspace.rowId}
+                              className="hover:bg-background"
+                            >
+                              <TableCell className="py-4 pl-3">
+                                <div className="flex items-center gap-3">
+                                  <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
+                                    <Building2 className="size-4 text-primary" />
+                                  </div>
+                                  <span className="font-medium">
+                                    {workspace.name}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell className="py-4 pl-1">
+                                <Badge>
+                                  {firstLetterToUppercase(
+                                    workspace.currentUser.nodes[0].role,
+                                  )}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="py-4 pr-3 text-right">
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="hover:border-green-200 hover:bg-green-50 hover:text-green-700 dark:hover:border-green-800 dark:hover:bg-green-950 dark:hover:text-green-300"
+                                  >
+                                    Settings
+                                  </Button>
+                                  {workspace.currentUser.nodes[0].role ===
+                                    Role.Owner && (
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
+                                    >
+                                      Remove
+                                    </Button>
+                                  )}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    ) : (
+                      "No current workspaces"
+                    )}
+                  </div>
+
+                  <div className="space-y-4">
+                    <h2 className="font-bold text-lg">Workspace Invitations</h2>
+                    {invitations.length ? (
                       <Table containerProps="rounded-md border">
                         <TableHeader>
                           <TableRow className="bg-muted hover:bg-muted">
@@ -230,8 +305,10 @@ function RouteComponent() {
                           ))}
                         </TableBody>
                       </Table>
-                    </div>
-                  )}
+                    ) : (
+                      "No current invitations"
+                    )}
+                  </div>
 
                   <div className="mt-8 rounded-xl border border-destructive/20 bg-destructive/5 p-6">
                     <div className="flex flex-col gap-4">

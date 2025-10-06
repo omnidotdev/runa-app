@@ -11,6 +11,11 @@ query Workspaces($userId: UUID!, $limit: Int) {
       workspaceUsers {
         totalCount
       }
+      currentUser: workspaceUsers(condition: { userId: $userId }) {
+        nodes {
+          role
+        }
+      }
     }
   }
 }
