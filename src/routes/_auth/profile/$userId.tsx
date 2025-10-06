@@ -232,7 +232,13 @@ function RouteComponent() {
                         </TableBody>
                       </Table>
                     ) : (
-                      "No current workspaces"
+                      <div className="flex flex-col gap-2">
+                        <p>
+                          No current workspaces. Create a workspace to get
+                          started.
+                        </p>
+                        <Button className="w-fit">Create Workspace</Button>
+                      </div>
                     )}
                   </div>
 
