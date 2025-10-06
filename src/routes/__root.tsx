@@ -121,8 +121,6 @@ function RootDocument({
               name: "Tanstack Query",
               render: <ReactQueryDevtoolsPanel />,
             },
-            // TODO: configure appropriately. Get max listeners warning on certain pages
-            // FormDevtoolsPlugin(),
             {
               name: "Studio",
               render: () => (

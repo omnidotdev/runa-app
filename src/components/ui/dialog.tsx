@@ -111,7 +111,6 @@ const DialogCloseTrigger = ({
 
 export {
   DialogRoot,
-  /** @knipignore */
   DialogTrigger,
   DialogBackdrop,
   DialogPositioner,

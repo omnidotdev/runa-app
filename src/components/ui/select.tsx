@@ -195,6 +195,7 @@ const SelectSeparator = ({
 
 export {
   Select,
+  /** @knipignore */
   SelectRoot,
   SelectRootProvider,
   /** @knipignore */
@@ -205,7 +206,9 @@ export {
   SelectTrigger,
   /** @knipignore */
   SelectValueText,
+  /** @knipignore */
   SelectIndicator,
+  /** @knipignore */
   SelectClearTrigger,
   SelectPositioner,
   SelectContent,

@@ -63,7 +63,10 @@ export {
   TabsList,
   TabsTrigger,
   TabsContent,
+  /** @knipignore */
   TabsIndicator,
+  /** @knipignore */
   TabsProvider,
+  /** @knipignore */
   TabsContext,
 };

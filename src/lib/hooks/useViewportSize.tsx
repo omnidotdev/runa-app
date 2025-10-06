@@ -5,14 +5,18 @@ import { useMediaQuery } from "usehooks-ts";
  */
 export enum Breakpoint {
   /** Small devices - 40rem (640px) */
+  /** @knipignore */
   Small = "40rem",
   /** Medium devices - 48rem (768px) */
+  /** @knipignore */
   Medium = "48rem",
   /** Large devices - 64rem (1024px) */
   Large = "64rem",
   /** Extra large devices - 80rem (1280px) */
+  /** @knipignore */
   XLarge = "80rem",
   /** 2x Extra large devices - 96rem (1536px) */
+  /** @knipignore */
   "2XLarge" = "96rem",
 }
 
