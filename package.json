@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "concurrently --kill-others --names \"GRAPHQL-CODEGEN,CLIENT\" -c \"bgBlue.bold,bgMagenta.bold\" \"bun run graphql:generate:watch\" \"bun --env-file .env.local --env-file .env.development vite dev\"",
     "build": "vite build",
-    "start": "bun run dist/server/server.jsist/server/server.js",
+    "start": "node dist/server/server.jsist/server/server.js",
     "check": "biome check --diagnostic-level=error src",
     "format": "biome format --write src",
     "lint": "biome lint --diagnostic-level=error src",
