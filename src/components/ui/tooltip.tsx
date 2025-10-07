@@ -2,13 +2,15 @@ import { Portal } from "@ark-ui/react/portal";
 import { Tooltip as ArkTooltip } from "@ark-ui/react/tooltip";
 import { tv } from "tailwind-variants";
 
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 import type { ComponentProps, ReactNode } from "react";
 
 const tooltipVariants = tv({
   slots: {
-    trigger: "",
+    trigger:
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background outline-hidden transition-[color,box-shadow]",
     positioner: "absolute top-0",
     content:
       "fade-in-0 zoom-in-95 data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 w-fit origin-(--radix-tooltip-content-transform-origin) animate-in text-balance rounded-md bg-base-500 px-3 py-1.5 text-base-100 text-xs data-[state=closed]:animate-out",
@@ -60,12 +62,13 @@ const TooltipArrowTip = ({
 
 interface Props extends ComponentProps<typeof TooltipRoot> {
   children?: ReactNode;
-  tooltip?: string | ComponentProps<typeof TooltipContent>;
+  tooltip?: string;
+  shortcut?: string;
 }
 
-const Tooltip = ({ tooltip, children, ...rest }: Props) => {
-  const tooltipProps =
-    typeof tooltip === "string" ? { children: tooltip } : tooltip;
+const Tooltip = ({ tooltip, children, shortcut, ...rest }: Props) => {
+  // const tooltipProps =
+  //   typeof tooltip === "string" ? { children: tooltip } : tooltip;
 
   return (
     <TooltipRoot
@@ -82,10 +85,16 @@ const Tooltip = ({ tooltip, children, ...rest }: Props) => {
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <Portal>
         <TooltipPositioner>
-          <TooltipContent
-            className="border bg-background text-foreground"
-            {...tooltipProps}
-          />
+          <TooltipContent className="border bg-background text-foreground">
+            <div className="flex items-center gap-2">
+              {tooltip}
+              {shortcut && (
+                <div className="ml-2 flex items-center gap-0.5">
+                  <SidebarMenuShortcut>{shortcut}</SidebarMenuShortcut>
+                </div>
+              )}
+            </div>
+          </TooltipContent>
         </TooltipPositioner>
       </Portal>
     </TooltipRoot>

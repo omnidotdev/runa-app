@@ -1,6 +1,7 @@
 query Task($rowId: UUID!) {
   task(rowId: $rowId) {
     rowId
+    projectId
     columnId
     columnIndex
     content
@@ -24,9 +25,12 @@ query Task($rowId: UUID!) {
         title
         description
         createdAt
+        authorId
         author {
           name
           avatarUrl
+          rowId
+          id
         }
       }
     }
@@ -37,6 +41,7 @@ query Task($rowId: UUID!) {
     author {
       name
       avatarUrl
+      rowId
     }
     assignees {
       nodes {

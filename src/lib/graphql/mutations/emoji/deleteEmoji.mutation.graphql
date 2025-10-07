@@ -1,0 +1,7 @@
+mutation DeletePostEmoji($rowId: UUID!) {
+  deleteEmoji(input: { rowId: $rowId }) {
+    emoji {
+      rowId
+    }
+  }
+}

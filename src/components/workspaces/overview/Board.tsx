@@ -1,35 +1,59 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-import { useQuery } from "@tanstack/react-query";
-import { useParams, useSearch } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
 
-import { Button } from "@/components/ui/button";
-import { SidebarMenuShortcut } from "@/components/ui/sidebar";
-import { Tooltip } from "@/components/ui/tooltip";
+import ColumnHeader from "@/components/shared/ColumnHeader";
 import BoardItem from "@/components/workspaces/overview/BoardItem";
+import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
+import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
-import type { ProjectFragment as Project } from "@/generated/graphql";
+import type { ProjectFragment } from "@/generated/graphql";
 
-const Board = () => {
-  const { workspaceId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/",
+interface Props {
+  projects: ProjectFragment[];
+}
+
+const Board = ({ projects }: Props) => {
+  const navigate = useNavigate();
+  const { workspaceSlug } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
+  });
+
+  const { workspaceId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
+  });
   const { search } = useSearch({
-    from: "/_auth/workspaces/$workspaceId/projects/",
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
-  const { data: projectColumns } = useQuery({
+  const { data: role } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data.workspace?.workspaceUsers.nodes?.[0]?.role,
+  });
+
+  const isMember = role === Role.Member;
+
+  const maxProjectsReached = useMaxProjectsReached();
+
+  const { data: projectColumns } = useSuspenseQuery({
     ...projectColumnsOptions({ workspaceId: workspaceId!, search }),
     select: (data) => data?.projectColumns?.nodes,
   });
-
-  const { draggableId } = useDragStore();
 
   const { setProjectColumnId } = useProjectStore();
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
@@ -37,54 +61,32 @@ const Board = () => {
   });
 
   return (
-    <div className="no-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/20">
-      <div className="h-full min-w-fit p-4">
+    <div className="custom-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/20">
+      <div className="h-full min-w-fit">
         <div className="flex h-full gap-3">
           {projectColumns?.map((column) => (
             <div
               key={column.rowId}
               className="relative flex h-full w-80 flex-col gap-2 bg-inherit"
             >
-              <div className="z-10 mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <span>{column.emoji ?? "😀"}</span>
-                  <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
-                    {column.title}
-                  </h3>
-                  <span className="flex size-7 items-center justify-center rounded-full bg-muted text-foreground text-xs tabular-nums">
-                    {column.projects.totalCount}
-                  </span>
-                </div>
+              <ColumnHeader
+                title={column.title}
+                count={column.projects.totalCount}
+                tooltip={{
+                  title: "Create Project",
+                  shortCut: "P",
+                }}
+                emoji={column.emoji}
+                onCreate={() => {
+                  setProjectColumnId(column.rowId);
+                  setIsCreateProjectDialogOpen(true);
+                }}
+                className={cn("hidden", !isMember && "inline-flex")}
+                // TODO: update tooltip to handle disabled state
+                disabled={maxProjectsReached}
+              />
 
-                <Tooltip
-                  positioning={{ placement: "top", gutter: 11 }}
-                  tooltip={{
-                    className: "bg-background text-foreground border",
-                    children: (
-                      <div className="inline-flex">
-                        Create Project
-                        <div className="ml-2 flex items-center gap-0.5">
-                          <SidebarMenuShortcut>P</SidebarMenuShortcut>
-                        </div>
-                      </div>
-                    ),
-                  }}
-                >
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    className="size-5"
-                    onClick={() => {
-                      setProjectColumnId(column.rowId);
-                      setIsCreateProjectDialogOpen(true);
-                    }}
-                  >
-                    <Plus className="size-4" />
-                  </Button>
-                </Tooltip>
-              </div>
-
-              <div className="no-scrollbar flex h-full overflow-y-auto">
+              <div className="flex h-full overflow-hidden">
                 <Droppable droppableId={column.rowId}>
                   {(provided, snapshot) => (
                     <div
@@ -96,27 +98,44 @@ const Board = () => {
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
                     >
-                      {column.projects.nodes
-                        .filter((project) => project.rowId !== draggableId)
-                        .map((project, index) => (
-                          <Draggable
-                            key={project.rowId}
-                            draggableId={project.rowId}
-                            index={index}
-                          >
-                            {(provided) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className="my-1"
-                              >
-                                <BoardItem project={project as Project} />
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                      {provided.placeholder}
+                      <div className="no-scrollbar flex h-full flex-col gap-2 overflow-y-auto p-1">
+                        {projects
+                          .filter(
+                            (project) =>
+                              project.projectColumnId === column.rowId,
+                          )
+                          .map((project, index) => (
+                            <Draggable
+                              key={project.rowId}
+                              draggableId={project.rowId}
+                              index={index}
+                              isDragDisabled={isMember}
+                            >
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className="rounded-lg outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                  onKeyDown={(evt) => {
+                                    if (evt.key === "Enter") {
+                                      navigate({
+                                        to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+                                        params: {
+                                          workspaceSlug,
+                                          projectSlug: project.slug,
+                                        },
+                                      });
+                                    }
+                                  }}
+                                >
+                                  <BoardItem project={project} />
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                        {provided.placeholder}
+                      </div>
                     </div>
                   )}
                 </Droppable>

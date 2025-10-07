@@ -449,10 +449,12 @@ export function useSidebarResize({
       setIsDraggingRail(false);
     };
 
+    // @ts-ignore
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
 
     return () => {
+      // @ts-ignore
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };

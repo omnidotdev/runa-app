@@ -1,0 +1,7 @@
+query UserEmojis($postId: UUID!, $userId: UUID!) {
+  emojis(condition: { userId: $userId, postId: $postId }) {
+    nodes {
+      emoji
+    }
+  }
+}

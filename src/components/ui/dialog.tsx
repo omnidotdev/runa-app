@@ -1,5 +1,5 @@
 import { Dialog as ArkDialog } from "@ark-ui/react/dialog";
-import { FiX } from "react-icons/fi";
+import { XIcon } from "lucide-react";
 import { tv } from "tailwind-variants";
 
 import { cn } from "@/lib/utils";
@@ -10,14 +10,14 @@ const dialogVariants = tv({
   slots: {
     trigger: "",
     backdrop:
-      "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-background/80 backdrop-blur-sm data-[state=closed]:animate-out data-[state=open]:animate-in",
+      "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-background/20 backdrop-blur-sm data-[state=closed]:animate-out data-[state=open]:animate-in",
     positioner: "fixed inset-0 z-50 flex items-center justify-center",
     content:
-      "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-[2%] data-[state=open]:slide-in-from-top-[2%] relative grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in sm:rounded-lg",
+      "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-[2%] data-[state=open]:slide-in-from-top-[2%] relative grid w-full max-w-lg gap-4 border bg-background p-6 outline-hidden shadow-lg duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in sm:rounded-lg mx-6 rounded-lg",
     title: "font-semibold text-lg leading-none tracking-tight",
     description: "text-muted-foreground text-sm",
     closeTrigger:
-      "cursor-pointer absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none",
+      "cursor-pointer absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none transition-[color,box-shadow]",
   },
 });
 
@@ -90,7 +90,7 @@ const DialogCloseTrigger = ({
         className={cn(closeTrigger(), className)}
         {...rest}
       >
-        <FiX className="h-4 w-4" />
+        <XIcon className="size-4" />
         <span className="sr-only">Close</span>
       </ArkDialog.CloseTrigger>
     );
@@ -111,7 +111,6 @@ const DialogCloseTrigger = ({
 
 export {
   DialogRoot,
-  /** @knipignore */
   DialogTrigger,
   DialogBackdrop,
   DialogPositioner,

@@ -1,6 +1,6 @@
 // TODO: remove `use client` from registry build
 import { DatePicker as ArkDatePicker } from "@ark-ui/react/date-picker";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { tv } from "tailwind-variants";
 
 import { Button } from "@/components/ui/button";
@@ -24,9 +24,9 @@ const datePickerVariants = tv({
       "flex items-center justify-center rounded-md px-2 py-1 font-medium text-sm",
     table: "-m-1 w-full border-separate border-spacing-1",
     tableHeader: "h-10 font-semibold text-sm",
-    tableCell: "text-center",
+    tableCell: "text-center ",
     tableCellTrigger:
-      "size-full flex cursor-pointer items-center justify-center data-[selected]:bg-primary-200 data-[selected]:dark:bg-primary-950",
+      "size-full flex border text-xs rounded cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background items-center justify-center data-[selected]:bg-primary-200 data-[selected]:dark:bg-primary-950",
   },
 });
 
@@ -134,7 +134,7 @@ const DatePickerPrevTrigger = ({
 }: ComponentProps<typeof ArkDatePicker.PrevTrigger>) => (
   <ArkDatePicker.PrevTrigger asChild {...rest}>
     <Button variant="ghost" size="icon" className={cn(className)}>
-      <FiChevronLeft className="h-4 w-4" />
+      <ChevronLeftIcon className="size-4" />
     </Button>
   </ArkDatePicker.PrevTrigger>
 );
@@ -145,7 +145,7 @@ const DatePickerNextTrigger = ({
 }: ComponentProps<typeof ArkDatePicker.NextTrigger>) => (
   <ArkDatePicker.NextTrigger asChild {...rest}>
     <Button variant="ghost" size="icon" className={cn(className)}>
-      <FiChevronRight className="h-4 w-4" />
+      <ChevronRightIcon className="size-4" />
     </Button>
   </ArkDatePicker.NextTrigger>
 );

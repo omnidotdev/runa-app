@@ -20,6 +20,7 @@ const knipConfig: KnipConfig = {
   ignoreDependencies: [
     // used by GraphQL Code Generator scripts
     "dotenv",
+    // use in globals.css
     "tw-animate-css",
   ],
 };

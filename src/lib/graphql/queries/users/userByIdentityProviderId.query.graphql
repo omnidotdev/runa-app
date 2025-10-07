@@ -1,0 +1,5 @@
+query UserByIdentityProviderId($hidraId: UUID!) {
+  userByIdentityProviderId(identityProviderId: $hidraId) {
+    rowId
+  }
+}

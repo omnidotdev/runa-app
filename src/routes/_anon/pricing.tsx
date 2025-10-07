@@ -1,3 +1,6 @@
+import { Format } from "@ark-ui/react";
+import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { ArrowLeft, Check } from "lucide-react";
 
 import Link from "@/components/core/Link";
@@ -8,8 +11,30 @@ import {
   AccordionRoot,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import {
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardRoot,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  TabsContent,
+  TabsList,
+  TabsRoot,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import { signIn } from "@/lib/auth/signIn";
+import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
+import RUNA_PRODUCT_IDS from "@/lib/polar/productIds";
+import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
+import { fetchCustomerState } from "@/server/fetchCustomerState";
+import { fetchRunaProducts } from "@/server/fetchRunaProducts";
+
+import type { ProductPriceFixed } from "@polar-sh/sdk/models/components/productpricefixed.js";
 
 const faqItems = [
   {
@@ -29,62 +54,64 @@ const faqItems = [
   },
 ];
 
-const pricingPlans = [
-  {
-    id: "self-hosted",
-    name: "Self-Hosted",
-    price: "$0",
-    priceNote: "/forever",
-    description:
-      "Host Runa on your own infrastructure with full control over your data.",
-    features: [
-      "Unlimited projects and tasks",
-      "Full source code access",
-      "Self-hosted deployment",
-      "Community support",
-    ],
-    action: {
-      label: "View on GitHub",
-      href: "https://github.com/omnidotdev/runa",
-      disabled: false,
-      linkProps: {
-        target: "_blank",
-        rel: "noopener noreferrer",
-      },
-    },
-    highlight: false,
-  },
-  {
-    id: "cloud",
-    name: "Cloud",
-    price: "$8",
-    priceNote: "/user/month",
-    description:
-      "Let us handle the infrastructure while you focus on your projects.",
-    features: [
-      "Everything in Self-Hosted",
-      "Managed cloud hosting",
-      "Automatic backups & updates",
-      "Priority support",
-      "30-day free trial",
-    ],
-    action: {
-      label: "Start Free Trial",
-      href: "/signup",
-      disabled: true,
-    },
-    highlight: true,
-  },
-];
-
-export const Route = createFileRoute({
+export const Route = createFileRoute("/_anon/pricing")({
   head: () => ({
     meta: [...seo({ title: "Pricing" })],
   }),
+  beforeLoad: async ({ context: { session } }) => {
+    if (session) {
+      const customer = await fetchCustomerState({
+        data: session.user.hidraId!,
+      });
+
+      if (
+        // NB: with updated logic in polar to allow for multiple subscriptions (across Omni apps) we need to validate that the user indeed has a *Runa* specific subscription before redirecting
+        // TODO: update Backfeed to include similar logic
+        customer?.activeSubscriptions?.some((sub) =>
+          RUNA_PRODUCT_IDS.includes(sub.productId),
+        )
+      ) {
+        throw redirect({
+          to: "/profile/$userId",
+          params: { userId: session.user.hidraId! },
+        });
+      }
+    }
+  },
+  loader: async () => {
+    const { products } = await fetchRunaProducts();
+
+    return { products };
+  },
   component: PricingPage,
 });
 
 function PricingPage() {
+  const { session } = Route.useRouteContext();
+  const { products } = Route.useLoaderData();
+
+  const navigate = Route.useNavigate();
+
+  const freeTier = products.find(
+    (product) => product.metadata.title === "free",
+  );
+
+  const monthlyTiers = [
+    freeTier,
+    ...products.filter(
+      (product) =>
+        product.recurringInterval === SubscriptionRecurringInterval.Month &&
+        !product.metadata.isFree,
+    ),
+  ];
+  const yearlyTiers = [
+    freeTier,
+    ...products.filter(
+      (product) =>
+        product.recurringInterval === SubscriptionRecurringInterval.Year,
+    ),
+  ];
+
   return (
     <div className="size-full pt-8">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -109,56 +136,114 @@ function PricingPage() {
           </p>
         </div>
 
-        <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-2">
-          {pricingPlans.map((plan) => (
-            <div
-              key={plan.id}
-              className={cn(
-                "rounded-lg bg-white shadow-lg dark:bg-muted",
-                plan.highlight && "border-2 border-primary-500",
-              )}
-            >
-              <div className="flex h-full flex-col p-8">
-                <h2 className="mb-4 font-bold text-2xl text-foreground">
-                  {plan.name}
-                </h2>
+        <TabsRoot defaultValue="monthly">
+          <TabsList>
+            <TabsTrigger value="monthly">Monthly</TabsTrigger>
+            <TabsTrigger value="yearly">Yearly</TabsTrigger>
+          </TabsList>
+          {(["monthly", "yearly"] as const).map((tab) => (
+            <TabsContent key={tab} value={tab} className="flex gap-4">
+              {(tab === "monthly" ? monthlyTiers : yearlyTiers).map((tier) => (
+                <CardRoot
+                  key={tier?.id}
+                  className={cn(
+                    "relative flex flex-1 flex-col border-2",
+                    tier?.metadata?.isRecommended &&
+                      "border-primary-700 bg-primary-50 shadow-primary/20 dark:border-primary dark:bg-primary-1000",
+                  )}
+                >
+                  {tier?.metadata?.isRecommended && (
+                    <div className="-top-3 -translate-x-1/2 absolute left-1/2">
+                      <span className="rounded-full bg-primary-700 px-3 py-1 font-medium text-primary-foreground text-sm dark:bg-primary">
+                        Recommended
+                      </span>
+                    </div>
+                  )}
+                  <CardHeader
+                    className={cn(
+                      "mb-4 rounded-xl rounded-b-none bg-muted pb-8 text-center",
+                      tier?.metadata?.isRecommended &&
+                        "bg-primary-400/10 dark:bg-primary-950/80",
+                    )}
+                  >
+                    <CardTitle className="font-bold text-2xl">
+                      {firstLetterToUppercase(tier?.metadata?.title as string)}
+                    </CardTitle>
+                    <CardDescription className="mt-2 text-muted-foreground">
+                      {tier?.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pb-8 text-center">
+                    <div className="mb-8">
+                      <div className="flex items-baseline justify-center font-bold text-4xl">
+                        <Format.Number
+                          value={
+                            tier?.prices?.[0]?.amountType === "free"
+                              ? 0
+                              : (tier?.prices[0] as ProductPriceFixed)
+                                  .priceAmount / 100
+                          }
+                          style="currency"
+                          currency="USD"
+                        />
+                        <span className="ml-1 font-medium text-lg text-muted-foreground">
+                          /
+                          {tier?.prices?.[0]?.amountType === "free"
+                            ? "forever"
+                            : tier?.recurringInterval}
+                        </span>
+                      </div>
+                      {tier?.recurringInterval ===
+                        SubscriptionRecurringInterval.Year && (
+                        <p className="mt-1 font-medium text-green-600 text-sm">
+                          Save 25%
+                        </p>
+                      )}
+                    </div>
 
-                <div className="mb-8 flex items-baseline">
-                  <span className="font-bold text-4xl text-foreground">
-                    {plan.price}
-                  </span>
-
-                  <span className="ml-1 text-foreground">{plan.priceNote}</span>
-                </div>
-
-                <p className="mb-8 text-foreground">{plan.description}</p>
-
-                <ul className="mb-8 flex-1 space-y-4">
-                  {plan.features.map((feature, i) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: Allow for simplicity
-                    <li key={i} className="flex items-center gap-2">
-                      <Check
-                        size={20}
-                        className="flex-shrink-0 text-green-500"
-                      />
-                      <span className="text-muted-foreground">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {plan.action && (
-                  <Button size="lg" disabled={plan.action.disabled}>
-                    <a href={plan.action.href} {...plan.action.linkProps}>
-                      {plan.action.label}
-                    </a>
-                  </Button>
-                )}
-              </div>
-            </div>
+                    <ul className="space-y-4 text-left">
+                      {tier?.benefits.map((benefit) => (
+                        <li key={benefit.id} className="flex items-start gap-3">
+                          <div className="rounded-full bg-green-100 p-1 dark:bg-green-900">
+                            <Check
+                              size={14}
+                              className="text-green-600 dark:text-green-400"
+                            />
+                          </div>
+                          <span className="text-foreground leading-6">
+                            {benefit.description}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                  <CardFooter className="mt-auto pt-8">
+                    <Button
+                      size="lg"
+                      className="w-full font-semibold"
+                      onClick={() => {
+                        if (session) {
+                          navigate({
+                            href: `${API_BASE_URL}/checkout?products=${tier?.id}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
+                            reloadDocument: true,
+                          });
+                        } else {
+                          signIn({ redirectUrl: `${BASE_URL}/pricing` });
+                        }
+                      }}
+                    >
+                      {tier?.metadata?.title === "free"
+                        ? "Start for Free"
+                        : "Get Started"}
+                    </Button>
+                  </CardFooter>
+                </CardRoot>
+              ))}
+            </TabsContent>
           ))}
-        </div>
+        </TabsRoot>
 
-        <div className="mt-16 text-center">
+        <div className="mt-24 text-center">
           <h2 className="mb-4 font-bold text-2xl text-foreground">
             Frequently Asked Questions
           </h2>

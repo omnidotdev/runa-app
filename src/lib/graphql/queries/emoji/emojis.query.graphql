@@ -1,0 +1,23 @@
+query PostEmojis($postId: UUID!, $userId: UUID!) {
+  emojis(condition: { postId: $postId }, orderBy: CREATED_AT_ASC) {
+    groupedAggregates(groupBy: EMOJI) {
+      distinctCount {
+        emoji
+        rowId
+      }
+      keys
+    }
+  }
+
+  users(condition: { rowId: $userId }) {
+    nodes {
+      emojis(condition: { postId: $postId }) {
+        nodes {
+          emoji
+          rowId
+          postId
+        }
+      }
+    }
+  }
+}

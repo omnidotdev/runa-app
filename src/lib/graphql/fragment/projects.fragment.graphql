@@ -1,10 +1,11 @@
 fragment Project on Project {
   rowId
   name
+  slug
   description
-  color
   prefix
   projectColumnId
+  columnIndex
   columns {
     nodes {
       allTasks: tasks {

@@ -1,0 +1,9 @@
+query Column($columnId: UUID!) {
+  column(rowId: $columnId) {
+    tasks {
+      nodes {
+        rowId
+      }
+    }
+  }
+}

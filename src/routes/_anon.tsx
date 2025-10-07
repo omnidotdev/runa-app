@@ -1,9 +1,13 @@
-import { Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { Image } from "@unpic/react";
 
 import Link from "@/components/core/Link";
-import ThemeToggle from "@/components/ThemeToggle";
+import ThemeToggle from "@/components/core/ThemeToggle";
+import { Button } from "@/components/ui/button";
+import { signIn } from "@/lib/auth/signIn";
+import { BASE_URL } from "@/lib/config/env.config";
 
-export const Route = createFileRoute({
+export const Route = createFileRoute("/_anon")({
   component: UnauthenticatedLayout,
 });
 
@@ -30,7 +34,8 @@ function UnauthenticatedLayout() {
               variant="ghost"
               className="hover:bg-accent/0 dark:hover:bg-accent/0"
             >
-              <img
+              <Image
+                layout="fullWidth"
                 src="/logo.png"
                 alt="Runa Logo"
                 className="h-6 w-6 md:h-8 md:w-8"
@@ -38,17 +43,15 @@ function UnauthenticatedLayout() {
               <h1 className="font-bold text-xl">Runa</h1>
             </Link>
 
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center gap-4">
               <ThemeToggle />
-              {/* TODO */}
-              {/* <Link
-                to="/docs"
-                variant="link"
-              >
-                Docs
-              </Link> */}
 
-              <Link to="/workspaces">Sign In</Link>
+              <Button
+                onClick={() => signIn({ redirectUrl: BASE_URL })}
+                className="bg-primary-700 dark:bg-primary"
+              >
+                Sign In
+              </Button>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 query Labels($projectId: UUID!) {
-  labels(condition: { projectId: $projectId }) {
+  labels(condition: { projectId: $projectId }, orderBy: NAME_ASC) {
     nodes {
       ...Label
     }

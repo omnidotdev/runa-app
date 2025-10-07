@@ -131,11 +131,8 @@ export {
   Card,
   CardRoot,
   CardHeader,
-  /** @knipignore */
   CardFooter,
-  /** @knipignore */
   CardTitle,
-  /** @knipignore */
   CardDescription,
   CardContent,
   /** @knipignore */

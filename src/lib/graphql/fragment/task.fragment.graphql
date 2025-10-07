@@ -1,0 +1,29 @@
+fragment Task on Task {
+  rowId
+  projectId
+  columnId
+  columnIndex
+  column {
+    ...Column
+  }
+  content
+  priority
+  dueDate
+  taskLabels {
+    nodes {
+      label {
+        ...Label
+      }
+    }
+  }
+  assignees {
+    nodes {
+      rowId
+      user {
+        rowId
+        name
+        avatarUrl
+      }
+    }
+  }
+}

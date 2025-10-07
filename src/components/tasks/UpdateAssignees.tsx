@@ -1,6 +1,6 @@
 import { useFilter, useListCollection } from "@ark-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import { TrashIcon } from "lucide-react";
 
 import { Avatar } from "@/components/ui/avatar";
@@ -10,6 +10,8 @@ import {
   ComboboxControl,
   ComboboxInput,
   ComboboxItem,
+  ComboboxItemIndicator,
+  ComboboxItemText,
   ComboboxPositioner,
   ComboboxRoot,
   ComboboxTrigger,
@@ -38,14 +40,12 @@ const UpdateAssignees = withForm({
   defaultValues: taskFormDefaults,
   props: {} as AdditionalProps,
   render: ({ form, comboboxInputProps }) => {
-    const { workspaceId } = useParams({
-      strict: false,
-    });
+    const { workspaceId } = useLoaderData({ from: "/_auth" });
 
     const { contains } = useFilter({ sensitivity: "base" });
 
     const { data: users } = useQuery({
-      ...workspaceUsersOptions({ rowId: workspaceId! }),
+      ...workspaceUsersOptions({ workspaceId: workspaceId! }),
       enabled: !!workspaceId,
       select: (data) => data?.workspaceUsers?.nodes.map((user) => user.user),
     });
@@ -67,7 +67,6 @@ const UpdateAssignees = withForm({
           return (
             <div className="flex flex-col">
               <ComboboxRoot
-                // @ts-ignore TODO type issue
                 collection={usersCollection}
                 value={field.state.value}
                 onInputValueChange={({ inputValue }) => filter(inputValue)}
@@ -87,12 +86,14 @@ const UpdateAssignees = withForm({
                   <ComboboxContent>
                     {usersCollection.items.map((user) => (
                       <ComboboxItem key={user.value} item={user}>
-                        {user.label}
+                        <ComboboxItemText>{user.label}</ComboboxItemText>
+                        <ComboboxItemIndicator />
                       </ComboboxItem>
                     ))}
                   </ComboboxContent>
                 </ComboboxPositioner>
               </ComboboxRoot>
+
               <div className="flex flex-col gap-1 p-1">
                 {field.state.value.length ? (
                   field.state.value.map((assignee, index) => {
@@ -121,6 +122,7 @@ const UpdateAssignees = withForm({
                         <Button
                           variant="ghost"
                           size="icon"
+                          className="size-6 justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20"
                           onClick={() => field.removeValue(index)}
                         >
                           <TrashIcon className="size-3" />

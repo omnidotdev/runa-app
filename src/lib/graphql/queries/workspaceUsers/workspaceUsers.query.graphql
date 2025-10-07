@@ -1,15 +1,25 @@
-query WorkspaceUsers($rowId: UUID!) {
-  workspaceUsers(condition: { workspaceId: $rowId }) {
+query WorkspaceUsers($workspaceId: UUID!, $filter: WorkspaceUserFilter) {
+  workspaceUsers(condition: { workspaceId: $workspaceId }, filter: $filter) {
     nodes {
+      role
       user {
         name
         avatarUrl
         rowId
-        allTasks: authoredTasks {
+        assignedTasks: assignees(
+          filter: {
+            task: { project: { workspaceId: { equalTo: $workspaceId } } }
+          }
+        ) {
           totalCount
         }
-        completedTasks: authoredTasks(
-          filter: { column: { title: { equalTo: "Done" } } }
+        completedTasks: assignees(
+          filter: {
+            task: {
+              project: { workspaceId: { equalTo: $workspaceId } }
+              column: { title: { equalTo: "Done" } }
+            }
+          }
         ) {
           totalCount
         }

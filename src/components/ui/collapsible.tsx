@@ -7,9 +7,9 @@ import type { ComponentProps } from "react";
 
 const collapsibleVariants = tv({
   slots: {
-    root: "w-full",
+    root: "",
     trigger:
-      "flex w-full items-center cursor-pointer justify-between rounded-md px-3 py-3 font-medium text-sm transition-transform [&[data-state=open]>svg]:rotate-180",
+      "flex w-full outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-background focus-visible:ring-ring focus-visible:ring-offset-2 items-center cursor-pointer justify-between rounded-md px-3 py-3 font-medium text-sm transition-transform [&[data-state=open]>svg]:rotate-90 transition-[color,box-shadow]",
     content: "overflow-hidden",
   },
 });

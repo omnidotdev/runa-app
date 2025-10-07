@@ -11,7 +11,7 @@ const tableVariants = tv({
     header: "[&_tr]:border-b h-8",
     body: "[&_tr:last-child]:border-0",
     footer: "border-t bg-muted/50 [&>tr]:last:border-b-0",
-    row: "border-b hover:bg-muted/50 data-[state=selected]:bg-muted",
+    row: "border-b hover:bg-accent data-[state=selected]:bg-accent",
     head: "whitespace-nowrap p-1 text-left align-middle font-medium text-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
     cell: "whitespace-nowrap font-light align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
     caption: "mt-4 text-muted-foreground text-sm",
@@ -75,6 +75,7 @@ export {
   Table,
   TableHeader,
   TableBody,
+  /** @knipignore */
   TableFooter,
   TableHead,
   TableRow,

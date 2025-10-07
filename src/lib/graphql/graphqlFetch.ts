@@ -1,6 +1,7 @@
 import { parse } from "graphql";
 import { GraphQLClient, gql } from "graphql-request";
 
+import fetchSession from "@/lib/auth/fetchSession";
 import { API_GRAPHQL_URL } from "@/lib/config/env.config";
 
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
@@ -22,14 +23,14 @@ export const graphqlFetch =
     options?: (HeadersInit & FetchOptions) | FetchOptions,
   ) =>
   async (): Promise<TData> => {
-    // const session = await getAuthSession();
+    const { session } = await fetchSession();
 
     const { cache, ...restOptions } = options || {};
 
     const client = new GraphQLClient(API_GRAPHQL_URL!, {
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${session?.accessToken ?? ""}`,
+        Authorization: `Bearer ${session?.accessToken ?? ""}`,
         ...restOptions,
       },
       cache,

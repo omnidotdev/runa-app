@@ -1,0 +1,251 @@
+import { useField, useStore } from "@tanstack/react-form";
+import { PlusIcon, TagIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+
+import PopoverWithTooltip from "@/components/core/PopoverWithTooltip";
+import ColorSelector from "@/components/core/selectors/ColorSelector";
+import { Button } from "@/components/ui/button";
+import { parseColor } from "@/components/ui/color-picker";
+import { Input } from "@/components/ui/input";
+import {
+  MenuCheckboxItem,
+  MenuContent,
+  MenuItemGroup,
+  MenuItemIndicator,
+  MenuItemText,
+  MenuPositioner,
+  MenuRoot,
+  MenuSeparator,
+  MenuTrigger,
+} from "@/components/ui/menu";
+import { SidebarMenuShortcut } from "@/components/ui/sidebar";
+import { TooltipTrigger } from "@/components/ui/tooltip";
+import { Hotkeys } from "@/lib/constants/hotkeys";
+import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
+import { withForm } from "@/lib/hooks/useForm";
+
+const CreateTaskLabels = withForm({
+  defaultValues: taskFormDefaults,
+  render: ({ form }) => {
+    const popoverButtonRef = useRef<HTMLButtonElement | null>(null);
+
+    const taskLabels = useStore(
+      form.store,
+      (state) => state.values.labels,
+    ).filter((label) => label.checked);
+
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const [newLabel, setNewLabel] = useState({
+      name: "",
+      color: "blue",
+    });
+
+    const field = useField({ form, name: "labels" });
+
+    const addNewLabel = () => {
+      if (!newLabel.name || !newLabel.color) return;
+
+      field.pushValue({
+        name: newLabel.name,
+        color: newLabel.color,
+        rowId: "pending",
+        checked: true,
+      });
+
+      setNewLabel({ name: "", color: "blue" });
+    };
+
+    useHotkeys(
+      Hotkeys.UpdateTaskLabels,
+      () => setIsPopoverOpen(!isPopoverOpen),
+      [isPopoverOpen, setIsPopoverOpen],
+    );
+
+    return (
+      <form.Field name="labels" mode="array">
+        {() => (
+          <PopoverWithTooltip
+            triggerRef={popoverButtonRef}
+            tooltip="Add labels"
+            shortcut={Hotkeys.UpdateTaskLabels.toUpperCase()}
+          >
+            <MenuRoot
+              positioning={{
+                strategy: "fixed",
+                placement: "bottom-start",
+              }}
+              open={isPopoverOpen}
+              onOpenChange={({ open }) => setIsPopoverOpen(open)}
+              loopFocus
+            >
+              <MenuTrigger ref={popoverButtonRef} asChild>
+                <TooltipTrigger asChild>
+                  <Button variant="outline">
+                    {taskLabels.length === 0 && (
+                      <>
+                        <TagIcon className="size-4" />
+                        <p className="hidden md:flex">Labels</p>
+                      </>
+                    )}
+
+                    {taskLabels.length === 1 && (
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="size-4 rounded-full shadow"
+                          style={{
+                            backgroundColor: taskLabels[0].color,
+                          }}
+                        />
+                        <p className="hidden md:flex">{taskLabels[0].name}</p>
+                      </div>
+                    )}
+
+                    {taskLabels.length > 1 && (
+                      <div className="flex items-center gap-2">
+                        <div className="-space-x-1 -mx-1 flex items-center">
+                          {taskLabels.map((label) => (
+                            <div
+                              key={label.rowId}
+                              className="size-4 rounded-full border"
+                              style={{ backgroundColor: label.color }}
+                            />
+                          ))}
+                        </div>
+                        <p className="hidden md:flex">{taskLabels.length}</p>
+                        <p className="hidden md:flex">
+                          {taskLabels.length > 1 ? "Labels" : "Label"}
+                        </p>
+                      </div>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+              </MenuTrigger>
+
+              <MenuPositioner>
+                <MenuContent className="flex min-w-fit flex-col gap-0 p-0">
+                  <div className="flex w-full items-center justify-between p-2 text-base-500 text-sm">
+                    Labels{" "}
+                    <SidebarMenuShortcut>
+                      {Hotkeys.UpdateTaskLabels.toUpperCase()}
+                    </SidebarMenuShortcut>
+                  </div>
+
+                  <MenuSeparator />
+
+                  <form.Field name="labels" mode="array">
+                    {(field) => {
+                      return (
+                        <div className="flex flex-col gap-0">
+                          <div className="flex h-fit w-full items-center gap-2 divide-x">
+                            <ColorSelector
+                              showChannelInput={false}
+                              positioning={{
+                                strategy: "fixed",
+                                placement: "bottom",
+                              }}
+                              value={parseColor(newLabel.color)}
+                              onValueChange={(details) => {
+                                setNewLabel((prev) => ({
+                                  ...prev,
+                                  color: details.value.toString("hex"),
+                                }));
+                              }}
+                            />
+
+                            <Input
+                              id="label-name"
+                              autoComplete="off"
+                              className="h-7 rounded border-0 px-2 shadow-none"
+                              placeholder="Add new label..."
+                              value={newLabel.name}
+                              onChange={(e) =>
+                                setNewLabel((prev) => ({
+                                  ...prev,
+                                  name: e.target.value,
+                                }))
+                              }
+                              onKeyDown={(e) => {
+                                if (
+                                  e.key === "Enter" &&
+                                  newLabel.name &&
+                                  newLabel.color
+                                ) {
+                                  e.preventDefault();
+                                  addNewLabel();
+                                }
+                              }}
+                            />
+                            <Button
+                              type="submit"
+                              variant="ghost"
+                              size="icon"
+                              disabled={!newLabel.name || !newLabel.color}
+                              className="mr-2 size-7"
+                              onClick={addNewLabel}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  addNewLabel();
+                                }
+                              }}
+                            >
+                              <PlusIcon className="size-4" />
+                            </Button>
+                          </div>
+
+                          <MenuItemGroup className="-mt-1">
+                            <MenuSeparator />
+
+                            {!!field.state.value.length && (
+                              <div className="mt-1 flex flex-col gap-1">
+                                {field.state.value.map((label, i) => (
+                                  <form.Field
+                                    key={label.name}
+                                    name={`labels[${i}]`}
+                                  >
+                                    {(subField) => (
+                                      <MenuCheckboxItem
+                                        closeOnSelect={false}
+                                        value={`labels[${i}]`}
+                                        checked={subField.state.value.checked}
+                                        onCheckedChange={(checked) => {
+                                          subField.handleChange({
+                                            ...subField.state.value,
+                                            checked,
+                                          });
+                                        }}
+                                      >
+                                        <MenuItemText className="flex items-center gap-2">
+                                          <div
+                                            className="size-4 rounded-full"
+                                            style={{
+                                              backgroundColor:
+                                                subField.state.value.color,
+                                            }}
+                                          />
+                                          {subField.state.value.name}
+                                        </MenuItemText>
+                                        <MenuItemIndicator />
+                                      </MenuCheckboxItem>
+                                    )}
+                                  </form.Field>
+                                ))}
+                              </div>
+                            )}
+                          </MenuItemGroup>
+                        </div>
+                      );
+                    }}
+                  </form.Field>
+                </MenuContent>
+              </MenuPositioner>
+            </MenuRoot>
+          </PopoverWithTooltip>
+        )}
+      </form.Field>
+    );
+  },
+});
+
+export default CreateTaskLabels;

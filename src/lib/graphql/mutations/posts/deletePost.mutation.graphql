@@ -1,0 +1,7 @@
+mutation DeletePost($rowId: UUID!) {
+  deletePost(input: { rowId: $rowId }) {
+    post {
+      rowId
+    }
+  }
+}

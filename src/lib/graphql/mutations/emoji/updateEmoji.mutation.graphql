@@ -1,0 +1,7 @@
+mutation UpdatePostEmoji($input: UpdateEmojiInput!) {
+  updateEmoji(input: $input) {
+    emoji {
+      rowId
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import { ark } from "@ark-ui/react/factory";
 import { Portal } from "@ark-ui/react/portal";
 import { TooltipContext } from "@ark-ui/react/tooltip";
-import { cva } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 import {
   createContext,
@@ -34,18 +33,16 @@ import useIsMobile from "@/lib/hooks/use-mobile";
 import { useSidebarResize } from "@/lib/hooks/use-sidebar-resize";
 import { cn } from "@/lib/utils";
 
-import type { VariantProps } from "class-variance-authority";
 import type { ComponentProps, CSSProperties } from "react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
-const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const MIN_SIDEBAR_WIDTH = "14rem";
 const MAX_SIDEBAR_WIDTH = "22rem";
 
-type SidebarContextProps = {
+interface SidebarContextProps {
   state: "expanded" | "collapsed";
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -57,7 +54,7 @@ type SidebarContextProps = {
   setWidth: (width: string) => void;
   isDraggingRail: boolean;
   setIsDraggingRail: (isDraggingRail: boolean) => void;
-};
+}
 
 const SidebarContext = createContext<SidebarContextProps | null>(null);
 
@@ -190,7 +187,7 @@ function Sidebar({
       <div
         data-slot="sidebar"
         className={cn(
-          "flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground",
+          "flex h-full w-(--sidebar-width) flex-col bg-background text-sidebar-foreground",
           className,
         )}
         {...rest}
@@ -215,12 +212,7 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-          style={
-            {
-              "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-            } as CSSProperties
-          }
+          className="w-1/2 bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
           side={side}
         >
           <div className="sr-only">
@@ -277,7 +269,7 @@ function Sidebar({
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow-sm"
+          className="flex h-full w-full flex-col rounded-xl bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow-sm"
         >
           {children}
         </div>
@@ -312,15 +304,13 @@ function SidebarTrigger({
   );
 }
 
-interface SidebarRailProps extends ComponentProps<"button"> {
-  enableDrag?: boolean;
-}
-
 function SidebarRail({
   enableDrag = true,
   className,
   ...rest
-}: SidebarRailProps) {
+}: ComponentProps<typeof ark.button> & {
+  enableDrag?: boolean;
+}) {
   const { toggleSidebar, setWidth, state, width, setIsDraggingRail } =
     useSidebar();
 
@@ -454,7 +444,7 @@ function SidebarContent({ className, ...rest }: ComponentProps<"div">) {
       data-slot="sidebar-content"
       data-sidebar="content"
       className={cn(
-        "no-scrollbar mb-2 flex min-h-0 flex-1 flex-col gap-0 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+        "no-scrollbar mb-2 flex min-h-0 flex-1 flex-col gap-4 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
         className,
       )}
       {...rest}
@@ -467,10 +457,7 @@ function SidebarGroup({ className, ...rest }: ComponentProps<"div">) {
     <div
       data-slot="sidebar-group"
       data-sidebar="group"
-      className={cn(
-        "relative flex w-full min-w-0 flex-col px-2 pt-2",
-        className,
-      )}
+      className={cn("flex w-full flex-col gap-1 px-2", className)}
       {...rest}
     />
   );
@@ -485,7 +472,7 @@ function SidebarGroupLabel({
       data-slot="sidebar-group-label"
       data-sidebar="group-label"
       className={cn(
-        "flex h-8 shrink-0 items-center rounded-md font-medium text-sidebar-foreground/70 text-xs outline-hidden ring-sidebar-ring transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
+        "flex shrink-0 items-center rounded-md py-1 font-medium text-sidebar-foreground/70 text-xs outline-hidden ring-sidebar-ring transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
         "group-data-[collapsible=icon]:hidden group-data-[collapsible=icon]:opacity-0",
         className,
       )}
@@ -497,16 +484,14 @@ function SidebarGroupLabel({
 function SidebarGroupAction({
   className,
   ...rest
-}: ComponentProps<typeof ark.button>) {
+}: ComponentProps<typeof ark.div>) {
   return (
-    <ark.button
+    <ark.div
       data-slot="sidebar-group-action"
       data-sidebar="group-action"
       className={cn(
-        "flex aspect-square w-5 cursor-pointer items-center justify-center rounded-md p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
-        // Increases the hit area of the button on mobile.
-        "after:-inset-2 after:absolute md:after:hidden",
-        "group-data-[collapsible=icon]:hidden group-data-[collapsible=icon]:opacity-0",
+        "flex size-5 cursor-pointer items-center justify-center rounded-md p-0 text-base-400 outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 [&>svg]:size-3 [&>svg]:shrink-0",
+        "group-data-[collapsible=icon]:hidden",
         className,
       )}
       {...rest}
@@ -525,9 +510,9 @@ function SidebarGroupContent({ className, ...rest }: ComponentProps<"div">) {
   );
 }
 
-function SidebarMenu({ className, ...rest }: ComponentProps<"ul">) {
+function SidebarMenu({ className, ...rest }: ComponentProps<"div">) {
   return (
-    <ul
+    <div
       data-slot="sidebar-menu"
       data-sidebar="menu"
       className={cn("flex w-full min-w-0 flex-col gap-1", className)}
@@ -536,64 +521,60 @@ function SidebarMenu({ className, ...rest }: ComponentProps<"ul">) {
   );
 }
 
-function SidebarMenuItem({ className, ...rest }: ComponentProps<"li">) {
+function SidebarMenuItem({ className, ...rest }: ComponentProps<"div">) {
   return (
-    <li
+    <div
       data-slot="sidebar-menu-item"
       data-sidebar="menu-item"
-      className={cn(
-        "group/menu-item relative cursor-pointer list-none",
-        className,
-      )}
+      className={cn("group/menu-item relative cursor-pointer", className)}
       {...rest}
     />
   );
 }
 
-const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-2 cursor-pointer overflow-hidden p-2 rounded-md text-left text-sm outline-hidden transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
-  {
-    variants: {
-      variant: {
-        default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-        outline:
-          "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
-      },
-      size: {
-        default: "h-8 text-sm",
-        sm: "h-7 text-xs",
-        lg: "h-8 text-sm group-data-[collapsible=icon]:p-0!",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  },
-);
-
 function SidebarMenuButton({
   isActive = false,
-  variant = "default",
-  size = "default",
   tooltip,
   shortcut,
   className,
   ...rest
 }: ComponentProps<typeof ark.button> & {
   isActive?: boolean;
-  tooltip?: string | ComponentProps<typeof TooltipContent>;
+  tooltip?: string;
   shortcut?: Hotkeys;
-} & VariantProps<typeof sidebarMenuButtonVariants>) {
+}) {
   const { isMobile, state } = useSidebar();
 
   const button = (
     <ark.button
       data-slot="sidebar-menu-button"
       data-sidebar="menu-button"
-      data-size={size}
       data-active={isActive}
-      className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+      className={cn(
+        // Base layout and spacing
+        "peer/menu-button flex h-8 w-full items-center gap-2 overflow-hidden rounded-md px-2 text-left text-sm transition-[width,height,padding,color,box-shadow]",
+        // Typography and base text color
+        "font-medium text-sidebar-foreground/70",
+        // Hover styles
+        "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+        // Focus styles
+        "outline-hidden focus-visible:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring! focus-visible:ring-offset-2!",
+        // Active styles
+        "active:text-sidebar-accent-foreground",
+        // Disabled and aria-disabled styles
+        "disabled:pointer-events-none disabled:opacity-50",
+        "aria-disabled:pointer-events-none aria-disabled:opacity-50",
+        // Data attribute states
+        "data-[active=true]:bg-sidebar-accent/80 data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground",
+        "data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground",
+        // Collapsible size variant
+        "group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2!",
+        // Sidebar action padding adjustment
+        "group-has-data-[sidebar=menu-action]/menu-item:pr-8",
+        // Children styling
+        "[&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+        className,
+      )}
       {...rest}
     />
   );
@@ -602,22 +583,10 @@ function SidebarMenuButton({
     return button;
   }
 
-  if (typeof tooltip === "string") {
-    tooltip = {
-      children: (
-        <div className="flex items-center justify-between gap-2">
-          <span>{tooltip}</span>
-          {shortcut && (
-            <SidebarMenuShortcut>{shortcut.toUpperCase()}</SidebarMenuShortcut>
-          )}
-        </div>
-      ),
-    };
-  }
-
   return (
     <Tooltip
       tooltip={tooltip}
+      shortcut={shortcut?.toUpperCase()}
       positioning={{
         placement: "right",
         offset: {
@@ -634,19 +603,21 @@ function SidebarMenuButton({
 }
 
 function SidebarMenuAction({
+  isActive,
   className,
   showOnHover = false,
   ...rest
 }: ComponentProps<typeof ark.button> & {
+  isActive?: boolean;
   showOnHover?: boolean;
 }) {
   return (
     <ark.button
       data-slot="sidebar-menu-action"
       data-sidebar="menu-action"
+      data-active={isActive}
       className={cn(
-        "absolute top-1.5 right-1 flex aspect-square w-5 cursor-pointer items-center justify-center rounded-md p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0",
-        // Increases the hit area of the button on mobile.
+        "absolute top-1.5 right-1 flex aspect-square w-5 cursor-pointer items-center justify-center rounded-md p-0 text-sidebar-foreground outline-none outline-hidden ring-sidebar-ring transition-[color,box-shadow] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring! focus-visible:ring-offset-2 peer-hover/menu-button:text-sidebar-accent-foreground data-[active=true]:text-sidebar-accent-foreground data-[active=true]:hover:bg-accent data-[active=true]:dark:hover:bg-base-700 [&>svg]:size-4 [&>svg]:shrink-0",
         "after:-inset-2 after:absolute md:after:hidden",
         "peer-data-[size=sm]/menu-button:top-1",
         "peer-data-[size=default]/menu-button:top-1.5",
@@ -687,7 +658,7 @@ function SidebarMenuShortcut({ className, ...rest }: ComponentProps<"span">) {
       data-slot="sidebar-menu-shortcut"
       data-sidebar="menu-shortcut"
       className={cn(
-        "ml-auto flex size-4 items-center justify-center gap-0.5 rounded-md border bg-base-100 p-0.5 font-medium text-[11px] text-muted-foreground tracking-widest dark:bg-base-700",
+        "ml-auto flex size-5 items-center justify-center gap-0.5 rounded-md border bg-background font-medium text-[10px] text-foreground",
         className,
       )}
       {...rest}

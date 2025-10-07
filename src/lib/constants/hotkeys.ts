@@ -9,4 +9,7 @@ export enum Hotkeys {
   UpdateAssignees = "a",
   UpdateDueDate = "d",
   UpdateTaskLabels = "l",
+  UpdateTaskStatus = "s",
+  UpdateTaskPriority = "shift+p",
+  InviteMember = "i",
 }
