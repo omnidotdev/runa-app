@@ -1,17 +1,30 @@
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import {
+  useNavigate,
+  useParams,
+  useRouteContext,
+} from "@tanstack/react-router";
 
-import type { ProjectFragment as Project } from "@/generated/graphql";
+import userPreferencesOptions from "@/lib/options/userPreferences.options";
+import { cn } from "@/lib/utils";
+
+import type { ProjectFragment } from "@/generated/graphql";
 
 interface Props {
-  project: Project;
+  project: ProjectFragment;
 }
 
 const ListItem = ({ project }: Props) => {
-  const { workspaceId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/",
+  const { workspaceSlug } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
+  });
+
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
   const navigate = useNavigate();
+
   const completedTasks = project.columns?.nodes?.reduce(
     (acc, col) => acc + (col?.completedTasks.totalCount || 0),
     0,
@@ -23,15 +36,23 @@ const ListItem = ({ project }: Props) => {
   const progressPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
+  const { data: userPreferences } = useQuery({
+    ...userPreferencesOptions({
+      userId: session?.user?.rowId!,
+      projectId: project.rowId,
+    }),
+    select: (data) => data?.userPreferenceByUserIdAndProjectId,
+  });
+
   return (
     <div
-      className="cursor-pointer border-base-200 border-b bg-card p-4 last:border-b-0 dark:border-base-700"
+      className="cursor-pointer border-base-200 border-b p-4 last:border-b-0 dark:border-base-700"
       onClick={() =>
         navigate({
-          to: "/workspaces/$workspaceId/projects/$projectId",
+          to: "/workspaces/$workspaceSlug/projects/$projectSlug",
           params: {
-            workspaceId,
-            projectId: project.rowId,
+            workspaceSlug,
+            projectSlug: project.slug,
           },
         })
       }
@@ -63,10 +84,13 @@ const ListItem = ({ project }: Props) => {
               </div>
               <div className="h-2 w-full rounded-full bg-base-200 dark:bg-base-700">
                 <div
-                  className="h-2 rounded-full bg-primary transition-all"
+                  className={cn(
+                    "h-2 rounded-full bg-primary transition-all",
+                    !userPreferences && "bg-transparent",
+                  )}
                   style={{
                     width: `${progressPercentage}%`,
-                    backgroundColor: project?.color ?? undefined,
+                    backgroundColor: userPreferences?.color ?? undefined,
                   }}
                 />
               </div>

@@ -1,22 +1,40 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
-import { Plus, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { MoreHorizontalIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { useRef, useState } from "react";
 
-import ConfirmDialog from "@/components/ConfirmDialog";
-import CreateMemberDialog from "@/components/CreateMemberDialog";
+import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import { Avatar } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import {
+  MenuContent,
+  MenuItem,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import { Tooltip } from "@/components/ui/tooltip";
-import { useDeleteWorkspaceUserMutation } from "@/generated/graphql";
+import InviteMemberDialog from "@/components/workspaces/InviteMemberDialog";
+import {
+  Role,
+  Tier,
+  useDeleteWorkspaceUserMutation,
+} from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
+import { cn } from "@/lib/utils";
 
 const Team = () => {
-  const { workspaceId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/settings",
+  const inviteRef = useRef<HTMLButtonElement>(null);
+
+  const { workspaceId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
+  });
+
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
   const [selectedMember, setSelectedMember] = useState<{
@@ -28,107 +46,152 @@ const Team = () => {
   const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({
       rowId: workspaceId,
-      userId: "024bec7c-5822-4b34-f993-39cbc613e1c9",
+      userId: session?.user?.rowId!,
     }),
     select: (data) => data?.workspace,
   });
 
   const { data: members } = useSuspenseQuery({
-    ...workspaceUsersOptions({ rowId: workspaceId }),
+    ...workspaceUsersOptions({ workspaceId: workspaceId }),
     select: (data) => data?.workspaceUsers,
   });
 
+  const isOwner = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Owner;
+
   const { mutate: deleteMember } = useDeleteWorkspaceUserMutation({
     meta: {
-      invalidates: [workspaceUsersOptions({ rowId: workspaceId }).queryKey],
+      invalidates: [
+        workspaceUsersOptions({ workspaceId: workspaceId }).queryKey,
+      ],
     },
   });
 
   const { setIsOpen: setIsDeleteTeamMemberOpen } = useDialogStore({
       type: DialogType.DeleteTeamMember,
     }),
-    { setIsOpen: setIsCreateMemberOpen } = useDialogStore({
-      type: DialogType.CreateMember,
+    { setIsOpen: setIsInviteTeamMemberOpen } = useDialogStore({
+      type: DialogType.InviteTeamMember,
     });
 
   return (
     <>
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="flex items-center gap-2 font-medium text-base-700 text-sm dark:text-base-300">
+      <div className="flex flex-col">
+        <div className="mb-1 flex h-10 items-center justify-between">
+          <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
             Team Members
           </h2>
 
-          <Tooltip tooltip="Add team member">
+          <Tooltip
+            tooltip="Invite Member"
+            shortcut="I"
+            positioning={{
+              placement: "left",
+            }}
+          >
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Add team member"
-              onClick={() => setIsCreateMemberOpen(true)}
+              aria-label="Invite team member"
+              className={cn("mr-2 hidden size-7", isOwner && "inline-flex")}
+              onClick={() => setIsInviteTeamMemberOpen(true)}
+              // TODO: add tooltip when disabled? Also conditionalize disabled prop for other tiers
+              disabled={workspace?.tier === Tier.Free}
+              ref={inviteRef}
             >
-              <Plus />
+              <PlusIcon />
             </Button>
           </Tooltip>
         </div>
 
         {members?.nodes.length ? (
-          <div className="flex-1 rounded-md border">
-            <Table>
-              <TableBody>
-                {members?.nodes?.map((member) => {
-                  const completedTasks =
-                    member?.user?.completedTasks?.totalCount ?? 0;
-                  const totalTasks = member?.user?.allTasks?.totalCount ?? 0;
+          <div className="flex flex-col divide-y border-y">
+            {members?.nodes?.map((member) => {
+              const completedTasks =
+                member?.user?.completedTasks?.totalCount ?? 0;
+              const totalTasks = member?.user?.assignedTasks?.totalCount ?? 0;
 
-                  return (
-                    <TableRow key={member?.user?.rowId}>
-                      <TableCell className="flex items-center gap-3">
-                        <Avatar
-                          fallback={member.user?.name?.charAt(0)}
-                          src={member.user?.avatarUrl ?? undefined}
-                          alt={member.user?.name}
-                          className="size-8 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
-                        />
+              return (
+                <div
+                  key={member?.user?.rowId}
+                  className="group flex h-10 w-full items-center px-2 hover:bg-accent lg:px-0"
+                >
+                  <div className="flex w-full items-center">
+                    <div className="flex size-10 items-center justify-center">
+                      <Avatar
+                        fallback={member.user?.name?.charAt(0)}
+                        src={member.user?.avatarUrl ?? undefined}
+                        alt={member.user?.name}
+                        size="xs"
+                        className="size-6 rounded-full border bg-background font-medium text-sm uppercase shadow"
+                      />
+                    </div>
 
-                        <span className="text-foreground text-sm">
-                          {member?.user?.name}
-                        </span>
+                    <span className="px-3 text-xs md:text-sm">
+                      {member?.user?.name}
+                    </span>
 
-                        <div className="mr-1 ml-auto flex gap-1">
-                          <div className="flex h-7 items-center px-4">
-                            <span className="text-base-600 text-xs dark:text-base-400">
-                              {completedTasks}/{totalTasks} tasks
-                            </span>
-                          </div>
+                    <Badge size="sm" variant="outline">
+                      <p className="first-letter:uppercase">{member.role}</p>
+                    </Badge>
 
+                    <div className="mr-2 ml-auto flex gap-1">
+                      <span className="flex items-center px-3 text-base-600 text-xs dark:text-base-400">
+                        {completedTasks}/{totalTasks} tasks
+                      </span>
+
+                      <MenuRoot
+                        positioning={{
+                          strategy: "fixed",
+                          placement: "left",
+                        }}
+                      >
+                        <MenuTrigger asChild>
                           <Button
                             variant="ghost"
                             size="icon"
-                            aria-label="Remove team member"
-                            onClick={() => {
-                              setIsDeleteTeamMemberOpen(true);
-                              setSelectedMember(member.user!);
-                            }}
-                            className="mr-2 ml-auto h-7 w-7 p-1 text-base-400 hover:text-red-500 dark:hover:text-red-400"
+                            className={cn(
+                              "hidden size-7 text-base-400",
+                              isOwner && "inline-flex",
+                            )}
+                            aria-label="More team member options"
                           >
-                            <Trash2 />
+                            <MoreHorizontalIcon />
                           </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                        </MenuTrigger>
+
+                        <MenuPositioner>
+                          <MenuContent className="focus-within:outline-none">
+                            <MenuItem
+                              value="reset"
+                              variant="destructive"
+                              onClick={() => {
+                                setIsDeleteTeamMemberOpen(true);
+                                setSelectedMember(member.user!);
+                              }}
+                              disabled={
+                                member.user?.rowId === session?.user?.rowId
+                              }
+                            >
+                              <Trash2Icon />
+                              <span> Delete </span>
+                            </MenuItem>
+                          </MenuContent>
+                        </MenuPositioner>
+                      </MenuRoot>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         ) : (
-          <div className="flex items-center text-base-500 text-sm">
+          <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
             No team members
           </div>
         )}
       </div>
 
-      <ConfirmDialog
+      <DestructiveActionDialog
         title="Danger Zone"
         description={`This will delete ${selectedMember?.name} from ${workspace?.name} workspace. This action cannot be undone.`}
         onConfirm={() =>
@@ -136,12 +199,9 @@ const Team = () => {
         }
         dialogType={DialogType.DeleteTeamMember}
         confirmation={selectedMember?.name}
-        inputProps={{
-          className: "focus-visible:ring-red-500",
-        }}
       />
 
-      <CreateMemberDialog />
+      <InviteMemberDialog triggerRef={inviteRef} />
     </>
   );
 };

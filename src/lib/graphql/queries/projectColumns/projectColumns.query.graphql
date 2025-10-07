@@ -5,7 +5,10 @@ query ProjectColumns($workspaceId: UUID!, $search: String = "") {
       index
       rowId
       emoji
-      projects(filter: { name: { includesInsensitive: $search } }) {
+      projects(
+        filter: { name: { includesInsensitive: $search } }
+        orderBy: COLUMN_INDEX_ASC
+      ) {
         totalCount
         nodes {
           ...Project

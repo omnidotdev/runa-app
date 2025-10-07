@@ -1,38 +1,60 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-import { useQuery } from "@tanstack/react-query";
-import { useParams, useSearch } from "@tanstack/react-router";
-import { ChevronDownIcon, PlusIcon } from "lucide-react";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useLoaderData,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
 
-import { Button } from "@/components/ui/button";
+import ListTrigger from "@/components/shared/ListTrigger";
 import {
   CollapsibleContent,
   CollapsibleRoot,
-  CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { SidebarMenuShortcut } from "@/components/ui/sidebar";
-import { Tooltip } from "@/components/ui/tooltip";
 import ListItem from "@/components/workspaces/overview/ListItem";
+import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
+import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
-const List = () => {
-  const { workspaceId } = useParams({
-    from: "/_auth/workspaces/$workspaceId/projects/",
+import type { ProjectFragment } from "@/generated/graphql";
+
+interface Props {
+  projects: ProjectFragment[];
+}
+
+const List = ({ projects }: Props) => {
+  const { workspaceId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
+  });
+
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
   const { search } = useSearch({
-    from: "/_auth/workspaces/$workspaceId/projects/",
+    from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
+
+  const { data: role } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data?.workspace?.workspaceUsers?.nodes?.[0]?.role,
+  });
+
+  const isMember = role === Role.Member;
+
+  const maxProjectsReached = useMaxProjectsReached();
 
   const { data: projectColumns } = useQuery({
     ...projectColumnsOptions({ workspaceId: workspaceId!, search }),
     select: (data) => data?.projectColumns?.nodes,
   });
 
-  const { draggableId } = useDragStore();
+  const columnProjects = (columnId: string) =>
+    projects.filter((project) => project.projectColumnId === columnId);
 
   const { setProjectColumnId } = useProjectStore();
   const { setIsOpen: setIsCreateProjectDialogOpen } = useDialogStore({
@@ -47,53 +69,27 @@ const List = () => {
           className="mb-4 rounded-lg border bg-background last:mb-0"
           defaultOpen
         >
-          <CollapsibleTrigger asChild>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span>{column.emoji ?? "😀"}</span>
-                <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
-                  {column.title}
-                </h3>
-                <span className="flex size-7 items-center justify-center rounded-full bg-muted text-foreground text-xs tabular-nums">
-                  {column.projects.totalCount}
-                </span>
-              </div>
+          <ListTrigger
+            title={column.title}
+            count={column.projects.totalCount}
+            tooltip={{
+              title: "Create Project",
+              shortCut: "P",
+            }}
+            emoji={column.emoji}
+            onCreate={(e) => {
+              e.preventDefault();
+              setProjectColumnId(column.rowId);
+              setIsCreateProjectDialogOpen(true);
+            }}
+            className={cn("hidden", !isMember && "inline-flex")}
+            // TODO: tooltip for disabled state
+            disabled={maxProjectsReached}
+          />
 
-              <div className="ml-auto flex gap-2">
-                <Tooltip
-                  positioning={{ placement: "top", gutter: 11 }}
-                  tooltip={{
-                    className: "bg-background text-foreground border",
-                    children: (
-                      <div className="inline-flex">
-                        Add Project
-                        <div className="ml-2 flex items-center gap-0.5">
-                          <SidebarMenuShortcut>P</SidebarMenuShortcut>
-                        </div>
-                      </div>
-                    ),
-                  }}
-                >
-                  <Button
-                    variant="ghost"
-                    size="xs"
-                    className="size-5"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setProjectColumnId(column.rowId);
-                      setIsCreateProjectDialogOpen(true);
-                    }}
-                  >
-                    <PlusIcon className="size-4" />
-                  </Button>
-                </Tooltip>
-              </div>
-
-              <ChevronDownIcon className="ml-2 size-4 transition-transform" />
-            </div>
-          </CollapsibleTrigger>
-
-          <CollapsibleContent className="border-t">
+          <CollapsibleContent className="rounded-b-lg">
+            {/* NB: Fade in the top border to avoid clashing with the parent border during animation */}
+            <div className="border-t transition-opacity ease-in-out" />
             <Droppable droppableId={column.rowId}>
               {(provided, snapshot) => (
                 <div
@@ -105,7 +101,7 @@ const List = () => {
                       "bg-primary-100/40 dark:bg-primary-950/40",
                   )}
                 >
-                  {column.projects.nodes.length === 0 ? (
+                  {columnProjects(column.rowId).length === 0 ? (
                     <p
                       className={cn(
                         "ml-2 p-2 text-muted-foreground text-xs",
@@ -115,31 +111,30 @@ const List = () => {
                       No projects
                     </p>
                   ) : (
-                    column.projects.nodes
-                      .filter((project) => project.rowId !== draggableId)
-                      .map((project, index) => (
-                        <Draggable
-                          key={project.rowId}
-                          draggableId={project.rowId}
-                          index={index}
-                        >
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className={cn(
-                                "group cursor-pointer bg-background",
-                                snapshot.isDragging
-                                  ? "z-10 shadow-lg"
-                                  : "hover:bg-base-50/50 dark:hover:bg-background/90",
-                              )}
-                            >
-                              <ListItem project={project} />
-                            </div>
-                          )}
-                        </Draggable>
-                      ))
+                    columnProjects(column.rowId).map((project, index) => (
+                      <Draggable
+                        key={project.rowId}
+                        draggableId={project.rowId}
+                        index={index}
+                        isDragDisabled={isMember}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={cn(
+                              "group cursor-pointer bg-background outline-hidden last:rounded-b-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+                              snapshot.isDragging
+                                ? "z-10 shadow-lg"
+                                : "hover:bg-base-50/50 dark:hover:bg-background/90",
+                            )}
+                          >
+                            <ListItem project={project} />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))
                   )}
                   {provided.placeholder}
                 </div>

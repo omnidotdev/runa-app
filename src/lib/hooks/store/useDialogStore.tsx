@@ -5,16 +5,19 @@ import { useStoreWithEqualityFn } from "zustand/traditional";
 export enum DialogType {
   DeleteTeamMember = "delete_team_member",
   DeleteWorkspace = "delete_workspace",
-  CreateTask = "create_task",
   CreateProject = "create_project",
   CreateWorkspace = "create_workspace",
   DeleteProject = "delete_project",
-  CreateMember = "create_member",
+  InviteTeamMember = "invite_team_member",
   UpdateAssignees = "update_assignees",
   UpdateDueDate = "update_due_date",
   UpdateTaskLabels = "update_task_labels",
   DeleteColumn = "delete_column",
+  DeleteColumnTasks = "delete_column_tasks",
   DeleteProjectColumn = "delete_project_column",
+  UpgradeSubscription = "upgrade_subscription",
+  DeleteTask = "delete_task",
+  DeleteComment = "delete_comment",
 }
 
 interface DialogState {

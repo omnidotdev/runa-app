@@ -1,10 +1,20 @@
-query Workspaces($limit: Int) {
-  workspaces(orderBy: WORKSPACE_USERS_COUNT_DESC, first: $limit) {
+query Workspaces($userId: UUID!, $limit: Int) {
+  workspaces(
+    filter: { workspaceUsers: { some: { userId: { equalTo: $userId } } } }
+    orderBy: WORKSPACE_USERS_COUNT_DESC
+    first: $limit
+  ) {
     nodes {
       rowId
       name
+      slug
       workspaceUsers {
         totalCount
+      }
+      currentUser: workspaceUsers(condition: { userId: $userId }) {
+        nodes {
+          role
+        }
       }
     }
   }

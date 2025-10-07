@@ -1,0 +1,7 @@
+mutation CreatePostEmoji($input: CreateEmojiInput!) {
+  createEmoji(input: $input) {
+    emoji {
+      rowId
+    }
+  }
+}

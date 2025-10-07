@@ -1,0 +1,5 @@
+mutation DeleteUser($id: UUID!) {
+  deleteUser(input: { rowId: $id }) {
+    clientMutationId
+  }
+}
