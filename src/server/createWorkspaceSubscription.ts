@@ -1,8 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import * as z from "zod/v4";
 
+import { isDevEnv } from "@/lib/config/env.config";
 import polar from "@/lib/polar/polar";
-import { SandboxFree } from "@/lib/polar/productIds";
+import { ProductionFree, SandboxFree } from "@/lib/polar/productIds";
 
 const createWorkspaceSubscriptionSchema = z.object({
   hidraId: z.guid(),
@@ -14,8 +15,7 @@ export const createWorkspaceSubscription = createServerFn({ method: "POST" })
   .inputValidator((data) => createWorkspaceSubscriptionSchema.parse(data))
   .handler(async ({ data }) => {
     const checkout = await polar.checkouts.create({
-      // TODO: conditionalize
-      products: [SandboxFree.Free],
+      products: isDevEnv ? [SandboxFree.Free] : [ProductionFree.Free],
       externalCustomerId: data.hidraId,
       metadata: {
         workspaceId: data.workspaceId,
@@ -25,8 +25,7 @@ export const createWorkspaceSubscription = createServerFn({ method: "POST" })
     await polar.checkouts.clientConfirm({
       clientSecret: checkout.clientSecret,
       checkoutConfirmStripe: {
-        // TODO: conditionalize
-        productId: SandboxFree.Free,
+        productId: isDevEnv ? SandboxFree.Free : ProductionFree.Free,
         customerEmail: data.userEmail,
       },
     });
