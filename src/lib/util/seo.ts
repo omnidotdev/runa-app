@@ -1,34 +1,55 @@
+import { BASE_URL } from "@/lib/config/env.config";
+
 const seo = ({
   title,
   description,
   keywords,
   image,
+  url,
 }: {
   title?: string;
   description?: string;
   image?: string;
   keywords?: string;
+  url?: string;
 } = {}) => {
+  const shownTitle = title ? `Runa | ${title}` : "Runa";
+  const shownDescription =
+    description ?? "A beautiful Kanban board application";
+  const shownUrl = url ?? BASE_URL;
+
   const tags = [
-    { title: title ? `Runa | ${title}` : "Runa" },
+    { title: shownTitle },
     {
       name: "description",
-      content: description ?? "A beautiful Kanban board application",
+      content: shownDescription,
     },
     { name: "keywords", content: keywords },
-    { name: "twitter:title", content: title },
-    { name: "twitter:description", content: description },
+    { name: "twitter:title", content: shownTitle },
+    {
+      name: "twitter:description",
+      content: shownDescription,
+    },
     { name: "twitter:creator", content: "@omnidotdev" },
+    { name: "twitter:url", content: shownUrl },
     { name: "og:type", content: "website" },
-    { name: "og:title", content: title },
-    { name: "og:description", content: description },
+    { name: "og:title", content: shownTitle },
+    {
+      name: "og:description",
+      content: shownDescription,
+    },
+    { name: "og:url", content: shownUrl },
     ...(image
       ? [
           { name: "twitter:image", content: image },
           { name: "twitter:card", content: "summary_large_image" },
           { name: "og:image", content: image },
         ]
-      : []),
+      : [
+          { name: "twitter:image", content: "/logo.png" },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "og:image", content: "/logo.png" },
+        ]),
   ];
 
   return tags;

@@ -25,23 +25,15 @@ import {
   TabsRoot,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { signIn } from "@/lib/auth/signIn";
-import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
-import RUNA_PRODUCT_IDS from "@/lib/polar/productIds";
+import { BASE_URL } from "@/lib/config/env.config";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
-import { fetchCustomerState } from "@/server/fetchCustomerState";
 import { fetchRunaProducts } from "@/server/fetchRunaProducts";
 
 import type { ProductPriceFixed } from "@polar-sh/sdk/models/components/productpricefixed.js";
 
 const faqItems = [
-  {
-    question: "What's included in the free trial?",
-    answer:
-      "The 30-day free trial includes all Cloud features with no limitations. No credit card required.",
-  },
   {
     question: "Can I cancel at any time?",
     answer:
@@ -56,26 +48,20 @@ const faqItems = [
 
 export const Route = createFileRoute("/_anon/pricing")({
   head: () => ({
-    meta: [...seo({ title: "Pricing" })],
+    meta: [
+      ...seo({
+        title: "Pricing",
+        description: "Simple and transparent pricing.",
+        url: `${BASE_URL}/pricing`,
+      }),
+    ],
   }),
   beforeLoad: async ({ context: { session } }) => {
     if (session) {
-      const customer = await fetchCustomerState({
-        data: session.user.hidraId!,
+      throw redirect({
+        to: "/profile/$userId",
+        params: { userId: session.user.hidraId! },
       });
-
-      if (
-        // NB: with updated logic in polar to allow for multiple subscriptions (across Omni apps) we need to validate that the user indeed has a *Runa* specific subscription before redirecting
-        // TODO: update Backfeed to include similar logic
-        customer?.activeSubscriptions?.some((sub) =>
-          RUNA_PRODUCT_IDS.includes(sub.productId),
-        )
-      ) {
-        throw redirect({
-          to: "/profile/$userId",
-          params: { userId: session.user.hidraId! },
-        });
-      }
     }
   },
   loader: async () => {
@@ -221,16 +207,18 @@ function PricingPage() {
                     <Button
                       size="lg"
                       className="w-full font-semibold"
-                      onClick={() => {
-                        if (session) {
-                          navigate({
-                            href: `${API_BASE_URL}/checkout?products=${tier?.id}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
-                            reloadDocument: true,
-                          });
-                        } else {
-                          signIn({ redirectUrl: `${BASE_URL}/pricing` });
-                        }
-                      }}
+                      disabled
+                      // TODO: implement proper logic
+                      // onClick={() => {
+                      //   if (session) {
+                      //     navigate({
+                      //       href: `${API_BASE_URL}/checkout?products=${tier?.id}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
+                      //       reloadDocument: true,
+                      //     });
+                      //   } else {
+                      //     signIn({ redirectUrl: `${BASE_URL}/pricing` });
+                      //   }
+                      // }}
                     >
                       {tier?.metadata?.title === "free"
                         ? "Start for Free"
