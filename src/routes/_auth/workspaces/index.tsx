@@ -5,13 +5,21 @@ import { LayersIcon, PlusIcon } from "lucide-react";
 import Link from "@/components/core/Link";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import seo from "@/lib/util/seo";
 
 export const Route = createFileRoute("/_auth/workspaces/")({
   head: () => ({
-    meta: [...seo({ title: "Workspaces" })],
+    meta: [
+      ...seo({
+        title: "Workspaces",
+        description:
+          "Create a new workspace, or select a current one to view details.",
+        url: `${BASE_URL}/workspaces`,
+      }),
+    ],
   }),
   component: WorkspacesOverviewPage,
   loader: async ({ context: { queryClient, session } }) =>
