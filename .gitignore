@@ -5,6 +5,7 @@ node_modules
 .nitro
 .output
 .vite
+dist
 
 # tests
 coverage
