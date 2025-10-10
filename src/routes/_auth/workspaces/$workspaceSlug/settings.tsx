@@ -20,7 +20,7 @@ import {
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
-import { API_BASE_URL } from "@/lib/config/env.config";
+import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import getSdk from "@/lib/graphql/getSdk";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
@@ -60,9 +60,15 @@ export const Route = createFileRoute(
       customer,
     };
   },
-  head: ({ loaderData }) => ({
+  head: ({ loaderData, params }) => ({
     meta: loaderData
-      ? [...seo({ title: `${loaderData.name} Settings` })]
+      ? [
+          ...seo({
+            title: `${loaderData.name} Settings`,
+            description: `Settings for the ${loaderData.name} workspace.`,
+            url: `${BASE_URL}/workspaces/${params.workspaceSlug}/settings`,
+          }),
+        ]
       : undefined,
   }),
   notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,

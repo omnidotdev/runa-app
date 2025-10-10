@@ -23,6 +23,7 @@ import {
   useUpdateProjectMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
+import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
@@ -67,9 +68,15 @@ export const Route = createFileRoute(
 
     return { name: workspaceBySlug.name, workspaceId: workspaceBySlug.rowId };
   },
-  head: ({ loaderData }) => ({
+  head: ({ loaderData, params }) => ({
     meta: loaderData
-      ? [...seo({ title: `${loaderData.name} Projects` })]
+      ? [
+          ...seo({
+            title: `${loaderData.name} Projects`,
+            description: `Manage and track all projects for the ${loaderData.name} workspace.`,
+            url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects`,
+          }),
+        ]
       : undefined,
   }),
   notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,

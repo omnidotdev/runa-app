@@ -54,6 +54,7 @@ import {
   useDeleteWorkspaceMutation,
 } from "@/generated/graphql";
 import { signOut } from "@/lib/auth/signOut";
+import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import invitationsOptions from "@/lib/options/invitations.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
@@ -63,8 +64,14 @@ import seo from "@/lib/util/seo";
 import type { Workspace } from "@/generated/graphql";
 
 export const Route = createFileRoute("/_auth/profile/$userId")({
-  head: () => ({
-    meta: [...seo({ title: "Profile" })],
+  head: (context) => ({
+    meta: [
+      ...seo({
+        title: "Profile",
+        description: "User profile page.",
+        url: `${BASE_URL}/profile/${context.params.userId}`,
+      }),
+    ],
   }),
   component: RouteComponent,
 });
