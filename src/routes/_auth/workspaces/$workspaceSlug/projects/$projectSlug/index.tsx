@@ -38,6 +38,7 @@ import {
   useUpdateTaskMutation,
   useUpdateUserPreferenceMutation,
 } from "@/generated/graphql";
+import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import getSdk from "@/lib/graphql/getSdk";
 import useDragStore from "@/lib/hooks/store/useDragStore";
@@ -132,8 +133,16 @@ export const Route = createFileRoute(
       }),
     ],
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData ? [...seo({ title: loaderData.name })] : undefined,
+  head: ({ loaderData, params }) => ({
+    meta: loaderData
+      ? [
+          ...seo({
+            title: loaderData.name,
+            description: `View and manage tasks for ${loaderData.name}.`,
+            url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}`,
+          }),
+        ]
+      : undefined,
   }),
   notFoundComponent: () => <NotFound>Project Not Found</NotFound>,
   component: ProjectPage,

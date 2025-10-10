@@ -18,6 +18,7 @@ import {
   useDeleteProjectMutation,
   useUpdateProjectMutation,
 } from "@/generated/graphql";
+import { BASE_URL } from "@/lib/config/env.config";
 import getSdk from "@/lib/graphql/getSdk";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import columnsOptions from "@/lib/options/columns.options";
@@ -47,9 +48,15 @@ export const Route = createFileRoute(
 
     return { name: projectName, projectId, workspaceId: workspaceBySlug.rowId };
   },
-  head: ({ loaderData }) => ({
+  head: ({ loaderData, params }) => ({
     meta: loaderData
-      ? [...seo({ title: `${loaderData.name} Settings` })]
+      ? [
+          ...seo({
+            title: `${loaderData.name} Settings`,
+            description: `View and manage ${loaderData.name} settings.`,
+            url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}/settings`,
+          }),
+        ]
       : undefined,
   }),
   notFoundComponent: () => <NotFound>Project Not Found</NotFound>,

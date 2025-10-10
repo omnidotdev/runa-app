@@ -31,6 +31,7 @@ import {
   useDeleteTaskMutation,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
+import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import projectOptions from "@/lib/options/project.options";
@@ -61,10 +62,17 @@ export const Route = createFileRoute(
     return {
       workspaceId: workspaceBySlug.rowId,
       projectId: workspaceBySlug.projects?.nodes?.[0]?.rowId!,
+      projectName: workspaceBySlug.projects.nodes?.[0]?.name!,
     };
   },
-  head: () => ({
-    meta: [...seo({ title: "Task" })],
+  head: ({ loaderData, params }) => ({
+    meta: [
+      ...seo({
+        title: "Task",
+        description: `View and manage a task for ${loaderData?.projectName}.`,
+        url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}/${params.taskId}`,
+      }),
+    ],
   }),
   notFoundComponent: () => <NotFound>Task Not Found</NotFound>,
   component: TaskPage,
