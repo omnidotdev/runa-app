@@ -10,8 +10,7 @@ import {
   UsersIcon,
   WorkflowIcon,
 } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { match } from "ts-pattern";
 
 import Link from "@/components/core/Link";
@@ -68,20 +67,51 @@ const features: Feature[] = [
   },
 ];
 
-const DEFAULT_COLUMNS = [
-  { title: "Backlog", emoji: "📚" },
-  { title: "To Do", emoji: "📝" },
-  { title: "In Progress", emoji: "🚧" },
-  { title: "Awaiting Review", emoji: "🔍" },
-  { title: "Done", emoji: "✅" },
-];
-
-const VARIANTS = [
-  { title: "Ideas", emoji: "💡" },
-  { title: "Working On It", emoji: "⚙️" },
-  { title: "Testing", emoji: "🧪" },
-  { title: "Shipped", emoji: "🚀" },
-  { title: "Celebrated", emoji: "🎉" },
+const mockData = [
+  {
+    displayId: "RUNA-24",
+    title: "Waiting on vendor API access",
+    color: "text-red-600",
+    wrapper: "-skew-y-16 mt-8 cursor-default",
+    priority: "Low",
+    assignees: [
+      {
+        name: "Eve",
+        avatarUrl: "/avatars/eve.png",
+      },
+    ],
+  },
+  {
+    displayId: "RUNA-26",
+    title: "Build user authentication flow",
+    color: "text-yellow-600",
+    wrapper: "-skew-y-16 -ml-80 mt-16 cursor-default",
+    priority: "Medium",
+    labels: [{ name: "Frontend", color: "#60a5fa", rowId: "lbl1" }],
+    assignees: [
+      {
+        name: "Beau",
+        avatarUrl: "https://api.dicebear.com/9.x/adventurer/svg?seed=Eden",
+      },
+      {
+        name: "Abby",
+        avatarUrl:
+          "https://api.dicebear.com/9.x/adventurer/svg?seed=Christopher",
+      },
+    ],
+  },
+  {
+    displayId: "RUNA-27",
+    title: "Finalize dashboard design system",
+    color: "text-green-600",
+    wrapper: "-skew-y-16 -ml-80 mt-24 cursor-default",
+    priority: "High",
+    labels: [
+      { name: "Design", color: "#a78bfa", rowId: "lbl2" },
+      { name: "Research", color: "#f472b6", rowId: "lbl3" },
+      { name: "Planning", color: "#34d399", rowId: "lbl4" },
+    ],
+  },
 ];
 
 export const Route = createFileRoute("/_anon/")({
@@ -93,82 +123,6 @@ export const Route = createFileRoute("/_anon/")({
 
 function HomePage() {
   const ref = useRef<HTMLDivElement>(null);
-  const [variantState, setVariantState] = useState<Record<number, boolean>>({});
-  const [hoveredState, setHoveredState] = useState<Record<number, boolean>>({});
-
-  const shortcuts = [
-    {
-      category: "Organization",
-      items: [
-        { keys: ["W"], action: "Create Workspace" },
-        { keys: ["P"], action: "Create Project" },
-        { keys: ["I"], action: "Invite Member" },
-      ],
-    },
-    {
-      category: "Tasks",
-      items: [
-        { keys: ["C"], action: "Create New Task" },
-        { keys: ["A"], action: "Create/Update Assignees" },
-        { keys: ["L"], action: "Create/Update Labels" },
-        { keys: ["D"], action: "Create/Update Due Date" },
-      ],
-    },
-    {
-      category: "Interface",
-      items: [
-        { keys: ["B"], action: "Toggle Sidebar" },
-        { keys: ["T"], action: "Toggle Dark Mode" },
-      ],
-    },
-  ];
-
-  const mockData = [
-    {
-      displayId: "RUNA-24",
-      title: "Waiting on vendor API access",
-      color: "text-red-600",
-      wrapper: "-skew-y-16 mt-8 cursor-default",
-      priority: "Low",
-      assignees: [
-        {
-          name: "Eve",
-          avatarUrl: "/avatars/eve.png",
-        },
-      ],
-    },
-    {
-      displayId: "RUNA-26",
-      title: "Build user authentication flow",
-      color: "text-yellow-600",
-      wrapper: "-skew-y-16 -ml-80 mt-16 cursor-default",
-      priority: "Medium",
-      labels: [{ name: "Frontend", color: "#60a5fa", rowId: "lbl1" }],
-      assignees: [
-        {
-          name: "Beau",
-          avatarUrl: "https://api.dicebear.com/9.x/adventurer/svg?seed=Eden",
-        },
-        {
-          name: "Abby",
-          avatarUrl:
-            "https://api.dicebear.com/9.x/adventurer/svg?seed=Christopher",
-        },
-      ],
-    },
-    {
-      displayId: "RUNA-27",
-      title: "Finalize dashboard design system",
-      color: "text-green-600",
-      wrapper: "-skew-y-16 -ml-80 mt-24 cursor-default",
-      priority: "High",
-      labels: [
-        { name: "Design", color: "#a78bfa", rowId: "lbl2" },
-        { name: "Research", color: "#f472b6", rowId: "lbl3" },
-        { name: "Planning", color: "#34d399", rowId: "lbl4" },
-      ],
-    },
-  ];
 
   return (
     <div className="relative size-full">
@@ -351,121 +305,6 @@ function HomePage() {
                 />
               );
             })}
-          </div>
-        </section>
-
-        <section className="relative min-h-screen">
-          <div className="flex flex-col items-center justify-center space-y-3 py-20 text-center text-foreground">
-            <h1 className="font-semibold text-4xl tracking-tight">
-              Work faster with shortcuts ⚡️
-            </h1>
-            <p className="text-base-600 text-lg dark:text-base-400">
-              Master key commands to navigate, create, and manage seamlessly.
-            </p>
-          </div>
-
-          <div className="mx-auto grid max-w-md gap-8 px-6 pb-20 lg:max-w-4xl lg:grid-cols-3">
-            {shortcuts.map((group) => (
-              <div
-                key={group.category}
-                className="rounded-2xl border bg-background p-5 shadow-sm"
-              >
-                <h2 className="mb-4 font-medium text-foreground text-lg">
-                  {group.category}
-                </h2>
-                <ul className="space-y-3">
-                  {group.items.map((item, idx) => (
-                    <li
-                      // biome-ignore lint/suspicious/noArrayIndexKey: test
-                      key={idx}
-                      className="flex items-center justify-between text-neutral-400 text-sm"
-                    >
-                      <span>{item.action}</span>
-                      <span className="flex gap-1">
-                        {item.keys.map((key, i) => (
-                          <kbd
-                            // biome-ignore lint/suspicious/noArrayIndexKey: test
-                            key={i}
-                            className="rounded-md border border-neutral-300 bg-neutral-100 px-2 py-1 font-mono text-foreground text-xs dark:border-neutral-700 dark:bg-neutral-800"
-                          >
-                            {key}
-                          </kbd>
-                        ))}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="relative min-h-screen">
-          <div className="relative mx-auto max-w-5xl">
-            <div className="flex flex-col items-center justify-center space-y-3 py-20 text-center text-foreground">
-              <h1 className="font-semibold text-4xl tracking-tight">
-                <span className="underline decoration-4 decoration-primary">
-                  Custom
-                </span>
-                ize Your Work
-                <span className="underline decoration-4 decoration-primary">
-                  flow
-                </span>
-              </h1>
-              <p className="text-base-600 text-lg dark:text-base-400">
-                Change the name and icon of each column to match your team’s
-                workflow.{" "}
-              </p>
-            </div>
-
-            <div className="flex gap-4 overflow-x-auto">
-              {DEFAULT_COLUMNS.map((col, i) => {
-                const isVariant = variantState[i];
-                const current = isVariant ? VARIANTS[i] : col;
-
-                return (
-                  <motion.div
-                    key={i}
-                    layout
-                    onMouseEnter={() => {
-                      if (!hoveredState[i]) {
-                        // Toggle variant only the first time we hover
-                        setVariantState((prev) => ({ ...prev, [i]: !prev[i] }));
-                        setHoveredState((prev) => ({ ...prev, [i]: true }));
-                      }
-                    }}
-                    onMouseLeave={() => {
-                      // Reset hovered state so it can toggle again next hover
-                      setHoveredState((prev) => ({ ...prev, [i]: false }));
-                    }}
-                    className="relative flex min-w-[180px] flex-shrink-0 flex-col rounded-xl border bg-background p-4 shadow-sm transition-all duration-300"
-                  >
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={current.title + current.emoji}
-                        initial={{ opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        transition={{ duration: 0.25 }}
-                        className="flex items-center gap-2 font-medium"
-                      >
-                        <span className="text-2xl">{current.emoji}</span>
-                        <span className="text-sm">{current.title}</span>
-                      </motion.div>
-                    </AnimatePresence>
-
-                    <div className="mt-4 space-y-2">
-                      {[...Array(3)].map((_, j) => (
-                        <div
-                          key={j}
-                          className="h-3 w-full rounded bg-muted-foreground/10"
-                        />
-                      ))}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
           </div>
         </section>
       </div>

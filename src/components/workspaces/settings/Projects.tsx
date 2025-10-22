@@ -115,7 +115,7 @@ const Projects = () => {
 
         {workspace?.projects.nodes.length ? (
           <div className="flex flex-col divide-y border-y px-2 lg:px-0">
-            {workspace?.projects.nodes.map((project, index) => {
+            {workspace?.projects.nodes.map((project) => {
               const completedTasks = project.columns?.nodes?.reduce(
                 (acc, col) => acc + (col?.completedTasks.totalCount || 0),
                 0,
