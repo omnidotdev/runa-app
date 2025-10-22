@@ -168,7 +168,8 @@ function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="lg:-mt-8 mx-auto mt-16 max-w-6xl">
+
+          <div className="lg:-mt-8 mx-auto mt-16 hidden max-w-6xl sm:flex">
             <div className="-space-x-4 flex scale-90 select-none lg:scale-100">
               {mockData.map((item) => (
                 <div key={item.title} className={item.wrapper}>
