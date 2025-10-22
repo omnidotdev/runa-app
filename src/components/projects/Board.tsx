@@ -11,7 +11,6 @@ import ColumnMenu from "@/components/projects/ColumnMenu";
 import ColumnHeader from "@/components/shared/ColumnHeader";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
-import useTheme from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
@@ -23,8 +22,6 @@ interface Props {
 }
 
 const Board = ({ tasks }: Props) => {
-  const { theme } = useTheme();
-
   const { projectId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
@@ -75,16 +72,7 @@ const Board = ({ tasks }: Props) => {
       .indexOf(taskId) ?? 0;
 
   return (
-    <div
-      className="custom-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
-      style={{
-        backgroundColor: userPreferences?.color
-          ? theme === "dark"
-            ? `${userPreferences?.color}12`
-            : `${userPreferences?.color}0D`
-          : undefined,
-      }}
-    >
+    <div className="custom-scrollbar h-full select-none overflow-x-auto">
       <div className="h-full min-w-fit p-4">
         <div className="flex h-full gap-3">
           {project?.columns?.nodes?.map((column) => (

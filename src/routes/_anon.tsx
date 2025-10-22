@@ -26,7 +26,7 @@ function UnauthenticatedLayout() {
         <div className="absolute inset-0 left-[calc(-1*calc(100vw-100%))] z-0 w-[calc(100%+calc(100vw-100%))] bg-gradient-to-b from-base-100/70 via-transparent to-base-100/70 dark:from-base-950/70 dark:via-transparent dark:to-base-900/70" />
       </div>
 
-      <header className="fixed top-0 z-50 w-full border-base-200 border-b bg-white shadow-sm blur-ms dark:border-base-700 dark:bg-base-900">
+      <header className="fixed top-0 z-50 w-full border-b bg-background dark:bg-base-900">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <Link
@@ -46,10 +46,7 @@ function UnauthenticatedLayout() {
             <div className="flex items-center gap-4">
               <ThemeToggle />
 
-              <Button
-                onClick={() => signIn({ redirectUrl: BASE_URL })}
-                className="bg-primary-700 dark:bg-primary"
-              >
+              <Button onClick={() => signIn({ redirectUrl: BASE_URL })}>
                 Sign In
               </Button>
             </div>

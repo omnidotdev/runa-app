@@ -9,7 +9,6 @@ import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
-import UpgradeSubscriptionDialog from "@/components/profile/UpgradeSubscriptionDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import WorkspaceColumnsForm from "@/components/workspaces/settings/columns/WorkspaceColumnsForm";
@@ -232,7 +231,7 @@ function SettingsPage() {
               <h4 className="mb-3 font-medium text-muted-foreground text-sm">
                 Current Plan Benefits
               </h4>
-              <ul className="space-y-2">
+              {/* <ul className="space-y-2">
                 {subscription.product.benefits.map((benefit) => (
                   <li key={benefit.id} className="flex items-center gap-2">
                     <div className="size-1.5 flex-shrink-0 rounded-full bg-primary" />
@@ -241,7 +240,7 @@ function SettingsPage() {
                     </span>
                   </li>
                 ))}
-              </ul>
+              </ul> */}
             </div>
 
             {/** TODO: adjust logic for managing subscription. Any updates required for the `tier` in the db should be done in the webhook handler */}
@@ -306,10 +305,10 @@ function SettingsPage() {
           confirmation={`Permanently delete ${workspace?.name}`}
         />
 
-        <UpgradeSubscriptionDialog
+        {/* <UpgradeSubscriptionDialog
           subscription={subscription}
           products={products}
-        />
+        /> */}
       </div>
     </div>
   );

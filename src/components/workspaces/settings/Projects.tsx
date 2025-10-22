@@ -94,7 +94,7 @@ const Projects = () => {
 
           <Tooltip
             positioning={{
-              placement: "left",
+              placement: "top-end",
             }}
             tooltip="Create Project"
             shortcut="P"
@@ -115,7 +115,7 @@ const Projects = () => {
 
         {workspace?.projects.nodes.length ? (
           <div className="flex flex-col divide-y border-y px-2 lg:px-0">
-            {workspace?.projects.nodes.map((project) => {
+            {workspace?.projects.nodes.map((project, index) => {
               const completedTasks = project.columns?.nodes?.reduce(
                 (acc, col) => acc + (col?.completedTasks.totalCount || 0),
                 0,
@@ -134,10 +134,14 @@ const Projects = () => {
                   <div className="flex items-center">
                     <div className="flex size-10 items-center justify-center">
                       <div
-                        className="flex size-6 items-center justify-center rounded-full border bg-primary font-medium text-background text-sm uppercase shadow"
+                        className={cn(
+                          "flex size-6 items-center justify-center rounded-full border bg-background font-medium text-sm uppercase shadow",
+                          project?.userPreferences.nodes?.[0]?.color &&
+                            "text-background",
+                        )}
                         style={{
                           backgroundColor:
-                            project?.userPreferences.nodes?.[0].color ??
+                            project?.userPreferences.nodes?.[0]?.color ??
                             undefined,
                         }}
                       >
@@ -162,7 +166,7 @@ const Projects = () => {
                     <MenuRoot
                       positioning={{
                         strategy: "fixed",
-                        placement: "left",
+                        placement: "left-start",
                       }}
                     >
                       <MenuTrigger asChild>
@@ -177,7 +181,7 @@ const Projects = () => {
                       </MenuTrigger>
 
                       <MenuPositioner>
-                        <MenuContent className="focus-within:outline-none">
+                        <MenuContent className="min-w-40 focus-within:outline-none">
                           <MenuItem
                             value="view project"
                             onClick={() => {

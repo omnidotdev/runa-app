@@ -42,8 +42,17 @@ const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
       triggerRef={selectButtonRef}
       tooltip="Adjust Priority"
       shortcut={Hotkeys.UpdateTaskPriority.toUpperCase()}
+      placement="top-end"
     >
-      <Select collection={priorityCollection} loopFocus {...rest}>
+      <Select
+        positioning={{
+          strategy: "fixed",
+          placement: "bottom-end",
+        }}
+        collection={priorityCollection}
+        loopFocus
+        {...rest}
+      >
         <SelectControl>
           <SelectTrigger
             aria-label="Select Priority"

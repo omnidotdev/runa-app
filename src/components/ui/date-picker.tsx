@@ -18,7 +18,7 @@ const datePickerVariants = tv({
     trigger: "ml-2 h-10 w-10",
     clearTrigger: "h-auto px-2 text-xs",
     content:
-      "z-10 flex w-[344px] min-w-fit flex-col gap-3 rounded-md border bg-base-50 p-4 shadow-lg dark:bg-base-950",
+      "z-10 flex w-[344px] min-w-fit flex-col gap-3 rounded-md border bg-base-50 p-4 shadow-lg dark:bg-base-950 origin-[var(--transform-origin)] data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-300 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 origin-[var(--transform-origin)] data-[state=closed]:animate-out data-[state=open]:animate-in",
     viewControl: "flex items-center justify-between",
     viewTrigger:
       "flex items-center justify-center rounded-md px-2 py-1 font-medium text-sm",

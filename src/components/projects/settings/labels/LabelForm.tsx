@@ -276,7 +276,7 @@ const LabelForm = ({
         <MenuRoot
           positioning={{
             strategy: "fixed",
-            placement: "left",
+            placement: "left-start",
           }}
         >
           <MenuTrigger asChild>

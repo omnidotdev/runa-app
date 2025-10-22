@@ -75,7 +75,7 @@ const Tooltip = ({ tooltip, children, shortcut, ...rest }: Props) => {
       positioning={{
         placement: "top",
         offset: {
-          mainAxis: 4,
+          mainAxis: 8,
         },
       }}
       closeDelay={0}

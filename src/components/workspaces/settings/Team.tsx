@@ -85,7 +85,7 @@ const Team = () => {
             tooltip="Invite Member"
             shortcut="I"
             positioning={{
-              placement: "left",
+              placement: "top-end",
             }}
           >
             <Button
@@ -142,7 +142,7 @@ const Team = () => {
                       <MenuRoot
                         positioning={{
                           strategy: "fixed",
-                          placement: "left",
+                          placement: "left-start",
                         }}
                       >
                         <MenuTrigger asChild>

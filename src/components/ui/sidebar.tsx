@@ -397,9 +397,19 @@ function SidebarInset({ className, ...rest }: ComponentProps<"main">) {
       data-slot="sidebar-inset"
       className={cn(
         "relative flex w-full flex-1 flex-col bg-background",
-        "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm",
+        "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl ",
         className,
       )}
+      {...rest}
+    />
+  );
+}
+
+function SidebarSeparator({ className, ...rest }: ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="sidebar-separator"
+      className={cn("-mx-2 h-px bg-border py-0", className)}
       {...rest}
     />
   );
@@ -751,4 +761,5 @@ export {
   SidebarTrigger,
   useSidebar,
   SidebarMenuShortcut,
+  SidebarSeparator,
 };

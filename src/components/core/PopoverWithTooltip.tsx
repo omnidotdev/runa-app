@@ -14,6 +14,20 @@ interface Props extends ComponentProps<typeof TooltipRoot> {
   tooltip?: string;
   shortcut?: string;
   triggerRef: RefObject<HTMLButtonElement | null>;
+  // TODO: Find the appropriate type from @ark-ui/react
+  placement?:
+    | "top"
+    | "bottom"
+    | "left"
+    | "right"
+    | "top-end"
+    | "top-start"
+    | "bottom-end"
+    | "bottom-start"
+    | "left-end"
+    | "left-start"
+    | "right-end"
+    | "right-start";
 }
 
 const PopoverWithTooltip = ({
@@ -21,13 +35,14 @@ const PopoverWithTooltip = ({
   children,
   shortcut,
   triggerRef,
+  placement = "top",
   ...rest
 }: Props) => {
   return (
     <TooltipRoot
       positioning={{
         strategy: "fixed",
-        placement: "top",
+        placement,
         getAnchorRect: () =>
           triggerRef.current?.getBoundingClientRect() ?? null,
       }}

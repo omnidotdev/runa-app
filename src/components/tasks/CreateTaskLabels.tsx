@@ -176,6 +176,7 @@ const CreateTaskLabels = withForm({
                                 }
                               }}
                             />
+
                             <Button
                               type="submit"
                               variant="ghost"
@@ -194,10 +195,10 @@ const CreateTaskLabels = withForm({
                             </Button>
                           </div>
 
-                          <MenuItemGroup className="-mt-1">
-                            <MenuSeparator />
+                          {!!field.state.value.length && (
+                            <MenuItemGroup className="-mt-1">
+                              <MenuSeparator />
 
-                            {!!field.state.value.length && (
                               <div className="mt-1 flex flex-col gap-1">
                                 {field.state.value.map((label, i) => (
                                   <form.Field
@@ -232,8 +233,8 @@ const CreateTaskLabels = withForm({
                                   </form.Field>
                                 ))}
                               </div>
-                            )}
-                          </MenuItemGroup>
+                            </MenuItemGroup>
+                          )}
                         </div>
                       );
                     }}

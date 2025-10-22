@@ -242,7 +242,7 @@ const ColumnForm = ({
         <MenuRoot
           positioning={{
             strategy: "fixed",
-            placement: "left",
+            placement: "left-start",
           }}
         >
           <MenuTrigger asChild>
@@ -261,17 +261,17 @@ const ColumnForm = ({
           </MenuTrigger>
 
           <MenuPositioner>
-            <MenuContent className="focus-within:outline-none">
+            <MenuContent className="min-w-40 focus-within:outline-none">
               <MenuItem
                 value="reset"
                 onClick={() => onSetActive(column.rowId!)}
               >
                 <PenLineIcon />
-                <span> Edit</span>
+                <span>Edit</span>
               </MenuItem>
 
               <MenuItem
-                value="reset"
+                value="delete"
                 variant="destructive"
                 onClick={() => {
                   setColumnToDelete?.(column);
@@ -279,7 +279,7 @@ const ColumnForm = ({
                 }}
               >
                 <Trash2Icon />
-                <span> Delete </span>
+                <span>Delete</span>
               </MenuItem>
             </MenuContent>
           </MenuPositioner>

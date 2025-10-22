@@ -30,7 +30,7 @@ import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 import { SidebarMenuShortcut } from "../ui/sidebar";
 
-const CreateTaskAssignees = withForm({
+const CreateAssignees = withForm({
   defaultValues: taskFormDefaults,
   render: ({ form }) => {
     const { workspaceId } = useLoaderData({ from: "/_auth" });
@@ -161,4 +161,4 @@ const CreateTaskAssignees = withForm({
   },
 });
 
-export default CreateTaskAssignees;
+export default CreateAssignees;

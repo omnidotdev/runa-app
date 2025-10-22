@@ -178,14 +178,14 @@ const ProjectColumnsForm = () => {
 
           <MenuRoot
             positioning={{
-              placement: "right-start",
+              placement: "left-start",
               getAnchorRect: () =>
                 menuButtonRef.current?.getBoundingClientRect() ?? null,
             }}
             closeOnSelect={false}
           >
             <Tooltip
-              positioning={{ placement: "left" }}
+              positioning={{ placement: "top-end" }}
               tooltip="Column options"
             >
               <MenuTrigger ref={menuButtonRef} asChild>

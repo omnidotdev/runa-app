@@ -42,6 +42,7 @@ import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import getSdk from "@/lib/graphql/getSdk";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import useTheme from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
@@ -155,6 +156,7 @@ function ProjectPage() {
   const { search, assignees, labels, priorities } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
+  const { theme } = useTheme();
 
   const navigate = Route.useNavigate();
 
@@ -473,8 +475,17 @@ function ProjectPage() {
 
   return (
     <div className="flex size-full">
-      <div className="flex size-full flex-col">
-        <div className="border-b px-6 py-4">
+      <div
+        className="flex size-full flex-col bg-primary-100/30 dark:bg-primary-950/15"
+        style={{
+          backgroundColor: userPreferences?.color
+            ? theme === "dark"
+              ? `${userPreferences?.color}12`
+              : `${userPreferences?.color}0D`
+            : undefined,
+        }}
+      >
+        <div className="border-b bg-background px-6 py-4">
           <div className="flex flex-col gap-2">
             <RichTextEditor
               key={project?.name}
@@ -524,7 +535,7 @@ function ProjectPage() {
             />
 
             <div className="mt-2 flex flex-wrap gap-2 sm:flex-nowrap">
-              <div className="relative flex-1 sm:flex-none">
+              <div className="relative flex-1 bg-background sm:flex-none">
                 <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-base-400" />
                 <Input
                   id="search-tasks"
@@ -537,7 +548,6 @@ function ProjectPage() {
               </div>
 
               <Tooltip
-                positioning={{ placement: "bottom" }}
                 shortcut="V"
                 tooltip={
                   userPreferences?.viewMode === "list"
@@ -569,10 +579,7 @@ function ProjectPage() {
                 </Button>
               </Tooltip>
 
-              <Tooltip
-                positioning={{ placement: "bottom" }}
-                tooltip="Project Settings"
-              >
+              <Tooltip tooltip="Project Settings">
                 <Link
                   to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
                   params={{
@@ -591,7 +598,6 @@ function ProjectPage() {
 
               {userPreferences?.viewMode === "list" && (
                 <Tooltip
-                  positioning={{ placement: "bottom" }}
                   tooltip={isForceClosed ? "Expand Lists" : "Collapse Lists"}
                 >
                   <Button

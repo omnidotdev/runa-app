@@ -56,7 +56,7 @@ const BoardItem = ({ project }: Props) => {
           },
         })
       }
-      className="cursor-pointer rounded-lg border bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
+      className="cursor-pointer rounded-lg border bg-background p-3 transition-shadow hover:shadow-md hover:shadow-sm dark:shadow-gray-400/10"
     >
       <div className="flex flex-col gap-1">
         <p className="text-base-600 text-xs dark:text-base-400">

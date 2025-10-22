@@ -88,16 +88,7 @@ const List = ({
       .indexOf(taskId) ?? 0;
 
   return (
-    <div
-      className="custom-scrollbar h-full overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/20"
-      style={{
-        backgroundColor: userPreferences?.color
-          ? theme === "dark"
-            ? `${userPreferences?.color}12`
-            : `${userPreferences?.color}0D`
-          : undefined,
-      }}
-    >
+    <div className="custom-scrollbar h-full overflow-y-auto p-4">
       {project?.columns?.nodes?.map((column, index) => {
         const columnTasks = tasks.filter(
           (task) => task.columnId === column.rowId,

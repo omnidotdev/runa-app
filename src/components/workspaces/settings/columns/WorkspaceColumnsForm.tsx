@@ -146,7 +146,7 @@ const ProjectColumnsForm = () => {
           <Tooltip
             tooltip="Create column"
             positioning={{
-              placement: "left",
+              placement: "top-end",
             }}
           >
             <Button

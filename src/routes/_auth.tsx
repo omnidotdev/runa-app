@@ -93,7 +93,7 @@ function AuthenticatedLayout() {
       <div className="flex h-dvh w-full">
         <AppSidebar variant="inset" />
 
-        <SidebarInset className="flex-1 overflow-hidden">
+        <SidebarInset className="flex-1 overflow-hidden border ">
           <Outlet />
         </SidebarInset>
       </div>

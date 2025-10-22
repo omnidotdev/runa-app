@@ -67,7 +67,7 @@ const ProjectLabelsForm = () => {
         <Tooltip
           tooltip="Create new label"
           positioning={{
-            placement: "left",
+            placement: "top-end",
           }}
         >
           <Button

@@ -70,7 +70,7 @@ const ListTrigger = ({
           </Tooltip>
         </div>
 
-        <ChevronRightIcon className="ml-2 size-5 text-base-400 transition-transform" />
+        <ChevronRightIcon className="ml-2 size-4 text-base-400 transition-transform" />
       </div>
     </CollapsibleTrigger>
   );

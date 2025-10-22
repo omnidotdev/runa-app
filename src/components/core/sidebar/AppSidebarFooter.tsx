@@ -59,7 +59,7 @@ const AppSidebarFooter = () => {
   });
 
   return (
-    <SidebarFooter className="flex justify-center border-t">
+    <SidebarFooter className="flex justify-center">
       <SidebarMenu className="gap-1 group-data-[collapsible=icon]:w-fit">
         <SidebarMenuItem>
           <SidebarMenuButton

@@ -26,7 +26,7 @@ const ColumnHeader = ({
   ...rest
 }: Props) => {
   return (
-    <div className="mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2 shadow-sm">
+    <div className="mb-1 flex items-center justify-between rounded-lg border bg-background px-3 py-2">
       <div className="flex items-center gap-2">
         <span>{emoji}</span>
         <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
@@ -48,7 +48,7 @@ const ColumnHeader = ({
           <Button
             variant="ghost"
             size="xs"
-            className="size-5"
+            className="size-7"
             onClick={onCreate}
             aria-label={`Create ${title}`}
             {...rest}

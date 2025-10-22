@@ -94,7 +94,7 @@ const ColumnMenu = ({ columnId }: Props) => {
       <MenuRoot
         positioning={{
           strategy: "fixed",
-          placement: "bottom-end",
+          placement: "left-start",
         }}
       >
         <MenuTrigger asChild onClick={(e) => e.stopPropagation()}>
