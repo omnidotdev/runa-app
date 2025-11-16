@@ -15,7 +15,7 @@
   },
   "overrides": {
     "vite": "npm:rolldown-vite@latest",
-    "yallist": "^4.0.0"
+    "yallist": "^5.0.0"
   },
   "dependencies": {
     "@ark-ui/react": "^5.18.3",
