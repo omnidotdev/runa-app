@@ -114,27 +114,13 @@ function RootDocument({
         <TanStackDevtools
           plugins={[
             {
-              name: "Tanstack Router",
+              name: "Router",
               render: <TanStackRouterDevtoolsPanel />,
+              defaultOpen: true,
             },
             {
-              name: "Tanstack Query",
+              name: "Query",
               render: <ReactQueryDevtoolsPanel />,
-            },
-            {
-              name: "Studio",
-              render: () => (
-                <iframe
-                  title="Drizzle Studio"
-                  src="https://local.drizzle.studio"
-                  style={{
-                    flexGrow: 1,
-                    width: "100%",
-                    height: "100%",
-                    border: 0,
-                  }}
-                />
-              ),
             },
           ]}
         />
