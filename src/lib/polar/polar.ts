@@ -1,8 +1,8 @@
 import { Polar } from "@polar-sh/sdk";
 
 import {
-  enablePolarSandbox,
   POLAR_ACCESS_TOKEN,
+  enablePolarSandbox,
 } from "@/lib/config/env.config";
 
 /**
