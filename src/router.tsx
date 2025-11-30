@@ -60,7 +60,6 @@ export function getRouter() {
 
   setupRouterSsrQueryIntegration({
     router,
-    // @ts-expect-error TODO: look into issue.
     queryClient,
   });
 
