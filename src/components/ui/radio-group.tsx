@@ -82,12 +82,9 @@ const RadioGroupItemHiddenInput = ({
 );
 
 export {
-  /** @knipignore */
   RadioGroupProvider,
-  /** @knipignore */
   RadioGroupContext,
   RadioGroupRoot,
-  /** @knipignore */
   RadioGroupLabel,
   RadioGroupIndicator,
   RadioGroupItem,

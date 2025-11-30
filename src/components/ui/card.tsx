@@ -135,8 +135,6 @@ export {
   CardTitle,
   CardDescription,
   CardContent,
-  /** @knipignore */
   cardVariants,
-  /** @knipignore */
   type CardProps,
 };

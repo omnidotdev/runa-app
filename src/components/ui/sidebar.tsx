@@ -726,28 +726,21 @@ export {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupAction,
-  /** @knipignore */
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
-  /** @knipignore */
   SidebarInput,
   SidebarInset,
   SidebarMenu,
   SidebarMenuAction,
-  /** @knipignore */
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-  /** @knipignore */
   SidebarMenuSub,
-  /** @knipignore */
   SidebarMenuSubButton,
-  /** @knipignore */
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
-  /** @knipignore */
   SidebarTrigger,
   useSidebar,
   SidebarMenuShortcut,

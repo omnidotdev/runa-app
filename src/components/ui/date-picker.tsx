@@ -186,13 +186,10 @@ const DatePickerTableCellTrigger = ({
 
 export {
   DatePickerRoot,
-  /** @knipignore */
   DatePickerLabel,
   DatePickerControl,
-  /** @knipignore */
   DatePickerInput,
   DatePickerTrigger,
-  /** @knipignore */
   DatePickerClearTrigger,
   DatePickerContent,
   DatePickerView,
@@ -206,7 +203,6 @@ export {
   DatePickerTableHeader,
   DatePickerTableBody,
   DatePickerTableCell,
-  /** @knipignore */
   DatePickerProvider,
   DatePickerContext,
   DatePickerPositioner,
