@@ -117,8 +117,22 @@ function PricingPage() {
             <TabsTrigger value="year">Yearly</TabsTrigger>
           </TabsList>
           {(["month", "year"] as const).map((tab) => (
-            // TODO: handle free tier price card
             <TabsContent key={tab} value={tab} className="flex gap-4">
+              <PriceCard
+                price={{
+                  id: "free",
+                  unit_amount: 0,
+                  metadata: { tier: "free" },
+                  product: {
+                    description: "Start for free.",
+                    marketing_features: [
+                      { name: "2 projects" },
+                      { name: "500 total tasks" },
+                    ],
+                  },
+                }}
+              />
+
               {filteredPrices.map((price) => (
                 <PriceCard key={price.id} price={price} />
               ))}

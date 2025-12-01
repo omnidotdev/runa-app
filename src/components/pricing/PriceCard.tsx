@@ -13,10 +13,19 @@ import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
-import type { ExpandedProductPrice } from "@/routes/_anon/pricing";
+import type Stripe from "stripe";
 
 interface Props {
-  price: Partial<ExpandedProductPrice>;
+  price: {
+    id: Stripe.Price["id"];
+    unit_amount: Stripe.Price["unit_amount"];
+    recurring?: Stripe.Price["recurring"];
+    metadata: Stripe.Price["metadata"];
+    product: {
+      description: Stripe.Product["description"];
+      marketing_features: Stripe.Product["marketing_features"];
+    };
+  };
 }
 
 export const PriceCard = ({ price }: Props) => (
@@ -59,7 +68,9 @@ export const PriceCard = ({ price }: Props) => (
             currency="USD"
           />
           <span className="ml-1 font-medium text-lg text-muted-foreground">
-            /workspace/{price.recurring?.interval}
+            {price.recurring
+              ? `/workspace/${price.recurring.interval}`
+              : "/forever"}
           </span>
         </div>
         {price.recurring?.interval === "year" && (
