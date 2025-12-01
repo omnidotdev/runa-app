@@ -37,7 +37,7 @@ const faqItems = [
 ];
 
 // NB: we expand the product details in the server function below. This interface narrows the type for `product` on that return
-export interface ExpandedProductPrice extends Stripe.Price {
+interface ExpandedProductPrice extends Stripe.Price {
   product: Stripe.Product;
 }
 
