@@ -55,6 +55,7 @@
     "react-hotkeys-hook": "^5.2.1",
     "resend": "^6.5.2",
     "sonner": "^2.0.7",
+    "stripe": "^20.0.0",
     "tailwind-merge": "^3.4.0",
     "tailwind-variants": "^3.2.2",
     "ts-pattern": "^5.9.0",
