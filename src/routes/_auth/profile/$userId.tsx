@@ -1,4 +1,3 @@
-import { CustomerCancellationReason } from "@polar-sh/sdk/models/components/customercancellationreason.js";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { AlertTriangle, Building2, LogOut, Settings } from "lucide-react";
@@ -24,14 +23,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  RadioGroupIndicator,
-  RadioGroupItem,
-  RadioGroupItemControl,
-  RadioGroupItemHiddenInput,
-  RadioGroupItemText,
-  RadioGroupRoot,
-} from "@/components/ui/radio-group";
 import {
   Table,
   TableBody,
@@ -73,15 +64,10 @@ export const Route = createFileRoute("/_auth/profile/$userId")({
       }),
     ],
   }),
-  component: RouteComponent,
+  component: ProfilePage,
 });
 
-function RouteComponent() {
-  const [reasonForLeaving, setReasonForLeaving] = useState<
-    CustomerCancellationReason | undefined
-  >(undefined);
-  const [reasonForLeavingComment, setReasonForLeavingComment] =
-    useState<string>("");
+function ProfilePage() {
   const [workspaceToDelete, setWorkspaceToDelete] = useState<
     Partial<Workspace> | undefined
   >(undefined);
@@ -398,55 +384,9 @@ function RouteComponent() {
                             <DialogDescription>
                               This will permanently cancel your subscription and
                               delete all associated data. This action cannot be
-                              undone. If you are sure, please provide a reason
-                              for leaving.
+                              undone.
                             </DialogDescription>
                           </div>
-
-                          <RadioGroupRoot
-                            value={reasonForLeaving}
-                            onValueChange={({ value }) =>
-                              setReasonForLeaving(
-                                value as CustomerCancellationReason,
-                              )
-                            }
-                          >
-                            <RadioGroupIndicator />
-                            {Object.values(CustomerCancellationReason).map(
-                              (reason) => (
-                                <RadioGroupItem key={reason} value={reason}>
-                                  <RadioGroupItemControl
-                                    className="ring-destructive data-[state=checked]:bg-destructive"
-                                    tabIndex={0}
-                                  />
-                                  <RadioGroupItemText>
-                                    {reason
-                                      .split("_")
-                                      .filter(Boolean)
-                                      .map((word) =>
-                                        firstLetterToUppercase(word),
-                                      )
-                                      .join(" ")}
-                                  </RadioGroupItemText>
-                                  <RadioGroupItemHiddenInput />
-                                </RadioGroupItem>
-                              ),
-                            )}
-                          </RadioGroupRoot>
-
-                          {reasonForLeaving ===
-                            CustomerCancellationReason.Other && (
-                            <textarea
-                              className="rounded-md border p-1.5 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                              placeholder="Reason for leaving..."
-                              value={reasonForLeavingComment}
-                              onChange={(e) =>
-                                e.target.value.length
-                                  ? setReasonForLeavingComment(e.target.value)
-                                  : setReasonForLeavingComment("")
-                              }
-                            />
-                          )}
 
                           <div className="mt-4 flex justify-end gap-2">
                             <DialogCloseTrigger asChild>

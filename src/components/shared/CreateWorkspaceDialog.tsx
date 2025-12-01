@@ -25,7 +25,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
-import { createWorkspaceSubscription } from "@/server/createWorkspaceSubscription";
 
 const DEFAULT_PROJECT_COLUMNS = [
   { title: "Planned", index: 0, emoji: "🗓" },
@@ -81,13 +80,6 @@ const CreateWorkspaceDialog = () => {
             },
           }),
         ),
-        createWorkspaceSubscription({
-          data: {
-            hidraId: session?.user.hidraId!,
-            userEmail: session?.user.email!,
-            workspaceId: createWorkspace?.workspace?.rowId!,
-          },
-        }),
       ]);
 
       navigate({

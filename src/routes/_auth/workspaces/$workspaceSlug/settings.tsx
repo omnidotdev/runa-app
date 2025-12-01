@@ -9,7 +9,6 @@ import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
-import UpgradeSubscriptionDialog from "@/components/profile/UpgradeSubscriptionDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import WorkspaceColumnsForm from "@/components/workspaces/settings/columns/WorkspaceColumnsForm";
@@ -20,7 +19,7 @@ import {
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
-import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
+import { BASE_URL } from "@/lib/config/env.config";
 import getSdk from "@/lib/graphql/getSdk";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
@@ -29,9 +28,6 @@ import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
-import { fetchAuthenticatedCustomer } from "@/server/fetchAuthenticatedCustomer";
-import { fetchRunaProducts } from "@/server/fetchRunaProducts";
-import { getSubscription } from "@/server/getSubscription";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
@@ -41,23 +37,15 @@ export const Route = createFileRoute(
       throw notFound();
     }
 
-    const [customer, subscription, { products }] = await Promise.all([
-      fetchAuthenticatedCustomer({ data: { hidraId: session?.user.hidraId! } }),
-      getSubscription({ data: { id: workspaceBySlug.subscriptionId! } }),
-      fetchRunaProducts(),
-      queryClient.ensureQueryData(
-        projectColumnsOptions({
-          workspaceId: workspaceBySlug.rowId!,
-        }),
-      ),
-    ]);
+    await queryClient.ensureQueryData(
+      projectColumnsOptions({
+        workspaceId: workspaceBySlug.rowId!,
+      }),
+    );
 
     return {
       name: workspaceBySlug.name,
       workspaceId: workspaceBySlug.rowId,
-      subscription,
-      products,
-      customer,
     };
   },
   head: ({ loaderData, params }) => ({
@@ -77,8 +65,7 @@ export const Route = createFileRoute(
 
 function SettingsPage() {
   const { session } = Route.useRouteContext();
-  const { workspaceId, customer, subscription, products } =
-    Route.useLoaderData();
+  const { workspaceId } = Route.useLoaderData();
   const { workspaceSlug } = Route.useParams();
   const navigate = Route.useNavigate();
 
@@ -232,46 +219,13 @@ function SettingsPage() {
               <h4 className="mb-3 font-medium text-muted-foreground text-sm">
                 Current Plan Benefits
               </h4>
-              <ul className="space-y-2">
-                {subscription.product.benefits.map((benefit) => (
-                  <li key={benefit.id} className="flex items-center gap-2">
-                    <div className="size-1.5 flex-shrink-0 rounded-full bg-primary" />
-                    <span className="text-sm leading-relaxed">
-                      {benefit.description}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <ul className="space-y-2">TODO</ul>
             </div>
 
             {/** TODO: adjust logic for managing subscription. Any updates required for the `tier` in the db should be done in the webhook handler */}
-            <Button
-              className="w-fit"
-              onClick={() => setIsUpgradeSubscriptionOpen(true)}
-              disabled={
-                !customer?.defaultPaymentMethodId || !customer?.billingAddress
-              }
-            >
+            <Button className="w-fit" disabled>
               Update Subscription
             </Button>
-            {(!customer?.defaultPaymentMethodId ||
-              !customer.billingAddress) && (
-              <p className="mt-2 text-xs">
-                Please add a payment method to update your subscription. This
-                can be done through the Billing tab of your{" "}
-                <span>
-                  <a
-                    href={`${API_BASE_URL}/portal?customerId=${customer?.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary underline"
-                  >
-                    customer portal
-                  </a>
-                </span>
-                .
-              </p>
-            )}
           </div>
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Danger Zone</h3>
@@ -304,11 +258,6 @@ function SettingsPage() {
           }}
           dialogType={DialogType.DeleteWorkspace}
           confirmation={`Permanently delete ${workspace?.name}`}
-        />
-
-        <UpgradeSubscriptionDialog
-          subscription={subscription}
-          products={products}
         />
       </div>
     </div>
