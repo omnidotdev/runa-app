@@ -20,7 +20,6 @@ import {
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
-import fetchSession from "@/lib/auth/fetchSession";
 import { BASE_URL, STRIPE_PORTAL_CONFIG_ID } from "@/lib/config/env.config";
 import getSdk from "@/lib/graphql/getSdk";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -32,6 +31,7 @@ import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 import { FREE_PRICE } from "@/routes/_anon/pricing";
+import { customerMiddleware } from "@/server/middleware";
 
 import type Stripe from "stripe";
 
@@ -61,20 +61,10 @@ const getProduct = createServerFn()
 
 const getManageSubscriptionUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => manageSubscriptionSchema.parse(data))
-  .handler(async ({ data }) => {
-    // TODO: extract auth check to middleware
-    const { session } = await fetchSession();
-
-    if (!session) throw new Error("Unauthorized");
-
-    const { data: customers } = await payments.customers.search({
-      query: `metadata["externalId"]:"${session.user.hidraId!}"`,
-    });
-
-    if (!customers.length) throw new Error("Unauthorized");
-
+  .middleware([customerMiddleware])
+  .handler(async ({ data, context }) => {
     const portal = await payments.billingPortal.sessions.create({
-      customer: customers[0].id,
+      customer: context.customer.id,
       configuration: STRIPE_PORTAL_CONFIG_ID,
       flow_data: {
         type: "subscription_update",
