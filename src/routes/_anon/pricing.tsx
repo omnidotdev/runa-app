@@ -51,7 +51,7 @@ interface ExpandedProductPrice extends Stripe.Price {
   product: Stripe.Product;
 }
 
-const fetchPrices = createServerFn().handler(async () => {
+export const getPrices = createServerFn().handler(async () => {
   const prices = await payments.prices.search({
     query: "metadata['app']:'runa'",
     expand: ["data.product"],
@@ -81,7 +81,7 @@ export const Route = createFileRoute("/_anon/pricing")({
     }
   },
   loader: async () => {
-    const prices = await fetchPrices();
+    const prices = await getPrices();
 
     return { prices };
   },

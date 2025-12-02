@@ -1,3 +1,4 @@
+import { Format } from "@ark-ui/react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
@@ -12,6 +13,15 @@ import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import WorkspaceColumnsForm from "@/components/workspaces/settings/columns/WorkspaceColumnsForm";
 import Projects from "@/components/workspaces/settings/Projects";
 import Team from "@/components/workspaces/settings/Team";
@@ -27,10 +37,11 @@ import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import { payments } from "@/lib/payments";
+import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
-import { FREE_PRICE } from "@/routes/_anon/pricing";
+import { FREE_PRICE, getPrices } from "@/routes/_anon/pricing";
 import { customerMiddleware } from "@/server/middleware";
 
 import type Stripe from "stripe";
@@ -42,6 +53,12 @@ const subscriptionSchema = z.object({
 const manageSubscriptionSchema = z.object({
   subscriptionId: z.string().startsWith("sub_"),
   returnUrl: z.url(),
+});
+
+const createSubscriptionSchema = z.object({
+  workspaceId: z.guid(),
+  priceId: z.string().startsWith("price_"),
+  successUrl: z.url(),
 });
 
 const getProduct = createServerFn()
@@ -63,6 +80,8 @@ const getManageSubscriptionUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => manageSubscriptionSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
+    if (!context.customer) throw new Error("Unauthorized");
+
     const portal = await payments.billingPortal.sessions.create({
       customer: context.customer.id,
       configuration: STRIPE_PORTAL_CONFIG_ID,
@@ -84,6 +103,39 @@ const getManageSubscriptionUrl = createServerFn({ method: "POST" })
     return portal.url;
   });
 
+const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
+  .inputValidator((data) => createSubscriptionSchema.parse(data))
+  .middleware([customerMiddleware])
+  .handler(async ({ data, context }) => {
+    let customer = context.customer;
+
+    if (!customer) {
+      customer = await payments.customers.create({
+        email: context.session.user.email!,
+        name: context.session.user.name ?? undefined,
+        metadata: {
+          externalId: context.session.user.hidraId!,
+        },
+      });
+    }
+
+    const checkout = await payments.checkout.sessions.create({
+      mode: "subscription",
+      customer: customer.id,
+      success_url: data.successUrl,
+      line_items: [{ price: data.priceId, quantity: 1 }],
+      subscription_data: {
+        metadata: {
+          workspaceId: data.workspaceId,
+          // TODO: extract to app config
+          omniProduct: "runa",
+        },
+      },
+    });
+
+    return checkout.url!;
+  });
+
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
 )({
@@ -92,8 +144,9 @@ export const Route = createFileRoute(
       throw notFound();
     }
 
-    const [product] = await Promise.all([
+    const [product, prices] = await Promise.all([
       getProduct({ data: { subscriptionId: workspaceBySlug.subscriptionId } }),
+      getPrices(),
       queryClient.ensureQueryData(
         projectColumnsOptions({
           workspaceId: workspaceBySlug.rowId!,
@@ -105,6 +158,7 @@ export const Route = createFileRoute(
       name: workspaceBySlug.name,
       workspaceId: workspaceBySlug.rowId,
       product,
+      prices,
     };
   },
   head: ({ loaderData, params }) => ({
@@ -124,7 +178,7 @@ export const Route = createFileRoute(
 
 function SettingsPage() {
   const { session } = Route.useRouteContext();
-  const { workspaceId, product } = Route.useLoaderData();
+  const { workspaceId, product, prices } = Route.useLoaderData();
   const { workspaceSlug } = Route.useParams();
   const navigate = Route.useNavigate();
 
@@ -144,6 +198,18 @@ function SettingsPage() {
         data: {
           subscriptionId: workspace?.subscriptionId,
           returnUrl: `${BASE_URL}/workspaces/${workspace?.slug}/settings`,
+        },
+      }),
+    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
+  });
+
+  const { mutateAsync: createSubscription } = useMutation({
+    mutationFn: async ({ priceId }: { priceId: string }) =>
+      await getCreateSubscriptionUrl({
+        data: {
+          workspaceId: workspace?.rowId,
+          priceId,
+          successUrl: `${BASE_URL}/workspaces/${workspace?.slug}/settings`,
         },
       }),
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
@@ -283,7 +349,7 @@ function SettingsPage() {
 
             <div className="rounded-lg border border-border bg-card p-4">
               <h4 className="mb-3 font-medium text-muted-foreground text-sm">
-                Current Plan Benefits
+                Current Workspace Benefits
               </h4>
               <ul className="space-y-2">
                 {(
@@ -300,13 +366,51 @@ function SettingsPage() {
               </ul>
             </div>
 
-            <Button
-              className="w-fit"
-              // TODO: handle upgrade workspace flow
-              onClick={() => (product ? manageSubscription() : null)}
-            >
-              {product ? "Manage Subscription" : "Upgrade Workspace"}
-            </Button>
+            {product ? (
+              <Button className="w-fit" onClick={() => manageSubscription()}>
+                Manage Subscription
+              </Button>
+            ) : (
+              <MenuRoot
+                onSelect={({ value }) => createSubscription({ priceId: value })}
+              >
+                <MenuTrigger asChild>
+                  <Button className="w-fit">Upgrade Workspace</Button>
+                </MenuTrigger>
+                <MenuPositioner>
+                  <MenuContent className="min-w-64">
+                    {(["month", "year"] as const).map((interval) => (
+                      <MenuItemGroup key={interval}>
+                        <MenuItemGroupLabel>
+                          {firstLetterToUppercase(interval)}ly
+                        </MenuItemGroupLabel>
+                        {prices
+                          .filter(
+                            (price) => price.recurring?.interval === interval,
+                          )
+                          .map((price) => (
+                            <MenuItem key={price.id} value={price.id}>
+                              <div className="flex w-full items-center justify-between">
+                                {firstLetterToUppercase(price.metadata.tier!)}
+
+                                <p>
+                                  <Format.Number
+                                    value={price.unit_amount! / 100}
+                                    currency="USD"
+                                    style="currency"
+                                    notation="compact"
+                                  />
+                                  /{interval === "month" ? "mo" : "yr"}
+                                </p>
+                              </div>
+                            </MenuItem>
+                          ))}
+                      </MenuItemGroup>
+                    ))}
+                  </MenuContent>
+                </MenuPositioner>
+              </MenuRoot>
+            )}
           </div>
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Danger Zone</h3>

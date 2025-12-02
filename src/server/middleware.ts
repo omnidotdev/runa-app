@@ -18,7 +18,7 @@ export const customerMiddleware = createMiddleware()
       query: `metadata["externalId"]:"${context.session.user.hidraId!}"`,
     });
 
-    if (!customers.length) throw new Error("Unauthorized");
-
-    return next({ context: { customer: customers[0] } });
+    return next({
+      context: { customer: customers.length ? customers[0] : null },
+    });
   });
