@@ -10,8 +10,8 @@ import {
   MoreHorizontalIcon,
   PanelLeftCloseIcon,
   PanelLeftIcon,
-  SendIcon,
   SunIcon,
+  WalletIcon,
 } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -40,6 +40,7 @@ import { signOut } from "@/lib/auth/signOut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useTheme from "@/lib/hooks/useTheme";
 import invitationsOptions from "@/lib/options/invitations.options";
+import Link from "../Link";
 
 const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
@@ -91,15 +92,11 @@ const AppSidebarFooter = () => {
         </SidebarMenuItem>
 
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Feedback" asChild>
-            <a
-              href="https://backfeed.omni.dev/organizations/omni/projects/runa"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <SendIcon />
-              <span className="flex w-full items-center">Feedback</span>
-            </a>
+          <SidebarMenuButton tooltip="Pricing" asChild>
+            <Link to="/pricing" variant="ghost" className="has-[>svg]:px-2">
+              <WalletIcon />
+              <span className="flex w-full items-center">Pricing</span>
+            </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
 

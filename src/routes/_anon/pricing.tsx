@@ -1,9 +1,12 @@
 import { useTabs } from "@ark-ui/react";
-import { createFileRoute } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useCanGoBack,
+  useRouter,
+} from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { ArrowLeft } from "lucide-react";
 
-import Link from "@/components/core/Link";
 import { PriceCard } from "@/components/pricing/PriceCard";
 import {
   AccordionItem,
@@ -12,6 +15,7 @@ import {
   AccordionRoot,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   TabsContent,
   TabsList,
@@ -82,8 +86,11 @@ export const Route = createFileRoute("/_anon/pricing")({
 });
 
 function PricingPage() {
+  const router = useRouter();
+  const canGoBack = useCanGoBack();
   const { prices } = Route.useLoaderData();
   const { session } = Route.useRouteContext();
+  const navigate = Route.useNavigate();
 
   const tabs = useTabs({ defaultValue: "month" });
 
@@ -95,14 +102,18 @@ function PricingPage() {
     <div className="size-full pt-8">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-12">
-          <Link
-            to={session ? "/" : "/workspaces"}
+          <Button
             variant="ghost"
             className="inline-flex items-center gap-2 text-muted-foreground text-sm hover:text-foreground"
+            onClick={() =>
+              canGoBack
+                ? router.history.back()
+                : navigate({ to: session ? "/workspaces" : "/" })
+            }
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to {session ? "workspaces" : "home"}
-          </Link>
+            Back
+          </Button>
         </div>
 
         <div className="mb-16 text-center">
