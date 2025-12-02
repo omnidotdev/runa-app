@@ -1,37 +1,42 @@
-import { Format } from "@ark-ui/react";
-import { SubscriptionRecurringInterval } from "@polar-sh/sdk/models/components/subscriptionrecurringinterval.js";
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { ArrowLeft, Check } from "lucide-react";
+import { useTabs } from "@ark-ui/react";
+import {
+  createFileRoute,
+  useCanGoBack,
+  useRouter,
+} from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import { ArrowLeft } from "lucide-react";
 
-import Link from "@/components/core/Link";
+import { PriceCard } from "@/components/pricing/PriceCard";
 import {
   AccordionItem,
   AccordionItemContent,
   AccordionItemTrigger,
   AccordionRoot,
 } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardRoot,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   TabsContent,
   TabsList,
-  TabsRoot,
+  TabsProvider,
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { BASE_URL } from "@/lib/config/env.config";
-import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import { payments } from "@/lib/payments";
 import seo from "@/lib/util/seo";
-import { cn } from "@/lib/utils";
-import { fetchRunaProducts } from "@/server/fetchRunaProducts";
 
-import type { ProductPriceFixed } from "@polar-sh/sdk/models/components/productpricefixed.js";
+import type Stripe from "stripe";
+
+export const FREE_PRICE = {
+  id: "free",
+  unit_amount: 0,
+  metadata: { tier: "free" },
+  product: {
+    description: "Start for free.",
+    marketing_features: [{ name: "2 projects" }, { name: "500 total tasks" }],
+  },
+};
 
 const faqItems = [
   {
@@ -46,6 +51,22 @@ const faqItems = [
   },
 ];
 
+// NB: we expand the product details in the server function below. This interface narrows the type for `product` on that return
+interface ExpandedProductPrice extends Stripe.Price {
+  product: Stripe.Product;
+}
+
+export const getPrices = createServerFn().handler(async () => {
+  const prices = await payments.prices.search({
+    query: "metadata['app']:'runa'",
+    expand: ["data.product"],
+  });
+
+  return prices.data.sort(
+    (a, b) => a.unit_amount! - b.unit_amount!,
+  ) as ExpandedProductPrice[];
+});
+
 export const Route = createFileRoute("/_anon/pricing")({
   head: () => ({
     meta: [
@@ -56,60 +77,43 @@ export const Route = createFileRoute("/_anon/pricing")({
       }),
     ],
   }),
-  beforeLoad: async ({ context: { session } }) => {
-    if (session) {
-      throw redirect({
-        to: "/profile/$userId",
-        params: { userId: session.user.hidraId! },
-      });
-    }
-  },
   loader: async () => {
-    const { products } = await fetchRunaProducts();
+    const prices = await getPrices();
 
-    return { products };
+    return { prices };
   },
   component: PricingPage,
 });
 
 function PricingPage() {
+  const router = useRouter();
+  const canGoBack = useCanGoBack();
+  const { prices } = Route.useLoaderData();
   const { session } = Route.useRouteContext();
-  const { products } = Route.useLoaderData();
-
   const navigate = Route.useNavigate();
 
-  const freeTier = products.find(
-    (product) => product.metadata.title === "free",
-  );
+  const tabs = useTabs({ defaultValue: "month" });
 
-  const monthlyTiers = [
-    freeTier,
-    ...products.filter(
-      (product) =>
-        product.recurringInterval === SubscriptionRecurringInterval.Month &&
-        !product.metadata.isFree,
-    ),
-  ];
-  const yearlyTiers = [
-    freeTier,
-    ...products.filter(
-      (product) =>
-        product.recurringInterval === SubscriptionRecurringInterval.Year,
-    ),
-  ];
+  const filteredPrices = prices.filter(
+    (price) => price.recurring?.interval === tabs.value,
+  );
 
   return (
     <div className="size-full pt-8">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-12">
-          <Link
-            to="/"
+          <Button
             variant="ghost"
             className="inline-flex items-center gap-2 text-muted-foreground text-sm hover:text-foreground"
+            onClick={() =>
+              canGoBack
+                ? router.history.back()
+                : navigate({ to: session ? "/workspaces" : "/" })
+            }
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to home
-          </Link>
+            Back
+          </Button>
         </div>
 
         <div className="mb-16 text-center">
@@ -122,114 +126,29 @@ function PricingPage() {
           </p>
         </div>
 
-        <TabsRoot defaultValue="monthly">
-          <TabsList>
-            <TabsTrigger value="monthly">Monthly</TabsTrigger>
-            <TabsTrigger value="yearly">Yearly</TabsTrigger>
+        <TabsProvider value={tabs} className="flex w-full flex-col">
+          <TabsList className="place-self-center">
+            <TabsTrigger value="month">Monthly</TabsTrigger>
+            <TabsTrigger value="year" className="relative">
+              Yearly{" "}
+              <Badge
+                size="sm"
+                className="-top-3.5 -right-4 absolute rotate-[12deg] px-1"
+              >
+                save 25%
+              </Badge>
+            </TabsTrigger>
           </TabsList>
-          {(["monthly", "yearly"] as const).map((tab) => (
+          {(["month", "year"] as const).map((tab) => (
             <TabsContent key={tab} value={tab} className="flex gap-4">
-              {(tab === "monthly" ? monthlyTiers : yearlyTiers).map((tier) => (
-                <CardRoot
-                  key={tier?.id}
-                  className={cn(
-                    "relative flex flex-1 flex-col border-2",
-                    tier?.metadata?.isRecommended &&
-                      "border-primary-700 bg-primary-50 shadow-primary/20 dark:border-primary dark:bg-primary-1000",
-                  )}
-                >
-                  {tier?.metadata?.isRecommended && (
-                    <div className="-top-3 -translate-x-1/2 absolute left-1/2">
-                      <span className="rounded-full bg-primary-700 px-3 py-1 font-medium text-primary-foreground text-sm dark:bg-primary">
-                        Recommended
-                      </span>
-                    </div>
-                  )}
-                  <CardHeader
-                    className={cn(
-                      "mb-4 rounded-xl rounded-b-none bg-muted pb-8 text-center",
-                      tier?.metadata?.isRecommended &&
-                        "bg-primary-400/10 dark:bg-primary-950/80",
-                    )}
-                  >
-                    <CardTitle className="font-bold text-2xl">
-                      {firstLetterToUppercase(tier?.metadata?.title as string)}
-                    </CardTitle>
-                    <CardDescription className="mt-2 text-muted-foreground">
-                      {tier?.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pb-8 text-center">
-                    <div className="mb-8">
-                      <div className="flex items-baseline justify-center font-bold text-4xl">
-                        <Format.Number
-                          value={
-                            tier?.prices?.[0]?.amountType === "free"
-                              ? 0
-                              : (tier?.prices[0] as ProductPriceFixed)
-                                  .priceAmount / 100
-                          }
-                          style="currency"
-                          currency="USD"
-                        />
-                        <span className="ml-1 font-medium text-lg text-muted-foreground">
-                          /
-                          {tier?.prices?.[0]?.amountType === "free"
-                            ? "forever"
-                            : tier?.recurringInterval}
-                        </span>
-                      </div>
-                      {tier?.recurringInterval ===
-                        SubscriptionRecurringInterval.Year && (
-                        <p className="mt-1 font-medium text-green-600 text-sm">
-                          Save 25%
-                        </p>
-                      )}
-                    </div>
+              <PriceCard price={FREE_PRICE} />
 
-                    <ul className="space-y-4 text-left">
-                      {tier?.benefits.map((benefit) => (
-                        <li key={benefit.id} className="flex items-start gap-3">
-                          <div className="rounded-full bg-green-100 p-1 dark:bg-green-900">
-                            <Check
-                              size={14}
-                              className="text-green-600 dark:text-green-400"
-                            />
-                          </div>
-                          <span className="text-foreground leading-6">
-                            {benefit.description}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                  <CardFooter className="mt-auto pt-8">
-                    <Button
-                      size="lg"
-                      className="w-full font-semibold"
-                      disabled
-                      // TODO: implement proper logic
-                      // onClick={() => {
-                      //   if (session) {
-                      //     navigate({
-                      //       href: `${API_BASE_URL}/checkout?products=${tier?.id}&customerExternalId=${session?.user?.hidraId}&customerEmail=${session?.user?.email}`,
-                      //       reloadDocument: true,
-                      //     });
-                      //   } else {
-                      //     signIn({ redirectUrl: `${BASE_URL}/pricing` });
-                      //   }
-                      // }}
-                    >
-                      {tier?.metadata?.title === "free"
-                        ? "Start for Free"
-                        : "Get Started"}
-                    </Button>
-                  </CardFooter>
-                </CardRoot>
+              {filteredPrices.map((price) => (
+                <PriceCard key={price.id} price={price} />
               ))}
             </TabsContent>
           ))}
-        </TabsRoot>
+        </TabsProvider>
 
         <div className="mt-24 text-center">
           <h2 className="mb-4 font-bold text-2xl text-foreground">

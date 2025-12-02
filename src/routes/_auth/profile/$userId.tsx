@@ -1,4 +1,3 @@
-import { CustomerCancellationReason } from "@polar-sh/sdk/models/components/customercancellationreason.js";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { AlertTriangle, Building2, LogOut, Settings } from "lucide-react";
@@ -13,7 +12,7 @@ import {
 } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
@@ -24,14 +23,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  RadioGroupIndicator,
-  RadioGroupItem,
-  RadioGroupItemControl,
-  RadioGroupItemHiddenInput,
-  RadioGroupItemText,
-  RadioGroupRoot,
-} from "@/components/ui/radio-group";
 import {
   Table,
   TableBody,
@@ -73,15 +64,10 @@ export const Route = createFileRoute("/_auth/profile/$userId")({
       }),
     ],
   }),
-  component: RouteComponent,
+  component: ProfilePage,
 });
 
-function RouteComponent() {
-  const [reasonForLeaving, setReasonForLeaving] = useState<
-    CustomerCancellationReason | undefined
-  >(undefined);
-  const [reasonForLeavingComment, setReasonForLeavingComment] =
-    useState<string>("");
+function ProfilePage() {
   const [workspaceToDelete, setWorkspaceToDelete] = useState<
     Partial<Workspace> | undefined
   >(undefined);
@@ -237,6 +223,7 @@ function RouteComponent() {
                                         variant="outline"
                                         size="sm"
                                         className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
+                                        // TODO: add leave workspace functionality
                                         disabled
                                       >
                                         Leave
@@ -398,55 +385,9 @@ function RouteComponent() {
                             <DialogDescription>
                               This will permanently cancel your subscription and
                               delete all associated data. This action cannot be
-                              undone. If you are sure, please provide a reason
-                              for leaving.
+                              undone.
                             </DialogDescription>
                           </div>
-
-                          <RadioGroupRoot
-                            value={reasonForLeaving}
-                            onValueChange={({ value }) =>
-                              setReasonForLeaving(
-                                value as CustomerCancellationReason,
-                              )
-                            }
-                          >
-                            <RadioGroupIndicator />
-                            {Object.values(CustomerCancellationReason).map(
-                              (reason) => (
-                                <RadioGroupItem key={reason} value={reason}>
-                                  <RadioGroupItemControl
-                                    className="ring-destructive data-[state=checked]:bg-destructive"
-                                    tabIndex={0}
-                                  />
-                                  <RadioGroupItemText>
-                                    {reason
-                                      .split("_")
-                                      .filter(Boolean)
-                                      .map((word) =>
-                                        firstLetterToUppercase(word),
-                                      )
-                                      .join(" ")}
-                                  </RadioGroupItemText>
-                                  <RadioGroupItemHiddenInput />
-                                </RadioGroupItem>
-                              ),
-                            )}
-                          </RadioGroupRoot>
-
-                          {reasonForLeaving ===
-                            CustomerCancellationReason.Other && (
-                            <textarea
-                              className="rounded-md border p-1.5 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                              placeholder="Reason for leaving..."
-                              value={reasonForLeavingComment}
-                              onChange={(e) =>
-                                e.target.value.length
-                                  ? setReasonForLeavingComment(e.target.value)
-                                  : setReasonForLeavingComment("")
-                              }
-                            />
-                          )}
 
                           <div className="mt-4 flex justify-end gap-2">
                             <DialogCloseTrigger asChild>
@@ -472,15 +413,7 @@ function RouteComponent() {
               </TabsContent>
               <TabsContent value="customization">
                 <Card className="mt-4 border">
-                  <CardHeader className="px-6 pt-6">
-                    <CardTitle className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
-                        <Settings className="size-4" />
-                      </div>
-                      Customization Settings
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="px-6 pb-6">
+                  <CardContent className="p-6">
                     <div className="p-8 text-center">
                       <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-muted/50">
                         <Settings className="size-8 text-muted-foreground" />

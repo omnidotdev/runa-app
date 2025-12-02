@@ -10,8 +10,8 @@ import {
   MoreHorizontalIcon,
   PanelLeftCloseIcon,
   PanelLeftIcon,
-  SendIcon,
   SunIcon,
+  TagIcon,
 } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -91,15 +91,12 @@ const AppSidebarFooter = () => {
         </SidebarMenuItem>
 
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip="Feedback" asChild>
-            <a
-              href="https://backfeed.omni.dev/organizations/omni/projects/runa"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <SendIcon />
-              <span className="flex w-full items-center">Feedback</span>
-            </a>
+          <SidebarMenuButton
+            tooltip="Pricing"
+            onClick={() => navigate({ to: "/pricing" })}
+          >
+            <TagIcon />
+            <span className="flex w-full items-center">Pricing</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
 

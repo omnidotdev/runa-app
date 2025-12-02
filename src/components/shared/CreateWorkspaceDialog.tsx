@@ -20,12 +20,13 @@ import {
   useCreateWorkspaceMutation,
   useCreateWorkspaceUserMutation,
 } from "@/generated/graphql";
+import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
-import { createWorkspaceSubscription } from "@/server/createWorkspaceSubscription";
+import { getCreateSubscriptionUrl } from "@/routes/_auth/workspaces/$workspaceSlug/settings";
 
 const DEFAULT_PROJECT_COLUMNS = [
   { title: "Planned", index: 0, emoji: "🗓" },
@@ -33,7 +34,17 @@ const DEFAULT_PROJECT_COLUMNS = [
   { title: "Completed", index: 2, emoji: "✅" },
 ];
 
-const CreateWorkspaceDialog = () => {
+interface Props {
+  /** Price ID. When not provided the workspace created will default to a free tier workspace. */
+  priceId?: string;
+  /** State management for the dialog. Used when global state management is not ideal. */
+  state?: {
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
+  };
+}
+
+const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
 
@@ -47,7 +58,10 @@ const CreateWorkspaceDialog = () => {
   useHotkeys(
     Hotkeys.CreateWorkspace,
     () => setIsCreateWorkspaceOpen(!isCreateWorkspaceOpen),
-    [setIsCreateWorkspaceOpen, isCreateWorkspaceOpen],
+    {
+      enabled: !state,
+    },
+    [setIsCreateWorkspaceOpen, isCreateWorkspaceOpen, state],
   );
 
   const { mutateAsync: createTeamMember } = useCreateWorkspaceUserMutation();
@@ -81,19 +95,24 @@ const CreateWorkspaceDialog = () => {
             },
           }),
         ),
-        createWorkspaceSubscription({
-          data: {
-            hidraId: session?.user.hidraId!,
-            userEmail: session?.user.email!,
-            workspaceId: createWorkspace?.workspace?.rowId!,
-          },
-        }),
       ]);
 
-      navigate({
-        to: "/workspaces/$workspaceSlug/projects",
-        params: { workspaceSlug: createWorkspace?.workspace?.slug! },
-      });
+      if (priceId) {
+        const checkoutUrl = await getCreateSubscriptionUrl({
+          data: {
+            workspaceId: createWorkspace?.workspace?.rowId,
+            priceId,
+            successUrl: `${BASE_URL}/workspaces/${createWorkspace?.workspace?.slug}/projects`,
+          },
+        });
+
+        navigate({ href: checkoutUrl, reloadDocument: true });
+      } else {
+        navigate({
+          to: "/workspaces/$workspaceSlug/projects",
+          params: { workspaceSlug: createWorkspace?.workspace?.slug! },
+        });
+      }
     },
   });
 
@@ -169,9 +188,9 @@ const CreateWorkspaceDialog = () => {
 
   return (
     <DialogRoot
-      open={isCreateWorkspaceOpen}
+      open={state ? state.isOpen : isCreateWorkspaceOpen}
       onOpenChange={({ open }) => {
-        setIsCreateWorkspaceOpen(open);
+        state ? state.setIsOpen(open) : setIsCreateWorkspaceOpen(open);
         form.reset();
       }}
       initialFocusEl={() => nameRef.current}
@@ -181,7 +200,6 @@ const CreateWorkspaceDialog = () => {
         <DialogContent>
           <DialogCloseTrigger />
           <DialogTitle>Create Workspace</DialogTitle>
-
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -222,7 +240,9 @@ const CreateWorkspaceDialog = () => {
             <div className="mt-4 flex justify-end gap-2">
               <Button
                 onClick={() => {
-                  setIsCreateWorkspaceOpen(false);
+                  state
+                    ? state.setIsOpen(false)
+                    : setIsCreateWorkspaceOpen(false);
                   form.reset();
                 }}
                 variant="outline"
