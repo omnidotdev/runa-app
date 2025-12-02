@@ -1,5 +1,5 @@
 import { useTabs } from "@ark-ui/react";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { ArrowLeft } from "lucide-react";
 
@@ -11,6 +11,7 @@ import {
   AccordionItemTrigger,
   AccordionRoot,
 } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 import {
   TabsContent,
   TabsList,
@@ -72,14 +73,6 @@ export const Route = createFileRoute("/_anon/pricing")({
       }),
     ],
   }),
-  beforeLoad: async ({ context: { session } }) => {
-    if (session) {
-      throw redirect({
-        to: "/profile/$userId",
-        params: { userId: session.user.hidraId! },
-      });
-    }
-  },
   loader: async () => {
     const prices = await getPrices();
 
@@ -90,6 +83,7 @@ export const Route = createFileRoute("/_anon/pricing")({
 
 function PricingPage() {
   const { prices } = Route.useLoaderData();
+  const { session } = Route.useRouteContext();
 
   const tabs = useTabs({ defaultValue: "month" });
 
@@ -102,12 +96,12 @@ function PricingPage() {
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-12">
           <Link
-            to="/"
+            to={session ? "/" : "/workspaces"}
             variant="ghost"
             className="inline-flex items-center gap-2 text-muted-foreground text-sm hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to home
+            Back to {session ? "workspaces" : "home"}
           </Link>
         </div>
 
@@ -124,7 +118,15 @@ function PricingPage() {
         <TabsProvider value={tabs} className="flex w-full flex-col">
           <TabsList className="place-self-center">
             <TabsTrigger value="month">Monthly</TabsTrigger>
-            <TabsTrigger value="year">Yearly</TabsTrigger>
+            <TabsTrigger value="year" className="relative">
+              Yearly{" "}
+              <Badge
+                size="sm"
+                className="-top-3.5 -right-4 absolute rotate-[12deg] px-1"
+              >
+                save 25%
+              </Badge>
+            </TabsTrigger>
           </TabsList>
           {(["month", "year"] as const).map((tab) => (
             <TabsContent key={tab} value={tab} className="flex gap-4">

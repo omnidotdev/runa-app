@@ -73,9 +73,6 @@ export const PriceCard = ({ price }: Props) => (
               : "/forever"}
           </span>
         </div>
-        {price.recurring?.interval === "year" && (
-          <p className="mt-1 font-medium text-green-600 text-sm">Save 25%</p>
-        )}
       </div>
 
       <ul className="space-y-4 text-left">
