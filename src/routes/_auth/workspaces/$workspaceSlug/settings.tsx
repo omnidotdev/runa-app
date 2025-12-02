@@ -76,6 +76,19 @@ const getProduct = createServerFn()
     return subscription.items.data[0].price.product as Stripe.Product;
   });
 
+const revokeSubscription = createServerFn({ method: "POST" })
+  .inputValidator((data) => subscriptionSchema.parse(data))
+  .middleware([customerMiddleware])
+  .handler(async ({ data, context }) => {
+    if (!context.customer) throw new Error("Unauthorized");
+
+    const subscription = await payments.subscriptions.cancel(
+      data.subscriptionId!,
+    );
+
+    return subscription.id;
+  });
+
 const getManageSubscriptionUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => manageSubscriptionSchema.parse(data))
   .middleware([customerMiddleware])
@@ -419,7 +432,6 @@ function SettingsPage() {
               variant="destructive"
               className="w-fit text-background"
               onClick={() => setIsDeleteWorkspaceOpen(true)}
-              disabled={!workspace?.subscriptionId}
             >
               Delete Workspace
             </Button>
@@ -434,10 +446,20 @@ function SettingsPage() {
               <strong className="font-medium text-base-900 dark:text-base-100">
                 {workspace?.name}
               </strong>{" "}
-              and all associated data. This action cannot be undone.
+              and all associated data. Any subscription associated with this
+              workspace will be revoked. This action cannot be undone.
             </span>
           }
-          onConfirm={() => {
+          onConfirm={async () => {
+            if (workspace?.subscriptionId) {
+              const revokedSubscriptionId = await revokeSubscription({
+                data: { subscriptionId: workspace.subscriptionId },
+              });
+
+              if (!revokedSubscriptionId)
+                throw new Error("Issue revoking subscription");
+            }
+
             deleteWorkspace({ rowId: workspace?.rowId! });
             navigate({ to: "/workspaces", replace: true });
           }}
