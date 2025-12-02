@@ -223,6 +223,7 @@ function ProfilePage() {
                                         variant="outline"
                                         size="sm"
                                         className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
+                                        // TODO: add leave workspace functionality
                                         disabled
                                       >
                                         Leave
