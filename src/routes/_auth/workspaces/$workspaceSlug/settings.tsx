@@ -116,7 +116,7 @@ const getManageSubscriptionUrl = createServerFn({ method: "POST" })
     return portal.url;
   });
 
-const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
+export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => createSubscriptionSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
