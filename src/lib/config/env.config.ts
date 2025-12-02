@@ -9,5 +9,9 @@ export const AUTH_ISSUER = `${import.meta.env.VITE_AUTH_BASE_URL}/api/auth`;
 export const AUTH_CLIENT_ID = process.env.AUTH_CLIENT_ID;
 export const AUTH_CLIENT_SECRET = process.env.AUTH_CLIENT_SECRET;
 
+// payment processing
+export const STRIPE_PORTAL_CONFIG_ID = import.meta.env
+  .VITE_STRIPE_PORTAL_CONFIG_ID;
+
 // environment helpers
 export const isDevEnv = import.meta.env.DEV;

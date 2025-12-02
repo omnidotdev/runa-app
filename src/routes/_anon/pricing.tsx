@@ -23,6 +23,16 @@ import seo from "@/lib/util/seo";
 
 import type Stripe from "stripe";
 
+export const FREE_PRICE = {
+  id: "free",
+  unit_amount: 0,
+  metadata: { tier: "free" },
+  product: {
+    description: "Start for free.",
+    marketing_features: [{ name: "2 projects" }, { name: "500 total tasks" }],
+  },
+};
+
 const faqItems = [
   {
     question: "Can I cancel at any time?",
@@ -118,20 +128,7 @@ function PricingPage() {
           </TabsList>
           {(["month", "year"] as const).map((tab) => (
             <TabsContent key={tab} value={tab} className="flex gap-4">
-              <PriceCard
-                price={{
-                  id: "free",
-                  unit_amount: 0,
-                  metadata: { tier: "free" },
-                  product: {
-                    description: "Start for free.",
-                    marketing_features: [
-                      { name: "2 projects" },
-                      { name: "500 total tasks" },
-                    ],
-                  },
-                }}
-              />
+              <PriceCard price={FREE_PRICE} />
 
               {filteredPrices.map((price) => (
                 <PriceCard key={price.id} price={price} />

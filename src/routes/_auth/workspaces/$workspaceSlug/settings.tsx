@@ -1,5 +1,6 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
@@ -19,33 +20,101 @@ import {
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
-import { BASE_URL } from "@/lib/config/env.config";
+import fetchSession from "@/lib/auth/fetchSession";
+import { BASE_URL, STRIPE_PORTAL_CONFIG_ID } from "@/lib/config/env.config";
 import getSdk from "@/lib/graphql/getSdk";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
+import { payments } from "@/lib/payments";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
+import { FREE_PRICE } from "@/routes/_anon/pricing";
+
+import type Stripe from "stripe";
+
+const subscriptionSchema = z.object({
+  subscriptionId: z.string().startsWith("sub_").nullable(),
+});
+
+const manageSubscriptionSchema = z.object({
+  subscriptionId: z.string().startsWith("sub_"),
+  returnUrl: z.url(),
+});
+
+const getProduct = createServerFn()
+  .inputValidator((data) => subscriptionSchema.parse(data))
+  .handler(async ({ data }) => {
+    if (!data.subscriptionId) return null;
+
+    const subscription = await payments.subscriptions.retrieve(
+      data.subscriptionId,
+      {
+        expand: ["items.data.price.product"],
+      },
+    );
+
+    return subscription.items.data[0].price.product as Stripe.Product;
+  });
+
+const getManageSubscriptionUrl = createServerFn({ method: "POST" })
+  .inputValidator((data) => manageSubscriptionSchema.parse(data))
+  .handler(async ({ data }) => {
+    // TODO: extract auth check to middleware
+    const { session } = await fetchSession();
+
+    if (!session) throw new Error("Unauthorized");
+
+    const { data: customers } = await payments.customers.search({
+      query: `metadata["externalId"]:"${session.user.hidraId!}"`,
+    });
+
+    if (!customers.length) throw new Error("Unauthorized");
+
+    const portal = await payments.billingPortal.sessions.create({
+      customer: customers[0].id,
+      configuration: STRIPE_PORTAL_CONFIG_ID,
+      flow_data: {
+        type: "subscription_update",
+        subscription_update: {
+          subscription: data.subscriptionId,
+        },
+        after_completion: {
+          type: "redirect",
+          redirect: {
+            return_url: data.returnUrl,
+          },
+        },
+      },
+      return_url: data.returnUrl,
+    });
+
+    return portal.url;
+  });
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
 )({
-  loader: async ({ context: { queryClient, workspaceBySlug, session } }) => {
+  loader: async ({ context: { queryClient, workspaceBySlug } }) => {
     if (!workspaceBySlug) {
       throw notFound();
     }
 
-    await queryClient.ensureQueryData(
-      projectColumnsOptions({
-        workspaceId: workspaceBySlug.rowId!,
-      }),
-    );
+    const [product] = await Promise.all([
+      getProduct({ data: { subscriptionId: workspaceBySlug.subscriptionId } }),
+      queryClient.ensureQueryData(
+        projectColumnsOptions({
+          workspaceId: workspaceBySlug.rowId!,
+        }),
+      ),
+    ]);
 
     return {
       name: workspaceBySlug.name,
       workspaceId: workspaceBySlug.rowId,
+      product,
     };
   },
   head: ({ loaderData, params }) => ({
@@ -65,7 +134,7 @@ export const Route = createFileRoute(
 
 function SettingsPage() {
   const { session } = Route.useRouteContext();
-  const { workspaceId } = Route.useLoaderData();
+  const { workspaceId, product } = Route.useLoaderData();
   const { workspaceSlug } = Route.useParams();
   const navigate = Route.useNavigate();
 
@@ -77,6 +146,17 @@ function SettingsPage() {
       userId: session?.user?.rowId!,
     }),
     select: (data) => data?.workspace,
+  });
+
+  const { mutateAsync: manageSubscription } = useMutation({
+    mutationFn: async () =>
+      await getManageSubscriptionUrl({
+        data: {
+          subscriptionId: workspace?.subscriptionId,
+          returnUrl: `${BASE_URL}/workspaces/${workspace?.slug}/settings`,
+        },
+      }),
+    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
   });
 
   const isOwner = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Owner;
@@ -123,10 +203,6 @@ function SettingsPage() {
 
   const { setIsOpen: setIsDeleteWorkspaceOpen } = useDialogStore({
     type: DialogType.DeleteWorkspace,
-  });
-
-  const { setIsOpen: setIsUpgradeSubscriptionOpen } = useDialogStore({
-    type: DialogType.UpgradeSubscription,
   });
 
   const { mutate: updateWorkspace } = useUpdateWorkspaceMutation({
@@ -219,12 +295,27 @@ function SettingsPage() {
               <h4 className="mb-3 font-medium text-muted-foreground text-sm">
                 Current Plan Benefits
               </h4>
-              <ul className="space-y-2">TODO</ul>
+              <ul className="space-y-2">
+                {(
+                  product?.marketing_features ??
+                  FREE_PRICE.product.marketing_features
+                ).map((feature) => (
+                  <li key={feature.name} className="flex items-center gap-2">
+                    <div className="size-1.5 flex-shrink-0 rounded-full bg-primary" />
+                    <span className="text-sm leading-relaxed">
+                      {feature.name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            {/** TODO: adjust logic for managing subscription. Any updates required for the `tier` in the db should be done in the webhook handler */}
-            <Button className="w-fit" disabled>
-              Update Subscription
+            <Button
+              className="w-fit"
+              // TODO: handle upgrade workspace flow
+              onClick={() => (product ? manageSubscription() : null)}
+            >
+              {product ? "Manage Subscription" : "Upgrade Workspace"}
             </Button>
           </div>
           <div className="flex flex-col gap-4">
