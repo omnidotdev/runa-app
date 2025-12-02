@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
@@ -413,15 +413,7 @@ function ProfilePage() {
               </TabsContent>
               <TabsContent value="customization">
                 <Card className="mt-4 border">
-                  <CardHeader className="px-6 pt-6">
-                    <CardTitle className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
-                        <Settings className="size-4" />
-                      </div>
-                      Customization Settings
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="px-6 pb-6">
+                  <CardContent className="p-6">
                     <div className="p-8 text-center">
                       <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-muted/50">
                         <Settings className="size-8 text-muted-foreground" />
