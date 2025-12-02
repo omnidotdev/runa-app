@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { AlertTriangleIcon, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
-import * as z from "zod/v4";
+import { z } from "zod";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
@@ -40,7 +40,8 @@ import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
-import { FREE_PRICE, getPrices } from "@/routes/_anon/pricing";
+import { FREE_PRICE } from "@/routes/_anon/pricing";
+import { getPrices } from "@/server/functions/prices";
 import {
   getCancelSubscriptionUrl,
   getCreateSubscriptionUrl,

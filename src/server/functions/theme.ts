@@ -5,7 +5,7 @@ import {
   getRequest,
   setCookie,
 } from "@tanstack/react-start/server";
-import * as z from "zod/v4";
+import { z } from "zod";
 
 import { getHints } from "@/components/scripts/ClientHintCheck";
 import { isDevEnv } from "@/lib/config/env.config";
