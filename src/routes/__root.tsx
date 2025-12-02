@@ -11,17 +11,17 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import ClientHintCheck from "@/components/scripts/ClientHintCheck";
 import { Toaster } from "@/components/ui/sonner";
-import fetchSession from "@/lib/auth/fetchSession";
 import useTheme from "@/lib/hooks/useTheme";
 import { themeQueryKey } from "@/lib/options/theme.options";
-import { getRequestInfo } from "@/lib/util/requestInfo";
 import seo from "@/lib/util/seo";
+import { fetchSession } from "@/server/functions/auth";
+import { getRequestInfo } from "@/server/functions/theme";
 import appCss from "@/styles/globals.css?url";
 
 import type { Session } from "@auth/core/types";
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import type { Theme } from "@/lib/util/theme";
+import type { Theme } from "@/server/functions/theme";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;

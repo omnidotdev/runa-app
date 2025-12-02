@@ -2,10 +2,12 @@ import { createServerFn } from "@tanstack/react-start";
 import {
   deleteCookie,
   getCookie,
+  getRequest,
   setCookie,
 } from "@tanstack/react-start/server";
 import * as z from "zod/v4";
 
+import { getHints } from "@/components/scripts/ClientHintCheck";
 import { isDevEnv } from "@/lib/config/env.config";
 
 const key = "theme";
@@ -34,3 +36,16 @@ export const setTheme = createServerFn({ method: "POST" })
       });
     }
   });
+
+export const getRequestInfo = createServerFn().handler(async () => {
+  const request = getRequest();
+
+  const requestInfo = {
+    hints: getHints(request),
+    userPreferences: {
+      theme: await getTheme(),
+    },
+  };
+
+  return requestInfo;
+});

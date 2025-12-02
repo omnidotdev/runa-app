@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 
-import { getTheme } from "@/lib/util/theme";
+import { getTheme } from "@/server/functions/theme";
 
 export const themeQueryKey = ["theme"] as const;
 

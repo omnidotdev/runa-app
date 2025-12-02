@@ -1,7 +1,7 @@
 import { createMiddleware } from "@tanstack/react-start";
 
-import fetchSession from "@/lib/auth/fetchSession";
 import { payments } from "@/lib/payments";
+import { fetchSession } from "@/server/functions/auth";
 
 export const authMiddleware = createMiddleware().server(async ({ next }) => {
   const { session } = await fetchSession();

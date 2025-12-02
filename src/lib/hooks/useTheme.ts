@@ -5,10 +5,10 @@ import {
 } from "@tanstack/react-query";
 
 import themeQueryOptions, { themeQueryKey } from "@/lib/options/theme.options";
-import { setTheme } from "@/lib/util/theme";
 import { Route } from "@/routes/__root";
+import { setTheme } from "@/server/functions/theme";
 
-import type { Theme } from "@/lib/util/theme";
+import type { Theme } from "@/server/functions/theme";
 
 const useOptimisticThemeMutation = () => {
   const queryClient = useQueryClient();

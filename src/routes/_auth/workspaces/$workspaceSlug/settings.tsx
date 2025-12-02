@@ -1,7 +1,6 @@
 import { Format } from "@ark-ui/react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { format } from "date-fns";
 import { AlertTriangleIcon, ArrowLeft } from "lucide-react";
 import { useState } from "react";
@@ -31,170 +30,25 @@ import {
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
-import { BASE_URL, STRIPE_PORTAL_CONFIG_ID } from "@/lib/config/env.config";
+import { BASE_URL } from "@/lib/config/env.config";
 import getSdk from "@/lib/graphql/getSdk";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
-import { payments } from "@/lib/payments";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 import { FREE_PRICE, getPrices } from "@/routes/_anon/pricing";
-import { customerMiddleware } from "@/server/middleware";
-
-import type Stripe from "stripe";
-
-const subscriptionSchema = z.object({
-  subscriptionId: z.string().startsWith("sub_").nullable(),
-});
-
-const manageSubscriptionSchema = z.object({
-  subscriptionId: z.string().startsWith("sub_"),
-  returnUrl: z.url(),
-});
-
-const createSubscriptionSchema = z.object({
-  workspaceId: z.guid(),
-  priceId: z.string().startsWith("price_"),
-  successUrl: z.url(),
-});
-
-const renewSubscriptionSchema = z.object({
-  subscriptionId: z.string().startsWith("sub_"),
-});
-
-const getSubscription = createServerFn()
-  .inputValidator((data) => subscriptionSchema.parse(data))
-  .handler(async ({ data }) => {
-    if (!data.subscriptionId) return null;
-
-    const subscription = await payments.subscriptions.retrieve(
-      data.subscriptionId,
-      {
-        expand: ["items.data.price.product"],
-      },
-    );
-
-    return {
-      id: subscription.id,
-      cancelAt: subscription.cancel_at,
-      product: subscription.items.data[0].price.product as Stripe.Product,
-    };
-  });
-
-const revokeSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => subscriptionSchema.parse(data))
-  .middleware([customerMiddleware])
-  .handler(async ({ data, context }) => {
-    if (!context.customer) throw new Error("Unauthorized");
-
-    const subscription = await payments.subscriptions.cancel(
-      data.subscriptionId!,
-    );
-
-    return subscription.id;
-  });
-
-const getManageSubscriptionUrl = createServerFn({ method: "POST" })
-  .inputValidator((data) => manageSubscriptionSchema.parse(data))
-  .middleware([customerMiddleware])
-  .handler(async ({ data, context }) => {
-    if (!context.customer) throw new Error("Unauthorized");
-
-    const portal = await payments.billingPortal.sessions.create({
-      customer: context.customer.id,
-      configuration: STRIPE_PORTAL_CONFIG_ID,
-      flow_data: {
-        type: "subscription_update",
-        subscription_update: {
-          subscription: data.subscriptionId,
-        },
-        after_completion: {
-          type: "redirect",
-          redirect: {
-            return_url: data.returnUrl,
-          },
-        },
-      },
-      return_url: data.returnUrl,
-    });
-
-    return portal.url;
-  });
-
-export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
-  .inputValidator((data) => createSubscriptionSchema.parse(data))
-  .middleware([customerMiddleware])
-  .handler(async ({ data, context }) => {
-    let customer = context.customer;
-
-    if (!customer) {
-      customer = await payments.customers.create({
-        email: context.session.user.email!,
-        name: context.session.user.name ?? undefined,
-        metadata: {
-          externalId: context.session.user.hidraId!,
-        },
-      });
-    }
-
-    const checkout = await payments.checkout.sessions.create({
-      mode: "subscription",
-      customer: customer.id,
-      success_url: data.successUrl,
-      line_items: [{ price: data.priceId, quantity: 1 }],
-      subscription_data: {
-        metadata: {
-          workspaceId: data.workspaceId,
-          // TODO: extract to app config
-          omniProduct: "runa",
-        },
-      },
-    });
-
-    return checkout.url!;
-  });
-
-const getCancelSubscriptionUrl = createServerFn({ method: "POST" })
-  .inputValidator((data) => manageSubscriptionSchema.parse(data))
-  .middleware([customerMiddleware])
-  .handler(async ({ data, context }) => {
-    if (!context.customer) throw new Error("Unauthorized");
-
-    const portal = await payments.billingPortal.sessions.create({
-      customer: context.customer.id,
-      configuration: STRIPE_PORTAL_CONFIG_ID,
-      flow_data: {
-        type: "subscription_cancel",
-        subscription_cancel: {
-          subscription: data.subscriptionId,
-        },
-        after_completion: {
-          type: "redirect",
-          redirect: {
-            return_url: data.returnUrl,
-          },
-        },
-      },
-      return_url: data.returnUrl,
-    });
-
-    return portal.url;
-  });
-
-const renewSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => renewSubscriptionSchema.parse(data))
-  .middleware([customerMiddleware])
-  .handler(async ({ data, context }) => {
-    if (!context.customer) throw new Error("Unauthorized");
-
-    await payments.subscriptions.update(data.subscriptionId, {
-      cancel_at: null,
-    });
-  });
+import {
+  getCancelSubscriptionUrl,
+  getCreateSubscriptionUrl,
+  getManageSubscriptionUrl,
+  getSubscription,
+  renewSubscription,
+  revokeSubscription,
+} from "@/server/functions/subscriptions";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",

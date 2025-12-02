@@ -26,7 +26,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
-import { getCreateSubscriptionUrl } from "@/routes/_auth/workspaces/$workspaceSlug/settings";
+import { getCreateSubscriptionUrl } from "@/server/functions/subscriptions";
 
 const DEFAULT_PROJECT_COLUMNS = [
   { title: "Planned", index: 0, emoji: "🗓" },

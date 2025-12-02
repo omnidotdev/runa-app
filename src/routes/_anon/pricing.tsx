@@ -4,7 +4,6 @@ import {
   useCanGoBack,
   useRouter,
 } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
 import { ArrowLeft } from "lucide-react";
 
 import { PriceCard } from "@/components/pricing/PriceCard";
@@ -23,10 +22,8 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { BASE_URL } from "@/lib/config/env.config";
-import { payments } from "@/lib/payments";
 import seo from "@/lib/util/seo";
-
-import type Stripe from "stripe";
+import { getPrices } from "@/server/functions/prices";
 
 export const FREE_PRICE = {
   id: "free",
@@ -50,22 +47,6 @@ const faqItems = [
       "You can export all your data at any time. After cancellation, your data will be retained for 30 days before being permanently deleted.",
   },
 ];
-
-// NB: we expand the product details in the server function below. This interface narrows the type for `product` on that return
-interface ExpandedProductPrice extends Stripe.Price {
-  product: Stripe.Product;
-}
-
-export const getPrices = createServerFn().handler(async () => {
-  const prices = await payments.prices.search({
-    query: "metadata['app']:'runa'",
-    expand: ["data.product"],
-  });
-
-  return prices.data.sort(
-    (a, b) => a.unit_amount! - b.unit_amount!,
-  ) as ExpandedProductPrice[];
-});
 
 export const Route = createFileRoute("/_anon/pricing")({
   head: () => ({
