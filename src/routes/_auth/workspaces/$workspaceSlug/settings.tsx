@@ -1,8 +1,9 @@
 import { Format } from "@ark-ui/react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { ArrowLeft } from "lucide-react";
+import { format } from "date-fns";
+import { AlertTriangleIcon, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import * as z from "zod/v4";
@@ -61,7 +62,11 @@ const createSubscriptionSchema = z.object({
   successUrl: z.url(),
 });
 
-const getProduct = createServerFn()
+const renewSubscriptionSchema = z.object({
+  subscriptionId: z.string().startsWith("sub_"),
+});
+
+const getSubscription = createServerFn()
   .inputValidator((data) => subscriptionSchema.parse(data))
   .handler(async ({ data }) => {
     if (!data.subscriptionId) return null;
@@ -73,7 +78,11 @@ const getProduct = createServerFn()
       },
     );
 
-    return subscription.items.data[0].price.product as Stripe.Product;
+    return {
+      id: subscription.id,
+      cancelAt: subscription.cancel_at,
+      product: subscription.items.data[0].price.product as Stripe.Product,
+    };
   });
 
 const revokeSubscription = createServerFn({ method: "POST" })
@@ -149,6 +158,44 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
     return checkout.url!;
   });
 
+const getCancelSubscriptionUrl = createServerFn({ method: "POST" })
+  .inputValidator((data) => manageSubscriptionSchema.parse(data))
+  .middleware([customerMiddleware])
+  .handler(async ({ data, context }) => {
+    if (!context.customer) throw new Error("Unauthorized");
+
+    const portal = await payments.billingPortal.sessions.create({
+      customer: context.customer.id,
+      configuration: STRIPE_PORTAL_CONFIG_ID,
+      flow_data: {
+        type: "subscription_cancel",
+        subscription_cancel: {
+          subscription: data.subscriptionId,
+        },
+        after_completion: {
+          type: "redirect",
+          redirect: {
+            return_url: data.returnUrl,
+          },
+        },
+      },
+      return_url: data.returnUrl,
+    });
+
+    return portal.url;
+  });
+
+const renewSubscription = createServerFn({ method: "POST" })
+  .inputValidator((data) => renewSubscriptionSchema.parse(data))
+  .middleware([customerMiddleware])
+  .handler(async ({ data, context }) => {
+    if (!context.customer) throw new Error("Unauthorized");
+
+    await payments.subscriptions.update(data.subscriptionId, {
+      cancel_at: null,
+    });
+  });
+
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
 )({
@@ -157,8 +204,10 @@ export const Route = createFileRoute(
       throw notFound();
     }
 
-    const [product, prices] = await Promise.all([
-      getProduct({ data: { subscriptionId: workspaceBySlug.subscriptionId } }),
+    const [subscription, prices] = await Promise.all([
+      getSubscription({
+        data: { subscriptionId: workspaceBySlug.subscriptionId },
+      }),
       getPrices(),
       queryClient.ensureQueryData(
         projectColumnsOptions({
@@ -170,7 +219,7 @@ export const Route = createFileRoute(
     return {
       name: workspaceBySlug.name,
       workspaceId: workspaceBySlug.rowId,
-      product,
+      subscription,
       prices,
     };
   },
@@ -191,8 +240,9 @@ export const Route = createFileRoute(
 
 function SettingsPage() {
   const { session } = Route.useRouteContext();
-  const { workspaceId, product, prices } = Route.useLoaderData();
+  const { workspaceId, subscription, prices } = Route.useLoaderData();
   const { workspaceSlug } = Route.useParams();
+  const router = useRouter();
   const navigate = Route.useNavigate();
 
   const [nameError, setNameError] = useState<string | null>(null);
@@ -216,6 +266,17 @@ function SettingsPage() {
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
   });
 
+  const { mutateAsync: cancelSubscription } = useMutation({
+    mutationFn: async () =>
+      await getCancelSubscriptionUrl({
+        data: {
+          subscriptionId: workspace?.subscriptionId,
+          returnUrl: `${BASE_URL}/workspaces/${workspace?.slug}/settings`,
+        },
+      }),
+    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
+  });
+
   const { mutateAsync: createSubscription } = useMutation({
     mutationFn: async ({ priceId }: { priceId: string }) =>
       await getCreateSubscriptionUrl({
@@ -226,6 +287,14 @@ function SettingsPage() {
         },
       }),
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
+  });
+
+  const { mutateAsync: handleRenewSubscription } = useMutation({
+    mutationFn: async () =>
+      await renewSubscription({
+        data: { subscriptionId: workspace?.subscriptionId },
+      }),
+    onSuccess: () => router.invalidate(),
   });
 
   const isOwner = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Owner;
@@ -360,13 +429,23 @@ function SettingsPage() {
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Manage Subscription</h3>
 
+            {!!subscription?.cancelAt && (
+              <div className="flex items-center gap-1 text-sm text-yellow-600 dark:text-yellow-400">
+                <AlertTriangleIcon className="size-4" />
+                The current subscription is set to be canceled on{" "}
+                {format(new Date(subscription.cancelAt * 1000), "MMM d, yyyy")}.
+                To avoid losing the current workspace benefits, renew your
+                subscription prior to this date.
+              </div>
+            )}
+
             <div className="rounded-lg border border-border bg-card p-4">
               <h4 className="mb-3 font-medium text-muted-foreground text-sm">
                 Current Workspace Benefits
               </h4>
               <ul className="space-y-2">
                 {(
-                  product?.marketing_features ??
+                  subscription?.product?.marketing_features ??
                   FREE_PRICE.product.marketing_features
                 ).map((feature) => (
                   <li key={feature.name} className="flex items-center gap-2">
@@ -379,10 +458,29 @@ function SettingsPage() {
               </ul>
             </div>
 
-            {product ? (
-              <Button className="w-fit" onClick={() => manageSubscription()}>
-                Manage Subscription
-              </Button>
+            {subscription ? (
+              <div className="flex gap-2">
+                {subscription.cancelAt ? (
+                  <Button onClick={() => handleRenewSubscription()}>
+                    Renew Subscription
+                  </Button>
+                ) : (
+                  <Button
+                    className="w-fit"
+                    onClick={() => manageSubscription()}
+                  >
+                    Manage Subscription
+                  </Button>
+                )}
+
+                <Button
+                  variant="outline"
+                  onClick={() => cancelSubscription()}
+                  disabled={!!subscription.cancelAt}
+                >
+                  Cancel Subscription
+                </Button>
+              </div>
             ) : (
               <MenuRoot
                 onSelect={({ value }) => createSubscription({ priceId: value })}
