@@ -345,20 +345,20 @@ function SettingsPage() {
                 </MenuTrigger>
                 <MenuPositioner>
                   <MenuContent className="min-w-64">
-                    {(["month", "year"] as const).map((interval) => (
-                      <MenuItemGroup key={interval}>
+                    {(["basic", "team"] as const).map((tier) => (
+                      <MenuItemGroup key={tier}>
                         <MenuItemGroupLabel>
-                          {firstLetterToUppercase(interval)}ly
+                          {firstLetterToUppercase(tier)}
                         </MenuItemGroupLabel>
                         {prices
-                          .filter(
-                            (price) => price.recurring?.interval === interval,
-                          )
+                          .filter((price) => price.metadata.tier === tier)
                           .map((price) => (
                             <MenuItem key={price.id} value={price.id}>
                               <div className="flex w-full items-center justify-between">
-                                {firstLetterToUppercase(price.metadata.tier!)}
-
+                                {firstLetterToUppercase(
+                                  price.recurring?.interval!,
+                                )}
+                                ly
                                 <p>
                                   <Format.Number
                                     value={price.unit_amount! / 100}
@@ -366,7 +366,10 @@ function SettingsPage() {
                                     style="currency"
                                     notation="compact"
                                   />
-                                  /{interval === "month" ? "mo" : "yr"}
+                                  /
+                                  {price.recurring?.interval === "month"
+                                    ? "mo"
+                                    : "yr"}
                                 </p>
                               </div>
                             </MenuItem>
