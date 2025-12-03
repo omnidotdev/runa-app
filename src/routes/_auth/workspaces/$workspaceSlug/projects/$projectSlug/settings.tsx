@@ -62,10 +62,10 @@ export const Route = createFileRoute(
       : undefined,
   }),
   notFoundComponent: () => <NotFound>Project Not Found</NotFound>,
-  component: RouteComponent,
+  component: ProjectSettingsPage,
 });
 
-function RouteComponent() {
+function ProjectSettingsPage() {
   const { session } = Route.useRouteContext();
   const { workspaceSlug, projectSlug } = Route.useParams();
 
@@ -142,6 +142,7 @@ function RouteComponent() {
 
   const [nameError, setNameError] = useState<string | null>(null);
 
+  // TODO: generalize error handling for the callbacks below
   const updateProjectName = useDebounceCallback(
     async ({ editor }: { editor: Editor }) => {
       const text = editor.getText().trim();
@@ -164,8 +165,33 @@ function RouteComponent() {
     500,
   );
 
-  // TODO: make dynamic to accept a zod schema to parse in order to validate input prior to update mutation being called. Or split into separate handlers similar to `updateProjectName`
-  const handleProjectUpdate = useDebounceCallback(updateProject, 500);
+  const updateProjectPrefix = useDebounceCallback(
+    async ({ editor }: { editor: Editor }) => {
+      const prefixSchema = z.string().min(3, "Must be at least 3 characters");
+
+      const result = await prefixSchema.safeParseAsync(editor.getText().trim());
+
+      if (result.success) {
+        updateProject({
+          rowId: projectId,
+          patch: { prefix: result.data },
+        });
+      }
+    },
+    500,
+  );
+
+  const updateProjectDescription = useDebounceCallback(
+    async ({ editor }: { editor: Editor }) => {
+      const text = editor.getText().trim();
+
+      updateProject({
+        rowId: projectId,
+        patch: { description: text.length ? text : null },
+      });
+    },
+    500,
+  );
 
   return (
     <div className="no-scrollbar relative h-full overflow-auto py-8 lg:p-12">
@@ -203,14 +229,7 @@ function RouteComponent() {
                   className="min-h-0 border-0 bg-transparent p-0 font-mono text-base-400 text-sm dark:bg-transparent dark:text-base-500"
                   placeholder="prefix"
                   skeletonClassName="h-5 w-12"
-                  onUpdate={({ editor }) =>
-                    handleProjectUpdate({
-                      rowId: projectId,
-                      patch: {
-                        prefix: editor.getText(),
-                      },
-                    })
-                  }
+                  onUpdate={updateProjectPrefix}
                 />
               </div>
             </div>
@@ -225,14 +244,7 @@ function RouteComponent() {
               className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
               placeholder="Add a short description..."
               skeletonClassName="h-5 max-w-40"
-              onUpdate={({ editor }) =>
-                handleProjectUpdate({
-                  rowId: projectId,
-                  patch: {
-                    description: editor.getText(),
-                  },
-                })
-              }
+              onUpdate={updateProjectDescription}
             />
           </div>
         </div>
