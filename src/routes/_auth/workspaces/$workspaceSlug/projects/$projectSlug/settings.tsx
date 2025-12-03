@@ -29,6 +29,8 @@ import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 
+import type { Editor } from "@tiptap/core";
+
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
 )({
@@ -140,7 +142,30 @@ function RouteComponent() {
 
   const [nameError, setNameError] = useState<string | null>(null);
 
-  const handleProjectUpdate = useDebounceCallback(updateProject, 300);
+  const updateProjectName = useDebounceCallback(
+    async ({ editor }: { editor: Editor }) => {
+      const text = editor.getText().trim();
+
+      const result = await editNameSchema.safeParseAsync({
+        name: text,
+      });
+
+      if (!result.success) {
+        setNameError(result.error.issues[0].message);
+        return;
+      }
+
+      setNameError(null);
+      updateProject({
+        rowId: projectId,
+        patch: { name: text, slug: generateSlug(text) },
+      });
+    },
+    500,
+  );
+
+  // TODO: make dynamic to accept a zod schema to parse in order to validate input prior to update mutation being called. Or split into separate handlers similar to `updateProjectName`
+  const handleProjectUpdate = useDebounceCallback(updateProject, 500);
 
   return (
     <div className="no-scrollbar relative h-full overflow-auto py-8 lg:p-12">
@@ -166,24 +191,7 @@ function RouteComponent() {
                 editable={!isMember}
                 className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
                 skeletonClassName="h-8 w-80"
-                onUpdate={async ({ editor }) => {
-                  const text = editor.getText().trim();
-
-                  const result = await editNameSchema.safeParseAsync({
-                    name: text,
-                  });
-
-                  if (!result.success) {
-                    setNameError(result.error.issues[0].message);
-                    return;
-                  }
-
-                  setNameError(null);
-                  handleProjectUpdate({
-                    rowId: projectId,
-                    patch: { name: text, slug: generateSlug(text) },
-                  });
-                }}
+                onUpdate={updateProjectName}
               />
               <div className="mt-1 flex items-center">
                 <span className="font-mono text-base-400 text-sm dark:text-base-500">
