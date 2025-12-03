@@ -18,6 +18,7 @@ export enum DialogType {
   UpgradeSubscription = "upgrade_subscription",
   DeleteTask = "delete_task",
   DeleteComment = "delete_comment",
+  ShortcutHelp = "shortcut_help",
 }
 
 interface DialogState {

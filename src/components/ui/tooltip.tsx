@@ -64,12 +64,16 @@ interface Props extends ComponentProps<typeof TooltipRoot> {
   children?: ReactNode;
   tooltip?: string;
   shortcut?: string;
+  className?: string;
 }
 
-const Tooltip = ({ tooltip, children, shortcut, ...rest }: Props) => {
-  // const tooltipProps =
-  //   typeof tooltip === "string" ? { children: tooltip } : tooltip;
-
+const Tooltip = ({
+  tooltip,
+  children,
+  shortcut,
+  className,
+  ...rest
+}: Props) => {
   return (
     <TooltipRoot
       positioning={{
@@ -85,7 +89,9 @@ const Tooltip = ({ tooltip, children, shortcut, ...rest }: Props) => {
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <Portal>
         <TooltipPositioner>
-          <TooltipContent className="border bg-background text-foreground">
+          <TooltipContent
+            className={cn("border bg-background text-foreground", className)}
+          >
             <div className="flex items-center gap-2">
               {tooltip}
               {shortcut && (

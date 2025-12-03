@@ -331,6 +331,32 @@ export type BigIntFilter = {
   notIn?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
+/** A filter to be used against Boolean fields. All fields are combined with a logical ‘and.’ */
+export type BooleanFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+};
+
 export type Column = Node & {
   __typename?: 'Column';
   createdAt: Scalars['Datetime']['output'];
@@ -6846,6 +6872,7 @@ export type User = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   identityProviderId: Scalars['UUID']['output'];
+  isOmniCore?: Maybe<Scalars['Boolean']['output']>;
   name: Scalars['String']['output'];
   rowId: Scalars['UUID']['output'];
   updatedAt: Scalars['Datetime']['output'];
@@ -6944,6 +6971,8 @@ export type UserCondition = {
   email?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `identityProviderId` field. */
   identityProviderId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `isOmniCore` field. */
+  isOmniCore?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -6986,6 +7015,8 @@ export type UserDistinctCountAggregates = {
   email?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of identityProviderId across the matching connection */
   identityProviderId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of isOmniCore across the matching connection */
+  isOmniCore?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
   name?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -7031,6 +7062,8 @@ export type UserFilter = {
   emojisExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `identityProviderId` field. */
   identityProviderId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `isOmniCore` field. */
+  isOmniCore?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
@@ -7057,6 +7090,7 @@ export enum UserGroupBy {
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  IsOmniCore = 'IS_OMNI_CORE',
   Name = 'NAME',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -7228,6 +7262,8 @@ export enum UserOrderBy {
   EmojisDistinctCountUserIdDesc = 'EMOJIS_DISTINCT_COUNT_USER_ID_DESC',
   IdentityProviderIdAsc = 'IDENTITY_PROVIDER_ID_ASC',
   IdentityProviderIdDesc = 'IDENTITY_PROVIDER_ID_DESC',
+  IsOmniCoreAsc = 'IS_OMNI_CORE_ASC',
+  IsOmniCoreDesc = 'IS_OMNI_CORE_DESC',
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',

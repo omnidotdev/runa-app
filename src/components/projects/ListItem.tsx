@@ -175,7 +175,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
                   variant="outline"
                   className="border-border border-dashed"
                 >
-                  <TagIcon className="!size-2.5" />
+                  <TagIcon className="size-2.5!" />
                 </Badge>
               )}
             </Tooltip>
@@ -199,7 +199,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
                   variant="outline"
                   className="h-5 w-fit place-self-end border-border border-dashed"
                 >
-                  <CalendarIcon className="!size-2.5" />
+                  <CalendarIcon className="size-2.5!" />
                 </Badge>
               )}
             </Tooltip>

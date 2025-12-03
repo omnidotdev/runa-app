@@ -121,7 +121,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
             <div className="flex items-start gap-2">
               <div className="mt-0.5 min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-400">
+                  <span className="shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-400">
                     {displayId}
                   </span>
 
@@ -198,7 +198,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                       variant="outline"
                       className="border-border border-dashed"
                     >
-                      <TagIcon className="!size-2.5" />
+                      <TagIcon className="size-2.5!" />
                     </Badge>
                   )}
                 </Tooltip>
@@ -225,7 +225,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                     variant="outline"
                     className="h-5 w-fit place-self-end border-border border-dashed"
                   >
-                    <CalendarIcon className="!size-2.5" />
+                    <CalendarIcon className="size-2.5!" />
                   </Badge>
                 )}
               </Tooltip>

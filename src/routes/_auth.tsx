@@ -8,6 +8,7 @@ import {
 import AppSidebar from "@/components/core/sidebar/AppSidebar";
 import NotFound from "@/components/layout/NotFound";
 import CreateWorkspaceDialog from "@/components/shared/CreateWorkspaceDialog";
+import ShortcutHelpDialog from "@/components/shared/ShortcutHelpDialog";
 import { SidebarInset } from "@/components/ui/sidebar";
 import CreateProjectDialog from "@/components/workspaces/CreateProjectDialog";
 import invitationsOptions from "@/lib/options/invitations.options";
@@ -100,6 +101,7 @@ function AuthenticatedLayout() {
 
       <CreateProjectDialog />
       <CreateWorkspaceDialog />
+      <ShortcutHelpDialog />
     </SidebarProvider>
   );
 }

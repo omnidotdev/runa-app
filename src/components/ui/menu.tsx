@@ -101,7 +101,7 @@ const MenuItem = ({
     className={cn(
       item(),
       variant === "destructive" &&
-        "data-[highlighted]:bg-destructive/10 data-[highlighted]:text-destructive",
+        "data-highlighted:bg-destructive/10 data-highlighted:text-destructive",
       className,
     )}
     {...rest}

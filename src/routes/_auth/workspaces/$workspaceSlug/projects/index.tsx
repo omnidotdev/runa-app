@@ -6,7 +6,7 @@ import {
   stripSearchParams,
 } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
-import { Grid2X2Icon, ListIcon, Plus, SearchIcon } from "lucide-react";
+import { Command, Grid2X2Icon, ListIcon, Plus, SearchIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
@@ -156,6 +156,9 @@ function ProjectsOverviewPage() {
 
   const { setIsOpen: setIsCreateProjectOpen } = useDialogStore({
     type: DialogType.CreateProject,
+  });
+  const { setIsOpen: setIsShortcutHelpOpen } = useDialogStore({
+    type: DialogType.ShortcutHelp,
   });
 
   const handleSearch = useDebounceCallback(
@@ -388,6 +391,22 @@ function ProjectsOverviewPage() {
                   <Plus className="size-4" />
                 </Button>
               </Tooltip>
+
+              <div className="ml-auto">
+                <Tooltip
+                  positioning={{ placement: "left" }}
+                  tooltip="View Shortcuts"
+                >
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setIsShortcutHelpOpen(true)}
+                    aria-label="Shortcut Help"
+                  >
+                    <Command className="size-4" />
+                  </Button>
+                </Tooltip>
+              </div>
             </div>
           </div>
         </div>

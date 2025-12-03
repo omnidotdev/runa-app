@@ -20,9 +20,9 @@ const comboboxVariants = tv({
     positioner: "z-50 w-full min-w-[8rem]",
     content:
       "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 max-h-[300px] overflow-y-auto rounded-md border bg-popover p-1 shadow-md data-[state=closed]:animate-out data-[state=open]:animate-in",
-    item: "flex px-2 items-center justify-between w-full cursor-default select-none items-center rounded-sm py-1.5 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[state=checkeck]:bg-accent data-[state=checkeck]:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50",
+    item: "flex px-2 justify-between w-full cursor-default select-none items-center rounded-sm py-1.5 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[state=checked]:bg-accent data-[state=checked]:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50",
     itemIndicator:
-      "text-green-500 flex ml-auto flex h-3.5 w-3.5 items-center justify-center",
+      "text-green-500 flex ml-auto h-3.5 w-3.5 items-center justify-center",
     itemGroup: "p-1",
     itemGroupLabel: "px-2 py-1.5 font-medium text-muted-foreground text-xs",
   },
