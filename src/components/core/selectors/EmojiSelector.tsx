@@ -9,7 +9,7 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import useTheme from "@/lib/hooks/useTheme";
+import { useTheme } from "@/providers/ThemeProvider";
 
 import type { ComponentProps } from "react";
 

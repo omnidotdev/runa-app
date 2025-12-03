@@ -38,8 +38,8 @@ import {
 } from "@/components/ui/sidebar";
 import { signOut } from "@/lib/auth/signOut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
-import useTheme from "@/lib/hooks/useTheme";
 import invitationsOptions from "@/lib/options/invitations.options";
+import { useTheme } from "@/providers/ThemeProvider";
 
 const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
