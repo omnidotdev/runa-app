@@ -48,7 +48,7 @@ const faqItems = [
   },
 ];
 
-export const Route = createFileRoute("/_anon/pricing")({
+export const Route = createFileRoute("/_marketing/pricing")({
   head: () => ({
     meta: [
       ...seo({

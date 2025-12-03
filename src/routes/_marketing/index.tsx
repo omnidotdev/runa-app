@@ -58,7 +58,7 @@ const features: Feature[] = [
   },
 ];
 
-export const Route = createFileRoute("/_anon/")({
+export const Route = createFileRoute("/_marketing/")({
   beforeLoad: ({ context: { session } }) => {
     if (session) throw redirect({ to: "/workspaces" });
   },

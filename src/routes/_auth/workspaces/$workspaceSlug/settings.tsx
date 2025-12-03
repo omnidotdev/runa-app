@@ -40,7 +40,7 @@ import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
-import { FREE_PRICE } from "@/routes/_anon/pricing";
+import { FREE_PRICE } from "@/routes/_marketing/pricing";
 import { getPrices } from "@/server/functions/prices";
 import {
   getCancelSubscriptionUrl,

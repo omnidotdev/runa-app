@@ -8,12 +8,11 @@ import { signIn } from "@/lib/auth/signIn";
 import { signOut } from "@/lib/auth/signOut";
 import { BASE_URL } from "@/lib/config/env.config";
 
-export const Route = createFileRoute("/_anon")({
-  component: UnauthenticatedLayout,
+export const Route = createFileRoute("/_marketing")({
+  component: MarketingLayout,
 });
 
-// TODO: Rename component + file and associated dir. This is not strictly used for unauthenticated users anymore.
-function UnauthenticatedLayout() {
+function MarketingLayout() {
   const { session } = Route.useRouteContext();
 
   return (
