@@ -140,9 +140,9 @@ function ProjectSettingsPage() {
     type: DialogType.DeleteProject,
   });
 
-  const [nameError, setNameError] = useState<string | null>(null);
+  const [parseError, setParseError] = useState<string | null>(null);
 
-  // TODO: generalize error handling for the callbacks below
+  // TODO: determine how to properly keep focus after successful callback
   const updateProjectName = useDebounceCallback(
     async ({ editor }: { editor: Editor }) => {
       const text = editor.getText().trim();
@@ -152,11 +152,11 @@ function ProjectSettingsPage() {
       });
 
       if (!result.success) {
-        setNameError(result.error.issues[0].message);
+        setParseError(result.error.issues[0].message);
         return;
       }
 
-      setNameError(null);
+      setParseError(null);
       updateProject({
         rowId: projectId,
         patch: { name: text, slug: generateSlug(text) },
@@ -167,16 +167,22 @@ function ProjectSettingsPage() {
 
   const updateProjectPrefix = useDebounceCallback(
     async ({ editor }: { editor: Editor }) => {
-      const prefixSchema = z.string().min(3, "Must be at least 3 characters");
+      const prefixSchema = z
+        .string()
+        .min(3, { error: "Prefix must be at least 3 characters" });
 
       const result = await prefixSchema.safeParseAsync(editor.getText().trim());
 
-      if (result.success) {
-        updateProject({
-          rowId: projectId,
-          patch: { prefix: result.data },
-        });
+      if (!result.success) {
+        setParseError(result.error.issues[0].message);
+        return;
       }
+
+      setParseError(null);
+      updateProject({
+        rowId: projectId,
+        patch: { prefix: result.data },
+      });
     },
     500,
   );
@@ -209,7 +215,8 @@ function ProjectSettingsPage() {
           </Link>
 
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
+            {/** NB: `w-fit` is to prevent layout shift when there is a `parseError` */}
+            <div className="flex w-fit items-center gap-2">
               <ProjectColorPicker disabled={isMember} />
 
               <RichTextEditor
@@ -234,8 +241,8 @@ function ProjectSettingsPage() {
               </div>
             </div>
 
-            {nameError && (
-              <p className="mt-1 text-red-500 text-sm">{nameError}</p>
+            {parseError && (
+              <p className="mt-1 text-red-500 text-sm">{parseError}</p>
             )}
 
             <RichTextEditor
