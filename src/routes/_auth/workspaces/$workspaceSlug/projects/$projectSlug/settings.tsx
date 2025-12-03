@@ -142,7 +142,8 @@ function ProjectSettingsPage() {
 
   const [parseError, setParseError] = useState<string | null>(null);
 
-  // TODO: determine how to properly keep focus after successful callback
+  // TODO: determine how to properly keep focus after successful callback. Issue is that the mutation invalidates the project query (necessary) but that forces a re-render and thus focus is lost
+  // The above applies to each callback below
   const updateProjectName = useDebounceCallback(
     async ({ editor }: { editor: Editor }) => {
       const text = editor.getText().trim();
