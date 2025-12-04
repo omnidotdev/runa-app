@@ -51,6 +51,7 @@ import invitationsOptions from "@/lib/options/invitations.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import seo from "@/lib/util/seo";
+import { revokeSubscription } from "@/server/functions/subscriptions";
 
 import type { Workspace } from "@/generated/graphql";
 
@@ -105,6 +106,22 @@ function ProfilePage() {
     onSettled: () => setIsDeleteWorkspaceOpen(false),
   });
 
+  // TODO make transactional
+  const handleDeleteWorkspace = async (workspace: Partial<Workspace>) => {
+    try {
+      // cancel subscription if it exists
+      if (workspace.subscriptionId)
+        await revokeSubscription({
+          data: { subscriptionId: workspace.subscriptionId },
+        });
+
+      // delete workspace
+      deleteWorkspace({ rowId: workspace.rowId! });
+    } catch (_err) {
+      setIsDeleteWorkspaceOpen(false);
+    }
+  };
+
   return (
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
@@ -158,9 +175,15 @@ function ProfilePage() {
                             <TableHead className="pl-3 font-semibold">
                               Workspace
                             </TableHead>
+
+                            <TableHead className="font-semibold">
+                              Tier
+                            </TableHead>
+
                             <TableHead className="font-semibold">
                               Role
                             </TableHead>
+
                             <TableHead className="pr-3 text-right font-semibold">
                               Actions
                             </TableHead>
@@ -182,6 +205,11 @@ function ProfilePage() {
                                     {workspace.name}
                                   </span>
                                 </div>
+                              </TableCell>
+                              <TableCell className="py-4 pl-1">
+                                <Badge variant="outline">
+                                  {firstLetterToUppercase(workspace.tier)}
+                                </Badge>
                               </TableCell>
                               <TableCell className="py-4 pl-1">
                                 <Badge>
@@ -241,10 +269,16 @@ function ProfilePage() {
                     ) : (
                       <div className="flex flex-col gap-2">
                         <p>
-                          No current workspaces. Create a workspace to get
-                          started.
+                          No current workspaces.{" "}
+                          <Link
+                            to="/pricing"
+                            variant="ghost"
+                            className="p-1 text-primary-600 underline"
+                          >
+                            Create a workspace
+                          </Link>{" "}
+                          to get started.
                         </p>
-                        <Button className="w-fit">Create Workspace</Button>
                       </div>
                     )}
                   </div>
@@ -385,9 +419,9 @@ function ProfilePage() {
                             </div>
                             <DialogTitle>Are you absolutely sure?</DialogTitle>
                             <DialogDescription>
-                              This will permanently cancel your subscription and
-                              delete all associated data. This action cannot be
-                              undone.
+                              This will permanently cancel any active
+                              subscription and delete all associated data. This
+                              action cannot be undone.
                             </DialogDescription>
                           </div>
 
@@ -448,9 +482,7 @@ function ProfilePage() {
             </span>
           }
           onConfirm={() => {
-            deleteWorkspace({
-              rowId: workspaceToDelete?.rowId!,
-            });
+            if (workspaceToDelete) handleDeleteWorkspace(workspaceToDelete);
           }}
           dialogType={DialogType.DeleteWorkspace}
           confirmation={`permanently delete ${workspaceToDelete?.name}`}

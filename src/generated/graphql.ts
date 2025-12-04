@@ -8680,7 +8680,7 @@ export type WorkspacesQueryVariables = Exact<{
 }>;
 
 
-export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, slug: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number }, currentUser: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', role: Role }> } }> } | null };
+export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, slug: string, subscriptionId?: string | null, tier: Tier, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number }, currentUser: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', role: Role }> } }> } | null };
 
 
 export const ProjectColumnFragmentDoc = `
@@ -10828,6 +10828,8 @@ export const WorkspacesDocument = `
       rowId
       name
       slug
+      subscriptionId
+      tier
       workspaceUsers {
         totalCount
       }
