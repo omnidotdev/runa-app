@@ -2,6 +2,7 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { AlertTriangle, Building2, LogOut, Settings } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
@@ -128,7 +129,7 @@ function ProfilePage() {
       // delete workspace
       deleteWorkspace({ rowId: workspaceId });
     },
-    onSettled: () => setIsDeleteWorkspaceOpen(false),
+    onError: (err) => toast.error(err.message),
   });
 
   return (
@@ -281,8 +282,8 @@ function ProfilePage() {
                           No current workspaces.{" "}
                           <Link
                             to="/pricing"
-                            variant="ghost"
-                            className="p-1 text-primary-600 underline"
+                            variant="unstyled"
+                            className="p-0 text-md text-primary-600 underline"
                           >
                             Create a workspace
                           </Link>{" "}
@@ -499,6 +500,7 @@ function ProfilePage() {
           }}
           dialogType={DialogType.DeleteWorkspace}
           confirmation={`permanently delete ${workspaceToDelete?.name}`}
+          onExitComplete={() => setWorkspaceToDelete(undefined)}
         />
       )}
     </div>
