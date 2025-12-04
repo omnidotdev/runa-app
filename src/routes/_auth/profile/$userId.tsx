@@ -285,6 +285,7 @@ function ProfilePage() {
 
                   <div className="space-y-4">
                     <h2 className="font-bold text-lg">Workspace Invitations</h2>
+
                     {invitations.length ? (
                       <Table containerProps="rounded-md border">
                         <TableHeader>
@@ -383,7 +384,7 @@ function ProfilePage() {
                         </TableBody>
                       </Table>
                     ) : (
-                      "No current invitations"
+                      <p>No current invitations</p>
                     )}
                   </div>
 
