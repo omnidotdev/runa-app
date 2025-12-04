@@ -420,7 +420,7 @@ function SettingsPage() {
             navigate({ to: "/workspaces", replace: true });
           }}
           dialogType={DialogType.DeleteWorkspace}
-          confirmation={`Permanently delete ${workspace?.name}`}
+          confirmation={`permanently delete ${workspace?.name}`}
         />
       </div>
     </div>

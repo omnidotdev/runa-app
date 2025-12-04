@@ -98,6 +98,7 @@ export const PriceCard = ({ price }: Props) => {
                     className="text-green-600 dark:text-green-400"
                   />
                 </div>
+
                 <span className="text-foreground leading-6">
                   {feature.name}
                 </span>
@@ -105,6 +106,7 @@ export const PriceCard = ({ price }: Props) => {
             ))}
           </ul>
         </CardContent>
+
         <CardFooter className="mt-auto pt-8">
           <Button
             variant={isTeamTier ? undefined : "outline"}

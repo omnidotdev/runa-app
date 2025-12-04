@@ -127,6 +127,7 @@ function ProfilePage() {
                 <p className="mt-1 text-muted-foreground text-sm">
                   {session?.user.email}
                 </p>
+
                 <Button
                   variant="destructive"
                   className="mt-4"
@@ -165,6 +166,7 @@ function ProfilePage() {
                             </TableHead>
                           </TableRow>
                         </TableHeader>
+
                         <TableBody>
                           {workspaces.map((workspace) => (
                             <TableRow
@@ -432,6 +434,7 @@ function ProfilePage() {
           </div>
         </div>
       </div>
+
       {workspaceToDelete && (
         <DestructiveActionDialog
           title="Danger Zone"
@@ -450,7 +453,7 @@ function ProfilePage() {
             });
           }}
           dialogType={DialogType.DeleteWorkspace}
-          confirmation={`Permanently delete ${workspaceToDelete?.name}`}
+          confirmation={`permanently delete ${workspaceToDelete?.name}`}
         />
       )}
     </div>
