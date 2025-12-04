@@ -39,17 +39,19 @@ export const PriceCard = ({ price }: Props) => {
   const [isCreateWorkspaceDialogOpen, setIsCreateWorkspaceDialogOpen] =
     useState(false);
 
+  const isTeamTier = price.metadata?.tier === "team";
+
   return (
     <>
       <CardRoot
         key={price?.id}
         className={cn(
           "relative flex flex-1 flex-col border-2",
-          price?.metadata?.tier === "team" &&
+          isTeamTier &&
             "border-primary-700 bg-primary-50 shadow-primary/20 dark:border-primary dark:bg-primary-1000",
         )}
       >
-        {price?.metadata?.tier === "team" && (
+        {isTeamTier && (
           <div className="-top-3 -translate-x-1/2 absolute left-1/2">
             <span className="rounded-full bg-primary-700 px-3 py-1 font-medium text-primary-foreground text-sm dark:bg-primary">
               Recommended
@@ -105,6 +107,7 @@ export const PriceCard = ({ price }: Props) => {
         </CardContent>
         <CardFooter className="mt-auto pt-8">
           <Button
+            variant={isTeamTier ? undefined : "outline"}
             size="lg"
             className="w-full font-semibold"
             onClick={() =>
