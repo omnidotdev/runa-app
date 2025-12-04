@@ -479,7 +479,7 @@ function ProfilePage() {
         </div>
       </div>
 
-      {workspaceToDelete && (
+      {!!workspaceToDelete && (
         <DestructiveActionDialog
           title="Danger Zone"
           description={
