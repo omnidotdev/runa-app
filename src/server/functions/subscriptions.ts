@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { STRIPE_PORTAL_CONFIG_ID } from "@/lib/config/env.config";
-import { payments } from "@/lib/payments";
+import payments from "@/lib/payments";
 import { customerMiddleware } from "@/server/middleware";
 
 import type Stripe from "stripe";

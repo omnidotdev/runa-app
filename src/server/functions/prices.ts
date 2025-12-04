@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 
-import { payments } from "@/lib/payments";
+import payments from "@/lib/payments";
 
 import type Stripe from "stripe";
 
