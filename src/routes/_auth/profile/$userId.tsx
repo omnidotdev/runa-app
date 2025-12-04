@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { AlertTriangle, Building2, LogOut, Settings } from "lucide-react";
 import { useState } from "react";
@@ -53,7 +53,7 @@ import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import seo from "@/lib/util/seo";
 import { revokeSubscription } from "@/server/functions/subscriptions";
 
-import type { Workspace } from "@/generated/graphql";
+import type { Maybe, Workspace } from "@/generated/graphql";
 
 export const Route = createFileRoute("/_auth/profile/$userId")({
   head: (context) => ({
@@ -106,21 +106,30 @@ function ProfilePage() {
     onSettled: () => setIsDeleteWorkspaceOpen(false),
   });
 
-  // TODO make transactional
-  const handleDeleteWorkspace = async (workspace: Partial<Workspace>) => {
-    try {
+  const { mutateAsync: handleDeleteWorkspace } = useMutation({
+    // TODO: make transactional
+    mutationFn: async ({
+      workspaceId,
+      subscriptionId,
+    }: {
+      workspaceId: string;
+      subscriptionId: Maybe<string> | undefined;
+    }) => {
       // cancel subscription if it exists
-      if (workspace.subscriptionId)
-        await revokeSubscription({
-          data: { subscriptionId: workspace.subscriptionId },
+      if (subscriptionId) {
+        const revokedSubscriptionId = await revokeSubscription({
+          data: { subscriptionId },
         });
 
+        if (!revokedSubscriptionId)
+          throw new Error("Issue revoking subscription");
+      }
+
       // delete workspace
-      deleteWorkspace({ rowId: workspace.rowId! });
-    } catch (_err) {
-      setIsDeleteWorkspaceOpen(false);
-    }
-  };
+      deleteWorkspace({ rowId: workspaceId });
+    },
+    onSettled: () => setIsDeleteWorkspaceOpen(false),
+  });
 
   return (
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
@@ -483,7 +492,11 @@ function ProfilePage() {
             </span>
           }
           onConfirm={() => {
-            if (workspaceToDelete) handleDeleteWorkspace(workspaceToDelete);
+            if (workspaceToDelete)
+              handleDeleteWorkspace({
+                workspaceId: workspaceToDelete.rowId!,
+                subscriptionId: workspaceToDelete.subscriptionId,
+              });
           }}
           dialogType={DialogType.DeleteWorkspace}
           confirmation={`permanently delete ${workspaceToDelete?.name}`}
