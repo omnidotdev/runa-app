@@ -11,7 +11,12 @@ import { match } from "ts-pattern";
 import Link from "@/components/core/Link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import {
+  CardDescription,
+  CardHeader,
+  CardRoot,
+  CardTitle,
+} from "@/components/ui/card";
 import { signIn } from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
@@ -72,7 +77,7 @@ function HomePage() {
         {/* Hero section */}
         <div className="py-20 md:py-28 lg:py-36">
           <div className="max-w-3xl">
-            <Badge variant="subtle" className="mb-5 rounded-full">
+            <Badge variant="secondary" className="mb-5 rounded-full">
               Introducing Runa
             </Badge>
 
@@ -142,26 +147,26 @@ function HomePage() {
                   .exhaustive();
 
                 return (
-                  <Card
+                  <CardRoot
                     key={title}
-                    title={title}
-                    description={description}
-                    icon={
-                      <div
-                        className={cn(
-                          "mb-4 flex h-12 w-12 items-center justify-center rounded-xl",
-                          iconBg,
-                        )}
-                      >
-                        {icon}
-                      </div>
-                    }
                     className={cn(
                       "hover:-translate-y-0.5 rounded-xl border border-base-200 bg-white p-6 shadow-sm transition-transform hover:shadow-md dark:border-base-700 dark:bg-base-900",
                       hoverBorder,
                     )}
-                    headerProps={{ className: "gap-4 p-0 pt-2" }}
-                  />
+                  >
+                    <div
+                      className={cn(
+                        "mb-4 flex h-12 w-12 items-center justify-center rounded-xl",
+                        iconBg,
+                      )}
+                    >
+                      {icon}
+                    </div>
+                    <CardHeader className="gap-4 p-0 pt-2">
+                      <CardTitle>{title}</CardTitle>
+                      <CardDescription>{description}</CardDescription>
+                    </CardHeader>
+                  </CardRoot>
                 );
               })}
             </div>

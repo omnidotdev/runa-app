@@ -13,7 +13,12 @@ import {
 } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  CardContent,
+  CardHeader,
+  CardRoot,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
@@ -25,7 +30,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  RadioGroupIndicator,
   RadioGroupItem,
   RadioGroupItemControl,
   RadioGroupItemHiddenInput,
@@ -120,7 +124,7 @@ function RouteComponent() {
   });
 
   return (
-    <div className="no-scrollbar min-h-dvh overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
+    <div className="no-scrollbar min-h-dvh overflow-y-auto bg-linear-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-12">
           <div className="xl:col-span-4">
@@ -411,7 +415,6 @@ function RouteComponent() {
                               )
                             }
                           >
-                            <RadioGroupIndicator />
                             {Object.values(CustomerCancellationReason).map(
                               (reason) => (
                                 <RadioGroupItem key={reason} value={reason}>
@@ -471,7 +474,7 @@ function RouteComponent() {
                 </div>
               </TabsContent>
               <TabsContent value="customization">
-                <Card className="mt-4 border">
+                <CardRoot className="mt-4 border">
                   <CardHeader className="px-6 pt-6">
                     <CardTitle className="flex items-center gap-3">
                       <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
@@ -493,7 +496,7 @@ function RouteComponent() {
                       </p>
                     </div>
                   </CardContent>
-                </Card>
+                </CardRoot>
               </TabsContent>
             </TabsRoot>
           </div>

@@ -50,7 +50,7 @@ const AppSidebarHeader = () => {
         <MenuRoot>
           <MenuTrigger asChild>
             <SidebarMenuButton className="bg-sidebar-accent focus-visible:ring-offset-background">
-              <ChevronsUpDown />
+              <ChevronsUpDown className="rotate-none!" />
 
               <span className="flex w-full items-center group-data-[collapsible=icon]:hidden">
                 {workspace?.name ?? "Select Workspace"}

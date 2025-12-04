@@ -4,12 +4,16 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 import Label from "@/components/shared/Label";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
-import { SidebarMenuShortcut } from "@/components/ui/sidebar";
+import { Shortcut } from "@/components/ui/shortcut";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import taskOptions from "@/lib/options/task.options";
-import { Avatar } from "../ui/avatar";
 
 import type { LabelFragment } from "@/generated/graphql";
 
@@ -54,20 +58,21 @@ const TaskSidebar = () => {
           <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
             Assignees
           </h3>
-          <SidebarMenuShortcut>A</SidebarMenuShortcut>
+          <Shortcut>A</Shortcut>
         </CardHeader>
 
-        <CardContent className="flex max-h-80 overflow-y-auto p-0">
+        <CardContent className="flex max-h-80 overflow-y-auto p-4">
           {task?.assignees?.nodes?.length ? (
             <div>
               {task?.assignees?.nodes?.map(({ user }) => (
-                <div key={user?.rowId} className="flex items-center gap-0">
-                  <Avatar
-                    fallback={user?.name?.charAt(0)}
-                    src={user?.avatarUrl ?? undefined}
-                    alt={user?.name}
-                    className="size-6 rounded-full border-2 bg-background font-medium text-xs"
-                  />
+                <div key={user?.rowId} className="flex items-center gap-2">
+                  <AvatarRoot className="size-6 rounded-full border-2 bg-background font-medium text-xs">
+                    <AvatarImage
+                      src={user?.avatarUrl ?? undefined}
+                      alt={user?.name}
+                    />
+                    <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
+                  </AvatarRoot>
 
                   <p className="text-xs">{user?.name}</p>
                 </div>
@@ -97,7 +102,7 @@ const TaskSidebar = () => {
           <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
             Labels
           </h3>
-          <SidebarMenuShortcut>L</SidebarMenuShortcut>
+          <Shortcut>L</Shortcut>
         </CardHeader>
 
         <CardContent className="space-y-4 p-4">
@@ -151,7 +156,7 @@ const TaskSidebar = () => {
               onClick={() => setIsUpdateDueDateDialogOpen(true)}
             >
               Due Date
-              <SidebarMenuShortcut>D</SidebarMenuShortcut>
+              <Shortcut>D</Shortcut>
             </Button>
 
             {task?.dueDate ? (

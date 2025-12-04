@@ -15,6 +15,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 
 import EmojiSelector from "@/components/core/selectors/EmojiSelector";
+import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,7 +25,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Tooltip } from "@/components/ui/tooltip";
 import {
   Role,
   useCreateColumnMutation,
@@ -358,32 +358,38 @@ const ColumnForm = ({
         >
           {([canSubmit, isSubmitting, isDefaultValue]) => (
             <div className="ml-2 flex items-center justify-center">
-              <Tooltip tooltip="Cancel">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => {
-                    onSetActive(null);
-                    form.reset();
-                  }}
-                  disabled={isSubmitting}
-                  className="focus-visible:ring-offset-0"
-                >
-                  <XIcon />
-                </Button>
-              </Tooltip>
+              <Tooltip
+                tooltip="Cancel"
+                trigger={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      onSetActive(null);
+                      form.reset();
+                    }}
+                    disabled={isSubmitting}
+                    className="focus-visible:ring-offset-0"
+                  >
+                    <XIcon />
+                  </Button>
+                }
+              />
 
-              <Tooltip tooltip="Save">
-                <Button
-                  type="submit"
-                  variant="ghost"
-                  size="icon"
-                  disabled={!canSubmit || isSubmitting || isDefaultValue}
-                  className="focus-visible:ring-offset-0"
-                >
-                  <CheckIcon />
-                </Button>
-              </Tooltip>
+              <Tooltip
+                tooltip="Save"
+                trigger={
+                  <Button
+                    type="submit"
+                    variant="ghost"
+                    size="icon"
+                    disabled={!canSubmit || isSubmitting || isDefaultValue}
+                    className="focus-visible:ring-offset-0"
+                  >
+                    <CheckIcon />
+                  </Button>
+                }
+              />
             </div>
           )}
         </form.Subscribe>

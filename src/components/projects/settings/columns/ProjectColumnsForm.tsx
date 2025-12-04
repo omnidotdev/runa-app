@@ -19,9 +19,10 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { AlignJustifyIcon, MoreHorizontalIcon, PlusIcon } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
+import Tooltip from "@/components/core/Tooltip";
 import ColumnForm from "@/components/projects/settings/columns/ColumnForm";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,7 +39,6 @@ import {
   MenuTrigger,
   MenuTriggerItem,
 } from "@/components/ui/menu";
-import { Tooltip } from "@/components/ui/tooltip";
 import {
   Role,
   useDeleteColumnMutation,
@@ -98,7 +98,6 @@ const ProjectColumnsForm = () => {
 
   const [localColumns, setLocalColumns] = useState<Column[]>(columns ?? []);
   const [columnToDelete, setColumnToDelete] = useState<Column>();
-  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const { mutate: updateColumn } = useUpdateColumnMutation({
       meta: {
@@ -179,26 +178,27 @@ const ProjectColumnsForm = () => {
           <MenuRoot
             positioning={{
               placement: "right-start",
-              getAnchorRect: () =>
-                menuButtonRef.current?.getBoundingClientRect() ?? null,
             }}
             closeOnSelect={false}
+            ids={{ trigger: "create-new-label" }}
           >
             <Tooltip
               positioning={{ placement: "left" }}
+              ids={{ trigger: "create-new-label" }}
               tooltip="Column options"
-            >
-              <MenuTrigger ref={menuButtonRef} asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Create new label"
-                  className="mr-2 size-7"
-                >
-                  <MoreHorizontalIcon className="size-4" />
-                </Button>
-              </MenuTrigger>
-            </Tooltip>
+              trigger={
+                <MenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Create new label"
+                    className="mr-2 size-7"
+                  >
+                    <MoreHorizontalIcon className="size-4" />
+                  </Button>
+                </MenuTrigger>
+              }
+            />
 
             <MenuPositioner>
               <MenuContent className="w-48 p-0">

@@ -4,7 +4,6 @@ import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import PopoverWithTooltip from "@/components/core/PopoverWithTooltip";
 import { Button } from "@/components/ui/button";
 import {
   DatePickerContent,
@@ -27,18 +26,17 @@ import {
   DatePickerViewControl,
   DatePickerViewTrigger,
 } from "@/components/ui/date-picker";
-import { TooltipTrigger } from "@/components/ui/tooltip";
+import { Shortcut } from "@/components/ui/shortcut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
-import { SidebarMenuShortcut } from "../ui/sidebar";
+import Tooltip from "../core/Tooltip";
 
 const CreateTaskDatePicker = withForm({
   defaultValues: taskFormDefaults,
   render: ({ form }) => {
-    const selectButtonRef = useRef<HTMLButtonElement | null>(null);
-
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+    const triggerRef = useRef<HTMLButtonElement | null>(null);
 
     useHotkeys(
       Hotkeys.UpdateDueDate,
@@ -49,37 +47,36 @@ const CreateTaskDatePicker = withForm({
     return (
       <form.Field name="dueDate">
         {(field) => (
-          <PopoverWithTooltip
-            triggerRef={selectButtonRef}
-            tooltip="Set due date"
-            shortcut={Hotkeys.UpdateDueDate.toUpperCase()}
+          <DatePickerRoot
+            positioning={{
+              getAnchorRect: () =>
+                triggerRef.current?.getBoundingClientRect() ?? null,
+            }}
+            open={isDatePickerOpen}
+            onOpenChange={({ open }) => setIsDatePickerOpen(open)}
+            value={
+              field.state.value.length
+                ? [parseAbsoluteToLocal(field.state.value)]
+                : []
+            }
+            onValueChange={({ value }) =>
+              value.length
+                ? field.handleChange(
+                    new Date(
+                      value[0].add({ days: 1 }).toString(),
+                    ).toISOString(),
+                  )
+                : field.handleChange("")
+            }
+            autoFocus
           >
-            <DatePickerRoot
-              positioning={{
-                strategy: "fixed",
-                placement: "bottom",
-              }}
-              open={isDatePickerOpen}
-              onOpenChange={({ open }) => setIsDatePickerOpen(open)}
-              value={
-                field.state.value.length
-                  ? [parseAbsoluteToLocal(field.state.value)]
-                  : []
-              }
-              onValueChange={({ value }) =>
-                value.length
-                  ? field.handleChange(
-                      new Date(
-                        value[0].add({ days: 1 }).toString(),
-                      ).toISOString(),
-                    )
-                  : field.handleChange("")
-              }
-              autoFocus
-            >
-              <DatePickerControl>
-                <DatePickerTrigger ref={selectButtonRef} asChild>
-                  <TooltipTrigger asChild className="ml-0 h-9 w-fit">
+            <Tooltip
+              positioning={{ placement: "top" }}
+              tooltip="Set due date"
+              shortcut={Hotkeys.UpdateDueDate.toUpperCase()}
+              trigger={
+                <DatePickerControl>
+                  <DatePickerTrigger ref={triggerRef} asChild>
                     <Button variant="outline">
                       <CalendarIcon className="size-4" />
                       <p className="">
@@ -89,194 +86,187 @@ const CreateTaskDatePicker = withForm({
                           : "Set due date"}
                       </p>
                     </Button>
-                  </TooltipTrigger>
-                </DatePickerTrigger>
+                  </DatePickerTrigger>
+                </DatePickerControl>
+              }
+            />
 
-                {/* </Tooltip> */}
-              </DatePickerControl>
+            <DatePickerPositioner>
+              <DatePickerContent className="w-48 bg-background p-0">
+                <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
+                  Date Picker{" "}
+                  <Shortcut>{Hotkeys.UpdateDueDate.toUpperCase()}</Shortcut>
+                </div>
 
-              <DatePickerPositioner>
-                <DatePickerContent className="w-48 bg-background p-0">
-                  <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
-                    Date Picker{" "}
-                    <SidebarMenuShortcut>
-                      {Hotkeys.UpdateDueDate.toUpperCase()}
-                    </SidebarMenuShortcut>
-                  </div>
+                <div className="p-2">
+                  <DatePickerView className="flex flex-col gap-3" view="day">
+                    <DatePickerContext>
+                      {(datePicker) => (
+                        <>
+                          <DatePickerViewControl>
+                            <DatePickerPrevTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <ChevronLeftIcon />
+                              </Button>
+                            </DatePickerPrevTrigger>
 
-                  <div className="p-2">
-                    <DatePickerView className="flex flex-col gap-3" view="day">
-                      <DatePickerContext>
-                        {(datePicker) => (
-                          <>
-                            <DatePickerViewControl>
-                              <DatePickerPrevTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <ChevronLeftIcon />
-                                </Button>
-                              </DatePickerPrevTrigger>
+                            <DatePickerViewTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <DatePickerRangeText />
+                              </Button>
+                            </DatePickerViewTrigger>
 
-                              <DatePickerViewTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <DatePickerRangeText />
-                                </Button>
-                              </DatePickerViewTrigger>
+                            <DatePickerNextTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <ChevronRightIcon />
+                              </Button>
+                            </DatePickerNextTrigger>
+                          </DatePickerViewControl>
 
-                              <DatePickerNextTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <ChevronRightIcon />
-                                </Button>
-                              </DatePickerNextTrigger>
-                            </DatePickerViewControl>
-
-                            <DatePickerTable>
-                              <DatePickerTableHead>
-                                <DatePickerTableRow>
-                                  {datePicker.weekDays.map((weekDay, id) => (
-                                    // biome-ignore lint/suspicious/noArrayIndexKey: simple index
-                                    <DatePickerTableHeader key={id}>
-                                      {weekDay.narrow}
-                                    </DatePickerTableHeader>
+                          <DatePickerTable>
+                            <DatePickerTableHead>
+                              <DatePickerTableRow>
+                                {datePicker.weekDays.map((weekDay, id) => (
+                                  // biome-ignore lint/suspicious/noArrayIndexKey: simple index
+                                  <DatePickerTableHeader key={id}>
+                                    {weekDay.narrow}
+                                  </DatePickerTableHeader>
+                                ))}
+                              </DatePickerTableRow>
+                            </DatePickerTableHead>
+                            <DatePickerTableBody>
+                              {datePicker.weeks.map((week, id) => (
+                                // biome-ignore lint/suspicious/noArrayIndexKey: simple index
+                                <DatePickerTableRow key={id}>
+                                  {week.map((day, id) => (
+                                    <DatePickerTableCell
+                                      // biome-ignore lint/suspicious/noArrayIndexKey: simple index
+                                      key={id}
+                                      value={day}
+                                      className="size-8"
+                                    >
+                                      <DatePickerTableCellTrigger className=" hover:bg-primary-50 data-outside-range:opacity-40 hover:data-outside-range:bg-transparent dark:hover:bg-primary-950">
+                                        {day.day}
+                                      </DatePickerTableCellTrigger>
+                                    </DatePickerTableCell>
                                   ))}
                                 </DatePickerTableRow>
-                              </DatePickerTableHead>
-                              <DatePickerTableBody>
-                                {datePicker.weeks.map((week, id) => (
+                              ))}
+                            </DatePickerTableBody>
+                          </DatePickerTable>
+                        </>
+                      )}
+                    </DatePickerContext>
+                  </DatePickerView>
+
+                  <DatePickerView className="flex flex-col gap-3" view="month">
+                    <DatePickerContext>
+                      {(datePicker) => (
+                        <>
+                          <DatePickerViewControl>
+                            <DatePickerPrevTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <ChevronLeftIcon />
+                              </Button>
+                            </DatePickerPrevTrigger>
+
+                            <DatePickerViewTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <DatePickerRangeText />
+                              </Button>
+                            </DatePickerViewTrigger>
+
+                            <DatePickerNextTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <ChevronRightIcon />
+                              </Button>
+                            </DatePickerNextTrigger>
+                          </DatePickerViewControl>
+
+                          <DatePickerTable>
+                            <DatePickerTableBody>
+                              {datePicker
+                                .getMonthsGrid({
+                                  columns: 4,
+                                  format: "short",
+                                })
+                                .map((months, id) => (
                                   // biome-ignore lint/suspicious/noArrayIndexKey: simple index
                                   <DatePickerTableRow key={id}>
-                                    {week.map((day, id) => (
+                                    {months.map((month, id) => (
                                       <DatePickerTableCell
                                         // biome-ignore lint/suspicious/noArrayIndexKey: simple index
                                         key={id}
-                                        value={day}
-                                        className="size-8"
+                                        value={month.value}
                                       >
-                                        <DatePickerTableCellTrigger className=" hover:bg-primary-50 data-[outside-range]:opacity-40 hover:data-[outside-range]:bg-transparent dark:hover:bg-primary-950">
-                                          {day.day}
+                                        <DatePickerTableCellTrigger>
+                                          {month.label}
                                         </DatePickerTableCellTrigger>
                                       </DatePickerTableCell>
                                     ))}
                                   </DatePickerTableRow>
                                 ))}
-                              </DatePickerTableBody>
-                            </DatePickerTable>
-                          </>
-                        )}
-                      </DatePickerContext>
-                    </DatePickerView>
+                            </DatePickerTableBody>
+                          </DatePickerTable>
+                        </>
+                      )}
+                    </DatePickerContext>
+                  </DatePickerView>
 
-                    <DatePickerView
-                      className="flex flex-col gap-3"
-                      view="month"
-                    >
-                      <DatePickerContext>
-                        {(datePicker) => (
-                          <>
-                            <DatePickerViewControl>
-                              <DatePickerPrevTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <ChevronLeftIcon />
-                                </Button>
-                              </DatePickerPrevTrigger>
+                  <DatePickerView className="flex flex-col gap-3" view="year">
+                    <DatePickerContext>
+                      {(datePicker) => (
+                        <>
+                          <DatePickerViewControl>
+                            <DatePickerPrevTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <ChevronLeftIcon />
+                              </Button>
+                            </DatePickerPrevTrigger>
 
-                              <DatePickerViewTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <DatePickerRangeText />
-                                </Button>
-                              </DatePickerViewTrigger>
+                            <DatePickerViewTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <DatePickerRangeText />
+                              </Button>
+                            </DatePickerViewTrigger>
 
-                              <DatePickerNextTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <ChevronRightIcon />
-                                </Button>
-                              </DatePickerNextTrigger>
-                            </DatePickerViewControl>
+                            <DatePickerNextTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <ChevronRightIcon />
+                              </Button>
+                            </DatePickerNextTrigger>
+                          </DatePickerViewControl>
 
-                            <DatePickerTable>
-                              <DatePickerTableBody>
-                                {datePicker
-                                  .getMonthsGrid({
-                                    columns: 4,
-                                    format: "short",
-                                  })
-                                  .map((months, id) => (
-                                    // biome-ignore lint/suspicious/noArrayIndexKey: simple index
-                                    <DatePickerTableRow key={id}>
-                                      {months.map((month, id) => (
-                                        <DatePickerTableCell
-                                          // biome-ignore lint/suspicious/noArrayIndexKey: simple index
-                                          key={id}
-                                          value={month.value}
-                                        >
-                                          <DatePickerTableCellTrigger>
-                                            {month.label}
-                                          </DatePickerTableCellTrigger>
-                                        </DatePickerTableCell>
-                                      ))}
-                                    </DatePickerTableRow>
-                                  ))}
-                              </DatePickerTableBody>
-                            </DatePickerTable>
-                          </>
-                        )}
-                      </DatePickerContext>
-                    </DatePickerView>
-
-                    <DatePickerView className="flex flex-col gap-3" view="year">
-                      <DatePickerContext>
-                        {(datePicker) => (
-                          <>
-                            <DatePickerViewControl>
-                              <DatePickerPrevTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <ChevronLeftIcon />
-                                </Button>
-                              </DatePickerPrevTrigger>
-
-                              <DatePickerViewTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <DatePickerRangeText />
-                                </Button>
-                              </DatePickerViewTrigger>
-
-                              <DatePickerNextTrigger asChild>
-                                <Button variant="ghost" size="sm">
-                                  <ChevronRightIcon />
-                                </Button>
-                              </DatePickerNextTrigger>
-                            </DatePickerViewControl>
-
-                            <DatePickerTable>
-                              <DatePickerTableBody>
-                                {datePicker
-                                  .getYearsGrid({ columns: 4 })
-                                  .map((years, id) => (
-                                    // biome-ignore lint/suspicious/noArrayIndexKey: simple index
-                                    <DatePickerTableRow key={id}>
-                                      {years.map((year, id) => (
-                                        <DatePickerTableCell
-                                          // biome-ignore lint/suspicious/noArrayIndexKey: simple index
-                                          key={id}
-                                          value={year.value}
-                                        >
-                                          <DatePickerTableCellTrigger>
-                                            {year.label}
-                                          </DatePickerTableCellTrigger>
-                                        </DatePickerTableCell>
-                                      ))}
-                                    </DatePickerTableRow>
-                                  ))}
-                              </DatePickerTableBody>
-                            </DatePickerTable>
-                          </>
-                        )}
-                      </DatePickerContext>
-                    </DatePickerView>
-                  </div>
-                </DatePickerContent>
-              </DatePickerPositioner>
-            </DatePickerRoot>
-          </PopoverWithTooltip>
+                          <DatePickerTable>
+                            <DatePickerTableBody>
+                              {datePicker
+                                .getYearsGrid({ columns: 4 })
+                                .map((years, id) => (
+                                  // biome-ignore lint/suspicious/noArrayIndexKey: simple index
+                                  <DatePickerTableRow key={id}>
+                                    {years.map((year, id) => (
+                                      <DatePickerTableCell
+                                        // biome-ignore lint/suspicious/noArrayIndexKey: simple index
+                                        key={id}
+                                        value={year.value}
+                                      >
+                                        <DatePickerTableCellTrigger>
+                                          {year.label}
+                                        </DatePickerTableCellTrigger>
+                                      </DatePickerTableCell>
+                                    ))}
+                                  </DatePickerTableRow>
+                                ))}
+                            </DatePickerTableBody>
+                          </DatePickerTable>
+                        </>
+                      )}
+                    </DatePickerContext>
+                  </DatePickerView>
+                </div>
+              </DatePickerContent>
+            </DatePickerPositioner>
+          </DatePickerRoot>
         )}
       </form.Field>
     );

@@ -1,7 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData } from "@tanstack/react-router";
 
-import { Avatar } from "@/components/ui/avatar";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 
@@ -52,12 +56,15 @@ const Assignees = ({
       >
         {visibleUsers.map((user) => (
           <div key={user?.rowId} className="flex items-center gap-0">
-            <Avatar
-              fallback={user?.name?.charAt(0)}
-              src={user?.avatarUrl ?? undefined}
-              alt={user?.name}
-              className="size-6 rounded-full border-2 bg-background font-medium text-xs"
-            />
+            <AvatarRoot className="size-6 rounded-full border-2 bg-background font-medium text-xs">
+              <AvatarImage
+                src={user?.avatarUrl ?? undefined}
+                alt={user?.name}
+              />
+              <AvatarFallback>
+                {user?.name?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </AvatarRoot>
 
             {showUsername && (
               <p className="hidden text-xs md:flex">{user?.name}</p>

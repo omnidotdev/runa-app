@@ -1,5 +1,4 @@
 import { ark } from "@ark-ui/react/factory";
-import { Portal } from "@ark-ui/react/portal";
 import { TooltipContext } from "@ark-ui/react/tooltip";
 import { PanelLeftIcon } from "lucide-react";
 import {
@@ -22,16 +21,15 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import {
-  Tooltip,
   TooltipContent,
   TooltipPositioner,
   TooltipRoot,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Hotkeys } from "@/lib/constants/hotkeys";
 import useIsMobile from "@/lib/hooks/use-mobile";
 import { useSidebarResize } from "@/lib/hooks/use-sidebar-resize";
 import { cn } from "@/lib/utils";
+import { Shortcut } from "./shortcut";
 
 import type { ComponentProps, CSSProperties } from "react";
 
@@ -58,16 +56,16 @@ interface SidebarContextProps {
 
 const SidebarContext = createContext<SidebarContextProps | null>(null);
 
-function useSidebar() {
+const useSidebar = () => {
   const context = useContext(SidebarContext);
   if (!context) {
     throw new Error("useSidebar must be used within a SidebarProvider.");
   }
 
   return context;
-}
+};
 
-function SidebarProvider({
+const SidebarProvider = ({
   defaultOpen = true,
   open: openProp,
   onOpenChange: setOpenProp,
@@ -81,7 +79,7 @@ function SidebarProvider({
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   defaultWidth?: string;
-}) {
+}) => {
   const isMobile = useIsMobile();
   const [width, setWidth] = useState(defaultWidth);
   const [openMobile, setOpenMobile] = useState(false);
@@ -93,7 +91,9 @@ function SidebarProvider({
   const open = openProp ?? _open;
   const setOpen = useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
-      const openState = typeof value === "function" ? value(open) : value;
+      // @ts-ignore TODO
+      // biome-ignore lint/correctness/useValidTypeof: TODO
+      const openState = typeof value === "const" ? value(open) : value;
       if (setOpenProp) {
         setOpenProp(openState);
       } else {
@@ -110,11 +110,10 @@ function SidebarProvider({
   // Helper to toggle the sidebar.
   const toggleSidebar = useCallback(() => {
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
-    // return setOpen((open) => !open);
   }, [isMobile, setOpen]);
 
   // Adds a keyboard shortcut to toggle the sidebar.
-  useHotkeys(Hotkeys.ToggleSidebar, toggleSidebar, [toggleSidebar]);
+  useHotkeys("b", toggleSidebar, [toggleSidebar]);
 
   const state = open ? "expanded" : "collapsed";
 
@@ -165,9 +164,9 @@ function SidebarProvider({
       </div>
     </SidebarContext.Provider>
   );
-}
+};
 
-function Sidebar({
+const Sidebar = ({
   side = "left",
   variant = "sidebar",
   collapsible = "offcanvas",
@@ -178,7 +177,7 @@ function Sidebar({
   side?: "left" | "right";
   variant?: "sidebar" | "floating" | "inset";
   collapsible?: "offcanvas" | "icon" | "none";
-}) {
+}) => {
   const { isMobile, state, openMobile, setOpenMobile, isDraggingRail } =
     useSidebar();
 
@@ -187,7 +186,7 @@ function Sidebar({
       <div
         data-slot="sidebar"
         className={cn(
-          "flex h-full w-(--sidebar-width) flex-col bg-background text-sidebar-foreground",
+          "flex h-full w-(--sidebar-width) flex-col bg-red-500 text-sidebar-foreground",
           className,
         )}
         {...rest}
@@ -201,7 +200,7 @@ function Sidebar({
     return (
       <SheetRoot
         open={openMobile}
-        onOpenChange={({ open }) => setOpenMobile(open)}
+        onOpenChange={({ open }: { open: boolean }) => setOpenMobile(open)}
       >
         <SheetTrigger asChild className="absolute top-2 right-2 z-50">
           <Button variant="ghost" size="icon" className="h-10 w-10">
@@ -246,7 +245,7 @@ function Sidebar({
             ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
             : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
           //* set duration to 0 for all elements when dragging
-          "group-data-[dragging=true]_*:!duration-0 group-data-[dragging=true]:duration-0!",
+          "group-data-[dragging=true]:duration-0! group-data-[dragging=true]_*:duration-0!",
         )}
       />
       <div
@@ -261,7 +260,7 @@ function Sidebar({
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
             : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
           //* set duration to 0 for all elements when dragging
-          "group-data-[dragging=true]_*:!duration-0 group-data-[dragging=true]:duration-0!",
+          "group-data-[dragging=true]:duration-0! group-data-[dragging=true]_*:duration-0!",
           className,
         )}
         {...rest}
@@ -276,13 +275,13 @@ function Sidebar({
       </div>
     </div>
   );
-}
+};
 
-function SidebarTrigger({
+const SidebarTrigger = ({
   className,
   onClick,
   ...rest
-}: ComponentProps<typeof Button>) {
+}: ComponentProps<typeof Button>) => {
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -292,7 +291,8 @@ function SidebarTrigger({
       variant="ghost"
       size="icon"
       className={cn("sticky top-2 ml-2 size-8", className)}
-      onClick={(event) => {
+      // biome-ignore lint/suspicious/noExplicitAny: TODO
+      onClick={(event: any) => {
         onClick?.(event);
         toggleSidebar();
       }}
@@ -302,15 +302,15 @@ function SidebarTrigger({
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );
-}
+};
 
-function SidebarRail({
+const SidebarRail = ({
   enableDrag = true,
   className,
   ...rest
 }: ComponentProps<typeof ark.button> & {
   enableDrag?: boolean;
-}) {
+}) => {
   const { toggleSidebar, setWidth, state, width, setIsDraggingRail } =
     useSidebar();
 
@@ -346,7 +346,8 @@ function SidebarRail({
         {(tootlip) => (
           <TooltipTrigger
             asChild
-            onPointerMove={(e) => {
+            // biome-ignore lint/suspicious/noExplicitAny: TODO
+            onPointerMove={(e: any) => {
               anchorRect.current = new DOMRect(e.clientX, e.clientY, 1, 1);
               tootlip.reposition();
             }}
@@ -359,7 +360,7 @@ function SidebarRail({
               tabIndex={-1}
               onMouseDown={handleMouseDown}
               className={cn(
-                "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] group-data-[side=right]:left-0 sm:flex",
+                "-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-0.5 group-data-[side=right]:left-0 sm:flex",
                 "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
                 "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
                 "group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full",
@@ -374,38 +375,44 @@ function SidebarRail({
         )}
       </TooltipContext>
 
-      <Portal>
-        <TooltipPositioner>
-          <TooltipContent className="flex w-full flex-col gap-1 border bg-background text-foreground">
-            <span>Drag to resize</span>
-            <div className="inline-flex">
-              Click to {isCollapsed ? "expand" : "collapse"}{" "}
-              <div className="ml-2 flex items-center gap-0.5">
-                <SidebarMenuShortcut>B</SidebarMenuShortcut>
-              </div>
-            </div>
-          </TooltipContent>
-        </TooltipPositioner>
-      </Portal>
+      <TooltipPositioner>
+        <TooltipContent className="flex h-fit flex-col items-start">
+          <span>Drag to resize</span>
+          <div className="flex items-center gap-2">
+            Click to {isCollapsed ? "expand" : "collapse"}{" "}
+            <Shortcut>B</Shortcut>
+          </div>
+        </TooltipContent>
+      </TooltipPositioner>
     </TooltipRoot>
   );
-}
+};
 
-function SidebarInset({ className, ...rest }: ComponentProps<"main">) {
+const SidebarInset = ({ className, ...rest }: ComponentProps<"main">) => {
   return (
     <main
       data-slot="sidebar-inset"
       className={cn(
         "relative flex w-full flex-1 flex-col bg-background",
-        "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm",
+        "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl ",
         className,
       )}
       {...rest}
     />
   );
-}
+};
 
-function SidebarInput({ className, ...rest }: ComponentProps<typeof Input>) {
+const SidebarSeparator = ({ className, ...rest }: ComponentProps<"div">) => {
+  return (
+    <div
+      data-slot="sidebar-separator"
+      className={cn("-mx-2 h-px bg-border py-0", className)}
+      {...rest}
+    />
+  );
+};
+
+const SidebarInput = ({ className, ...rest }: ComponentProps<typeof Input>) => {
   return (
     <Input
       data-slot="sidebar-input"
@@ -414,9 +421,9 @@ function SidebarInput({ className, ...rest }: ComponentProps<typeof Input>) {
       {...rest}
     />
   );
-}
+};
 
-function SidebarHeader({ className, ...rest }: ComponentProps<"div">) {
+const SidebarHeader = ({ className, ...rest }: ComponentProps<"div">) => {
   return (
     <div
       data-slot="sidebar-header"
@@ -425,9 +432,9 @@ function SidebarHeader({ className, ...rest }: ComponentProps<"div">) {
       {...rest}
     />
   );
-}
+};
 
-function SidebarFooter({ className, ...rest }: ComponentProps<"div">) {
+const SidebarFooter = ({ className, ...rest }: ComponentProps<"div">) => {
   return (
     <div
       data-slot="sidebar-footer"
@@ -436,9 +443,9 @@ function SidebarFooter({ className, ...rest }: ComponentProps<"div">) {
       {...rest}
     />
   );
-}
+};
 
-function SidebarContent({ className, ...rest }: ComponentProps<"div">) {
+const SidebarContent = ({ className, ...rest }: ComponentProps<"div">) => {
   return (
     <div
       data-slot="sidebar-content"
@@ -450,9 +457,9 @@ function SidebarContent({ className, ...rest }: ComponentProps<"div">) {
       {...rest}
     />
   );
-}
+};
 
-function SidebarGroup({ className, ...rest }: ComponentProps<"div">) {
+const SidebarGroup = ({ className, ...rest }: ComponentProps<"div">) => {
   return (
     <div
       data-slot="sidebar-group"
@@ -461,12 +468,12 @@ function SidebarGroup({ className, ...rest }: ComponentProps<"div">) {
       {...rest}
     />
   );
-}
+};
 
-function SidebarGroupLabel({
+const SidebarGroupLabel = ({
   className,
   ...rest
-}: ComponentProps<typeof ark.div>) {
+}: ComponentProps<typeof ark.div>) => {
   return (
     <ark.div
       data-slot="sidebar-group-label"
@@ -479,12 +486,12 @@ function SidebarGroupLabel({
       {...rest}
     />
   );
-}
+};
 
-function SidebarGroupAction({
+const SidebarGroupAction = ({
   className,
   ...rest
-}: ComponentProps<typeof ark.div>) {
+}: ComponentProps<typeof ark.div>) => {
   return (
     <ark.div
       data-slot="sidebar-group-action"
@@ -497,9 +504,9 @@ function SidebarGroupAction({
       {...rest}
     />
   );
-}
+};
 
-function SidebarGroupContent({ className, ...rest }: ComponentProps<"div">) {
+const SidebarGroupContent = ({ className, ...rest }: ComponentProps<"div">) => {
   return (
     <div
       data-slot="sidebar-group-content"
@@ -508,9 +515,9 @@ function SidebarGroupContent({ className, ...rest }: ComponentProps<"div">) {
       {...rest}
     />
   );
-}
+};
 
-function SidebarMenu({ className, ...rest }: ComponentProps<"div">) {
+const SidebarMenu = ({ className, ...rest }: ComponentProps<"div">) => {
   return (
     <div
       data-slot="sidebar-menu"
@@ -519,9 +526,9 @@ function SidebarMenu({ className, ...rest }: ComponentProps<"div">) {
       {...rest}
     />
   );
-}
+};
 
-function SidebarMenuItem({ className, ...rest }: ComponentProps<"div">) {
+const SidebarMenuItem = ({ className, ...rest }: ComponentProps<"div">) => {
   return (
     <div
       data-slot="sidebar-menu-item"
@@ -530,9 +537,9 @@ function SidebarMenuItem({ className, ...rest }: ComponentProps<"div">) {
       {...rest}
     />
   );
-}
+};
 
-function SidebarMenuButton({
+const SidebarMenuButton = ({
   isActive = false,
   tooltip,
   shortcut,
@@ -541,8 +548,8 @@ function SidebarMenuButton({
 }: ComponentProps<typeof ark.button> & {
   isActive?: boolean;
   tooltip?: string;
-  shortcut?: Hotkeys;
-}) {
+  shortcut?: string;
+}) => {
   const { isMobile, state } = useSidebar();
 
   const button = (
@@ -558,7 +565,7 @@ function SidebarMenuButton({
         // Hover styles
         "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         // Focus styles
-        "outline-hidden focus-visible:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring! focus-visible:ring-offset-2!",
+        "outline-hidden focus-visible:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring! focus-visible:ring-offset-2! focus-visible:ring-offset-background",
         // Active styles
         "active:text-sidebar-accent-foreground",
         // Disabled and aria-disabled styles
@@ -584,25 +591,26 @@ function SidebarMenuButton({
   }
 
   return (
-    <Tooltip
-      tooltip={tooltip}
-      shortcut={shortcut?.toUpperCase()}
-      positioning={{
-        placement: "right",
-        offset: {
-          mainAxis: 8,
-        },
-      }}
+    <TooltipRoot
+      positioning={{ placement: "right" }}
       closeDelay={0}
-      openDelay={300}
+      openDelay={200}
       disabled={isMobile || state === "expanded"}
     >
-      {button}
-    </Tooltip>
+      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipPositioner>
+        <TooltipContent>
+          <div className="flex items-center gap-2">
+            {tooltip}
+            {shortcut && <Shortcut>{shortcut}</Shortcut>}
+          </div>
+        </TooltipContent>
+      </TooltipPositioner>
+    </TooltipRoot>
   );
-}
+};
 
-function SidebarMenuAction({
+const SidebarMenuAction = ({
   isActive,
   className,
   showOnHover = false,
@@ -610,7 +618,7 @@ function SidebarMenuAction({
 }: ComponentProps<typeof ark.button> & {
   isActive?: boolean;
   showOnHover?: boolean;
-}) {
+}) => {
   return (
     <ark.button
       data-slot="sidebar-menu-action"
@@ -630,9 +638,9 @@ function SidebarMenuAction({
       {...rest}
     />
   );
-}
+};
 
-function SidebarMenuBadge({ className, ...rest }: ComponentProps<"div">) {
+const SidebarMenuBadge = ({ className, ...rest }: ComponentProps<"div">) => {
   return (
     <div
       data-slot="sidebar-menu-badge"
@@ -649,24 +657,9 @@ function SidebarMenuBadge({ className, ...rest }: ComponentProps<"div">) {
       {...rest}
     />
   );
-}
+};
 
-// NB: Could extend on this with the hotkey hook for further advanced functionality
-function SidebarMenuShortcut({ className, ...rest }: ComponentProps<"span">) {
-  return (
-    <span
-      data-slot="sidebar-menu-shortcut"
-      data-sidebar="menu-shortcut"
-      className={cn(
-        "ml-auto flex size-5 items-center justify-center gap-0.5 rounded-md border bg-background font-medium text-[10px] text-foreground",
-        className,
-      )}
-      {...rest}
-    />
-  );
-}
-
-function SidebarMenuSub({ className, ...rest }: ComponentProps<"ul">) {
+const SidebarMenuSub = ({ className, ...rest }: ComponentProps<"ul">) => {
   return (
     <ul
       data-slot="sidebar-menu-sub"
@@ -679,9 +672,9 @@ function SidebarMenuSub({ className, ...rest }: ComponentProps<"ul">) {
       {...rest}
     />
   );
-}
+};
 
-function SidebarMenuSubItem({ className, ...rest }: ComponentProps<"li">) {
+const SidebarMenuSubItem = ({ className, ...rest }: ComponentProps<"li">) => {
   return (
     <li
       data-slot="sidebar-menu-sub-item"
@@ -690,9 +683,9 @@ function SidebarMenuSubItem({ className, ...rest }: ComponentProps<"li">) {
       {...rest}
     />
   );
-}
+};
 
-function SidebarMenuSubButton({
+const SidebarMenuSubButton = ({
   size = "md",
   isActive = false,
   className,
@@ -700,7 +693,7 @@ function SidebarMenuSubButton({
 }: ComponentProps<typeof ark.a> & {
   size?: "sm" | "md";
   isActive?: boolean;
-}) {
+}) => {
   return (
     <ark.a
       data-slot="sidebar-menu-sub-button"
@@ -718,7 +711,7 @@ function SidebarMenuSubButton({
       {...rest}
     />
   );
-}
+};
 
 export {
   Sidebar,
@@ -726,29 +719,22 @@ export {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupAction,
-  /** @knipignore */
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
-  /** @knipignore */
   SidebarInput,
   SidebarInset,
   SidebarMenu,
   SidebarMenuAction,
-  /** @knipignore */
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-  /** @knipignore */
   SidebarMenuSub,
-  /** @knipignore */
   SidebarMenuSubButton,
-  /** @knipignore */
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
-  /** @knipignore */
   SidebarTrigger,
   useSidebar,
-  SidebarMenuShortcut,
+  SidebarSeparator,
 };

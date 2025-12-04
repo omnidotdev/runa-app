@@ -1,48 +1,26 @@
 import { Avatar as ArkAvatar, useAvatar as useArkAvatar } from "@ark-ui/react";
-import { tv } from "tailwind-variants";
+import { cva } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
-import type { ComponentProps, ReactNode } from "react";
-import type { VariantProps } from "tailwind-variants";
+import type { VariantProps } from "class-variance-authority";
+import type { ComponentProps } from "react";
 
-const avatarVariants = tv({
-  slots: {
-    root: "relative flex shrink-0 items-center justify-center overflow-hidden rounded-full",
-    fallback:
-      "flex size-full items-center justify-center rounded-full bg-muted",
-    image: "aspect-square size-full",
-  },
-  variants: {
-    size: {
-      xs: {
-        root: "size-8",
-        fallback: "text-xs",
-      },
-      sm: {
-        root: "size-9",
-        fallback: "text-sm",
-      },
-      md: {
-        root: "size-10",
-        fallback: "text-md",
-      },
-      lg: {
-        root: "size-11",
-        fallback: "text-lg",
-      },
-      xl: {
-        root: "size-12",
-        fallback: "text-xl",
+const avatarVariants = cva(
+  "relative flex shrink-0 items-center justify-center overflow-hidden rounded-full",
+  {
+    variants: {
+      size: {
+        xs: "size-8 text-xs",
+        sm: "size-9 text-sm",
+        md: "size-10 text-md",
+        lg: "size-11 text-lg",
+        xl: "size-12 text-xl",
       },
     },
+    defaultVariants: { size: "md" },
   },
-  defaultVariants: {
-    size: "md",
-  },
-});
-
-const { root, fallback: fallbackVariants, image } = avatarVariants();
+);
 
 const useAvatar = useArkAvatar;
 
@@ -51,30 +29,32 @@ const AvatarProvider = ({
   size,
   ...rest
 }: ComponentProps<typeof ArkAvatar.RootProvider> &
-  VariantProps<typeof root>) => (
-  <ArkAvatar.RootProvider className={cn(root({ size }), className)} {...rest} />
+  VariantProps<typeof avatarVariants>) => (
+  <ArkAvatar.RootProvider
+    className={cn(avatarVariants({ size, className }))}
+    {...rest}
+  />
 );
 
 const AvatarRoot = ({
   className,
   size,
   ...rest
-}: ComponentProps<typeof ArkAvatar.Root> & VariantProps<typeof root>) => (
-  <ArkAvatar.Root className={cn(root({ size }), className)} {...rest} />
+}: ComponentProps<typeof ArkAvatar.Root> &
+  VariantProps<typeof avatarVariants>) => (
+  <ArkAvatar.Root
+    className={cn(avatarVariants({ size, className }))}
+    {...rest}
+  />
 );
 
-// TODO: fix `React.Children.only` issue with `asChild`
 const AvatarFallback = ({
   className,
-  size,
   ...rest
-}: ComponentProps<typeof ArkAvatar.Fallback> &
-  VariantProps<typeof fallbackVariants>) => (
+}: ComponentProps<typeof ArkAvatar.Fallback>) => (
   <ArkAvatar.Fallback
-    asChild={typeof rest.children !== "string"}
     className={cn(
-      fallbackVariants({ size }),
-      typeof rest.children !== "string" && "p-2",
+      "flex size-full items-center justify-center rounded-full bg-muted",
       className,
     )}
     {...rest}
@@ -83,55 +63,13 @@ const AvatarFallback = ({
 
 const AvatarImage = ({
   className,
-  size,
   ...rest
-}: ComponentProps<typeof ArkAvatar.Image> & VariantProps<typeof image>) => (
+}: ComponentProps<typeof ArkAvatar.Image>) => (
   <ArkAvatar.Image
-    className={cn(image({ size }), className)}
+    className={cn("aspect-square size-full", className)}
     alt="Avatar"
     {...rest}
   />
 );
 
-interface AvatarProps extends ComponentProps<typeof AvatarRoot> {
-  // TODO: fix type issue upstream in thornberry
-  src: string | undefined;
-  alt: string | undefined;
-  fallback: ReactNode;
-}
-
-const Avatar = ({
-  src,
-  alt,
-  fallback,
-  className,
-  size,
-  ...rest
-}: AvatarProps) => (
-  <AvatarRoot className={root({ size })} {...rest}>
-    <AvatarFallback className={cn(fallbackVariants({ size }), className)}>
-      {fallback}
-    </AvatarFallback>
-
-    <AvatarImage
-      src={src}
-      alt={alt}
-      className={cn(image({ size }), className)}
-    />
-  </AvatarRoot>
-);
-
-export {
-  Avatar,
-  AvatarRoot,
-  AvatarFallback,
-  AvatarImage,
-  /** @knipignore */
-  AvatarProvider,
-  /** @knipignore */
-  useAvatar,
-  /** @knipignore */
-  avatarVariants,
-  /** @knipignore */
-  type AvatarProps,
-};
+export { AvatarRoot, AvatarFallback, AvatarImage, AvatarProvider, useAvatar };

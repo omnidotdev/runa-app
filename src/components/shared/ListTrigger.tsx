@@ -1,8 +1,8 @@
 import { ChevronRightIcon, PlusIcon } from "lucide-react";
 
+import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import { CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Tooltip } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 import type { MouseEventHandler } from "react";
@@ -56,18 +56,18 @@ const ListTrigger = ({
             positioning={{ placement: "left", gutter: 11 }}
             tooltip={tooltip.title}
             shortcut={tooltip.shortCut}
-          >
-            <Button
-              variant="ghost"
-              size="xs"
-              className={cn("size-7", className)}
-              onClick={onCreate}
-              aria-label="Create"
-              {...rest}
-            >
-              <PlusIcon className="size-4" />
-            </Button>
-          </Tooltip>
+            trigger={
+              <Button
+                variant="ghost"
+                className={cn("size-7", className)}
+                onClick={onCreate}
+                aria-label="Create"
+                {...rest}
+              >
+                <PlusIcon className="size-4" />
+              </Button>
+            }
+          />
         </div>
 
         <ChevronRightIcon className="ml-2 size-5 text-base-400 transition-transform" />
