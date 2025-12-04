@@ -492,11 +492,10 @@ function ProfilePage() {
             </span>
           }
           onConfirm={() => {
-            if (workspaceToDelete)
-              handleDeleteWorkspace({
-                workspaceId: workspaceToDelete.rowId!,
-                subscriptionId: workspaceToDelete.subscriptionId,
-              });
+            handleDeleteWorkspace({
+              workspaceId: workspaceToDelete.rowId!,
+              subscriptionId: workspaceToDelete.subscriptionId,
+            });
           }}
           dialogType={DialogType.DeleteWorkspace}
           confirmation={`permanently delete ${workspaceToDelete?.name}`}
