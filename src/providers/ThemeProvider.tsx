@@ -13,7 +13,10 @@ interface ThemeContext {
 
 const ThemeContext = createContext<ThemeContext | null>(null);
 
-export const ThemeProvider = ({
+/**
+ * Global theme provider.
+ */
+const ThemeProvider = ({
   children,
   theme,
 }: PropsWithChildren<{ theme: Theme }>) => {
@@ -27,6 +30,10 @@ export const ThemeProvider = ({
 
 export const useTheme = () => {
   const val = use(ThemeContext);
-  if (!val) throw new Error("useTheme called outside of <ThemeProvider />");
+
+  if (!val) throw new Error("`useTheme` called outside of `<ThemeProvider />`");
+
   return val;
 };
+
+export default ThemeProvider;

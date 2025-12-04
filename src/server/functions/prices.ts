@@ -4,7 +4,9 @@ import payments from "@/lib/payments";
 
 import type Stripe from "stripe";
 
-// NB: we expand the product details in the server function below. This interface narrows the type for `product` on that return
+/**
+ * Expand a Stripe Price object (https://docs.stripe.com/api/prices/object) with a Stripe Product object (https://docs.stripe.com/api/products/object).
+ */
 export interface ExpandedProductPrice extends Stripe.Price {
   product: Stripe.Product;
 }
