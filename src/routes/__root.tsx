@@ -11,7 +11,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import { Toaster } from "@/components/ui/sonner";
 import seo from "@/lib/util/seo";
-import { ThemeProvider } from "@/providers/ThemeProvider";
+import ThemeProvider from "@/providers/ThemeProvider";
 import { fetchSession } from "@/server/functions/auth";
 import { getTheme } from "@/server/functions/theme";
 import appCss from "@/styles/globals.css?url";
