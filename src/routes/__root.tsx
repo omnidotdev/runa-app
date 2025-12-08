@@ -1,27 +1,24 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import {
-  createRootRouteWithContext,
   HeadContent,
   Outlet,
   Scripts,
+  createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
-import ClientHintCheck from "@/components/scripts/ClientHintCheck";
 import { Toaster } from "@/components/ui/sonner";
-import fetchSession from "@/lib/auth/fetchSession";
-import useTheme from "@/lib/hooks/useTheme";
-import { themeQueryKey } from "@/lib/options/theme.options";
-import { getRequestInfo } from "@/lib/util/requestInfo";
 import seo from "@/lib/util/seo";
+import ThemeProvider from "@/providers/ThemeProvider";
+import { fetchSession } from "@/server/functions/auth";
+import { getTheme } from "@/server/functions/theme";
 import appCss from "@/styles/globals.css?url";
 
 import type { Session } from "@auth/core/types";
 import type { QueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import type { Theme } from "@/lib/util/theme";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -32,13 +29,7 @@ export const Route = createRootRouteWithContext<{
 
     return { session };
   },
-  loader: async ({ context: { queryClient } }) => {
-    const requestInfo = await getRequestInfo();
-
-    queryClient.setQueryData(themeQueryKey, requestInfo.userPreferences.theme);
-
-    return { requestInfo };
-  },
+  loader: () => getTheme(),
   head: () => ({
     meta: [
       {
@@ -87,54 +78,39 @@ export const Route = createRootRouteWithContext<{
 });
 
 function RootComponent() {
-  const { theme } = useTheme();
-
   return (
-    <RootDocument theme={theme}>
+    <RootDocument>
       <Outlet />
     </RootDocument>
   );
 }
 
-function RootDocument({
-  children,
-  theme,
-}: Readonly<{ children: ReactNode; theme: Theme }>) {
+function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
+  const theme = Route.useLoaderData();
+
   return (
     <html lang="en" className={theme}>
       <head>
-        <ClientHintCheck />
         <HeadContent />
       </head>
       <body>
-        {children}
+        <ThemeProvider theme={theme}>
+          {children}
 
-        <Toaster position="top-center" richColors />
+          <Toaster position="top-center" richColors />
+        </ThemeProvider>
+
         {/* Dev Tools - only included in development */}
         <TanStackDevtools
           plugins={[
             {
-              name: "Tanstack Router",
+              name: "Router",
               render: <TanStackRouterDevtoolsPanel />,
+              defaultOpen: true,
             },
             {
-              name: "Tanstack Query",
+              name: "Query",
               render: <ReactQueryDevtoolsPanel />,
-            },
-            {
-              name: "Studio",
-              render: () => (
-                <iframe
-                  title="Drizzle Studio"
-                  src="https://local.drizzle.studio"
-                  style={{
-                    flexGrow: 1,
-                    width: "100%",
-                    height: "100%",
-                    border: 0,
-                  }}
-                />
-              ),
             },
           ]}
         />

@@ -11,10 +11,10 @@ import ColumnMenu from "@/components/projects/ColumnMenu";
 import ColumnHeader from "@/components/shared/ColumnHeader";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
-import useTheme from "@/lib/hooks/useTheme";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/providers/ThemeProvider";
 
 import type { TaskFragment } from "@/generated/graphql";
 

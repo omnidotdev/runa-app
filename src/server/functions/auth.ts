@@ -3,13 +3,10 @@ import { getRequest } from "@tanstack/react-start/server";
 
 import { getAuth } from "@/lib/auth/getAuth";
 
-const fetchSession = createServerFn().handler(async () => {
+export const fetchSession = createServerFn().handler(async () => {
   const request = getRequest();
+
   const session = await getAuth(request);
 
-  return {
-    session,
-  };
+  return { session };
 });
-
-export default fetchSession;

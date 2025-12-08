@@ -2,16 +2,11 @@ import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import { useRateLimiter } from "@tanstack/react-pacer/rate-limiter";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { zodValidator } from "@tanstack/zod-adapter";
 import { PlusIcon } from "lucide-react";
 import ms from "ms";
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Resend } from "resend";
-import * as z from "zod/v4";
 
-import WorkspaceInvitation from "@/components/emails/WorkspaceInvitation";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -36,49 +31,16 @@ import {
   TagsInputRoot,
 } from "@/components/ui/tags-input";
 import { useCreateInvitationMutation } from "@/generated/graphql";
-import { BASE_URL, isDevEnv } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import userOptions from "@/lib/options/user.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { inviteSchema, sendInviteEmail } from "@/server/functions/emails";
 
 import type { RefObject } from "react";
 
 const MAX_NUMBER_OF_INVITES = 10;
-
-const inviteSchema = z.object({
-  inviterEmail: z.email(),
-  inviterUsername: z.string(),
-  recipientEmail: z.email(),
-  workspaceName: z.string(),
-});
-
-const sendInviteEmail = createServerFn({ method: "POST" })
-  .inputValidator(zodValidator(inviteSchema))
-  .handler(async ({ data }) => {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-
-    const { inviterEmail, inviterUsername, recipientEmail, workspaceName } =
-      data;
-
-    const { data: email, error } = await resend.emails.send({
-      from: `Runa Support <${isDevEnv ? "onboarding@resend.dev" : inviterEmail}>`,
-      to: isDevEnv ? "delivered@resend.dev" : recipientEmail,
-      subject: `You have been invited to join the ${workspaceName} workspace on Runa`,
-      react: WorkspaceInvitation({
-        inviterUsername,
-        inviterEmail,
-        workspaceName,
-        recipientEmail,
-        inviteUrl: BASE_URL,
-      }),
-    });
-
-    if (error) throw new Error(error.message);
-
-    return { email };
-  });
 
 interface Props {
   triggerRef?: RefObject<HTMLButtonElement | null>;

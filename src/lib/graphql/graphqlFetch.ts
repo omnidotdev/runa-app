@@ -1,8 +1,8 @@
 import { parse } from "graphql";
 import { GraphQLClient, gql } from "graphql-request";
 
-import fetchSession from "@/lib/auth/fetchSession";
 import { API_GRAPHQL_URL } from "@/lib/config/env.config";
+import { fetchSession } from "@/server/functions/auth";
 
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import type { Variables } from "graphql-request";

@@ -4,7 +4,6 @@ import { useRef } from "react";
 import PopoverWithTooltip from "@/components/core/PopoverWithTooltip";
 import { Button } from "@/components/ui/button";
 import {
-  createListCollection,
   Select,
   SelectContent,
   SelectControl,
@@ -14,6 +13,7 @@ import {
   SelectItemText,
   SelectPositioner,
   SelectTrigger,
+  createListCollection,
 } from "@/components/ui/select";
 import { SidebarMenuShortcut } from "@/components/ui/sidebar";
 import { TooltipTrigger } from "@/components/ui/tooltip";

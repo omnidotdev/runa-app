@@ -8,6 +8,8 @@ query Workspaces($userId: UUID!, $limit: Int) {
       rowId
       name
       slug
+      subscriptionId
+      tier
       workspaceUsers {
         totalCount
       }

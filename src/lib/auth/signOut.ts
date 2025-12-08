@@ -1,5 +1,3 @@
-import { BASE_URL } from "@/lib/config/env.config";
-
 export const signOut = async () => {
   const response = await fetch("/api/auth/csrf");
 
@@ -23,7 +21,7 @@ export const signOut = async () => {
 
   // TODO: this method doesn't prevent `back` button in browser from reloading auth page. Revamp if needed before migration to BA
   if (!error) {
-    window.location.href = BASE_URL;
+    window.location.reload();
     return;
   }
 

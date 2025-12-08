@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import * as dateFns from "date-fns";
-// @ts-ignore no declaration file
+// @ts-expect-error no declaration file
 import { createParseHumanRelativeTime } from "parse-human-relative-time/date-fns.js";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import * as z from "zod/v4";
+import { z } from "zod";
 
 import CreateTaskDatePicker from "@/components/tasks/CreateTaskDatePicker";
 import { Button } from "@/components/ui/button";

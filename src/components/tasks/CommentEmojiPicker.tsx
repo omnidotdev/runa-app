@@ -13,8 +13,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useCreatePostEmojiMutation } from "@/generated/graphql";
-import useTheme from "@/lib/hooks/useTheme";
 import userEmojisOptions from "@/lib/options/userEmojis.options";
+import { useTheme } from "@/providers/ThemeProvider";
 
 interface Props {
   postId: string;

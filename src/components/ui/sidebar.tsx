@@ -33,7 +33,7 @@ import useIsMobile from "@/lib/hooks/use-mobile";
 import { useSidebarResize } from "@/lib/hooks/use-sidebar-resize";
 import { cn } from "@/lib/utils";
 
-import type { ComponentProps, CSSProperties } from "react";
+import type { CSSProperties, ComponentProps } from "react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -726,28 +726,21 @@ export {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupAction,
-  /** @knipignore */
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
-  /** @knipignore */
   SidebarInput,
   SidebarInset,
   SidebarMenu,
   SidebarMenuAction,
-  /** @knipignore */
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-  /** @knipignore */
   SidebarMenuSub,
-  /** @knipignore */
   SidebarMenuSubButton,
-  /** @knipignore */
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
-  /** @knipignore */
   SidebarTrigger,
   useSidebar,
   SidebarMenuShortcut,

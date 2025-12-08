@@ -195,32 +195,23 @@ const SelectSeparator = ({
 
 export {
   Select,
-  /** @knipignore */
   SelectRoot,
   SelectRootProvider,
-  /** @knipignore */
   SelectContext,
-  /** @knipignore */
   SelectLabel,
   SelectControl,
   SelectTrigger,
-  /** @knipignore */
   SelectValueText,
-  /** @knipignore */
   SelectIndicator,
-  /** @knipignore */
   SelectClearTrigger,
   SelectPositioner,
   SelectContent,
   SelectItemGroup,
-  /** @knipignore */
   SelectItemGroupLabel,
   SelectItem,
   SelectItemText,
   SelectItemIndicator,
-  /** @knipignore */
   SelectSeparator,
-  /** @knipignore */
   SelectHiddenSelect,
 };
 

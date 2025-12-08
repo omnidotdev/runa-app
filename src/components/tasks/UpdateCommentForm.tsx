@@ -38,7 +38,7 @@ const UpdateCommentForm = ({ post, isActive, onSetActive }: Props) => {
     onMutate: (variables) => {
       queryClient.setQueryData(
         taskOptions({ rowId: taskId }).queryKey,
-        // @ts-ignore TODO type properly
+        // @ts-expect-error TODO type properly
         (prev) => ({
           ...prev,
           task: {

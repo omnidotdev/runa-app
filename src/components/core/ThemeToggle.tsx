@@ -3,7 +3,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
 import { Hotkeys } from "@/lib/constants/hotkeys";
-import useTheme from "@/lib/hooks/useTheme";
+import { useTheme } from "@/providers/ThemeProvider";
 
 const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();

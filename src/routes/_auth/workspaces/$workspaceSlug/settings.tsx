@@ -1,17 +1,27 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { Format } from "@ark-ui/react";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
+import { format } from "date-fns";
+import { AlertTriangleIcon, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
-import * as z from "zod/v4";
+import { z } from "zod";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
-import UpgradeSubscriptionDialog from "@/components/profile/UpgradeSubscriptionDialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import WorkspaceColumnsForm from "@/components/workspaces/settings/columns/WorkspaceColumnsForm";
 import Projects from "@/components/workspaces/settings/Projects";
 import Team from "@/components/workspaces/settings/Team";
@@ -20,31 +30,40 @@ import {
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
-import { API_BASE_URL, BASE_URL } from "@/lib/config/env.config";
+import { BASE_URL } from "@/lib/config/env.config";
 import getSdk from "@/lib/graphql/getSdk";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
+import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
-import { fetchAuthenticatedCustomer } from "@/server/fetchAuthenticatedCustomer";
-import { fetchRunaProducts } from "@/server/fetchRunaProducts";
-import { getSubscription } from "@/server/getSubscription";
+import { FREE_PRICE } from "@/routes/_marketing/pricing";
+import { getPrices } from "@/server/functions/prices";
+import {
+  getCancelSubscriptionUrl,
+  getCreateSubscriptionUrl,
+  getManageSubscriptionUrl,
+  getSubscription,
+  renewSubscription,
+  revokeSubscription,
+} from "@/server/functions/subscriptions";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
 )({
-  loader: async ({ context: { queryClient, workspaceBySlug, session } }) => {
+  loader: async ({ context: { queryClient, workspaceBySlug } }) => {
     if (!workspaceBySlug) {
       throw notFound();
     }
 
-    const [customer, subscription, { products }] = await Promise.all([
-      fetchAuthenticatedCustomer({ data: { hidraId: session?.user.hidraId! } }),
-      getSubscription({ data: { id: workspaceBySlug.subscriptionId! } }),
-      fetchRunaProducts(),
+    const [subscription, prices] = await Promise.all([
+      getSubscription({
+        data: { subscriptionId: workspaceBySlug.subscriptionId },
+      }),
+      getPrices(),
       queryClient.ensureQueryData(
         projectColumnsOptions({
           workspaceId: workspaceBySlug.rowId!,
@@ -56,8 +75,7 @@ export const Route = createFileRoute(
       name: workspaceBySlug.name,
       workspaceId: workspaceBySlug.rowId,
       subscription,
-      products,
-      customer,
+      prices,
     };
   },
   head: ({ loaderData, params }) => ({
@@ -77,9 +95,9 @@ export const Route = createFileRoute(
 
 function SettingsPage() {
   const { session } = Route.useRouteContext();
-  const { workspaceId, customer, subscription, products } =
-    Route.useLoaderData();
+  const { workspaceId, subscription, prices } = Route.useLoaderData();
   const { workspaceSlug } = Route.useParams();
+  const router = useRouter();
   const navigate = Route.useNavigate();
 
   const [nameError, setNameError] = useState<string | null>(null);
@@ -90,6 +108,48 @@ function SettingsPage() {
       userId: session?.user?.rowId!,
     }),
     select: (data) => data?.workspace,
+  });
+
+  const { mutateAsync: manageSubscription } = useMutation({
+    mutationFn: async () =>
+      await getManageSubscriptionUrl({
+        data: {
+          subscriptionId: workspace?.subscriptionId,
+          returnUrl: `${BASE_URL}/workspaces/${workspace?.slug}/settings`,
+        },
+      }),
+    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
+  });
+
+  const { mutateAsync: cancelSubscription } = useMutation({
+    mutationFn: async () =>
+      await getCancelSubscriptionUrl({
+        data: {
+          subscriptionId: workspace?.subscriptionId,
+          returnUrl: `${BASE_URL}/workspaces/${workspace?.slug}/settings`,
+        },
+      }),
+    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
+  });
+
+  const { mutateAsync: createSubscription } = useMutation({
+    mutationFn: async ({ priceId }: { priceId: string }) =>
+      await getCreateSubscriptionUrl({
+        data: {
+          workspaceId: workspace?.rowId,
+          priceId,
+          successUrl: `${BASE_URL}/workspaces/${workspace?.slug}/settings`,
+        },
+      }),
+    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
+  });
+
+  const { mutateAsync: handleRenewSubscription } = useMutation({
+    mutationFn: async () =>
+      await renewSubscription({
+        data: { subscriptionId: workspace?.subscriptionId },
+      }),
+    onSuccess: () => router.invalidate(),
   });
 
   const isOwner = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Owner;
@@ -136,10 +196,6 @@ function SettingsPage() {
 
   const { setIsOpen: setIsDeleteWorkspaceOpen } = useDialogStore({
     type: DialogType.DeleteWorkspace,
-  });
-
-  const { setIsOpen: setIsUpgradeSubscriptionOpen } = useDialogStore({
-    type: DialogType.UpgradeSubscription,
   });
 
   const { mutate: updateWorkspace } = useUpdateWorkspaceMutation({
@@ -228,49 +284,101 @@ function SettingsPage() {
           <div className="flex flex-col gap-4">
             <h3 className="font-medium text-sm">Manage Subscription</h3>
 
+            {!!subscription?.cancelAt && (
+              <div className="flex items-center gap-1 text-sm text-yellow-600 dark:text-yellow-400">
+                <AlertTriangleIcon className="size-4" />
+                The current subscription is set to be canceled on{" "}
+                {format(new Date(subscription.cancelAt * 1000), "MMM d, yyyy")}.
+                To avoid losing the current workspace benefits, renew your
+                subscription prior to this date.
+              </div>
+            )}
+
             <div className="rounded-lg border border-border bg-card p-4">
               <h4 className="mb-3 font-medium text-muted-foreground text-sm">
-                Current Plan Benefits
+                Current Workspace Benefits
               </h4>
               <ul className="space-y-2">
-                {subscription.product.benefits.map((benefit) => (
-                  <li key={benefit.id} className="flex items-center gap-2">
+                {(
+                  subscription?.product?.marketing_features ??
+                  FREE_PRICE.product.marketing_features
+                ).map((feature) => (
+                  <li key={feature.name} className="flex items-center gap-2">
                     <div className="size-1.5 flex-shrink-0 rounded-full bg-primary" />
                     <span className="text-sm leading-relaxed">
-                      {benefit.description}
+                      {feature.name}
                     </span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/** TODO: adjust logic for managing subscription. Any updates required for the `tier` in the db should be done in the webhook handler */}
-            <Button
-              className="w-fit"
-              onClick={() => setIsUpgradeSubscriptionOpen(true)}
-              disabled={
-                !customer?.defaultPaymentMethodId || !customer?.billingAddress
-              }
-            >
-              Update Subscription
-            </Button>
-            {(!customer?.defaultPaymentMethodId ||
-              !customer.billingAddress) && (
-              <p className="mt-2 text-xs">
-                Please add a payment method to update your subscription. This
-                can be done through the Billing tab of your{" "}
-                <span>
-                  <a
-                    href={`${API_BASE_URL}/portal?customerId=${customer?.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary underline"
+            {subscription ? (
+              <div className="flex gap-2">
+                {subscription.cancelAt ? (
+                  <Button onClick={() => handleRenewSubscription()}>
+                    Renew Subscription
+                  </Button>
+                ) : (
+                  <Button
+                    className="w-fit"
+                    onClick={() => manageSubscription()}
                   >
-                    customer portal
-                  </a>
-                </span>
-                .
-              </p>
+                    Manage Subscription
+                  </Button>
+                )}
+
+                <Button
+                  variant="outline"
+                  onClick={() => cancelSubscription()}
+                  disabled={!!subscription.cancelAt}
+                >
+                  Cancel Subscription
+                </Button>
+              </div>
+            ) : (
+              <MenuRoot
+                onSelect={({ value }) => createSubscription({ priceId: value })}
+              >
+                <MenuTrigger asChild>
+                  <Button className="w-fit">Upgrade Workspace</Button>
+                </MenuTrigger>
+                <MenuPositioner>
+                  <MenuContent className="min-w-64">
+                    {(["basic", "team"] as const).map((tier) => (
+                      <MenuItemGroup key={tier}>
+                        <MenuItemGroupLabel>
+                          {firstLetterToUppercase(tier)}
+                        </MenuItemGroupLabel>
+                        {prices
+                          .filter((price) => price.metadata.tier === tier)
+                          .map((price) => (
+                            <MenuItem key={price.id} value={price.id}>
+                              <div className="flex w-full items-center justify-between">
+                                {firstLetterToUppercase(
+                                  price.recurring?.interval!,
+                                )}
+                                ly
+                                <p>
+                                  <Format.Number
+                                    value={price.unit_amount! / 100}
+                                    currency="USD"
+                                    style="currency"
+                                    notation="compact"
+                                  />
+                                  /
+                                  {price.recurring?.interval === "month"
+                                    ? "mo"
+                                    : "yr"}
+                                </p>
+                              </div>
+                            </MenuItem>
+                          ))}
+                      </MenuItemGroup>
+                    ))}
+                  </MenuContent>
+                </MenuPositioner>
+              </MenuRoot>
             )}
           </div>
           <div className="flex flex-col gap-4">
@@ -280,7 +388,6 @@ function SettingsPage() {
               variant="destructive"
               className="w-fit text-background"
               onClick={() => setIsDeleteWorkspaceOpen(true)}
-              disabled={!workspace?.subscriptionId}
             >
               Delete Workspace
             </Button>
@@ -295,20 +402,25 @@ function SettingsPage() {
               <strong className="font-medium text-base-900 dark:text-base-100">
                 {workspace?.name}
               </strong>{" "}
-              and all associated data. This action cannot be undone.
+              and all associated data. Any subscription associated with this
+              workspace will be revoked. This action cannot be undone.
             </span>
           }
-          onConfirm={() => {
+          onConfirm={async () => {
+            if (workspace?.subscriptionId) {
+              const revokedSubscriptionId = await revokeSubscription({
+                data: { subscriptionId: workspace.subscriptionId },
+              });
+
+              if (!revokedSubscriptionId)
+                throw new Error("Issue revoking subscription");
+            }
+
             deleteWorkspace({ rowId: workspace?.rowId! });
             navigate({ to: "/workspaces", replace: true });
           }}
           dialogType={DialogType.DeleteWorkspace}
-          confirmation={`Permanently delete ${workspace?.name}`}
-        />
-
-        <UpgradeSubscriptionDialog
-          subscription={subscription}
-          products={products}
+          confirmation={`permanently delete ${workspace?.name}`}
         />
       </div>
     </div>

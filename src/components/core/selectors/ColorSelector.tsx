@@ -46,7 +46,7 @@ const ColorSelector = ({
   return (
     <ColorPickerRoot {...rest}>
       <ColorPickerControl
-        className="flex items-center gap-2 px-3 outline-none "
+        className="flex items-center gap-2 px-3 outline-none"
         {...colorPickerControlProps}
       >
         <ColorPickerTrigger

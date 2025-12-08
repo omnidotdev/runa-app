@@ -47,8 +47,6 @@ export {
   CollapsibleRoot,
   CollapsibleTrigger,
   CollapsibleContent,
-  /** @knipignore */
   CollapsibleProvider,
-  /** @knipignore */
   CollapsibleContext,
 };

@@ -130,17 +130,12 @@ const SheetCloseTrigger = ({
 export {
   SheetRoot,
   SheetTrigger,
-  /** @knipignore */
   SheetBackdrop,
-  /** @knipignore */
   SheetPositioner,
   SheetContent,
   SheetTitle,
   SheetDescription,
-  /** @knipignore */
   SheetCloseTrigger,
-  /** @knipignore */
   SheetProvider,
-  /** @knipignore */
   SheetContext,
 };

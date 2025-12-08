@@ -126,12 +126,8 @@ export {
   AvatarRoot,
   AvatarFallback,
   AvatarImage,
-  /** @knipignore */
   AvatarProvider,
-  /** @knipignore */
   useAvatar,
-  /** @knipignore */
   avatarVariants,
-  /** @knipignore */
   type AvatarProps,
 };

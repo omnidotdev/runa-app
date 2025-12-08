@@ -2,7 +2,7 @@ import { GraphQLClient } from "graphql-request";
 
 import { getSdk as getGeneratedSdk } from "@/generated/graphql.sdk";
 import { API_GRAPHQL_URL } from "@/lib/config/env.config";
-import fetchSession from "../auth/fetchSession";
+import { fetchSession } from "@/server/functions/auth";
 
 const getSdk = async () => {
   const { session } = await fetchSession();

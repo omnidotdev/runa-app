@@ -1,17 +1,20 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
 
 import Link from "@/components/core/Link";
 import ThemeToggle from "@/components/core/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth/signIn";
+import { signOut } from "@/lib/auth/signOut";
 import { BASE_URL } from "@/lib/config/env.config";
 
-export const Route = createFileRoute("/_anon")({
-  component: UnauthenticatedLayout,
+export const Route = createFileRoute("/_marketing")({
+  component: MarketingLayout,
 });
 
-function UnauthenticatedLayout() {
+function MarketingLayout() {
+  const { session } = Route.useRouteContext();
+
   return (
     <>
       {/* Background Image */}
@@ -46,12 +49,13 @@ function UnauthenticatedLayout() {
             <div className="flex items-center gap-4">
               <ThemeToggle />
 
-              <Button
-                onClick={() => signIn({ redirectUrl: BASE_URL })}
-                className="bg-primary-700 dark:bg-primary"
-              >
-                Sign In
-              </Button>
+              {session ? (
+                <Button onClick={signOut}>Sign Out</Button>
+              ) : (
+                <Button onClick={() => signIn({ redirectUrl: BASE_URL })}>
+                  Sign In
+                </Button>
+              )}
             </div>
           </div>
         </div>

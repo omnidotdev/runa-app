@@ -3,7 +3,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
-import * as z from "zod/v4";
+import { z } from "zod";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
@@ -28,6 +28,8 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import generateSlug from "@/lib/util/generateSlug";
 import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
+
+import type { Editor } from "@tiptap/core";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
@@ -60,10 +62,10 @@ export const Route = createFileRoute(
       : undefined,
   }),
   notFoundComponent: () => <NotFound>Project Not Found</NotFound>,
-  component: RouteComponent,
+  component: ProjectSettingsPage,
 });
 
-function RouteComponent() {
+function ProjectSettingsPage() {
   const { session } = Route.useRouteContext();
   const { workspaceSlug, projectSlug } = Route.useParams();
 
@@ -138,9 +140,65 @@ function RouteComponent() {
     type: DialogType.DeleteProject,
   });
 
-  const [nameError, setNameError] = useState<string | null>(null);
+  const [parseError, setParseError] = useState<string | null>(null);
 
-  const handleProjectUpdate = useDebounceCallback(updateProject, 300);
+  // TODO: determine how to properly keep focus after successful callback. Issue is that the mutation invalidates the project query (necessary) but that forces a re-render and thus focus is lost
+  // The above applies to each callback below
+  const updateProjectName = useDebounceCallback(
+    async ({ editor }: { editor: Editor }) => {
+      const text = editor.getText().trim();
+
+      const result = await editNameSchema.safeParseAsync({
+        name: text,
+      });
+
+      if (!result.success) {
+        setParseError(result.error.issues[0].message);
+        return;
+      }
+
+      setParseError(null);
+      updateProject({
+        rowId: projectId,
+        patch: { name: text, slug: generateSlug(text) },
+      });
+    },
+    500,
+  );
+
+  const updateProjectPrefix = useDebounceCallback(
+    async ({ editor }: { editor: Editor }) => {
+      const prefixSchema = z
+        .string()
+        .min(3, { error: "Prefix must be at least 3 characters" });
+
+      const result = await prefixSchema.safeParseAsync(editor.getText().trim());
+
+      if (!result.success) {
+        setParseError(result.error.issues[0].message);
+        return;
+      }
+
+      setParseError(null);
+      updateProject({
+        rowId: projectId,
+        patch: { prefix: result.data },
+      });
+    },
+    500,
+  );
+
+  const updateProjectDescription = useDebounceCallback(
+    async ({ editor }: { editor: Editor }) => {
+      const text = editor.getText().trim();
+
+      updateProject({
+        rowId: projectId,
+        patch: { description: text.length ? text : null },
+      });
+    },
+    500,
+  );
 
   return (
     <div className="no-scrollbar relative h-full overflow-auto py-8 lg:p-12">
@@ -158,7 +216,8 @@ function RouteComponent() {
           </Link>
 
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
+            {/** NB: `w-fit` is to prevent layout shift when there is a `parseError` */}
+            <div className="flex w-fit items-center gap-2">
               <ProjectColorPicker disabled={isMember} />
 
               <RichTextEditor
@@ -166,24 +225,7 @@ function RouteComponent() {
                 editable={!isMember}
                 className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
                 skeletonClassName="h-8 w-80"
-                onUpdate={async ({ editor }) => {
-                  const text = editor.getText().trim();
-
-                  const result = await editNameSchema.safeParseAsync({
-                    name: text,
-                  });
-
-                  if (!result.success) {
-                    setNameError(result.error.issues[0].message);
-                    return;
-                  }
-
-                  setNameError(null);
-                  handleProjectUpdate({
-                    rowId: projectId,
-                    patch: { name: text, slug: generateSlug(text) },
-                  });
-                }}
+                onUpdate={updateProjectName}
               />
               <div className="mt-1 flex items-center">
                 <span className="font-mono text-base-400 text-sm dark:text-base-500">
@@ -195,20 +237,13 @@ function RouteComponent() {
                   className="min-h-0 border-0 bg-transparent p-0 font-mono text-base-400 text-sm dark:bg-transparent dark:text-base-500"
                   placeholder="prefix"
                   skeletonClassName="h-5 w-12"
-                  onUpdate={({ editor }) =>
-                    handleProjectUpdate({
-                      rowId: projectId,
-                      patch: {
-                        prefix: editor.getText(),
-                      },
-                    })
-                  }
+                  onUpdate={updateProjectPrefix}
                 />
               </div>
             </div>
 
-            {nameError && (
-              <p className="mt-1 text-red-500 text-sm">{nameError}</p>
+            {parseError && (
+              <p className="mt-1 text-red-500 text-sm">{parseError}</p>
             )}
 
             <RichTextEditor
@@ -217,14 +252,7 @@ function RouteComponent() {
               className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
               placeholder="Add a short description..."
               skeletonClassName="h-5 max-w-40"
-              onUpdate={({ editor }) =>
-                handleProjectUpdate({
-                  rowId: projectId,
-                  patch: {
-                    description: editor.getText(),
-                  },
-                })
-              }
+              onUpdate={updateProjectDescription}
             />
           </div>
         </div>

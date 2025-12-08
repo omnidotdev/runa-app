@@ -92,14 +92,9 @@ export {
   PopoverTrigger,
   PopoverContent,
   PopoverPositioner,
-  /** @knipignore */
   PopoverArrow,
-  /** @knipignore */
   PopoverArrowTip,
-  /** @knipignore */
   PopoverCloseTrigger,
-  /** @knipignore */
   PopoverProvider,
-  /** @knipignore */
   PopoverContext,
 };

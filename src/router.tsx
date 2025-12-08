@@ -1,4 +1,4 @@
-import { MutationCache, matchQuery, QueryClient } from "@tanstack/react-query";
+import { MutationCache, QueryClient, matchQuery } from "@tanstack/react-query";
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 
@@ -60,7 +60,6 @@ export function getRouter() {
 
   setupRouterSsrQueryIntegration({
     router,
-    // @ts-ignore TODO: look into issue.
     queryClient,
   });
 
