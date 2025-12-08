@@ -102,13 +102,10 @@ const Tooltip = ({ tooltip, children, shortcut, ...rest }: Props) => {
 };
 
 export {
-  /** @knipignore */
   TooltipArrow,
-  /** @knipignore */
   TooltipArrowTip,
   TooltipContent,
   TooltipPositioner,
-  /** @knipignore */
   TooltipProvider,
   TooltipRoot,
   TooltipTrigger,

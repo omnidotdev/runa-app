@@ -17,6 +17,8 @@ const buttonVariants = tv({
       ghost: "hover:bg-accent hover:text-accent-foreground",
       destructive:
         "bg-red-600 dark:bg-red-500 text-background shadow-xs hover:bg-destructive/90 focus-visible:ring-red-500 aria-invalid:ring-red-500/20 dark:aria-invalid:ring-red-500/40",
+      // TODO: add to Thornberry
+      unstyled: "",
     },
     size: {
       xs: "h-7 gap-1 rounded-sm px-2.5 has-[>svg]:px-2",

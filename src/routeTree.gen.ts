@@ -9,11 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MarketingRouteImport } from './routes/_marketing'
 import { Route as AuthRouteImport } from './routes/_auth'
-import { Route as AnonRouteImport } from './routes/_anon'
-import { Route as AnonIndexRouteImport } from './routes/_anon/index'
+import { Route as MarketingIndexRouteImport } from './routes/_marketing/index'
+import { Route as MarketingPricingRouteImport } from './routes/_marketing/pricing'
 import { Route as AuthConfirmationRouteImport } from './routes/_auth/confirmation'
-import { Route as AnonPricingRouteImport } from './routes/_anon/pricing'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthProfileUserIdRouteImport } from './routes/_auth/profile/$userId'
@@ -23,28 +23,28 @@ import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
 
+const MarketingRoute = MarketingRouteImport.update({
+  id: '/_marketing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AnonRoute = AnonRouteImport.update({
-  id: '/_anon',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AnonIndexRoute = AnonIndexRouteImport.update({
+const MarketingIndexRoute = MarketingIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AnonRoute,
+  getParentRoute: () => MarketingRoute,
+} as any)
+const MarketingPricingRoute = MarketingPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => MarketingRoute,
 } as any)
 const AuthConfirmationRoute = AuthConfirmationRouteImport.update({
   id: '/confirmation',
   path: '/confirmation',
   getParentRoute: () => AuthRoute,
-} as any)
-const AnonPricingRoute = AnonPricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => AnonRoute,
 } as any)
 const AuthWorkspacesIndexRoute = AuthWorkspacesIndexRouteImport.update({
   id: '/workspaces/',
@@ -93,9 +93,9 @@ const AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/pricing': typeof AnonPricingRoute
   '/confirmation': typeof AuthConfirmationRoute
-  '/': typeof AnonIndexRoute
+  '/pricing': typeof MarketingPricingRoute
+  '/': typeof MarketingIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
@@ -106,9 +106,9 @@ export interface FileRoutesByFullPath {
   '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesByTo {
-  '/pricing': typeof AnonPricingRoute
   '/confirmation': typeof AuthConfirmationRoute
-  '/': typeof AnonIndexRoute
+  '/pricing': typeof MarketingPricingRoute
+  '/': typeof MarketingIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
@@ -120,11 +120,11 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_anon': typeof AnonRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
-  '/_anon/pricing': typeof AnonPricingRoute
+  '/_marketing': typeof MarketingRouteWithChildren
   '/_auth/confirmation': typeof AuthConfirmationRoute
-  '/_anon/': typeof AnonIndexRoute
+  '/_marketing/pricing': typeof MarketingPricingRoute
+  '/_marketing/': typeof MarketingIndexRoute
   '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
@@ -137,8 +137,8 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/pricing'
     | '/confirmation'
+    | '/pricing'
     | '/'
     | '/profile/$userId'
     | '/api/auth/$'
@@ -150,8 +150,8 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/pricing'
     | '/confirmation'
+    | '/pricing'
     | '/'
     | '/profile/$userId'
     | '/api/auth/$'
@@ -163,11 +163,11 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   id:
     | '__root__'
-    | '/_anon'
     | '/_auth'
-    | '/_anon/pricing'
+    | '/_marketing'
     | '/_auth/confirmation'
-    | '/_anon/'
+    | '/_marketing/pricing'
+    | '/_marketing/'
     | '/_auth/profile/$userId'
     | '/api/auth/$'
     | '/_auth/workspaces/'
@@ -179,13 +179,20 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AnonRoute: typeof AnonRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  MarketingRoute: typeof MarketingRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_marketing': {
+      id: '/_marketing'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof MarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -193,19 +200,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_anon': {
-      id: '/_anon'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AnonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_anon/': {
-      id: '/_anon/'
+    '/_marketing/': {
+      id: '/_marketing/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AnonIndexRouteImport
-      parentRoute: typeof AnonRoute
+      preLoaderRoute: typeof MarketingIndexRouteImport
+      parentRoute: typeof MarketingRoute
+    }
+    '/_marketing/pricing': {
+      id: '/_marketing/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof MarketingPricingRouteImport
+      parentRoute: typeof MarketingRoute
     }
     '/_auth/confirmation': {
       id: '/_auth/confirmation'
@@ -213,13 +220,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/confirmation'
       preLoaderRoute: typeof AuthConfirmationRouteImport
       parentRoute: typeof AuthRoute
-    }
-    '/_anon/pricing': {
-      id: '/_anon/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof AnonPricingRouteImport
-      parentRoute: typeof AnonRoute
     }
     '/_auth/workspaces/': {
       id: '/_auth/workspaces/'
@@ -280,18 +280,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AnonRouteChildren {
-  AnonPricingRoute: typeof AnonPricingRoute
-  AnonIndexRoute: typeof AnonIndexRoute
-}
-
-const AnonRouteChildren: AnonRouteChildren = {
-  AnonPricingRoute: AnonPricingRoute,
-  AnonIndexRoute: AnonIndexRoute,
-}
-
-const AnonRouteWithChildren = AnonRoute._addFileChildren(AnonRouteChildren)
-
 interface AuthRouteChildren {
   AuthConfirmationRoute: typeof AuthConfirmationRoute
   AuthProfileUserIdRoute: typeof AuthProfileUserIdRoute
@@ -321,9 +309,23 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface MarketingRouteChildren {
+  MarketingPricingRoute: typeof MarketingPricingRoute
+  MarketingIndexRoute: typeof MarketingIndexRoute
+}
+
+const MarketingRouteChildren: MarketingRouteChildren = {
+  MarketingPricingRoute: MarketingPricingRoute,
+  MarketingIndexRoute: MarketingIndexRoute,
+}
+
+const MarketingRouteWithChildren = MarketingRoute._addFileChildren(
+  MarketingRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  AnonRoute: AnonRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  MarketingRoute: MarketingRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

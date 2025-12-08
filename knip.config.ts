@@ -11,18 +11,19 @@ const knipConfig: KnipConfig = {
     "src/lib/graphql/graphqlFetch.ts",
   ],
   // NB: files are reported as unused if they are in the set of project files, but not in the set of files resolved from the entry files. See: https://knip.dev/guides/configuring-project-files
-  project: ["src/**/*.{ts,tsx}"],
+  project: ["src/**/*.{ts,tsx,css}"],
   // NB: Modified from the default GraphQL Codegen configuration, see: https://knip.dev/reference/plugins/graphql-codegen
   "graphql-codegen": {
     config: ["package.json", "src/lib/graphql/codegen.config.ts"],
   },
+  // used for proper management of Thornberry components, see https://knip.dev/reference/configuration#ignoreexportsusedinfile
+  ignoreExportsUsedInFile: true,
   ignore: ["src/generated/**", "src/routeTree.gen.ts"],
   ignoreDependencies: [
     // used by GraphQL Code Generator scripts
     "dotenv",
-    // use in globals.css
-    "tw-animate-css",
   ],
+  tags: ["-knipignore"],
 };
 
 export default knipConfig;

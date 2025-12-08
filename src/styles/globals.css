@@ -207,8 +207,11 @@ html.dark {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply overscroll-y-none;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overscroll-y-none;
   }
   .font-display {
     font-weight: var(--display-weight);

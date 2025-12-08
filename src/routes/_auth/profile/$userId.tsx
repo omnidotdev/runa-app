@@ -1,8 +1,8 @@
-import { CustomerCancellationReason } from "@polar-sh/sdk/models/components/customercancellationreason.js";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { AlertTriangle, Building2, LogOut, Settings } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
@@ -24,14 +24,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  RadioGroupIndicator,
-  RadioGroupItem,
-  RadioGroupItemControl,
-  RadioGroupItemHiddenInput,
-  RadioGroupItemText,
-  RadioGroupRoot,
-} from "@/components/ui/radio-group";
 import {
   Table,
   TableBody,
@@ -60,8 +52,9 @@ import invitationsOptions from "@/lib/options/invitations.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import seo from "@/lib/util/seo";
+import { revokeSubscription } from "@/server/functions/subscriptions";
 
-import type { Workspace } from "@/generated/graphql";
+import type { Maybe, Workspace } from "@/generated/graphql";
 
 export const Route = createFileRoute("/_auth/profile/$userId")({
   head: (context) => ({
@@ -73,15 +66,10 @@ export const Route = createFileRoute("/_auth/profile/$userId")({
       }),
     ],
   }),
-  component: RouteComponent,
+  component: ProfilePage,
 });
 
-function RouteComponent() {
-  const [reasonForLeaving, setReasonForLeaving] = useState<
-    CustomerCancellationReason | undefined
-  >(undefined);
-  const [reasonForLeavingComment, setReasonForLeavingComment] =
-    useState<string>("");
+function ProfilePage() {
   const [workspaceToDelete, setWorkspaceToDelete] = useState<
     Partial<Workspace> | undefined
   >(undefined);
@@ -119,6 +107,31 @@ function RouteComponent() {
     onSettled: () => setIsDeleteWorkspaceOpen(false),
   });
 
+  const { mutateAsync: handleDeleteWorkspace } = useMutation({
+    // TODO: make transactional
+    mutationFn: async ({
+      workspaceId,
+      subscriptionId,
+    }: {
+      workspaceId: string;
+      subscriptionId: Maybe<string> | undefined;
+    }) => {
+      // cancel subscription if it exists
+      if (subscriptionId) {
+        const revokedSubscriptionId = await revokeSubscription({
+          data: { subscriptionId },
+        });
+
+        if (!revokedSubscriptionId)
+          throw new Error("Issue revoking subscription");
+      }
+
+      // delete workspace
+      deleteWorkspace({ rowId: workspaceId });
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
   return (
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
@@ -141,6 +154,7 @@ function RouteComponent() {
                 <p className="mt-1 text-muted-foreground text-sm">
                   {session?.user.email}
                 </p>
+
                 <Button
                   variant="destructive"
                   className="mt-4"
@@ -171,14 +185,21 @@ function RouteComponent() {
                             <TableHead className="pl-3 font-semibold">
                               Workspace
                             </TableHead>
+
+                            <TableHead className="font-semibold">
+                              Tier
+                            </TableHead>
+
                             <TableHead className="font-semibold">
                               Role
                             </TableHead>
+
                             <TableHead className="pr-3 text-right font-semibold">
                               Actions
                             </TableHead>
                           </TableRow>
                         </TableHeader>
+
                         <TableBody>
                           {workspaces.map((workspace) => (
                             <TableRow
@@ -194,6 +215,11 @@ function RouteComponent() {
                                     {workspace.name}
                                   </span>
                                 </div>
+                              </TableCell>
+                              <TableCell className="py-4 pl-1">
+                                <Badge variant="outline">
+                                  {firstLetterToUppercase(workspace.tier)}
+                                </Badge>
                               </TableCell>
                               <TableCell className="py-4 pl-1">
                                 <Badge>
@@ -237,6 +263,7 @@ function RouteComponent() {
                                         variant="outline"
                                         size="sm"
                                         className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
+                                        // TODO: add leave workspace functionality
                                         disabled
                                       >
                                         Leave
@@ -252,16 +279,23 @@ function RouteComponent() {
                     ) : (
                       <div className="flex flex-col gap-2">
                         <p>
-                          No current workspaces. Create a workspace to get
-                          started.
+                          No current workspaces.{" "}
+                          <Link
+                            to="/pricing"
+                            variant="unstyled"
+                            className="p-0 text-md text-primary-600 underline"
+                          >
+                            Create a workspace
+                          </Link>{" "}
+                          to get started.
                         </p>
-                        <Button className="w-fit">Create Workspace</Button>
                       </div>
                     )}
                   </div>
 
                   <div className="space-y-4">
                     <h2 className="font-bold text-lg">Workspace Invitations</h2>
+
                     {invitations.length ? (
                       <Table containerProps="rounded-md border">
                         <TableHeader>
@@ -360,7 +394,7 @@ function RouteComponent() {
                         </TableBody>
                       </Table>
                     ) : (
-                      "No current invitations"
+                      <p>No current invitations</p>
                     )}
                   </div>
 
@@ -396,57 +430,11 @@ function RouteComponent() {
                             </div>
                             <DialogTitle>Are you absolutely sure?</DialogTitle>
                             <DialogDescription>
-                              This will permanently cancel your subscription and
-                              delete all associated data. This action cannot be
-                              undone. If you are sure, please provide a reason
-                              for leaving.
+                              This will permanently cancel any active
+                              subscription and delete all associated data. This
+                              action cannot be undone.
                             </DialogDescription>
                           </div>
-
-                          <RadioGroupRoot
-                            value={reasonForLeaving}
-                            onValueChange={({ value }) =>
-                              setReasonForLeaving(
-                                value as CustomerCancellationReason,
-                              )
-                            }
-                          >
-                            <RadioGroupIndicator />
-                            {Object.values(CustomerCancellationReason).map(
-                              (reason) => (
-                                <RadioGroupItem key={reason} value={reason}>
-                                  <RadioGroupItemControl
-                                    className="ring-destructive data-[state=checked]:bg-destructive"
-                                    tabIndex={0}
-                                  />
-                                  <RadioGroupItemText>
-                                    {reason
-                                      .split("_")
-                                      .filter(Boolean)
-                                      .map((word) =>
-                                        firstLetterToUppercase(word),
-                                      )
-                                      .join(" ")}
-                                  </RadioGroupItemText>
-                                  <RadioGroupItemHiddenInput />
-                                </RadioGroupItem>
-                              ),
-                            )}
-                          </RadioGroupRoot>
-
-                          {reasonForLeaving ===
-                            CustomerCancellationReason.Other && (
-                            <textarea
-                              className="rounded-md border p-1.5 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                              placeholder="Reason for leaving..."
-                              value={reasonForLeavingComment}
-                              onChange={(e) =>
-                                e.target.value.length
-                                  ? setReasonForLeavingComment(e.target.value)
-                                  : setReasonForLeavingComment("")
-                              }
-                            />
-                          )}
 
                           <div className="mt-4 flex justify-end gap-2">
                             <DialogCloseTrigger asChild>
@@ -472,15 +460,7 @@ function RouteComponent() {
               </TabsContent>
               <TabsContent value="customization">
                 <Card className="mt-4 border">
-                  <CardHeader className="px-6 pt-6">
-                    <CardTitle className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center rounded-lg bg-muted">
-                        <Settings className="size-4" />
-                      </div>
-                      Customization Settings
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="px-6 pb-6">
+                  <CardContent className="p-6">
                     <div className="p-8 text-center">
                       <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-muted/50">
                         <Settings className="size-8 text-muted-foreground" />
@@ -499,7 +479,8 @@ function RouteComponent() {
           </div>
         </div>
       </div>
-      {workspaceToDelete && (
+
+      {!!workspaceToDelete && (
         <DestructiveActionDialog
           title="Danger Zone"
           description={
@@ -512,12 +493,14 @@ function RouteComponent() {
             </span>
           }
           onConfirm={() => {
-            deleteWorkspace({
-              rowId: workspaceToDelete?.rowId!,
+            handleDeleteWorkspace({
+              workspaceId: workspaceToDelete.rowId!,
+              subscriptionId: workspaceToDelete.subscriptionId,
             });
           }}
           dialogType={DialogType.DeleteWorkspace}
-          confirmation={`Permanently delete ${workspaceToDelete?.name}`}
+          confirmation={`permanently delete ${workspaceToDelete?.name}`}
+          onExitComplete={() => setWorkspaceToDelete(undefined)}
         />
       )}
     </div>
