@@ -1,4 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import Shortcut from "@/components/core/Shortcut";
 import Tooltip from "@/components/core/Tooltip";
@@ -47,8 +49,18 @@ const ColumnSelector = ({
       })) ?? [],
   });
 
+  const [isColumnSelectorOpen, setIsColumnSelectorOpen] = useState(false);
+
+  useHotkeys(
+    Hotkeys.UpdateTaskStatus,
+    () => setIsColumnSelectorOpen(!isColumnSelectorOpen),
+    [isColumnSelectorOpen, setIsColumnSelectorOpen],
+  );
+
   return (
     <Select
+      open={isColumnSelectorOpen}
+      onOpenChange={({ open }) => setIsColumnSelectorOpen(open)}
       collection={columnCollection}
       loopFocus
       aria-label="Select Column"

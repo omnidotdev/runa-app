@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import Shortcut from "@/components/core/Shortcut";
 import Tooltip from "@/components/core/Tooltip";
@@ -26,8 +27,6 @@ interface Props extends Omit<ComponentProps<typeof Select>, "collection"> {
 }
 
 const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
-  const selectButtonRef = useRef<HTMLButtonElement | null>(null);
-
   const priorityCollection = createListCollection({
     items: [
       { label: "Low", value: "low" },
@@ -36,19 +35,29 @@ const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
     ],
   });
 
+  const [isPrioritySelectorOpen, setIsPrioritySelectorOpen] = useState(false);
+
+  useHotkeys(
+    Hotkeys.UpdateTaskPriority,
+    () => setIsPrioritySelectorOpen(!isPrioritySelectorOpen),
+    [isPrioritySelectorOpen, setIsPrioritySelectorOpen],
+  );
+
   return (
-    <Select collection={priorityCollection} loopFocus {...rest}>
+    <Select
+      open={isPrioritySelectorOpen}
+      onOpenChange={({ open }) => setIsPrioritySelectorOpen(open)}
+      collection={priorityCollection}
+      loopFocus
+      {...rest}
+    >
       <Tooltip
         positioning={{ placement: "top" }}
         tooltip="Adjust Priority"
         shortcut={Hotkeys.UpdateTaskPriority}
         trigger={
           <SelectControl>
-            <SelectTrigger
-              aria-label="Select Priority"
-              ref={selectButtonRef}
-              asChild
-            >
+            <SelectTrigger aria-label="Select Priority" asChild>
               <Button variant="outline" className="w-fit">
                 <PriorityIcon priority={triggerValue} />
 
