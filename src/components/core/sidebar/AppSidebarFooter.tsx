@@ -45,7 +45,7 @@ const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { isMobile, setOpen, open, state } = useSidebar();
+  const { isMobile, setOpen, open } = useSidebar();
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () =>
@@ -65,7 +65,7 @@ const AppSidebarFooter = () => {
           positioning={{ placement: "right" }}
           tooltip="Expand Sidebar"
           shortcut={Hotkeys.ToggleSidebar}
-          disabled={isMobile || state === "expanded"}
+          disabled={isMobile || open}
           trigger={
             <SidebarMenuButton onClick={() => setOpen(!open)}>
               {open ? <PanelLeftCloseIcon /> : <PanelLeftIcon />}
@@ -81,7 +81,7 @@ const AppSidebarFooter = () => {
           positioning={{ placement: "right" }}
           tooltip="Toggle Theme"
           shortcut={Hotkeys.ToggleTheme}
-          disabled={isMobile || state === "expanded"}
+          disabled={isMobile || open}
           trigger={
             <SidebarMenuButton onClick={() => toggleTheme()}>
               {theme === "dark" ? <MoonIcon /> : <SunIcon />}
@@ -96,7 +96,7 @@ const AppSidebarFooter = () => {
         <Tooltip
           positioning={{ placement: "right" }}
           tooltip="Pricing"
-          disabled={isMobile || state === "expanded"}
+          disabled={isMobile || open}
           trigger={
             <SidebarMenuButton onClick={() => navigate({ to: "/pricing" })}>
               <TagIcon />
@@ -108,7 +108,7 @@ const AppSidebarFooter = () => {
         <Tooltip
           positioning={{ placement: "right" }}
           tooltip="Profile"
-          disabled={isMobile || state === "expanded"}
+          disabled={isMobile || open}
           trigger={
             <div className="group/menu-item relative">
               <SidebarMenuButton
