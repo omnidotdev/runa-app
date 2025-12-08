@@ -11,7 +11,6 @@ import {
 } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import Shortcut from "@/components/core/Shortcut";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -380,7 +379,9 @@ const SidebarRail = ({
           <span>Drag to resize</span>
           <div className="flex items-center gap-2">
             Click to {isCollapsed ? "expand" : "collapse"}{" "}
-            <Shortcut>B</Shortcut>
+            <span className="ml-auto flex items-center justify-center gap-0.5 rounded border bg-background px-1 font-medium text-foreground text-xs">
+              B
+            </span>
           </div>
         </TooltipContent>
       </TooltipPositioner>
@@ -599,11 +600,13 @@ const SidebarMenuButton = ({
     >
       <TooltipTrigger asChild>{button}</TooltipTrigger>
       <TooltipPositioner>
-        <TooltipContent>
-          <div className="flex items-center gap-2">
-            {tooltip}
-            {shortcut && <Shortcut>{shortcut}</Shortcut>}
-          </div>
+        <TooltipContent className="flex items-center gap-2">
+          {tooltip}
+          {shortcut && (
+            <span className="ml-auto flex items-center justify-center gap-0.5 rounded border bg-background px-1 font-medium text-foreground text-xs">
+              {shortcut}
+            </span>
+          )}
         </TooltipContent>
       </TooltipPositioner>
     </TooltipRoot>

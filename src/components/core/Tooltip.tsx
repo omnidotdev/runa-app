@@ -21,9 +21,7 @@ const Tooltip = ({ trigger, tooltip, shortcut, className, ...rest }: Props) => {
     <TooltipRoot closeDelay={0} openDelay={100} {...rest}>
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
       <TooltipPositioner>
-        <TooltipContent
-          className={cn("flex items-center gap-2 rounded-lg", className)}
-        >
+        <TooltipContent className={cn("flex items-center gap-2", className)}>
           {tooltip}
           {shortcut && <Shortcut>{shortcut}</Shortcut>}
         </TooltipContent>

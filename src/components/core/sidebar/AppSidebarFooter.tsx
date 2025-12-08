@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import Tooltip from "@/components/core//Tooltip";
 import Shortcut from "@/components/core/Shortcut";
 import {
   AvatarFallback,
@@ -39,7 +40,6 @@ import { signOut } from "@/lib/auth/signOut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useTheme from "@/lib/hooks/useTheme";
 import invitationsOptions from "@/lib/options/invitations.options";
-import Tooltip from "../Tooltip";
 
 const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
