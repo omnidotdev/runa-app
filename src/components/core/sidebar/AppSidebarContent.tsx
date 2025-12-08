@@ -134,7 +134,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
     },
     {
       isActive: pathname === `/workspaces/${workspaceSlug}/projects`,
-      tooltip: "Project Overview",
+      tooltip: "Projects Overview",
       to: "/workspaces/$workspaceSlug/projects",
       icon: LayersIcon,
       label: "Overview",
