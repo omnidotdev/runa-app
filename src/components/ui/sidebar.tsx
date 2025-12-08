@@ -9,7 +9,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -108,26 +107,6 @@ const SidebarProvider = ({
   const toggleSidebar = useCallback(() => {
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
   }, [isMobile, setOpen]);
-
-  // TODO: Disuss removing the useHotKeys hook for this component since its built from the upstream thornberry registry.
-  // Adds a keyboard shortcut to toggle the sidebar.
-  useHotkeys("b", toggleSidebar, [toggleSidebar]);
-
-  // const SIDEBAR_KEYBOARD_SHORTCUT = "b";
-  //   // Adds a keyboard shortcut to toggle the sidebar.
-  // useEffect(() => {
-  //   const handleKeyDown = (event: KeyboardEvent) => {
-  //     if (
-  //       event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
-  //       (event.metaKey || event.ctrlKey)
-  //     ) {
-  //       event.preventDefault()
-  //       toggleSidebar()
-  //     }
-  //   }
-  //   window.addEventListener("keydown", handleKeyDown)
-  //   return () => window.removeEventListener("keydown", handleKeyDown)
-  // }, [toggleSidebar])
 
   const state = open ? "expanded" : "collapsed";
 
