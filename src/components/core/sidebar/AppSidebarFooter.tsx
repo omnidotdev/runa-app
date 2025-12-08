@@ -96,6 +96,7 @@ const AppSidebarFooter = () => {
         <Tooltip
           positioning={{ placement: "right" }}
           tooltip="Pricing"
+          disabled={isMobile || state === "expanded"}
           trigger={
             <SidebarMenuButton onClick={() => navigate({ to: "/pricing" })}>
               <TagIcon />
