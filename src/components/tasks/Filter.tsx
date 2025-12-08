@@ -29,7 +29,6 @@ import {
   MenuPositioner,
   MenuProvider,
   MenuRoot,
-  MenuSeparator,
   MenuTrigger,
   MenuTriggerItem,
 } from "@/components/ui/menu";
@@ -135,11 +134,9 @@ const Filter = () => {
       <MenuPositioner>
         <MenuContent className="w-48 p-0">
           <MenuItemGroup>
-            <MenuItemGroupLabel>
+            <MenuItemGroupLabel className="border-b">
               Filter <Shortcut>F</Shortcut>
             </MenuItemGroupLabel>
-
-            <MenuSeparator />
 
             <div className="mt-1 flex flex-col gap-0.5">
               <MenuProvider value={labelsMenu}>

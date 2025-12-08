@@ -125,17 +125,15 @@ const CreateTaskLabels = withForm({
 
             <MenuPositioner>
               <MenuContent className="flex min-w-fit flex-col gap-0 p-0">
-                <div className="flex w-full items-center justify-between p-2 text-base-500 text-sm">
+                <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
                   Labels{" "}
                   <Shortcut>{Hotkeys.UpdateTaskLabels.toUpperCase()}</Shortcut>
                 </div>
 
-                <MenuSeparator />
-
                 <form.Field name="labels" mode="array">
                   {(field) => {
                     return (
-                      <div className="flex flex-col gap-0">
+                      <div className="flex flex-col gap-0 pt-1">
                         <div className="-mt-1 flex h-fit w-full items-center gap-2 divide-x">
                           <ColorSelector
                             showChannelInput={false}

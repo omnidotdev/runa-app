@@ -35,7 +35,6 @@ import {
   MenuItemText,
   MenuPositioner,
   MenuRoot,
-  MenuSeparator,
   MenuTrigger,
   MenuTriggerItem,
 } from "@/components/ui/menu";
@@ -203,9 +202,9 @@ const ProjectColumnsForm = () => {
             <MenuPositioner>
               <MenuContent className="w-48 p-0">
                 <MenuItemGroup>
-                  <MenuItemGroupLabel>Column options</MenuItemGroupLabel>
-
-                  <MenuSeparator />
+                  <MenuItemGroupLabel className="border-b">
+                    Column options
+                  </MenuItemGroupLabel>
 
                   <div className="mt-1 flex flex-col gap-0.5">
                     <MenuItem
