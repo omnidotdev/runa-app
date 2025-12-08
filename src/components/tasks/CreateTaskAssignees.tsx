@@ -5,6 +5,7 @@ import { useLoaderData } from "@tanstack/react-router";
 import { UserPlusIcon, UserXIcon } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import Shortcut from "@/components/core/Shortcut";
 import Tooltip from "@/components/core/Tooltip";
 import Assignees from "@/components/shared/Assignees";
 import {
@@ -25,7 +26,6 @@ import {
   SelectRootProvider,
   SelectTrigger,
 } from "@/components/ui/select";
-import { Shortcut } from "@/components/ui/shortcut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
@@ -133,7 +133,7 @@ const CreateTaskAssignees = withForm({
                             <UserXIcon className="ml-1.5 size-4" />
                           ) : (
                             <div className="-m-2">
-                              <AvatarRoot className="size-6 rounded-full border p-0 shadow">
+                              <AvatarRoot className="mr-2 size-6 rounded-full border p-0 shadow">
                                 <AvatarImage
                                   src={item.user?.avatarUrl ?? undefined}
                                   alt={item.user?.name}

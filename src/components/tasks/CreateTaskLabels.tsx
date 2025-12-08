@@ -3,6 +3,7 @@ import { PlusIcon, TagIcon } from "lucide-react";
 import { useId, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import Shortcut from "@/components/core/Shortcut";
 import ColorSelector from "@/components/core/selectors/ColorSelector";
 import { Button } from "@/components/ui/button";
 import { parseColor } from "@/components/ui/color-picker";
@@ -18,7 +19,6 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Shortcut } from "@/components/ui/shortcut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
@@ -42,6 +42,7 @@ const CreateTaskLabels = withForm({
 
     const field = useField({ form, name: "labels" });
 
+    // TODO: Fix issue adding a space in the label name in the create task dialog.
     const addNewLabel = () => {
       if (!newLabel.name || !newLabel.color) return;
 
@@ -135,7 +136,7 @@ const CreateTaskLabels = withForm({
                   {(field) => {
                     return (
                       <div className="flex flex-col gap-0">
-                        <div className="flex h-fit w-full items-center gap-2 divide-x">
+                        <div className="-mt-1 flex h-fit w-full items-center gap-2 divide-x">
                           <ColorSelector
                             showChannelInput={false}
                             positioning={{
@@ -154,7 +155,7 @@ const CreateTaskLabels = withForm({
                           <Input
                             id="label-name"
                             autoComplete="off"
-                            className="h-7 rounded border-0 px-2 shadow-none"
+                            className="rounded border-0 px-2 shadow-none"
                             placeholder="Add new label..."
                             value={newLabel.name}
                             onChange={(e) =>
@@ -195,7 +196,7 @@ const CreateTaskLabels = withForm({
                         <MenuItemGroup className="-mt-1">
                           <MenuSeparator />
 
-                          {!!field.state.value.length && (
+                          {field.state.value.length ? (
                             <div className="mt-1 flex flex-col gap-1">
                               {field.state.value.map((label, i) => (
                                 <form.Field
@@ -230,6 +231,10 @@ const CreateTaskLabels = withForm({
                                 </form.Field>
                               ))}
                             </div>
+                          ) : (
+                            <p className="-mt-1 px-3 py-2 text-sm">
+                              No labels added
+                            </p>
                           )}
                         </MenuItemGroup>
                       </div>

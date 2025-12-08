@@ -4,6 +4,7 @@ import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import Shortcut from "@/components/core/Shortcut";
 import { Button } from "@/components/ui/button";
 import {
   DatePickerContent,
@@ -26,7 +27,6 @@ import {
   DatePickerViewControl,
   DatePickerViewTrigger,
 } from "@/components/ui/date-picker";
-import { Shortcut } from "@/components/ui/shortcut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";

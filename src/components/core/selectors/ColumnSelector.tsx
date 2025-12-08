@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
+import Shortcut from "@/components/core/Shortcut";
 import { Button } from "@/components/ui/button";
 import {
   createListCollection,
@@ -13,7 +14,6 @@ import {
   SelectPositioner,
   SelectTrigger,
 } from "@/components/ui/select";
-import { Shortcut } from "@/components/ui/shortcut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";
 import Tooltip from "../Tooltip";

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useId, useState } from "react";
 
+import Shortcut from "@/components/core/Shortcut";
 import Tooltip from "@/components/core/Tooltip";
 import {
   CollapsibleContent,
@@ -35,7 +36,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Shortcut } from "@/components/ui/shortcut";
 import {
   SidebarContent,
   SidebarGroup,

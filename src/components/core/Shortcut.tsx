@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 
 import type { ComponentProps } from "react";
 
-// TODO: add shortcut component to thornberry
 const Shortcut = ({ className, ...rest }: ComponentProps<"span">) => {
   return (
     <span
@@ -15,4 +14,4 @@ const Shortcut = ({ className, ...rest }: ComponentProps<"span">) => {
   );
 };
 
-export { Shortcut };
+export default Shortcut;

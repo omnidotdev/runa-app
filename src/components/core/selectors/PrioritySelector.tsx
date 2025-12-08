@@ -1,5 +1,6 @@
 import { useRef } from "react";
 
+import Shortcut from "@/components/core/Shortcut";
 import Tooltip from "@/components/core/Tooltip";
 import PriorityIcon from "@/components/tasks/PriorityIcon";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,6 @@ import {
   SelectPositioner,
   SelectTrigger,
 } from "@/components/ui/select";
-import { Shortcut } from "@/components/ui/shortcut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 

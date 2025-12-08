@@ -11,6 +11,7 @@ import {
 import { useId, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import Shortcut from "@/components/core/Shortcut";
 import {
   AvatarFallback,
   AvatarImage,
@@ -32,7 +33,6 @@ import {
   MenuTrigger,
   MenuTriggerItem,
 } from "@/components/ui/menu";
-import { Shortcut } from "@/components/ui/shortcut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";

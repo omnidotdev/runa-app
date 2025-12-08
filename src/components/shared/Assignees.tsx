@@ -67,7 +67,7 @@ const Assignees = ({
             </AvatarRoot>
 
             {showUsername && (
-              <p className="hidden text-xs md:flex">{user?.name}</p>
+              <p className="ml-2 hidden text-xs md:flex">{user?.name}</p>
             )}
           </div>
         ))}

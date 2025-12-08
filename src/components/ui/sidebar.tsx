@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import Shortcut from "@/components/core/Shortcut";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,7 +30,6 @@ import {
 import useIsMobile from "@/lib/hooks/use-mobile";
 import { useSidebarResize } from "@/lib/hooks/use-sidebar-resize";
 import { cn } from "@/lib/utils";
-import { Shortcut } from "./shortcut";
 
 import type { ComponentProps, CSSProperties } from "react";
 

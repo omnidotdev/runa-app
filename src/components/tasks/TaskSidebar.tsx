@@ -3,6 +3,7 @@ import { useParams } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
+import Shortcut from "@/components/core/Shortcut";
 import Label from "@/components/shared/Label";
 import {
   AvatarFallback,
@@ -11,7 +12,6 @@ import {
 } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
-import { Shortcut } from "@/components/ui/shortcut";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import taskOptions from "@/lib/options/task.options";
 

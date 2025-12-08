@@ -1,4 +1,4 @@
-import { Shortcut } from "@/components/ui/shortcut";
+import Shortcut from "@/components/core/Shortcut";
 import {
   TooltipContent,
   TooltipPositioner,

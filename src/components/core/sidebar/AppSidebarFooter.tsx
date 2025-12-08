@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import Shortcut from "@/components/core/Shortcut";
 import {
   AvatarFallback,
   AvatarImage,
@@ -27,7 +28,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Shortcut } from "@/components/ui/shortcut";
 import {
   SidebarFooter,
   SidebarMenu,
@@ -121,7 +121,6 @@ const AppSidebarFooter = () => {
                 isActive={
                   pathname.pathname === `/profile/${session?.user.hidraId}`
                 }
-                disabled={isMobile || state === "expanded"}
                 tooltip="Profile"
                 onClick={() =>
                   navigate({
@@ -144,6 +143,7 @@ const AppSidebarFooter = () => {
                   <div className="absolute top-2 left-5 size-1.5 rounded-full bg-red-500" />
                 )}
               </SidebarMenuButton>
+
               <MenuRoot
                 positioning={{
                   strategy: "fixed",
