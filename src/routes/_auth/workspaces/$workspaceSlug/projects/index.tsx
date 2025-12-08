@@ -334,7 +334,7 @@ function ProjectsOverviewPage() {
                   defaultValue={search}
                   onChange={handleSearch}
                   placeholder="Search projects..."
-                  className="pl-10"
+                  className="border-border pl-10 shadow-xs"
                   id="project-search-input"
                   autoComplete="off"
                 />

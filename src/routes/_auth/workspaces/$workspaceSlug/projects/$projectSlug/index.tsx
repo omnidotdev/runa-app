@@ -532,7 +532,7 @@ function ProjectPage() {
                   defaultValue={search}
                   onChange={handleSearch}
                   placeholder="Search tasks..."
-                  className="pl-10"
+                  className="border-border pl-10 shadow-xs"
                 />
               </div>
 
