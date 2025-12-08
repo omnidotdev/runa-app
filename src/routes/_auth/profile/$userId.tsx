@@ -489,7 +489,8 @@ function ProfilePage() {
               <strong className="font-medium text-base-900 dark:text-base-100">
                 {workspaceToDelete?.name}
               </strong>{" "}
-              and all associated data. This action cannot be undone.
+              and all associated data. Any subscription associated with this
+              workspace will be revoked. This action cannot be undone.
             </span>
           }
           onConfirm={() => {
