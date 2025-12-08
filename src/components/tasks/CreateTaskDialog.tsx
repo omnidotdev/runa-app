@@ -232,8 +232,7 @@ const CreateTaskDialog = () => {
     >
       <DialogBackdrop />
       <DialogPositioner>
-        {/* Fix width issue on task property changes */}
-        <DialogContent className="flex min-w-[60%] flex-col items-start">
+        <DialogContent className="mx-8 flex max-w-3xl flex-col items-start rounded-lg">
           <DialogCloseTrigger />
 
           <span className="text-nowrap font-medium font-mono text-base-400 dark:text-base-500">
