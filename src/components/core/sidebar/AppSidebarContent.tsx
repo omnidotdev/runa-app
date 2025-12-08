@@ -298,7 +298,12 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
             <SidebarGroup>
               <CollapsibleTrigger className="mt-1 gap-2 p-0 px-1">
                 <SidebarGroupLabel>Projects</SidebarGroupLabel>
-                <ChevronRightIcon size={12} className="mr-auto text-base-400" />
+                {!!workspace?.projects?.nodes?.length && (
+                  <ChevronRightIcon
+                    size={12}
+                    className="mr-auto text-base-400"
+                  />
+                )}
 
                 <Tooltip
                   disabled={!workspace?.projectColumns.nodes.length}
