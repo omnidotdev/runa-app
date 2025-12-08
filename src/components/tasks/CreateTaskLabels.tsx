@@ -5,6 +5,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import Shortcut from "@/components/core/Shortcut";
 import ColorSelector from "@/components/core/selectors/ColorSelector";
+import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import { parseColor } from "@/components/ui/color-picker";
 import { Input } from "@/components/ui/input";
@@ -22,7 +23,6 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
-import Tooltip from "../core/Tooltip";
 
 const CreateTaskLabels = withForm({
   defaultValues: taskFormDefaults,

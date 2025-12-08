@@ -262,7 +262,7 @@ function SettingsPage() {
               <p className="mt-1 text-red-500 text-sm">{nameError}</p>
             )}
           </div>
-          <Badge variant="subtle">
+          <Badge variant="secondary">
             <p className="first-letter:uppercase">{workspace?.tier}</p>
           </Badge>
         </div>

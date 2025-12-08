@@ -41,7 +41,7 @@ const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
       <Tooltip
         positioning={{ placement: "top" }}
         tooltip="Adjust Priority"
-        shortcut={Hotkeys.UpdateTaskPriority.toUpperCase()}
+        shortcut={Hotkeys.UpdateTaskPriority}
         trigger={
           <SelectControl>
             <SelectTrigger
