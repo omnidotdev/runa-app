@@ -1,7 +1,7 @@
 import { parseAbsoluteToLocal } from "@internationalized/date";
 import { format, parseISO } from "date-fns";
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,16 +32,11 @@ const CreateTaskDatePicker = withForm({
   defaultValues: taskFormDefaults,
   render: ({ form }) => {
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-    const triggerRef = useRef<HTMLButtonElement | null>(null);
 
     return (
       <form.Field name="dueDate">
         {(field) => (
           <DatePickerRoot
-            positioning={{
-              getAnchorRect: () =>
-                triggerRef.current?.getBoundingClientRect() ?? null,
-            }}
             open={isDatePickerOpen}
             onOpenChange={({ open }) => setIsDatePickerOpen(open)}
             value={
@@ -61,7 +56,7 @@ const CreateTaskDatePicker = withForm({
             autoFocus
           >
             <DatePickerControl>
-              <DatePickerTrigger ref={triggerRef} asChild>
+              <DatePickerTrigger asChild>
                 <Button variant="outline">
                   <CalendarIcon className="size-4" />
                   <p className="">
