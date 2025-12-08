@@ -44,7 +44,7 @@ import { useTheme } from "@/providers/ThemeProvider";
 const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
   const navigate = useNavigate();
-  const pathname = useLocation();
+  const { pathname } = useLocation();
   const { isMobile, setOpen, open, state } = useSidebar();
   const { theme, setTheme } = useTheme();
 
@@ -112,9 +112,7 @@ const AppSidebarFooter = () => {
           trigger={
             <div className="group/menu-item relative">
               <SidebarMenuButton
-                isActive={
-                  pathname.pathname === `/profile/${session?.user.hidraId}`
-                }
+                isActive={pathname === `/profile/${session?.user.hidraId}`}
                 tooltip="Profile"
                 onClick={() =>
                   navigate({
@@ -149,9 +147,7 @@ const AppSidebarFooter = () => {
                   className="focus-visible:ring-offset-background [&[data-state=open]>svg]:rotate-0"
                 >
                   <SidebarMenuAction
-                    isActive={
-                      pathname.pathname === `/profile/${session?.user.hidraId}`
-                    }
+                    isActive={pathname === `/profile/${session?.user.hidraId}`}
                     showOnHover
                   >
                     <MoreHorizontalIcon />
