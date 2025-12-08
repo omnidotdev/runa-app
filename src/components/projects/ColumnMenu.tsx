@@ -152,7 +152,7 @@ const ColumnMenu = ({ columnId }: Props) => {
         <DestructiveActionDialog
           title="Danger Zone"
           description={`This will delete all tasks from ${column?.title}. This action cannot be undone`}
-          confirmation={`Permanently delete ${column?.title} tasks`}
+          confirmation={`permanently delete ${column?.title} tasks`}
           dialogType={DialogType.DeleteColumnTasks}
           onConfirm={() => {
             if (taskIds?.length) {

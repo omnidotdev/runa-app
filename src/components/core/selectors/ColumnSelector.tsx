@@ -4,7 +4,6 @@ import Shortcut from "@/components/core/Shortcut";
 import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import {
-  createListCollection,
   Select,
   SelectContent,
   SelectControl,
@@ -14,6 +13,7 @@ import {
   SelectItemText,
   SelectPositioner,
   SelectTrigger,
+  createListCollection,
 } from "@/components/ui/select";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";

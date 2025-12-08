@@ -10,8 +10,8 @@ import {
   MoreHorizontalIcon,
   PanelLeftCloseIcon,
   PanelLeftIcon,
-  SendIcon,
   SunIcon,
+  TagIcon,
 } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -38,8 +38,8 @@ import {
 } from "@/components/ui/sidebar";
 import { signOut } from "@/lib/auth/signOut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
-import useTheme from "@/lib/hooks/useTheme";
 import invitationsOptions from "@/lib/options/invitations.options";
+import { useTheme } from "@/providers/ThemeProvider";
 
 const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
@@ -95,18 +95,11 @@ const AppSidebarFooter = () => {
 
         <Tooltip
           positioning={{ placement: "right" }}
-          tooltip="Feedback"
-          disabled={isMobile || state === "expanded"}
+          tooltip="Pricing"
           trigger={
-            <SidebarMenuButton asChild>
-              <a
-                href="https://backfeed.omni.dev/organizations/omni/projects/runa"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <SendIcon />
-                <span className="flex w-full items-center">Feedback</span>
-              </a>
+            <SidebarMenuButton onClick={() => navigate({ to: "/pricing" })}>
+              <TagIcon />
+              <span className="flex w-full items-center">Pricing</span>
             </SidebarMenuButton>
           }
         />

@@ -114,7 +114,7 @@ const RichTextEditor = ({
         <EditorContent
           editor={editor}
           className={cn(
-            " pointer-events-auto min-h-[120px] flex-1 rounded-md border border-base-300 border-dashed bg-transparent p-3 text-base-600 focus-visible:border-base-400! dark:border-base-600 dark:text-base-300 dark:focus-visible:border-base-500 dark:hover:border-base-500",
+            "pointer-events-auto min-h-[120px] flex-1 rounded-md border border-base-300 border-dashed bg-transparent p-3 text-base-600 focus-visible:border-base-400! dark:border-base-600 dark:text-base-300 dark:focus-visible:border-base-500 dark:hover:border-base-500",
             editor?.isFocused
               ? "border-2 border-primary-500/20 dark:border-primary-500/10"
               : "hover:border-base-400 dark:hover:border-base-500",

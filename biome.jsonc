@@ -1,23 +1,18 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
   "vcs": {
-    "enabled": false,
+    "enabled": true,
     "clientKind": "git",
-    "useIgnoreFile": false
+    "useIgnoreFile": true
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": [
-      "**",
-      "!**/generated/**",
-      "!.nitro",
-      "!.output",
-      "!node_modules",
-      "!certificates",
-      "!public",
-      "!src/routeTree.gen.ts",
-      "!bun.lock"
-    ]
+    "includes": ["**", "!!**/generated", "!!src/routeTree.gen.ts"]
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
   },
   "formatter": {
     "enabled": true,
@@ -38,7 +33,6 @@
         "noUnusedImports": { "fix": "safe", "options": {}, "level": "error" }
       },
       "nursery": {
-        "useUniqueElementIds": "off",
         "useSortedClasses": {
           "level": "error",
           "fix": "safe",
@@ -58,6 +52,8 @@
       },
       "suspicious": {
         "noArrayIndexKey": "warn",
+        "noNonNullAssertedOptionalChain": "off",
+        "useIterableCallbackReturn": "off",
         "noConsole": {
           "level": "error",
           "options": {
@@ -73,6 +69,7 @@
         "organizeImports": {
           "level": "on",
           "options": {
+            "identifierOrder": "lexicographic",
             "groups": [
               { "type": false, "source": [":BUN:", ":NODE:"] },
               ":BLANK_LINE:",

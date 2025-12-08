@@ -78,7 +78,7 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
           });
         }}
         dialogType={DialogType.DeleteProject}
-        confirmation={`Permanently delete ${selectedProject?.name}`}
+        confirmation={`permanently delete ${selectedProject?.name}`}
       />
     </>
   );

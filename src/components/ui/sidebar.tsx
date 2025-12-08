@@ -30,7 +30,7 @@ import useIsMobile from "@/lib/hooks/use-mobile";
 import { useSidebarResize } from "@/lib/hooks/use-sidebar-resize";
 import { cn } from "@/lib/utils";
 
-import type { ComponentProps, CSSProperties } from "react";
+import type { CSSProperties, ComponentProps } from "react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -90,9 +90,7 @@ const SidebarProvider = ({
   const open = openProp ?? _open;
   const setOpen = useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
-      // @ts-ignore TODO
-      // biome-ignore lint/correctness/useValidTypeof: TODO
-      const openState = typeof value === "const" ? value(open) : value;
+      const openState = typeof value === "function" ? value(open) : value;
       if (setOpenProp) {
         setOpenProp(openState);
       } else {
@@ -111,8 +109,25 @@ const SidebarProvider = ({
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
   }, [isMobile, setOpen]);
 
+  // TODO: Disuss removing the useHotKeys hook for this component since its built from the upstream thornberry registry.
   // Adds a keyboard shortcut to toggle the sidebar.
   useHotkeys("b", toggleSidebar, [toggleSidebar]);
+
+  // const SIDEBAR_KEYBOARD_SHORTCUT = "b";
+  //   // Adds a keyboard shortcut to toggle the sidebar.
+  // useEffect(() => {
+  //   const handleKeyDown = (event: KeyboardEvent) => {
+  //     if (
+  //       event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
+  //       (event.metaKey || event.ctrlKey)
+  //     ) {
+  //       event.preventDefault()
+  //       toggleSidebar()
+  //     }
+  //   }
+  //   window.addEventListener("keydown", handleKeyDown)
+  //   return () => window.removeEventListener("keydown", handleKeyDown)
+  // }, [toggleSidebar])
 
   const state = open ? "expanded" : "collapsed";
 
@@ -395,7 +410,7 @@ const SidebarInset = ({ className, ...rest }: ComponentProps<"main">) => {
       data-slot="sidebar-inset"
       className={cn(
         "relative flex w-full flex-1 flex-col bg-background",
-        "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl ",
+        "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl",
         className,
       )}
       {...rest}

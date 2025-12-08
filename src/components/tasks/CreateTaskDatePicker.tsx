@@ -144,7 +144,7 @@ const CreateTaskDatePicker = withForm({
                                       value={day}
                                       className="size-8"
                                     >
-                                      <DatePickerTableCellTrigger className=" hover:bg-primary-50 data-outside-range:opacity-40 hover:data-outside-range:bg-transparent dark:hover:bg-primary-950">
+                                      <DatePickerTableCellTrigger className="hover:bg-primary-50 data-outside-range:opacity-40 hover:data-outside-range:bg-transparent dark:hover:bg-primary-950">
                                         {day.day}
                                       </DatePickerTableCellTrigger>
                                     </DatePickerTableCell>

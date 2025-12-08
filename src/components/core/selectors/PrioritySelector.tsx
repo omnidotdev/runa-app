@@ -5,7 +5,6 @@ import Tooltip from "@/components/core/Tooltip";
 import PriorityIcon from "@/components/tasks/PriorityIcon";
 import { Button } from "@/components/ui/button";
 import {
-  createListCollection,
   Select,
   SelectContent,
   SelectControl,
@@ -15,6 +14,7 @@ import {
   SelectItemText,
   SelectPositioner,
   SelectTrigger,
+  createListCollection,
 } from "@/components/ui/select";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";

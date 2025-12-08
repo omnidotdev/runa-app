@@ -7633,7 +7633,7 @@ export type Workspace = Node & {
   projects: ProjectConnection;
   rowId: Scalars['UUID']['output'];
   slug: Scalars['String']['output'];
-  subscriptionId?: Maybe<Scalars['UUID']['output']>;
+  subscriptionId?: Maybe<Scalars['String']['output']>;
   tier: Tier;
   updatedAt: Scalars['Datetime']['output'];
   viewMode: Scalars['String']['output'];
@@ -7710,7 +7710,7 @@ export type WorkspaceCondition = {
   /** Checks for equality with the object’s `slug` field. */
   slug?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `subscriptionId` field. */
-  subscriptionId?: InputMaybe<Scalars['UUID']['input']>;
+  subscriptionId?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `tier` field. */
   tier?: InputMaybe<Tier>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -7801,7 +7801,7 @@ export type WorkspaceFilter = {
   /** Filter by the object’s `slug` field. */
   slug?: InputMaybe<StringFilter>;
   /** Filter by the object’s `subscriptionId` field. */
-  subscriptionId?: InputMaybe<UuidFilter>;
+  subscriptionId?: InputMaybe<StringFilter>;
   /** Filter by the object’s `tier` field. */
   tier?: InputMaybe<TierFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -8681,7 +8681,7 @@ export type WorkspacesQueryVariables = Exact<{
 }>;
 
 
-export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, slug: string, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number }, currentUser: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', role: Role }> } }> } | null };
+export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, name: string, slug: string, subscriptionId?: string | null, tier: Tier, workspaceUsers: { __typename?: 'WorkspaceUserConnection', totalCount: number }, currentUser: { __typename?: 'WorkspaceUserConnection', nodes: Array<{ __typename?: 'WorkspaceUser', role: Role }> } }> } | null };
 
 export const ProjectColumnFragmentDoc = gql`
     fragment ProjectColumn on ProjectColumn {
@@ -9432,6 +9432,8 @@ export const WorkspacesDocument = gql`
       rowId
       name
       slug
+      subscriptionId
+      tier
       workspaceUsers {
         totalCount
       }

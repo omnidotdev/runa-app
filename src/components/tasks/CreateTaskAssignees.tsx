@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  createListCollection,
   SelectContent,
   SelectControl,
   SelectItem,
@@ -25,6 +24,7 @@ import {
   SelectPositioner,
   SelectRootProvider,
   SelectTrigger,
+  createListCollection,
 } from "@/components/ui/select";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";

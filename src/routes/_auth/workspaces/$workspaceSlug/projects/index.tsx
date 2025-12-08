@@ -10,7 +10,7 @@ import { Grid2X2Icon, ListIcon, Plus, SearchIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
-import * as z from "zod/v4";
+import { z } from "zod";
 
 import Tooltip from "@/components/core/Tooltip";
 import NotFound from "@/components/layout/NotFound";
