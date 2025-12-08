@@ -6,7 +6,7 @@ const Shortcut = ({ className, ...rest }: ComponentProps<"span">) => {
   return (
     <span
       className={cn(
-        "ml-auto flex items-center justify-center gap-0.5 rounded-md border bg-background px-1 font-medium text-[10px] text-foreground",
+        "ml-auto flex items-center justify-center gap-0.5 rounded border bg-background px-1 font-medium text-[11px] text-foreground",
         className,
       )}
       {...rest}

@@ -47,7 +47,7 @@ const ColumnHeader = ({
           trigger={
             <Button
               variant="ghost"
-              size="sm"
+              className="size-7"
               onClick={onCreate}
               aria-label={`Create ${title}`}
               {...rest}

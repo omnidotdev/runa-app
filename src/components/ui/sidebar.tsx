@@ -559,7 +559,7 @@ const SidebarMenuButton = ({
       data-active={isActive}
       className={cn(
         // Base layout and spacing
-        "peer/menu-button flex h-8 w-full items-center gap-2 overflow-hidden rounded-md px-2 text-left text-sm transition-[width,height,padding,color,box-shadow]",
+        "peer/menu-button flex h-8 w-full items-center gap-2 overflow-hidden rounded-md px-2 text-left text-sm transition-[width,height,padding,color,box-shadow] duration-0",
         // Typography and base text color
         "font-medium text-sidebar-foreground/70",
         // Hover styles
