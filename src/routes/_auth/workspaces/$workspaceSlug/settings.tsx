@@ -262,8 +262,8 @@ function SettingsPage() {
               <p className="mt-1 text-red-500 text-sm">{nameError}</p>
             )}
           </div>
-          <Badge variant="secondary">
-            <p className="first-letter:uppercase">{workspace?.tier}</p>
+          <Badge className="bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
+            {firstLetterToUppercase(workspace?.tier!)}
           </Badge>
         </div>
       </div>
@@ -347,7 +347,7 @@ function SettingsPage() {
                   <MenuContent className="min-w-64">
                     {(["basic", "team"] as const).map((tier) => (
                       <MenuItemGroup key={tier}>
-                        <MenuItemGroupLabel>
+                        <MenuItemGroupLabel className="text-muted-foreground">
                           {firstLetterToUppercase(tier)}
                         </MenuItemGroupLabel>
                         {prices

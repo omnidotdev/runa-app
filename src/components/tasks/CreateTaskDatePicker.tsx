@@ -2,10 +2,7 @@ import { parseAbsoluteToLocal } from "@internationalized/date";
 import { format, parseISO } from "date-fns";
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useRef, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 
-import Shortcut from "@/components/core/Shortcut";
-import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import {
   DatePickerContent,
@@ -28,7 +25,6 @@ import {
   DatePickerViewControl,
   DatePickerViewTrigger,
 } from "@/components/ui/date-picker";
-import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 
@@ -37,12 +33,6 @@ const CreateTaskDatePicker = withForm({
   render: ({ form }) => {
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
     const triggerRef = useRef<HTMLButtonElement | null>(null);
-
-    useHotkeys(
-      Hotkeys.UpdateDueDate,
-      () => setIsDatePickerOpen(!isDatePickerOpen),
-      [isDatePickerOpen, setIsDatePickerOpen],
-    );
 
     return (
       <form.Field name="dueDate">
@@ -70,31 +60,24 @@ const CreateTaskDatePicker = withForm({
             }
             autoFocus
           >
-            <Tooltip
-              positioning={{ placement: "top" }}
-              tooltip="Set due date"
-              shortcut={Hotkeys.UpdateDueDate}
-              trigger={
-                <DatePickerControl>
-                  <DatePickerTrigger ref={triggerRef} asChild>
-                    <Button variant="outline">
-                      <CalendarIcon className="size-4" />
-                      <p className="">
-                        {field.state.value.length
-                          ? // TODO: timezone handling
-                            format(parseISO(field.state.value), "MMM d, yyyy")
-                          : "Set due date"}
-                      </p>
-                    </Button>
-                  </DatePickerTrigger>
-                </DatePickerControl>
-              }
-            />
+            <DatePickerControl>
+              <DatePickerTrigger ref={triggerRef} asChild>
+                <Button variant="outline">
+                  <CalendarIcon className="size-4" />
+                  <p className="">
+                    {field.state.value.length
+                      ? // TODO: timezone handling
+                        format(parseISO(field.state.value), "MMM d, yyyy")
+                      : "Set due date"}
+                  </p>
+                </Button>
+              </DatePickerTrigger>
+            </DatePickerControl>
 
             <DatePickerPositioner>
               <DatePickerContent className="w-48 bg-background p-0">
                 <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
-                  Date Picker <Shortcut>{Hotkeys.UpdateDueDate}</Shortcut>
+                  Date Picker
                 </div>
 
                 <div className="p-2">

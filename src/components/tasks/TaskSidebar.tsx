@@ -153,7 +153,7 @@ const TaskSidebar = () => {
           <div className="flex items-center justify-between text-xs">
             <Button
               variant="ghost"
-              className="group h-fit px-0 py-0 font-normal text-base-500 text-xs hover:bg-transparent dark:text-base-400"
+              className="group h-fit px-0 py-0 font-normal text-base-500 text-xs hover:bg-transparent hover:bg-transparent dark:text-base-400 dark:hover:bg-transparent"
               onClick={() => setIsUpdateDueDateDialogOpen(true)}
             >
               Due Date

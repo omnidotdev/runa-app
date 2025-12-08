@@ -132,7 +132,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
               tooltip="Update Assignees"
               shortcut="A"
               trigger={
-                <div className="-mt-6 -mr-2 ml-auto flex items-center gap-1">
+                <div className="-mt-6 ml-auto flex items-center gap-1">
                   {task.assignees.nodes.length ? (
                     <Assignees
                       assignees={task.assignees.nodes.map(

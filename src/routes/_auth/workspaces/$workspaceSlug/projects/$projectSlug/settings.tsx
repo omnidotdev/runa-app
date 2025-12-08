@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import NotFound from "@/components/layout/NotFound";
@@ -281,32 +280,6 @@ function ProjectSettingsPage() {
             </Button>
           </div>
         </div>
-
-        <DestructiveActionDialog
-          title="Danger Zone"
-          description={
-            <span>
-              This will delete the project{" "}
-              <strong className="font-medium text-base-900 dark:text-base-100">
-                {project?.name}
-              </strong>{" "}
-              including{" "}
-              <strong className="font-medium text-base-900 dark:text-base-100">
-                {project?.tasks.totalCount ?? 0} tasks
-              </strong>
-              . This action cannot be undone.
-            </span>
-          }
-          onConfirm={() => {
-            deleteProject({ rowId: project?.rowId! });
-            navigate({
-              to: "/workspaces/$workspaceSlug/projects",
-              params: { workspaceSlug },
-            });
-          }}
-          dialogType={DialogType.DeleteProject}
-          confirmation={`Delete ${project?.name}`}
-        />
       </div>
     </div>
   );

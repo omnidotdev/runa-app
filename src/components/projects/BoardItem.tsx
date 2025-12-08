@@ -150,13 +150,13 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                 tooltip="Update Assignees"
                 shortcut="A"
                 trigger={
-                  <div className="-mt-2.5 -mr-2 flex items-center gap-1">
+                  <div className="-mt-1 flex items-center gap-1">
                     {task.assignees.nodes.length ? (
                       <Assignees
                         assignees={task?.assignees.nodes.map(
                           (assignee) => assignee.user?.rowId!,
                         )}
-                        className="-space-x-4 mt-1 flex w-fit items-center"
+                        className="flex w-fit items-center"
                       />
                     ) : (
                       <AvatarRoot

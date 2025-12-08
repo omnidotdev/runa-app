@@ -77,7 +77,7 @@ function HomePage() {
         {/* Hero section */}
         <div className="py-20 md:py-28 lg:py-36">
           <div className="max-w-3xl">
-            <Badge variant="secondary" className="mb-5 rounded-full">
+            <Badge className="mb-5 bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
               Introducing Runa
             </Badge>
 
