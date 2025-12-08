@@ -148,7 +148,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                 }}
                 openDelay={1000}
                 tooltip="Update Assignees"
-                shortcut=""
+                shortcut="A"
                 trigger={
                   <div className="-mt-2.5 -mr-2 flex items-center gap-1">
                     {task.assignees.nodes.length ? (

@@ -12,6 +12,7 @@ import { useId, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import Shortcut from "@/components/core/Shortcut";
+import Tooltip from "@/components/core/Tooltip";
 import {
   AvatarFallback,
   AvatarImage,
@@ -36,7 +37,6 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
-import Tooltip from "../core/Tooltip";
 
 const Filter = () => {
   const { workspaceId, projectId } = useLoaderData({
@@ -135,7 +135,7 @@ const Filter = () => {
         <MenuContent className="w-48 p-0">
           <MenuItemGroup>
             <MenuItemGroupLabel className="border-b">
-              Filter <Shortcut>F</Shortcut>
+              Filter <Shortcut>{Hotkeys.ToggleFilter}</Shortcut>
             </MenuItemGroupLabel>
 
             <div className="mt-1 flex flex-col gap-0.5">

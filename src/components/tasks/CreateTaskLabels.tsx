@@ -78,7 +78,7 @@ const CreateTaskLabels = withForm({
               positioning={{ placement: "top" }}
               ids={{ trigger: triggerId }}
               tooltip="Add labels"
-              shortcut={Hotkeys.UpdateTaskLabels.toUpperCase()}
+              shortcut={Hotkeys.UpdateTaskLabels}
               trigger={
                 <MenuTrigger asChild>
                   <Button variant="outline">
@@ -126,8 +126,7 @@ const CreateTaskLabels = withForm({
             <MenuPositioner>
               <MenuContent className="flex min-w-fit flex-col gap-0 p-0">
                 <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
-                  Labels{" "}
-                  <Shortcut>{Hotkeys.UpdateTaskLabels.toUpperCase()}</Shortcut>
+                  Labels <Shortcut>{Hotkeys.UpdateTaskLabels}</Shortcut>
                 </div>
 
                 <form.Field name="labels" mode="array">

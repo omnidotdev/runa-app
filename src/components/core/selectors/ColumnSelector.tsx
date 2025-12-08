@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import Shortcut from "@/components/core/Shortcut";
+import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import {
   createListCollection,
@@ -16,7 +17,6 @@ import {
 } from "@/components/ui/select";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";
-import Tooltip from "../Tooltip";
 
 import type { ComponentProps } from "react";
 
@@ -57,7 +57,7 @@ const ColumnSelector = ({
       <Tooltip
         positioning={{ placement: "top" }}
         tooltip="Adjust status"
-        shortcut={Hotkeys.UpdateTaskStatus.toUpperCase()}
+        shortcut={Hotkeys.UpdateTaskStatus}
         trigger={
           <SelectControl>
             <SelectTrigger asChild>
@@ -74,7 +74,7 @@ const ColumnSelector = ({
       <SelectPositioner>
         <SelectContent className="w-48 p-0">
           <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
-            Status <Shortcut>{Hotkeys.UpdateTaskStatus.toUpperCase()}</Shortcut>
+            Status <Shortcut>{Hotkeys.UpdateTaskStatus}</Shortcut>
           </div>
 
           <SelectItemGroup className="space-y-1 p-1">

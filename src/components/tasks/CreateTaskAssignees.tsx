@@ -90,7 +90,7 @@ const CreateTaskAssignees = withForm({
             <Tooltip
               positioning={{ placement: "top" }}
               tooltip="Add Assignees"
-              shortcut={Hotkeys.UpdateAssignees.toUpperCase()}
+              shortcut={Hotkeys.UpdateAssignees}
               trigger={
                 <SelectControl>
                   <SelectTrigger asChild>
@@ -120,8 +120,7 @@ const CreateTaskAssignees = withForm({
             <SelectPositioner>
               <SelectContent className="max-h-80 w-48 overflow-auto p-0">
                 <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
-                  Assignees{" "}
-                  <Shortcut>{Hotkeys.UpdateAssignees.toUpperCase()}</Shortcut>
+                  Assignees <Shortcut>{Hotkeys.UpdateAssignees}</Shortcut>
                 </div>
 
                 <SelectItemGroup className="space-y-1 p-1">

@@ -71,7 +71,7 @@ const AppSidebarFooter = () => {
               {open ? <PanelLeftCloseIcon /> : <PanelLeftIcon />}
               <span className="flex w-full items-center">
                 Collapse Sidebar
-                <Shortcut>B</Shortcut>
+                <Shortcut>{Hotkeys.ToggleSidebar}</Shortcut>
               </span>
             </SidebarMenuButton>
           }
@@ -87,7 +87,7 @@ const AppSidebarFooter = () => {
               {theme === "dark" ? <MoonIcon /> : <SunIcon />}
               <span className="flex w-full items-center">
                 Toggle Theme
-                <Shortcut>T</Shortcut>
+                <Shortcut>{Hotkeys.ToggleTheme}</Shortcut>
               </span>
             </SidebarMenuButton>
           }

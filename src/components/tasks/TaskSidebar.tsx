@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import taskOptions from "@/lib/options/task.options";
 
@@ -58,7 +59,7 @@ const TaskSidebar = () => {
           <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
             Assignees
           </h3>
-          <Shortcut>A</Shortcut>
+          <Shortcut>{Hotkeys.UpdateAssignees}</Shortcut>
         </CardHeader>
 
         <CardContent className="flex max-h-80 overflow-y-auto p-4">
@@ -102,7 +103,7 @@ const TaskSidebar = () => {
           <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
             Labels
           </h3>
-          <Shortcut>L</Shortcut>
+          <Shortcut>{Hotkeys.UpdateTaskLabels}</Shortcut>
         </CardHeader>
 
         <CardContent className="space-y-4 p-4">
@@ -156,7 +157,7 @@ const TaskSidebar = () => {
               onClick={() => setIsUpdateDueDateDialogOpen(true)}
             >
               Due Date
-              <Shortcut>D</Shortcut>
+              <Shortcut>{Hotkeys.UpdateDueDate}</Shortcut>
             </Button>
 
             {task?.dueDate ? (

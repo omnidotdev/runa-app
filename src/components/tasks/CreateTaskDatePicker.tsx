@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import Shortcut from "@/components/core/Shortcut";
+import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import {
   DatePickerContent,
@@ -30,7 +31,6 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
-import Tooltip from "../core/Tooltip";
 
 const CreateTaskDatePicker = withForm({
   defaultValues: taskFormDefaults,
@@ -73,7 +73,7 @@ const CreateTaskDatePicker = withForm({
             <Tooltip
               positioning={{ placement: "top" }}
               tooltip="Set due date"
-              shortcut={Hotkeys.UpdateDueDate.toUpperCase()}
+              shortcut={Hotkeys.UpdateDueDate}
               trigger={
                 <DatePickerControl>
                   <DatePickerTrigger ref={triggerRef} asChild>
@@ -94,8 +94,7 @@ const CreateTaskDatePicker = withForm({
             <DatePickerPositioner>
               <DatePickerContent className="w-48 bg-background p-0">
                 <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
-                  Date Picker{" "}
-                  <Shortcut>{Hotkeys.UpdateDueDate.toUpperCase()}</Shortcut>
+                  Date Picker <Shortcut>{Hotkeys.UpdateDueDate}</Shortcut>
                 </div>
 
                 <div className="p-2">

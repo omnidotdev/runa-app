@@ -64,10 +64,8 @@ const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
       <SelectPositioner>
         <SelectContent className="w-48 p-0">
           <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
-            Priority{" "}
-            <Shortcut className="w-fit px-1">
-              {Hotkeys.UpdateTaskPriority.toUpperCase()}
-            </Shortcut>
+            Priority
+            <Shortcut>{Hotkeys.UpdateTaskPriority}</Shortcut>
           </div>
 
           <SelectItemGroup className="space-y-1 p-1">

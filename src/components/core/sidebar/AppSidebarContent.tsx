@@ -47,6 +47,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Role, useUpdateUserPreferenceMutation } from "@/generated/graphql";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
@@ -254,7 +255,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                 <Tooltip
                   positioning={{ placement: "right" }}
                   tooltip="Create Workspace"
-                  shortcut="W"
+                  shortcut={Hotkeys.CreateWorkspace.toUpperCase()}
                   trigger={
                     <SidebarGroupAction
                       onClick={(e) => {
@@ -309,7 +310,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                   disabled={!workspace?.projectColumns.nodes.length}
                   positioning={{ placement: "right" }}
                   tooltip="Create Project"
-                  shortcut="P"
+                  shortcut={Hotkeys.CreateProject}
                   trigger={
                     <SidebarGroupAction
                       className={cn(
@@ -451,7 +452,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                                     : "List View"}
                                 </span>
 
-                                <Shortcut>V</Shortcut>
+                                <Shortcut>{Hotkeys.ToggleViewMode}</Shortcut>
                               </MenuItem>
 
                               <MenuItem
