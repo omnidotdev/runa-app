@@ -4,8 +4,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import type { LinkComponent } from "@tanstack/react-router";
+import type { VariantProps } from "class-variance-authority";
 import type { AnchorHTMLAttributes } from "react";
-import type { VariantProps } from "tailwind-variants";
 
 const BasicLink = ({
   variant,
