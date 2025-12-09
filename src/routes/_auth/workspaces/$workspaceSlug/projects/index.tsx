@@ -12,10 +12,10 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
+import Tooltip from "@/components/core/Tooltip";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tooltip } from "@/components/ui/tooltip";
 import Board from "@/components/workspaces/overview/Board";
 import List from "@/components/workspaces/overview/List";
 import {
@@ -334,7 +334,7 @@ function ProjectsOverviewPage() {
                   defaultValue={search}
                   onChange={handleSearch}
                   placeholder="Search projects..."
-                  className="pl-10"
+                  className="border-border pl-10 shadow-xs"
                   id="project-search-input"
                   autoComplete="off"
                 />
@@ -346,48 +346,52 @@ function ProjectsOverviewPage() {
                   workspace?.viewMode === "list" ? "Board View" : "List View"
                 }
                 shortcut="V"
-              >
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() =>
-                    updateViewMode({
-                      rowId: workspaceId,
-                      patch: {
-                        viewMode:
-                          workspace?.viewMode === "board" ? "list" : "board",
-                      },
-                    })
-                  }
-                  aria-label={
-                    workspace?.viewMode === "list" ? "Board View" : "List View"
-                  }
-                >
-                  {workspace?.viewMode === "list" ? (
-                    <Grid2X2Icon />
-                  ) : (
-                    <ListIcon />
-                  )}
-                </Button>
-              </Tooltip>
+                trigger={
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() =>
+                      updateViewMode({
+                        rowId: workspaceId,
+                        patch: {
+                          viewMode:
+                            workspace?.viewMode === "board" ? "list" : "board",
+                        },
+                      })
+                    }
+                    aria-label={
+                      workspace?.viewMode === "list"
+                        ? "Board View"
+                        : "List View"
+                    }
+                  >
+                    {workspace?.viewMode === "list" ? (
+                      <Grid2X2Icon />
+                    ) : (
+                      <ListIcon />
+                    )}
+                  </Button>
+                }
+              />
 
               <Tooltip
                 positioning={{ placement: "bottom" }}
                 tooltip="Create Project"
                 shortcut="P"
-              >
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setIsCreateProjectOpen(true)}
-                  // TODO: update tooltip to handle disabled state
-                  disabled={maxProjectsReached}
-                  aria-label="Create Project"
-                  className={cn("hidden", !isMember && "inline-flex")}
-                >
-                  <Plus className="size-4" />
-                </Button>
-              </Tooltip>
+                trigger={
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setIsCreateProjectOpen(true)}
+                    // TODO: update tooltip to handle disabled state
+                    disabled={maxProjectsReached}
+                    aria-label="Create Project"
+                    className={cn("hidden", !isMember && "inline-flex")}
+                  >
+                    <Plus className="size-4" />
+                  </Button>
+                }
+              />
             </div>
           </div>
         </div>

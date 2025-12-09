@@ -4,7 +4,12 @@ import { MoreHorizontalIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useRef, useState } from "react";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
-import { Avatar } from "@/components/ui/avatar";
+import Tooltip from "@/components/core/Tooltip";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +19,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Tooltip } from "@/components/ui/tooltip";
 import InviteMemberDialog from "@/components/workspaces/InviteMemberDialog";
 import {
   Role,
@@ -82,25 +86,24 @@ const Team = () => {
           </h2>
 
           <Tooltip
+            positioning={{ placement: "left" }}
             tooltip="Invite Member"
             shortcut="I"
-            positioning={{
-              placement: "left",
-            }}
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Invite team member"
-              className={cn("mr-2 hidden size-7", isOwner && "inline-flex")}
-              onClick={() => setIsInviteTeamMemberOpen(true)}
-              // TODO: add tooltip when disabled? Also conditionalize disabled prop for other tiers
-              disabled={workspace?.tier === Tier.Free}
-              ref={inviteRef}
-            >
-              <PlusIcon />
-            </Button>
-          </Tooltip>
+            trigger={
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Invite team member"
+                className={cn("mr-2 hidden size-7", isOwner && "inline-flex")}
+                onClick={() => setIsInviteTeamMemberOpen(true)}
+                // TODO: add tooltip when disabled? Also conditionalize disabled prop for other tiers
+                disabled={workspace?.tier === Tier.Free}
+                ref={inviteRef}
+              >
+                <PlusIcon />
+              </Button>
+            }
+          />
         </div>
 
         {members?.nodes.length ? (
@@ -117,20 +120,25 @@ const Team = () => {
                 >
                   <div className="flex w-full items-center">
                     <div className="flex size-10 items-center justify-center">
-                      <Avatar
-                        fallback={member.user?.name?.charAt(0)}
-                        src={member.user?.avatarUrl ?? undefined}
-                        alt={member.user?.name}
+                      <AvatarRoot
                         size="xs"
                         className="size-6 rounded-full border bg-background font-medium text-sm uppercase shadow"
-                      />
+                      >
+                        <AvatarImage
+                          src={member.user?.avatarUrl ?? undefined}
+                          alt={member.user?.name}
+                        />
+                        <AvatarFallback>
+                          {member.user?.name?.charAt(0)}
+                        </AvatarFallback>
+                      </AvatarRoot>
                     </div>
 
                     <span className="px-3 text-xs md:text-sm">
                       {member?.user?.name}
                     </span>
 
-                    <Badge size="sm" variant="outline">
+                    <Badge variant="outline">
                       <p className="first-letter:uppercase">{member.role}</p>
                     </Badge>
 

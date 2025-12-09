@@ -6,13 +6,15 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import AppSidebarContent from "@/components/core/sidebar/AppSidebarContent";
 import AppSidebarFooter from "@/components/core/sidebar/AppSidebarFooter";
 import AppSidebarHeader from "@/components/core/sidebar/AppSidebarHeader";
-import { Sidebar, SidebarRail } from "@/components/ui/sidebar";
+import { Sidebar, SidebarRail, useSidebar } from "@/components/ui/sidebar";
 import { useDeleteProjectMutation } from "@/generated/graphql";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -50,6 +52,10 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
       ],
     },
   });
+
+  const { toggleSidebar } = useSidebar();
+
+  useHotkeys(Hotkeys.ToggleSidebar, toggleSidebar, [toggleSidebar]);
 
   return (
     <>

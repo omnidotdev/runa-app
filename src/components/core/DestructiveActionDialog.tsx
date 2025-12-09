@@ -107,7 +107,7 @@ const DestructiveActionDialog = ({
                     autoComplete="off"
                     autoCorrect="off"
                     spellCheck="false"
-                    variant="destructive"
+                    className="focus-visible:ring-red-500"
                   />
                 </div>
               )}

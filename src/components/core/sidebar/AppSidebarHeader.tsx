@@ -24,7 +24,7 @@ const AppSidebarHeader = () => {
   const { workspaceId } = useLoaderData({ from: "/_auth" });
   const { session } = useRouteContext({ strict: false });
   const navigate = useNavigate();
-  const pathname = useLocation();
+  const { pathname } = useLocation();
 
   const { data: workspaces } = useQuery({
     ...workspacesOptions({ userId: session?.user.rowId! }),
@@ -50,7 +50,7 @@ const AppSidebarHeader = () => {
         <MenuRoot>
           <MenuTrigger asChild>
             <SidebarMenuButton className="bg-sidebar-accent focus-visible:ring-offset-background">
-              <ChevronsUpDown />
+              <ChevronsUpDown className="rotate-none!" />
 
               <span className="flex w-full items-center group-data-[collapsible=icon]:hidden">
                 {workspace?.name ?? "Select Workspace"}
@@ -62,7 +62,7 @@ const AppSidebarHeader = () => {
             <MenuContent className="no-scrollbar flex max-h-80 min-w-48 flex-col gap-1 overflow-auto rounded-lg focus:outline-none">
               {workspaces?.map((workspace) => {
                 const isWorkspaceSelected =
-                  workspace.slug === pathname.pathname.split("/")[2];
+                  workspace.slug === pathname.split("/")[2];
 
                 return (
                   <MenuItem

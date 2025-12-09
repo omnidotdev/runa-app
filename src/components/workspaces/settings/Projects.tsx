@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
+import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import {
   MenuContent,
@@ -24,7 +25,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Tooltip } from "@/components/ui/tooltip";
 import { Role, useDeleteProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
@@ -93,24 +93,23 @@ const Projects = () => {
           </h2>
 
           <Tooltip
-            positioning={{
-              placement: "left",
-            }}
+            positioning={{ placement: "left" }}
             tooltip="Create Project"
             shortcut="P"
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Add project"
-              className={cn("mr-2 hidden size-7", !isMember && "inline-flex")}
-              onClick={() => setIsCreateProjectOpen(true)}
-              // TODO: add tooltip for disabled state
-              disabled={maxProjectsReached}
-            >
-              <Plus />
-            </Button>
-          </Tooltip>
+            trigger={
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Add project"
+                className={cn("mr-2 hidden size-7", !isMember && "inline-flex")}
+                onClick={() => setIsCreateProjectOpen(true)}
+                // TODO: add tooltip for disabled state
+                disabled={maxProjectsReached}
+              >
+                <Plus />
+              </Button>
+            }
+          />
         </div>
 
         {workspace?.projects.nodes.length ? (

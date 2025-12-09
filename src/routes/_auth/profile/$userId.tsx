@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { CardContent, CardRoot } from "@/components/ui/card";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
@@ -133,7 +133,7 @@ function ProfilePage() {
   });
 
   return (
-    <div className="no-scrollbar min-h-dvh overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
+    <div className="no-scrollbar min-h-dvh overflow-y-auto bg-linear-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-12">
           <div className="xl:col-span-4">
@@ -459,7 +459,7 @@ function ProfilePage() {
                 </div>
               </TabsContent>
               <TabsContent value="customization">
-                <Card className="mt-4 border">
+                <CardRoot className="mt-4 border">
                   <CardContent className="p-6">
                     <div className="p-8 text-center">
                       <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-muted/50">
@@ -473,7 +473,7 @@ function ProfilePage() {
                       </p>
                     </div>
                   </CardContent>
-                </Card>
+                </CardRoot>
               </TabsContent>
             </TabsRoot>
           </div>
@@ -489,7 +489,8 @@ function ProfilePage() {
               <strong className="font-medium text-base-900 dark:text-base-100">
                 {workspaceToDelete?.name}
               </strong>{" "}
-              and all associated data. This action cannot be undone.
+              and all associated data. Any subscription associated with this
+              workspace will be revoked. This action cannot be undone.
             </span>
           }
           onConfirm={() => {

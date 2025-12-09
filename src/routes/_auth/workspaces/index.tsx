@@ -3,7 +3,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LayersIcon, PlusIcon } from "lucide-react";
 
 import Link from "@/components/core/Link";
-import { Avatar } from "@/components/ui/avatar";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -71,16 +75,15 @@ function WorkspacesOverviewPage() {
                 variant="outline"
                 className="flex h-32 flex-col p-4"
               >
-                <Avatar
-                  src={undefined}
-                  alt={workspace?.name}
-                  fallback={
+                <AvatarRoot size="lg">
+                  <AvatarImage src={undefined} alt={workspace?.name} />
+                  <AvatarFallback>
+                    {" "}
                     <div className="flex size-full items-center justify-center border font-semibold uppercase">
                       {workspace?.name?.charAt(0)}
                     </div>
-                  }
-                  size="lg"
-                />
+                  </AvatarFallback>
+                </AvatarRoot>
                 <div className="flex flex-1 flex-col items-center">
                   <h3 className="truncate font-semibold text-base-900 dark:text-base-100">
                     {workspace?.name}

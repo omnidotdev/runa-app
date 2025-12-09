@@ -3,7 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useLoaderData } from "@tanstack/react-router";
 import { TrashIcon } from "lucide-react";
 
-import { Avatar } from "@/components/ui/avatar";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   ComboboxContent,
@@ -104,17 +108,18 @@ const UpdateAssignees = withForm({
                     return (
                       <div
                         key={assignee}
-                        className="flex items-center justify-between"
+                        className="mt-2 flex items-center justify-between"
                       >
-                        <div className="flex items-center gap-0">
-                          <Avatar
-                            fallback={
-                              workspaceUser?.user?.name?.charAt(0) ?? "U"
-                            }
-                            src={workspaceUser?.user?.avatarUrl ?? undefined}
-                            alt={workspaceUser?.user?.name}
-                            className="size-6 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100"
-                          />
+                        <div className="flex items-center gap-2">
+                          <AvatarRoot className="size-6 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100">
+                            <AvatarImage
+                              src={workspaceUser?.user?.avatarUrl ?? undefined}
+                              alt={workspaceUser?.user?.name}
+                            />
+                            <AvatarFallback>
+                              {workspaceUser?.user?.name?.charAt(0) ?? "U"}
+                            </AvatarFallback>
+                          </AvatarRoot>
 
                           <p className="text-xs">{workspaceUser?.user?.name}</p>
                         </div>

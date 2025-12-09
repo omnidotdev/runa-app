@@ -1,6 +1,8 @@
-import { useRef } from "react";
+import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
-import PopoverWithTooltip from "@/components/core/PopoverWithTooltip";
+import Shortcut from "@/components/core/Shortcut";
+import Tooltip from "@/components/core/Tooltip";
 import PriorityIcon from "@/components/tasks/PriorityIcon";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,8 +17,6 @@ import {
   SelectTrigger,
   createListCollection,
 } from "@/components/ui/select";
-import { SidebarMenuShortcut } from "@/components/ui/sidebar";
-import { TooltipTrigger } from "@/components/ui/tooltip";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 
@@ -27,8 +27,6 @@ interface Props extends Omit<ComponentProps<typeof Select>, "collection"> {
 }
 
 const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
-  const selectButtonRef = useRef<HTMLButtonElement | null>(null);
-
   const priorityCollection = createListCollection({
     items: [
       { label: "Low", value: "low" },
@@ -37,20 +35,29 @@ const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
     ],
   });
 
+  const [isPrioritySelectorOpen, setIsPrioritySelectorOpen] = useState(false);
+
+  useHotkeys(
+    Hotkeys.UpdateTaskPriority,
+    () => setIsPrioritySelectorOpen(!isPrioritySelectorOpen),
+    [isPrioritySelectorOpen, setIsPrioritySelectorOpen],
+  );
+
   return (
-    <PopoverWithTooltip
-      triggerRef={selectButtonRef}
-      tooltip="Adjust Priority"
-      shortcut={Hotkeys.UpdateTaskPriority.toUpperCase()}
+    <Select
+      open={isPrioritySelectorOpen}
+      onOpenChange={({ open }) => setIsPrioritySelectorOpen(open)}
+      collection={priorityCollection}
+      loopFocus
+      {...rest}
     >
-      <Select collection={priorityCollection} loopFocus {...rest}>
-        <SelectControl>
-          <SelectTrigger
-            aria-label="Select Priority"
-            ref={selectButtonRef}
-            asChild
-          >
-            <TooltipTrigger asChild>
+      <Tooltip
+        positioning={{ placement: "top" }}
+        tooltip="Adjust Priority"
+        shortcut={Hotkeys.UpdateTaskPriority}
+        trigger={
+          <SelectControl>
+            <SelectTrigger aria-label="Select Priority" asChild>
               <Button variant="outline" className="w-fit">
                 <PriorityIcon priority={triggerValue} />
 
@@ -58,34 +65,32 @@ const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
                   {firstLetterToUppercase(triggerValue!)}
                 </p>
               </Button>
-            </TooltipTrigger>
-          </SelectTrigger>
-        </SelectControl>
+            </SelectTrigger>
+          </SelectControl>
+        }
+      />
 
-        <SelectPositioner>
-          <SelectContent className="w-48 p-0">
-            <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
-              Priority{" "}
-              <SidebarMenuShortcut className="w-fit px-1">
-                {Hotkeys.UpdateTaskPriority.toUpperCase()}
-              </SidebarMenuShortcut>
-            </div>
+      <SelectPositioner>
+        <SelectContent className="w-48 p-0">
+          <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
+            Priority
+            <Shortcut>{Hotkeys.UpdateTaskPriority}</Shortcut>
+          </div>
 
-            <SelectItemGroup className="space-y-1 p-1">
-              {priorityCollection.items.map((column) => (
-                <SelectItem key={column.value} item={column}>
-                  <SelectItemText>
-                    <PriorityIcon priority={column.label} />
-                    {column.label}
-                  </SelectItemText>
-                  <SelectItemIndicator />
-                </SelectItem>
-              ))}
-            </SelectItemGroup>
-          </SelectContent>
-        </SelectPositioner>
-      </Select>
-    </PopoverWithTooltip>
+          <SelectItemGroup className="space-y-1 p-1">
+            {priorityCollection.items.map((column) => (
+              <SelectItem key={column.value} item={column}>
+                <SelectItemText>
+                  <PriorityIcon priority={column.label} />
+                  {column.label}
+                </SelectItemText>
+                <SelectItemIndicator />
+              </SelectItem>
+            ))}
+          </SelectItemGroup>
+        </SelectContent>
+      </SelectPositioner>
+    </Select>
   );
 };
 

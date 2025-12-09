@@ -3,9 +3,9 @@ import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
+import Tooltip from "@/components/core/Tooltip";
 import LabelForm from "@/components/projects/settings/labels/LabelForm";
 import { Button } from "@/components/ui/button";
-import { Tooltip } from "@/components/ui/tooltip";
 import { Role } from "@/generated/graphql";
 import labelsOptions from "@/lib/options/labels.options";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -65,22 +65,21 @@ const ProjectLabelsForm = () => {
         </h2>
 
         <Tooltip
+          positioning={{ placement: "left" }}
           tooltip="Create new label"
-          positioning={{
-            placement: "left",
-          }}
-        >
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Create new label"
-            className={cn("mr-2 hidden size-7", !isMember && "inline-flex")}
-            onClick={handleCreateNewLabel}
-            disabled={activeLabelId !== null}
-          >
-            <PlusIcon />
-          </Button>
-        </Tooltip>
+          trigger={
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Create new label"
+              className={cn("mr-2 hidden size-7", !isMember && "inline-flex")}
+              onClick={handleCreateNewLabel}
+              disabled={activeLabelId !== null}
+            >
+              <PlusIcon />
+            </Button>
+          }
+        />
       </div>
 
       {isCreatingLabel && (

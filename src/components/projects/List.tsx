@@ -152,7 +152,7 @@ const List = ({
               <ColumnMenu columnId={column.rowId} />
             </ListTrigger>
 
-            <CollapsibleContent className="rounded-b-lg">
+            <CollapsibleContent className="rounded-b-lg p-0">
               {/* NB: Fade in the top border to avoid clashing with the parent border during animation */}
               <div className="border-t transition-opacity ease-in-out" />
               <Droppable droppableId={column.rowId}>

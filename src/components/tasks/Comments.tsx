@@ -6,7 +6,11 @@ import { Suspense, useEffect, useRef, useState } from "react";
 
 import RichTextEditor from "@/components/core/RichTextEditor";
 import UpdateCommentForm from "@/components/tasks/UpdateCommentForm";
-import { Avatar } from "@/components/ui/avatar";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import {
@@ -104,13 +108,15 @@ const Comments = () => {
                   >
                     <div className="flex flex-1 flex-col gap-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <Avatar
-                          fallback={post?.author?.name.charAt(0)}
-                          src={post?.author?.avatarUrl ?? undefined}
-                          alt={post?.author?.name}
-                          size="xs"
-                          className="size-6! border"
-                        />
+                        <AvatarRoot size="xs" className="size-6! border">
+                          <AvatarImage
+                            src={post?.author?.avatarUrl ?? undefined}
+                            alt={post?.author?.name}
+                          />
+                          <AvatarFallback>
+                            {post?.author?.name.charAt(0)}
+                          </AvatarFallback>
+                        </AvatarRoot>
                         <span className="font-medium text-base-900 text-sm dark:text-base-100">
                           {post?.author?.name ?? "Anonymous"}
                         </span>

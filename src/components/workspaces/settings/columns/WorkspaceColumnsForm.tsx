@@ -22,8 +22,8 @@ import { PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
+import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
-import { Tooltip } from "@/components/ui/tooltip";
 import ColumnForm from "@/components/workspaces/settings/columns/ColumnForm";
 import {
   Role,
@@ -144,22 +144,21 @@ const ProjectColumnsForm = () => {
           </h2>
 
           <Tooltip
+            positioning={{ placement: "left" }}
             tooltip="Create column"
-            positioning={{
-              placement: "left",
-            }}
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Create new column"
-              className={cn("mr-2 hidden size-7", !isMember && "inline-flex")}
-              onClick={handleCreateNewColumn}
-              disabled={activeColumnId !== null}
-            >
-              <PlusIcon />
-            </Button>
-          </Tooltip>
+            trigger={
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Create new column"
+                className={cn("mr-2 hidden size-7", !isMember && "inline-flex")}
+                onClick={handleCreateNewColumn}
+                disabled={activeColumnId !== null}
+              >
+                <PlusIcon />
+              </Button>
+            }
+          />
         </div>
 
         {isCreatingColumn && (

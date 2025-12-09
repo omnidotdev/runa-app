@@ -1,91 +1,54 @@
 import { Menu as ArkMenu } from "@ark-ui/react/menu";
-import { CheckIcon, ChevronRightIcon } from "lucide-react";
-import { tv } from "tailwind-variants";
+import { Check, ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
+import type { ark } from "@ark-ui/react";
 import type { ComponentProps } from "react";
-
-const menuVariants = tv({
-  slots: {
-    trigger: "",
-    positioner: "",
-    content:
-      "bg-background outline-none data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=closed]:animate-out data-[state=open]:animate-in flex flex-col gap-0.5",
-    arrow: "fill-popover",
-    arrowTip: "fill-border",
-    item: "data-[state=checked]:bg-accent data-[state=checked]:text-accent-foreground [&[data-state=checked][data-highlighted]]:bg-sidebar-accent/80 focus:bg-accent hover:bg-accent focus:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:hover:bg-destructive/10 dark:data-[variant=destructive]:hover:bg-destructive/20 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-    checkboxItem:
-      "data-[state=checked]:bg-accent data-[state=checked]:text-accent-foreground [&[data-state=checked][data-highlighted]]:bg-sidebar-accent/80 relative w-full flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent hover:bg-accent focus:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-    itemGroup: "overflow-hidden p-1",
-    itemGroupLabel:
-      "flex w-full items-center justify-between p-2 text-base-500 text-sm",
-    itemText: "",
-    itemIndicator:
-      "text-green-500 ml-auto flex h-3.5 w-3.5 items-center justify-center",
-    radioItem:
-      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50",
-    radioItemGroup: "",
-    separator: "-mx-1 py-0 h-px",
-    triggerItem:
-      "relative [&>svg]:size-4 outline-none focus-visible:border-ring data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground focus-visible:ring-ring/50 focus-visible:ring-[3px] flex cursor-default select-none items-center rounded-sm gap-2 px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-  },
-});
-
-const {
-  trigger,
-  positioner,
-  content,
-  arrow,
-  arrowTip,
-  item,
-  checkboxItem,
-  itemGroup,
-  itemGroupLabel,
-  itemText,
-  itemIndicator,
-  radioItem,
-  radioItemGroup,
-  separator,
-  triggerItem,
-} = menuVariants();
 
 const MenuProvider = ArkMenu.RootProvider;
 const MenuRoot = ArkMenu.Root;
+const PrimitiveMenuIndicator = ArkMenu.ItemIndicator;
 
 const MenuTrigger = ({
   className,
   ...rest
 }: ComponentProps<typeof ArkMenu.Trigger>) => (
-  <ArkMenu.Trigger className={cn(trigger(), className)} {...rest} />
+  <ArkMenu.Trigger className={className} {...rest} />
 );
 
 const MenuPositioner = ({
   className,
   ...rest
 }: ComponentProps<typeof ArkMenu.Positioner>) => (
-  <ArkMenu.Positioner className={cn(positioner(), className)} {...rest} />
+  <ArkMenu.Positioner className={className} {...rest} />
 );
 
 const MenuContent = ({
   className,
   ...rest
 }: ComponentProps<typeof ArkMenu.Content>) => (
-  <ArkMenu.Content className={cn(content(), className)} {...rest} />
+  <ArkMenu.Content
+    className={cn(
+      "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 z-50 flex min-w-32 origin-(--transform-origin) flex-col gap-0.5 overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-none duration-300 data-[state=closed]:animate-out data-[state=open]:animate-in",
+      className,
+    )}
+    {...rest}
+  />
 );
 
 const MenuArrow = ({
   className,
   ...rest
 }: ComponentProps<typeof ArkMenu.Arrow>) => (
-  <ArkMenu.Arrow className={cn(arrow(), className)} {...rest} />
+  <ArkMenu.Arrow className={cn("fill-popover", className)} {...rest} />
 );
 
 const MenuArrowTip = ({
   className,
   ...rest
 }: ComponentProps<typeof ArkMenu.ArrowTip>) => (
-  <ArkMenu.ArrowTip className={cn(arrowTip(), className)} {...rest} />
+  <ArkMenu.ArrowTip className={cn("fill-border", className)} {...rest} />
 );
 
 const MenuItem = ({
@@ -99,9 +62,9 @@ const MenuItem = ({
   <ArkMenu.Item
     data-variant={variant}
     className={cn(
-      item(),
+      "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden hover:bg-accent focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-[state=checked]:bg-accent data-highlighted:bg-accent data-inset:pl-8 data-[state=checked]:text-accent-foreground data-[variant=destructive]:text-destructive data-highlighted:text-accent-foreground data-disabled:opacity-50 data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:hover:bg-destructive/10 dark:data-[variant=destructive]:hover:bg-destructive/20 [&[data-state=checked][data-highlighted]]:bg-sidebar-accent/80 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[variant=destructive]:*:[svg]:text-destructive!",
       variant === "destructive" &&
-        "data-[highlighted]:bg-destructive/10 data-[highlighted]:text-destructive",
+        "data-highlighted:bg-destructive/10 data-highlighted:text-destructive",
       className,
     )}
     {...rest}
@@ -115,7 +78,13 @@ const MenuCheckboxItem = ({
   children,
   ...rest
 }: ComponentProps<typeof ArkMenu.CheckboxItem>) => (
-  <ArkMenu.CheckboxItem className={cn(checkboxItem(), className)} {...rest}>
+  <ArkMenu.CheckboxItem
+    className={cn(
+      "relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-[state=checked]:bg-accent data-highlighted:bg-accent data-[state=checked]:text-accent-foreground data-highlighted:text-accent-foreground data-disabled:opacity-50 [&[data-state=checked][data-highlighted]]:bg-sidebar-accent/80",
+      className,
+    )}
+    {...rest}
+  >
     {children}
   </ArkMenu.CheckboxItem>
 );
@@ -124,7 +93,7 @@ const MenuItemGroup = ({
   className,
   ...rest
 }: ComponentProps<typeof ArkMenu.ItemGroup>) => (
-  <ArkMenu.ItemGroup className={cn(itemGroup(), className)} {...rest} />
+  <ArkMenu.ItemGroup className={cn("overflow-hidden", className)} {...rest} />
 );
 
 const MenuItemGroupLabel = ({
@@ -132,7 +101,10 @@ const MenuItemGroupLabel = ({
   ...rest
 }: ComponentProps<typeof ArkMenu.ItemGroupLabel>) => (
   <ArkMenu.ItemGroupLabel
-    className={cn(itemGroupLabel(), className)}
+    className={cn(
+      "flex w-full cursor-default items-center justify-between p-2 font-medium text-foreground text-sm",
+      className,
+    )}
     {...rest}
   />
 );
@@ -141,15 +113,21 @@ const MenuItemText = ({
   className,
   ...rest
 }: ComponentProps<typeof ArkMenu.ItemText>) => (
-  <ArkMenu.ItemText className={cn(itemText(), className)} {...rest} />
+  <ArkMenu.ItemText className={className} {...rest} />
 );
 
 const MenuItemIndicator = ({
   className,
   ...rest
 }: ComponentProps<typeof ArkMenu.ItemIndicator>) => (
-  <ArkMenu.ItemIndicator className={cn(itemIndicator(), className)} {...rest}>
-    <CheckIcon className="size-4" />
+  <ArkMenu.ItemIndicator
+    className={cn(
+      "ml-auto flex h-3.5 w-3.5 items-center justify-center",
+      className,
+    )}
+    {...rest}
+  >
+    <Check className="size-4" />
   </ArkMenu.ItemIndicator>
 );
 
@@ -158,7 +136,13 @@ const MenuRadioItem = ({
   children,
   ...rest
 }: ComponentProps<typeof ArkMenu.RadioItem>) => (
-  <ArkMenu.RadioItem className={cn(radioItem(), className)} {...rest}>
+  <ArkMenu.RadioItem
+    className={cn(
+      "relative flex cursor-default select-none items-center gap-2 rounded-sm py-1.5 pr-2 pl-8 text-sm outline-hidden focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+      className,
+    )}
+    {...rest}
+  >
     {children}
   </ArkMenu.RadioItem>
 );
@@ -167,17 +151,17 @@ const MenuRadioItemGroup = ({
   className,
   ...rest
 }: ComponentProps<typeof ArkMenu.RadioItemGroup>) => (
-  <ArkMenu.RadioItemGroup
-    className={cn(radioItemGroup(), className)}
-    {...rest}
-  />
+  <ArkMenu.RadioItemGroup className={className} {...rest} />
 );
 
 const MenuSeparator = ({
   className,
   ...rest
 }: ComponentProps<typeof ArkMenu.Separator>) => (
-  <ArkMenu.Separator className={cn(separator(), className)} {...rest} />
+  <ArkMenu.Separator
+    className={cn("-mx-1 mt-1 mb-1 h-px bg-border", className)}
+    {...rest}
+  />
 );
 
 const MenuTriggerItem = ({
@@ -185,10 +169,33 @@ const MenuTriggerItem = ({
   children,
   ...rest
 }: ComponentProps<typeof ArkMenu.TriggerItem>) => (
-  <ArkMenu.TriggerItem className={cn(triggerItem(), className)} {...rest}>
+  <ArkMenu.TriggerItem
+    className={cn(
+      "relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 data-disabled:pointer-events-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-disabled:opacity-50 [&>svg]:size-4",
+      className,
+    )}
+    {...rest}
+  >
     {children}
-    <ChevronRightIcon className="ml-auto size-3! text-base-400" />
+    <ChevronRight className="ml-auto h-4 w-4" />
   </ArkMenu.TriggerItem>
+);
+
+// TODO: Dicuss passing in an Icon i.e, <Settings /> as children
+const MenuItemShortcut = ({
+  className,
+  children,
+  ...rest
+}: ComponentProps<typeof ark.span>) => (
+  <span
+    className={cn(
+      "ml-auto text-muted-foreground text-xs tracking-widest",
+      className,
+    )}
+    {...rest}
+  >
+    {children}
+  </span>
 );
 
 export {
@@ -209,4 +216,6 @@ export {
   MenuSeparator,
   MenuTrigger,
   MenuTriggerItem,
+  MenuItemShortcut,
+  PrimitiveMenuIndicator,
 };

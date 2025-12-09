@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import {
   ColorPickerArea,
@@ -43,7 +44,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Tooltip } from "@/components/ui/tooltip";
 import {
   Role,
   useCreateLabelMutation,
@@ -326,32 +326,37 @@ const LabelForm = ({
         >
           {([canSubmit, isSubmitting, isDefaultValue]) => (
             <div className="ml-2 flex items-center justify-center">
-              <Tooltip tooltip="Cancel">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => {
-                    onSetActive(null);
-                    form.reset();
-                  }}
-                  disabled={isSubmitting}
-                  className="focus-visible:ring-offset-0"
-                >
-                  <XIcon />
-                </Button>
-              </Tooltip>
-
-              <Tooltip tooltip="Save">
-                <Button
-                  type="submit"
-                  variant="ghost"
-                  size="icon"
-                  disabled={!canSubmit || isSubmitting || isDefaultValue}
-                  className="focus-visible:ring-offset-0"
-                >
-                  <CheckIcon />
-                </Button>
-              </Tooltip>
+              <Tooltip
+                tooltip="Cancel"
+                trigger={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      onSetActive(null);
+                      form.reset();
+                    }}
+                    disabled={isSubmitting}
+                    className="focus-visible:ring-offset-0"
+                  >
+                    <XIcon />
+                  </Button>
+                }
+              />
+              <Tooltip
+                tooltip="Save"
+                trigger={
+                  <Button
+                    type="submit"
+                    variant="ghost"
+                    size="icon"
+                    disabled={!canSubmit || isSubmitting || isDefaultValue}
+                    className="focus-visible:ring-offset-0"
+                  >
+                    <CheckIcon />
+                  </Button>
+                }
+              />
             </div>
           )}
         </form.Subscribe>
