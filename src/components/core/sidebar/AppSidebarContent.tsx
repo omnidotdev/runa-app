@@ -20,8 +20,10 @@ import {
   Settings2Icon,
   Trash2Icon,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useId, useState } from "react";
 
+import Shortcut from "@/components/core/Shortcut";
+import Tooltip from "@/components/core/Tooltip";
 import {
   CollapsibleContent,
   CollapsibleRoot,
@@ -42,12 +44,10 @@ import {
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuShortcut,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Tooltip } from "@/components/ui/tooltip";
 import { Role, useUpdateUserPreferenceMutation } from "@/generated/graphql";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
@@ -75,8 +75,6 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
   const { pathname } = useLocation();
 
   const [isProjectMenuOpen, setProjectMenuOpen] = useState(false);
-
-  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const { data: workspace } = useQuery({
     ...workspaceOptions({
@@ -136,12 +134,14 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
     },
     {
       isActive: pathname === `/workspaces/${workspaceSlug}/projects`,
-      tooltip: "Project Overview",
+      tooltip: "Projects Overview",
       to: "/workspaces/$workspaceSlug/projects",
       icon: LayersIcon,
       label: "Overview",
     },
   ];
+
+  const triggerId = useId();
 
   return (
     <SidebarContent className="pt-2 group-data-[collapsible=icon]:gap-0">
@@ -149,98 +149,97 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
         <>
           <SidebarMenu className="ml-2 hidden gap-1 group-data-[collapsible=icon]:flex">
             {sidebarMenuItems.map((item) => (
-              <SidebarMenuItem key={item.to}>
-                <SidebarMenuButton
-                  isActive={item.isActive}
-                  tooltip={item.tooltip}
-                  onClick={() =>
-                    navigate({
-                      to: item.to,
-                      params: { workspaceSlug },
-                    })
-                  }
-                >
-                  <item.icon />
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              <SidebarMenuButton
+                key={item.to}
+                isActive={item.isActive}
+                tooltip={item.tooltip}
+                onClick={() =>
+                  navigate({
+                    to: item.to,
+                    params: { workspaceSlug },
+                  })
+                }
+              >
+                <item.icon />
+              </SidebarMenuButton>
             ))}
 
             {/* Mobile projects menu */}
             {!open && !!workspace?.projects?.nodes?.length && (
-              <SidebarMenuItem>
-                <MenuRoot
-                  positioning={{
-                    strategy: "fixed",
-                    placement: "bottom-start",
-                    getAnchorRect: () =>
-                      menuButtonRef.current?.getBoundingClientRect() ?? null,
-                  }}
-                  open={isProjectMenuOpen}
-                  onOpenChange={({ open }) => setProjectMenuOpen(open)}
-                >
-                  <SidebarMenuButton
-                    tooltip={!isProjectMenuOpen ? "Project List" : undefined}
-                    asChild
-                  >
-                    <MenuTrigger
-                      ref={menuButtonRef}
-                      className="text-sidebar-foreground/70"
-                    >
-                      {isProjectMenuOpen ? <PackageOpenIcon /> : <BoxIcon />}
+              <MenuRoot
+                positioning={{ placement: "bottom-start" }}
+                open={isProjectMenuOpen}
+                onOpenChange={({ open }) => setProjectMenuOpen(open)}
+                ids={{ trigger: triggerId }}
+              >
+                <Tooltip
+                  positioning={{ placement: "right" }}
+                  ids={{ trigger: triggerId }}
+                  disabled={isProjectMenuOpen}
+                  tooltip="Project List"
+                  trigger={
+                    <MenuTrigger asChild>
+                      <SidebarMenuButton>
+                        {isProjectMenuOpen ? (
+                          <PackageOpenIcon className="rotate-none!" />
+                        ) : (
+                          <BoxIcon className="rotate-none!" />
+                        )}
+                      </SidebarMenuButton>
                     </MenuTrigger>
-                  </SidebarMenuButton>
+                  }
+                />
 
-                  <MenuPositioner>
-                    <MenuContent className="flex w-40 flex-col gap-1 rounded-lg">
-                      {workspace?.projects.nodes.map((project) => {
-                        const userPreferences =
-                          project?.userPreferences?.nodes?.[0];
+                <MenuPositioner>
+                  <MenuContent className="flex w-40 flex-col gap-1 rounded-lg">
+                    {workspace?.projects.nodes.map((project) => {
+                      const userPreferences =
+                        project?.userPreferences?.nodes?.[0];
 
-                        const isWorkspaceProjectSelected =
-                          pathname ===
-                          `/workspaces/${workspaceSlug}/projects/${project.slug}`;
-                        return (
-                          <MenuItem
-                            key={project.rowId}
-                            value={project.name}
-                            className="flex w-full cursor-pointer items-center gap-1"
-                            onSelect={() =>
-                              navigate({
-                                to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-                                params: {
-                                  workspaceSlug,
-                                  projectSlug: project.slug,
-                                },
-                              })
-                            }
-                          >
-                            {userPreferences?.viewMode === "board" ? (
-                              <Grid2X2Icon
-                                className="size-4 text-primary-500"
-                                style={{
-                                  color: userPreferences?.color ?? undefined,
-                                }}
-                              />
-                            ) : (
-                              <ListIcon
-                                className="size-4 text-primary-500"
-                                style={{
-                                  color: userPreferences?.color ?? undefined,
-                                }}
-                              />
-                            )}
-                            <span className="truncate">{project?.name}</span>
+                      const isWorkspaceProjectSelected =
+                        pathname ===
+                        `/workspaces/${workspaceSlug}/projects/${project.slug}`;
+                      return (
+                        <MenuItem
+                          key={project.rowId}
+                          value={project.name}
+                          className="flex w-full cursor-pointer items-center gap-1"
+                          onSelect={() =>
+                            navigate({
+                              to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+                              params: {
+                                workspaceSlug,
+                                projectSlug: project.slug,
+                              },
+                            })
+                          }
+                        >
+                          {userPreferences?.viewMode === "board" ? (
+                            <Grid2X2Icon
+                              className="size-4 text-primary-500"
+                              style={{
+                                color: userPreferences?.color ?? undefined,
+                              }}
+                            />
+                          ) : (
+                            <ListIcon
+                              className="size-4 text-primary-500"
+                              style={{
+                                color: userPreferences?.color ?? undefined,
+                              }}
+                            />
+                          )}
+                          <span className="truncate">{project?.name}</span>
 
-                            {isWorkspaceProjectSelected && (
-                              <CheckIcon color="green" className="ml-auto" />
-                            )}
-                          </MenuItem>
-                        );
-                      })}
-                    </MenuContent>
-                  </MenuPositioner>
-                </MenuRoot>
-              </SidebarMenuItem>
+                          {isWorkspaceProjectSelected && (
+                            <CheckIcon color="green" className="ml-auto" />
+                          )}
+                        </MenuItem>
+                      );
+                    })}
+                  </MenuContent>
+                </MenuPositioner>
+              </MenuRoot>
             )}
           </SidebarMenu>
 
@@ -249,44 +248,44 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
             className="group-data-[collapsible=icon]:hidden"
           >
             <SidebarGroup>
-              <CollapsibleTrigger className="mt-1 gap-2 p-0 px-1">
+              <CollapsibleTrigger className="gap-2 p-0 px-1">
                 <SidebarGroupLabel>Workspace</SidebarGroupLabel>
                 <ChevronRightIcon size={12} className="mr-auto text-base-400" />
 
                 <Tooltip
                   positioning={{ placement: "right" }}
                   tooltip="Create Workspace"
-                  shortcut="W"
-                >
-                  <SidebarGroupAction
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsCreateWorkspaceOpen(true);
-                    }}
-                  >
-                    <PlusIcon />
-                  </SidebarGroupAction>
-                </Tooltip>
+                  shortcut={Hotkeys.CreateWorkspace.toUpperCase()}
+                  trigger={
+                    <SidebarGroupAction
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsCreateWorkspaceOpen(true);
+                      }}
+                    >
+                      <PlusIcon />
+                      <span className="sr-only">Create Workspace</span>
+                    </SidebarGroupAction>
+                  }
+                />
               </CollapsibleTrigger>
 
-              <CollapsibleContent className="-mx-2 animate-none">
+              <CollapsibleContent className="-mx-2 p-0">
                 <SidebarMenu className="my-1 px-2">
                   {sidebarMenuItems.map((item) => (
-                    <SidebarMenuItem key={item.to}>
-                      <SidebarMenuButton
-                        isActive={item.isActive}
-                        tooltip={item.tooltip}
-                        onClick={() =>
-                          navigate({
-                            to: item.to,
-                            params: { workspaceSlug },
-                          })
-                        }
-                      >
-                        <item.icon />
-                        <span className="w-full truncate">{item.label}</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                    <SidebarMenuButton
+                      key={item.to}
+                      isActive={item.isActive}
+                      onClick={() =>
+                        navigate({
+                          to: item.to,
+                          params: { workspaceSlug },
+                        })
+                      }
+                    >
+                      <item.icon />
+                      <span className="w-full truncate">{item.label}</span>
+                    </SidebarMenuButton>
                   ))}
                 </SidebarMenu>
               </CollapsibleContent>
@@ -300,45 +299,53 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
             <SidebarGroup>
               <CollapsibleTrigger className="mt-1 gap-2 p-0 px-1">
                 <SidebarGroupLabel>Projects</SidebarGroupLabel>
-                <ChevronRightIcon size={12} className="mr-auto text-base-400" />
+                {!!workspace?.projects?.nodes?.length && (
+                  <ChevronRightIcon
+                    size={12}
+                    className="mr-auto text-base-400"
+                  />
+                )}
 
                 <Tooltip
                   disabled={!workspace?.projectColumns.nodes.length}
                   positioning={{ placement: "right" }}
                   tooltip="Create Project"
-                  shortcut="P"
-                >
-                  <SidebarGroupAction
-                    className={cn(
-                      "flex",
-                      // TODO: adjust logic for `maxProjectsReached`. Make action disabled instead, but create a tooltip
-                      (isMember || maxProjectsReached) && "hidden",
-                    )}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsCreateProjectOpen(true);
-                    }}
-                  >
-                    <PlusIcon />
-                    <span className="sr-only">Add Project</span>
-                  </SidebarGroupAction>
-                </Tooltip>
+                  shortcut={Hotkeys.CreateProject}
+                  trigger={
+                    <SidebarGroupAction
+                      className={cn(
+                        "flex",
+                        // TODO: adjust logic for `maxProjectsReached`. Make action disabled instead, but create a tooltip
+                        (isMember || maxProjectsReached) && "hidden",
+                      )}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsCreateProjectOpen(true);
+                      }}
+                    >
+                      <PlusIcon />
+                      <span className="sr-only">Create Project</span>
+                    </SidebarGroupAction>
+                  }
+                />
               </CollapsibleTrigger>
 
-              <CollapsibleContent className="-mx-2 animate-none">
+              <CollapsibleContent className="-mx-2 p-0">
                 <SidebarMenu className="my-1 px-2">
                   {workspace?.projects.nodes.map((project) => {
                     const userPreferences =
                       project?.userPreferences?.nodes?.[0];
 
                     return (
-                      <SidebarMenuItem key={project?.rowId}>
+                      <div
+                        key={project?.rowId}
+                        className="group/menu-item relative"
+                      >
                         <SidebarMenuButton
                           isActive={
                             pathname ===
                             `/workspaces/${workspaceSlug}/projects/${project.slug}`
                           }
-                          tooltip={project?.name}
                           onClick={() =>
                             navigate({
                               to: "/workspaces/$workspaceSlug/projects/$projectSlug",
@@ -445,7 +452,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                                     : "List View"}
                                 </span>
 
-                                <SidebarMenuShortcut>V</SidebarMenuShortcut>
+                                <Shortcut>{Hotkeys.ToggleViewMode}</Shortcut>
                               </MenuItem>
 
                               <MenuItem
@@ -466,7 +473,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                             </MenuContent>
                           </MenuPositioner>
                         </MenuRoot>
-                      </SidebarMenuItem>
+                      </div>
                     );
                   })}
                 </SidebarMenu>

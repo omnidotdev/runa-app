@@ -1,7 +1,7 @@
 import { PlusIcon } from "lucide-react";
 
+import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
-import { Tooltip } from "@/components/ui/tooltip";
 
 import type { ButtonProps } from "@/components/ui/button";
 
@@ -44,18 +44,18 @@ const ColumnHeader = ({
           positioning={{ placement: "top", gutter: 16 }}
           tooltip={tooltip.title}
           shortcut={tooltip.shortCut}
-        >
-          <Button
-            variant="ghost"
-            size="xs"
-            className="size-5"
-            onClick={onCreate}
-            aria-label={`Create ${title}`}
-            {...rest}
-          >
-            <PlusIcon className="size-4" />
-          </Button>
-        </Tooltip>
+          trigger={
+            <Button
+              variant="ghost"
+              className="size-7"
+              onClick={onCreate}
+              aria-label={`Create ${title}`}
+              {...rest}
+            >
+              <PlusIcon className="size-4" />
+            </Button>
+          }
+        />
       </div>
     </div>
   );

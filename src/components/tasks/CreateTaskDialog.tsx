@@ -232,8 +232,7 @@ const CreateTaskDialog = () => {
     >
       <DialogBackdrop />
       <DialogPositioner>
-        {/* Fix width issue on task property changes */}
-        <DialogContent className="flex min-w-fit flex-col items-start">
+        <DialogContent className="mx-8 flex max-w-3xl flex-col items-start rounded-lg">
           <DialogCloseTrigger />
 
           <span className="text-nowrap font-medium font-mono text-base-400 dark:text-base-500">
@@ -279,7 +278,7 @@ const CreateTaskDialog = () => {
             </form.Field>
 
             <RichTextEditor
-              className="min-h-[160px] text-xs placeholder:text-xs md:min-h-[120px] md:text-sm"
+              className="min-h-40 text-xs placeholder:text-xs md:text-sm"
               placeholder="Task description..."
               onUpdate={({ editor }) =>
                 form.setFieldValue("description", editor.getHTML())

@@ -5,12 +5,12 @@ import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
 import RichTextEditor from "@/components/core/RichTextEditor";
+import Tooltip from "@/components/core/Tooltip";
 import Assignees from "@/components/shared/Assignees";
 import Label from "@/components/shared/Label";
 import PriorityIcon from "@/components/tasks/PriorityIcon";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip } from "@/components/ui/tooltip";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
@@ -121,7 +121,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
             <div className="flex items-start gap-2">
               <div className="mt-0.5 min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="flex-shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-400">
+                  <span className="shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-400">
                     {displayId}
                   </span>
 
@@ -146,30 +146,31 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                   placement: "bottom-end",
                   gutter: -4,
                 }}
+                openDelay={1000}
                 tooltip="Update Assignees"
                 shortcut="A"
-                openDelay={1000}
-              >
-                <div className="-mt-2.5 -mr-2 flex items-center gap-1">
-                  {task.assignees.nodes.length ? (
-                    <Assignees
-                      assignees={task?.assignees.nodes.map(
-                        (assignee) => assignee.user?.rowId!,
-                      )}
-                      className="-space-x-4 flex w-fit items-center"
-                    />
-                  ) : (
-                    <AvatarRoot
-                      aria-label="No Assignees"
-                      className="mt-2.5 mr-2 size-5.5"
-                    >
-                      <AvatarFallback className="border border-border border-dashed bg-transparent p-1 text-muted-foreground">
-                        <UserIcon />
-                      </AvatarFallback>
-                    </AvatarRoot>
-                  )}
-                </div>
-              </Tooltip>
+                trigger={
+                  <div className="-mt-1 flex items-center gap-1">
+                    {task.assignees.nodes.length ? (
+                      <Assignees
+                        assignees={task?.assignees.nodes.map(
+                          (assignee) => assignee.user?.rowId!,
+                        )}
+                        className="flex w-fit items-center"
+                      />
+                    ) : (
+                      <AvatarRoot
+                        aria-label="No Assignees"
+                        className="mt-2.5 mr-2 size-5.5"
+                      >
+                        <AvatarFallback className="border border-border border-dashed bg-transparent p-1 text-muted-foreground">
+                          <UserIcon />
+                        </AvatarFallback>
+                      </AvatarRoot>
+                    )}
+                  </div>
+                }
+              />
             </div>
 
             <div className="grid grid-cols-4">
@@ -179,29 +180,29 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                     placement: "top-start",
                     shift: -6,
                   }}
+                  openDelay={1000}
                   tooltip="Update Labels"
                   shortcut="L"
-                  openDelay={1000}
-                >
-                  {task.taskLabels.nodes.length ? (
-                    <div className="flex flex-wrap gap-1">
-                      {task.taskLabels.nodes?.map(({ label }) => (
-                        <Label
-                          key={label?.rowId}
-                          label={label as LabelFragment}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <Badge
-                      size="sm"
-                      variant="outline"
-                      className="border-border border-dashed"
-                    >
-                      <TagIcon className="!size-2.5" />
-                    </Badge>
-                  )}
-                </Tooltip>
+                  trigger={
+                    task.taskLabels.nodes.length ? (
+                      <div className="flex flex-wrap gap-1">
+                        {task.taskLabels.nodes?.map(({ label }) => (
+                          <Label
+                            key={label?.rowId}
+                            label={label as LabelFragment}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <Badge
+                        variant="outline"
+                        className="border-border border-dashed"
+                      >
+                        <TagIcon className="size-2.5!" />
+                      </Badge>
+                    )
+                  }
+                />
               </div>
 
               <Tooltip
@@ -209,26 +210,26 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                   placement: "top-end",
                   shift: -8,
                 }}
+                openDelay={1000}
                 tooltip="Update Due Date"
                 shortcut="D"
-                openDelay={1000}
-              >
-                {task?.dueDate ? (
-                  <div className="col-span-1 mr-1 flex h-5 items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
-                    <CalendarIcon className="h-3 w-3" />
-                    {/* TODO: timezone handling */}
-                    <span>{format(new Date(task.dueDate), "MMM d")}</span>
-                  </div>
-                ) : (
-                  <Badge
-                    size="sm"
-                    variant="outline"
-                    className="h-5 w-fit place-self-end border-border border-dashed"
-                  >
-                    <CalendarIcon className="!size-2.5" />
-                  </Badge>
-                )}
-              </Tooltip>
+                trigger={
+                  task?.dueDate ? (
+                    <div className="col-span-1 mr-1 flex h-5 items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
+                      <CalendarIcon className="h-3 w-3" />
+                      {/* TODO: timezone handling */}
+                      <span>{format(new Date(task.dueDate), "MMM d")}</span>
+                    </div>
+                  ) : (
+                    <Badge
+                      variant="outline"
+                      className="h-5 w-fit place-self-end border-border border-dashed"
+                    >
+                      <CalendarIcon className="size-2.5!" />
+                    </Badge>
+                  )
+                }
+              />
             </div>
           </div>
         </div>

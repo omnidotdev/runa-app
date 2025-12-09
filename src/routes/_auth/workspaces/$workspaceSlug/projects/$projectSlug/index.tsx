@@ -21,6 +21,7 @@ import { z } from "zod";
 
 import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
+import Tooltip from "@/components/core/Tooltip";
 import NotFound from "@/components/layout/NotFound";
 import Board from "@/components/projects/Board";
 import List from "@/components/projects/List";
@@ -31,7 +32,6 @@ import UpdateDueDateDialog from "@/components/tasks/UpdateDueDateDialog";
 import UpdateTaskLabelsDialog from "@/components/tasks/UpdateTaskLabelsDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tooltip } from "@/components/ui/tooltip";
 import {
   Role,
   useUpdateProjectMutation,
@@ -532,60 +532,62 @@ function ProjectPage() {
                   defaultValue={search}
                   onChange={handleSearch}
                   placeholder="Search tasks..."
-                  className="pl-10"
+                  className="border-border pl-10 shadow-xs"
                 />
               </div>
 
               <Tooltip
                 positioning={{ placement: "bottom" }}
-                shortcut="V"
                 tooltip={
                   userPreferences?.viewMode === "list"
                     ? "Board View"
                     : "List View"
                 }
-              >
-                <Button
-                  variant="outline"
-                  size="icon"
-                  aria-label="Switch View Mode"
-                  onClick={() =>
-                    updateViewMode({
-                      rowId: userPreferences?.rowId!,
-                      patch: {
-                        viewMode:
-                          userPreferences?.viewMode === "board"
-                            ? "list"
-                            : "board",
-                      },
-                    })
-                  }
-                >
-                  {userPreferences?.viewMode === "list" ? (
-                    <Grid2X2Icon />
-                  ) : (
-                    <ListIcon />
-                  )}
-                </Button>
-              </Tooltip>
+                shortcut="V"
+                trigger={
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    aria-label="Switch View Mode"
+                    onClick={() =>
+                      updateViewMode({
+                        rowId: userPreferences?.rowId!,
+                        patch: {
+                          viewMode:
+                            userPreferences?.viewMode === "board"
+                              ? "list"
+                              : "board",
+                        },
+                      })
+                    }
+                  >
+                    {userPreferences?.viewMode === "list" ? (
+                      <Grid2X2Icon />
+                    ) : (
+                      <ListIcon />
+                    )}
+                  </Button>
+                }
+              />
 
               <Tooltip
                 positioning={{ placement: "bottom" }}
                 tooltip="Project Settings"
-              >
-                <Link
-                  to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
-                  params={{
-                    workspaceSlug,
-                    projectSlug,
-                  }}
-                  variant="outline"
-                  size="icon"
-                  aria-label="Project Settings"
-                >
-                  <Settings2 />
-                </Link>
-              </Tooltip>
+                trigger={
+                  <Link
+                    to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
+                    params={{
+                      workspaceSlug,
+                      projectSlug,
+                    }}
+                    variant="outline"
+                    size="icon"
+                    aria-label="Project Settings"
+                  >
+                    <Settings2 />
+                  </Link>
+                }
+              />
 
               <Filter />
 
@@ -593,18 +595,19 @@ function ProjectPage() {
                 <Tooltip
                   positioning={{ placement: "bottom" }}
                   tooltip={isForceClosed ? "Expand Lists" : "Collapse Lists"}
-                >
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={isForceClosed ? handleOpenAll : handleCloseAll}
-                    aria-label={
-                      isForceClosed ? "Expand Lists" : "Collapse Lists"
-                    }
-                  >
-                    {isForceClosed ? <Maximize2Icon /> : <Minimize2Icon />}
-                  </Button>
-                </Tooltip>
+                  trigger={
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={isForceClosed ? handleOpenAll : handleCloseAll}
+                      aria-label={
+                        isForceClosed ? "Expand Lists" : "Collapse Lists"
+                      }
+                    >
+                      {isForceClosed ? <Maximize2Icon /> : <Minimize2Icon />}
+                    </Button>
+                  }
+                />
               )}
             </div>
           </div>

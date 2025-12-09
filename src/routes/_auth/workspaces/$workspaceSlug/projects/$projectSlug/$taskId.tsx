@@ -15,6 +15,7 @@ import Link from "@/components/core/Link";
 import RichTextEditor from "@/components/core/RichTextEditor";
 import ColumnSelector from "@/components/core/selectors/ColumnSelector";
 import PrioritySelector from "@/components/core/selectors/PrioritySelector";
+import Tooltip from "@/components/core/Tooltip";
 import NotFound from "@/components/layout/NotFound";
 import Comments from "@/components/tasks/Comments";
 import CreateComment from "@/components/tasks/CreateComment";
@@ -25,7 +26,6 @@ import UpdateDueDateDialog from "@/components/tasks/UpdateDueDateDialog";
 import UpdateTaskLabelsDialog from "@/components/tasks/UpdateTaskLabelsDialog";
 import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
-import { Tooltip } from "@/components/ui/tooltip";
 import {
   Role,
   useDeleteTaskMutation,
@@ -238,21 +238,22 @@ function TaskPage() {
             positioning={{ placement: "top" }}
             tooltip="Update Due Date"
             shortcut="D"
-          >
-            <Button
-              onClick={() => setIsUpdateDueDateDialogOpen(true)}
-              variant="outline"
-            >
-              {task?.dueDate ? (
-                <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
-                  <CalendarIcon className="size-3" />
-                  {format(new Date(task.dueDate), "MMM d, yyyy")}
-                </div>
-              ) : (
-                <p className="text-sm">Set due date</p>
-              )}
-            </Button>
-          </Tooltip>
+            trigger={
+              <Button
+                onClick={() => setIsUpdateDueDateDialogOpen(true)}
+                variant="outline"
+              >
+                {task?.dueDate ? (
+                  <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
+                    <CalendarIcon className="size-3" />
+                    {format(new Date(task.dueDate), "MMM d, yyyy")}
+                  </div>
+                ) : (
+                  <p className="text-sm">Set due date</p>
+                )}
+              </Button>
+            }
+          />
 
           {/* TODO: Better position this for actual mobile */}
           <div className="lg:hidden">
