@@ -122,6 +122,7 @@ const Filter = () => {
       <Tooltip
         ids={{ trigger: triggerId }}
         tooltip="Filter"
+        shortcut={Hotkeys.ToggleFilter}
         trigger={
           <MenuTrigger asChild>
             <Button variant="outline" size="icon">
