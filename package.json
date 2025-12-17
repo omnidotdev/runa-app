@@ -80,7 +80,7 @@
     "@tanstack/react-router-devtools": "^1.139.12",
     "@tanstack/react-router-ssr-query": "^1.139.12",
     "@types/ms": "^2.1.0",
-    "@types/node": "^24.10.1",
+    "@types/node": "^25.0.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
