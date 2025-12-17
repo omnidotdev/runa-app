@@ -10,8 +10,8 @@
     "lint": "biome lint --diagnostic-level=error",
     "graphql:generate": "NODE_PATH=src/ dotenv -e .env.development -- graphql-codegen --config src/lib/graphql/codegen.config.ts",
     "graphql:generate:watch": "bun graphql:generate -w",
-    "prepare": "husky",
-    "knip": "knip-bun"
+    "knip": "knip-bun",
+    "prepare": "husky"
   },
   "dependencies": {
     "@ark-ui/react": "^5.29.1",
