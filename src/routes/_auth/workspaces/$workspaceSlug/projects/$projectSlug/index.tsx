@@ -19,17 +19,16 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
-import Link from "@/components/core/Link";
-import RichTextEditor from "@/components/core/RichTextEditor";
-import Tooltip from "@/components/core/Tooltip";
-import NotFound from "@/components/layout/NotFound";
-import Board from "@/components/projects/Board";
-import List from "@/components/projects/List";
-import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
-import Filter from "@/components/tasks/Filter";
-import UpdateAssigneesDialog from "@/components/tasks/UpdateAssigneesDialog";
-import UpdateDueDateDialog from "@/components/tasks/UpdateDueDateDialog";
-import UpdateTaskLabelsDialog from "@/components/tasks/UpdateTaskLabelsDialog";
+import { Link, RichTextEditor, Tooltip } from "@/components/core";
+import { NotFound } from "@/components/layout";
+import { Board, List } from "@/components/projects";
+import {
+  CreateTaskDialog,
+  Filter,
+  UpdateAssigneesDialog,
+  UpdateDueDateDialog,
+  UpdateTaskLabelsDialog,
+} from "@/components/tasks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

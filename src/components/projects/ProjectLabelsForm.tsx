@@ -3,13 +3,13 @@ import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
-import Tooltip from "@/components/core/Tooltip";
-import LabelForm from "@/components/projects/ProjectLabelForm";
+import { Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import { Role } from "@/generated/graphql";
 import labelsOptions from "@/lib/options/labels.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
+import LabelForm from "./ProjectLabelForm";
 
 import type { LabelFragment as Label } from "@/generated/graphql";
 

@@ -1,7 +1,7 @@
 import { PlusIcon } from "lucide-react";
 
-import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
+import Tooltip from "./Tooltip";
 
 import type { ButtonProps } from "@/components/ui/button";
 

@@ -8,16 +8,16 @@ import {
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import AppSidebarContent from "@/components/core/AppSidebarContent";
-import AppSidebarFooter from "@/components/core/AppSidebarFooter";
-import AppSidebarHeader from "@/components/core/AppSidebarHeader";
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import { Sidebar, SidebarRail, useSidebar } from "@/components/ui/sidebar";
 import { useDeleteProjectMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import AppSidebarContent from "./AppSidebarContent";
+import AppSidebarFooter from "./AppSidebarFooter";
+import AppSidebarHeader from "./AppSidebarHeader";
+import DestructiveActionDialog from "./DestructiveActionDialog";
 
 import type { ComponentProps } from "react";
 

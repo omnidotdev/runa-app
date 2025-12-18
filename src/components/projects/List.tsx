@@ -6,9 +6,7 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 
-import ListTrigger from "@/components/core/ListTrigger";
-import ColumnMenu from "@/components/projects/ColumnMenu";
-import ListItem from "@/components/projects/ListItem";
+import { ListTrigger } from "@/components/core";
 import {
   CollapsibleContent,
   CollapsibleRoot,
@@ -19,6 +17,8 @@ import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
+import ColumnMenu from "./ColumnMenu";
+import ListItem from "./ListItem";
 
 import type { Dispatch, SetStateAction } from "react";
 import type { TaskFragment } from "@/generated/graphql";

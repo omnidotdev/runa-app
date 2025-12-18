@@ -1,4 +1,3 @@
-import Shortcut from "@/components/core/Shortcut";
 import {
   TooltipContent,
   TooltipPositioner,
@@ -6,6 +5,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import Shortcut from "./Shortcut";
 
 import type { ComponentProps, ReactNode } from "react";
 

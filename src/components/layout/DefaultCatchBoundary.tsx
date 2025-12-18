@@ -5,7 +5,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 
-import Link from "@/components/core/Link";
+import { Link } from "@/components/core";
 import { Button } from "@/components/ui/button";
 
 import type { ErrorComponentProps } from "@tanstack/react-router";

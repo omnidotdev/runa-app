@@ -7,10 +7,12 @@ import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
-import Link from "@/components/core/Link";
-import RichTextEditor from "@/components/core/RichTextEditor";
-import NotFound from "@/components/layout/NotFound";
+import {
+  DestructiveActionDialog,
+  Link,
+  RichTextEditor,
+} from "@/components/core";
+import { NotFound } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,9 +24,7 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import Projects from "@/components/workspaces/Projects";
-import Team from "@/components/workspaces/Team";
-import WorkspaceColumnsForm from "@/components/workspaces/WorkspaceColumnsForm";
+import { Projects, Team, WorkspaceColumnsForm } from "@/components/workspaces";
 import {
   Role,
   useDeleteWorkspaceMutation,

@@ -4,11 +4,8 @@ import { format } from "date-fns";
 import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
-import Assignees from "@/components/core/Assignees";
-import Label from "@/components/core/Label";
-import RichTextEditor from "@/components/core/RichTextEditor";
-import Tooltip from "@/components/core/Tooltip";
-import PriorityIcon from "@/components/tasks/PriorityIcon";
+import { Assignees, Label, RichTextEditor, Tooltip } from "@/components/core";
+import { PriorityIcon } from "@/components/tasks";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";

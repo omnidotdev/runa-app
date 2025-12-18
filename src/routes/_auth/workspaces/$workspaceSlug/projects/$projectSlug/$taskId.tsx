@@ -10,20 +10,24 @@ import {
 import { useEffect, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
-import ColumnSelector from "@/components/core/ColumnSelector";
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
-import Link from "@/components/core/Link";
-import PrioritySelector from "@/components/core/PrioritySelector";
-import RichTextEditor from "@/components/core/RichTextEditor";
-import Tooltip from "@/components/core/Tooltip";
-import NotFound from "@/components/layout/NotFound";
-import Comments from "@/components/tasks/Comments";
-import CreateComment from "@/components/tasks/CreateComment";
-import TaskDescription from "@/components/tasks/TaskDescription";
-import TaskSidebar from "@/components/tasks/TaskSidebar";
-import UpdateAssigneesDialog from "@/components/tasks/UpdateAssigneesDialog";
-import UpdateDueDateDialog from "@/components/tasks/UpdateDueDateDialog";
-import UpdateTaskLabelsDialog from "@/components/tasks/UpdateTaskLabelsDialog";
+import {
+  ColumnSelector,
+  DestructiveActionDialog,
+  Link,
+  PrioritySelector,
+  RichTextEditor,
+  Tooltip,
+} from "@/components/core";
+import { NotFound } from "@/components/layout";
+import {
+  Comments,
+  CreateComment,
+  TaskDescription,
+  TaskSidebar,
+  UpdateAssigneesDialog,
+  UpdateDueDateDialog,
+  UpdateTaskLabelsDialog,
+} from "@/components/tasks";
 import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import {

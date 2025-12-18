@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import Tooltip from "@/components/core/Tooltip";
+import { Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import {
   ColorPickerArea,

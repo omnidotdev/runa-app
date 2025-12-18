@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 
-import { PriceCard } from "@/components/pricing/PriceCard";
+import { PriceCard } from "@/components/pricing";
 import {
   AccordionItem,
   AccordionItemContent,

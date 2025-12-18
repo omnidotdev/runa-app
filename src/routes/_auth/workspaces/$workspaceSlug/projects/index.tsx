@@ -12,12 +12,11 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
-import Tooltip from "@/components/core/Tooltip";
-import NotFound from "@/components/layout/NotFound";
+import { Tooltip } from "@/components/core";
+import { NotFound } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Board from "@/components/workspaces/OverviewBoard";
-import List from "@/components/workspaces/OverviewList";
+import { OverviewBoard, OverviewList } from "@/components/workspaces";
 import {
   Role,
   useUpdateProjectMutation,
@@ -398,9 +397,9 @@ function ProjectsOverviewPage() {
 
         <DragDropContext onDragEnd={onDragEnd}>
           {workspace?.viewMode === "board" ? (
-            <Board projects={localProjects} />
+            <OverviewBoard projects={localProjects} />
           ) : (
-            <List projects={localProjects} />
+            <OverviewList projects={localProjects} />
           )}
         </DragDropContext>
       </div>

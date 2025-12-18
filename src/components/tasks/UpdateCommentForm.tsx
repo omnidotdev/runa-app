@@ -2,13 +2,13 @@ import { useForm } from "@tanstack/react-form";
 import { useParams, useRouteContext } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
-import RichTextEditor from "@/components/core/RichTextEditor";
+import { RichTextEditor } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import { useUpdatePostMutation } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
 import { cn } from "@/lib/utils";
 
-import type { EditorApi } from "@/components/core/RichTextEditor";
+import type { EditorApi } from "@/components/core";
 
 interface Props {
   post: {

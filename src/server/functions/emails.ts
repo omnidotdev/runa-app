@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { Resend } from "resend";
 import { z } from "zod";
 
-import WorkspaceInvitation from "@/components/emails/WorkspaceInvitation";
+import { WorkspaceInvitation } from "@/components/emails";
 import app from "@/lib/config/app.config";
 import { BASE_URL, isDevEnv } from "@/lib/config/env.config";
 

@@ -3,7 +3,7 @@ import { useRouteContext } from "@tanstack/react-router";
 import { CheckIcon } from "lucide-react";
 import { useState } from "react";
 
-import CreateWorkspaceDialog from "@/components/core/CreateWorkspaceDialog";
+import { CreateWorkspaceDialog } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import {
   CardContent,

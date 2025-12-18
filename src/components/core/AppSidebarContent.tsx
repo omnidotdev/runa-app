@@ -22,8 +22,6 @@ import {
 } from "lucide-react";
 import { useId, useState } from "react";
 
-import Shortcut from "@/components/core/Shortcut";
-import Tooltip from "@/components/core/Tooltip";
 import {
   CollapsibleContent,
   CollapsibleRoot,
@@ -53,6 +51,8 @@ import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
+import Shortcut from "./Shortcut";
+import Tooltip from "./Tooltip";
 
 interface SidebarMenuItemType {
   isActive: boolean;

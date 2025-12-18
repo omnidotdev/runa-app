@@ -6,15 +6,15 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 
-import ColumnHeader from "@/components/core/ColumnHeader";
-import BoardItem from "@/components/projects/BoardItem";
-import ColumnMenu from "@/components/projects/ColumnMenu";
+import { ColumnHeader } from "@/components/core";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
+import BoardItem from "./BoardItem";
+import ColumnMenu from "./ColumnMenu";
 
 import type { TaskFragment } from "@/generated/graphql";
 

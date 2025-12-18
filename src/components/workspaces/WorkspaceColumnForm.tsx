@@ -12,8 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import EmojiSelector from "@/components/core/EmojiSelector";
-import Tooltip from "@/components/core/Tooltip";
+import { EmojiSelector, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {

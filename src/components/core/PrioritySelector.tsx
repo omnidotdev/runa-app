@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import Shortcut from "@/components/core/Shortcut";
-import Tooltip from "@/components/core/Tooltip";
-import PriorityIcon from "@/components/tasks/PriorityIcon";
+import { PriorityIcon } from "@/components/tasks";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -19,6 +17,8 @@ import {
 } from "@/components/ui/select";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import Shortcut from "./Shortcut";
+import Tooltip from "./Tooltip";
 
 import type { ComponentProps } from "react";
 

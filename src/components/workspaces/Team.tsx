@@ -3,8 +3,7 @@ import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { MoreHorizontalIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useRef, useState } from "react";
 
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
-import Tooltip from "@/components/core/Tooltip";
+import { DestructiveActionDialog, Tooltip } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,
@@ -19,7 +18,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import InviteMemberDialog from "@/components/workspaces/InviteMemberDialog";
 import {
   Role,
   Tier,
@@ -29,6 +27,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
+import InviteMemberDialog from "./InviteMemberDialog";
 
 const Team = () => {
   const inviteRef = useRef<HTMLButtonElement>(null);

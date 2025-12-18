@@ -15,8 +15,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
-import Tooltip from "@/components/core/Tooltip";
+import { DestructiveActionDialog, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import {
   MenuContent,

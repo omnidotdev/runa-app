@@ -21,10 +21,8 @@ import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
-import Tooltip from "@/components/core/Tooltip";
+import { DestructiveActionDialog, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
-import ColumnForm from "@/components/workspaces/WorkspaceColumnForm";
 import {
   Role,
   useDeleteProjectColumnMutation,
@@ -34,6 +32,7 @@ import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
+import ColumnForm from "./WorkspaceColumnForm";
 
 import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
 import type { ProjectColumnFragment as ProjectColumn } from "@/generated/graphql";

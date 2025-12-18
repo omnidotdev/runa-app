@@ -5,12 +5,13 @@ import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
-import Link from "@/components/core/Link";
-import RichTextEditor from "@/components/core/RichTextEditor";
-import NotFound from "@/components/layout/NotFound";
-import ProjectColorPicker from "@/components/projects/ProjectColorPicker";
-import ProjectColumnsForm from "@/components/projects/ProjectColumnsForm";
-import ProjectLabelsForm from "@/components/projects/ProjectLabelsForm";
+import { Link, RichTextEditor } from "@/components/core";
+import { NotFound } from "@/components/layout";
+import {
+  ProjectColorPicker,
+  ProjectColumnsForm,
+  ProjectLabelsForm,
+} from "@/components/projects";
 import { Button } from "@/components/ui/button";
 import {
   Role,

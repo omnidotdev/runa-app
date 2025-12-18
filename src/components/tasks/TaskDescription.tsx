@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { useDebounceCallback } from "usehooks-ts";
 
-import RichTextEditor from "@/components/core/RichTextEditor";
+import { RichTextEditor } from "@/components/core";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import { Role, useUpdateTaskMutation } from "@/generated/graphql";
 import workspaceOptions from "@/lib/options/workspace.options";

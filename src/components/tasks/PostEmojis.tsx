@@ -2,7 +2,6 @@ import { Format } from "@ark-ui/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 
-import CommentEmojiPicker from "@/components/tasks/CommentEmojiPicker";
 import { Button } from "@/components/ui/button";
 import {
   useCreatePostEmojiMutation,
@@ -10,6 +9,7 @@ import {
 } from "@/generated/graphql";
 import postEmojisOptions from "@/lib/options/emoji.options";
 import { cn } from "@/lib/utils";
+import CommentEmojiPicker from "./CommentEmojiPicker";
 
 interface Props {
   postId: string;

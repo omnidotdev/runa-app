@@ -1,8 +1,7 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { Image } from "@unpic/react";
 
-import Link from "@/components/core/Link";
-import ThemeToggle from "@/components/core/ThemeToggle";
+import { Link, ThemeToggle } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth/signIn";
 import { signOut } from "@/lib/auth/signOut";

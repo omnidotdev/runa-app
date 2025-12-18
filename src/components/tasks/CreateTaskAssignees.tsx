@@ -5,9 +5,7 @@ import { useLoaderData } from "@tanstack/react-router";
 import { UserPlusIcon, UserXIcon } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import Assignees from "@/components/core/Assignees";
-import Shortcut from "@/components/core/Shortcut";
-import Tooltip from "@/components/core/Tooltip";
+import { Assignees, Shortcut, Tooltip } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,

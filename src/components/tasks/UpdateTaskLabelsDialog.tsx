@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams, useRouteContext } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import TaskLabelsForm from "@/components/tasks/TaskLabelsForm";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -25,6 +24,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
+import TaskLabelsForm from "./TaskLabelsForm";
 
 const UpdateTaskLabelsDialog = () => {
   const { queryClient } = useRouteContext({ from: "/_auth" });

@@ -2,8 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import Shortcut from "@/components/core/Shortcut";
-import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -19,6 +17,8 @@ import {
 } from "@/components/ui/select";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";
+import Shortcut from "./Shortcut";
+import Tooltip from "./Tooltip";
 
 import type { ComponentProps } from "react";
 

@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { match } from "ts-pattern";
 
-import Link from "@/components/core/Link";
+import { Link } from "@/components/core";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

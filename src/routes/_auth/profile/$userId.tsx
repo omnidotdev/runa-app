@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
+import { DestructiveActionDialog } from "@/components/core";
 import {
   CustomizationTab,
   DangerZone,
@@ -143,11 +143,6 @@ function ProfilePage() {
     await deleteInvitation({ rowId: invitation.rowId });
   };
 
-  const handleWorkspaceDelete = (workspace: Partial<Workspace>) => {
-    setWorkspaceToDelete(workspace);
-    setIsDeleteWorkspaceOpen(true);
-  };
-
   return (
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-linear-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
@@ -169,7 +164,10 @@ function ProfilePage() {
                     <h2 className="font-bold text-lg">Current Workspaces</h2>
                     <WorkspacesTable
                       workspaces={workspaces}
-                      onDeleteWorkspace={handleWorkspaceDelete}
+                      onDeleteWorkspace={(workspace) => {
+                        setWorkspaceToDelete(workspace);
+                        setIsDeleteWorkspaceOpen(true);
+                      }}
                     />
                   </div>
 

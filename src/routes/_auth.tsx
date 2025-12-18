@@ -5,11 +5,10 @@ import {
   redirect,
 } from "@tanstack/react-router";
 
-import AppSidebar from "@/components/core/AppSidebar";
-import CreateWorkspaceDialog from "@/components/core/CreateWorkspaceDialog";
-import NotFound from "@/components/layout/NotFound";
+import { AppSidebar, CreateWorkspaceDialog } from "@/components/core";
+import { NotFound } from "@/components/layout";
 import { SidebarInset } from "@/components/ui/sidebar";
-import CreateProjectDialog from "@/components/workspaces/CreateProjectDialog";
+import { CreateProjectDialog } from "@/components/workspaces";
 import invitationsOptions from "@/lib/options/invitations.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";

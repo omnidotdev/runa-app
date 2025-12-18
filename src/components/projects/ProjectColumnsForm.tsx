@@ -21,9 +21,7 @@ import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { AlignJustifyIcon, MoreHorizontalIcon, PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
-import Tooltip from "@/components/core/Tooltip";
-import ColumnForm from "@/components/projects/ProjectColumnForm";
+import { DestructiveActionDialog, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import {
   MenuCheckboxItem,
@@ -50,6 +48,7 @@ import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
+import ColumnForm from "./ProjectColumnForm";
 
 import type { DragEndEvent, UniqueIdentifier } from "@dnd-kit/core";
 import type { ColumnFragment as Column } from "@/generated/graphql";

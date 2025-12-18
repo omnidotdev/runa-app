@@ -11,8 +11,7 @@ import {
 import { useId, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import Shortcut from "@/components/core/Shortcut";
-import Tooltip from "@/components/core/Tooltip";
+import { Shortcut, Tooltip } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,

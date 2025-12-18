@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { LayersIcon, PlusIcon } from "lucide-react";
 
-import Link from "@/components/core/Link";
+import { Link } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,

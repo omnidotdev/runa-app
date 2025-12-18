@@ -8,8 +8,7 @@ import {
   useSearch,
 } from "@tanstack/react-router";
 
-import ColumnHeader from "@/components/core/ColumnHeader";
-import BoardItem from "@/components/workspaces/OverviewBoardItem";
+import { ColumnHeader } from "@/components/core";
 import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
@@ -17,6 +16,7 @@ import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
+import BoardItem from "./OverviewBoardItem";
 
 import type { ProjectFragment } from "@/generated/graphql";
 
