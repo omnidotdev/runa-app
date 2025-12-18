@@ -13,7 +13,7 @@ interface Props extends ButtonProps {
   count: number;
   tooltip: {
     title: string;
-    shortCut?: string;
+    shortcut?: string;
   };
   onCreate: MouseEventHandler<HTMLButtonElement>;
   emoji?: string | null;
@@ -55,7 +55,7 @@ const ListTrigger = ({
           <Tooltip
             positioning={{ placement: "left", gutter: 11 }}
             tooltip={tooltip.title}
-            shortcut={tooltip.shortCut}
+            shortcut={tooltip.shortcut}
             trigger={
               <Button
                 variant="ghost"

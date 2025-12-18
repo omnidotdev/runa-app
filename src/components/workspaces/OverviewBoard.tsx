@@ -74,7 +74,7 @@ const Board = ({ projects }: Props) => {
                 count={column.projects.totalCount}
                 tooltip={{
                   title: "Create Project",
-                  shortCut: "P",
+                  shortcut: "P",
                 }}
                 emoji={column.emoji}
                 onCreate={() => {
@@ -93,7 +93,7 @@ const Board = ({ projects }: Props) => {
                       ref={provided.innerRef}
                       {...provided.droppableProps}
                       className={cn(
-                        "flex flex-1 flex-col rounded-xl bg-background/60 p-2 dark:bg-background/20",
+                        "flex flex-1 flex-col rounded-xl",
                         snapshot.isDraggingOver &&
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
@@ -134,6 +134,7 @@ const Board = ({ projects }: Props) => {
                               )}
                             </Draggable>
                           ))}
+
                         {provided.placeholder}
                       </div>
                     </div>

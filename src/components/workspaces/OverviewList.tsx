@@ -74,7 +74,7 @@ const List = ({ projects }: Props) => {
             count={column.projects.totalCount}
             tooltip={{
               title: "Create Project",
-              shortCut: "P",
+              shortcut: "P",
             }}
             emoji={column.emoji}
             onCreate={(e) => {

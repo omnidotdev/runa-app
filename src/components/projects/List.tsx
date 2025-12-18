@@ -133,7 +133,7 @@ const List = ({
               }
               tooltip={{
                 title: "Add Task",
-                shortCut: "C",
+                shortcut: "C",
               }}
               emoji={column.emoji}
               onCreate={(e) => {
