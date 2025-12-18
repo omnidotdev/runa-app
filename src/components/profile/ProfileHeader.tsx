@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { signOut } from "@/lib/auth/signOut";
+import signOut from "@/lib/auth/signOut";
 
 interface Props {
   session: {

@@ -34,7 +34,7 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { signOut } from "@/lib/auth/signOut";
+import signOut from "@/lib/auth/signOut";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import invitationsOptions from "@/lib/options/invitations.options";
 import { useTheme } from "@/providers/ThemeProvider";

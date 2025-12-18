@@ -3,8 +3,8 @@ import { Image } from "@unpic/react";
 
 import { Link, ThemeToggle } from "@/components/core";
 import { Button } from "@/components/ui/button";
-import { signIn } from "@/lib/auth/signIn";
-import { signOut } from "@/lib/auth/signOut";
+import signIn from "@/lib/auth/signIn";
+import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 
