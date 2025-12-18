@@ -90,7 +90,7 @@ const Board = ({ tasks }: Props) => {
           {project?.columns?.nodes?.map((column) => (
             <div
               key={column?.rowId}
-              className="relative flex h-full w-[340px] flex-col gap-2 bg-inherit"
+              className="relative flex h-full w-85 flex-col gap-2"
             >
               <ColumnHeader
                 title={column.title}
@@ -126,7 +126,7 @@ const Board = ({ tasks }: Props) => {
                       ref={provided.innerRef}
                       {...provided.droppableProps}
                       className={cn(
-                        "flex flex-1 flex-col rounded-xl bg-background/60 p-2 dark:bg-background/20",
+                        "flex flex-1 flex-col rounded-xl p-2",
                         snapshot.isDraggingOver &&
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
