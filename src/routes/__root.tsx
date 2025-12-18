@@ -11,7 +11,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/seo";
 import ThemeProvider from "@/providers/ThemeProvider";
 import { fetchSession } from "@/server/functions/auth";
 import { getTheme } from "@/server/functions/theme";
@@ -59,8 +59,7 @@ export const Route = createRootRouteWithContext<{
         name: "apple-mobile-web-app-title",
         content: app.name,
       },
-      // TODO rename
-      ...seo(),
+      ...createMetaTags(),
     ],
     links: [
       { rel: "stylesheet", href: appCss },

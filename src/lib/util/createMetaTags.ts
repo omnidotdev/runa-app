@@ -1,7 +1,10 @@
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 
-const seo = ({
+/**
+ * Create meta tags.
+ */
+const createMetaTags = ({
   title,
   description,
   keywords,
@@ -56,4 +59,4 @@ const seo = ({
   return tags;
 };
 
-export default seo;
+export default createMetaTags;

@@ -12,12 +12,12 @@ import { Button } from "@/components/ui/button";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/seo";
 
 export const Route = createFileRoute("/_auth/workspaces/")({
   head: () => ({
     meta: [
-      ...seo({
+      ...createMetaTags({
         title: "Workspaces",
         description:
           "Create a new workspace, or select a current one to view details.",

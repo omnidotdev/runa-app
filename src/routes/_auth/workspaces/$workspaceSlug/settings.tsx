@@ -38,7 +38,7 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import generateSlug from "@/lib/util/generateSlug";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 import { FREE_PRICE } from "@/routes/_marketing/pricing";
 import { getPrices } from "@/server/functions/prices";
@@ -81,7 +81,7 @@ export const Route = createFileRoute(
   head: ({ loaderData, params }) => ({
     meta: loaderData
       ? [
-          ...seo({
+          ...createMetaTags({
             title: `${loaderData.name} Settings`,
             description: `Settings for the ${loaderData.name} workspace.`,
             url: `${BASE_URL}/workspaces/${params.workspaceSlug}/settings`,

@@ -31,7 +31,7 @@ import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 
 import type { DropResult } from "@hello-pangea/dnd";
@@ -71,7 +71,7 @@ export const Route = createFileRoute(
   head: ({ loaderData, params }) => ({
     meta: loaderData
       ? [
-          ...seo({
+          ...createMetaTags({
             title: `${loaderData.name} Projects`,
             description: `Manage and track all projects for the ${loaderData.name} workspace.`,
             url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects`,

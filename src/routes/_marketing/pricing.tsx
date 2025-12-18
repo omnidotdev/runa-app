@@ -22,7 +22,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { BASE_URL } from "@/lib/config/env.config";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/seo";
 import { getPrices } from "@/server/functions/prices";
 
 export const FREE_PRICE = {
@@ -51,7 +51,7 @@ const faqItems = [
 export const Route = createFileRoute("/_marketing/pricing")({
   head: () => ({
     meta: [
-      ...seo({
+      ...createMetaTags({
         title: "Pricing",
         description: "Simple and transparent pricing.",
         url: `${BASE_URL}/pricing`,

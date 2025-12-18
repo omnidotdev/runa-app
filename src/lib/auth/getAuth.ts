@@ -13,7 +13,7 @@ export async function getAuth(request: Request) {
 
     if (!session) return null;
 
-    // Get access token and id token for GraphQL requests
+    // get access token and id token for GraphQL requests
     let accessToken: string | undefined;
     let hidraId: string | undefined;
 
@@ -24,7 +24,7 @@ export async function getAuth(request: Request) {
       });
       accessToken = tokenResult?.accessToken;
 
-      // Extract the IDP user ID (sub) from the id token
+      // extract the IDP user ID (sub) from the ID token
       if (tokenResult?.idToken) {
         const jwks = createRemoteJWKSet(new URL(`${AUTH_ISSUER_URL}/jwks`));
         const { payload } = await jwtVerify(tokenResult.idToken, jwks);
@@ -36,7 +36,7 @@ export async function getAuth(request: Request) {
 
     let rowId: string | undefined;
 
-    // Fetch the database rowId using the IDP ID (hidraId from idToken.sub)
+    // fetch the database `rowId` using the IDP ID (`hidraId` from `idToken.sub`)
     if (accessToken && hidraId) {
       try {
         const graphqlClient = new GraphQLClient(API_GRAPHQL_URL!, {
@@ -68,7 +68,7 @@ export async function getAuth(request: Request) {
       user: {
         ...session.user,
         rowId,
-        hidraId, // Now correctly using idToken.sub instead of session.user.id
+        hidraId,
         username: session.user.name || session.user.email,
       },
     };

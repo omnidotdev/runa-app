@@ -25,7 +25,7 @@ import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import generateSlug from "@/lib/util/generateSlug";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 
 import type { Editor } from "@tiptap/core";
@@ -52,7 +52,7 @@ export const Route = createFileRoute(
   head: ({ loaderData, params }) => ({
     meta: loaderData
       ? [
-          ...seo({
+          ...createMetaTags({
             title: `${loaderData.name} Settings`,
             description: `View and manage ${loaderData.name} settings.`,
             url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}/settings`,

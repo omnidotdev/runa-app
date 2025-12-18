@@ -37,7 +37,7 @@ import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute(
@@ -67,7 +67,7 @@ export const Route = createFileRoute(
   },
   head: ({ loaderData, params }) => ({
     meta: [
-      ...seo({
+      ...createMetaTags({
         title: "Task",
         description: `View and manage a task for ${loaderData?.projectName}.`,
         url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}/${params.taskId}`,

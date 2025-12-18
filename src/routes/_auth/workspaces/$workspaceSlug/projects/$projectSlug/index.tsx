@@ -47,7 +47,7 @@ import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import generateSlug from "@/lib/util/generateSlug";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/seo";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
@@ -136,7 +136,7 @@ export const Route = createFileRoute(
   head: ({ loaderData, params }) => ({
     meta: loaderData
       ? [
-          ...seo({
+          ...createMetaTags({
             title: loaderData.name,
             description: `View and manage tasks for ${loaderData.name}.`,
             url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}`,
