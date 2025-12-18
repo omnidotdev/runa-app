@@ -63,7 +63,7 @@ const PostEmojis = ({ postId }: Props) => {
         <Button
           key={emoji}
           variant="ghost"
-          size="xs"
+          size="sm"
           disabled={isCreatePostEmojiPending || isDeleteEmojiPending}
           onClick={() => {
             if (userEmoji) {

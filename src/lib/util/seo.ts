@@ -1,3 +1,4 @@
+import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 
 const seo = ({
@@ -13,7 +14,7 @@ const seo = ({
   keywords?: string;
   url?: string;
 } = {}) => {
-  const shownTitle = title ? `Runa | ${title}` : "Runa";
+  const shownTitle = title ? `${app.name} | ${title}` : app.name;
   const shownDescription =
     description ?? "A beautiful Kanban board application";
   const shownUrl = url ?? BASE_URL;

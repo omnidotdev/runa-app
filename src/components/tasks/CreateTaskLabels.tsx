@@ -103,7 +103,7 @@ const CreateTaskLabels = withForm({
 
                     {taskLabels.length > 1 && (
                       <div className="flex items-center gap-2">
-                        <div className="-space-x-1 -mx-1 flex items-center">
+                        <div className="-mx-1 flex items-center -space-x-1">
                           {taskLabels.map((label) => (
                             <div
                               key={label.rowId}

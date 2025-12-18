@@ -174,7 +174,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
             </div>
 
             <div className="grid grid-cols-4">
-              <div className="-m-3 col-span-3 flex items-end p-2.5">
+              <div className="col-span-3 -m-3 flex items-end p-2.5">
                 <Tooltip
                   positioning={{
                     placement: "top-start",

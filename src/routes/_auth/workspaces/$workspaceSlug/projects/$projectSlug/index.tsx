@@ -525,7 +525,7 @@ function ProjectPage() {
 
             <div className="mt-2 flex flex-wrap gap-2 sm:flex-nowrap">
               <div className="relative flex-1 sm:flex-none">
-                <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-base-400" />
+                <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-base-400" />
                 <Input
                   id="search-tasks"
                   autoComplete="off"

@@ -18,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { signIn } from "@/lib/auth/signIn";
+import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 
@@ -78,14 +79,14 @@ function HomePage() {
         <div className="py-20 md:py-28 lg:py-36">
           <div className="max-w-3xl">
             <Badge className="mb-5 bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
-              Introducing Runa
+              Introducing {app.name}
             </Badge>
 
             <h1 className="mb-8 font-extrabold text-4xl text-base-900 sm:text-5xl md:text-6xl dark:text-white">
               Transform Your Projects into{" "}
               <span className="relative whitespace-nowrap text-primary-600 dark:text-primary-400">
                 <span className="relative z-10">Success Stories</span>
-                <span className="-inset-1 -skew-y-3 -z-10 absolute rounded-sm bg-primary-100 dark:bg-primary-900/40" />
+                <span className="absolute -inset-1 -z-10 -skew-y-3 rounded-sm bg-primary-100 dark:bg-primary-900/40" />
               </span>
             </h1>
 
@@ -150,7 +151,7 @@ function HomePage() {
                   <CardRoot
                     key={title}
                     className={cn(
-                      "hover:-translate-y-0.5 rounded-xl border border-base-200 bg-white p-6 shadow-sm transition-transform hover:shadow-md dark:border-base-700 dark:bg-base-900",
+                      "rounded-xl border border-base-200 bg-white p-6 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md dark:border-base-700 dark:bg-base-900",
                       hoverBorder,
                     )}
                   >

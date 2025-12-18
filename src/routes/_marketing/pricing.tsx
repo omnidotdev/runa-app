@@ -112,10 +112,7 @@ function PricingPage() {
             <TabsTrigger value="month">Monthly</TabsTrigger>
             <TabsTrigger value="year" className="relative">
               Yearly{" "}
-              <Badge
-                size="sm"
-                className="-top-3.5 -right-4 absolute rotate-[12deg] px-1"
-              >
+              <Badge className="absolute -top-3.5 -right-4 rotate-12 px-1">
                 save 25%
               </Badge>
             </TabsTrigger>

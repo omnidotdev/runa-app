@@ -33,9 +33,9 @@ import { colors } from "@/lib/constants/colors";
 import useForm from "@/lib/hooks/useForm";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 
-import type { ColorPickerProps } from "@/components/ui/color-picker";
+import type { ComponentProps } from "react";
 
-const ProjectColorPicker = (props: ColorPickerProps) => {
+const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
   const { projectId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });

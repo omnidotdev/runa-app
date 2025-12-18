@@ -52,7 +52,7 @@ export const PriceCard = ({ price }: Props) => {
         )}
       >
         {isTeamTier && (
-          <div className="-top-3 -translate-x-1/2 absolute left-1/2">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <span className="rounded-full bg-primary-700 px-3 py-1 font-medium text-primary-foreground text-sm dark:bg-primary">
               Recommended
             </span>

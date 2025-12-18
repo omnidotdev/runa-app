@@ -234,12 +234,12 @@ html.dark {
       :active,
       :not(:hover):not(:focus):not(:active)
     ) {
-    -webkit-box-shadow: 0 0 0px 1000px var(--color-white) inset !important;
-    box-shadow: 0 0 0px 1000px var(--color-white) inset !important;
-    -webkit-text-fill-color: var(--base-800) !important;
-    color: var(--base-800) !important;
-    caret-color: var(--base-800) !important;
-    transition: background-color 5000s ease-in-out 0s !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--color-white) inset;
+    box-shadow: 0 0 0px 1000px var(--color-white) inset;
+    -webkit-text-fill-color: var(--base-800);
+    color: var(--base-800);
+    caret-color: var(--base-800);
+    transition: background-color 5000s ease-in-out 0s;
   }
 
   /* handle autofill states on dark mode */
@@ -250,12 +250,12 @@ html.dark {
     :active,
     :not(:hover):not(:focus):not(:active)
   ) {
-    -webkit-box-shadow: 0 0 0px 1000px var(--base-950) inset !important;
-    box-shadow: 0 0 0px 1000px var(--base-950) inset !important;
-    -webkit-text-fill-color: var(--base-200) !important;
-    color: var(--base-200) !important;
-    caret-color: var(--base-200) !important;
-    transition: background-color 5000s ease-in-out 0s !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--base-950) inset;
+    box-shadow: 0 0 0px 1000px var(--base-950) inset;
+    -webkit-text-fill-color: var(--base-200);
+    color: var(--base-200);
+    caret-color: var(--base-200);
+    transition: background-color 5000s ease-in-out 0s;
   }
 }
 

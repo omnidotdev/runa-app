@@ -21,6 +21,10 @@ export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { queryClient, session } }) => {
     if (!session) throw redirect({ to: "/" });
 
+    if (!session.user.rowId) {
+      throw new Error("User `rowId` not found in session");
+    }
+
     const { workspaceSlug, projectSlug } = params as unknown as {
       workspaceSlug?: string;
       projectSlug?: string;
@@ -38,7 +42,7 @@ export const Route = createFileRoute("/_auth")({
       if (!workspaceBySlug) throw notFound();
 
       const [{ workspaceUsers }] = await Promise.all([
-        // NB: used to ensure that the user is indeed a member of the workspace
+        // ensure user is a member of the workspace
         queryClient.ensureQueryData(
           workspaceUsersOptions({
             workspaceId: workspaceBySlug.rowId,
@@ -68,7 +72,7 @@ export const Route = createFileRoute("/_auth")({
       return { workspaceBySlug };
     } else {
       await queryClient.ensureQueryData(
-        workspacesOptions({ userId: session?.user.rowId! }),
+        workspacesOptions({ userId: session.user.rowId }),
       );
 
       return { workspaceBySlug: undefined };

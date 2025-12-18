@@ -6,7 +6,10 @@ import ThemeToggle from "@/components/core/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { signIn } from "@/lib/auth/signIn";
 import { signOut } from "@/lib/auth/signOut";
+import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
+
+// TODO rename to landing or index or home
 
 export const Route = createFileRoute("/_marketing")({
   component: MarketingLayout,
@@ -26,7 +29,7 @@ function MarketingLayout() {
             backgroundSize: "cover",
           }}
         />
-        <div className="absolute inset-0 left-[calc(-1*calc(100vw-100%))] z-0 w-[calc(100%+calc(100vw-100%))] bg-gradient-to-b from-base-100/70 via-transparent to-base-100/70 dark:from-base-950/70 dark:via-transparent dark:to-base-900/70" />
+        <div className="absolute inset-0 left-[calc(-1*calc(100vw-100%))] z-0 w-[calc(100%+calc(100vw-100%))] bg-linear-to-b from-base-100/70 via-transparent to-base-100/70 dark:from-base-950/70 dark:via-transparent dark:to-base-900/70" />
       </div>
 
       <header className="fixed top-0 z-50 w-full border-base-200 border-b bg-white shadow-sm blur-ms dark:border-base-700 dark:bg-base-900">
@@ -40,10 +43,10 @@ function MarketingLayout() {
               <Image
                 layout="fullWidth"
                 src="/logo.png"
-                alt="Runa Logo"
+                alt={`${app.name} logo`}
                 className="h-6 w-6 md:h-8 md:w-8"
               />
-              <h1 className="font-bold text-xl">Runa</h1>
+              <h1 className="font-bold text-xl">{app.name}</h1>
             </Link>
 
             <div className="flex items-center gap-4">
@@ -67,7 +70,7 @@ function MarketingLayout() {
         </main>
 
         <footer className="flex w-full items-center justify-center p-4 text-base-600 dark:text-base-400">
-          &copy; {new Date().getFullYear()} Runa
+          &copy; {new Date().getFullYear()} {app.organization.name}
         </footer>
       </div>
     </>

@@ -49,6 +49,7 @@ function WorkspacesOverviewPage() {
       <div className="w-full max-w-4xl">
         <div className="mb-12 flex flex-col items-center justify-center gap-4">
           <LayersIcon className="size-12 text-base-500 dark:text-base-400" />
+
           <h1 className="text-pretty text-center font-semibold text-2xl text-base-900 dark:text-base-100">
             {recentWorkspaces?.length
               ? "Select a workspace or create a new one to get started"

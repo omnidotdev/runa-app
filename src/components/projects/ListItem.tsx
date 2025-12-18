@@ -138,7 +138,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
                       assignees={task.assignees.nodes.map(
                         (assignee) => assignee.user?.rowId!,
                       )}
-                      className="-space-x-4 flex w-fit items-center"
+                      className="flex w-fit items-center -space-x-4"
                     />
                   ) : (
                     <AvatarRoot
