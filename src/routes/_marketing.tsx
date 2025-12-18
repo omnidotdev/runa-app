@@ -10,11 +10,7 @@ import { BASE_URL } from "@/lib/config/env.config";
 
 // TODO rename to landing or index or home
 
-export const Route = createFileRoute("/_marketing")({
-  component: MarketingLayout,
-});
-
-function MarketingLayout() {
+const MarketingLayout = () => {
   const { session } = Route.useRouteContext();
 
   return (
@@ -74,4 +70,8 @@ function MarketingLayout() {
       </div>
     </>
   );
-}
+};
+
+export const Route = createFileRoute("/_marketing")({
+  component: MarketingLayout,
+});
