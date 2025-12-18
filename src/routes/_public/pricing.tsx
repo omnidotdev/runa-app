@@ -48,7 +48,25 @@ const faqItems = [
   },
 ];
 
-const PricingPage = () => {
+export const Route = createFileRoute("/_public/pricing")({
+  head: () => ({
+    meta: [
+      ...createMetaTags({
+        title: "Pricing",
+        description: "Simple and transparent pricing.",
+        url: `${BASE_URL}/pricing`,
+      }),
+    ],
+  }),
+  loader: async () => {
+    const prices = await getPrices();
+
+    return { prices };
+  },
+  component: PricingPage,
+});
+
+function PricingPage() {
   const router = useRouter();
   const canGoBack = useCanGoBack();
   const { prices } = Route.useLoaderData();
@@ -137,22 +155,4 @@ const PricingPage = () => {
       </div>
     </div>
   );
-};
-
-export const Route = createFileRoute("/_public/pricing")({
-  head: () => ({
-    meta: [
-      ...createMetaTags({
-        title: "Pricing",
-        description: "Simple and transparent pricing.",
-        url: `${BASE_URL}/pricing`,
-      }),
-    ],
-  }),
-  loader: async () => {
-    const prices = await getPrices();
-
-    return { prices };
-  },
-  component: PricingPage,
-});
+}

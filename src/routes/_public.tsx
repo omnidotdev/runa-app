@@ -8,7 +8,11 @@ import { signOut } from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 
-const PublicLayout = () => {
+export const Route = createFileRoute("/_public")({
+  component: PublicLayout,
+});
+
+function PublicLayout() {
   const { session } = Route.useRouteContext();
 
   return (
@@ -68,8 +72,4 @@ const PublicLayout = () => {
       </div>
     </>
   );
-};
-
-export const Route = createFileRoute("/_public")({
-  component: PublicLayout,
-});
+}

@@ -64,6 +64,8 @@ const features: Feature[] = [
   },
 ];
 
+// TODO make this page slap
+
 export const Route = createFileRoute("/_public/")({
   beforeLoad: ({ context: { session } }) => {
     if (session) throw redirect({ to: "/workspaces" });
