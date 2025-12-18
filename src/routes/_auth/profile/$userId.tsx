@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { DestructiveActionDialog } from "@/components/core";
 import {
   CustomizationTab,
-  DangerZone,
   InvitationsTable,
   ProfileHeader,
   WorkspacesTable,
@@ -182,8 +181,6 @@ function ProfilePage() {
                       onReject={handleRejectInvitation}
                     />
                   </div>
-
-                  <DangerZone />
                 </div>
               </TabsContent>
 
