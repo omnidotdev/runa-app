@@ -109,25 +109,33 @@ function PricingPage() {
 
         <TabsProvider value={tabs} className="flex w-full flex-col">
           <TabsList className="place-self-center">
-            <TabsTrigger value="month">Monthly</TabsTrigger>
+            <TabsTrigger value="month" className="rounded-lg">
+              Monthly
+            </TabsTrigger>
 
-            <TabsTrigger value="year" className="relative">
+            <TabsTrigger value="year" className="relative rounded-lg">
               Yearly{" "}
-              <Badge className="absolute -top-3.5 -right-4 rotate-12 px-1">
+              <Badge className="absolute -top-4 -right-4 rotate-12 px-1">
                 save 25%
               </Badge>
             </TabsTrigger>
           </TabsList>
 
-          {(["month", "year"] as const).map((tab) => (
-            <TabsContent key={tab} value={tab} className="flex flex-wrap gap-4">
-              <PriceCard price={FREE_PRICE} />
+          <div className="pt-2">
+            {(["month", "year"] as const).map((tab) => (
+              <TabsContent
+                key={tab}
+                value={tab}
+                className="flex flex-wrap gap-4"
+              >
+                <PriceCard price={FREE_PRICE} />
 
-              {filteredPrices.map((price) => (
-                <PriceCard key={price.id} price={price} />
-              ))}
-            </TabsContent>
-          ))}
+                {filteredPrices.map((price) => (
+                  <PriceCard key={price.id} price={price} />
+                ))}
+              </TabsContent>
+            ))}
+          </div>
         </TabsProvider>
 
         <div className="mt-24 text-center">
@@ -135,12 +143,13 @@ function PricingPage() {
             Frequently Asked Questions
           </h2>
 
-          <AccordionRoot
-            multiple
-            className="mx-auto mt-8 grid max-w-3xl bg-background"
-          >
+          <AccordionRoot multiple className="mx-auto mt-8 grid max-w-3xl">
             {faqItems.map((item) => (
-              <AccordionItem key={item.question} value={item.question}>
+              <AccordionItem
+                key={item.question}
+                value={item.question}
+                className="border-0"
+              >
                 <AccordionItemTrigger className="text-lg">
                   {item.question}
                 </AccordionItemTrigger>

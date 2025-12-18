@@ -73,16 +73,20 @@ const Board = ({ projects }: Props) => {
                 title={column.title}
                 count={column.projects.totalCount}
                 tooltip={{
-                  title: "Create Project",
-                  shortcut: "P",
+                  title: maxProjectsReached
+                    ? "Upgrade workspace to create more projects"
+                    : "Create Project",
+                  shortcut: !maxProjectsReached ? "P" : undefined,
                 }}
                 emoji={column.emoji}
                 onCreate={() => {
                   setProjectColumnId(column.rowId);
                   setIsCreateProjectDialogOpen(true);
                 }}
-                className={cn("hidden", !isMember && "inline-flex")}
-                // TODO: update tooltip to handle disabled state
+                className={cn(
+                  "hidden disabled:pointer-events-auto disabled:cursor-not-allowed disabled:hover:bg-transparent dark:disabled:hover:bg-transparent",
+                  !isMember && "inline-flex",
+                )}
                 disabled={maxProjectsReached}
               />
 

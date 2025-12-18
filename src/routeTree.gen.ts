@@ -13,7 +13,6 @@ import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as PublicPricingRouteImport } from './routes/_public/pricing'
-import { Route as AuthConfirmationRouteImport } from './routes/_auth/confirmation'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthProfileUserIdRouteImport } from './routes/_auth/profile/$userId'
@@ -40,11 +39,6 @@ const PublicPricingRoute = PublicPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
   getParentRoute: () => PublicRoute,
-} as any)
-const AuthConfirmationRoute = AuthConfirmationRouteImport.update({
-  id: '/confirmation',
-  path: '/confirmation',
-  getParentRoute: () => AuthRoute,
 } as any)
 const AuthWorkspacesIndexRoute = AuthWorkspacesIndexRouteImport.update({
   id: '/workspaces/',
@@ -93,7 +87,6 @@ const AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/confirmation': typeof AuthConfirmationRoute
   '/pricing': typeof PublicPricingRoute
   '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
@@ -106,7 +99,6 @@ export interface FileRoutesByFullPath {
   '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesByTo {
-  '/confirmation': typeof AuthConfirmationRoute
   '/pricing': typeof PublicPricingRoute
   '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
@@ -122,7 +114,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
-  '/_auth/confirmation': typeof AuthConfirmationRoute
   '/_public/pricing': typeof PublicPricingRoute
   '/_public/': typeof PublicIndexRoute
   '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
@@ -137,7 +128,6 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/confirmation'
     | '/pricing'
     | '/'
     | '/profile/$userId'
@@ -150,7 +140,6 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/confirmation'
     | '/pricing'
     | '/'
     | '/profile/$userId'
@@ -165,7 +154,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth'
     | '/_public'
-    | '/_auth/confirmation'
     | '/_public/pricing'
     | '/_public/'
     | '/_auth/profile/$userId'
@@ -213,13 +201,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/pricing'
       preLoaderRoute: typeof PublicPricingRouteImport
       parentRoute: typeof PublicRoute
-    }
-    '/_auth/confirmation': {
-      id: '/_auth/confirmation'
-      path: '/confirmation'
-      fullPath: '/confirmation'
-      preLoaderRoute: typeof AuthConfirmationRouteImport
-      parentRoute: typeof AuthRoute
     }
     '/_auth/workspaces/': {
       id: '/_auth/workspaces/'
@@ -281,7 +262,6 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthRouteChildren {
-  AuthConfirmationRoute: typeof AuthConfirmationRoute
   AuthProfileUserIdRoute: typeof AuthProfileUserIdRoute
   AuthWorkspacesIndexRoute: typeof AuthWorkspacesIndexRoute
   AuthWorkspacesWorkspaceSlugSettingsRoute: typeof AuthWorkspacesWorkspaceSlugSettingsRoute
@@ -292,7 +272,6 @@ interface AuthRouteChildren {
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthConfirmationRoute: AuthConfirmationRoute,
   AuthProfileUserIdRoute: AuthProfileUserIdRoute,
   AuthWorkspacesIndexRoute: AuthWorkspacesIndexRoute,
   AuthWorkspacesWorkspaceSlugSettingsRoute:

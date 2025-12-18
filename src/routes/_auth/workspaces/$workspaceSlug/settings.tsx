@@ -1,17 +1,18 @@
 import { Format } from "@ark-ui/react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  useCanGoBack,
+  useRouter,
+} from "@tanstack/react-router";
 import { format } from "date-fns";
 import { AlertTriangleIcon, ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
-import {
-  DestructiveActionDialog,
-  Link,
-  RichTextEditor,
-} from "@/components/core";
+import { DestructiveActionDialog, RichTextEditor } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,8 +21,10 @@ import {
   MenuItem,
   MenuItemGroup,
   MenuItemGroupLabel,
+  MenuItemText,
   MenuPositioner,
   MenuRoot,
+  MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
 import { Projects, Team, WorkspaceColumnsForm } from "@/components/workspaces";
@@ -64,11 +67,12 @@ export const Route = createFileRoute(
         data: { subscriptionId: workspaceBySlug.subscriptionId },
       }),
       getPrices(),
-      queryClient.ensureQueryData(
-        projectColumnsOptions({
+      queryClient.ensureQueryData({
+        ...projectColumnsOptions({
           workspaceId: workspaceBySlug.rowId!,
         }),
-      ),
+        revalidateIfStale: true,
+      }),
     ]);
 
     return {
@@ -99,6 +103,7 @@ function SettingsPage() {
   const { workspaceSlug } = Route.useParams();
   const router = useRouter();
   const navigate = Route.useNavigate();
+  const canGoBack = useCanGoBack();
 
   const [nameError, setNameError] = useState<string | null>(null);
 
@@ -220,15 +225,20 @@ function SettingsPage() {
       {/* Header */}
       <div className="mb-10 ml-2 flex items-center justify-between lg:ml-0">
         <div className="flex items-center gap-3">
-          <Link
-            to="/workspaces/$workspaceSlug/projects"
-            params={{ workspaceSlug: workspaceSlug }}
+          <Button
             variant="ghost"
-            size="icon"
-            aria-label="Back to projects"
+            aria-label="Go back"
+            onClick={() =>
+              canGoBack
+                ? router.history.back()
+                : navigate({
+                    to: "/workspaces/$workspaceSlug/projects",
+                    params: { workspaceSlug },
+                  })
+            }
           >
             <ArrowLeft className="size-4" />
-          </Link>
+          </Button>
           <div className="flex flex-col gap-2">
             <RichTextEditor
               defaultContent={workspace?.name}
@@ -281,8 +291,10 @@ function SettingsPage() {
             isOwner && "flex",
           )}
         >
-          <div className="flex flex-col gap-4">
-            <h3 className="font-medium text-sm">Manage Subscription</h3>
+          <div className="flex flex-col gap-4 pt-2">
+            <h3 className="font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+              Workspace Benefits
+            </h3>
 
             {!!subscription?.cancelAt && (
               <div className="flex items-center gap-1 text-sm text-yellow-600 dark:text-yellow-400">
@@ -294,17 +306,17 @@ function SettingsPage() {
               </div>
             )}
 
-            <div className="rounded-lg border border-border bg-card p-4">
-              <h4 className="mb-3 font-medium text-muted-foreground text-sm">
-                Current Workspace Benefits
-              </h4>
-              <ul className="space-y-2">
+            <div className="border-t">
+              <ul className="divide-y border-b">
                 {(
                   subscription?.product?.marketing_features ??
                   FREE_PRICE.product.marketing_features
                 ).map((feature) => (
-                  <li key={feature.name} className="flex items-center gap-2">
-                    <div className="size-1.5 flex-shrink-0 rounded-full bg-primary" />
+                  <li
+                    key={feature.name}
+                    className="flex h-10 items-center gap-2 pl-2"
+                  >
+                    <div className="size-1.5 shrink-0 rounded-full bg-primary" />
                     <span className="text-sm leading-relaxed">
                       {feature.name}
                     </span>
@@ -341,40 +353,54 @@ function SettingsPage() {
                 onSelect={({ value }) => createSubscription({ priceId: value })}
               >
                 <MenuTrigger asChild>
-                  <Button className="w-fit">Upgrade Workspace</Button>
+                  <Button className="mt-2 w-fit">Upgrade Workspace</Button>
                 </MenuTrigger>
                 <MenuPositioner>
-                  <MenuContent className="min-w-64">
-                    {(["basic", "team"] as const).map((tier) => (
-                      <MenuItemGroup key={tier}>
-                        <MenuItemGroupLabel className="text-muted-foreground">
-                          {firstLetterToUppercase(tier)}
-                        </MenuItemGroupLabel>
-                        {prices
-                          .filter((price) => price.metadata.tier === tier)
-                          .map((price) => (
-                            <MenuItem key={price.id} value={price.id}>
-                              <div className="flex w-full items-center justify-between">
-                                {firstLetterToUppercase(
-                                  price.recurring?.interval!,
-                                )}
-                                ly
-                                <p>
-                                  <Format.Number
-                                    value={price.unit_amount! / 100}
-                                    currency="USD"
-                                    style="currency"
-                                    notation="compact"
-                                  />
-                                  /
-                                  {price.recurring?.interval === "month"
-                                    ? "mo"
-                                    : "yr"}
-                                </p>
-                              </div>
-                            </MenuItem>
-                          ))}
-                      </MenuItemGroup>
+                  <MenuContent className="w-60">
+                    {(["basic", "team"] as const).map((tier, index) => (
+                      <Fragment key={tier}>
+                        <MenuItemGroup>
+                          <MenuItemGroupLabel className="text-muted-foreground">
+                            {firstLetterToUppercase(tier)}
+                          </MenuItemGroupLabel>
+
+                          {prices
+                            .filter((price) => price.metadata.tier === tier)
+                            .map((price) => (
+                              <MenuItem
+                                key={price.id}
+                                value={price.id}
+                                className="cursor-pointer"
+                              >
+                                <MenuItemText className="flex w-full items-center justify-between">
+                                  <span className="font-medium text-sm">
+                                    {firstLetterToUppercase(
+                                      price.recurring?.interval!,
+                                    )}
+                                    ly
+                                  </span>
+
+                                  <span className="font-semibold text-sm">
+                                    <Format.Number
+                                      value={price.unit_amount! / 100}
+                                      currency="USD"
+                                      style="currency"
+                                      notation="compact"
+                                    />
+                                    <span className="font-normal text-muted-foreground">
+                                      /
+                                      {price.recurring?.interval === "month"
+                                        ? "mo"
+                                        : "yr"}
+                                    </span>
+                                  </span>
+                                </MenuItemText>
+                              </MenuItem>
+                            ))}
+                        </MenuItemGroup>
+
+                        {index < 1 && <MenuSeparator />}
+                      </Fragment>
                     ))}
                   </MenuContent>
                 </MenuPositioner>

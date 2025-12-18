@@ -3,6 +3,7 @@ query WorkspaceBySlug($slug: String!, $projectSlug: String) {
     name
     rowId
     subscriptionId
+    tier
     projects(condition: { slug: $projectSlug }) {
       nodes {
         name

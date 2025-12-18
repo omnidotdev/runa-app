@@ -8522,6 +8522,13 @@ export type DeleteWorkspaceUserMutationVariables = Exact<{
 
 export type DeleteWorkspaceUserMutation = { __typename?: 'Mutation', deleteWorkspaceUser?: { __typename?: 'DeleteWorkspaceUserPayload', clientMutationId?: string | null } | null };
 
+export type UpdateWorkspaceUserMutationVariables = Exact<{
+  input: UpdateWorkspaceUserInput;
+}>;
+
+
+export type UpdateWorkspaceUserMutation = { __typename?: 'Mutation', updateWorkspaceUser?: { __typename?: 'UpdateWorkspaceUserPayload', clientMutationId?: string | null } | null };
+
 export type CreateWorkspaceMutationVariables = Exact<{
   input: CreateWorkspaceInput;
 }>;
@@ -8654,6 +8661,7 @@ export type UserByIdentityProviderIdQuery = { __typename?: 'Query', userByIdenti
 export type WorkspaceUsersQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
   filter?: InputMaybe<WorkspaceUserFilter>;
+  orderBy?: InputMaybe<Array<WorkspaceUserOrderBy> | WorkspaceUserOrderBy>;
 }>;
 
 
@@ -8673,7 +8681,7 @@ export type WorkspaceBySlugQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceBySlugQuery = { __typename?: 'Query', workspaceBySlug?: { __typename?: 'Workspace', name: string, rowId: string, subscriptionId?: string | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string }> } } | null };
+export type WorkspaceBySlugQuery = { __typename?: 'Query', workspaceBySlug?: { __typename?: 'Workspace', name: string, rowId: string, subscriptionId?: string | null, tier: Tier, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string }> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -9046,6 +9054,13 @@ export const DeleteWorkspaceUserDocument = gql`
   }
 }
     `;
+export const UpdateWorkspaceUserDocument = gql`
+    mutation UpdateWorkspaceUser($input: UpdateWorkspaceUserInput!) {
+  updateWorkspaceUser(input: $input) {
+    clientMutationId
+  }
+}
+    `;
 export const CreateWorkspaceDocument = gql`
     mutation CreateWorkspace($input: CreateWorkspaceInput!) {
   createWorkspace(input: $input) {
@@ -9324,8 +9339,12 @@ export const UserByIdentityProviderIdDocument = gql`
 }
     `;
 export const WorkspaceUsersDocument = gql`
-    query WorkspaceUsers($workspaceId: UUID!, $filter: WorkspaceUserFilter) {
-  workspaceUsers(condition: {workspaceId: $workspaceId}, filter: $filter) {
+    query WorkspaceUsers($workspaceId: UUID!, $filter: WorkspaceUserFilter, $orderBy: [WorkspaceUserOrderBy!] = [CREATED_AT_ASC]) {
+  workspaceUsers(
+    condition: {workspaceId: $workspaceId}
+    filter: $filter
+    orderBy: $orderBy
+  ) {
     nodes {
       role
       user {
@@ -9412,6 +9431,7 @@ export const WorkspaceBySlugDocument = gql`
     name
     rowId
     subscriptionId
+    tier
     projects(condition: {slug: $projectSlug}) {
       nodes {
         name
@@ -9549,6 +9569,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     DeleteWorkspaceUser(variables: DeleteWorkspaceUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DeleteWorkspaceUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeleteWorkspaceUserMutation>({ document: DeleteWorkspaceUserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DeleteWorkspaceUser', 'mutation', variables);
+    },
+    UpdateWorkspaceUser(variables: UpdateWorkspaceUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateWorkspaceUserMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UpdateWorkspaceUserMutation>({ document: UpdateWorkspaceUserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateWorkspaceUser', 'mutation', variables);
     },
     CreateWorkspace(variables: CreateWorkspaceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateWorkspaceMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateWorkspaceMutation>({ document: CreateWorkspaceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateWorkspace', 'mutation', variables);

@@ -8521,6 +8521,13 @@ export type DeleteWorkspaceUserMutationVariables = Exact<{
 
 export type DeleteWorkspaceUserMutation = { __typename?: 'Mutation', deleteWorkspaceUser?: { __typename?: 'DeleteWorkspaceUserPayload', clientMutationId?: string | null } | null };
 
+export type UpdateWorkspaceUserMutationVariables = Exact<{
+  input: UpdateWorkspaceUserInput;
+}>;
+
+
+export type UpdateWorkspaceUserMutation = { __typename?: 'Mutation', updateWorkspaceUser?: { __typename?: 'UpdateWorkspaceUserPayload', clientMutationId?: string | null } | null };
+
 export type CreateWorkspaceMutationVariables = Exact<{
   input: CreateWorkspaceInput;
 }>;
@@ -8653,6 +8660,7 @@ export type UserByIdentityProviderIdQuery = { __typename?: 'Query', userByIdenti
 export type WorkspaceUsersQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
   filter?: InputMaybe<WorkspaceUserFilter>;
+  orderBy?: InputMaybe<Array<WorkspaceUserOrderBy> | WorkspaceUserOrderBy>;
 }>;
 
 
@@ -8672,7 +8680,7 @@ export type WorkspaceBySlugQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceBySlugQuery = { __typename?: 'Query', workspaceBySlug?: { __typename?: 'Workspace', name: string, rowId: string, subscriptionId?: string | null, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string }> } } | null };
+export type WorkspaceBySlugQuery = { __typename?: 'Query', workspaceBySlug?: { __typename?: 'Workspace', name: string, rowId: string, subscriptionId?: string | null, tier: Tier, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string }> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -9654,6 +9662,32 @@ useDeleteWorkspaceUserMutation.getKey = () => ['DeleteWorkspaceUser'];
 
 useDeleteWorkspaceUserMutation.fetcher = (variables: DeleteWorkspaceUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteWorkspaceUserMutation, DeleteWorkspaceUserMutationVariables>(DeleteWorkspaceUserDocument, variables, options);
 
+export const UpdateWorkspaceUserDocument = `
+    mutation UpdateWorkspaceUser($input: UpdateWorkspaceUserInput!) {
+  updateWorkspaceUser(input: $input) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useUpdateWorkspaceUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateWorkspaceUserMutation, TError, UpdateWorkspaceUserMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateWorkspaceUserMutation, TError, UpdateWorkspaceUserMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateWorkspaceUser'],
+    mutationFn: (variables?: UpdateWorkspaceUserMutationVariables) => graphqlFetch<UpdateWorkspaceUserMutation, UpdateWorkspaceUserMutationVariables>(UpdateWorkspaceUserDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateWorkspaceUserMutation.getKey = () => ['UpdateWorkspaceUser'];
+
+
+useUpdateWorkspaceUserMutation.fetcher = (variables: UpdateWorkspaceUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateWorkspaceUserMutation, UpdateWorkspaceUserMutationVariables>(UpdateWorkspaceUserDocument, variables, options);
+
 export const CreateWorkspaceDocument = `
     mutation CreateWorkspace($input: CreateWorkspaceInput!) {
   createWorkspace(input: $input) {
@@ -10591,8 +10625,12 @@ useInfiniteUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProv
 useUserByIdentityProviderIdQuery.fetcher = (variables: UserByIdentityProviderIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, variables, options);
 
 export const WorkspaceUsersDocument = `
-    query WorkspaceUsers($workspaceId: UUID!, $filter: WorkspaceUserFilter) {
-  workspaceUsers(condition: {workspaceId: $workspaceId}, filter: $filter) {
+    query WorkspaceUsers($workspaceId: UUID!, $filter: WorkspaceUserFilter, $orderBy: [WorkspaceUserOrderBy!] = [CREATED_AT_ASC]) {
+  workspaceUsers(
+    condition: {workspaceId: $workspaceId}
+    filter: $filter
+    orderBy: $orderBy
+  ) {
     nodes {
       role
       user {
@@ -10765,6 +10803,7 @@ export const WorkspaceBySlugDocument = `
     name
     rowId
     subscriptionId
+    tier
     projects(condition: {slug: $projectSlug}) {
       nodes {
         name

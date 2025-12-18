@@ -17,3 +17,4 @@ export { type EditorApi, default as RichTextEditor } from "./RichTextEditor";
 export { default as Shortcut } from "./Shortcut";
 export { default as ThemeToggle } from "./ThemeToggle";
 export { default as Tooltip } from "./Tooltip";
+export { default as WorkspaceTier } from "./WorkspaceTier";
