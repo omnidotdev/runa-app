@@ -13,12 +13,9 @@ export default defineConfig(({ command, mode }) => {
   return {
     server: {
       port: 3000,
+      host: "0.0.0.0",
       // Seemingly needed as a workaround for `https`. See: https://github.com/TanStack/router/issues/4287#issuecomment-2954268842
       proxy: {},
-      cors: {
-        origin: env.VITE_AUTH_BASE_URL,
-        credentials: true,
-      },
     },
     plugins: [
       devtools(),

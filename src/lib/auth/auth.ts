@@ -18,7 +18,6 @@ const auth = betterAuth({
   baseURL: BASE_URL,
   basePath: "/api/auth",
   secret: AUTH_SECRET,
-  trustedOrigins: ["*"],
   account: {
     // store OAuth tokens (access token, refresh token) in a signed cookie for stateless mode to enable automatic token refresh without a database
     storeAccountCookie: true,
