@@ -18,7 +18,6 @@ import {
   PlusIcon,
   Settings2,
   Settings2Icon,
-  Trash2Icon,
 } from "lucide-react";
 import { useId, useState } from "react";
 
@@ -407,22 +406,6 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                           <MenuPositioner>
                             <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
                               <MenuItem
-                                value="settings"
-                                onClick={() => {
-                                  navigate({
-                                    to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-                                    params: {
-                                      workspaceSlug,
-                                      projectSlug: project.slug,
-                                    },
-                                  });
-                                }}
-                              >
-                                <Settings2 />
-                                Settings
-                              </MenuItem>
-
-                              <MenuItem
                                 value="viewMode"
                                 onClick={() =>
                                   updateViewMode({
@@ -456,19 +439,19 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                               </MenuItem>
 
                               <MenuItem
-                                value="delete"
-                                variant="destructive"
-                                className={cn("flex", isMember && "hidden")}
+                                value="settings"
                                 onClick={() => {
-                                  setSelectedProject({
-                                    rowId: project.rowId,
-                                    name: project.name,
+                                  navigate({
+                                    to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+                                    params: {
+                                      workspaceSlug,
+                                      projectSlug: project.slug,
+                                    },
                                   });
-                                  setIsDeleteProjectOpen(true);
                                 }}
                               >
-                                <Trash2Icon />
-                                <span>Delete Project</span>
+                                <Settings2 />
+                                Settings
                               </MenuItem>
                             </MenuContent>
                           </MenuPositioner>
