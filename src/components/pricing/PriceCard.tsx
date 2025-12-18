@@ -82,9 +82,7 @@ export const PriceCard = ({ price }: Props) => {
                 currency="USD"
               />
               <span className="ml-1 font-medium text-lg text-muted-foreground">
-                {price.recurring
-                  ? `/workspace/${price.recurring.interval}`
-                  : "/forever"}
+                {price.recurring && `/workspace/${price.recurring.interval}`}
               </span>
             </div>
           </div>
