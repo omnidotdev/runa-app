@@ -1,4 +1,4 @@
-import Link from "@/components/core/Link";
+import { Link } from "@/components/core";
 import { Button } from "@/components/ui/button";
 
 import type { ReactNode } from "react";

@@ -2,13 +2,13 @@ import { useParams, useRouteContext } from "@tanstack/react-router";
 import { SendIcon } from "lucide-react";
 import { useRef } from "react";
 
-import RichTextEditor from "@/components/core/RichTextEditor";
+import { RichTextEditor } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import { useCreatePostMutation } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
 
-import type { EditorApi } from "@/components/core/RichTextEditor";
+import type { EditorApi } from "@/components/core";
 
 const CreateComment = () => {
   const editorApi = useRef<EditorApi | null>(null);

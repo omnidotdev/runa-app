@@ -5,12 +5,13 @@ import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
-import Link from "@/components/core/Link";
-import RichTextEditor from "@/components/core/RichTextEditor";
-import NotFound from "@/components/layout/NotFound";
-import ProjectColumnsForm from "@/components/projects/settings/columns/ProjectColumnsForm";
-import ProjectLabelsForm from "@/components/projects/settings/labels/ProjectLabelsForm";
-import ProjectColorPicker from "@/components/projects/settings/ProjectColorPicker";
+import { Link, RichTextEditor } from "@/components/core";
+import { NotFound } from "@/components/layout";
+import {
+  ProjectColorPicker,
+  ProjectColumnsForm,
+  ProjectLabelsForm,
+} from "@/components/projects";
 import { Button } from "@/components/ui/button";
 import {
   Role,
@@ -24,8 +25,8 @@ import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import createMetaTags from "@/lib/util/createMetaTags";
 import generateSlug from "@/lib/util/generateSlug";
-import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 
 import type { Editor } from "@tiptap/core";
@@ -52,7 +53,7 @@ export const Route = createFileRoute(
   head: ({ loaderData, params }) => ({
     meta: loaderData
       ? [
-          ...seo({
+          ...createMetaTags({
             title: `${loaderData.name} Settings`,
             description: `View and manage ${loaderData.name} settings.`,
             url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}/settings`,

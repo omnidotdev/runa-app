@@ -7,7 +7,6 @@ import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
-import CreateTaskDatePicker from "@/components/tasks/CreateTaskDatePicker";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -26,6 +25,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
+import CreateTaskDatePicker from "./CreateTaskDatePicker";
 
 const UpdateDueDateDialog = () => {
   const inputRef = useRef<HTMLInputElement>(null);

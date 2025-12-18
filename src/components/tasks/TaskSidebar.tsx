@@ -3,8 +3,7 @@ import { useParams } from "@tanstack/react-router";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
-import Shortcut from "@/components/core/Shortcut";
-import Label from "@/components/shared/Label";
+import { Label, Shortcut } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,

@@ -1066,7 +1066,7 @@ export const mockUserQuery = (resolver: GraphQLResponseResolver<Types.UserQuery,
  * @example
  * mockUserByIdentityProviderIdQuery(
  *   ({ query, variables }) => {
- *     const { hidraId } = variables;
+ *     const { identityProviderId } = variables;
  *     return HttpResponse.json({
  *       data: { userByIdentityProviderId }
  *     })

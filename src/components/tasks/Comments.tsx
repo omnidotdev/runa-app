@@ -4,8 +4,7 @@ import { format } from "date-fns";
 import { MoreHorizontalIcon, PenLineIcon, Trash2Icon } from "lucide-react";
 import { Suspense, useEffect, useRef, useState } from "react";
 
-import RichTextEditor from "@/components/core/RichTextEditor";
-import UpdateCommentForm from "@/components/tasks/UpdateCommentForm";
+import { RichTextEditor } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,
@@ -35,6 +34,7 @@ import taskOptions from "@/lib/options/task.options";
 import { cn } from "@/lib/utils";
 import CommentEmojiPicker from "./CommentEmojiPicker";
 import PostEmojis from "./PostEmojis";
+import UpdateCommentForm from "./UpdateCommentForm";
 
 const Comments = () => {
   const { taskId } = useParams({

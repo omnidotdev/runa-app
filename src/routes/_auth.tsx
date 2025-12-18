@@ -5,11 +5,10 @@ import {
   redirect,
 } from "@tanstack/react-router";
 
-import AppSidebar from "@/components/core/sidebar/AppSidebar";
-import NotFound from "@/components/layout/NotFound";
-import CreateWorkspaceDialog from "@/components/shared/CreateWorkspaceDialog";
+import { AppSidebar, CreateWorkspaceDialog } from "@/components/core";
+import { NotFound } from "@/components/layout";
 import { SidebarInset } from "@/components/ui/sidebar";
-import CreateProjectDialog from "@/components/workspaces/CreateProjectDialog";
+import { CreateProjectDialog } from "@/components/workspaces";
 import invitationsOptions from "@/lib/options/invitations.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
@@ -20,6 +19,12 @@ import SidebarProvider from "@/providers/SidebarProvider";
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { queryClient, session } }) => {
     if (!session) throw redirect({ to: "/" });
+
+    // if session exists but `rowId` is missing, the user may exist in the identity provider but not in the database (stale cookie or incomplete signup), so signed out to clear the stale session
+    if (!session.user.rowId) {
+      const { signOutAndRedirect } = await import("@/server/functions/auth");
+      await signOutAndRedirect();
+    }
 
     const { workspaceSlug, projectSlug } = params as unknown as {
       workspaceSlug?: string;
@@ -38,7 +43,7 @@ export const Route = createFileRoute("/_auth")({
       if (!workspaceBySlug) throw notFound();
 
       const [{ workspaceUsers }] = await Promise.all([
-        // NB: used to ensure that the user is indeed a member of the workspace
+        // ensure user is a member of the workspace
         queryClient.ensureQueryData(
           workspaceUsersOptions({
             workspaceId: workspaceBySlug.rowId,
@@ -68,7 +73,7 @@ export const Route = createFileRoute("/_auth")({
       return { workspaceBySlug };
     } else {
       await queryClient.ensureQueryData(
-        workspacesOptions({ userId: session?.user.rowId! }),
+        workspacesOptions({ userId: session.user.rowId! }),
       );
 
       return { workspaceBySlug: undefined };

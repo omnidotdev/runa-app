@@ -2,7 +2,7 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { EyeOffIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
+import { DestructiveActionDialog } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import {
   MenuContent,

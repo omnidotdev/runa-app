@@ -13,18 +13,19 @@ import {
   Text,
 } from "@react-email/components";
 
+import app from "@/lib/config/app.config";
+
 const inviteMemberDetails = {
   from: {
-    value1: "Runa Support",
+    value1: `${app.name} Support`,
   },
   subject: {
     value1: "You have been invited to join the",
     value2: "workspace on",
   },
-  heading: "Join **{workspaceName}** on **Runa**",
+  heading: `Join **{workspaceName}** on **${app.name}**`,
   greeting: "Hello",
-  statement:
-    "**{inviterUsername}** ([{inviterEmail}](mailto:{inviterEmail})) invited you to join **{workspaceName}** on **Runa**.",
+  statement: `**{inviterUsername}** ([{inviterEmail}](mailto:{inviterEmail})) invited you to join **{workspaceName}** on **${app.name}**.`,
   cta: "Join the workspace",
   supportMessagePrefix:
     "If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please email us at ",
@@ -75,8 +76,9 @@ const WorkspaceInvitation = ({
         <Container className="mx-auto my-10 max-w-md rounded border border-subtle border-solid p-5">
           <Section className="mt-8">
             <Img
+              // TODO CDN
               src="https://runa.omni.dev/logo.png"
-              alt="Runa logo"
+              alt={`${app.name} logo`}
               width={80}
               height={40}
               className="mx-auto my-0"

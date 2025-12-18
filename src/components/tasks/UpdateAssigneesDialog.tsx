@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import UpdateAssignees from "@/components/tasks/UpdateAssignees";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -23,6 +22,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
+import UpdateAssignees from "./UpdateAssignees";
 
 const UpdateAssigneesDialog = () => {
   const { taskId: paramsTaskId } = useParams({

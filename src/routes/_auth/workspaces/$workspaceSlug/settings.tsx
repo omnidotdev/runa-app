@@ -7,10 +7,12 @@ import { useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
-import Link from "@/components/core/Link";
-import RichTextEditor from "@/components/core/RichTextEditor";
-import NotFound from "@/components/layout/NotFound";
+import {
+  DestructiveActionDialog,
+  Link,
+  RichTextEditor,
+} from "@/components/core";
+import { NotFound } from "@/components/layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,9 +24,7 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import WorkspaceColumnsForm from "@/components/workspaces/settings/columns/WorkspaceColumnsForm";
-import Projects from "@/components/workspaces/settings/Projects";
-import Team from "@/components/workspaces/settings/Team";
+import { Projects, Team, WorkspaceColumnsForm } from "@/components/workspaces";
 import {
   Role,
   useDeleteWorkspaceMutation,
@@ -36,11 +36,11 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
+import createMetaTags from "@/lib/util/createMetaTags";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import generateSlug from "@/lib/util/generateSlug";
-import seo from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
-import { FREE_PRICE } from "@/routes/_marketing/pricing";
+import { FREE_PRICE } from "@/routes/_public/pricing";
 import { getPrices } from "@/server/functions/prices";
 import {
   getCancelSubscriptionUrl,
@@ -81,7 +81,7 @@ export const Route = createFileRoute(
   head: ({ loaderData, params }) => ({
     meta: loaderData
       ? [
-          ...seo({
+          ...createMetaTags({
             title: `${loaderData.name} Settings`,
             description: `Settings for the ${loaderData.name} workspace.`,
             url: `${BASE_URL}/workspaces/${params.workspaceSlug}/settings`,

@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { LayersIcon, PlusIcon } from "lucide-react";
 
-import Link from "@/components/core/Link";
+import { Link } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,
@@ -12,12 +12,12 @@ import { Button } from "@/components/ui/button";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute("/_auth/workspaces/")({
   head: () => ({
     meta: [
-      ...seo({
+      ...createMetaTags({
         title: "Workspaces",
         description:
           "Create a new workspace, or select a current one to view details.",
@@ -49,6 +49,7 @@ function WorkspacesOverviewPage() {
       <div className="w-full max-w-4xl">
         <div className="mb-12 flex flex-col items-center justify-center gap-4">
           <LayersIcon className="size-12 text-base-500 dark:text-base-400" />
+
           <h1 className="text-pretty text-center font-semibold text-2xl text-base-900 dark:text-base-100">
             {recentWorkspaces?.length
               ? "Select a workspace or create a new one to get started"

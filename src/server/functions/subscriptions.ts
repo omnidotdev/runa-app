@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+import app from "@/lib/config/app.config";
 import { STRIPE_PORTAL_CONFIG_ID } from "@/lib/config/env.config";
 import payments from "@/lib/payments";
 import { customerMiddleware } from "@/server/middleware";
@@ -96,7 +97,7 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
         email: context.session.user.email!,
         name: context.session.user.name ?? undefined,
         metadata: {
-          externalId: context.session.user.hidraId!,
+          externalId: context.session.user.identityProviderId!,
         },
       });
     }
@@ -109,8 +110,8 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
       subscription_data: {
         metadata: {
           workspaceId: data.workspaceId,
-          // TODO: extract to app config
-          omniProduct: "runa",
+          // TODO make more robust, handle edge cases like multi-word app name
+          omniProduct: app.name.toLowerCase(),
         },
       },
     });

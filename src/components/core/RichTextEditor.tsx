@@ -11,9 +11,9 @@ import html from "highlight.js/lib/languages/xml";
 import { createLowlight } from "lowlight";
 import { useEffect, useRef } from "react";
 
-import { CodeBlockWithHeader } from "@/components/core/CodeBlockWithHeader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import CodeBlockWithHeader from "./CodeBlockWithHeader";
 
 import type { EditorEvents } from "@tiptap/react";
 import type { ComponentProps, RefObject } from "react";
@@ -114,7 +114,7 @@ const RichTextEditor = ({
         <EditorContent
           editor={editor}
           className={cn(
-            "pointer-events-auto min-h-[120px] flex-1 rounded-md border border-base-300 border-dashed bg-transparent p-3 text-base-600 focus-visible:border-base-400! dark:border-base-600 dark:text-base-300 dark:focus-visible:border-base-500 dark:hover:border-base-500",
+            "pointer-events-auto min-h-30 flex-1 rounded-md border border-base-300 border-dashed bg-transparent p-3 text-base-600 focus-visible:border-base-400! dark:border-base-600 dark:text-base-300 dark:focus-visible:border-base-500 dark:hover:border-base-500",
             editor?.isFocused
               ? "border-2 border-primary-500/20 dark:border-primary-500/10"
               : "hover:border-base-400 dark:hover:border-base-500",

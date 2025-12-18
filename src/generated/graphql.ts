@@ -8644,7 +8644,7 @@ export type UserQueryVariables = Exact<{
 export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', rowId: string, name: string, email: string } | null };
 
 export type UserByIdentityProviderIdQueryVariables = Exact<{
-  hidraId: Scalars['UUID']['input'];
+  identityProviderId: Scalars['UUID']['input'];
 }>;
 
 
@@ -10541,8 +10541,8 @@ useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite
 useUserQuery.fetcher = (variables: UserQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables, options);
 
 export const UserByIdentityProviderIdDocument = `
-    query UserByIdentityProviderId($hidraId: UUID!) {
-  userByIdentityProviderId(identityProviderId: $hidraId) {
+    query UserByIdentityProviderId($identityProviderId: UUID!) {
+  userByIdentityProviderId(identityProviderId: $identityProviderId) {
     rowId
   }
 }
