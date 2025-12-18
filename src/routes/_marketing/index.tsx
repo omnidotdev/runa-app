@@ -100,7 +100,7 @@ function HomePage() {
                 className="group h-full px-6 py-4 has-[>svg]:px-6"
                 onClick={() => signIn({ redirectUrl: BASE_URL })}
               >
-                Get Started{" "}
+                Get Started for Free{" "}
                 <ArrowRightIcon className="ml-1 inline-block transition-transform group-hover:translate-x-1" />
               </Button>
 
