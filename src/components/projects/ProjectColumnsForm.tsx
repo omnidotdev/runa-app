@@ -23,7 +23,7 @@ import { useMemo, useState } from "react";
 
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Tooltip from "@/components/core/Tooltip";
-import ColumnForm from "@/components/projects/settings/columns/ColumnForm";
+import ColumnForm from "@/components/projects/ProjectColumnForm";
 import { Button } from "@/components/ui/button";
 import {
   MenuCheckboxItem,

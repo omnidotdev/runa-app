@@ -6,9 +6,9 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 
+import ListTrigger from "@/components/core/ListTrigger";
 import ColumnMenu from "@/components/projects/ColumnMenu";
 import ListItem from "@/components/projects/ListItem";
-import ListTrigger from "@/components/shared/ListTrigger";
 import {
   CollapsibleContent,
   CollapsibleRoot,

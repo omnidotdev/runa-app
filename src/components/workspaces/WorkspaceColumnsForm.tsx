@@ -24,7 +24,7 @@ import { useMemo, useState } from "react";
 import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
-import ColumnForm from "@/components/workspaces/settings/columns/ColumnForm";
+import ColumnForm from "@/components/workspaces/WorkspaceColumnForm";
 import {
   Role,
   useDeleteProjectColumnMutation,

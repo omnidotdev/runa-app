@@ -22,9 +22,9 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import WorkspaceColumnsForm from "@/components/workspaces/settings/columns/WorkspaceColumnsForm";
-import Projects from "@/components/workspaces/settings/Projects";
-import Team from "@/components/workspaces/settings/Team";
+import Projects from "@/components/workspaces/Projects";
+import Team from "@/components/workspaces/Team";
+import WorkspaceColumnsForm from "@/components/workspaces/WorkspaceColumnsForm";
 import {
   Role,
   useDeleteWorkspaceMutation,
@@ -36,9 +36,9 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
+import createMetaTags from "@/lib/util/createMetaTags";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import generateSlug from "@/lib/util/generateSlug";
-import createMetaTags from "@/lib/util/seo";
 import { cn } from "@/lib/utils";
 import { FREE_PRICE } from "@/routes/_marketing/pricing";
 import { getPrices } from "@/server/functions/prices";

@@ -46,8 +46,8 @@ import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import createMetaTags from "@/lib/util/createMetaTags";
 import generateSlug from "@/lib/util/generateSlug";
-import createMetaTags from "@/lib/util/seo";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";

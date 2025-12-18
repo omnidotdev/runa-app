@@ -22,7 +22,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { BASE_URL } from "@/lib/config/env.config";
-import createMetaTags from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 import { getPrices } from "@/server/functions/prices";
 
 export const FREE_PRICE = {

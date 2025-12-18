@@ -4,7 +4,7 @@ import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { CheckIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 
-import ColorSelector from "@/components/core/selectors/ColorSelector";
+import ColorSelector from "@/components/core/ColorSelector";
 import { Button } from "@/components/ui/button";
 import { parseColor } from "@/components/ui/color-picker";
 import { Input } from "@/components/ui/input";

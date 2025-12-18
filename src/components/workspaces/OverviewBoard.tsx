@@ -8,8 +8,8 @@ import {
   useSearch,
 } from "@tanstack/react-router";
 
-import ColumnHeader from "@/components/shared/ColumnHeader";
-import BoardItem from "@/components/workspaces/overview/BoardItem";
+import ColumnHeader from "@/components/core/ColumnHeader";
+import BoardItem from "@/components/workspaces/OverviewBoardItem";
 import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";

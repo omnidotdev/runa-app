@@ -6,12 +6,12 @@ import {
   useSearch,
 } from "@tanstack/react-router";
 
-import ListTrigger from "@/components/shared/ListTrigger";
+import ListTrigger from "@/components/core/ListTrigger";
 import {
   CollapsibleContent,
   CollapsibleRoot,
 } from "@/components/ui/collapsible";
-import ListItem from "@/components/workspaces/overview/ListItem";
+import ListItem from "@/components/workspaces/OverviewListItem";
 import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";

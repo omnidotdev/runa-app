@@ -16,8 +16,8 @@ import Tooltip from "@/components/core/Tooltip";
 import NotFound from "@/components/layout/NotFound";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Board from "@/components/workspaces/overview/Board";
-import List from "@/components/workspaces/overview/List";
+import Board from "@/components/workspaces/OverviewBoard";
+import List from "@/components/workspaces/OverviewList";
 import {
   Role,
   useUpdateProjectMutation,
@@ -31,7 +31,7 @@ import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import createMetaTags from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 import { cn } from "@/lib/utils";
 
 import type { DropResult } from "@hello-pangea/dnd";

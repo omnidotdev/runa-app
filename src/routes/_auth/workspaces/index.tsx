@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspacesOptions from "@/lib/options/workspaces.options";
-import createMetaTags from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute("/_auth/workspaces/")({
   head: () => ({

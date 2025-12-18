@@ -6,9 +6,9 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 
+import ColumnHeader from "@/components/core/ColumnHeader";
 import BoardItem from "@/components/projects/BoardItem";
 import ColumnMenu from "@/components/projects/ColumnMenu";
-import ColumnHeader from "@/components/shared/ColumnHeader";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";

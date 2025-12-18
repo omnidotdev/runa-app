@@ -1,6 +1,6 @@
 import { useStore } from "@tanstack/react-form";
 
-import PrioritySelector from "@/components/core/selectors/PrioritySelector";
+import PrioritySelector from "@/components/core/PrioritySelector";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 

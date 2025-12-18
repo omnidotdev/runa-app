@@ -4,7 +4,7 @@ import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
 import Tooltip from "@/components/core/Tooltip";
-import LabelForm from "@/components/projects/settings/labels/LabelForm";
+import LabelForm from "@/components/projects/ProjectLabelForm";
 import { Button } from "@/components/ui/button";
 import { Role } from "@/generated/graphql";
 import labelsOptions from "@/lib/options/labels.options";

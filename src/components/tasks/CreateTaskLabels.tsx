@@ -3,8 +3,8 @@ import { PlusIcon, TagIcon } from "lucide-react";
 import { useId, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
+import ColorSelector from "@/components/core/ColorSelector";
 import Shortcut from "@/components/core/Shortcut";
-import ColorSelector from "@/components/core/selectors/ColorSelector";
 import Tooltip from "@/components/core/Tooltip";
 import { Button } from "@/components/ui/button";
 import { parseColor } from "@/components/ui/color-picker";

@@ -5,9 +5,9 @@ import {
   redirect,
 } from "@tanstack/react-router";
 
-import AppSidebar from "@/components/core/sidebar/AppSidebar";
+import AppSidebar from "@/components/core/AppSidebar";
+import CreateWorkspaceDialog from "@/components/core/CreateWorkspaceDialog";
 import NotFound from "@/components/layout/NotFound";
-import CreateWorkspaceDialog from "@/components/shared/CreateWorkspaceDialog";
 import { SidebarInset } from "@/components/ui/sidebar";
 import CreateProjectDialog from "@/components/workspaces/CreateProjectDialog";
 import invitationsOptions from "@/lib/options/invitations.options";
