@@ -48,25 +48,7 @@ const faqItems = [
   },
 ];
 
-export const Route = createFileRoute("/_marketing/pricing")({
-  head: () => ({
-    meta: [
-      ...createMetaTags({
-        title: "Pricing",
-        description: "Simple and transparent pricing.",
-        url: `${BASE_URL}/pricing`,
-      }),
-    ],
-  }),
-  loader: async () => {
-    const prices = await getPrices();
-
-    return { prices };
-  },
-  component: PricingPage,
-});
-
-function PricingPage() {
+const PricingPage = () => {
   const router = useRouter();
   const canGoBack = useCanGoBack();
   const { prices } = Route.useLoaderData();
@@ -110,6 +92,7 @@ function PricingPage() {
         <TabsProvider value={tabs} className="flex w-full flex-col">
           <TabsList className="place-self-center">
             <TabsTrigger value="month">Monthly</TabsTrigger>
+
             <TabsTrigger value="year" className="relative">
               Yearly{" "}
               <Badge className="absolute -top-3.5 -right-4 rotate-12 px-1">
@@ -117,8 +100,9 @@ function PricingPage() {
               </Badge>
             </TabsTrigger>
           </TabsList>
+
           {(["month", "year"] as const).map((tab) => (
-            <TabsContent key={tab} value={tab} className="flex gap-4">
+            <TabsContent key={tab} value={tab} className="flex flex-wrap gap-4">
               <PriceCard price={FREE_PRICE} />
 
               {filteredPrices.map((price) => (
@@ -153,4 +137,22 @@ function PricingPage() {
       </div>
     </div>
   );
-}
+};
+
+export const Route = createFileRoute("/_marketing/pricing")({
+  head: () => ({
+    meta: [
+      ...createMetaTags({
+        title: "Pricing",
+        description: "Simple and transparent pricing.",
+        url: `${BASE_URL}/pricing`,
+      }),
+    ],
+  }),
+  loader: async () => {
+    const prices = await getPrices();
+
+    return { prices };
+  },
+  component: PricingPage,
+});
