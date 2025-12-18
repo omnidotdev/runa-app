@@ -5,6 +5,15 @@ import { getSdk } from "@/generated/graphql.sdk";
 import auth from "@/lib/auth/auth";
 import { API_GRAPHQL_URL, AUTH_ISSUER_URL } from "@/lib/config/env.config";
 
+const OMNI_CLAIMS_KEY = "https://manifold.omni.dev/@omni/claims/organizations";
+
+export interface OrganizationClaim {
+  id: string;
+  slug: string;
+  roles: string[];
+  teams: Array<{ id: string; name: string }>;
+}
+
 export async function getAuth(request: Request) {
   try {
     const session = await auth.api.getSession({
@@ -16,6 +25,7 @@ export async function getAuth(request: Request) {
     // get access token and id token for GraphQL requests
     let accessToken: string | undefined;
     let identityProviderId: string | undefined;
+    let organizations: OrganizationClaim[] | undefined;
 
     try {
       const tokenResult = await auth.api.getAccessToken({
@@ -24,11 +34,17 @@ export async function getAuth(request: Request) {
       });
       accessToken = tokenResult?.accessToken;
 
-      // extract the IDP user ID (sub) from the ID token
+      // extract claims from the ID token
       if (tokenResult?.idToken) {
         const jwks = createRemoteJWKSet(new URL(`${AUTH_ISSUER_URL}/jwks`));
         const { payload } = await jwtVerify(tokenResult.idToken, jwks);
         identityProviderId = payload.sub;
+
+        // extract organization claims from the ID token
+        const orgClaims = payload[OMNI_CLAIMS_KEY];
+        if (Array.isArray(orgClaims)) {
+          organizations = orgClaims as OrganizationClaim[];
+        }
       }
     } catch (err) {
       console.error(err);
@@ -65,6 +81,7 @@ export async function getAuth(request: Request) {
     const result = {
       ...session,
       accessToken,
+      organizations,
       user: {
         ...session.user,
         rowId,

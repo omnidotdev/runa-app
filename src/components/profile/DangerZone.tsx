@@ -33,7 +33,9 @@ const DangerZone = () => {
             Delete Account
           </Button>
         </DialogTrigger>
+
         <DialogBackdrop />
+
         <DialogPositioner>
           <DialogContent className="w-full max-w-md rounded-lg bg-background">
             <DialogCloseTrigger />
@@ -42,7 +44,9 @@ const DangerZone = () => {
               <div className="flex size-10 items-center justify-center rounded-full border border-destructive bg-destructive/10">
                 <AlertTriangle className="size-5 text-destructive" />
               </div>
+
               <DialogTitle>Are you absolutely sure?</DialogTitle>
+
               <DialogDescription>
                 This will permanently cancel any active subscription and delete
                 all associated data. This action cannot be undone.

@@ -52,6 +52,9 @@ function ProfilePage() {
 
   const { session } = Route.useRouteContext();
 
+  const isOmniMember =
+    session?.organizations?.some((org) => org.slug === "omni") ?? false;
+
   const { setIsOpen: setIsDeleteWorkspaceOpen } = useDialogStore({
     type: DialogType.DeleteWorkspace,
   });
@@ -148,7 +151,7 @@ function ProfilePage() {
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-12">
           <div className="xl:col-span-4">
-            <ProfileHeader session={session} />
+            <ProfileHeader session={session} isOmniTeamMember={isOmniMember} />
           </div>
 
           <div className="xl:col-span-8">

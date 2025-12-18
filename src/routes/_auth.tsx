@@ -20,8 +20,10 @@ export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { queryClient, session } }) => {
     if (!session) throw redirect({ to: "/" });
 
+    // if session exists but `rowId` is missing, the user may exist in the identity provider but not in the database (stale cookie or incomplete signup), so signed out to clear the stale session
     if (!session.user.rowId) {
-      throw new Error("User `rowId` not found in session");
+      const { signOutAndRedirect } = await import("@/server/functions/auth");
+      await signOutAndRedirect();
     }
 
     const { workspaceSlug, projectSlug } = params as unknown as {
@@ -71,7 +73,7 @@ export const Route = createFileRoute("/_auth")({
       return { workspaceBySlug };
     } else {
       await queryClient.ensureQueryData(
-        workspacesOptions({ userId: session.user.rowId }),
+        workspacesOptions({ userId: session.user.rowId! }),
       );
 
       return { workspaceBySlug: undefined };
