@@ -40,7 +40,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import generateSlug from "@/lib/util/generateSlug";
 import { cn } from "@/lib/utils";
-import { FREE_PRICE } from "@/routes/_marketing/pricing";
+import { FREE_PRICE } from "@/routes/_public/pricing";
 import { getPrices } from "@/server/functions/prices";
 import {
   getCancelSubscriptionUrl,
