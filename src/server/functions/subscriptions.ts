@@ -97,7 +97,7 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
         email: context.session.user.email!,
         name: context.session.user.name ?? undefined,
         metadata: {
-          externalId: context.session.user.hidraId!,
+          externalId: context.session.user.identityProviderId!,
         },
       });
     }

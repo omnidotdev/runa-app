@@ -11,7 +11,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
-import createMetaTags from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 import ThemeProvider from "@/providers/ThemeProvider";
 import { fetchSession } from "@/server/functions/auth";
 import { getTheme } from "@/server/functions/theme";
@@ -27,7 +27,7 @@ interface ExtendedUser {
   name?: string;
   image?: string;
   rowId?: string;
-  hidraId?: string;
+  identityProviderId?: string;
   username?: string;
 }
 

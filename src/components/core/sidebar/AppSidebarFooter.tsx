@@ -112,12 +112,14 @@ const AppSidebarFooter = () => {
           trigger={
             <div className="group/menu-item relative">
               <SidebarMenuButton
-                isActive={pathname === `/profile/${session?.user.hidraId}`}
+                isActive={
+                  pathname === `/profile/${session?.user.identityProviderId}`
+                }
                 tooltip="Profile"
                 onClick={() =>
                   navigate({
                     to: "/profile/$userId",
-                    params: { userId: session?.user.hidraId! },
+                    params: { userId: session?.user.identityProviderId! },
                   })
                 }
               >
@@ -147,7 +149,10 @@ const AppSidebarFooter = () => {
                   className="focus-visible:ring-offset-background [&[data-state=open]>svg]:rotate-0"
                 >
                   <SidebarMenuAction
-                    isActive={pathname === `/profile/${session?.user.hidraId}`}
+                    isActive={
+                      pathname ===
+                      `/profile/${session?.user.identityProviderId}`
+                    }
                     showOnHover
                   >
                     <MoreHorizontalIcon />
