@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { MoreHorizontalIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 import { useRef, useState } from "react";
 
-import { DestructiveActionDialog, Tooltip } from "@/components/core";
+import { DestructiveActionDialog } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,
@@ -18,11 +18,7 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import {
-  Role,
-  Tier,
-  useDeleteWorkspaceUserMutation,
-} from "@/generated/graphql";
+import { Role, useDeleteWorkspaceUserMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
@@ -81,12 +77,14 @@ const Team = () => {
       <div className="flex flex-col">
         <div className="mb-1 flex h-10 items-center justify-between">
           <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
-            Team Members
+            Team Members (invites coming soon)
           </h2>
 
-          <Tooltip
+          {/* TODO enable, too buggy/risky right now */}
+          {/*<Tooltip
             positioning={{ placement: "left" }}
             tooltip="Invite Member"
+            // TODO fix shortcut ignores disabled state
             shortcut="I"
             trigger={
               <Button
@@ -102,7 +100,7 @@ const Team = () => {
                 <PlusIcon />
               </Button>
             }
-          />
+          />*/}
         </div>
 
         {members?.nodes.length ? (
