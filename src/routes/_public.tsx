@@ -8,9 +8,7 @@ import { signOut } from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 
-// TODO rename to landing or index or home
-
-const MarketingLayout = () => {
+const PublicLayout = () => {
   const { session } = Route.useRouteContext();
 
   return (
@@ -72,6 +70,6 @@ const MarketingLayout = () => {
   );
 };
 
-export const Route = createFileRoute("/_marketing")({
-  component: MarketingLayout,
+export const Route = createFileRoute("/_public")({
+  component: PublicLayout,
 });

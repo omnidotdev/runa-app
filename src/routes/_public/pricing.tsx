@@ -139,7 +139,7 @@ const PricingPage = () => {
   );
 };
 
-export const Route = createFileRoute("/_marketing/pricing")({
+export const Route = createFileRoute("/_public/pricing")({
   head: () => ({
     meta: [
       ...createMetaTags({
