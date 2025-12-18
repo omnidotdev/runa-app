@@ -3,9 +3,7 @@ import { PlusIcon, TagIcon } from "lucide-react";
 import { useId, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import Shortcut from "@/components/core/Shortcut";
-import ColorSelector from "@/components/core/selectors/ColorSelector";
-import Tooltip from "@/components/core/Tooltip";
+import { ColorSelector, Shortcut, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import { parseColor } from "@/components/ui/color-picker";
 import { Input } from "@/components/ui/input";
@@ -103,7 +101,7 @@ const CreateTaskLabels = withForm({
 
                     {taskLabels.length > 1 && (
                       <div className="flex items-center gap-2">
-                        <div className="-space-x-1 -mx-1 flex items-center">
+                        <div className="-mx-1 flex items-center -space-x-1">
                           {taskLabels.map((label) => (
                             <div
                               key={label.rowId}

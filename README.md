@@ -1,4 +1,4 @@
-# Runa
+# 🌙 Runa
 
 Runa is an open-source project management platform.
 

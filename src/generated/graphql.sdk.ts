@@ -8645,7 +8645,7 @@ export type UserQueryVariables = Exact<{
 export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', rowId: string, name: string, email: string } | null };
 
 export type UserByIdentityProviderIdQueryVariables = Exact<{
-  hidraId: Scalars['UUID']['input'];
+  identityProviderId: Scalars['UUID']['input'];
 }>;
 
 
@@ -9317,8 +9317,8 @@ export const UserDocument = gql`
 }
     `;
 export const UserByIdentityProviderIdDocument = gql`
-    query UserByIdentityProviderId($hidraId: UUID!) {
-  userByIdentityProviderId(identityProviderId: $hidraId) {
+    query UserByIdentityProviderId($identityProviderId: UUID!) {
+  userByIdentityProviderId(identityProviderId: $identityProviderId) {
     rowId
   }
 }

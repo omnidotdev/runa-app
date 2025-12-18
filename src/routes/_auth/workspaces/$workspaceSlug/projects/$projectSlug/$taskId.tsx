@@ -10,20 +10,24 @@ import {
 import { useEffect, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
-import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
-import Link from "@/components/core/Link";
-import RichTextEditor from "@/components/core/RichTextEditor";
-import ColumnSelector from "@/components/core/selectors/ColumnSelector";
-import PrioritySelector from "@/components/core/selectors/PrioritySelector";
-import Tooltip from "@/components/core/Tooltip";
-import NotFound from "@/components/layout/NotFound";
-import Comments from "@/components/tasks/Comments";
-import CreateComment from "@/components/tasks/CreateComment";
-import TaskDescription from "@/components/tasks/TaskDescription";
-import TaskSidebar from "@/components/tasks/TaskSidebar";
-import UpdateAssigneesDialog from "@/components/tasks/UpdateAssigneesDialog";
-import UpdateDueDateDialog from "@/components/tasks/UpdateDueDateDialog";
-import UpdateTaskLabelsDialog from "@/components/tasks/UpdateTaskLabelsDialog";
+import {
+  ColumnSelector,
+  DestructiveActionDialog,
+  Link,
+  PrioritySelector,
+  RichTextEditor,
+  Tooltip,
+} from "@/components/core";
+import { NotFound } from "@/components/layout";
+import {
+  Comments,
+  CreateComment,
+  TaskDescription,
+  TaskSidebar,
+  UpdateAssigneesDialog,
+  UpdateDueDateDialog,
+  UpdateTaskLabelsDialog,
+} from "@/components/tasks";
 import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -37,7 +41,7 @@ import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute(
@@ -67,7 +71,7 @@ export const Route = createFileRoute(
   },
   head: ({ loaderData, params }) => ({
     meta: [
-      ...seo({
+      ...createMetaTags({
         title: "Task",
         description: `View and manage a task for ${loaderData?.projectName}.`,
         url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}/${params.taskId}`,

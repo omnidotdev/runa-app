@@ -19,17 +19,16 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
-import Link from "@/components/core/Link";
-import RichTextEditor from "@/components/core/RichTextEditor";
-import Tooltip from "@/components/core/Tooltip";
-import NotFound from "@/components/layout/NotFound";
-import Board from "@/components/projects/Board";
-import List from "@/components/projects/List";
-import CreateTaskDialog from "@/components/tasks/CreateTaskDialog";
-import Filter from "@/components/tasks/Filter";
-import UpdateAssigneesDialog from "@/components/tasks/UpdateAssigneesDialog";
-import UpdateDueDateDialog from "@/components/tasks/UpdateDueDateDialog";
-import UpdateTaskLabelsDialog from "@/components/tasks/UpdateTaskLabelsDialog";
+import { Link, RichTextEditor, Tooltip } from "@/components/core";
+import { NotFound } from "@/components/layout";
+import { Board, List } from "@/components/projects";
+import {
+  CreateTaskDialog,
+  Filter,
+  UpdateAssigneesDialog,
+  UpdateDueDateDialog,
+  UpdateTaskLabelsDialog,
+} from "@/components/tasks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -46,8 +45,8 @@ import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import createMetaTags from "@/lib/util/createMetaTags";
 import generateSlug from "@/lib/util/generateSlug";
-import seo from "@/lib/util/seo";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
@@ -136,7 +135,7 @@ export const Route = createFileRoute(
   head: ({ loaderData, params }) => ({
     meta: loaderData
       ? [
-          ...seo({
+          ...createMetaTags({
             title: loaderData.name,
             description: `View and manage tasks for ${loaderData.name}.`,
             url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}`,
@@ -525,7 +524,7 @@ function ProjectPage() {
 
             <div className="mt-2 flex flex-wrap gap-2 sm:flex-nowrap">
               <div className="relative flex-1 sm:flex-none">
-                <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-base-400" />
+                <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-base-400" />
                 <Input
                   id="search-tasks"
                   autoComplete="off"

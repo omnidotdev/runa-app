@@ -2,7 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { Resend } from "resend";
 import { z } from "zod";
 
-import WorkspaceInvitation from "@/components/emails/WorkspaceInvitation";
+import { WorkspaceInvitation } from "@/components/emails";
+import app from "@/lib/config/app.config";
 import { BASE_URL, isDevEnv } from "@/lib/config/env.config";
 
 export const inviteSchema = z.object({
@@ -21,9 +22,9 @@ export const sendInviteEmail = createServerFn({ method: "POST" })
       data;
 
     const { data: email, error } = await resend.emails.send({
-      from: `Runa Support <${isDevEnv ? "onboarding@resend.dev" : inviterEmail}>`,
+      from: `${app.name} Support <${isDevEnv ? "onboarding@resend.dev" : inviterEmail}>`,
       to: isDevEnv ? "delivered@resend.dev" : recipientEmail,
-      subject: `You have been invited to join the ${workspaceName} workspace on Runa`,
+      subject: `You have been invited to join the ${workspaceName} workspace on ${app.name}`,
       react: WorkspaceInvitation({
         inviterUsername,
         inviterEmail,

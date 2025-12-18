@@ -12,12 +12,11 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
-import Tooltip from "@/components/core/Tooltip";
-import NotFound from "@/components/layout/NotFound";
+import { Tooltip } from "@/components/core";
+import { NotFound } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Board from "@/components/workspaces/overview/Board";
-import List from "@/components/workspaces/overview/List";
+import { OverviewBoard, OverviewList } from "@/components/workspaces";
 import {
   Role,
   useUpdateProjectMutation,
@@ -31,7 +30,7 @@ import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import seo from "@/lib/util/seo";
+import createMetaTags from "@/lib/util/createMetaTags";
 import { cn } from "@/lib/utils";
 
 import type { DropResult } from "@hello-pangea/dnd";
@@ -71,7 +70,7 @@ export const Route = createFileRoute(
   head: ({ loaderData, params }) => ({
     meta: loaderData
       ? [
-          ...seo({
+          ...createMetaTags({
             title: `${loaderData.name} Projects`,
             description: `Manage and track all projects for the ${loaderData.name} workspace.`,
             url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects`,
@@ -329,7 +328,7 @@ function ProjectsOverviewPage() {
             </div>
             <div className="flex flex-wrap gap-2 sm:flex-nowrap">
               <div className="relative flex-1 sm:flex-none">
-                <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 size-4 text-base-400" />
+                <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-base-400" />
                 <Input
                   defaultValue={search}
                   onChange={handleSearch}
@@ -398,9 +397,9 @@ function ProjectsOverviewPage() {
 
         <DragDropContext onDragEnd={onDragEnd}>
           {workspace?.viewMode === "board" ? (
-            <Board projects={localProjects} />
+            <OverviewBoard projects={localProjects} />
           ) : (
-            <List projects={localProjects} />
+            <OverviewList projects={localProjects} />
           )}
         </DragDropContext>
       </div>

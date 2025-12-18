@@ -8,21 +8,37 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
-import DefaultCatchBoundary from "@/components/layout/DefaultCatchBoundary";
+import { DefaultCatchBoundary } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
-import seo from "@/lib/util/seo";
+import app from "@/lib/config/app.config";
+import appCss from "@/lib/styles/globals.css?url";
+import createMetaTags from "@/lib/util/createMetaTags";
 import ThemeProvider from "@/providers/ThemeProvider";
 import { fetchSession } from "@/server/functions/auth";
 import { getTheme } from "@/server/functions/theme";
-import appCss from "@/styles/globals.css?url";
 
-import type { Session } from "@auth/core/types";
 import type { QueryClient } from "@tanstack/react-query";
+import type { Session } from "better-auth/types";
 import type { ReactNode } from "react";
+
+interface ExtendedUser {
+  id: string;
+  email: string;
+  name?: string;
+  image?: string;
+  rowId?: string;
+  identityProviderId?: string;
+  username?: string;
+}
+
+interface ExtendedSession extends Omit<Session, "user"> {
+  user: ExtendedUser;
+  accessToken?: string;
+}
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
-  session: Session | null;
+  session: ExtendedSession | null;
 }>()({
   beforeLoad: async () => {
     const { session } = await fetchSession();
@@ -41,9 +57,9 @@ export const Route = createRootRouteWithContext<{
       },
       {
         name: "apple-mobile-web-app-title",
-        content: "Runa",
+        content: app.name,
       },
-      ...seo(),
+      ...createMetaTags(),
     ],
     links: [
       { rel: "stylesheet", href: appCss },

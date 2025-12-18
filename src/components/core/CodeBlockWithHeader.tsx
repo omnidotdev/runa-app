@@ -53,8 +53,10 @@ const CodeBlockComponent: React.FC<ReactNodeViewProps> = ({ node }) => {
   );
 };
 
-export const CodeBlockWithHeader = CodeBlockLowlight.extend({
+const CodeBlockWithHeader = CodeBlockLowlight.extend({
   addNodeView() {
     return ReactNodeViewRenderer(CodeBlockComponent);
   },
 });
+
+export default CodeBlockWithHeader;

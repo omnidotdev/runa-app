@@ -6,15 +6,15 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 
-import BoardItem from "@/components/projects/BoardItem";
-import ColumnMenu from "@/components/projects/ColumnMenu";
-import ColumnHeader from "@/components/shared/ColumnHeader";
+import { ColumnHeader } from "@/components/core";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
+import BoardItem from "./BoardItem";
+import ColumnMenu from "./ColumnMenu";
 
 import type { TaskFragment } from "@/generated/graphql";
 
@@ -90,7 +90,7 @@ const Board = ({ tasks }: Props) => {
           {project?.columns?.nodes?.map((column) => (
             <div
               key={column?.rowId}
-              className="relative flex h-full w-[340px] flex-col gap-2 bg-inherit"
+              className="relative flex h-full w-85 flex-col gap-2"
             >
               <ColumnHeader
                 title={column.title}
@@ -101,7 +101,7 @@ const Board = ({ tasks }: Props) => {
                 }
                 tooltip={{
                   title: "Add Task",
-                  shortCut: "C",
+                  shortcut: "C",
                 }}
                 emoji={column.emoji}
                 onCreate={() => {
@@ -126,7 +126,7 @@ const Board = ({ tasks }: Props) => {
                       ref={provided.innerRef}
                       {...provided.droppableProps}
                       className={cn(
-                        "flex flex-1 flex-col rounded-xl bg-background/60 p-2 dark:bg-background/20",
+                        "flex flex-1 flex-col rounded-xl p-2",
                         snapshot.isDraggingOver &&
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
