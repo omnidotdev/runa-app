@@ -126,18 +126,18 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
 
   const sidebarMenuItems: SidebarMenuItemType[] = [
     {
+      isActive: pathname === `/workspaces/${workspaceSlug}/projects`,
+      tooltip: "Projects Overview",
+      to: "/workspaces/$workspaceSlug/projects",
+      icon: LayersIcon,
+      label: "All Projects",
+    },
+    {
       isActive: pathname === `/workspaces/${workspaceSlug}/settings`,
       tooltip: "Workspace Settings",
       to: "/workspaces/$workspaceSlug/settings",
       icon: Settings2Icon,
       label: "Settings",
-    },
-    {
-      isActive: pathname === `/workspaces/${workspaceSlug}/projects`,
-      tooltip: "Projects Overview",
-      to: "/workspaces/$workspaceSlug/projects",
-      icon: LayersIcon,
-      label: "Overview",
     },
   ];
 
