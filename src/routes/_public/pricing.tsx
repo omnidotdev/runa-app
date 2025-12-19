@@ -4,7 +4,6 @@ import {
   useCanGoBack,
   useRouter,
 } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
 
 import { PriceCard } from "@/components/pricing";
 import {
@@ -14,7 +13,6 @@ import {
   AccordionRoot,
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   TabsContent,
   TabsList,
@@ -67,11 +65,11 @@ export const Route = createFileRoute("/_public/pricing")({
 });
 
 function PricingPage() {
-  const router = useRouter();
-  const canGoBack = useCanGoBack();
+  const _router = useRouter();
+  const _canGoBack = useCanGoBack();
   const { prices } = Route.useLoaderData();
   const { session } = Route.useRouteContext();
-  const navigate = Route.useNavigate();
+  const _navigate = Route.useNavigate();
 
   const tabs = useTabs({ defaultValue: "month" });
 
@@ -82,21 +80,6 @@ function PricingPage() {
   return (
     <div className="size-full pt-8">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mb-12">
-          <Button
-            variant="ghost"
-            className="inline-flex items-center gap-2 text-muted-foreground text-sm hover:text-foreground"
-            onClick={() =>
-              canGoBack
-                ? router.history.back()
-                : navigate({ to: session ? "/workspaces" : "/" })
-            }
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Button>
-        </div>
-
         <div className="mb-16 text-center">
           <h1 className="mb-4 font-bold text-4xl text-foreground">
             Simple, transparent pricing
