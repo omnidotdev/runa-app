@@ -1,7 +1,8 @@
 mutation CreateTaskLabel($input: CreateTaskLabelInput!) {
   createTaskLabel(input: $input) {
     taskLabel {
-      rowId
+      taskId
+      labelId
     }
   }
 }

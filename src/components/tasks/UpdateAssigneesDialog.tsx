@@ -93,9 +93,8 @@ const UpdateAssigneesDialog = () => {
           // remove any assignees that are no longer assigned
           if (!assignees.includes(assignee)) {
             removeAssignee({
-              rowId: task?.assignees?.nodes?.find(
-                (a) => a?.user?.rowId === assignee,
-              )?.rowId!,
+              taskId: taskId!,
+              userId: assignee,
             });
           }
         }

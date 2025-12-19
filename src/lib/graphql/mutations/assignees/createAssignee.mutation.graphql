@@ -1,7 +1,8 @@
 mutation CreateAssignee($input: CreateAssigneeInput!) {
   createAssignee(input: $input) {
     assignee {
-      rowId
+      taskId
+      userId
     }
   }
 }

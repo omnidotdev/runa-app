@@ -12,7 +12,8 @@ query Task($rowId: UUID!) {
     dueDate
     taskLabels {
       nodes {
-        rowId
+        taskId
+        labelId
         label {
           ...Label
         }
@@ -45,7 +46,8 @@ query Task($rowId: UUID!) {
     }
     assignees {
       nodes {
-        rowId
+        taskId
+        userId
         user {
           rowId
           name

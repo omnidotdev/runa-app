@@ -231,7 +231,6 @@ function HomePage() {
               >
                 <Link
                   to="/demo"
-                  variant="default"
                   className="group h-12 gap-2 bg-primary-500 px-8 font-semibold text-base text-base-950 shadow-lg shadow-primary-500/25 transition-all hover:bg-primary-400 hover:shadow-primary-500/30 hover:shadow-xl dark:bg-primary-500 dark:hover:bg-primary-400"
                 >
                   Try the Demo

@@ -29,7 +29,6 @@ export type Assignee = Node & {
   deletedAt?: Maybe<Scalars['Datetime']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
-  rowId: Scalars['UUID']['output'];
   /** Reads a single `Task` that is related to this `Assignee`. */
   task?: Maybe<Task>;
   taskId: Scalars['UUID']['output'];
@@ -63,8 +62,6 @@ export type AssigneeCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `deletedAt` field. */
   deletedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `taskId` field. */
   taskId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -100,7 +97,6 @@ export type AssigneeConnectionGroupedAggregatesArgs = {
 export type AssigneeDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   deletedAt?: InputMaybe<BigIntFilter>;
-  rowId?: InputMaybe<BigIntFilter>;
   taskId?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
@@ -112,8 +108,6 @@ export type AssigneeDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of deletedAt across the matching connection */
   deletedAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of rowId across the matching connection */
-  rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of taskId across the matching connection */
   taskId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -143,8 +137,6 @@ export type AssigneeFilter = {
   not?: InputMaybe<AssigneeFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<AssigneeFilter>>;
-  /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `task` relation. */
   task?: InputMaybe<TaskFilter>;
   /** Filter by the object’s `taskId` field. */
@@ -245,7 +237,6 @@ export type AssigneeHavingVarianceSampleInput = {
 export type AssigneeInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   deletedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
   taskId: Scalars['UUID']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
@@ -260,8 +251,6 @@ export enum AssigneeOrderBy {
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  RowIdAsc = 'ROW_ID_ASC',
-  RowIdDesc = 'ROW_ID_DESC',
   TaskIdAsc = 'TASK_ID_ASC',
   TaskIdDesc = 'TASK_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -274,7 +263,6 @@ export enum AssigneeOrderBy {
 export type AssigneePatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   deletedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
   taskId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
@@ -1281,7 +1269,8 @@ export type DeleteAssigneeInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['UUID']['input'];
+  taskId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
 };
 
 /** The output of our delete `Assignee` mutation. */
@@ -1654,7 +1643,8 @@ export type DeleteTaskLabelInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['UUID']['input'];
+  labelId: Scalars['UUID']['input'];
+  taskId: Scalars['UUID']['input'];
 };
 
 /** The output of our delete `TaskLabel` mutation. */
@@ -2645,8 +2635,6 @@ export enum LabelOrderBy {
   TaskLabelsDistinctCountCreatedAtDesc = 'TASK_LABELS_DISTINCT_COUNT_CREATED_AT_DESC',
   TaskLabelsDistinctCountLabelIdAsc = 'TASK_LABELS_DISTINCT_COUNT_LABEL_ID_ASC',
   TaskLabelsDistinctCountLabelIdDesc = 'TASK_LABELS_DISTINCT_COUNT_LABEL_ID_DESC',
-  TaskLabelsDistinctCountRowIdAsc = 'TASK_LABELS_DISTINCT_COUNT_ROW_ID_ASC',
-  TaskLabelsDistinctCountRowIdDesc = 'TASK_LABELS_DISTINCT_COUNT_ROW_ID_DESC',
   TaskLabelsDistinctCountTaskIdAsc = 'TASK_LABELS_DISTINCT_COUNT_TASK_ID_ASC',
   TaskLabelsDistinctCountTaskIdDesc = 'TASK_LABELS_DISTINCT_COUNT_TASK_ID_DESC',
   TaskLabelsDistinctCountUpdatedAtAsc = 'TASK_LABELS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -4654,6 +4642,8 @@ export type Query = Node & {
   assignee?: Maybe<Assignee>;
   /** Reads a single `Assignee` using its globally unique `ID`. */
   assigneeById?: Maybe<Assignee>;
+  /** Get a single `Assignee`. */
+  assigneeByTaskIdAndUserId?: Maybe<Assignee>;
   /** Reads and enables pagination through a set of `Assignee`. */
   assignees?: Maybe<AssigneeConnection>;
   /** Get a single `Column`. */
@@ -4719,6 +4709,8 @@ export type Query = Node & {
   taskLabel?: Maybe<TaskLabel>;
   /** Reads a single `TaskLabel` using its globally unique `ID`. */
   taskLabelById?: Maybe<TaskLabel>;
+  /** Get a single `TaskLabel`. */
+  taskLabelByTaskIdAndLabelId?: Maybe<TaskLabel>;
   /** Reads and enables pagination through a set of `TaskLabel`. */
   taskLabels?: Maybe<TaskLabelConnection>;
   /** Reads and enables pagination through a set of `Task`. */
@@ -4760,13 +4752,21 @@ export type Query = Node & {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryAssigneeArgs = {
-  rowId: Scalars['UUID']['input'];
+  taskId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
 };
 
 
 /** The root query type which gives access points into the data universe. */
 export type QueryAssigneeByIdArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAssigneeByTaskIdAndUserIdArgs = {
+  taskId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
 };
 
 
@@ -4992,13 +4992,21 @@ export type QueryTaskByIdArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryTaskLabelArgs = {
-  rowId: Scalars['UUID']['input'];
+  labelId: Scalars['UUID']['input'];
+  taskId: Scalars['UUID']['input'];
 };
 
 
 /** The root query type which gives access points into the data universe. */
 export type QueryTaskLabelByIdArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTaskLabelByTaskIdAndLabelIdArgs = {
+  labelId: Scalars['UUID']['input'];
+  taskId: Scalars['UUID']['input'];
 };
 
 
@@ -5697,7 +5705,6 @@ export type TaskLabel = Node & {
   /** Reads a single `Label` that is related to this `TaskLabel`. */
   label?: Maybe<Label>;
   labelId: Scalars['UUID']['output'];
-  rowId: Scalars['UUID']['output'];
   /** Reads a single `Task` that is related to this `TaskLabel`. */
   task?: Maybe<Task>;
   taskId: Scalars['UUID']['output'];
@@ -5728,8 +5735,6 @@ export type TaskLabelCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `labelId` field. */
   labelId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `taskId` field. */
   taskId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -5763,7 +5768,6 @@ export type TaskLabelConnectionGroupedAggregatesArgs = {
 export type TaskLabelDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   labelId?: InputMaybe<BigIntFilter>;
-  rowId?: InputMaybe<BigIntFilter>;
   taskId?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
 };
@@ -5774,8 +5778,6 @@ export type TaskLabelDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of labelId across the matching connection */
   labelId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of rowId across the matching connection */
-  rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of taskId across the matching connection */
   taskId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -5805,8 +5807,6 @@ export type TaskLabelFilter = {
   not?: InputMaybe<TaskLabelFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<TaskLabelFilter>>;
-  /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `task` relation. */
   task?: InputMaybe<TaskFilter>;
   /** Filter by the object’s `taskId` field. */
@@ -5891,7 +5891,6 @@ export type TaskLabelHavingVarianceSampleInput = {
 export type TaskLabelInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   labelId: Scalars['UUID']['input'];
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
   taskId: Scalars['UUID']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -5905,8 +5904,6 @@ export enum TaskLabelOrderBy {
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  RowIdAsc = 'ROW_ID_ASC',
-  RowIdDesc = 'ROW_ID_DESC',
   TaskIdAsc = 'TASK_ID_ASC',
   TaskIdDesc = 'TASK_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -5917,7 +5914,6 @@ export enum TaskLabelOrderBy {
 export type TaskLabelPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   labelId?: InputMaybe<Scalars['UUID']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
   taskId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -5950,8 +5946,6 @@ export enum TaskOrderBy {
   AssigneesDistinctCountCreatedAtDesc = 'ASSIGNEES_DISTINCT_COUNT_CREATED_AT_DESC',
   AssigneesDistinctCountDeletedAtAsc = 'ASSIGNEES_DISTINCT_COUNT_DELETED_AT_ASC',
   AssigneesDistinctCountDeletedAtDesc = 'ASSIGNEES_DISTINCT_COUNT_DELETED_AT_DESC',
-  AssigneesDistinctCountRowIdAsc = 'ASSIGNEES_DISTINCT_COUNT_ROW_ID_ASC',
-  AssigneesDistinctCountRowIdDesc = 'ASSIGNEES_DISTINCT_COUNT_ROW_ID_DESC',
   AssigneesDistinctCountTaskIdAsc = 'ASSIGNEES_DISTINCT_COUNT_TASK_ID_ASC',
   AssigneesDistinctCountTaskIdDesc = 'ASSIGNEES_DISTINCT_COUNT_TASK_ID_DESC',
   AssigneesDistinctCountUpdatedAtAsc = 'ASSIGNEES_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -6003,8 +5997,6 @@ export enum TaskOrderBy {
   TaskLabelsDistinctCountCreatedAtDesc = 'TASK_LABELS_DISTINCT_COUNT_CREATED_AT_DESC',
   TaskLabelsDistinctCountLabelIdAsc = 'TASK_LABELS_DISTINCT_COUNT_LABEL_ID_ASC',
   TaskLabelsDistinctCountLabelIdDesc = 'TASK_LABELS_DISTINCT_COUNT_LABEL_ID_DESC',
-  TaskLabelsDistinctCountRowIdAsc = 'TASK_LABELS_DISTINCT_COUNT_ROW_ID_ASC',
-  TaskLabelsDistinctCountRowIdDesc = 'TASK_LABELS_DISTINCT_COUNT_ROW_ID_DESC',
   TaskLabelsDistinctCountTaskIdAsc = 'TASK_LABELS_DISTINCT_COUNT_TASK_ID_ASC',
   TaskLabelsDistinctCountTaskIdDesc = 'TASK_LABELS_DISTINCT_COUNT_TASK_ID_DESC',
   TaskLabelsDistinctCountUpdatedAtAsc = 'TASK_LABELS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -6194,7 +6186,8 @@ export type UpdateAssigneeInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** An object where the defined keys will be set on the `Assignee` being updated. */
   patch: AssigneePatch;
-  rowId: Scalars['UUID']['input'];
+  taskId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
 };
 
 /** The output of our update `Assignee` mutation. */
@@ -6593,9 +6586,10 @@ export type UpdateTaskLabelInput = {
    * payload verbatim. May be used to track mutations by the client.
    */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  labelId: Scalars['UUID']['input'];
   /** An object where the defined keys will be set on the `TaskLabel` being updated. */
   patch: TaskLabelPatch;
-  rowId: Scalars['UUID']['input'];
+  taskId: Scalars['UUID']['input'];
 };
 
 /** The output of our update `TaskLabel` mutation. */
@@ -7143,8 +7137,6 @@ export enum UserOrderBy {
   AssigneesDistinctCountCreatedAtDesc = 'ASSIGNEES_DISTINCT_COUNT_CREATED_AT_DESC',
   AssigneesDistinctCountDeletedAtAsc = 'ASSIGNEES_DISTINCT_COUNT_DELETED_AT_ASC',
   AssigneesDistinctCountDeletedAtDesc = 'ASSIGNEES_DISTINCT_COUNT_DELETED_AT_DESC',
-  AssigneesDistinctCountRowIdAsc = 'ASSIGNEES_DISTINCT_COUNT_ROW_ID_ASC',
-  AssigneesDistinctCountRowIdDesc = 'ASSIGNEES_DISTINCT_COUNT_ROW_ID_DESC',
   AssigneesDistinctCountTaskIdAsc = 'ASSIGNEES_DISTINCT_COUNT_TASK_ID_ASC',
   AssigneesDistinctCountTaskIdDesc = 'ASSIGNEES_DISTINCT_COUNT_TASK_ID_DESC',
   AssigneesDistinctCountUpdatedAtAsc = 'ASSIGNEES_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -7262,6 +7254,8 @@ export enum UserOrderBy {
   WorkspaceUsersDistinctCountCreatedAtDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_CREATED_AT_DESC',
   WorkspaceUsersDistinctCountRoleAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_ROLE_ASC',
   WorkspaceUsersDistinctCountRoleDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_ROLE_DESC',
+  WorkspaceUsersDistinctCountUpdatedAtAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  WorkspaceUsersDistinctCountUpdatedAtDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_UPDATED_AT_DESC',
   WorkspaceUsersDistinctCountUserIdAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_USER_ID_ASC',
   WorkspaceUsersDistinctCountUserIdDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_USER_ID_DESC',
   WorkspaceUsersDistinctCountWorkspaceIdAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
@@ -8007,6 +8001,8 @@ export enum WorkspaceOrderBy {
   WorkspaceUsersDistinctCountCreatedAtDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_CREATED_AT_DESC',
   WorkspaceUsersDistinctCountRoleAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_ROLE_ASC',
   WorkspaceUsersDistinctCountRoleDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_ROLE_DESC',
+  WorkspaceUsersDistinctCountUpdatedAtAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  WorkspaceUsersDistinctCountUpdatedAtDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_UPDATED_AT_DESC',
   WorkspaceUsersDistinctCountUserIdAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_USER_ID_ASC',
   WorkspaceUsersDistinctCountUserIdDesc = 'WORKSPACE_USERS_DISTINCT_COUNT_USER_ID_DESC',
   WorkspaceUsersDistinctCountWorkspaceIdAsc = 'WORKSPACE_USERS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
@@ -8077,6 +8073,7 @@ export type WorkspaceUser = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   role: Role;
+  updatedAt: Scalars['Datetime']['output'];
   /** Reads a single `User` that is related to this `WorkspaceUser`. */
   user?: Maybe<User>;
   userId: Scalars['UUID']['output'];
@@ -8109,6 +8106,8 @@ export type WorkspaceUserCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `role` field. */
   role?: InputMaybe<Role>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `userId` field. */
   userId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `workspaceId` field. */
@@ -8142,6 +8141,7 @@ export type WorkspaceUserConnectionGroupedAggregatesArgs = {
 export type WorkspaceUserDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   role?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
   workspaceId?: InputMaybe<BigIntFilter>;
 };
@@ -8152,6 +8152,8 @@ export type WorkspaceUserDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of role across the matching connection */
   role?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of userId across the matching connection */
   userId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of workspaceId across the matching connection */
@@ -8179,6 +8181,8 @@ export type WorkspaceUserFilter = {
   or?: InputMaybe<Array<WorkspaceUserFilter>>;
   /** Filter by the object’s `role` field. */
   role?: InputMaybe<RoleFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `user` relation. */
   user?: InputMaybe<UserFilter>;
   /** Filter by the object’s `userId` field. */
@@ -8195,16 +8199,21 @@ export enum WorkspaceUserGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Role = 'ROLE',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
   UserId = 'USER_ID',
   WorkspaceId = 'WORKSPACE_ID'
 }
 
 export type WorkspaceUserHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type WorkspaceUserHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 /** Conditions for `WorkspaceUser` aggregates. */
@@ -8224,36 +8233,44 @@ export type WorkspaceUserHavingInput = {
 
 export type WorkspaceUserHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type WorkspaceUserHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type WorkspaceUserHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type WorkspaceUserHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type WorkspaceUserHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type WorkspaceUserHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type WorkspaceUserHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 /** An input for mutations affecting `WorkspaceUser` */
 export type WorkspaceUserInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   role?: InputMaybe<Role>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
   workspaceId: Scalars['UUID']['input'];
 };
@@ -8267,6 +8284,8 @@ export enum WorkspaceUserOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RoleAsc = 'ROLE_ASC',
   RoleDesc = 'ROLE_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
   UserIdAsc = 'USER_ID_ASC',
   UserIdDesc = 'USER_ID_DESC',
   WorkspaceIdAsc = 'WORKSPACE_ID_ASC',
@@ -8277,6 +8296,7 @@ export enum WorkspaceUserOrderBy {
 export type WorkspaceUserPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   role?: InputMaybe<Role>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
   workspaceId?: InputMaybe<Scalars['UUID']['input']>;
 };
@@ -8289,21 +8309,22 @@ export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: strin
 
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } };
 
-export type TaskFragment = { __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } };
+export type TaskFragment = { __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } };
 
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
 }>;
 
 
-export type CreateAssigneeMutation = { __typename?: 'Mutation', createAssignee?: { __typename?: 'CreateAssigneePayload', assignee?: { __typename?: 'Assignee', rowId: string } | null } | null };
+export type CreateAssigneeMutation = { __typename?: 'Mutation', createAssignee?: { __typename?: 'CreateAssigneePayload', assignee?: { __typename?: 'Assignee', taskId: string, userId: string } | null } | null };
 
 export type DeleteAssigneeMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
+  taskId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
 }>;
 
 
-export type DeleteAssigneeMutation = { __typename?: 'Mutation', deleteAssignee?: { __typename?: 'DeleteAssigneePayload', assignee?: { __typename?: 'Assignee', rowId: string } | null } | null };
+export type DeleteAssigneeMutation = { __typename?: 'Mutation', deleteAssignee?: { __typename?: 'DeleteAssigneePayload', assignee?: { __typename?: 'Assignee', taskId: string, userId: string } | null } | null };
 
 export type CreateColumnMutationVariables = Exact<{
   input: CreateColumnInput;
@@ -8454,10 +8475,11 @@ export type CreateTaskLabelMutationVariables = Exact<{
 }>;
 
 
-export type CreateTaskLabelMutation = { __typename?: 'Mutation', createTaskLabel?: { __typename?: 'CreateTaskLabelPayload', taskLabel?: { __typename?: 'TaskLabel', rowId: string } | null } | null };
+export type CreateTaskLabelMutation = { __typename?: 'Mutation', createTaskLabel?: { __typename?: 'CreateTaskLabelPayload', taskLabel?: { __typename?: 'TaskLabel', taskId: string, labelId: string } | null } | null };
 
 export type DeleteTaskLabelMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
+  taskId: Scalars['UUID']['input'];
+  labelId: Scalars['UUID']['input'];
 }>;
 
 
@@ -8623,7 +8645,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', rowId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, emoji?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, emoji?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -8634,7 +8656,7 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', rowId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
 
 export type UserPreferencesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -8762,7 +8784,8 @@ export const TaskFragmentDoc = gql`
   }
   assignees {
     nodes {
-      rowId
+      taskId
+      userId
       user {
         rowId
         name
@@ -8777,16 +8800,18 @@ export const CreateAssigneeDocument = gql`
     mutation CreateAssignee($input: CreateAssigneeInput!) {
   createAssignee(input: $input) {
     assignee {
-      rowId
+      taskId
+      userId
     }
   }
 }
     `;
 export const DeleteAssigneeDocument = gql`
-    mutation DeleteAssignee($rowId: UUID!) {
-  deleteAssignee(input: {rowId: $rowId}) {
+    mutation DeleteAssignee($taskId: UUID!, $userId: UUID!) {
+  deleteAssignee(input: {taskId: $taskId, userId: $userId}) {
     assignee {
-      rowId
+      taskId
+      userId
     }
   }
 }
@@ -8974,14 +8999,15 @@ export const CreateTaskLabelDocument = gql`
     mutation CreateTaskLabel($input: CreateTaskLabelInput!) {
   createTaskLabel(input: $input) {
     taskLabel {
-      rowId
+      taskId
+      labelId
     }
   }
 }
     `;
 export const DeleteTaskLabelDocument = gql`
-    mutation DeleteTaskLabel($rowId: UUID!) {
-  deleteTaskLabel(input: {rowId: $rowId}) {
+    mutation DeleteTaskLabel($taskId: UUID!, $labelId: UUID!) {
+  deleteTaskLabel(input: {taskId: $taskId, labelId: $labelId}) {
     clientMutationId
   }
 }
@@ -9256,7 +9282,8 @@ export const TaskDocument = gql`
     dueDate
     taskLabels {
       nodes {
-        rowId
+        taskId
+        labelId
         label {
           ...Label
         }
@@ -9289,7 +9316,8 @@ export const TaskDocument = gql`
     }
     assignees {
       nodes {
-        rowId
+        taskId
+        userId
         user {
           rowId
           name

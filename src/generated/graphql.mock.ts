@@ -32,7 +32,7 @@ export const mockCreateAssigneeMutation = (resolver: GraphQLResponseResolver<Typ
  * @example
  * mockDeleteAssigneeMutation(
  *   ({ query, variables }) => {
- *     const { rowId } = variables;
+ *     const { taskId, userId } = variables;
  *     return HttpResponse.json({
  *       data: { deleteAssignee }
  *     })
@@ -516,7 +516,7 @@ export const mockCreateTaskLabelMutation = (resolver: GraphQLResponseResolver<Ty
  * @example
  * mockDeleteTaskLabelMutation(
  *   ({ query, variables }) => {
- *     const { rowId } = variables;
+ *     const { taskId, labelId } = variables;
  *     return HttpResponse.json({
  *       data: { deleteTaskLabel }
  *     })
