@@ -6,7 +6,7 @@ import {
   useSearch,
 } from "@tanstack/react-router";
 
-import { ListTrigger } from "@/components/core";
+import { ColumnTrigger } from "@/components/core";
 import {
   CollapsibleContent,
   CollapsibleRoot,
@@ -69,7 +69,7 @@ const List = ({ projects }: Props) => {
           className="mb-4 rounded-lg border bg-background last:mb-0"
           defaultOpen
         >
-          <ListTrigger
+          <ColumnTrigger
             title={column.title}
             count={column.projects.totalCount}
             tooltip={{
