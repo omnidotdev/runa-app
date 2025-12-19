@@ -159,7 +159,7 @@ function HomePage() {
               </TiltCard>
 
               <a
-                href={app.socials.github}
+                href={app.links.github}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -384,7 +384,7 @@ function HomePage() {
               {/* CTA */}
               <div className="flex flex-col gap-4 sm:flex-row">
                 <a
-                  href={app.socials.github}
+                  href={app.links.github}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

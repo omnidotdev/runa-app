@@ -77,6 +77,15 @@ function PublicLayout() {
                 Pricing
               </Link>
 
+              <a
+                href={app.links.docs}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-md px-3 py-2 font-medium text-base-600 text-sm hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
+              >
+                Docs
+              </a>
+
               <ThemeToggle />
 
               {session ? (
@@ -127,7 +136,7 @@ function PublicLayout() {
 
               <div className="flex items-center gap-6">
                 <a
-                  href={app.socials.github}
+                  href={app.links.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-base-500 transition-colors hover:text-foreground"

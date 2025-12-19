@@ -9,7 +9,8 @@ const app = {
     website: "https://omni.dev",
     discord: "https://discord.gg/omnidotdev",
   },
-  socials: {
+  links: {
+    docs: "https://docs.omni.dev/runa",
     github: "https://github.com/omnidotdev/runa",
     feedback: "https://backfeed.omni.dev/organizations/omni/projects/runa",
   },

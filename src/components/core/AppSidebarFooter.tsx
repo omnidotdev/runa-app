@@ -5,6 +5,7 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 import {
+  BookOpenIcon,
   LogOutIcon,
   MessageSquareIcon,
   MoonIcon,
@@ -110,12 +111,30 @@ const AppSidebarFooter = () => {
 
         <Tooltip
           positioning={{ placement: "right" }}
+          tooltip="Documentation"
+          disabled={isMobile || open}
+          trigger={
+            <SidebarMenuButton asChild>
+              <a
+                href={app.links.docs}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <BookOpenIcon />
+                <span className="flex w-full items-center">Docs</span>
+              </a>
+            </SidebarMenuButton>
+          }
+        />
+
+        <Tooltip
+          positioning={{ placement: "right" }}
           tooltip="Send Feedback"
           disabled={isMobile || open}
           trigger={
             <SidebarMenuButton asChild>
               <a
-                href={app.socials.feedback}
+                href={app.links.feedback}
                 target="_blank"
                 rel="noopener noreferrer"
               >
