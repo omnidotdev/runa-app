@@ -86,7 +86,7 @@ function PricingPage() {
           </h1>
 
           <p className="text-muted-foreground">
-            Free and open source forever. Pay only for what you need.
+            Free and open source. Pay only for what you need.
           </p>
         </div>
 
