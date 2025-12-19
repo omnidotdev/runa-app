@@ -13,6 +13,7 @@ import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as PublicPricingRouteImport } from './routes/_public/pricing'
+import { Route as PublicDemoRouteImport } from './routes/_public/demo'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthProfileUserIdRouteImport } from './routes/_auth/profile/$userId'
@@ -38,6 +39,11 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
 const PublicPricingRoute = PublicPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicDemoRoute = PublicDemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
   getParentRoute: () => PublicRoute,
 } as any)
 const AuthWorkspacesIndexRoute = AuthWorkspacesIndexRouteImport.update({
@@ -87,6 +93,7 @@ const AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/demo': typeof PublicDemoRoute
   '/pricing': typeof PublicPricingRoute
   '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesByTo {
+  '/demo': typeof PublicDemoRoute
   '/pricing': typeof PublicPricingRoute
   '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
+  '/_public/demo': typeof PublicDemoRoute
   '/_public/pricing': typeof PublicPricingRoute
   '/_public/': typeof PublicIndexRoute
   '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
@@ -128,6 +137,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/demo'
     | '/pricing'
     | '/'
     | '/profile/$userId'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/demo'
     | '/pricing'
     | '/'
     | '/profile/$userId'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth'
     | '/_public'
+    | '/_public/demo'
     | '/_public/pricing'
     | '/_public/'
     | '/_auth/profile/$userId'
@@ -200,6 +212,13 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PublicPricingRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/demo': {
+      id: '/_public/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof PublicDemoRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_auth/workspaces/': {
@@ -289,11 +308,13 @@ const AuthRouteChildren: AuthRouteChildren = {
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface PublicRouteChildren {
+  PublicDemoRoute: typeof PublicDemoRoute
   PublicPricingRoute: typeof PublicPricingRoute
   PublicIndexRoute: typeof PublicIndexRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
+  PublicDemoRoute: PublicDemoRoute,
   PublicPricingRoute: PublicPricingRoute,
   PublicIndexRoute: PublicIndexRoute,
 }

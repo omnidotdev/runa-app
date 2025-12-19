@@ -62,6 +62,14 @@ function PublicLayout() {
 
             <div className="flex items-center gap-3">
               <Link
+                to="/demo"
+                variant="ghost"
+                className="text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
+              >
+                Demo
+              </Link>
+
+              <Link
                 to="/pricing"
                 variant="ghost"
                 className="text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"

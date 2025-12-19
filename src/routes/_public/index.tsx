@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { LuGithub as GithubIcon } from "react-icons/lu";
 
-import { TiltCard } from "@/components/core";
+import { Link, TiltCard } from "@/components/core";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
@@ -159,7 +159,7 @@ function HomePage() {
               </TiltCard>
 
               <a
-                href="https://github.com/omnidotdev/runa"
+                href={app.socials.github}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -198,6 +198,52 @@ function HomePage() {
 
         {/* Decorative gradient orb behind hero */}
         <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-150 w-150 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500/5 blur-[100px]" />
+      </section>
+
+      {/* Demo CTA Section */}
+      <section className="relative px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl">
+          <div className="relative overflow-hidden rounded-2xl border border-primary-500/20 bg-linear-to-br from-primary-50/50 to-base-100 p-8 text-center dark:border-primary-500/10 dark:from-primary-950/20 dark:to-base-950">
+            {/* Background decoration */}
+            <div className="absolute top-0 right-0 h-32 w-32 rounded-full bg-primary-500/15 blur-2xl" />
+            <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-primary-400/10 blur-2xl" />
+
+            <div className="relative">
+              <Badge className="mb-4 border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400">
+                Try It Out
+              </Badge>
+
+              <h2 className="mb-4 font-bold text-2xl text-foreground sm:text-3xl">
+                See it in action
+              </h2>
+
+              <p className="mb-6 text-base-600 dark:text-base-400">
+                Experience the intuitive drag-and-drop workflow with our
+                interactive demo board.
+              </p>
+
+              <TiltCard
+                maxTilt={8}
+                liftAmount={4}
+                hoverScale={1.02}
+                glareIntensity={0.2}
+                className="inline-block rounded-xl border-0 bg-transparent p-0 shadow-none"
+              >
+                <Link
+                  to="/demo"
+                  variant="default"
+                  className="group h-12 gap-2 bg-primary-500 px-8 font-semibold text-base text-base-950 shadow-lg shadow-primary-500/25 transition-all hover:bg-primary-400 hover:shadow-primary-500/30 hover:shadow-xl dark:bg-primary-500 dark:hover:bg-primary-400"
+                >
+                  Try the Demo
+                  <ArrowRightIcon
+                    size={18}
+                    className="transition-transform group-hover:translate-x-1"
+                  />
+                </Link>
+              </TiltCard>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Features Section - Bento Grid */}
@@ -268,8 +314,8 @@ function HomePage() {
               From zero to 🌙 in minutes
             </h2>
             <p className="text-base-600 text-lg dark:text-base-400">
-              Getting started in Runa is simple. No complex setup, no steep
-              learning curve.
+              Getting started in {app.name} is simple. No complex setup, no
+              steep learning curve.
             </p>
           </div>
 
@@ -329,9 +375,9 @@ function HomePage() {
                   Built in the open, for everyone
                 </h2>
                 <p className="text-base-600 text-lg dark:text-base-400">
-                  Runa is completely open source. Inspect the code, contribute
-                  features, or self-host on your own infrastructure. Your data,
-                  your rules.
+                  {app.name} is completely open source. Inspect the code,
+                  contribute features, or self-host on your own infrastructure.
+                  Your data, your rules.
                 </p>
               </div>
 
@@ -378,8 +424,8 @@ function HomePage() {
               Ready for <span className="text-shimmer">stellar execution?</span>
             </h2>
             <p className="mx-auto mb-10 max-w-xl text-base-600 text-lg dark:text-base-400">
-              Join innovative teams shipping better products with Runa. Free for
-              individuals and small teams.
+              Join innovative teams shipping better products with {app.name}.
+              Free for individuals and small teams.
             </p>
 
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
