@@ -1,7 +1,9 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
-import { Image } from "@unpic/react";
+import { LuGithub as GithubIcon } from "react-icons/lu";
 
 import { Link, ThemeToggle } from "@/components/core";
+import { ShootingStars } from "@/components/landing";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import signOut from "@/lib/auth/signOut";
@@ -17,57 +19,131 @@ function PublicLayout() {
 
   return (
     <>
-      {/* Background Image */}
-      <div className="fixed inset-0">
+      {/* cosmic background */}
+      <div className="fixed inset-0 overflow-hidden">
+        {/* base gradient */}
+        <div className="absolute inset-0 bg-linear-to-b from-base-50 via-base-100 to-base-50 dark:from-base-950 dark:via-base-900 dark:to-base-950" />
+
+        {/* ambient glow orbs */}
+        <div className="absolute top-1/4 left-1/4 h-125 w-125 rounded-full bg-primary-500/10 blur-[120px] dark:bg-primary-400/5" />
+        <div className="absolute top-1/2 right-1/4 h-100 w-100 rounded-full bg-primary-500/10 blur-[100px] dark:bg-primary-400/5" />
+        <div className="absolute bottom-1/4 left-1/2 h-75 w-75 rounded-full bg-secondary-500/5 blur-[80px] dark:bg-secondary-400/5" />
+
+        <ShootingStars className="opacity-40 dark:opacity-70" />
+
+        {/* grid overlay */}
         <div
-          className="absolute inset-0 left-[calc(-1*calc(100vw-100%))] z-0 w-[calc(100%+calc(100vw-100%))] opacity-50 dark:opacity-20"
+          className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03]"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='200' height='200' patternUnits='userSpaceOnUse' patternTransform='rotate(12)'%3E%3Cpath d='M 200 0 L 0 0 0 200' fill='none' stroke='rgba(37, 99, 235, 0.45)' stroke-width='2.5' class='light-stroke'/%3E%3Cpath d='M 200 0 L 0 0 0 200' fill='none' stroke='rgba(96, 165, 250, 0.55)' stroke-width='2.5' class='dark-stroke' style='display:none'/%3E%3C/pattern%3E%3CradialGradient id='fade' cx='50%25' cy='50%25' r='70%25' fx='50%25' fy='50%25'%3E%3Cstop offset='0%25' style='stop-color:white;stop-opacity:0' /%3E%3Cstop offset='70%25' style='stop-color:white;stop-opacity:1' /%3E%3C/radialGradient%3E%3Cmask id='mask' x='0' y='0' width='100%25' height='100%25'%3E%3Crect x='0' y='0' width='100%25' height='100%25' fill='url(%23fade)'/%3E%3C/mask%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)' mask='url(%23mask)'/%3E%3Cstyle%3E@media (prefers-color-scheme: dark) { .light-stroke { display: none; } .dark-stroke { display: block !important; } }%3C/style%3E%3C/svg%3E")`,
-            backgroundSize: "cover",
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)`,
+            backgroundSize: "100px 100px",
           }}
         />
-        <div className="absolute inset-0 left-[calc(-1*calc(100vw-100%))] z-0 w-[calc(100%+calc(100vw-100%))] bg-linear-to-b from-base-100/70 via-transparent to-base-100/70 dark:from-base-950/70 dark:via-transparent dark:to-base-900/70" />
       </div>
 
-      <header className="fixed top-0 z-50 w-full border-base-200 border-b bg-white shadow-sm blur-ms dark:border-base-700 dark:bg-base-900">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="fixed top-0 z-50 w-full border-base-200/50 border-b bg-white/80 backdrop-blur-xl dark:border-base-800/50 dark:bg-base-950/80">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <Link
               to="/"
               variant="ghost"
-              className="hover:bg-accent/0 dark:hover:bg-accent/0"
+              className="gap-2 hover:bg-transparent dark:hover:bg-transparent"
             >
-              <Image
-                layout="fullWidth"
-                src="/logo.png"
-                alt={`${app.name} logo`}
-                className="h-6 w-6 md:h-8 md:w-8"
-              />
-              <h1 className="font-bold text-xl">{app.name}</h1>
+              {/* TODO: Replace with real logo */}
+              <span className="text-2xl">🌙</span>
+              <span className="font-bold text-xl tracking-tight">
+                {app.name}
+              </span>
+              <Badge className="border-primary-500/20 bg-primary-500/10 text-shimmer text-xs">
+                Alpha
+              </Badge>
             </Link>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <Link
+                to="/pricing"
+                variant="ghost"
+                className="text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
+              >
+                Pricing
+              </Link>
+
               <ThemeToggle />
 
               {session ? (
-                <Button onClick={signOut}>Sign Out</Button>
+                <Button variant="outline" onClick={signOut}>
+                  Sign Out
+                </Button>
               ) : (
-                <Button onClick={() => signIn({ redirectUrl: BASE_URL })}>
+                <Button
+                  onClick={() => signIn({ redirectUrl: BASE_URL })}
+                  className="bg-primary-500 text-base-950 hover:bg-primary-400 dark:bg-primary-500 dark:hover:bg-primary-400"
+                >
                   Sign In
                 </Button>
               )}
+
+              {/* TODO Sign Up CTA */}
             </div>
           </div>
         </div>
       </header>
 
-      <div className="relative z-10 flex h-dvh w-full flex-col gap-0 pl-[calc(100vw-100%)]">
+      {/* Main Content */}
+      <div className="relative z-10 flex min-h-dvh w-full flex-col pt-16">
         <main className="flex-1">
           <Outlet />
         </main>
 
-        <footer className="flex w-full items-center justify-center p-4 text-base-600 dark:text-base-400">
-          &copy; {new Date().getFullYear()} {app.organization.name}
+        {/* Footer */}
+        <footer className="relative border-base-200/50 border-t bg-base-50/50 backdrop-blur-sm dark:border-base-800/50 dark:bg-base-950/50">
+          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+              {/* Brand */}
+              <div className="flex items-center gap-2">
+                {/* TODO: Replace with real logo */}
+                <span className="text-xl opacity-60">🌙</span>
+                <span className="text-base-500 text-sm">
+                  Made with 🌙 by{" "}
+                  <a
+                    href="https://omni.dev"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-foreground transition-colors hover:text-primary-500"
+                  >
+                    {app.organization.name}
+                  </a>
+                </span>
+              </div>
+
+              <div className="flex items-center gap-6">
+                <a
+                  href={app.socials.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base-500 transition-colors hover:text-foreground"
+                >
+                  <GithubIcon size={20} />
+                </a>
+              </div>
+
+              <p className="text-base-500 text-sm">
+                &copy; {new Date().getFullYear()}{" "}
+                {/* TODO improve, this is strange DX; <a> used elsewhere for simplicity */}
+                <Link
+                  variant="link"
+                  className="p-0"
+                  to={app.organization.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {app.organization.name}
+                </Link>
+                . All rights reserved.
+              </p>
+            </div>
+          </div>
         </footer>
       </div>
     </>
