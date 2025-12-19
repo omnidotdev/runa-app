@@ -36,6 +36,8 @@ interface ExtendedSession extends Omit<Session, "user"> {
   accessToken?: string;
 }
 
+// TODO add test suite
+
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
   session: ExtendedSession | null;
