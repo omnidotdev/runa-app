@@ -116,7 +116,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
           <Toaster position="top-center" richColors />
         </ThemeProvider>
 
-        {/* Dev Tools - only included in development */}
+        {/* dev tools (only included in development) */}
         <TanStackDevtools
           plugins={[
             {
@@ -130,6 +130,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
             },
           ]}
         />
+
         <Scripts />
       </body>
     </html>

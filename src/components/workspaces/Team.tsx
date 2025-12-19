@@ -32,6 +32,10 @@ import {
   useUpdateWorkspaceUserMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import {
+  canModifyMember,
+  useCanManageTeam,
+} from "@/lib/hooks/useCanManageTeam";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
@@ -67,7 +71,9 @@ const Team = () => {
     select: (data) => data?.workspaceUsers,
   });
 
-  const isOwner = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Owner;
+  const currentUserRole = workspace?.workspaceUsers?.nodes?.[0]?.role;
+  const { canInvite, canChangeRoles, canRemoveMembers } =
+    useCanManageTeam(currentUserRole);
 
   const { mutate: deleteMember } = useDeleteWorkspaceUserMutation({
     meta: {
@@ -128,7 +134,7 @@ const Team = () => {
                 aria-label="Invite team member"
                 className={cn(
                   "mr-2 hidden size-7 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:hover:bg-transparent dark:disabled:hover:bg-transparent",
-                  isOwner && "inline-flex",
+                  canInvite && "inline-flex",
                 )}
                 onClick={() => setIsInviteTeamMemberOpen(true)}
                 disabled={maxNumberOfMembersReached}
@@ -146,6 +152,15 @@ const Team = () => {
               const completedTasks =
                 member?.user?.completedTasks?.totalCount ?? 0;
               const totalTasks = member?.user?.assignedTasks?.totalCount ?? 0;
+
+              // check if current user can modify this member
+              const canModifyThisMember =
+                currentUserRole &&
+                member.role &&
+                canModifyMember(currentUserRole, member.role);
+
+              // cannot modify self
+              const isSelf = member.user?.rowId === session?.user.rowId;
 
               return (
                 <div
@@ -188,7 +203,7 @@ const Team = () => {
                       }
                     >
                       <MenuTrigger
-                        disabled={member.user?.rowId === session?.user.rowId}
+                        disabled={isSelf || !canModifyThisMember}
                         asChild
                       >
                         <Badge variant="outline">
@@ -198,8 +213,9 @@ const Team = () => {
                           <ChevronDownIcon
                             className={cn(
                               "hidden",
-                              isOwner &&
-                                member.user?.rowId !== session?.user.rowId &&
+                              canChangeRoles &&
+                                !isSelf &&
+                                canModifyThisMember &&
                                 "inline-flex",
                             )}
                           />
@@ -251,7 +267,9 @@ const Team = () => {
                             size="icon"
                             className={cn(
                               "hidden size-7 text-base-400",
-                              isOwner && "inline-flex",
+                              canRemoveMembers &&
+                                canModifyThisMember &&
+                                "inline-flex",
                             )}
                             aria-label="More team member options"
                           >
@@ -268,9 +286,7 @@ const Team = () => {
                                 setIsDeleteTeamMemberOpen(true);
                                 setSelectedMember(member.user!);
                               }}
-                              disabled={
-                                member.user?.rowId === session?.user?.rowId
-                              }
+                              disabled={isSelf}
                             >
                               <Trash2Icon />
                               <span> Delete </span>

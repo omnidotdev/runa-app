@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/menu";
 import { Projects, Team, WorkspaceColumnsForm } from "@/components/workspaces";
 import {
-  Role,
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
@@ -39,6 +38,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
+import { isAdminOrOwner, isOwner } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import generateSlug from "@/lib/util/generateSlug";
@@ -157,7 +157,9 @@ function SettingsPage() {
     onSuccess: () => router.invalidate(),
   });
 
-  const isOwner = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Owner;
+  const currentUserRole = workspace?.workspaceUsers?.nodes?.[0]?.role;
+  const canEditWorkspace = currentUserRole && isAdminOrOwner(currentUserRole);
+  const canDeleteWorkspace = currentUserRole && isOwner(currentUserRole);
 
   const editNameSchema = z
     .object({
@@ -244,7 +246,7 @@ function SettingsPage() {
               defaultContent={workspace?.name}
               className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
               skeletonClassName="h-8 w-80"
-              editable={isOwner}
+              editable={canEditWorkspace}
               onUpdate={async ({ editor }) => {
                 const text = editor.getText().trim();
 
@@ -288,7 +290,7 @@ function SettingsPage() {
         <div
           className={cn(
             "ml-2 hidden flex-col gap-8 lg:ml-0",
-            isOwner && "flex",
+            canDeleteWorkspace && "flex",
           )}
         >
           <div className="flex flex-col gap-4 pt-2">
