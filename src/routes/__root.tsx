@@ -70,11 +70,6 @@ export const Route = createRootRouteWithContext<{
         sizes: "96x96",
       },
       {
-        rel: "icon",
-        type: "image/svg+xml",
-        href: "/favicon.svg",
-      },
-      {
         rel: "shortcut icon",
         href: "/favicon.ico",
       },

@@ -55,7 +55,7 @@ const ProfileHeader = ({ session, isOmniTeamMember }: Props) => (
       </p>
 
       {isOmniTeamMember && (
-        <Badge className="mt-2 bg-linear-to-r from-violet-500 to-fuchsia-500 text-white">
+        <Badge className="mt-2 bg-linear-to-r from-primary-400 to-primary-600 text-base-950">
           Omni Team
         </Badge>
       )}

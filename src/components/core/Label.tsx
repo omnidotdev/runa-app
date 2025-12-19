@@ -32,7 +32,7 @@ const Label = ({ label }: Props) => {
         }}
       >
         <TagIcon
-          className="!size-2.5"
+          className="size-2.5!"
           style={{ color: colorPicker.value.toString("css") }}
         />
         <span className="font-medium text-[10px]">{label.name}</span>
