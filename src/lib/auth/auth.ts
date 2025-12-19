@@ -26,8 +26,12 @@ const auth = betterAuth({
     // enable cookie caching for stateless session validation
     cookieCache: {
       enabled: true,
-      // cache session in cookie for 5 minutes before re-validating
-      maxAge: 60 * 5,
+      // cache session in cookie for 7 days
+      maxAge: 60 * 60 * 24 * 7,
+      // use encrypted JWE for security
+      strategy: "jwe",
+      // auto-refresh cookie before expiry (critical for stateless mode)
+      refreshCache: true,
     },
   },
   account: {
@@ -49,7 +53,6 @@ const auth = betterAuth({
             "offline_access",
             "organization",
           ],
-          prompt: "consent",
           accessType: "offline",
           pkce: true,
         },
