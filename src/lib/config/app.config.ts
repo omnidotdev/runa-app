@@ -6,6 +6,7 @@ const app = {
   description: "🌙 Lunar plans, stellar execution",
   organization: {
     name: "Omni",
+    website: "https://omni.dev",
     discord: "https://discord.gg/omnidotdev",
   },
   socials: {
