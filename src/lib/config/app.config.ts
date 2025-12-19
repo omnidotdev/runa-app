@@ -3,7 +3,7 @@
  */
 const app = {
   name: "Runa",
-  description: "Stellar execution",
+  description: "🌙 Lunar plans, stellar execution",
   organization: {
     name: "Omni",
   },
