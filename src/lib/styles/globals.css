@@ -105,18 +105,19 @@ html.dark {
   --base-950: oklch(0.141 0.004 285.83);
   --base-1000: oklch(0.096 0.0027 285.79);
 
-  --primary-50: oklch(0.9848 0.0133 188.69);
-  --primary-100: oklch(0.9546 0.0419 188.91);
-  --primary-200: oklch(0.9126 0.0775 188.86);
-  --primary-300: oklch(0.8584 0.1147 189.63);
-  --primary-400: oklch(0.758 0.1301 191.61);
-  --primary-500: oklch(0.7076 0.1202 192.87);
-  --primary-600: oklch(0.6031 0.1027 195.48);
-  --primary-700: oklch(0.5142 0.0843 197.08);
-  --primary-800: oklch(0.4414 0.0684 198.69);
-  --primary-900: oklch(0.3902 0.0556 199.49);
-  --primary-950: oklch(0.2852 0.0419 202.03);
-  --primary-1000: oklch(0.2171 0.0331 202.65);
+  /* primary palette (amber/citrine gemstone) */
+  --primary-50: oklch(0.987 0.022 84);
+  --primary-100: oklch(0.962 0.059 84);
+  --primary-200: oklch(0.924 0.12 84);
+  --primary-300: oklch(0.879 0.156 83);
+  --primary-400: oklch(0.828 0.175 83);
+  --primary-500: oklch(0.769 0.171 70);
+  --primary-600: oklch(0.666 0.164 55);
+  --primary-700: oklch(0.555 0.145 46);
+  --primary-800: oklch(0.473 0.122 46);
+  --primary-900: oklch(0.414 0.101 46);
+  --primary-950: oklch(0.279 0.077 46);
+  --primary-1000: oklch(0.208 0.06 46);
 
   --secondary-50: oklch(0.9769 0.0144 320.55);
   --secondary-100: oklch(0.9519 0.0314 319.35);
@@ -288,5 +289,47 @@ html.dark {
     border-radius: 10px;
     border: 2px solid var(--muted);
     background-clip: content-box;
+  }
+
+  /* gradient text shimmer */
+  .text-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--primary-500) 0%,
+      var(--primary-300) 25%,
+      var(--primary-500) 50%,
+      var(--primary-600) 75%,
+      var(--primary-500) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
+    line-height: 1.2;
+  }
+
+  .border-glow-hover {
+    transition:
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  .border-glow-hover:hover {
+    border-color: color-mix(in oklch, var(--primary-500) 50%, transparent);
+    box-shadow:
+      0 0 15px color-mix(in oklch, var(--primary-500) 20%, transparent),
+      inset 0 0 15px color-mix(in oklch, var(--primary-500) 5%, transparent);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
   }
 }
