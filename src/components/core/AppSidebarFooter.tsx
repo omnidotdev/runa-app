@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-router";
 import {
   LogOutIcon,
+  MessageSquareIcon,
   MoonIcon,
   MoreHorizontalIcon,
   PanelLeftCloseIcon,
@@ -14,6 +15,7 @@ import {
   TagIcon,
 } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { RiDiscordLine as DiscordIcon } from "react-icons/ri";
 
 import {
   AvatarFallback,
@@ -35,6 +37,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import signOut from "@/lib/auth/signOut";
+import app from "@/lib/config/app.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import invitationsOptions from "@/lib/options/invitations.options";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -107,10 +110,50 @@ const AppSidebarFooter = () => {
 
         <Tooltip
           positioning={{ placement: "right" }}
+          tooltip="Send Feedback"
+          disabled={isMobile || open}
+          trigger={
+            <SidebarMenuButton asChild>
+              <a
+                href={app.socials.feedback}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageSquareIcon />
+                <span className="flex w-full items-center">
+                  Provide Feedback
+                </span>
+              </a>
+            </SidebarMenuButton>
+          }
+        />
+
+        <Tooltip
+          positioning={{ placement: "right" }}
+          tooltip="Join Discord"
+          disabled={isMobile || open}
+          trigger={
+            <SidebarMenuButton asChild>
+              <a
+                href={app.organization.discord}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <DiscordIcon />
+                <span className="flex w-full items-center">
+                  Join Omni Discord
+                </span>
+              </a>
+            </SidebarMenuButton>
+          }
+        />
+
+        <Tooltip
+          positioning={{ placement: "right" }}
           tooltip="Profile"
           disabled={isMobile || open}
           trigger={
-            <div className="group/menu-item relative">
+            <div className="group/menu-item relative border-t">
               <SidebarMenuButton
                 isActive={
                   pathname === `/profile/${session?.user.identityProviderId}`
@@ -128,11 +171,16 @@ const AppSidebarFooter = () => {
                     src={session?.user.image ?? undefined}
                     alt={session?.user.username}
                   />
+
                   <AvatarFallback className="font-semibold text-xs">
                     {session?.user.username?.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </AvatarRoot>
-                <span>{session?.user.username}</span>
+
+                <span className="text-primary-500">
+                  {session?.user.username}
+                </span>
+
                 {!!invitations.length && (
                   <div className="absolute top-2 left-5 size-1.5 rounded-full bg-red-500" />
                 )}
