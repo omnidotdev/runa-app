@@ -1,6 +1,7 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 import { useState } from "react";
+import ScrollContainer from "react-indiana-drag-scroll";
 
 import { PriorityIcon } from "@/components/tasks";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
@@ -101,7 +102,10 @@ const DemoBoard = () => {
 
   return (
     <div className="overflow-hidden rounded-2xl border border-primary-500/10 bg-white/95 dark:border-primary-500/10 dark:bg-base-900/95">
-      <div className="custom-scrollbar overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15">
+      <ScrollContainer
+        className="custom-scrollbar overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
+        ignoreElements="[data-rfd-draggable-id]"
+      >
         <div className="min-w-fit p-4">
           <DragDropContext onDragEnd={onDragEnd}>
             <div className="flex gap-3">
@@ -151,7 +155,7 @@ const DemoBoard = () => {
             </div>
           </DragDropContext>
         </div>
-      </div>
+      </ScrollContainer>
 
       {/* task detail modal */}
       <DialogRoot

@@ -7,6 +7,7 @@ import {
   useRouteContext,
   useSearch,
 } from "@tanstack/react-router";
+import ScrollContainer from "react-indiana-drag-scroll";
 
 import { ColumnHeader } from "@/components/core";
 import { Role } from "@/generated/graphql";
@@ -61,7 +62,10 @@ const Board = ({ projects }: Props) => {
   });
 
   return (
-    <div className="custom-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/20">
+    <ScrollContainer
+      className="custom-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/20"
+      ignoreElements="[data-rfd-draggable-id]"
+    >
       <div className="h-full min-w-fit">
         <div className="flex h-full gap-3">
           {projectColumns?.map((column) => (
@@ -149,7 +153,7 @@ const Board = ({ projects }: Props) => {
           ))}
         </div>
       </div>
-    </div>
+    </ScrollContainer>
   );
 };
 
