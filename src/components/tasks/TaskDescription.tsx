@@ -1,17 +1,23 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useLoaderData,
+  useParams,
+  useRouteContext,
+} from "@tanstack/react-router";
 import { useDebounceCallback } from "usehooks-ts";
 
 import { RichTextEditor } from "@/components/core";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import {
   Role,
-  useTaskQuery,
   useTasksQuery,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
+import taskOptions from "@/lib/options/task.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+
+import type { TaskQuery } from "@/generated/graphql";
 
 interface Props {
   task: {
@@ -22,6 +28,10 @@ interface Props {
 }
 
 const TaskDescription = ({ task }: Props) => {
+  const { taskId } = useParams({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+  });
+
   const { workspaceId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
@@ -29,6 +39,9 @@ const TaskDescription = ({ task }: Props) => {
   const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
+
+  const queryClient = useQueryClient();
+  const taskQueryKey = taskOptions({ rowId: taskId }).queryKey;
 
   const { data: role } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
@@ -38,11 +51,27 @@ const TaskDescription = ({ task }: Props) => {
   const isMember = role === Role.Member;
 
   const { mutate: updateTask } = useUpdateTaskMutation({
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: taskQueryKey });
+      const previousTask = queryClient.getQueryData(taskQueryKey);
+
+      queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) => {
+        if (!old?.task) return old;
+        return {
+          ...old,
+          task: { ...old.task, ...variables.patch },
+        } as TaskQuery;
+      });
+
+      return { previousTask };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTask) {
+        queryClient.setQueryData(taskQueryKey, context.previousTask);
+      }
+    },
     meta: {
-      invalidates: [
-        getQueryKeyPrefix(useTaskQuery),
-        getQueryKeyPrefix(useTasksQuery),
-      ],
+      invalidates: [taskQueryKey, getQueryKeyPrefix(useTasksQuery)],
     },
   });
 

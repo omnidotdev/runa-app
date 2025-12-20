@@ -28,10 +28,9 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { useDeletePostMutation, useTaskQuery } from "@/generated/graphql";
+import { useDeletePostMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import taskOptions from "@/lib/options/task.options";
-import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 import CommentEmojiPicker from "./CommentEmojiPicker";
 import PostEmojis from "./PostEmojis";
@@ -57,9 +56,11 @@ const Comments = () => {
   const endRef = useRef<HTMLDivElement | null>(null);
   const prevLengthRef = useRef<number>(task?.posts?.nodes?.length ?? 0);
 
+  const taskQueryKey = taskOptions({ rowId: taskId }).queryKey;
+
   const { mutate: deletePost } = useDeletePostMutation({
     meta: {
-      invalidates: [getQueryKeyPrefix(useTaskQuery)],
+      invalidates: [taskQueryKey],
     },
   });
 

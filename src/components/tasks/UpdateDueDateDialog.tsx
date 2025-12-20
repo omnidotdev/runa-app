@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import * as dateFns from "date-fns";
 // @ts-expect-error no declaration file
@@ -18,11 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import {
-  useTaskQuery,
-  useTasksQuery,
-  useUpdateTaskMutation,
-} from "@/generated/graphql";
+import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -31,6 +27,8 @@ import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import CreateTaskDatePicker from "./CreateTaskDatePicker";
+
+import type { TaskQuery } from "@/generated/graphql";
 
 const UpdateDueDateDialog = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -49,6 +47,9 @@ const UpdateDueDateDialog = () => {
 
   const taskId = paramsTaskId ?? storeTaskId;
 
+  const queryClient = useQueryClient();
+  const taskQueryKey = taskOptions({ rowId: taskId! }).queryKey;
+
   const { data: defaultDueDate } = useQuery({
     ...taskOptions({ rowId: taskId! }),
     enabled: !!taskId,
@@ -56,11 +57,27 @@ const UpdateDueDateDialog = () => {
   });
 
   const { mutate: updateTask } = useUpdateTaskMutation({
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: taskQueryKey });
+      const previousTask = queryClient.getQueryData(taskQueryKey);
+
+      queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) => {
+        if (!old?.task) return old;
+        return {
+          ...old,
+          task: { ...old.task, ...variables.patch },
+        } as TaskQuery;
+      });
+
+      return { previousTask };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTask) {
+        queryClient.setQueryData(taskQueryKey, context.previousTask);
+      }
+    },
     meta: {
-      invalidates: [
-        getQueryKeyPrefix(useTaskQuery),
-        getQueryKeyPrefix(useTasksQuery),
-      ],
+      invalidates: [taskQueryKey, getQueryKeyPrefix(useTasksQuery)],
     },
   });
 

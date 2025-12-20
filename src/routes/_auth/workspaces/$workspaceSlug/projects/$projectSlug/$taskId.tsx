@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
@@ -34,7 +34,6 @@ import {
   Role,
   useDeleteTaskMutation,
   useProjectQuery,
-  useTaskQuery,
   useTasksQuery,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
@@ -47,6 +46,8 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
+
+import type { TaskQuery } from "@/generated/graphql";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
@@ -114,10 +115,39 @@ function TaskPage() {
     select: (data) => data?.project,
   });
 
+  const queryClient = useQueryClient();
+  const taskQueryKey = taskOptions({ rowId: taskId }).queryKey;
+
   const { mutate: updateTask } = useUpdateTaskMutation({
+    onMutate: async (variables) => {
+      // cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: taskQueryKey });
+
+      // snapshot the previous value
+      const previousTask = queryClient.getQueryData(taskQueryKey);
+
+      // optimistically update the cache
+      queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) => {
+        if (!old?.task) return old;
+        return {
+          ...old,
+          task: { ...old.task, ...variables.patch },
+        } as TaskQuery;
+      });
+
+      // return context with the previous value
+      return { previousTask };
+    },
+    onError: (_err, _variables, context) => {
+      // rollback on error
+      if (context?.previousTask) {
+        queryClient.setQueryData(taskQueryKey, context.previousTask);
+      }
+    },
     meta: {
       invalidates: [
-        getQueryKeyPrefix(useTaskQuery),
+        // invalidate this specific task
+        taskQueryKey,
         getQueryKeyPrefix(useTasksQuery),
       ],
     },

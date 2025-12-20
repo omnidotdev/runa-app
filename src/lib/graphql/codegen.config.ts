@@ -77,6 +77,8 @@ const graphqlCodegenConfig: CodegenConfig = {
         reactQueryVersion: 5,
         // enable infinite query generation
         addInfiniteQuery: true,
+        // enable suspense query generation
+        addSuspenseQuery: true,
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposequerykeys
         exposeQueryKeys: true,
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-react-query#exposemutationkeys

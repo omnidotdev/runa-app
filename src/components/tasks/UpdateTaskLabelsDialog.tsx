@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,6 @@ import {
   useCreateLabelMutation,
   useCreateTaskLabelMutation,
   useDeleteTaskLabelMutation,
-  useTaskQuery,
   useTasksQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -30,7 +29,7 @@ import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import TaskLabelsForm from "./TaskLabelsForm";
 
 const UpdateTaskLabelsDialog = () => {
-  const { queryClient } = useRouteContext({ from: "/_auth" });
+  const queryClient = useQueryClient();
 
   const { taskId: paramsTaskId } = useParams({
     strict: false,
@@ -39,6 +38,7 @@ const UpdateTaskLabelsDialog = () => {
   const { taskId: storeTaskId, setTaskId } = useTaskStore();
 
   const taskId = paramsTaskId ?? storeTaskId;
+  const taskQueryKey = taskOptions({ rowId: taskId! }).queryKey;
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.UpdateTaskLabels,
@@ -131,9 +131,7 @@ const UpdateTaskLabelsDialog = () => {
         ),
       ]);
 
-      queryClient.invalidateQueries({
-        queryKey: getQueryKeyPrefix(useTaskQuery),
-      });
+      queryClient.invalidateQueries({ queryKey: taskQueryKey });
       queryClient.invalidateQueries({
         queryKey: getQueryKeyPrefix(useTasksQuery),
       });

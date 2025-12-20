@@ -28,8 +28,8 @@ const useInertialScroll = (
   options: UseInertialScrollOptions = {},
 ): UseInertialScrollReturn => {
   const {
-    friction = 0.92,
-    velocityMultiplier = 1.5,
+    friction = 0.87,
+    velocityMultiplier = 1.3,
     minVelocity = 0.5,
   } = options;
 

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMutation, useQuery, useInfiniteQuery, UseMutationOptions, UseQueryOptions, UseInfiniteQueryOptions, InfiniteData } from '@tanstack/react-query';
+import { useMutation, useQuery, useSuspenseQuery, useInfiniteQuery, useSuspenseInfiniteQuery, UseMutationOptions, UseQueryOptions, UseSuspenseQueryOptions, UseInfiniteQueryOptions, InfiniteData, UseSuspenseInfiniteQueryOptions } from '@tanstack/react-query';
 import { graphqlFetch } from '@/lib/graphql/graphqlFetch';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -9827,6 +9827,24 @@ export const useColumnQuery = <
 
 useColumnQuery.getKey = (variables: ColumnQueryVariables) => ['Column', variables];
 
+export const useSuspenseColumnQuery = <
+      TData = ColumnQuery,
+      TError = unknown
+    >(
+      variables: ColumnQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<ColumnQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<ColumnQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<ColumnQuery, TError, TData>(
+      {
+    queryKey: ['ColumnSuspense', variables],
+    queryFn: graphqlFetch<ColumnQuery, ColumnQueryVariables>(ColumnDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseColumnQuery.getKey = (variables: ColumnQueryVariables) => ['ColumnSuspense', variables];
+
 export const useInfiniteColumnQuery = <
       TData = InfiniteData<ColumnQuery>,
       TError = unknown
@@ -9847,6 +9865,27 @@ export const useInfiniteColumnQuery = <
     )};
 
 useInfiniteColumnQuery.getKey = (variables: ColumnQueryVariables) => ['Column.infinite', variables];
+
+export const useSuspenseInfiniteColumnQuery = <
+      TData = InfiniteData<ColumnQuery>,
+      TError = unknown
+    >(
+      variables: ColumnQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<ColumnQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<ColumnQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<ColumnQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Column.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<ColumnQuery, ColumnQueryVariables>(ColumnDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteColumnQuery.getKey = (variables: ColumnQueryVariables) => ['Column.infiniteSuspense', variables];
 
 
 useColumnQuery.fetcher = (variables: ColumnQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ColumnQuery, ColumnQueryVariables>(ColumnDocument, variables, options);
@@ -9879,6 +9918,24 @@ export const useColumnsQuery = <
 
 useColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['Columns', variables];
 
+export const useSuspenseColumnsQuery = <
+      TData = ColumnsQuery,
+      TError = unknown
+    >(
+      variables: ColumnsQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<ColumnsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<ColumnsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<ColumnsQuery, TError, TData>(
+      {
+    queryKey: ['ColumnsSuspense', variables],
+    queryFn: graphqlFetch<ColumnsQuery, ColumnsQueryVariables>(ColumnsDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['ColumnsSuspense', variables];
+
 export const useInfiniteColumnsQuery = <
       TData = InfiniteData<ColumnsQuery>,
       TError = unknown
@@ -9899,6 +9956,27 @@ export const useInfiniteColumnsQuery = <
     )};
 
 useInfiniteColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['Columns.infinite', variables];
+
+export const useSuspenseInfiniteColumnsQuery = <
+      TData = InfiniteData<ColumnsQuery>,
+      TError = unknown
+    >(
+      variables: ColumnsQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<ColumnsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<ColumnsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<ColumnsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Columns.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<ColumnsQuery, ColumnsQueryVariables>(ColumnsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['Columns.infiniteSuspense', variables];
 
 
 useColumnsQuery.fetcher = (variables: ColumnsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ColumnsQuery, ColumnsQueryVariables>(ColumnsDocument, variables, options);
@@ -9946,6 +10024,24 @@ export const usePostEmojisQuery = <
 
 usePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojis', variables];
 
+export const useSuspensePostEmojisQuery = <
+      TData = PostEmojisQuery,
+      TError = unknown
+    >(
+      variables: PostEmojisQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<PostEmojisQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<PostEmojisQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<PostEmojisQuery, TError, TData>(
+      {
+    queryKey: ['PostEmojisSuspense', variables],
+    queryFn: graphqlFetch<PostEmojisQuery, PostEmojisQueryVariables>(PostEmojisDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspensePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojisSuspense', variables];
+
 export const useInfinitePostEmojisQuery = <
       TData = InfiniteData<PostEmojisQuery>,
       TError = unknown
@@ -9966,6 +10062,27 @@ export const useInfinitePostEmojisQuery = <
     )};
 
 useInfinitePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojis.infinite', variables];
+
+export const useSuspenseInfinitePostEmojisQuery = <
+      TData = InfiniteData<PostEmojisQuery>,
+      TError = unknown
+    >(
+      variables: PostEmojisQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<PostEmojisQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<PostEmojisQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<PostEmojisQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['PostEmojis.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<PostEmojisQuery, PostEmojisQueryVariables>(PostEmojisDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfinitePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojis.infiniteSuspense', variables];
 
 
 usePostEmojisQuery.fetcher = (variables: PostEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<PostEmojisQuery, PostEmojisQueryVariables>(PostEmojisDocument, variables, options);
@@ -9998,6 +10115,24 @@ export const useUserEmojisQuery = <
 
 useUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojis', variables];
 
+export const useSuspenseUserEmojisQuery = <
+      TData = UserEmojisQuery,
+      TError = unknown
+    >(
+      variables: UserEmojisQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<UserEmojisQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<UserEmojisQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<UserEmojisQuery, TError, TData>(
+      {
+    queryKey: ['UserEmojisSuspense', variables],
+    queryFn: graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojisSuspense', variables];
+
 export const useInfiniteUserEmojisQuery = <
       TData = InfiniteData<UserEmojisQuery>,
       TError = unknown
@@ -10018,6 +10153,27 @@ export const useInfiniteUserEmojisQuery = <
     )};
 
 useInfiniteUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojis.infinite', variables];
+
+export const useSuspenseInfiniteUserEmojisQuery = <
+      TData = InfiniteData<UserEmojisQuery>,
+      TError = unknown
+    >(
+      variables: UserEmojisQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<UserEmojisQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<UserEmojisQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<UserEmojisQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['UserEmojis.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojis.infiniteSuspense', variables];
 
 
 useUserEmojisQuery.fetcher = (variables: UserEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, variables, options);
@@ -10062,6 +10218,24 @@ export const useInvitationsQuery = <
 
 useInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['Invitations'] : ['Invitations', variables];
 
+export const useSuspenseInvitationsQuery = <
+      TData = InvitationsQuery,
+      TError = unknown
+    >(
+      variables?: InvitationsQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<InvitationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<InvitationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<InvitationsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['InvitationsSuspense'] : ['InvitationsSuspense', variables],
+    queryFn: graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['InvitationsSuspense'] : ['InvitationsSuspense', variables];
+
 export const useInfiniteInvitationsQuery = <
       TData = InfiniteData<InvitationsQuery>,
       TError = unknown
@@ -10082,6 +10256,27 @@ export const useInfiniteInvitationsQuery = <
     )};
 
 useInfiniteInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['Invitations.infinite'] : ['Invitations.infinite', variables];
+
+export const useSuspenseInfiniteInvitationsQuery = <
+      TData = InfiniteData<InvitationsQuery>,
+      TError = unknown
+    >(
+      variables: InvitationsQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<InvitationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<InvitationsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<InvitationsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Invitations.infiniteSuspense'] : ['Invitations.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['Invitations.infiniteSuspense'] : ['Invitations.infiniteSuspense', variables];
 
 
 useInvitationsQuery.fetcher = (variables?: InvitationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables, options);
@@ -10114,6 +10309,24 @@ export const useLabelsQuery = <
 
 useLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['Labels', variables];
 
+export const useSuspenseLabelsQuery = <
+      TData = LabelsQuery,
+      TError = unknown
+    >(
+      variables: LabelsQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<LabelsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<LabelsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<LabelsQuery, TError, TData>(
+      {
+    queryKey: ['LabelsSuspense', variables],
+    queryFn: graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['LabelsSuspense', variables];
+
 export const useInfiniteLabelsQuery = <
       TData = InfiniteData<LabelsQuery>,
       TError = unknown
@@ -10134,6 +10347,27 @@ export const useInfiniteLabelsQuery = <
     )};
 
 useInfiniteLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['Labels.infinite', variables];
+
+export const useSuspenseInfiniteLabelsQuery = <
+      TData = InfiniteData<LabelsQuery>,
+      TError = unknown
+    >(
+      variables: LabelsQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<LabelsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<LabelsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<LabelsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Labels.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['Labels.infiniteSuspense', variables];
 
 
 useLabelsQuery.fetcher = (variables: LabelsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, variables, options);
@@ -10178,6 +10412,24 @@ export const useProjectColumnsQuery = <
 
 useProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumns', variables];
 
+export const useSuspenseProjectColumnsQuery = <
+      TData = ProjectColumnsQuery,
+      TError = unknown
+    >(
+      variables: ProjectColumnsQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<ProjectColumnsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<ProjectColumnsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<ProjectColumnsQuery, TError, TData>(
+      {
+    queryKey: ['ProjectColumnsSuspense', variables],
+    queryFn: graphqlFetch<ProjectColumnsQuery, ProjectColumnsQueryVariables>(ProjectColumnsDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumnsSuspense', variables];
+
 export const useInfiniteProjectColumnsQuery = <
       TData = InfiniteData<ProjectColumnsQuery>,
       TError = unknown
@@ -10198,6 +10450,27 @@ export const useInfiniteProjectColumnsQuery = <
     )};
 
 useInfiniteProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumns.infinite', variables];
+
+export const useSuspenseInfiniteProjectColumnsQuery = <
+      TData = InfiniteData<ProjectColumnsQuery>,
+      TError = unknown
+    >(
+      variables: ProjectColumnsQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<ProjectColumnsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<ProjectColumnsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<ProjectColumnsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['ProjectColumns.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<ProjectColumnsQuery, ProjectColumnsQueryVariables>(ProjectColumnsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumns.infiniteSuspense', variables];
 
 
 useProjectColumnsQuery.fetcher = (variables: ProjectColumnsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectColumnsQuery, ProjectColumnsQueryVariables>(ProjectColumnsDocument, variables, options);
@@ -10258,6 +10531,24 @@ export const useProjectQuery = <
 
 useProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project', variables];
 
+export const useSuspenseProjectQuery = <
+      TData = ProjectQuery,
+      TError = unknown
+    >(
+      variables: ProjectQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<ProjectQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<ProjectQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<ProjectQuery, TError, TData>(
+      {
+    queryKey: ['ProjectSuspense', variables],
+    queryFn: graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseProjectQuery.getKey = (variables: ProjectQueryVariables) => ['ProjectSuspense', variables];
+
 export const useInfiniteProjectQuery = <
       TData = InfiniteData<ProjectQuery>,
       TError = unknown
@@ -10278,6 +10569,27 @@ export const useInfiniteProjectQuery = <
     )};
 
 useInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
+
+export const useSuspenseInfiniteProjectQuery = <
+      TData = InfiniteData<ProjectQuery>,
+      TError = unknown
+    >(
+      variables: ProjectQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<ProjectQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<ProjectQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<ProjectQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Project.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infiniteSuspense', variables];
 
 
 useProjectQuery.fetcher = (variables: ProjectQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables, options);
@@ -10314,6 +10626,24 @@ export const useProjectsQuery = <
 
 useProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects', variables];
 
+export const useSuspenseProjectsQuery = <
+      TData = ProjectsQuery,
+      TError = unknown
+    >(
+      variables: ProjectsQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<ProjectsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<ProjectsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<ProjectsQuery, TError, TData>(
+      {
+    queryKey: ['ProjectsSuspense', variables],
+    queryFn: graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['ProjectsSuspense', variables];
+
 export const useInfiniteProjectsQuery = <
       TData = InfiniteData<ProjectsQuery>,
       TError = unknown
@@ -10334,6 +10664,27 @@ export const useInfiniteProjectsQuery = <
     )};
 
 useInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects.infinite', variables];
+
+export const useSuspenseInfiniteProjectsQuery = <
+      TData = InfiniteData<ProjectsQuery>,
+      TError = unknown
+    >(
+      variables: ProjectsQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<ProjectsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<ProjectsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<ProjectsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Projects.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects.infiniteSuspense', variables];
 
 
 useProjectsQuery.fetcher = (variables: ProjectsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables, options);
@@ -10418,6 +10769,24 @@ export const useTaskQuery = <
 
 useTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task', variables];
 
+export const useSuspenseTaskQuery = <
+      TData = TaskQuery,
+      TError = unknown
+    >(
+      variables: TaskQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<TaskQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<TaskQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<TaskQuery, TError, TData>(
+      {
+    queryKey: ['TaskSuspense', variables],
+    queryFn: graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseTaskQuery.getKey = (variables: TaskQueryVariables) => ['TaskSuspense', variables];
+
 export const useInfiniteTaskQuery = <
       TData = InfiniteData<TaskQuery>,
       TError = unknown
@@ -10438,6 +10807,27 @@ export const useInfiniteTaskQuery = <
     )};
 
 useInfiniteTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task.infinite', variables];
+
+export const useSuspenseInfiniteTaskQuery = <
+      TData = InfiniteData<TaskQuery>,
+      TError = unknown
+    >(
+      variables: TaskQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<TaskQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<TaskQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<TaskQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Task.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task.infiniteSuspense', variables];
 
 
 useTaskQuery.fetcher = (variables: TaskQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, variables, options);
@@ -10473,6 +10863,24 @@ export const useTasksQuery = <
 
 useTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks', variables];
 
+export const useSuspenseTasksQuery = <
+      TData = TasksQuery,
+      TError = unknown
+    >(
+      variables: TasksQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<TasksQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<TasksQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<TasksQuery, TError, TData>(
+      {
+    queryKey: ['TasksSuspense', variables],
+    queryFn: graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseTasksQuery.getKey = (variables: TasksQueryVariables) => ['TasksSuspense', variables];
+
 export const useInfiniteTasksQuery = <
       TData = InfiniteData<TasksQuery>,
       TError = unknown
@@ -10493,6 +10901,27 @@ export const useInfiniteTasksQuery = <
     )};
 
 useInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks.infinite', variables];
+
+export const useSuspenseInfiniteTasksQuery = <
+      TData = InfiniteData<TasksQuery>,
+      TError = unknown
+    >(
+      variables: TasksQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<TasksQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<TasksQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<TasksQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Tasks.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks.infiniteSuspense', variables];
 
 
 useTasksQuery.fetcher = (variables: TasksQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables, options);
@@ -10526,6 +10955,24 @@ export const useUserPreferencesQuery = <
 
 useUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferences', variables];
 
+export const useSuspenseUserPreferencesQuery = <
+      TData = UserPreferencesQuery,
+      TError = unknown
+    >(
+      variables: UserPreferencesQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<UserPreferencesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<UserPreferencesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<UserPreferencesQuery, TError, TData>(
+      {
+    queryKey: ['UserPreferencesSuspense', variables],
+    queryFn: graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferencesSuspense', variables];
+
 export const useInfiniteUserPreferencesQuery = <
       TData = InfiniteData<UserPreferencesQuery>,
       TError = unknown
@@ -10546,6 +10993,27 @@ export const useInfiniteUserPreferencesQuery = <
     )};
 
 useInfiniteUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferences.infinite', variables];
+
+export const useSuspenseInfiniteUserPreferencesQuery = <
+      TData = InfiniteData<UserPreferencesQuery>,
+      TError = unknown
+    >(
+      variables: UserPreferencesQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<UserPreferencesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<UserPreferencesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<UserPreferencesQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['UserPreferences.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferences.infiniteSuspense', variables];
 
 
 useUserPreferencesQuery.fetcher = (variables: UserPreferencesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, variables, options);
@@ -10578,6 +11046,24 @@ export const useUserQuery = <
 
 useUserQuery.getKey = (variables: UserQueryVariables) => ['User', variables];
 
+export const useSuspenseUserQuery = <
+      TData = UserQuery,
+      TError = unknown
+    >(
+      variables: UserQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<UserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<UserQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<UserQuery, TError, TData>(
+      {
+    queryKey: ['UserSuspense', variables],
+    queryFn: graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseUserQuery.getKey = (variables: UserQueryVariables) => ['UserSuspense', variables];
+
 export const useInfiniteUserQuery = <
       TData = InfiniteData<UserQuery>,
       TError = unknown
@@ -10598,6 +11084,27 @@ export const useInfiniteUserQuery = <
     )};
 
 useInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite', variables];
+
+export const useSuspenseInfiniteUserQuery = <
+      TData = InfiniteData<UserQuery>,
+      TError = unknown
+    >(
+      variables: UserQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<UserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<UserQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<UserQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['User.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infiniteSuspense', variables];
 
 
 useUserQuery.fetcher = (variables: UserQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables, options);
@@ -10628,6 +11135,24 @@ export const useUserByIdentityProviderIdQuery = <
 
 useUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderId', variables];
 
+export const useSuspenseUserByIdentityProviderIdQuery = <
+      TData = UserByIdentityProviderIdQuery,
+      TError = unknown
+    >(
+      variables: UserByIdentityProviderIdQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<UserByIdentityProviderIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<UserByIdentityProviderIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<UserByIdentityProviderIdQuery, TError, TData>(
+      {
+    queryKey: ['UserByIdentityProviderIdSuspense', variables],
+    queryFn: graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderIdSuspense', variables];
+
 export const useInfiniteUserByIdentityProviderIdQuery = <
       TData = InfiniteData<UserByIdentityProviderIdQuery>,
       TError = unknown
@@ -10648,6 +11173,27 @@ export const useInfiniteUserByIdentityProviderIdQuery = <
     )};
 
 useInfiniteUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderId.infinite', variables];
+
+export const useSuspenseInfiniteUserByIdentityProviderIdQuery = <
+      TData = InfiniteData<UserByIdentityProviderIdQuery>,
+      TError = unknown
+    >(
+      variables: UserByIdentityProviderIdQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<UserByIdentityProviderIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<UserByIdentityProviderIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<UserByIdentityProviderIdQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['UserByIdentityProviderId.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderId.infiniteSuspense', variables];
 
 
 useUserByIdentityProviderIdQuery.fetcher = (variables: UserByIdentityProviderIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, variables, options);
@@ -10699,6 +11245,24 @@ export const useWorkspaceUsersQuery = <
 
 useWorkspaceUsersQuery.getKey = (variables: WorkspaceUsersQueryVariables) => ['WorkspaceUsers', variables];
 
+export const useSuspenseWorkspaceUsersQuery = <
+      TData = WorkspaceUsersQuery,
+      TError = unknown
+    >(
+      variables: WorkspaceUsersQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<WorkspaceUsersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<WorkspaceUsersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<WorkspaceUsersQuery, TError, TData>(
+      {
+    queryKey: ['WorkspaceUsersSuspense', variables],
+    queryFn: graphqlFetch<WorkspaceUsersQuery, WorkspaceUsersQueryVariables>(WorkspaceUsersDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseWorkspaceUsersQuery.getKey = (variables: WorkspaceUsersQueryVariables) => ['WorkspaceUsersSuspense', variables];
+
 export const useInfiniteWorkspaceUsersQuery = <
       TData = InfiniteData<WorkspaceUsersQuery>,
       TError = unknown
@@ -10719,6 +11283,27 @@ export const useInfiniteWorkspaceUsersQuery = <
     )};
 
 useInfiniteWorkspaceUsersQuery.getKey = (variables: WorkspaceUsersQueryVariables) => ['WorkspaceUsers.infinite', variables];
+
+export const useSuspenseInfiniteWorkspaceUsersQuery = <
+      TData = InfiniteData<WorkspaceUsersQuery>,
+      TError = unknown
+    >(
+      variables: WorkspaceUsersQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<WorkspaceUsersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<WorkspaceUsersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<WorkspaceUsersQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['WorkspaceUsers.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<WorkspaceUsersQuery, WorkspaceUsersQueryVariables>(WorkspaceUsersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteWorkspaceUsersQuery.getKey = (variables: WorkspaceUsersQueryVariables) => ['WorkspaceUsers.infiniteSuspense', variables];
 
 
 useWorkspaceUsersQuery.fetcher = (variables: WorkspaceUsersQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceUsersQuery, WorkspaceUsersQueryVariables>(WorkspaceUsersDocument, variables, options);
@@ -10801,6 +11386,24 @@ export const useWorkspaceQuery = <
 
 useWorkspaceQuery.getKey = (variables: WorkspaceQueryVariables) => ['Workspace', variables];
 
+export const useSuspenseWorkspaceQuery = <
+      TData = WorkspaceQuery,
+      TError = unknown
+    >(
+      variables: WorkspaceQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<WorkspaceQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<WorkspaceQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<WorkspaceQuery, TError, TData>(
+      {
+    queryKey: ['WorkspaceSuspense', variables],
+    queryFn: graphqlFetch<WorkspaceQuery, WorkspaceQueryVariables>(WorkspaceDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseWorkspaceQuery.getKey = (variables: WorkspaceQueryVariables) => ['WorkspaceSuspense', variables];
+
 export const useInfiniteWorkspaceQuery = <
       TData = InfiniteData<WorkspaceQuery>,
       TError = unknown
@@ -10821,6 +11424,27 @@ export const useInfiniteWorkspaceQuery = <
     )};
 
 useInfiniteWorkspaceQuery.getKey = (variables: WorkspaceQueryVariables) => ['Workspace.infinite', variables];
+
+export const useSuspenseInfiniteWorkspaceQuery = <
+      TData = InfiniteData<WorkspaceQuery>,
+      TError = unknown
+    >(
+      variables: WorkspaceQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<WorkspaceQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<WorkspaceQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<WorkspaceQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Workspace.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<WorkspaceQuery, WorkspaceQueryVariables>(WorkspaceDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteWorkspaceQuery.getKey = (variables: WorkspaceQueryVariables) => ['Workspace.infiniteSuspense', variables];
 
 
 useWorkspaceQuery.fetcher = (variables: WorkspaceQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceQuery, WorkspaceQueryVariables>(WorkspaceDocument, variables, options);
@@ -10860,6 +11484,24 @@ export const useWorkspaceBySlugQuery = <
 
 useWorkspaceBySlugQuery.getKey = (variables: WorkspaceBySlugQueryVariables) => ['WorkspaceBySlug', variables];
 
+export const useSuspenseWorkspaceBySlugQuery = <
+      TData = WorkspaceBySlugQuery,
+      TError = unknown
+    >(
+      variables: WorkspaceBySlugQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<WorkspaceBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<WorkspaceBySlugQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<WorkspaceBySlugQuery, TError, TData>(
+      {
+    queryKey: ['WorkspaceBySlugSuspense', variables],
+    queryFn: graphqlFetch<WorkspaceBySlugQuery, WorkspaceBySlugQueryVariables>(WorkspaceBySlugDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseWorkspaceBySlugQuery.getKey = (variables: WorkspaceBySlugQueryVariables) => ['WorkspaceBySlugSuspense', variables];
+
 export const useInfiniteWorkspaceBySlugQuery = <
       TData = InfiniteData<WorkspaceBySlugQuery>,
       TError = unknown
@@ -10880,6 +11522,27 @@ export const useInfiniteWorkspaceBySlugQuery = <
     )};
 
 useInfiniteWorkspaceBySlugQuery.getKey = (variables: WorkspaceBySlugQueryVariables) => ['WorkspaceBySlug.infinite', variables];
+
+export const useSuspenseInfiniteWorkspaceBySlugQuery = <
+      TData = InfiniteData<WorkspaceBySlugQuery>,
+      TError = unknown
+    >(
+      variables: WorkspaceBySlugQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<WorkspaceBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<WorkspaceBySlugQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<WorkspaceBySlugQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['WorkspaceBySlug.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<WorkspaceBySlugQuery, WorkspaceBySlugQueryVariables>(WorkspaceBySlugDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteWorkspaceBySlugQuery.getKey = (variables: WorkspaceBySlugQueryVariables) => ['WorkspaceBySlug.infiniteSuspense', variables];
 
 
 useWorkspaceBySlugQuery.fetcher = (variables: WorkspaceBySlugQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceBySlugQuery, WorkspaceBySlugQueryVariables>(WorkspaceBySlugDocument, variables, options);
@@ -10928,6 +11591,24 @@ export const useWorkspacesQuery = <
 
 useWorkspacesQuery.getKey = (variables: WorkspacesQueryVariables) => ['Workspaces', variables];
 
+export const useSuspenseWorkspacesQuery = <
+      TData = WorkspacesQuery,
+      TError = unknown
+    >(
+      variables: WorkspacesQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<WorkspacesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<WorkspacesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<WorkspacesQuery, TError, TData>(
+      {
+    queryKey: ['WorkspacesSuspense', variables],
+    queryFn: graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseWorkspacesQuery.getKey = (variables: WorkspacesQueryVariables) => ['WorkspacesSuspense', variables];
+
 export const useInfiniteWorkspacesQuery = <
       TData = InfiniteData<WorkspacesQuery>,
       TError = unknown
@@ -10948,6 +11629,27 @@ export const useInfiniteWorkspacesQuery = <
     )};
 
 useInfiniteWorkspacesQuery.getKey = (variables: WorkspacesQueryVariables) => ['Workspaces.infinite', variables];
+
+export const useSuspenseInfiniteWorkspacesQuery = <
+      TData = InfiniteData<WorkspacesQuery>,
+      TError = unknown
+    >(
+      variables: WorkspacesQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<WorkspacesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<WorkspacesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<WorkspacesQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['Workspaces.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteWorkspacesQuery.getKey = (variables: WorkspacesQueryVariables) => ['Workspaces.infiniteSuspense', variables];
 
 
 useWorkspacesQuery.fetcher = (variables: WorkspacesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, variables, options);

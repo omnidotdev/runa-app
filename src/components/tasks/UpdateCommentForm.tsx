@@ -1,12 +1,12 @@
 import { useForm } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouteContext } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
 import { RichTextEditor } from "@/components/core";
 import { Button } from "@/components/ui/button";
-import { useTaskQuery, useUpdatePostMutation } from "@/generated/graphql";
+import { useUpdatePostMutation } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
-import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 import type { EditorApi } from "@/components/core";
@@ -28,17 +28,20 @@ const UpdateCommentForm = ({ post, isActive, onSetActive }: Props) => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
-  const { session, queryClient } = useRouteContext({
+  const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
+  const queryClient = useQueryClient();
+  const taskQueryKey = taskOptions({ rowId: taskId }).queryKey;
+
   const { mutateAsync: updateComment } = useUpdatePostMutation({
     meta: {
-      invalidates: [getQueryKeyPrefix(useTaskQuery)],
+      invalidates: [taskQueryKey],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(
-        taskOptions({ rowId: taskId }).queryKey,
+        taskQueryKey,
         // @ts-expect-error TODO type properly
         (prev) => ({
           ...prev,

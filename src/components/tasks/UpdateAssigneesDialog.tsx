@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLoaderData, useParams } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,6 @@ import {
 import {
   useCreateAssigneeMutation,
   useDeleteAssigneeMutation,
-  useTaskQuery,
   useTasksQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -24,20 +23,34 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
+import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import UpdateAssignees from "./UpdateAssignees";
+
+import type { TaskQuery } from "@/generated/graphql";
 
 const UpdateAssigneesDialog = () => {
   const { taskId: paramsTaskId } = useParams({
     strict: false,
   });
 
+  const { workspaceId } = useLoaderData({ from: "/_auth" });
+
   const { taskId: storeTaskId, setTaskId } = useTaskStore();
 
   const taskId = paramsTaskId ?? storeTaskId;
 
+  const queryClient = useQueryClient();
+  const taskQueryKey = taskOptions({ rowId: taskId! }).queryKey;
+
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.UpdateAssignees,
+  });
+
+  const { data: workspaceUsers } = useQuery({
+    ...workspaceUsersOptions({ workspaceId: workspaceId! }),
+    enabled: !!workspaceId,
+    select: (data) => data?.workspaceUsers?.nodes.map((wu) => wu.user),
   });
 
   useHotkeys(
@@ -60,20 +73,85 @@ const UpdateAssigneesDialog = () => {
   );
 
   const { mutate: addNewAssignee } = useCreateAssigneeMutation({
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: taskQueryKey });
+      const previousTask = queryClient.getQueryData(taskQueryKey);
+
+      const user = workspaceUsers?.find(
+        (u) => u?.rowId === variables.input.assignee?.userId,
+      );
+
+      if (user) {
+        queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) => {
+          if (!old?.task) return old;
+          return {
+            ...old,
+            task: {
+              ...old.task,
+              assignees: {
+                ...old.task.assignees,
+                nodes: [
+                  ...old.task.assignees.nodes,
+                  {
+                    __typename: "Assignee" as const,
+                    taskId: variables.input.assignee?.taskId!,
+                    userId: user.rowId,
+                    user: {
+                      __typename: "User" as const,
+                      rowId: user.rowId,
+                      name: user.name,
+                      avatarUrl: user.avatarUrl,
+                    },
+                  },
+                ],
+              },
+            },
+          } as TaskQuery;
+        });
+      }
+
+      return { previousTask };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTask) {
+        queryClient.setQueryData(taskQueryKey, context.previousTask);
+      }
+    },
     meta: {
-      invalidates: [
-        getQueryKeyPrefix(useTaskQuery),
-        getQueryKeyPrefix(useTasksQuery),
-      ],
+      invalidates: [taskQueryKey, getQueryKeyPrefix(useTasksQuery)],
     },
   });
 
   const { mutate: removeAssignee } = useDeleteAssigneeMutation({
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: taskQueryKey });
+      const previousTask = queryClient.getQueryData(taskQueryKey);
+
+      queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) => {
+        if (!old?.task) return old;
+        return {
+          ...old,
+          task: {
+            ...old.task,
+            assignees: {
+              ...old.task.assignees,
+              nodes: old.task.assignees.nodes.filter(
+                (a) => a.userId !== variables.userId,
+              ),
+            },
+          },
+        } as TaskQuery;
+      });
+
+      return { previousTask };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTask) {
+        queryClient.setQueryData(taskQueryKey, context.previousTask);
+      }
+    },
     meta: {
-      invalidates: [
-        getQueryKeyPrefix(useTaskQuery),
-        getQueryKeyPrefix(useTasksQuery),
-      ],
+      invalidates: [taskQueryKey, getQueryKeyPrefix(useTasksQuery)],
     },
   });
 
