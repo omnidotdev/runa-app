@@ -1,7 +1,6 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
-import { useState } from "react";
-import ScrollContainer from "react-indiana-drag-scroll";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { PriorityIcon } from "@/components/tasks";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
@@ -22,8 +21,12 @@ import { cn } from "@/lib/utils";
 import DemoBoardItem from "./DemoBoardItem";
 import { demoColumns, initialDemoTasks } from "./demoBoardData";
 
-import type { DropResult } from "@hello-pangea/dnd";
+import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { DemoTask } from "./demoBoardData";
+import type { MouseEvent as ReactMouseEvent } from "react";
+
+const EDGE_THRESHOLD = 150;
+const MAX_SCROLL_SPEED = 25;
 
 /**
  * Demo board for users to try the app.
@@ -31,8 +34,111 @@ import type { DemoTask } from "./demoBoardData";
 const DemoBoard = () => {
   const [tasks, setTasks] = useState<DemoTask[]>(initialDemoTasks);
   const [selectedTask, setSelectedTask] = useState<DemoTask | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Drag-to-scroll state
+  const [isMouseDragging, setIsMouseDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftStart, setScrollLeftStart] = useState(0);
+
+  // Auto-scroll during card drag
+  useEffect(() => {
+    if (!isDragging) return;
+
+    let animationFrameId: number;
+    let scrollSpeed = 0;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      const mouseX = e.clientX;
+
+      if (mouseX < rect.left + EDGE_THRESHOLD) {
+        const distanceFromEdge = mouseX - rect.left;
+        const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
+        scrollSpeed = -MAX_SCROLL_SPEED * Math.pow(intensity, 2);
+      } else if (mouseX > rect.right - EDGE_THRESHOLD) {
+        const distanceFromEdge = rect.right - mouseX;
+        const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
+        scrollSpeed = MAX_SCROLL_SPEED * Math.pow(intensity, 2);
+      } else {
+        scrollSpeed = 0;
+      }
+    };
+
+    const scrollStep = () => {
+      const container = scrollContainerRef.current;
+      if (container && scrollSpeed !== 0) {
+        container.scrollLeft += scrollSpeed;
+      }
+      animationFrameId = requestAnimationFrame(scrollStep);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    animationFrameId = requestAnimationFrame(scrollStep);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [isDragging]);
+
+  // Drag-to-scroll handlers
+  const handleMouseDown = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.closest("[data-rfd-draggable-id]")) return;
+
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    setIsMouseDragging(true);
+    setStartX(e.pageX - container.offsetLeft);
+    setScrollLeftStart(container.scrollLeft);
+    container.style.cursor = "grabbing";
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    setIsMouseDragging(false);
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.style.cursor = "grab";
+    }
+  }, []);
+
+  const handleMouseMoveScroll = useCallback(
+    (e: ReactMouseEvent<HTMLDivElement>) => {
+      if (!isMouseDragging) return;
+      e.preventDefault();
+
+      const container = scrollContainerRef.current;
+      if (!container) return;
+
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      container.scrollLeft = scrollLeftStart - walk;
+    },
+    [isMouseDragging, startX, scrollLeftStart],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    if (isMouseDragging) {
+      setIsMouseDragging(false);
+      const container = scrollContainerRef.current;
+      if (container) {
+        container.style.cursor = "grab";
+      }
+    }
+  }, [isMouseDragging]);
+
+  const onDragStart = (_start: DragStart) => {
+    setIsDragging(true);
+  };
 
   const onDragEnd = (result: DropResult) => {
+    setIsDragging(false);
     const { destination, source, draggableId } = result;
 
     // dropped outside a droppable area
@@ -102,12 +208,16 @@ const DemoBoard = () => {
 
   return (
     <div className="overflow-hidden rounded-2xl border border-primary-500/10 bg-white/95 dark:border-primary-500/10 dark:bg-base-900/95">
-      <ScrollContainer
-        className="custom-scrollbar overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
-        ignoreElements="[data-rfd-draggable-id]"
+      <div
+        ref={scrollContainerRef}
+        className="custom-scrollbar cursor-grab select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMoveScroll}
+        onMouseLeave={handleMouseLeave}
       >
         <div className="min-w-fit p-4">
-          <DragDropContext onDragEnd={onDragEnd}>
+          <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
             <div className="flex gap-3">
               {demoColumns.map((column) => {
                 const columnTasks = getColumnTasks(column.rowId);
@@ -155,7 +265,7 @@ const DemoBoard = () => {
             </div>
           </DragDropContext>
         </div>
-      </ScrollContainer>
+      </div>
 
       {/* task detail modal */}
       <DialogRoot

@@ -55,7 +55,6 @@
     "react-dom": "^19.2.3",
     "react-hotkeys-hook": "^5.2.1",
     "react-icons": "^5.5.0",
-    "react-indiana-drag-scroll": "^2.2.1",
     "resend": "^6.6.0",
     "sonner": "^2.0.7",
     "stripe": "^20.1.0",
