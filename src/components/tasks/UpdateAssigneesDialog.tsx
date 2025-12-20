@@ -15,6 +15,8 @@ import {
 import {
   useCreateAssigneeMutation,
   useDeleteAssigneeMutation,
+  useTaskQuery,
+  useTasksQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
@@ -22,6 +24,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import UpdateAssignees from "./UpdateAssignees";
 
 const UpdateAssigneesDialog = () => {
@@ -58,13 +61,19 @@ const UpdateAssigneesDialog = () => {
 
   const { mutate: addNewAssignee } = useCreateAssigneeMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useTaskQuery),
+        getQueryKeyPrefix(useTasksQuery),
+      ],
     },
   });
 
   const { mutate: removeAssignee } = useDeleteAssigneeMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useTaskQuery),
+        getQueryKeyPrefix(useTasksQuery),
+      ],
     },
   });
 

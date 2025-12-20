@@ -13,7 +13,7 @@ import {
   Plus,
   SearchIcon,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
@@ -25,6 +25,8 @@ import { Input } from "@/components/ui/input";
 import { OverviewBoard, OverviewList } from "@/components/workspaces";
 import {
   Role,
+  useProjectQuery,
+  useProjectsQuery,
   useUpdateProjectMutation,
   useUpdateWorkspaceMutation,
 } from "@/generated/graphql";
@@ -37,10 +39,12 @@ import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import createMetaTags from "@/lib/util/createMetaTags";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
+import type { ProjectsQuery } from "@/generated/graphql";
 
 const projectsSearchSchema = z.object({
   search: z.string().default(""),
@@ -107,12 +111,15 @@ function ProjectsOverviewPage() {
 
   const maxProjectsReached = useMaxProjectsReached();
 
+  const projectsVariables = useMemo(
+    () => ({ workspaceId, search }),
+    [workspaceId, search],
+  );
+
   const { data: projects } = useSuspenseQuery({
-    ...projectsOptions({ workspaceId, search }),
+    ...projectsOptions(projectsVariables),
     select: (data) => data?.projects?.nodes ?? [],
   });
-
-  const [localProjects, setLocalProjects] = useState(projects);
 
   const { setDraggableId, setIsDragging } = useDragStore();
 
@@ -155,7 +162,10 @@ function ProjectsOverviewPage() {
 
   const { mutateAsync: updateProject } = useUpdateProjectMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useProjectsQuery),
+        getQueryKeyPrefix(useProjectQuery),
+      ],
     },
   });
 
@@ -200,134 +210,156 @@ function ProjectsOverviewPage() {
 
       setDraggableId(draggableId);
 
-      if (localProjects?.length) {
-        const currentProject = localProjects.find(
-          (project) => project.rowId === draggableId,
-        )!;
+      // Get current projects from cache
+      const queryKey = projectsOptions(projectsVariables).queryKey;
+      const cachedData = queryClient.getQueryData<ProjectsQuery>(queryKey);
+      const currentProjects = cachedData?.projects?.nodes ?? [];
 
-        const destinationColumnProjects = localProjects.filter(
-          (project) => project.projectColumnId === destination.droppableId,
+      if (!currentProjects.length) return;
+
+      const currentProject = currentProjects.find(
+        (project) => project.rowId === draggableId,
+      );
+      if (!currentProject) return;
+
+      const destinationColumnProjects = currentProjects.filter(
+        (project) => project.projectColumnId === destination.droppableId,
+      );
+
+      // Helper to apply optimistic update to cache
+      const applyOptimisticUpdate = (
+        updater: (projects: typeof currentProjects) => typeof currentProjects,
+      ) => {
+        queryClient.setQueryData<ProjectsQuery>(queryKey, (old) => {
+          if (!old?.projects?.nodes) return old;
+          return {
+            ...old,
+            projects: {
+              ...old.projects,
+              nodes: updater([...old.projects.nodes]),
+            },
+          };
+        });
+      };
+
+      if (source.droppableId === destination.droppableId) {
+        // Same column reorder
+        const reorderedColumnProjects = [...destinationColumnProjects];
+        const [projectToMove] = reorderedColumnProjects.splice(
+          currentProject.columnIndex,
+          1,
+        );
+        reorderedColumnProjects.splice(destination.index, 0, projectToMove);
+
+        // Optimistic update
+        applyOptimisticUpdate((prev) => {
+          const unTouchedProjects = prev.filter(
+            (project) => project.projectColumnId !== destination.droppableId,
+          );
+          return [
+            ...unTouchedProjects,
+            ...reorderedColumnProjects.map((project, index) => ({
+              ...project,
+              columnIndex: index,
+            })),
+          ];
+        });
+
+        // Persist to server
+        await Promise.all(
+          reorderedColumnProjects.map((project, index) =>
+            updateProject({
+              rowId: project.rowId,
+              patch: {
+                columnIndex: index,
+              },
+            }),
+          ),
+        );
+      } else {
+        // Cross-column move
+        const sourceColumnProjectsExcludingMovedProject =
+          currentProjects.filter(
+            (project) =>
+              project.projectColumnId === source.droppableId &&
+              project.rowId !== draggableId,
+          );
+
+        const projectsWithMovedInDestination = [...destinationColumnProjects];
+        projectsWithMovedInDestination.splice(
+          destination.index,
+          0,
+          currentProject,
         );
 
-        if (source.droppableId === destination.droppableId) {
-          const reorderedColumnProjects = [...destinationColumnProjects];
-          const [projectToMove] = reorderedColumnProjects.splice(
-            currentProject.columnIndex,
-            1,
+        const sourceProjectIds = sourceColumnProjectsExcludingMovedProject.map(
+          (project) => project.rowId,
+        );
+        const destinationProjectIds = projectsWithMovedInDestination.map(
+          (project) => project.rowId,
+        );
+
+        // Optimistic update
+        applyOptimisticUpdate((prev) => {
+          const unTouchedProjects = prev.filter(
+            (project) =>
+              !sourceProjectIds.includes(project.rowId) &&
+              !destinationProjectIds.includes(project.rowId),
           );
-          reorderedColumnProjects.splice(destination.index, 0, projectToMove);
-
-          setLocalProjects((prev) => {
-            const unTouchedProjects = prev.filter(
-              (project) => project.projectColumnId !== destination.droppableId,
-            );
-
-            return [
-              ...unTouchedProjects,
-              ...reorderedColumnProjects.map((project, index) => ({
+          return [
+            ...unTouchedProjects,
+            ...sourceColumnProjectsExcludingMovedProject.map(
+              (project, index) => ({
                 ...project,
                 columnIndex: index,
-              })),
-            ];
-          });
-
-          await Promise.all(
-            reorderedColumnProjects.map((project, index) =>
-              updateProject({
-                rowId: project.rowId,
-                patch: {
-                  columnIndex: index,
-                },
               }),
             ),
-          );
-        } else {
-          const sourceColumnProjectsExcludingMovedProject =
-            localProjects.filter(
-              (project) =>
-                project.projectColumnId === source.droppableId &&
-                project.rowId !== draggableId,
-            );
+            ...projectsWithMovedInDestination.map((project, index) => ({
+              ...project,
+              columnIndex: index,
+              projectColumnId:
+                project.rowId === currentProject.rowId
+                  ? destination.droppableId
+                  : project.projectColumnId,
+            })),
+          ];
+        });
 
-          const sourceProjectIds =
-            sourceColumnProjectsExcludingMovedProject.map(
-              (project) => project.rowId,
-            );
-
-          const projectsWithMovedInDestination = [...destinationColumnProjects];
-          projectsWithMovedInDestination.splice(
-            destination.index,
-            0,
-            currentProject,
-          );
-
-          const destinationProjectIds = projectsWithMovedInDestination.map(
-            (project) => project.rowId,
-          );
-
-          setLocalProjects((prev) => {
-            const unTouchedProjects = prev.filter(
-              (project) =>
-                !sourceProjectIds.includes(project.rowId) &&
-                !destinationProjectIds.includes(project.rowId),
-            );
-
-            return [
-              ...unTouchedProjects,
-              ...sourceColumnProjectsExcludingMovedProject.map(
-                (project, index) => ({
-                  ...project,
-                  columnIndex: index,
-                }),
-              ),
-              ...projectsWithMovedInDestination.map((project, index) => ({
-                ...project,
+        // Persist to server
+        await Promise.all([
+          ...sourceColumnProjectsExcludingMovedProject.map((project, index) =>
+            updateProject({
+              rowId: project.rowId,
+              patch: {
+                columnIndex: index,
+              },
+            }),
+          ),
+          ...projectsWithMovedInDestination.map((project, index) =>
+            updateProject({
+              rowId: project.rowId,
+              patch: {
                 columnIndex: index,
                 projectColumnId:
                   project.rowId === currentProject.rowId
                     ? destination.droppableId
                     : project.projectColumnId,
-              })),
-            ];
-          });
-
-          await Promise.all([
-            ...sourceColumnProjectsExcludingMovedProject.map((project, index) =>
-              updateProject({
-                rowId: project.rowId,
-                patch: {
-                  columnIndex: index,
-                },
-              }),
-            ),
-            ...projectsWithMovedInDestination.map((project, index) =>
-              updateProject({
-                rowId: project.rowId,
-                patch: {
-                  columnIndex: index,
-                  projectColumnId:
-                    project.rowId === currentProject.rowId
-                      ? destination.droppableId
-                      : project.projectColumnId,
-                },
-              }),
-            ),
-          ]);
-        }
-
-        setDraggableId(null);
-
-        await queryClient.invalidateQueries({
-          queryKey: ["Projects"],
-          // NB: important to refetch all `Projects` queries *even* if they are inactive to prevent flashing when search params are updated
-          refetchType: "all",
-        });
+              },
+            }),
+          ),
+        ]);
       }
-    },
-    [updateProject, setDraggableId, localProjects, queryClient],
-  );
 
-  useEffect(() => setLocalProjects(projects), [projects]);
+      setDraggableId(null);
+
+      // Refetch to ensure consistency with server
+      await queryClient.invalidateQueries({
+        queryKey: getQueryKeyPrefix(useProjectsQuery),
+        refetchType: "all",
+      });
+    },
+    [updateProject, setDraggableId, projectsVariables, queryClient],
+  );
 
   return (
     <div className="flex size-full">
@@ -421,9 +453,9 @@ function ProjectsOverviewPage() {
 
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
           {workspace?.viewMode === "board" ? (
-            <OverviewBoard projects={localProjects} />
+            <OverviewBoard projects={projects} />
           ) : (
-            <OverviewList projects={localProjects} />
+            <OverviewList projects={projects} />
           )}
         </DragDropContext>
       </div>

@@ -4,8 +4,9 @@ import { useEffect, useRef } from "react";
 
 import { RichTextEditor } from "@/components/core";
 import { Button } from "@/components/ui/button";
-import { useUpdatePostMutation } from "@/generated/graphql";
+import { useTaskQuery, useUpdatePostMutation } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 import type { EditorApi } from "@/components/core";
@@ -33,7 +34,7 @@ const UpdateCommentForm = ({ post, isActive, onSetActive }: Props) => {
 
   const { mutateAsync: updateComment } = useUpdatePostMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [getQueryKeyPrefix(useTaskQuery)],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(

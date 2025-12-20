@@ -24,12 +24,16 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { useDeleteProjectMutation } from "@/generated/graphql";
+import {
+  useDeleteProjectMutation,
+  useProjectsQuery,
+} from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { isAdminOrOwner } from "@/lib/permissions";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 const Projects = () => {
@@ -69,7 +73,7 @@ const Projects = () => {
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
       invalidates: [
-        ["Projects"],
+        getQueryKeyPrefix(useProjectsQuery),
         workspaceOptions({
           rowId: workspaceId,
           userId: session?.user?.rowId!,
