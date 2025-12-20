@@ -62,6 +62,7 @@ const WorkspaceInvitation = ({
         theme: {
           extend: {
             colors: {
+              // TODO tokens
               brand: "#00a3a2",
               muted: "#666666",
             },
