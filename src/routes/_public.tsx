@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
-import { BASE_URL } from "@/lib/config/env.config";
+import { BASE_URL, isDevEnv } from "@/lib/config/env.config";
 
 export const Route = createFileRoute("/_public")({
   component: PublicLayout,
@@ -95,9 +95,10 @@ function PublicLayout() {
               ) : (
                 <Button
                   onClick={() => signIn({ redirectUrl: BASE_URL })}
+                  disabled={!isDevEnv}
                   className="bg-primary-500 text-base-950 hover:bg-primary-400 dark:bg-primary-500 dark:hover:bg-primary-400"
                 >
-                  Sign In
+                  Sign In {!isDevEnv && "(Coming Soon)"}
                 </Button>
               )}
 

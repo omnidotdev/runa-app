@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
-import { BASE_URL } from "@/lib/config/env.config";
+import { BASE_URL, isDevEnv } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 
 import type { ReactNode } from "react";
@@ -138,25 +138,35 @@ function HomePage() {
 
             {/* CTAs */}
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <TiltCard
-                maxTilt={8}
-                liftAmount={4}
-                hoverScale={1.02}
-                glareIntensity={0.25}
-                onClick={() => signIn({ redirectUrl: BASE_URL })}
-                className="rounded-xl border-0 bg-transparent p-0 shadow-none"
-              >
+              {isDevEnv ? (
+                <TiltCard
+                  maxTilt={8}
+                  liftAmount={4}
+                  hoverScale={1.02}
+                  glareIntensity={0.25}
+                  onClick={() => signIn({ redirectUrl: BASE_URL })}
+                  className="rounded-xl border-0 bg-transparent p-0 shadow-none"
+                >
+                  <Button
+                    size="lg"
+                    className="group h-12 gap-2 bg-primary-500 px-8 font-semibold text-base text-base-950 shadow-lg shadow-primary-500/25 transition-all hover:bg-primary-400 hover:shadow-primary-500/30 hover:shadow-xl dark:bg-primary-500 dark:hover:bg-primary-400"
+                  >
+                    Get Started Free
+                    <ArrowRightIcon
+                      size={18}
+                      className="transition-transform group-hover:translate-x-1"
+                    />
+                  </Button>
+                </TiltCard>
+              ) : (
                 <Button
                   size="lg"
-                  className="group h-12 gap-2 bg-primary-500 px-8 font-semibold text-base text-base-950 shadow-lg shadow-primary-500/25 transition-all hover:bg-primary-400 hover:shadow-primary-500/30 hover:shadow-xl dark:bg-primary-500 dark:hover:bg-primary-400"
+                  disabled
+                  className="h-12 gap-2 px-8 font-semibold text-base"
                 >
-                  Get Started Free
-                  <ArrowRightIcon
-                    size={18}
-                    className="transition-transform group-hover:translate-x-1"
-                  />
+                  Coming Soon 🚧
                 </Button>
-              </TiltCard>
+              )}
 
               <a
                 href={app.links.github}
@@ -428,25 +438,35 @@ function HomePage() {
             </p>
 
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <TiltCard
-                maxTilt={10}
-                liftAmount={6}
-                hoverScale={1.03}
-                glareIntensity={0.3}
-                onClick={() => signIn({ redirectUrl: BASE_URL })}
-                className="rounded-xl border-0 bg-transparent p-0 shadow-none"
-              >
+              {isDevEnv ? (
+                <TiltCard
+                  maxTilt={10}
+                  liftAmount={6}
+                  hoverScale={1.03}
+                  glareIntensity={0.3}
+                  onClick={() => signIn({ redirectUrl: BASE_URL })}
+                  className="rounded-xl border-0 bg-transparent p-0 shadow-none"
+                >
+                  <Button
+                    size="lg"
+                    className="group h-14 gap-2 bg-primary-500 px-10 font-semibold text-base-950 text-lg shadow-lg shadow-primary-500/25 transition-all hover:bg-primary-400 hover:shadow-primary-500/30 hover:shadow-xl dark:bg-primary-500 dark:hover:bg-primary-400"
+                  >
+                    Get Started for Free
+                    <ArrowRightIcon
+                      size={20}
+                      className="transition-transform group-hover:translate-x-1"
+                    />
+                  </Button>
+                </TiltCard>
+              ) : (
                 <Button
                   size="lg"
-                  className="group h-14 gap-2 bg-primary-500 px-10 font-semibold text-base-950 text-lg shadow-lg shadow-primary-500/25 transition-all hover:bg-primary-400 hover:shadow-primary-500/30 hover:shadow-xl dark:bg-primary-500 dark:hover:bg-primary-400"
+                  disabled
+                  className="h-14 gap-2 px-10 font-semibold text-lg"
                 >
-                  Get Started for Free
-                  <ArrowRightIcon
-                    size={20}
-                    className="transition-transform group-hover:translate-x-1"
-                  />
+                  Coming Soon 🚧
                 </Button>
-              </TiltCard>
+              )}
             </div>
 
             <p className="mt-6 text-base-500 text-sm">
