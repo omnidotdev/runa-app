@@ -51,7 +51,6 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
-import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import Shortcut from "./Shortcut";
@@ -102,17 +101,42 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
       invalidates: [getQueryKeyPrefix(useUserPreferencesQuery)],
     },
     onMutate: (variables) => {
+      // Update workspace cache for sidebar UI
       queryClient.setQueryData(
-        userPreferencesOptions({
-          projectId: selectedProject?.rowId!,
+        workspaceOptions({
+          rowId: workspaceId!,
           userId: session?.user?.rowId!,
         }).queryKey,
-        (old) => ({
-          userPreferenceByUserIdAndProjectId: {
-            ...old?.userPreferenceByUserIdAndProjectId!,
-            viewMode: variables.patch?.viewMode!,
-          },
-        }),
+        (old) => {
+          if (!old?.workspace) return old;
+          return {
+            ...old,
+            workspace: {
+              ...old.workspace,
+              projects: {
+                ...old.workspace.projects,
+                nodes: old.workspace.projects.nodes.map((project) => {
+                  const userPref = project.userPreferences?.nodes?.[0];
+                  if (userPref?.rowId === variables.rowId) {
+                    return {
+                      ...project,
+                      userPreferences: {
+                        ...project.userPreferences,
+                        nodes: [
+                          {
+                            ...userPref,
+                            viewMode: variables.patch?.viewMode!,
+                          },
+                        ],
+                      },
+                    };
+                  }
+                  return project;
+                }),
+              },
+            },
+          };
+        },
       );
     },
   });
@@ -433,6 +457,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                                 ) : (
                                   <ListIcon />
                                 )}
+
                                 <span>
                                   {project?.userPreferences?.nodes?.[0]
                                     ?.viewMode === "list"
