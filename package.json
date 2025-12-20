@@ -107,5 +107,8 @@
     "msw",
     "oxc-resolver",
     "esbuild"
-  ]
+  ],
+  "overrides": {
+    "@internationalized/date": "^3.10.1"
+  }
 }
