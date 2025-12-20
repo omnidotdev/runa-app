@@ -70,7 +70,8 @@ function PublicLayout() {
               Discord
             </a>
 
-            <a
+            {/* TODO enable after Backfeed `next`/`redirectTo`, public boards, TanStack migration, and brand repaint */}
+            {/* <a
               href={app.links.feedback}
               target="_blank"
               rel="noopener noreferrer"
@@ -78,7 +79,7 @@ function PublicLayout() {
             >
               <MegaphoneIcon className="size-3" />
               Feedback
-            </a>
+            </a> */}
           </div>
         </div>
 
