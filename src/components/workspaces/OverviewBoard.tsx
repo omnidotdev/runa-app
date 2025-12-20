@@ -7,10 +7,11 @@ import {
   useRouteContext,
   useSearch,
 } from "@tanstack/react-router";
-import ScrollContainer from "react-indiana-drag-scroll";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ColumnHeader } from "@/components/core";
 import { Role } from "@/generated/graphql";
+import useDragStore from "@/lib/hooks/store/useDragStore";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
@@ -20,13 +21,115 @@ import { cn } from "@/lib/utils";
 import BoardItem from "./OverviewBoardItem";
 
 import type { ProjectFragment } from "@/generated/graphql";
+import type { MouseEvent as ReactMouseEvent } from "react";
 
 interface Props {
   projects: ProjectFragment[];
 }
 
+const EDGE_THRESHOLD = 150;
+const MAX_SCROLL_SPEED = 25;
+
 const Board = ({ projects }: Props) => {
   const navigate = useNavigate();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const { isDragging } = useDragStore();
+
+  // Drag-to-scroll state
+  const [isMouseDragging, setIsMouseDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftStart, setScrollLeftStart] = useState(0);
+
+  // Auto-scroll during card drag
+  useEffect(() => {
+    if (!isDragging) return;
+
+    let animationFrameId: number;
+    let scrollSpeed = 0;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      const mouseX = e.clientX;
+
+      if (mouseX < rect.left + EDGE_THRESHOLD) {
+        const distanceFromEdge = mouseX - rect.left;
+        const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
+        scrollSpeed = -MAX_SCROLL_SPEED * Math.pow(intensity, 2);
+      } else if (mouseX > rect.right - EDGE_THRESHOLD) {
+        const distanceFromEdge = rect.right - mouseX;
+        const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
+        scrollSpeed = MAX_SCROLL_SPEED * Math.pow(intensity, 2);
+      } else {
+        scrollSpeed = 0;
+      }
+    };
+
+    const scrollStep = () => {
+      const container = scrollContainerRef.current;
+      if (container && scrollSpeed !== 0) {
+        container.scrollLeft += scrollSpeed;
+      }
+      animationFrameId = requestAnimationFrame(scrollStep);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    animationFrameId = requestAnimationFrame(scrollStep);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [isDragging]);
+
+  // Drag-to-scroll handlers
+  const handleMouseDown = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.closest("[data-rfd-draggable-id]")) return;
+
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    setIsMouseDragging(true);
+    setStartX(e.pageX - container.offsetLeft);
+    setScrollLeftStart(container.scrollLeft);
+    container.style.cursor = "grabbing";
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    setIsMouseDragging(false);
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.style.cursor = "grab";
+    }
+  }, []);
+
+  const handleMouseMove = useCallback(
+    (e: ReactMouseEvent<HTMLDivElement>) => {
+      if (!isMouseDragging) return;
+      e.preventDefault();
+
+      const container = scrollContainerRef.current;
+      if (!container) return;
+
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      container.scrollLeft = scrollLeftStart - walk;
+    },
+    [isMouseDragging, startX, scrollLeftStart],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    if (isMouseDragging) {
+      setIsMouseDragging(false);
+      const container = scrollContainerRef.current;
+      if (container) {
+        container.style.cursor = "grab";
+      }
+    }
+  }, [isMouseDragging]);
   const { workspaceSlug } = useParams({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
@@ -62,9 +165,13 @@ const Board = ({ projects }: Props) => {
   });
 
   return (
-    <ScrollContainer
-      className="custom-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/20"
-      ignoreElements="[data-rfd-draggable-id]"
+    <div
+      ref={scrollContainerRef}
+      className="custom-scrollbar h-full cursor-grab select-none overflow-x-auto bg-primary-100/30 p-4 dark:bg-primary-950/20"
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
       <div className="h-full min-w-fit">
         <div className="flex h-full gap-3">
@@ -153,7 +260,7 @@ const Board = ({ projects }: Props) => {
           ))}
         </div>
       </div>
-    </ScrollContainer>
+    </div>
   );
 };
 

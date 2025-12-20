@@ -39,7 +39,7 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { cn } from "@/lib/utils";
 
-import type { DropResult } from "@hello-pangea/dnd";
+import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
 
 const projectsSearchSchema = z.object({
@@ -114,7 +114,7 @@ function ProjectsOverviewPage() {
 
   const [localProjects, setLocalProjects] = useState(projects);
 
-  const { setDraggableId } = useDragStore();
+  const { setDraggableId, setIsDragging } = useDragStore();
 
   const { mutate: updateViewMode } = useUpdateWorkspaceMutation({
     meta: {
@@ -175,8 +175,17 @@ function ProjectsOverviewPage() {
     300,
   );
 
+  const onDragStart = useCallback(
+    (start: DragStart) => {
+      setIsDragging(true);
+      setDraggableId(start.draggableId);
+    },
+    [setIsDragging, setDraggableId],
+  );
+
   const onDragEnd = useCallback(
     async (result: DropResult) => {
+      setIsDragging(false);
       const { destination, source, draggableId } = result;
 
       // Exit early if dropped outside a droppable area or in the same position
@@ -409,7 +418,7 @@ function ProjectsOverviewPage() {
           </div>
         </div>
 
-        <DragDropContext onDragEnd={onDragEnd}>
+        <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
           {workspace?.viewMode === "board" ? (
             <OverviewBoard projects={localProjects} />
           ) : (
