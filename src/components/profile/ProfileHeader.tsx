@@ -27,9 +27,9 @@ interface Props {
 const ProfileHeader = ({ session, isOmniTeamMember }: Props) => (
   <div className="mb-8 flex flex-col items-center gap-6 rounded-2xl p-6">
     <Button
-      variant="destructive"
+      variant="outline"
       size="sm"
-      className="mt-4 self-end"
+      className="mt-4 self-end hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
       onClick={signOut}
       aria-label="Sign out"
     >

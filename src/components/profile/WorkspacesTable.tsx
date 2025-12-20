@@ -109,7 +109,7 @@ const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
                         );
                       }}
                     >
-                      Remove
+                      Delete
                     </Button>
                   </div>
                 ) : (
