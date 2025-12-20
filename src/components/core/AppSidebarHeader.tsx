@@ -14,7 +14,11 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { SidebarHeader, SidebarMenuButton } from "@/components/ui/sidebar";
+import {
+  SidebarHeader,
+  SidebarMenuButton,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import app from "@/lib/config/app.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -27,6 +31,7 @@ const AppSidebarHeader = () => {
   const { session } = useRouteContext({ strict: false });
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { toggleSidebar } = useSidebar();
 
   const { data: workspaces } = useQuery({
     ...workspacesOptions({ userId: session?.user.rowId! }),
@@ -50,7 +55,13 @@ const AppSidebarHeader = () => {
     <SidebarHeader>
       <div className="mb-4 flex justify-between">
         <div className="flex gap-2">
-          <span className="ml-2">🌙</span>
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            className="ml-2 cursor-pointer"
+          >
+            🌙
+          </button>
           <span className="font-semibold group-data-[collapsible=icon]:hidden">
             {app.name}
           </span>
@@ -73,8 +84,8 @@ const AppSidebarHeader = () => {
             </SidebarMenuButton>
           </MenuTrigger>
 
-          <MenuPositioner>
-            <MenuContent className="no-scrollbar flex max-h-80 min-w-48 flex-col gap-1 overflow-auto rounded-lg focus:outline-none">
+          <MenuPositioner className="!w-[var(--reference-width)]">
+            <MenuContent className="no-scrollbar flex max-h-80 w-full flex-col gap-1 overflow-auto rounded-lg focus:outline-none">
               {workspaces?.map((workspace) => {
                 const isWorkspaceSelected =
                   workspace.slug === pathname.split("/")[2];
