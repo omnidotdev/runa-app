@@ -9,7 +9,7 @@ import type {
   AccordionItemTriggerProps,
   AccordionRootProps,
 } from "@ark-ui/react";
-import type { ElementType } from "react";
+import type { ComponentType, SVGProps } from "react";
 
 const AccordionRoot = ({ className, ...rest }: AccordionRootProps) => (
   <ArkAccordion.Root
@@ -32,7 +32,7 @@ const AccordionItem = ({ className, ...rest }: AccordionItemProps) => (
 );
 
 interface ItemTriggerProps extends AccordionItemTriggerProps {
-  icon?: ElementType;
+  icon?: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
 const AccordionItemTrigger = ({
