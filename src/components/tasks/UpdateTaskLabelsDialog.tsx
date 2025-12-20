@@ -105,12 +105,17 @@ const UpdateTaskLabelsDialog = () => {
 
       const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
 
-      const currentTaskLabelIds =
-        task?.taskLabels?.nodes?.map((l) => l.rowId) ?? [];
+      const currentTaskLabels =
+        task?.taskLabels?.nodes?.map((l) => ({
+          taskId: l.taskId,
+          labelId: l.labelId,
+        })) ?? [];
 
       // delete all current labels and add all checked task labels. This is to provide ease of functionality rather than needing to compare on each current label to see if it is still valid.
       await Promise.all([
-        ...currentTaskLabelIds.map((rowId) => deleteTaskLabel({ rowId })),
+        ...currentTaskLabels.map(({ taskId, labelId }) =>
+          deleteTaskLabel({ taskId, labelId }),
+        ),
         ...newTaskLabels.map((label) =>
           createTaskLabel({
             input: {

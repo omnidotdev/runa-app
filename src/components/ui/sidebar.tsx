@@ -29,7 +29,12 @@ import useIsMobile from "@/lib/hooks/use-mobile";
 import { useSidebarResize } from "@/lib/hooks/use-sidebar-resize";
 import { cn } from "@/lib/utils";
 
-import type { CSSProperties, ComponentProps } from "react";
+import type {
+  CSSProperties,
+  ComponentProps,
+  MouseEvent,
+  PointerEvent,
+} from "react";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -284,8 +289,7 @@ const SidebarTrigger = ({
       variant="ghost"
       size="icon"
       className={cn("sticky top-2 ml-2 size-8", className)}
-      // biome-ignore lint/suspicious/noExplicitAny: TODO
-      onClick={(event: any) => {
+      onClick={(event: MouseEvent<HTMLButtonElement>) => {
         onClick?.(event);
         toggleSidebar();
       }}
@@ -339,8 +343,7 @@ const SidebarRail = ({
         {(tootlip) => (
           <TooltipTrigger
             asChild
-            // biome-ignore lint/suspicious/noExplicitAny: TODO
-            onPointerMove={(e: any) => {
+            onPointerMove={(e: PointerEvent<HTMLButtonElement>) => {
               anchorRect.current = new DOMRect(e.clientX, e.clientY, 1, 1);
               tootlip.reposition();
             }}
@@ -485,14 +488,18 @@ const SidebarGroupLabel = ({
 
 const SidebarGroupAction = ({
   className,
+  disabled = false,
   ...rest
-}: ComponentProps<typeof ark.div>) => {
+}: ComponentProps<typeof ark.div> & {
+  disabled?: boolean;
+}) => {
   return (
     <ark.div
       data-slot="sidebar-group-action"
       data-sidebar="group-action"
+      data-disabled={disabled ? "true" : undefined}
       className={cn(
-        "flex size-5 cursor-pointer items-center justify-center rounded-md p-0 text-base-400 outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 [&>svg]:size-3 [&>svg]:shrink-0",
+        "flex size-5 cursor-pointer items-center justify-center rounded-md p-0 text-base-400 outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50 data-[disabled=true]:hover:bg-transparent data-[disabled=true]:hover:text-base-400 [&>svg]:size-3 [&>svg]:shrink-0",
         "group-data-[collapsible=icon]:hidden",
         className,
       )}

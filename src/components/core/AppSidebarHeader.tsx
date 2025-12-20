@@ -15,10 +15,12 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import { SidebarHeader, SidebarMenuButton } from "@/components/ui/sidebar";
+import app from "@/lib/config/app.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import { cn } from "@/lib/utils";
+import { Badge } from "../ui/badge";
 
 const AppSidebarHeader = () => {
   const { workspaceId } = useLoaderData({ from: "/_auth" });
@@ -46,6 +48,19 @@ const AppSidebarHeader = () => {
 
   return (
     <SidebarHeader>
+      <div className="mb-4 flex justify-between">
+        <div className="flex gap-2">
+          <span className="ml-2">🌙</span>
+          <span className="font-semibold group-data-[collapsible=icon]:hidden">
+            {app.name}
+          </span>
+        </div>
+
+        <Badge className="border-primary-500/20 bg-primary-500/10 text-primary-500 text-xs group-data-[collapsible=icon]:hidden">
+          Alpha
+        </Badge>
+      </div>
+
       {workspaces?.length ? (
         <MenuRoot>
           <MenuTrigger asChild>
@@ -94,6 +109,7 @@ const AppSidebarHeader = () => {
           className="border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
         >
           <PlusIcon />
+
           <span>Create Workspace</span>
         </SidebarMenuButton>
       )}

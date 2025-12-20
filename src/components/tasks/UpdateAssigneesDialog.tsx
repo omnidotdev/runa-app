@@ -37,10 +37,14 @@ const UpdateAssigneesDialog = () => {
     type: DialogType.UpdateAssignees,
   });
 
-  useHotkeys(Hotkeys.UpdateAssignees, () => setIsOpen(!isOpen), [
-    isOpen,
-    setIsOpen,
-  ]);
+  useHotkeys(
+    Hotkeys.UpdateAssignees,
+    () => setIsOpen(!isOpen),
+    {
+      description: "Create/Update Assignees",
+    },
+    [isOpen, setIsOpen],
+  );
 
   const { data: task } = useQuery({
     ...taskOptions({ rowId: taskId! }),
@@ -89,9 +93,8 @@ const UpdateAssigneesDialog = () => {
           // remove any assignees that are no longer assigned
           if (!assignees.includes(assignee)) {
             removeAssignee({
-              rowId: task?.assignees?.nodes?.find(
-                (a) => a?.user?.rowId === assignee,
-              )?.rowId!,
+              taskId: taskId!,
+              userId: assignee,
             });
           }
         }

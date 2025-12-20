@@ -13,7 +13,7 @@ import {
   CardRoot,
   CardTitle,
 } from "@/components/ui/card";
-import { signIn } from "@/lib/auth/signIn";
+import signIn from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import { cn } from "@/lib/utils";

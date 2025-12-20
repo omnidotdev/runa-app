@@ -19,7 +19,7 @@ interface Props extends ButtonProps {
   emoji?: string | null;
 }
 
-const ListTrigger = ({
+const ColumnTrigger = ({
   emoji = "😀",
   title,
   count,
@@ -76,4 +76,4 @@ const ListTrigger = ({
   );
 };
 
-export default ListTrigger;
+export default ColumnTrigger;

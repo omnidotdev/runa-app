@@ -33,56 +33,63 @@ export const Route = createFileRoute("/_auth")({
 
     // validate that the user belongs to the workspace when applicable
     if (workspaceSlug) {
-      const { workspaceBySlug } = await queryClient.ensureQueryData(
-        workspaceBySlugOptions({
+      const { workspaceBySlug } = await queryClient.ensureQueryData({
+        ...workspaceBySlugOptions({
           slug: workspaceSlug,
           projectSlug,
         }),
-      );
+        revalidateIfStale: true,
+      });
 
       if (!workspaceBySlug) throw notFound();
 
       const [{ workspaceUsers }] = await Promise.all([
         // ensure user is a member of the workspace
-        queryClient.ensureQueryData(
-          workspaceUsersOptions({
+        queryClient.ensureQueryData({
+          ...workspaceUsersOptions({
             workspaceId: workspaceBySlug.rowId,
             filter: {
               userId: { equalTo: session.user.rowId! },
             },
           }),
-        ),
-        queryClient.ensureQueryData(
-          workspaceUsersOptions({
+          revalidateIfStale: true,
+        }),
+        queryClient.ensureQueryData({
+          ...workspaceUsersOptions({
             workspaceId: workspaceBySlug.rowId,
           }),
-        ),
-        queryClient.ensureQueryData(
-          workspaceOptions({
+          revalidateIfStale: true,
+        }),
+        queryClient.ensureQueryData({
+          ...workspaceOptions({
             rowId: workspaceBySlug.rowId,
             userId: session.user.rowId!,
           }),
-        ),
-        queryClient.ensureQueryData(
-          workspacesOptions({ userId: session.user.rowId! }),
-        ),
+          revalidateIfStale: true,
+        }),
+        queryClient.ensureQueryData({
+          ...workspacesOptions({ userId: session.user.rowId! }),
+          revalidateIfStale: true,
+        }),
       ]);
 
       if (!workspaceUsers?.nodes.length) throw notFound();
 
       return { workspaceBySlug };
     } else {
-      await queryClient.ensureQueryData(
-        workspacesOptions({ userId: session.user.rowId! }),
-      );
+      await queryClient.ensureQueryData({
+        ...workspacesOptions({ userId: session.user.rowId! }),
+        revalidateIfStale: true,
+      });
 
       return { workspaceBySlug: undefined };
     }
   },
   loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(
-      invitationsOptions({ email: context.session?.user.email! }),
-    );
+    await context.queryClient.ensureQueryData({
+      ...invitationsOptions({ email: context.session?.user.email! }),
+      revalidateIfStale: true,
+    });
 
     return {
       workspaceId: context.workspaceBySlug?.rowId,

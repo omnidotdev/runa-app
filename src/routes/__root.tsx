@@ -36,6 +36,8 @@ interface ExtendedSession extends Omit<Session, "user"> {
   accessToken?: string;
 }
 
+// TODO add test suite
+
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
   session: ExtendedSession | null;
@@ -68,11 +70,6 @@ export const Route = createRootRouteWithContext<{
         type: "image/png",
         href: "/favicon-96x96.png",
         sizes: "96x96",
-      },
-      {
-        rel: "icon",
-        type: "image/svg+xml",
-        href: "/favicon.svg",
       },
       {
         rel: "shortcut icon",
@@ -116,7 +113,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
           <Toaster position="top-center" richColors />
         </ThemeProvider>
 
-        {/* Dev Tools - only included in development */}
+        {/* dev tools (only included in development) */}
         <TanStackDevtools
           plugins={[
             {
@@ -130,6 +127,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
             },
           ]}
         />
+
         <Scripts />
       </body>
     </html>

@@ -1,9 +1,16 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { MoreHorizontalIcon, Trash2Icon } from "lucide-react";
+import {
+  CheckIcon,
+  ChevronDownIcon,
+  MoreHorizontalIcon,
+  PlusIcon,
+  Trash2Icon,
+} from "lucide-react";
 import { useRef, useState } from "react";
+import { match } from "ts-pattern";
 
-import { DestructiveActionDialog } from "@/components/core";
+import { DestructiveActionDialog, Tooltip } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,
@@ -18,8 +25,17 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Role, useDeleteWorkspaceUserMutation } from "@/generated/graphql";
+import {
+  Role,
+  Tier,
+  useDeleteWorkspaceUserMutation,
+  useUpdateWorkspaceUserMutation,
+} from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import {
+  canModifyMember,
+  useCanManageTeam,
+} from "@/lib/hooks/useCanManageTeam";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
@@ -55,7 +71,9 @@ const Team = () => {
     select: (data) => data?.workspaceUsers,
   });
 
-  const isOwner = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Owner;
+  const currentUserRole = workspace?.workspaceUsers?.nodes?.[0]?.role;
+  const { canInvite, canChangeRoles, canRemoveMembers } =
+    useCanManageTeam(currentUserRole);
 
   const { mutate: deleteMember } = useDeleteWorkspaceUserMutation({
     meta: {
@@ -65,6 +83,8 @@ const Team = () => {
     },
   });
 
+  const { mutate: editMember } = useUpdateWorkspaceUserMutation();
+
   const { setIsOpen: setIsDeleteTeamMemberOpen } = useDialogStore({
       type: DialogType.DeleteTeamMember,
     }),
@@ -72,35 +92,58 @@ const Team = () => {
       type: DialogType.InviteTeamMember,
     });
 
+  const maxNumberOfMembersReached = match(workspace?.tier)
+    .with(Tier.Team, () => false)
+    .with(Tier.Basic, () => members!.nodes.length >= 10)
+    .otherwise(() => members!.nodes.length >= 3);
+
+  const maxNumberofAdminsReached = match(workspace?.tier)
+    .with(Tier.Team, () => false)
+    .with(
+      Tier.Basic,
+      () =>
+        members!.nodes.filter((member) => member.role !== Role.Member).length >=
+        3,
+    )
+    .otherwise(
+      () =>
+        members!.nodes.filter((member) => member.role !== Role.Member).length >=
+        1,
+    );
+
   return (
     <>
       <div className="flex flex-col">
         <div className="mb-1 flex h-10 items-center justify-between">
           <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
-            Team Members (invites coming soon)
+            Team Members
           </h2>
 
-          {/* TODO enable, too buggy/risky right now */}
-          {/*<Tooltip
+          <Tooltip
             positioning={{ placement: "left" }}
-            tooltip="Invite Member"
-            // TODO fix shortcut ignores disabled state
-            shortcut="I"
+            tooltip={
+              maxNumberOfMembersReached
+                ? "Upgrade workspace to invite members"
+                : "Invite Member"
+            }
+            shortcut={!maxNumberOfMembersReached ? "I" : undefined}
             trigger={
               <Button
                 variant="ghost"
                 size="icon"
                 aria-label="Invite team member"
-                className={cn("mr-2 hidden size-7", isOwner && "inline-flex")}
+                className={cn(
+                  "mr-2 hidden size-7 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:hover:bg-transparent dark:disabled:hover:bg-transparent",
+                  canInvite && "inline-flex",
+                )}
                 onClick={() => setIsInviteTeamMemberOpen(true)}
-                // TODO: add tooltip when disabled? Also conditionalize disabled prop for other tiers
-                disabled={workspace?.tier === Tier.Free}
+                disabled={maxNumberOfMembersReached}
                 ref={inviteRef}
               >
                 <PlusIcon />
               </Button>
             }
-          />*/}
+          />
         </div>
 
         {members?.nodes.length ? (
@@ -109,6 +152,15 @@ const Team = () => {
               const completedTasks =
                 member?.user?.completedTasks?.totalCount ?? 0;
               const totalTasks = member?.user?.assignedTasks?.totalCount ?? 0;
+
+              // check if current user can modify this member
+              const canModifyThisMember =
+                currentUserRole &&
+                member.role &&
+                canModifyMember(currentUserRole, member.role);
+
+              // cannot modify self
+              const isSelf = member.user?.rowId === session?.user.rowId;
 
               return (
                 <div
@@ -135,9 +187,68 @@ const Team = () => {
                       {member?.user?.name}
                     </span>
 
-                    <Badge variant="outline">
-                      <p className="first-letter:uppercase">{member.role}</p>
-                    </Badge>
+                    <MenuRoot
+                      positioning={{
+                        strategy: "fixed",
+                        placement: "bottom-start",
+                      }}
+                      onSelect={({ value }) =>
+                        editMember({
+                          input: {
+                            userId: member?.user?.rowId!,
+                            workspaceId: workspace?.rowId!,
+                            patch: { role: value as Role },
+                          },
+                        })
+                      }
+                    >
+                      <MenuTrigger
+                        disabled={isSelf || !canModifyThisMember}
+                        asChild
+                      >
+                        <Badge variant="outline">
+                          <p className="first-letter:uppercase">
+                            {member.role}
+                          </p>
+                          <ChevronDownIcon
+                            className={cn(
+                              "hidden",
+                              canChangeRoles &&
+                                !isSelf &&
+                                canModifyThisMember &&
+                                "inline-flex",
+                            )}
+                          />
+                        </Badge>
+                      </MenuTrigger>
+
+                      <MenuPositioner>
+                        <MenuContent>
+                          <MenuItem
+                            value={Role.Admin}
+                            disabled={
+                              member?.role === Role.Admin ||
+                              maxNumberofAdminsReached
+                            }
+                          >
+                            Admin
+                            {member?.role === Role.Admin && (
+                              <CheckIcon className="text-green-500" />
+                            )}
+                          </MenuItem>
+                          <MenuItem
+                            value={Role.Member}
+                            disabled={member?.role === Role.Member}
+                            className="justify-between"
+                          >
+                            Member
+                            {member?.role === Role.Member && (
+                              <CheckIcon className="text-green-500" />
+                            )}
+                          </MenuItem>
+                        </MenuContent>
+                      </MenuPositioner>
+                    </MenuRoot>
 
                     <div className="mr-2 ml-auto flex gap-1">
                       <span className="flex items-center px-3 text-base-600 text-xs dark:text-base-400">
@@ -156,7 +267,9 @@ const Team = () => {
                             size="icon"
                             className={cn(
                               "hidden size-7 text-base-400",
-                              isOwner && "inline-flex",
+                              canRemoveMembers &&
+                                canModifyThisMember &&
+                                "inline-flex",
                             )}
                             aria-label="More team member options"
                           >
@@ -167,15 +280,13 @@ const Team = () => {
                         <MenuPositioner>
                           <MenuContent className="focus-within:outline-none">
                             <MenuItem
-                              value="reset"
+                              value="delete"
                               variant="destructive"
                               onClick={() => {
                                 setIsDeleteTeamMemberOpen(true);
                                 setSelectedMember(member.user!);
                               }}
-                              disabled={
-                                member.user?.rowId === session?.user?.rowId
-                              }
+                              disabled={isSelf}
                             >
                               <Trash2Icon />
                               <span> Delete </span>

@@ -17,6 +17,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import {
+  Role,
   useCreateUserPreferenceMutation,
   useCreateWorkspaceUserMutation,
   useDeleteInvitationMutation,
@@ -117,28 +118,43 @@ function ProfilePage() {
       projects: { nodes: Array<{ rowId: string }> };
     } | null;
   }) => {
-    await Promise.all([
-      acceptInvitation({
+    try {
+      // First accept the invitation (creates workspace user)
+      // The invitation must exist for authorization to pass
+      await acceptInvitation({
         input: {
           workspaceUser: {
             userId: session?.user.rowId!,
             workspaceId: invitation.workspace?.rowId!,
+            role: Role.Member,
           },
         },
-      }),
-      invitation.workspace?.projects.nodes.map((project) =>
-        createUserPreferences({
-          input: {
-            userPreference: {
-              userId: session?.user.rowId!,
-              projectId: project.rowId,
-            },
-          },
-        }),
-      ),
-    ]);
+      });
 
-    await deleteInvitation({ rowId: invitation.rowId });
+      // Create user preferences for all projects in the workspace
+      if (invitation.workspace?.projects.nodes.length) {
+        await Promise.all(
+          invitation.workspace.projects.nodes.map((project) =>
+            createUserPreferences({
+              input: {
+                userPreference: {
+                  userId: session?.user.rowId!,
+                  projectId: project.rowId,
+                },
+              },
+            }),
+          ),
+        );
+      }
+
+      // Delete the invitation after successful acceptance
+      await deleteInvitation({ rowId: invitation.rowId });
+
+      toast.success("Successfully joined workspace");
+    } catch (error) {
+      toast.error("Failed to accept invitation");
+      throw error;
+    }
   };
 
   const handleRejectInvitation = async (invitation: { rowId: string }) => {
