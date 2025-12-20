@@ -206,9 +206,7 @@ const Board = ({ tasks }: Props) => {
                         {tasks
                           .filter((task) => task.columnId === column.rowId)
                           .map((task, index) => {
-                            const displayId = `${project?.prefix ?? "PROJ"}-${taskIndex(
-                              task.rowId,
-                            )}`;
+                            const displayId = `${project?.prefix ?? "PROJ"}-${taskIndex(task.rowId) + 1}`;
 
                             return (
                               <BoardItem

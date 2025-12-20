@@ -200,7 +200,7 @@ function TaskPage() {
           />
 
           <div className="flex items-center gap-2 font-mono text-base-500 text-sm dark:text-base-400">
-            {`${project?.prefix ? project.prefix : "PROJ"}-${taskIndex}`}
+            {`${project?.prefix ? project.prefix : "PROJ"}-${(taskIndex ?? 0) + 1}`}
           </div>
         </div>
       </div>
