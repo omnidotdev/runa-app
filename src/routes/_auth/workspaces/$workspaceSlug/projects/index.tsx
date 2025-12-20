@@ -183,6 +183,7 @@ function ProjectsOverviewPage() {
     [setIsDragging, setDraggableId],
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `setIsDragging` is stable
   const onDragEnd = useCallback(
     async (result: DropResult) => {
       setIsDragging(false);

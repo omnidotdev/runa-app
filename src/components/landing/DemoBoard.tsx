@@ -22,8 +22,8 @@ import DemoBoardItem from "./DemoBoardItem";
 import { demoColumns, initialDemoTasks } from "./demoBoardData";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
-import type { DemoTask } from "./demoBoardData";
 import type { MouseEvent as ReactMouseEvent } from "react";
+import type { DemoTask } from "./demoBoardData";
 
 const EDGE_THRESHOLD = 150;
 const MAX_SCROLL_SPEED = 25;
@@ -59,11 +59,11 @@ const DemoBoard = () => {
       if (mouseX < rect.left + EDGE_THRESHOLD) {
         const distanceFromEdge = mouseX - rect.left;
         const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
-        scrollSpeed = -MAX_SCROLL_SPEED * Math.pow(intensity, 2);
+        scrollSpeed = -MAX_SCROLL_SPEED * intensity ** 2;
       } else if (mouseX > rect.right - EDGE_THRESHOLD) {
         const distanceFromEdge = rect.right - mouseX;
         const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
-        scrollSpeed = MAX_SCROLL_SPEED * Math.pow(intensity, 2);
+        scrollSpeed = MAX_SCROLL_SPEED * intensity ** 2;
       } else {
         scrollSpeed = 0;
       }

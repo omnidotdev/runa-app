@@ -11,8 +11,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ColumnHeader } from "@/components/core";
 import { Role } from "@/generated/graphql";
-import useDragStore from "@/lib/hooks/store/useDragStore";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
@@ -20,8 +20,8 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 import BoardItem from "./OverviewBoardItem";
 
-import type { ProjectFragment } from "@/generated/graphql";
 import type { MouseEvent as ReactMouseEvent } from "react";
+import type { ProjectFragment } from "@/generated/graphql";
 
 interface Props {
   projects: ProjectFragment[];
@@ -57,11 +57,11 @@ const Board = ({ projects }: Props) => {
       if (mouseX < rect.left + EDGE_THRESHOLD) {
         const distanceFromEdge = mouseX - rect.left;
         const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
-        scrollSpeed = -MAX_SCROLL_SPEED * Math.pow(intensity, 2);
+        scrollSpeed = -MAX_SCROLL_SPEED * intensity ** 2;
       } else if (mouseX > rect.right - EDGE_THRESHOLD) {
         const distanceFromEdge = rect.right - mouseX;
         const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
-        scrollSpeed = MAX_SCROLL_SPEED * Math.pow(intensity, 2);
+        scrollSpeed = MAX_SCROLL_SPEED * intensity ** 2;
       } else {
         scrollSpeed = 0;
       }
