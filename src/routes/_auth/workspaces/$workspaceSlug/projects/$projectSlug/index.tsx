@@ -41,6 +41,7 @@ import {
   useUpdateTaskMutation,
   useUpdateUserPreferenceMutation,
   useUserPreferencesQuery,
+  useWorkspaceQuery,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -275,9 +276,13 @@ function ProjectPage() {
 
   const { mutate: updateViewMode } = useUpdateUserPreferenceMutation({
     meta: {
-      invalidates: [getQueryKeyPrefix(useUserPreferencesQuery)],
+      invalidates: [
+        getQueryKeyPrefix(useUserPreferencesQuery),
+        getQueryKeyPrefix(useWorkspaceQuery),
+      ],
     },
     onMutate: (variables) => {
+      // Update userPreferences cache for project page UI
       queryClient.setQueryData(
         userPreferencesOptions({
           projectId: projectId,
@@ -289,6 +294,44 @@ function ProjectPage() {
             viewMode: variables.patch?.viewMode!,
           },
         }),
+      );
+
+      // Update workspace cache for sidebar icon
+      queryClient.setQueryData(
+        workspaceOptions({
+          rowId: workspaceId,
+          userId: session?.user?.rowId!,
+        }).queryKey,
+        (old) => {
+          if (!old?.workspace) return old;
+          return {
+            ...old,
+            workspace: {
+              ...old.workspace,
+              projects: {
+                ...old.workspace.projects,
+                nodes: old.workspace.projects.nodes.map((project) => {
+                  const userPref = project.userPreferences?.nodes?.[0];
+                  if (userPref?.rowId === variables.rowId) {
+                    return {
+                      ...project,
+                      userPreferences: {
+                        ...project.userPreferences,
+                        nodes: [
+                          {
+                            ...userPref,
+                            viewMode: variables.patch?.viewMode!,
+                          },
+                        ],
+                      },
+                    };
+                  }
+                  return project;
+                }),
+              },
+            },
+          };
+        },
       );
     },
   });
