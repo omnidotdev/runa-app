@@ -30,6 +30,9 @@ interface Props {
 const EDGE_THRESHOLD = 150;
 const MAX_SCROLL_SPEED = 25;
 
+// TODO deduplicate with `Board.tsx`
+// TODO allow customizing columns like a regular project board
+
 const Board = ({ projects }: Props) => {
   const navigate = useNavigate();
   const { isDragging } = useDragStore();
@@ -169,7 +172,7 @@ const Board = ({ projects }: Props) => {
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
                     >
-                      <div className="no-scrollbar flex h-full flex-col gap-2 overflow-y-auto p-1">
+                      <div className="no-scrollbar flex h-full flex-col gap-2 overflow-y-auto">
                         {projects
                           .filter(
                             (project) =>

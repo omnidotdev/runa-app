@@ -191,7 +191,7 @@ const Board = ({ tasks }: Props) => {
                       ref={provided.innerRef}
                       {...provided.droppableProps}
                       className={cn(
-                        "flex flex-1 flex-col rounded-xl p-2",
+                        "flex flex-1 flex-col rounded-xl",
                         snapshot.isDraggingOver &&
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
@@ -202,7 +202,7 @@ const Board = ({ tasks }: Props) => {
                             : undefined,
                       }}
                     >
-                      <div className="no-scrollbar flex h-full flex-col overflow-y-auto p-1">
+                      <div className="no-scrollbar flex h-full flex-col overflow-y-auto">
                         {tasks
                           .filter((task) => task.columnId === column.rowId)
                           .map((task, index) => {

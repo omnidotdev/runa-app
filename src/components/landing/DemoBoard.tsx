@@ -28,6 +28,8 @@ import type { DemoTask } from "./demoBoardData";
 const EDGE_THRESHOLD = 150;
 const MAX_SCROLL_SPEED = 25;
 
+// TODO deduplicate with `Board.tsx`
+
 /**
  * Demo board for users to try the app.
  */
@@ -198,7 +200,7 @@ const DemoBoard = () => {
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                           className={cn(
-                            "flex h-80 flex-col overflow-y-auto rounded-xl p-2 transition-colors",
+                            "flex h-80 flex-col overflow-y-auto rounded-xl transition-colors",
                             snapshot.isDraggingOver &&
                               "bg-primary-200/40 dark:bg-primary-900/40",
                           )}

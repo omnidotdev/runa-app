@@ -33,7 +33,7 @@ const DemoBoardItem = ({ task, index, onSelect }: Props) => (
           }
         }}
         className={cn(
-          "mb-2 cursor-pointer rounded-lg border border-border bg-white p-3 outline-hidden dark:bg-base-900",
+          "mb-2 cursor-pointer rounded-xl border border-border bg-white p-3 outline-hidden dark:bg-base-900",
           snapshot.isDragging
             ? "cursor-grabbing shadow-xl ring-2 ring-primary-500/30"
             : "hover:shadow-sm dark:shadow-gray-400/10",
