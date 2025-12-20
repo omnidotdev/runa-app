@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { LayersIcon, PlusIcon } from "lucide-react";
 
@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 
@@ -35,6 +36,7 @@ export const Route = createFileRoute("/_auth/workspaces/")({
 
 function WorkspacesOverviewPage() {
   const { session } = Route.useRouteContext();
+  const queryClient = useQueryClient();
 
   const { data: recentWorkspaces } = useSuspenseQuery({
     ...workspacesOptions({ userId: session?.user?.rowId!, limit: 4 }),
@@ -65,6 +67,12 @@ function WorkspacesOverviewPage() {
                 key={workspace.rowId}
                 to="/workspaces/$workspaceSlug/projects"
                 params={{ workspaceSlug: workspace.slug }}
+                preload="intent"
+                onMouseEnter={() => {
+                  queryClient.prefetchQuery(
+                    workspaceBySlugOptions({ slug: workspace.slug }),
+                  );
+                }}
                 variant="outline"
                 className="relative flex h-32 flex-col p-4"
               >
