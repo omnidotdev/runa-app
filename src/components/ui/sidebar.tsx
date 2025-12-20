@@ -25,8 +25,8 @@ import {
   TooltipRoot,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import useIsMobile from "@/lib/hooks/use-mobile";
-import { useSidebarResize } from "@/lib/hooks/use-sidebar-resize";
+import useIsMobile from "@/lib/hooks/useIsMobile";
+import { useSidebarResize } from "@/lib/hooks/useSidebarResize";
 import { cn } from "@/lib/utils";
 
 import type {
@@ -49,7 +49,7 @@ interface SidebarContextProps {
   setOpen: (open: boolean) => void;
   openMobile: boolean;
   setOpenMobile: (open: boolean) => void;
-  isMobile: boolean;
+  isMobile: boolean | null;
   toggleSidebar: () => void;
   width: string;
   setWidth: (width: string) => void;
@@ -178,6 +178,17 @@ const Sidebar = ({
 }) => {
   const { isMobile, state, openMobile, setOpenMobile, isDraggingRail } =
     useSidebar();
+
+  // On mobile, don't render until hydration completes to keep drawer UX snappy.
+  // On desktop, render a collapsed-size placeholder to prevent layout shift.
+  if (isMobile === null) {
+    return (
+      <div
+        data-slot="sidebar-placeholder"
+        className="hidden w-[calc(var(--sidebar-width-icon)+(--spacing(4)))] shrink-0 md:block"
+      />
+    );
+  }
 
   if (collapsible === "none") {
     return (
