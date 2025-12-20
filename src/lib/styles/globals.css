@@ -209,10 +209,10 @@ html.dark {
     @apply border-border outline-ring/50;
   }
   html {
-    @apply overscroll-y-none;
+    @apply overscroll-y-none overflow-x-clip;
   }
   body {
-    @apply bg-background text-foreground overscroll-y-none;
+    @apply bg-background text-foreground overscroll-y-none overflow-x-clip;
   }
   .font-display {
     font-weight: var(--display-weight);
