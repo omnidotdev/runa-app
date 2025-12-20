@@ -9,6 +9,9 @@ export const {
   // auth (server-side secrets)
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
+  // emails
+  VITE_FROM_EMAIL_ADDRESS: FROM_EMAIL_ADDRESS,
+  VITE_TO_EMAIL_ADDRESS: TO_EMAIL_ADDRESS,
   // payment processing
   VITE_STRIPE_PORTAL_CONFIG_ID: STRIPE_PORTAL_CONFIG_ID,
 } = { ...import.meta.env, ...process.env };
