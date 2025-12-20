@@ -6,7 +6,13 @@ import {
   stripSearchParams,
 } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
-import { Grid2X2Icon, ListIcon, Plus, SearchIcon } from "lucide-react";
+import {
+  ColumnsIcon,
+  Grid2X2Icon,
+  ListIcon,
+  Plus,
+  SearchIcon,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
@@ -326,6 +332,14 @@ function ProjectsOverviewPage() {
                 Manage and track all your projects in one place
               </p>
             </div>
+
+            <div className="mb-4 flex items-center gap-2 rounded-lg border border-primary-200 bg-primary-50 px-4 py-2.5 text-primary-700 dark:border-primary-800 dark:bg-primary-950/50 dark:text-primary-300">
+              <ColumnsIcon className="size-4 shrink-0" />
+              <span className="text-sm">
+                Editing project columns is coming soon.
+              </span>
+            </div>
+
             <div className="flex flex-wrap gap-2 sm:flex-nowrap">
               <div className="relative flex-1 sm:flex-none">
                 <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-base-400" />

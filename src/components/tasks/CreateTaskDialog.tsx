@@ -76,7 +76,10 @@ const CreateTaskDialog = () => {
           createTask: !createTask,
         }),
       }),
-    { enabled: !maxTasksReached },
+    {
+      enabled: !maxTasksReached,
+      description: "Create New Task",
+    },
     [navigate, createTask, maxTasksReached],
   );
 

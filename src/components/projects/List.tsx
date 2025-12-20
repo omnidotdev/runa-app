@@ -6,7 +6,7 @@ import {
   useRouteContext,
 } from "@tanstack/react-router";
 
-import { ListTrigger } from "@/components/core";
+import { ColumnTrigger } from "@/components/core";
 import {
   CollapsibleContent,
   CollapsibleRoot,
@@ -125,7 +125,7 @@ const List = ({
               });
             }}
           >
-            <ListTrigger
+            <ColumnTrigger
               title={column.title}
               count={
                 project?.columns?.nodes?.find((c) => c?.rowId === column?.rowId)
@@ -150,7 +150,7 @@ const List = ({
               disabled={maxTasksReached}
             >
               <ColumnMenu columnId={column.rowId} />
-            </ListTrigger>
+            </ColumnTrigger>
 
             <CollapsibleContent className="rounded-b-lg p-0">
               {/* NB: Fade in the top border to avoid clashing with the parent border during animation */}

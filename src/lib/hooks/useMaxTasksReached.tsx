@@ -17,13 +17,13 @@ const useMaxTasksReached = () => {
     from: "/_auth",
   });
 
-  const { data: tier } = useQuery({
+  const { data: tier, isLoading: isTierLoading } = useQuery({
     ...workspaceOptions({ rowId: workspaceId!, userId: session?.user.rowId! }),
     enabled: !!workspaceId && !!session?.user?.rowId,
     select: (data) => data.workspace?.tier,
   });
 
-  const { data: totalTasks } = useQuery({
+  const { data: totalTasks, isLoading: isTasksLoading } = useQuery({
     ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
     enabled: !!workspaceId && !!session?.user?.rowId,
     select: (data) =>
@@ -33,9 +33,12 @@ const useMaxTasksReached = () => {
       ),
   });
 
+  // Allow task creation while data is loading
+  if (isTierLoading || isTasksLoading) return false;
+
   return match({ tier, totalTasks })
-    .with({ tier: undefined }, () => true)
-    .with({ totalTasks: undefined }, () => true)
+    .with({ tier: undefined }, () => false)
+    .with({ totalTasks: undefined }, () => false)
     .with(
       { tier: Tier.Free },
       ({ totalTasks }) => Number(totalTasks) >= FREE_TIER_MAX_TASKS,

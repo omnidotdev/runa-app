@@ -18,7 +18,8 @@ fragment Task on Task {
   }
   assignees {
     nodes {
-      rowId
+      taskId
+      userId
       user {
         rowId
         name

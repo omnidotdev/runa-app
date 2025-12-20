@@ -49,7 +49,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import { cn } from "@/lib/utils";
 import Shortcut from "./Shortcut";
 import Tooltip from "./Tooltip";
 
@@ -118,9 +117,6 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
     }),
     { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
       type: DialogType.CreateWorkspace,
-    }),
-    { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({
-      type: DialogType.DeleteProject,
     });
 
   const sidebarMenuItems: SidebarMenuItemType[] = [
@@ -308,15 +304,19 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                 <Tooltip
                   disabled={!workspace?.projectColumns.nodes.length}
                   positioning={{ placement: "right" }}
-                  tooltip="Create Project"
-                  shortcut={Hotkeys.CreateProject}
+                  tooltip={
+                    isMember || maxProjectsReached
+                      ? "Upgrade workspace to create more projects"
+                      : "Create Project"
+                  }
+                  shortcut={
+                    isMember || maxProjectsReached
+                      ? undefined
+                      : Hotkeys.CreateProject
+                  }
                   trigger={
                     <SidebarGroupAction
-                      className={cn(
-                        "flex",
-                        // TODO: adjust logic for `maxProjectsReached`. Make action disabled instead, but create a tooltip
-                        (isMember || maxProjectsReached) && "hidden",
-                      )}
+                      disabled={isMember || maxProjectsReached}
                       onClick={(e) => {
                         e.stopPropagation();
                         setIsCreateProjectOpen(true);

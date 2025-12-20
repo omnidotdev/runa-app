@@ -1,5 +1,5 @@
-mutation DeleteTaskLabel($rowId: UUID!) {
-  deleteTaskLabel(input: { rowId: $rowId }) {
+mutation DeleteTaskLabel($taskId: UUID!, $labelId: UUID!) {
+  deleteTaskLabel(input: { taskId: $taskId, labelId: $labelId }) {
     clientMutationId
   }
 }

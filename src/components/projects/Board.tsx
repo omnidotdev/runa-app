@@ -5,6 +5,7 @@ import {
   useNavigate,
   useRouteContext,
 } from "@tanstack/react-router";
+import ScrollContainer from "react-indiana-drag-scroll";
 
 import { ColumnHeader } from "@/components/core";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
@@ -75,8 +76,9 @@ const Board = ({ tasks }: Props) => {
       .indexOf(taskId) ?? 0;
 
   return (
-    <div
+    <ScrollContainer
       className="custom-scrollbar h-full select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
+      ignoreElements="[data-rfd-draggable-id]"
       style={{
         backgroundColor: userPreferences?.color
           ? theme === "dark"
@@ -164,7 +166,7 @@ const Board = ({ tasks }: Props) => {
           ))}
         </div>
       </div>
-    </div>
+    </ScrollContainer>
   );
 };
 

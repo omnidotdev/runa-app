@@ -1,0 +1,5 @@
+mutation UpdateWorkspaceUser($input: UpdateWorkspaceUserInput!) {
+  updateWorkspaceUser(input: $input) {
+    clientMutationId
+  }
+}

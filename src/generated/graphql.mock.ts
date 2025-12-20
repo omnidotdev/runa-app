@@ -32,7 +32,7 @@ export const mockCreateAssigneeMutation = (resolver: GraphQLResponseResolver<Typ
  * @example
  * mockDeleteAssigneeMutation(
  *   ({ query, variables }) => {
- *     const { rowId } = variables;
+ *     const { taskId, userId } = variables;
  *     return HttpResponse.json({
  *       data: { deleteAssignee }
  *     })
@@ -516,7 +516,7 @@ export const mockCreateTaskLabelMutation = (resolver: GraphQLResponseResolver<Ty
  * @example
  * mockDeleteTaskLabelMutation(
  *   ({ query, variables }) => {
- *     const { rowId } = variables;
+ *     const { taskId, labelId } = variables;
  *     return HttpResponse.json({
  *       data: { deleteTaskLabel }
  *     })
@@ -703,6 +703,28 @@ export const mockCreateWorkspaceUserMutation = (resolver: GraphQLResponseResolve
 export const mockDeleteWorkspaceUserMutation = (resolver: GraphQLResponseResolver<Types.DeleteWorkspaceUserMutation, Types.DeleteWorkspaceUserMutationVariables>, options?: RequestHandlerOptions) =>
   graphql.mutation<Types.DeleteWorkspaceUserMutation, Types.DeleteWorkspaceUserMutationVariables>(
     'DeleteWorkspaceUser',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUpdateWorkspaceUserMutation(
+ *   ({ query, variables }) => {
+ *     const { input } = variables;
+ *     return HttpResponse.json({
+ *       data: { updateWorkspaceUser }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockUpdateWorkspaceUserMutation = (resolver: GraphQLResponseResolver<Types.UpdateWorkspaceUserMutation, Types.UpdateWorkspaceUserMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.UpdateWorkspaceUserMutation, Types.UpdateWorkspaceUserMutationVariables>(
+    'UpdateWorkspaceUser',
     resolver,
     options
   )
@@ -1088,7 +1110,7 @@ export const mockUserByIdentityProviderIdQuery = (resolver: GraphQLResponseResol
  * @example
  * mockWorkspaceUsersQuery(
  *   ({ query, variables }) => {
- *     const { workspaceId, filter } = variables;
+ *     const { workspaceId, filter, orderBy } = variables;
  *     return HttpResponse.json({
  *       data: { workspaceUsers }
  *     })

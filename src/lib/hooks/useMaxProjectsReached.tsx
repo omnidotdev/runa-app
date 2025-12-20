@@ -17,21 +17,24 @@ const useMaxProjectsReached = () => {
     from: "/_auth",
   });
 
-  const { data: tier } = useQuery({
+  const { data: tier, isLoading: isTierLoading } = useQuery({
     ...workspaceOptions({ rowId: workspaceId!, userId: session?.user.rowId! }),
     enabled: !!workspaceId && !!session?.user?.rowId,
     select: (data) => data.workspace?.tier,
   });
 
-  const { data: totalProjects } = useQuery({
+  const { data: totalProjects, isLoading: isProjectsLoading } = useQuery({
     ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
     enabled: !!workspaceId && !!session?.user?.rowId,
     select: (data) => data?.workspace?.projects?.totalCount,
   });
 
+  // Allow project creation while data is loading
+  if (isTierLoading || isProjectsLoading) return false;
+
   return match({ tier, totalProjects })
-    .with({ tier: undefined }, () => true)
-    .with({ totalProjects: undefined }, () => true)
+    .with({ tier: undefined }, () => false)
+    .with({ totalProjects: undefined }, () => false)
     .with(
       { tier: Tier.Free },
       ({ totalProjects }) => Number(totalProjects) >= FREE_TIER_MAX_PROJECTS,

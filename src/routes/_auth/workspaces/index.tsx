@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { LayersIcon, PlusIcon } from "lucide-react";
 
-import { Link } from "@/components/core";
+import { Link, WorkspaceTier } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,
@@ -27,9 +27,10 @@ export const Route = createFileRoute("/_auth/workspaces/")({
   }),
   component: WorkspacesOverviewPage,
   loader: async ({ context: { queryClient, session } }) =>
-    await queryClient.ensureQueryData(
-      workspacesOptions({ userId: session?.user?.rowId!, limit: 4 }),
-    ),
+    await queryClient.ensureQueryData({
+      ...workspacesOptions({ userId: session?.user?.rowId!, limit: 4 }),
+      revalidateIfStale: true,
+    }),
 });
 
 function WorkspacesOverviewPage() {
@@ -52,29 +53,20 @@ function WorkspacesOverviewPage() {
 
           <h1 className="text-pretty text-center font-semibold text-2xl text-base-900 dark:text-base-100">
             {recentWorkspaces?.length
-              ? "Select a workspace or create a new one to get started"
+              ? "Select a workspace"
               : "Create a workspace to get started"}
           </h1>
-
-          <Button
-            variant="outline"
-            className="flex w-full border-primary border-dashed bg-primary/5 p-12 hover:bg-primary/5 active:scale-[0.99]"
-            onClick={() => setIsCreateWorkspaceOpen(true)}
-          >
-            <PlusIcon className="size-4" />
-            Create New Workspace
-          </Button>
         </div>
 
         {!!recentWorkspaces?.length && (
-          <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="mb-8 grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] justify-center gap-6">
             {recentWorkspaces?.map((workspace) => (
               <Link
                 key={workspace.rowId}
                 to="/workspaces/$workspaceSlug/projects"
                 params={{ workspaceSlug: workspace.slug }}
                 variant="outline"
-                className="flex h-32 flex-col p-4"
+                className="relative flex h-32 flex-col p-4"
               >
                 <AvatarRoot size="lg">
                   <AvatarImage src={undefined} alt={workspace?.name} />
@@ -85,18 +77,34 @@ function WorkspacesOverviewPage() {
                     </div>
                   </AvatarFallback>
                 </AvatarRoot>
+
                 <div className="flex flex-1 flex-col items-center">
                   <h3 className="truncate font-semibold text-base-900 dark:text-base-100">
                     {workspace?.name}
                   </h3>
+
                   <p className="mt-1 text-base-600 text-sm dark:text-base-400">
                     {workspace?.workspaceUsers?.totalCount} members
                   </p>
+
+                  <WorkspaceTier
+                    tier={workspace.tier}
+                    className="absolute top-2 right-2"
+                  />
                 </div>
               </Link>
             ))}
           </div>
         )}
+
+        <Button
+          variant="outline"
+          className="flex w-full border-primary border-dashed bg-primary/5 p-12 hover:bg-primary/5 active:scale-[0.99]"
+          onClick={() => setIsCreateWorkspaceOpen(true)}
+        >
+          <PlusIcon className="size-4" />
+          Create New Workspace
+        </Button>
       </div>
     </div>
   );

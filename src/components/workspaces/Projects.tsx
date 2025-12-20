@@ -24,11 +24,12 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Role, useDeleteProjectMutation } from "@/generated/graphql";
+import { useDeleteProjectMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { isAdminOrOwner } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
 const Projects = () => {
@@ -59,7 +60,8 @@ const Projects = () => {
     select: (data) => data?.workspace,
   });
 
-  const isMember = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
+  const currentUserRole = workspace?.workspaceUsers?.nodes?.[0]?.role;
+  const canManageProjects = currentUserRole && isAdminOrOwner(currentUserRole);
 
   const maxProjectsReached = useMaxProjectsReached();
   const maxTasksReached = useMaxTasksReached();
@@ -100,7 +102,10 @@ const Projects = () => {
                 variant="ghost"
                 size="icon"
                 aria-label="Add project"
-                className={cn("mr-2 hidden size-7", !isMember && "inline-flex")}
+                className={cn(
+                  "mr-2 hidden size-7",
+                  canManageProjects && "inline-flex",
+                )}
                 onClick={() => setIsCreateProjectOpen(true)}
                 // TODO: add tooltip for disabled state
                 disabled={maxProjectsReached}
@@ -232,7 +237,10 @@ const Projects = () => {
                           <MenuItem
                             value="delete"
                             variant="destructive"
-                            className={cn("hidden", !isMember && "flex")}
+                            className={cn(
+                              "hidden",
+                              canManageProjects && "flex",
+                            )}
                             onClick={() => {
                               setIsDeleteProjectOpen(true);
                               setSelectedProject({

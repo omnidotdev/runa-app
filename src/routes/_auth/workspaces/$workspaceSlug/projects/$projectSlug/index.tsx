@@ -569,6 +569,8 @@ function ProjectPage() {
                 }
               />
 
+              <Filter />
+
               <Tooltip
                 positioning={{ placement: "bottom" }}
                 tooltip="Project Settings"
@@ -587,8 +589,6 @@ function ProjectPage() {
                   </Link>
                 }
               />
-
-              <Filter />
 
               {userPreferences?.viewMode === "list" && (
                 <Tooltip

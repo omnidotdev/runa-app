@@ -1,7 +1,8 @@
-mutation DeleteAssignee($rowId: UUID!) {
-  deleteAssignee(input: { rowId: $rowId }) {
+mutation DeleteAssignee($taskId: UUID!, $userId: UUID!) {
+  deleteAssignee(input: { taskId: $taskId, userId: $userId }) {
     assignee {
-      rowId
+      taskId
+      userId
     }
   }
 }
