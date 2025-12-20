@@ -13,7 +13,7 @@ const NotFound = ({ children }: { children?: ReactNode }) => (
       <Button onClick={() => window.history.back()}>Go back</Button>
 
       <Link to="/" variant="outline">
-        Start Over
+        Go Home
       </Link>
     </p>
   </div>
