@@ -19,6 +19,8 @@ import {
   useCreateProjectColumnMutation,
   useCreateWorkspaceMutation,
   useCreateWorkspaceUserMutation,
+  useProjectColumnsQuery,
+  useWorkspacesQuery,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -26,6 +28,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { getCreateSubscriptionUrl } from "@/server/functions/subscriptions";
 
 const DEFAULT_PROJECT_COLUMNS = [
@@ -118,7 +121,10 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
 
   const { mutate: createProjectColumn } = useCreateProjectColumnMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useWorkspacesQuery),
+        getQueryKeyPrefix(useProjectColumnsQuery),
+      ],
     },
   });
 

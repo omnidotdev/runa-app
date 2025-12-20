@@ -7,20 +7,20 @@ import {
   useRouteContext,
   useSearch,
 } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 
 import { ColumnHeader } from "@/components/core";
 import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
+import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 import BoardItem from "./OverviewBoardItem";
 
-import type { MouseEvent as ReactMouseEvent } from "react";
 import type { ProjectFragment } from "@/generated/graphql";
 
 interface Props {
@@ -30,15 +30,21 @@ interface Props {
 const EDGE_THRESHOLD = 150;
 const MAX_SCROLL_SPEED = 25;
 
+// TODO deduplicate with `Board.tsx`
+// TODO allow customizing columns like a regular project board
+
 const Board = ({ projects }: Props) => {
   const navigate = useNavigate();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { isDragging } = useDragStore();
 
-  // Drag-to-scroll state
-  const [isMouseDragging, setIsMouseDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeftStart, setScrollLeftStart] = useState(0);
+  // Inertial scroll for drag-to-scroll with momentum
+  const {
+    scrollContainerRef,
+    handleMouseDown,
+    handleMouseUp,
+    handleMouseMove,
+    handleMouseLeave,
+  } = useInertialScroll();
 
   // Auto-scroll during card drag
   useEffect(() => {
@@ -82,54 +88,7 @@ const Board = ({ projects }: Props) => {
       document.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isDragging]);
-
-  // Drag-to-scroll handlers
-  const handleMouseDown = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLElement;
-    if (target.closest("[data-rfd-draggable-id]")) return;
-
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    setIsMouseDragging(true);
-    setStartX(e.pageX - container.offsetLeft);
-    setScrollLeftStart(container.scrollLeft);
-    container.style.cursor = "grabbing";
-  }, []);
-
-  const handleMouseUp = useCallback(() => {
-    setIsMouseDragging(false);
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.style.cursor = "grab";
-    }
-  }, []);
-
-  const handleMouseMove = useCallback(
-    (e: ReactMouseEvent<HTMLDivElement>) => {
-      if (!isMouseDragging) return;
-      e.preventDefault();
-
-      const container = scrollContainerRef.current;
-      if (!container) return;
-
-      const x = e.pageX - container.offsetLeft;
-      const walk = (x - startX) * 1.5;
-      container.scrollLeft = scrollLeftStart - walk;
-    },
-    [isMouseDragging, startX, scrollLeftStart],
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    if (isMouseDragging) {
-      setIsMouseDragging(false);
-      const container = scrollContainerRef.current;
-      if (container) {
-        container.style.cursor = "grab";
-      }
-    }
-  }, [isMouseDragging]);
+  }, [isDragging, scrollContainerRef]);
   const { workspaceSlug } = useParams({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
@@ -213,7 +172,7 @@ const Board = ({ projects }: Props) => {
                           "bg-primary-100/40 dark:bg-primary-950/40",
                       )}
                     >
-                      <div className="no-scrollbar flex h-full flex-col gap-2 overflow-y-auto p-1">
+                      <div className="no-scrollbar flex h-full flex-col gap-2 overflow-y-auto">
                         {projects
                           .filter(
                             (project) =>

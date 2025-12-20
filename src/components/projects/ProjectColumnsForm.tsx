@@ -38,15 +38,19 @@ import {
 } from "@/components/ui/menu";
 import {
   Role,
+  useColumnsQuery,
   useDeleteColumnMutation,
+  useProjectQuery,
   useUpdateColumnMutation,
   useUpdateUserPreferenceMutation,
+  useUserPreferencesQuery,
 } from "@/generated/graphql";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import columnsOptions from "@/lib/options/columns.options";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 import ColumnForm from "./ProjectColumnForm";
 
@@ -99,12 +103,18 @@ const ProjectColumnsForm = () => {
 
   const { mutate: updateColumn } = useUpdateColumnMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [
+          getQueryKeyPrefix(useColumnsQuery),
+          getQueryKeyPrefix(useProjectQuery),
+        ],
       },
     }),
     { mutate: deleteColumn } = useDeleteColumnMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [
+          getQueryKeyPrefix(useColumnsQuery),
+          getQueryKeyPrefix(useProjectQuery),
+        ],
       },
       onSuccess: (_data, variables) =>
         setLocalColumns((prev) =>
@@ -113,7 +123,7 @@ const ProjectColumnsForm = () => {
     }),
     { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [getQueryKeyPrefix(useUserPreferencesQuery)],
       },
     });
 

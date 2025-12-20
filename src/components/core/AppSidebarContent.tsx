@@ -43,12 +43,17 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Role, useUpdateUserPreferenceMutation } from "@/generated/graphql";
+import {
+  Role,
+  useUpdateUserPreferenceMutation,
+  useUserPreferencesQuery,
+} from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import Shortcut from "./Shortcut";
 import Tooltip from "./Tooltip";
 
@@ -94,7 +99,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
 
   const { mutate: updateViewMode } = useUpdateUserPreferenceMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [getQueryKeyPrefix(useUserPreferencesQuery)],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(

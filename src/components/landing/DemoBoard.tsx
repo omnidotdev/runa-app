@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { PriorityIcon } from "@/components/tasks";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
@@ -17,16 +17,18 @@ import {
 } from "@/components/ui/dialog";
 import signIn from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
+import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import { cn } from "@/lib/utils";
 import DemoBoardItem from "./DemoBoardItem";
 import { demoColumns, initialDemoTasks } from "./demoBoardData";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
-import type { MouseEvent as ReactMouseEvent } from "react";
 import type { DemoTask } from "./demoBoardData";
 
 const EDGE_THRESHOLD = 150;
 const MAX_SCROLL_SPEED = 25;
+
+// TODO deduplicate with `Board.tsx`
 
 /**
  * Demo board for users to try the app.
@@ -35,12 +37,15 @@ const DemoBoard = () => {
   const [tasks, setTasks] = useState<DemoTask[]>(initialDemoTasks);
   const [selectedTask, setSelectedTask] = useState<DemoTask | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Drag-to-scroll state
-  const [isMouseDragging, setIsMouseDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeftStart, setScrollLeftStart] = useState(0);
+  // Inertial scroll for drag-to-scroll with momentum
+  const {
+    scrollContainerRef,
+    handleMouseDown,
+    handleMouseUp,
+    handleMouseMove,
+    handleMouseLeave,
+  } = useInertialScroll();
 
   // Auto-scroll during card drag
   useEffect(() => {
@@ -84,54 +89,7 @@ const DemoBoard = () => {
       document.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isDragging]);
-
-  // Drag-to-scroll handlers
-  const handleMouseDown = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLElement;
-    if (target.closest("[data-rfd-draggable-id]")) return;
-
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    setIsMouseDragging(true);
-    setStartX(e.pageX - container.offsetLeft);
-    setScrollLeftStart(container.scrollLeft);
-    container.style.cursor = "grabbing";
-  }, []);
-
-  const handleMouseUp = useCallback(() => {
-    setIsMouseDragging(false);
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.style.cursor = "grab";
-    }
-  }, []);
-
-  const handleMouseMoveScroll = useCallback(
-    (e: ReactMouseEvent<HTMLDivElement>) => {
-      if (!isMouseDragging) return;
-      e.preventDefault();
-
-      const container = scrollContainerRef.current;
-      if (!container) return;
-
-      const x = e.pageX - container.offsetLeft;
-      const walk = (x - startX) * 1.5;
-      container.scrollLeft = scrollLeftStart - walk;
-    },
-    [isMouseDragging, startX, scrollLeftStart],
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    if (isMouseDragging) {
-      setIsMouseDragging(false);
-      const container = scrollContainerRef.current;
-      if (container) {
-        container.style.cursor = "grab";
-      }
-    }
-  }, [isMouseDragging]);
+  }, [isDragging, scrollContainerRef]);
 
   const onDragStart = (_start: DragStart) => {
     setIsDragging(true);
@@ -213,7 +171,7 @@ const DemoBoard = () => {
         className="custom-scrollbar cursor-grab select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMoveScroll}
+        onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
         <div className="min-w-fit p-4">
@@ -242,7 +200,7 @@ const DemoBoard = () => {
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                           className={cn(
-                            "flex h-80 flex-col overflow-y-auto rounded-xl p-2 transition-colors",
+                            "flex h-80 flex-col overflow-y-auto rounded-xl transition-colors",
                             snapshot.isDraggingOver &&
                               "bg-primary-200/40 dark:bg-primary-900/40",
                           )}

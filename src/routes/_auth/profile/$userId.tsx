@@ -22,12 +22,14 @@ import {
   useCreateWorkspaceUserMutation,
   useDeleteInvitationMutation,
   useDeleteWorkspaceMutation,
+  useInvitationsQuery,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import invitationsOptions from "@/lib/options/invitations.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import createMetaTags from "@/lib/util/createMetaTags";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { revokeSubscription } from "@/server/functions/subscriptions";
 
 import type { Maybe, Workspace } from "@/generated/graphql";
@@ -73,7 +75,7 @@ function ProfilePage() {
     useCreateUserPreferenceMutation();
   const { mutateAsync: deleteInvitation } = useDeleteInvitationMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [getQueryKeyPrefix(useInvitationsQuery)],
     },
   });
   const { mutateAsync: acceptInvitation } = useCreateWorkspaceUserMutation();

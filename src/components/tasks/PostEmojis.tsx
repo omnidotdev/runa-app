@@ -6,8 +6,11 @@ import { Button } from "@/components/ui/button";
 import {
   useCreatePostEmojiMutation,
   useDeletePostEmojiMutation,
+  usePostEmojisQuery,
+  useUserEmojisQuery,
 } from "@/generated/graphql";
 import postEmojisOptions from "@/lib/options/emoji.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 import CommentEmojiPicker from "./CommentEmojiPicker";
 
@@ -45,13 +48,19 @@ const PostEmojis = ({ postId }: Props) => {
   const { mutate: deleteEmoji, isPending: isDeleteEmojiPending } =
       useDeletePostEmojiMutation({
         meta: {
-          invalidates: [["all"]],
+          invalidates: [
+            getQueryKeyPrefix(usePostEmojisQuery),
+            getQueryKeyPrefix(useUserEmojisQuery),
+          ],
         },
       }),
     { mutate: createPostEmoji, isPending: isCreatePostEmojiPending } =
       useCreatePostEmojiMutation({
         meta: {
-          invalidates: [["all"]],
+          invalidates: [
+            getQueryKeyPrefix(usePostEmojisQuery),
+            getQueryKeyPrefix(useUserEmojisQuery),
+          ],
         },
       });
 

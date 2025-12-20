@@ -12,8 +12,13 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useCreatePostEmojiMutation } from "@/generated/graphql";
+import {
+  useCreatePostEmojiMutation,
+  usePostEmojisQuery,
+  useUserEmojisQuery,
+} from "@/generated/graphql";
 import userEmojisOptions from "@/lib/options/userEmojis.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useTheme } from "@/providers/ThemeProvider";
 
 interface Props {
@@ -36,7 +41,10 @@ const CommentEmojiPicker = ({ postId }: Props) => {
 
   const { mutate: createPostEmoji } = useCreatePostEmojiMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(usePostEmojisQuery),
+        getQueryKeyPrefix(useUserEmojisQuery),
+      ],
     },
   });
 

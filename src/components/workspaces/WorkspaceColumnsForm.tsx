@@ -26,11 +26,14 @@ import { Button } from "@/components/ui/button";
 import {
   Role,
   useDeleteProjectColumnMutation,
+  useProjectColumnsQuery,
   useUpdateProjectColumnMutation,
+  useWorkspaceQuery,
 } from "@/generated/graphql";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 import ColumnForm from "./WorkspaceColumnForm";
 
@@ -73,12 +76,18 @@ const ProjectColumnsForm = () => {
 
   const { mutate: updateProjectColumn } = useUpdateProjectColumnMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [
+          getQueryKeyPrefix(useProjectColumnsQuery),
+          getQueryKeyPrefix(useWorkspaceQuery),
+        ],
       },
     }),
     { mutate: deleteProjectColumn } = useDeleteProjectColumnMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [
+          getQueryKeyPrefix(useProjectColumnsQuery),
+          getQueryKeyPrefix(useWorkspaceQuery),
+        ],
       },
       onSuccess: (_data, variables) =>
         setLocalColumns((prev) =>

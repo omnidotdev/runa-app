@@ -48,11 +48,14 @@ import {
   Role,
   useCreateLabelMutation,
   useDeleteLabelMutation,
+  useLabelsQuery,
+  useProjectQuery,
   useUpdateLabelMutation,
 } from "@/generated/graphql";
 import { colors } from "@/lib/constants/colors";
 import useForm from "@/lib/hooks/useForm";
 import workspaceOptions from "@/lib/options/workspace.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 import type { Dispatch, SetStateAction } from "react";
@@ -94,12 +97,18 @@ const LabelForm = ({
 
   const { mutate: updateLabel } = useUpdateLabelMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [
+          getQueryKeyPrefix(useLabelsQuery),
+          getQueryKeyPrefix(useProjectQuery),
+        ],
       },
     }),
     { mutate: deleteLabel } = useDeleteLabelMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [
+          getQueryKeyPrefix(useLabelsQuery),
+          getQueryKeyPrefix(useProjectQuery),
+        ],
       },
       onError: (error) => console.error(error),
       onSuccess: (data) => {
@@ -114,7 +123,10 @@ const LabelForm = ({
     }),
     { mutate: createLabel } = useCreateLabelMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [
+          getQueryKeyPrefix(useLabelsQuery),
+          getQueryKeyPrefix(useProjectQuery),
+        ],
       },
       onError: (error) => console.error(error),
       onSuccess: (data) => {

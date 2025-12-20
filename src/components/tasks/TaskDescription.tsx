@@ -4,8 +4,14 @@ import { useDebounceCallback } from "usehooks-ts";
 
 import { RichTextEditor } from "@/components/core";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
-import { Role, useUpdateTaskMutation } from "@/generated/graphql";
+import {
+  Role,
+  useTaskQuery,
+  useTasksQuery,
+  useUpdateTaskMutation,
+} from "@/generated/graphql";
 import workspaceOptions from "@/lib/options/workspace.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 interface Props {
   task: {
@@ -33,7 +39,10 @@ const TaskDescription = ({ task }: Props) => {
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useTaskQuery),
+        getQueryKeyPrefix(useTasksQuery),
+      ],
     },
   });
 

@@ -25,11 +25,14 @@ import {
 import {
   Role,
   useCreateProjectColumnMutation,
+  useProjectColumnsQuery,
   useUpdateProjectColumnMutation,
+  useWorkspaceQuery,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import workspaceOptions from "@/lib/options/workspace.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
@@ -101,7 +104,10 @@ const ColumnForm = ({
 
   const { mutate: createProjectColumn } = useCreateProjectColumnMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [
+          getQueryKeyPrefix(useProjectColumnsQuery),
+          getQueryKeyPrefix(useWorkspaceQuery),
+        ],
       },
       onError: (error) => console.error(error),
       onSuccess: (data) => {
@@ -114,7 +120,10 @@ const ColumnForm = ({
     }),
     { mutate: updateColumn } = useUpdateProjectColumnMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [
+          getQueryKeyPrefix(useProjectColumnsQuery),
+          getQueryKeyPrefix(useWorkspaceQuery),
+        ],
       },
       onError: (error) => console.error(error),
     });

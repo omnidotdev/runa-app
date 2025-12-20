@@ -18,13 +18,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useUpdateTaskMutation } from "@/generated/graphql";
+import {
+  useTaskQuery,
+  useTasksQuery,
+  useUpdateTaskMutation,
+} from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import CreateTaskDatePicker from "./CreateTaskDatePicker";
 
 const UpdateDueDateDialog = () => {
@@ -52,7 +57,10 @@ const UpdateDueDateDialog = () => {
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useTaskQuery),
+        getQueryKeyPrefix(useTasksQuery),
+      ],
     },
   });
 

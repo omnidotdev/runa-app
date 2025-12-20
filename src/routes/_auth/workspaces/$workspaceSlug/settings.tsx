@@ -31,6 +31,9 @@ import { Projects, Team, WorkspaceColumnsForm } from "@/components/workspaces";
 import {
   useDeleteWorkspaceMutation,
   useUpdateWorkspaceMutation,
+  useWorkspaceBySlugQuery,
+  useWorkspaceQuery,
+  useWorkspacesQuery,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import getSdk from "@/lib/graphql/getSdk";
@@ -42,6 +45,7 @@ import { isAdminOrOwner, isOwner } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
 import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
 import generateSlug from "@/lib/util/generateSlug";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 import { FREE_PRICE } from "@/routes/_public/pricing";
 import { getPrices } from "@/server/functions/prices";
@@ -207,7 +211,11 @@ function SettingsPage() {
 
   const { mutate: updateWorkspace } = useUpdateWorkspaceMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useWorkspaceQuery),
+        getQueryKeyPrefix(useWorkspacesQuery),
+        getQueryKeyPrefix(useWorkspaceBySlugQuery),
+      ],
     },
     onSuccess: (_data, variables) => {
       if (variables.patch.slug) {
