@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import {
   Role,
   useDeleteProjectMutation,
+  useProjectQuery,
+  useProjectsQuery,
   useUpdateProjectMutation,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
@@ -27,6 +29,7 @@ import projectOptions from "@/lib/options/project.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 import generateSlug from "@/lib/util/generateSlug";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 import type { Editor } from "@tiptap/core";
@@ -118,7 +121,10 @@ function ProjectSettingsPage() {
 
   const { mutate: updateProject } = useUpdateProjectMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [
+          getQueryKeyPrefix(useProjectQuery),
+          getQueryKeyPrefix(useProjectsQuery),
+        ],
       },
       onSuccess: (_data, variables) => {
         if (variables.patch.slug) {
@@ -132,7 +138,7 @@ function ProjectSettingsPage() {
     }),
     { mutate: deleteProject } = useDeleteProjectMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [getQueryKeyPrefix(useProjectsQuery)],
       },
     });
 

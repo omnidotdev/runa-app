@@ -33,6 +33,9 @@ import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import {
   Role,
   useDeleteTaskMutation,
+  useProjectQuery,
+  useTaskQuery,
+  useTasksQuery,
   useUpdateTaskMutation,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
@@ -42,6 +45,7 @@ import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import createMetaTags from "@/lib/util/createMetaTags";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute(
@@ -112,13 +116,19 @@ function TaskPage() {
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useTaskQuery),
+        getQueryKeyPrefix(useTasksQuery),
+      ],
     },
   });
 
   const { mutate: deleteTask } = useDeleteTaskMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useTasksQuery),
+        getQueryKeyPrefix(useProjectQuery),
+      ],
     },
     onSuccess: () => {
       navigate({
@@ -190,7 +200,7 @@ function TaskPage() {
           />
 
           <div className="flex items-center gap-2 font-mono text-base-500 text-sm dark:text-base-400">
-            {`${project?.prefix ? project.prefix : "PROJ"}-${taskIndex}`}
+            {`${project?.prefix ? project.prefix : "PROJ"}-${(taskIndex ?? 0) + 1}`}
           </div>
         </div>
       </div>

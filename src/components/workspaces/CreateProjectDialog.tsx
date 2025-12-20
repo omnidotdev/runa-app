@@ -25,6 +25,7 @@ import {
   useCreateColumnMutation,
   useCreateProjectMutation,
   useCreateUserPreferenceMutation,
+  useProjectsQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -35,6 +36,7 @@ import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import generateSlug from "@/lib/util/generateSlug";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 const DEFAULT_COLUMNS = [
   { title: "Backlog", index: 0, emoji: "📚" },
@@ -109,7 +111,7 @@ const CreateProjectDialog = () => {
   const { mutateAsync: createNewProject } = useCreateProjectMutation({
     meta: {
       invalidates: [
-        ["Projects"],
+        getQueryKeyPrefix(useProjectsQuery),
         workspaceOptions({
           rowId: workspaceId!,
           userId: session?.user?.rowId!,

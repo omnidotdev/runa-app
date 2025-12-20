@@ -24,6 +24,8 @@ import {
   useCreateLabelMutation,
   useCreateTaskLabelMutation,
   useCreateTaskMutation,
+  useProjectQuery,
+  useTasksQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
@@ -31,6 +33,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import CreateTaskAssignees from "./CreateTaskAssignees";
 import CreateTaskDatePicker from "./CreateTaskDatePicker";
 import CreateTaskLabels from "./CreateTaskLabels";
@@ -189,7 +192,12 @@ const CreateTaskDialog = () => {
           );
         }
 
-        queryClient.invalidateQueries();
+        queryClient.invalidateQueries({
+          queryKey: getQueryKeyPrefix(useTasksQuery),
+        });
+        queryClient.invalidateQueries({
+          queryKey: getQueryKeyPrefix(useProjectQuery),
+        });
       };
 
       toast.promise(createTaskOperation(), {

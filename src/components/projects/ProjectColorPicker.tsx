@@ -28,10 +28,14 @@ import {
   ColorPickerView,
   parseColor,
 } from "@/components/ui/color-picker";
-import { useUpdateUserPreferenceMutation } from "@/generated/graphql";
+import {
+  useUpdateUserPreferenceMutation,
+  useUserPreferencesQuery,
+} from "@/generated/graphql";
 import { colors } from "@/lib/constants/colors";
 import useForm from "@/lib/hooks/useForm";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { ComponentProps } from "react";
 
@@ -57,7 +61,7 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
 
   const { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [getQueryKeyPrefix(useUserPreferencesQuery)],
     },
   });
 

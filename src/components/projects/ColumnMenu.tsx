@@ -14,6 +14,8 @@ import {
 import {
   Role,
   useDeleteTaskMutation,
+  useProjectQuery,
+  useTasksQuery,
   useUpdateUserPreferenceMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -22,6 +24,7 @@ import columnOptions from "@/lib/options/column.options";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -85,7 +88,10 @@ const ColumnMenu = ({ columnId }: Props) => {
 
   const { mutate: deleteTask } = useDeleteTaskMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useTasksQuery),
+        getQueryKeyPrefix(useProjectQuery),
+      ],
     },
   });
 

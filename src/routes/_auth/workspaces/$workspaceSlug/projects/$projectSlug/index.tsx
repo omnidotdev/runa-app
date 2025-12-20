@@ -14,7 +14,7 @@ import {
   SearchIcon,
   Settings2,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
@@ -33,9 +33,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Role,
+  useProjectQuery,
+  useProjectsQuery,
+  useTaskQuery,
+  useTasksQuery,
   useUpdateProjectMutation,
   useUpdateTaskMutation,
   useUpdateUserPreferenceMutation,
+  useUserPreferencesQuery,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -47,10 +52,11 @@ import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 import generateSlug from "@/lib/util/generateSlug";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
-import type { TasksQueryVariables } from "@/generated/graphql";
+import type { TasksQuery, TasksQueryVariables } from "@/generated/graphql";
 
 const projectSearchParamsSchema = z.object({
   search: z.string().default(""),
@@ -185,8 +191,6 @@ function ProjectPage() {
     select: (data) => data?.tasks?.nodes ?? [],
   });
 
-  const [localTasks, setLocalTasks] = useState(tasks);
-
   const { setIsDragging, setDraggableId } = useDragStore();
 
   const handleSearch = useDebounceCallback(
@@ -271,7 +275,7 @@ function ProjectPage() {
 
   const { mutate: updateViewMode } = useUpdateUserPreferenceMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [getQueryKeyPrefix(useUserPreferencesQuery)],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(
@@ -291,7 +295,10 @@ function ProjectPage() {
 
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useProjectQuery),
+        getQueryKeyPrefix(useProjectsQuery),
+      ],
     },
     onSuccess: (_data, variables) => {
       if (variables.patch.slug) {
@@ -308,7 +315,10 @@ function ProjectPage() {
 
   const { mutateAsync: updateTask } = useUpdateTaskMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useTaskQuery),
+        getQueryKeyPrefix(useTasksQuery),
+      ],
     },
   });
 
@@ -329,123 +339,147 @@ function ProjectPage() {
 
       setDraggableId(draggableId);
 
-      if (localTasks?.length) {
-        const currentTask = localTasks.find(
-          (task) => task.rowId === draggableId,
-        )!;
+      // Get current tasks from cache
+      const queryKey = tasksOptions(tasksVariables).queryKey;
+      const cachedData = queryClient.getQueryData<TasksQuery>(queryKey);
+      const currentTasks = cachedData?.tasks?.nodes ?? [];
 
-        const destinationColumnTasks = localTasks.filter(
-          (task) => task.columnId === destination.droppableId,
+      if (!currentTasks.length) return;
+
+      const currentTask = currentTasks.find(
+        (task) => task.rowId === draggableId,
+      );
+      if (!currentTask) return;
+
+      const destinationColumnTasks = currentTasks.filter(
+        (task) => task.columnId === destination.droppableId,
+      );
+
+      // Helper to apply optimistic update to cache
+      const applyOptimisticUpdate = (
+        updater: (tasks: typeof currentTasks) => typeof currentTasks,
+      ) => {
+        queryClient.setQueryData<TasksQuery>(queryKey, (old) => {
+          if (!old?.tasks?.nodes) return old;
+          return {
+            ...old,
+            tasks: {
+              ...old.tasks,
+              nodes: updater([...old.tasks.nodes]),
+            },
+          };
+        });
+      };
+
+      if (source.droppableId === destination.droppableId) {
+        // Same column reorder
+        const reorderedColumnTasks = [...destinationColumnTasks];
+        const [taskToMove] = reorderedColumnTasks.splice(
+          currentTask.columnIndex,
+          1,
+        );
+        reorderedColumnTasks.splice(destination.index, 0, taskToMove);
+
+        // Optimistic update
+        applyOptimisticUpdate((prev) => {
+          const unTouchedTasks = prev.filter(
+            (task) => task.columnId !== destination.droppableId,
+          );
+          return [
+            ...unTouchedTasks,
+            ...reorderedColumnTasks.filter(Boolean).map((task, index) => ({
+              ...task,
+              columnIndex: index,
+            })),
+          ];
+        });
+
+        // Persist to server
+        await Promise.all(
+          reorderedColumnTasks.filter(Boolean).map((task, index) =>
+            updateTask({
+              rowId: task.rowId,
+              patch: {
+                columnIndex: index,
+              },
+            }),
+          ),
+        );
+      } else {
+        // Cross-column move
+        const sourceColumnTasksExcludingMovedTask = currentTasks.filter(
+          (task) =>
+            task.columnId === source.droppableId && task.rowId !== draggableId,
         );
 
-        if (source.droppableId === destination.droppableId) {
-          const reorderedColumnTasks = [...destinationColumnTasks];
-          const [taskToMove] = reorderedColumnTasks.splice(
-            currentTask.columnIndex,
-            1,
-          );
-          reorderedColumnTasks.splice(destination.index, 0, taskToMove);
+        const tasksWithMovedInDestination = [...destinationColumnTasks];
+        tasksWithMovedInDestination.splice(destination.index, 0, currentTask);
 
-          setLocalTasks((prev) => {
-            const unTouchedTasks = prev.filter(
-              (task) => task.columnId !== destination.droppableId,
-            );
+        const sourceTaskIds = sourceColumnTasksExcludingMovedTask.map(
+          (task) => task.rowId,
+        );
+        const destinationTaskIds = tasksWithMovedInDestination.map(
+          (task) => task.rowId,
+        );
 
-            return [
-              ...unTouchedTasks,
-              ...reorderedColumnTasks.filter(Boolean).map((task, index) => ({
-                ...task,
-                columnIndex: index,
-              })),
-            ];
-          });
-
-          await Promise.all(
-            reorderedColumnTasks.filter(Boolean).map((task, index) =>
-              updateTask({
-                rowId: task.rowId,
-                patch: {
-                  columnIndex: index,
-                },
-              }),
-            ),
-          );
-        } else {
-          const sourceColumnTasksExcludingMovedTask = localTasks.filter(
+        // Optimistic update
+        applyOptimisticUpdate((prev) => {
+          const unTouchedTasks = prev.filter(
             (task) =>
-              task.columnId === source.droppableId &&
-              task.rowId !== draggableId,
+              !sourceTaskIds.includes(task.rowId) &&
+              !destinationTaskIds.includes(task.rowId),
           );
+          return [
+            ...unTouchedTasks,
+            ...sourceColumnTasksExcludingMovedTask.map((task, index) => ({
+              ...task,
+              columnIndex: index,
+            })),
+            ...tasksWithMovedInDestination.map((task, index) => ({
+              ...task,
+              columnIndex: index,
+              columnId:
+                task.rowId === currentTask.rowId
+                  ? destination.droppableId
+                  : task.columnId,
+            })),
+          ];
+        });
 
-          const sourceTaskIds = sourceColumnTasksExcludingMovedTask.map(
-            (task) => task.rowId,
-          );
-
-          const tasksWithMovedInDestination = [...destinationColumnTasks];
-          tasksWithMovedInDestination.splice(destination.index, 0, currentTask);
-
-          const destinationTaskIds = tasksWithMovedInDestination.map(
-            (task) => task.rowId,
-          );
-
-          setLocalTasks((prev) => {
-            const unTouchedTasks = prev.filter(
-              (task) =>
-                !sourceTaskIds.includes(task.rowId) &&
-                !destinationTaskIds.includes(task.rowId),
-            );
-
-            return [
-              ...unTouchedTasks,
-              ...sourceColumnTasksExcludingMovedTask.map((task, index) => ({
-                ...task,
+        // Persist to server
+        await Promise.all([
+          ...sourceColumnTasksExcludingMovedTask.map((task, index) =>
+            updateTask({
+              rowId: task.rowId,
+              patch: {
                 columnIndex: index,
-              })),
-              ...tasksWithMovedInDestination.map((task, index) => ({
-                ...task,
+              },
+            }),
+          ),
+          ...tasksWithMovedInDestination.map((task, index) =>
+            updateTask({
+              rowId: task.rowId,
+              patch: {
                 columnIndex: index,
                 columnId:
                   task.rowId === currentTask.rowId
                     ? destination.droppableId
                     : task.columnId,
-              })),
-            ];
-          });
-
-          await Promise.all([
-            ...sourceColumnTasksExcludingMovedTask.map((task, index) =>
-              updateTask({
-                rowId: task.rowId,
-                patch: {
-                  columnIndex: index,
-                },
-              }),
-            ),
-            ...tasksWithMovedInDestination.map((task, index) =>
-              updateTask({
-                rowId: task.rowId,
-                patch: {
-                  columnIndex: index,
-                  columnId:
-                    task.rowId === currentTask.rowId
-                      ? destination.droppableId
-                      : task.columnId,
-                },
-              }),
-            ),
-          ]);
-        }
-
-        setDraggableId(null);
-
-        await queryClient.invalidateQueries({
-          queryKey: ["Tasks"],
-          // NB: important to refetch all `Tasks` queries *even* if they are inactive to prevent flashing when search params are updated
-          refetchType: "all",
-        });
+              },
+            }),
+          ),
+        ]);
       }
+
+      setDraggableId(null);
+
+      // Refetch to ensure consistency with server
+      await queryClient.invalidateQueries({
+        queryKey: getQueryKeyPrefix(useTasksQuery),
+        refetchType: "all",
+      });
     },
-    [updateTask, setDraggableId, localTasks, queryClient, setIsDragging],
+    [updateTask, setDraggableId, tasksVariables, queryClient, setIsDragging],
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: `setIsDragging` is stable
@@ -468,8 +502,6 @@ function ProjectPage() {
       }),
     [updateViewMode, userPreferences?.viewMode, projectId],
   );
-
-  useEffect(() => setLocalTasks(tasks), [tasks]);
 
   return (
     <div className="flex size-full">
@@ -615,10 +647,10 @@ function ProjectPage() {
 
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
           {userPreferences?.viewMode === "board" ? (
-            <Board tasks={localTasks} />
+            <Board tasks={tasks} />
           ) : (
             <List
-              tasks={localTasks}
+              tasks={tasks}
               openStates={projectColumnOpenStates}
               setOpenStates={setProjectColumnOpenStates}
               setIsForceClosed={setIsForceClosed}

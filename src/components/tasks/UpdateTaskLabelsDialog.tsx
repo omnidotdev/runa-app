@@ -16,6 +16,8 @@ import {
   useCreateLabelMutation,
   useCreateTaskLabelMutation,
   useDeleteTaskLabelMutation,
+  useTaskQuery,
+  useTasksQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
@@ -24,6 +26,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import TaskLabelsForm from "./TaskLabelsForm";
 
 const UpdateTaskLabelsDialog = () => {
@@ -128,7 +131,12 @@ const UpdateTaskLabelsDialog = () => {
         ),
       ]);
 
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({
+        queryKey: getQueryKeyPrefix(useTaskQuery),
+      });
+      queryClient.invalidateQueries({
+        queryKey: getQueryKeyPrefix(useTasksQuery),
+      });
       formApi.reset();
       setIsOpen(false);
       setTaskId(null);

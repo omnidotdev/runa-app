@@ -26,15 +26,19 @@ import {
 } from "@/components/ui/menu";
 import {
   Role,
+  useColumnsQuery,
   useCreateColumnMutation,
   useCreateUserPreferenceMutation,
+  useProjectQuery,
   useUpdateColumnMutation,
   useUpdateUserPreferenceMutation,
+  useUserPreferencesQuery,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
@@ -103,17 +107,20 @@ const ColumnForm = ({
 
   const { mutate: updateColumn } = useUpdateColumnMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [
+          getQueryKeyPrefix(useColumnsQuery),
+          getQueryKeyPrefix(useProjectQuery),
+        ],
       },
     }),
     { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [getQueryKeyPrefix(useUserPreferencesQuery)],
       },
     }),
     { mutate: createUserPreference } = useCreateUserPreferenceMutation({
       meta: {
-        invalidates: [["all"]],
+        invalidates: [getQueryKeyPrefix(useUserPreferencesQuery)],
       },
     });
 
@@ -129,7 +136,10 @@ const ColumnForm = ({
 
   const { mutate: createColumn } = useCreateColumnMutation({
     meta: {
-      invalidates: [["all"]],
+      invalidates: [
+        getQueryKeyPrefix(useColumnsQuery),
+        getQueryKeyPrefix(useProjectQuery),
+      ],
     },
     onError: (error) => console.error(error),
     onSuccess: (data) => {
