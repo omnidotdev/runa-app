@@ -18,8 +18,8 @@ import { useTheme } from "@/providers/ThemeProvider";
 import BoardItem from "./BoardItem";
 import ColumnMenu from "./ColumnMenu";
 
-import type { TaskFragment } from "@/generated/graphql";
 import type { MouseEvent as ReactMouseEvent } from "react";
+import type { TaskFragment } from "@/generated/graphql";
 
 interface Props {
   tasks: TaskFragment[];
@@ -55,11 +55,11 @@ const Board = ({ tasks }: Props) => {
       if (mouseX < rect.left + EDGE_THRESHOLD) {
         const distanceFromEdge = mouseX - rect.left;
         const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
-        scrollSpeed = -MAX_SCROLL_SPEED * Math.pow(intensity, 2);
+        scrollSpeed = -MAX_SCROLL_SPEED * intensity ** 2;
       } else if (mouseX > rect.right - EDGE_THRESHOLD) {
         const distanceFromEdge = rect.right - mouseX;
         const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
-        scrollSpeed = MAX_SCROLL_SPEED * Math.pow(intensity, 2);
+        scrollSpeed = MAX_SCROLL_SPEED * intensity ** 2;
       } else {
         scrollSpeed = 0;
       }
