@@ -5,11 +5,11 @@ import { BASE_URL } from "@/lib/config/env.config";
  * Create meta tags.
  */
 const createMetaTags = ({
-  title,
-  description,
+  title: _title,
+  description: _description,
+  url: _url,
   keywords,
   image,
-  url,
 }: {
   title?: string;
   description?: string;
@@ -17,42 +17,45 @@ const createMetaTags = ({
   keywords?: string;
   url?: string;
 } = {}) => {
-  const shownTitle = title ? `${app.name} | ${title}` : app.name;
-  const shownDescription =
-    description ?? "A beautiful Kanban board application";
-  const shownUrl = url ?? BASE_URL;
+  const title = _title ? `${_title} | ${app.name}` : app.name,
+    description = _description ?? app.description,
+    url = _url ?? BASE_URL;
 
   const tags = [
-    { title: shownTitle },
+    { title: title },
     {
       name: "description",
-      content: shownDescription,
+      content: description,
     },
     { name: "keywords", content: keywords },
-    { name: "twitter:title", content: shownTitle },
+    { name: "twitter:title", content: title },
     {
       name: "twitter:description",
-      content: shownDescription,
+      content: description,
     },
     { name: "twitter:creator", content: "@omnidotdev" },
-    { name: "twitter:url", content: shownUrl },
+    { name: "twitter:url", content: url },
     { name: "og:type", content: "website" },
-    { name: "og:title", content: shownTitle },
+    { name: "og:title", content: title },
     {
       name: "og:description",
-      content: shownDescription,
+      content: description,
     },
-    { name: "og:url", content: shownUrl },
+    { name: "og:url", content: url },
     ...(image
       ? [
           { name: "twitter:image", content: image },
           { name: "twitter:card", content: "summary_large_image" },
           { name: "og:image", content: image },
+          { name: "og:image:width", content: "1200" },
+          { name: "og:image:height", content: "630" },
         ]
       : [
-          { name: "twitter:image", content: "/logo.png" },
+          { name: "twitter:image", content: `${BASE_URL}/runa_og.png` },
           { name: "twitter:card", content: "summary_large_image" },
-          { name: "og:image", content: "/logo.png" },
+          { name: "og:image", content: `${BASE_URL}/runa_og.png` },
+          { name: "og:image:width", content: "1200" },
+          { name: "og:image:height", content: "630" },
         ]),
   ];
 
