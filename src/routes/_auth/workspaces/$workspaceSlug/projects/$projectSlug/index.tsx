@@ -473,10 +473,9 @@ function ProjectPage() {
 
       setDraggableId(null);
 
-      // Refetch to ensure consistency with server
+      // Mark queries as stale (mutations will handle invalidation via meta.invalidates)
       await queryClient.invalidateQueries({
         queryKey: getQueryKeyPrefix(useTasksQuery),
-        refetchType: "all",
       });
     },
     [updateTask, setDraggableId, tasksVariables, queryClient, setIsDragging],
