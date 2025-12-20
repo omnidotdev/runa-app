@@ -5,11 +5,12 @@ import {
   useNavigate,
   useRouteContext,
 } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 
 import { ColumnHeader } from "@/components/core";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
@@ -18,7 +19,6 @@ import { useTheme } from "@/providers/ThemeProvider";
 import BoardItem from "./BoardItem";
 import ColumnMenu from "./ColumnMenu";
 
-import type { MouseEvent as ReactMouseEvent } from "react";
 import type { TaskFragment } from "@/generated/graphql";
 
 interface Props {
@@ -30,13 +30,16 @@ const MAX_SCROLL_SPEED = 25;
 
 const Board = ({ tasks }: Props) => {
   const { theme } = useTheme();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { isDragging } = useDragStore();
 
-  // Drag-to-scroll state
-  const [isMouseDragging, setIsMouseDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeftStart, setScrollLeftStart] = useState(0);
+  // Inertial scroll for drag-to-scroll with momentum
+  const {
+    scrollContainerRef,
+    handleMouseDown,
+    handleMouseUp,
+    handleMouseMove,
+    handleMouseLeave,
+  } = useInertialScroll();
 
   // Auto-scroll during card drag
   useEffect(() => {
@@ -80,55 +83,7 @@ const Board = ({ tasks }: Props) => {
       document.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isDragging]);
-
-  // Drag-to-scroll handlers (replaces react-indiana-drag-scroll)
-  const handleMouseDown = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
-    // Only start drag-scroll if clicking on the container background, not on draggable items
-    const target = e.target as HTMLElement;
-    if (target.closest("[data-rfd-draggable-id]")) return;
-
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    setIsMouseDragging(true);
-    setStartX(e.pageX - container.offsetLeft);
-    setScrollLeftStart(container.scrollLeft);
-    container.style.cursor = "grabbing";
-  }, []);
-
-  const handleMouseUp = useCallback(() => {
-    setIsMouseDragging(false);
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.style.cursor = "grab";
-    }
-  }, []);
-
-  const handleMouseMove = useCallback(
-    (e: ReactMouseEvent<HTMLDivElement>) => {
-      if (!isMouseDragging) return;
-      e.preventDefault();
-
-      const container = scrollContainerRef.current;
-      if (!container) return;
-
-      const x = e.pageX - container.offsetLeft;
-      const walk = (x - startX) * 1.5;
-      container.scrollLeft = scrollLeftStart - walk;
-    },
-    [isMouseDragging, startX, scrollLeftStart],
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    if (isMouseDragging) {
-      setIsMouseDragging(false);
-      const container = scrollContainerRef.current;
-      if (container) {
-        container.style.cursor = "grab";
-      }
-    }
-  }, [isMouseDragging]);
+  }, [isDragging, scrollContainerRef]);
 
   const { projectId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
