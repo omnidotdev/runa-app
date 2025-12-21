@@ -9482,7 +9482,7 @@ export const WorkspacesDocument = gql`
     query Workspaces($userId: UUID!, $limit: Int) {
   workspaces(
     filter: {workspaceUsers: {some: {userId: {equalTo: $userId}}}}
-    orderBy: WORKSPACE_USERS_COUNT_DESC
+    orderBy: NAME_ASC
     first: $limit
   ) {
     nodes {

@@ -5,13 +5,19 @@ import {
   useNavigate,
   useRouteContext,
 } from "@tanstack/react-router";
-import { CheckIcon, ChevronsUpDown, PlusIcon } from "lucide-react";
+import {
+  CheckIcon,
+  ChevronsUpDown,
+  LayoutGridIcon,
+  PlusIcon,
+} from "lucide-react";
 
 import {
   MenuContent,
   MenuItem,
   MenuPositioner,
   MenuRoot,
+  MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
 import {
@@ -111,6 +117,17 @@ const AppSidebarHeader = () => {
                   </MenuItem>
                 );
               })}
+
+              <MenuSeparator />
+
+              <MenuItem
+                onClick={() => navigate({ to: "/workspaces" })}
+                className="cursor-pointer gap-2 px-2 py-1"
+                value="view-all-workspaces"
+              >
+                <LayoutGridIcon className="size-4" />
+                All Workspaces
+              </MenuItem>
             </MenuContent>
           </MenuPositioner>
         </MenuRoot>
