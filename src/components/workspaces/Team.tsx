@@ -119,14 +119,16 @@ const Team = () => {
             Team Members
           </h2>
 
+          {/* TODO: re-enable when per-seat pricing is implemented */}
           <Tooltip
             positioning={{ placement: "left" }}
-            tooltip={
-              maxNumberOfMembersReached
-                ? "Upgrade workspace to invite members"
-                : "Invite Member"
-            }
-            shortcut={!maxNumberOfMembersReached ? "I" : undefined}
+            tooltip="Coming Soon"
+            // tooltip={
+            //   maxNumberOfMembersReached
+            //     ? "Upgrade workspace to invite members"
+            //     : "Invite Member"
+            // }
+            // shortcut={!maxNumberOfMembersReached ? "I" : undefined}
             trigger={
               <Button
                 variant="ghost"
@@ -136,8 +138,8 @@ const Team = () => {
                   "mr-2 hidden size-7 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:hover:bg-transparent dark:disabled:hover:bg-transparent",
                   canInvite && "inline-flex",
                 )}
-                onClick={() => setIsInviteTeamMemberOpen(true)}
-                disabled={maxNumberOfMembersReached}
+                // onClick={() => setIsInviteTeamMemberOpen(true)}
+                disabled
                 ref={inviteRef}
               >
                 <PlusIcon />

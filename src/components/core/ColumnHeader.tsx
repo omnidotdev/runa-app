@@ -26,6 +26,7 @@ const ColumnHeader = ({
   tooltip,
   onCreate,
   children,
+  disabled,
   ...rest
 }: Props) => (
   <div className="mb-1 flex items-center justify-between rounded-lg py-2">
@@ -50,8 +51,9 @@ const ColumnHeader = ({
           <Button
             variant="ghost"
             className="size-7"
-            onClick={onCreate}
+            onClick={() => !disabled && onCreate()}
             aria-label={`Create ${title}`}
+            disabled={disabled}
             {...rest}
           >
             <PlusIcon className="size-4" />

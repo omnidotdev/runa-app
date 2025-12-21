@@ -11,5 +11,6 @@ export enum Hotkeys {
   UpdateTaskLabels = "l",
   UpdateTaskStatus = "s",
   UpdateTaskPriority = "shift+p",
-  InviteMember = "i",
+  // TODO: enable once per-seat pricing implemented
+  // InviteMember = "i",
 }

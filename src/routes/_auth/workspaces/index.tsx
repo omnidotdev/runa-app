@@ -69,7 +69,10 @@ function WorkspacesOverviewPage() {
                 preload="intent"
                 onMouseEnter={() => {
                   queryClient.prefetchQuery(
-                    workspaceBySlugOptions({ slug: workspace.slug }),
+                    workspaceBySlugOptions({
+                      slug: workspace.slug,
+                      projectSlug: undefined,
+                    }),
                   );
                 }}
                 variant="outline"
