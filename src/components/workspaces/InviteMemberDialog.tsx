@@ -5,7 +5,6 @@ import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import ms from "ms";
 import { useRef, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -31,7 +30,6 @@ import {
   TagsInputRoot,
 } from "@/components/ui/tags-input";
 import { useCreateInvitationMutation } from "@/generated/graphql";
-import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import userOptions from "@/lib/options/user.options";
@@ -61,14 +59,15 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     type: DialogType.InviteTeamMember,
   });
 
-  useHotkeys(
-    Hotkeys.InviteMember,
-    () => setIsInviteTeamMemberOpen(!isInviteTeamMemberOpen),
-    {
-      description: "Invite Team Member",
-    },
-    [setIsInviteTeamMemberOpen, isInviteTeamMemberOpen],
-  );
+  // TODO: re-enable when per-seat pricing is implemented
+  // useHotkeys(
+  //   Hotkeys.InviteMember,
+  //   () => setIsInviteTeamMemberOpen(!isInviteTeamMemberOpen),
+  //   {
+  //     description: "Invite Team Member",
+  //   },
+  //   [setIsInviteTeamMemberOpen, isInviteTeamMemberOpen],
+  // );
 
   const { data: currentWorkspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
