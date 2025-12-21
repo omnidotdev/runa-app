@@ -1,6 +1,15 @@
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 
+// TODO JSDoc
+interface CreateMetaTagsParams {
+  title?: string;
+  description?: string;
+  image?: string;
+  keywords?: string;
+  url?: string;
+}
+
 /**
  * Create meta tags.
  */
@@ -10,13 +19,7 @@ const createMetaTags = ({
   url: _url,
   keywords,
   image,
-}: {
-  title?: string;
-  description?: string;
-  image?: string;
-  keywords?: string;
-  url?: string;
-} = {}) => {
+}: CreateMetaTagsParams = {}) => {
   const title = _title ? `${_title} | ${app.name}` : app.name,
     description = _description ?? app.description,
     url = _url ?? BASE_URL;
@@ -35,27 +38,27 @@ const createMetaTags = ({
     },
     { name: "twitter:creator", content: "@omnidotdev" },
     { name: "twitter:url", content: url },
-    { name: "og:type", content: "website" },
-    { name: "og:title", content: title },
+    { property: "og:type", content: "website" },
+    { property: "og:title", content: title },
     {
-      name: "og:description",
+      property: "og:description",
       content: description,
     },
-    { name: "og:url", content: url },
+    { property: "og:url", content: url },
     ...(image
       ? [
           { name: "twitter:image", content: image },
           { name: "twitter:card", content: "summary_large_image" },
-          { name: "og:image", content: image },
-          { name: "og:image:width", content: "1200" },
-          { name: "og:image:height", content: "630" },
+          { property: "og:image", content: image },
+          { property: "og:image:width", content: "1200" },
+          { property: "og:image:height", content: "630" },
         ]
       : [
           { name: "twitter:image", content: `${BASE_URL}/runa_og.png` },
           { name: "twitter:card", content: "summary_large_image" },
-          { name: "og:image", content: `${BASE_URL}/runa_og.png` },
-          { name: "og:image:width", content: "1200" },
-          { name: "og:image:height", content: "630" },
+          { property: "og:image", content: `${BASE_URL}/runa_og.png` },
+          { property: "og:image:width", content: "1200" },
+          { property: "og:image:height", content: "630" },
         ]),
   ];
 
