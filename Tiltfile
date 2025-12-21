@@ -18,3 +18,10 @@ local_resource(
     labels=[project_name],
 	env=env_local,
 )
+
+local_resource(
+    "email-preview-%s" % project_name,
+    serve_cmd="bun email:preview",
+    labels=[project_name],
+	env=env_local,
+)
