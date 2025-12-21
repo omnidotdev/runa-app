@@ -22,6 +22,8 @@ const knipConfig: KnipConfig = {
   ignoreDependencies: [
     // used by GraphQL Code Generator scripts
     "dotenv",
+    // used by React Email preview server
+    "@react-email/preview-server",
   ],
   tags: ["-knipignore"],
 };
