@@ -75,7 +75,6 @@ export const Route = createFileRoute(
         ...projectColumnsOptions({
           workspaceId: workspaceBySlug.rowId!,
         }),
-        revalidateIfStale: true,
       }),
     ]);
 

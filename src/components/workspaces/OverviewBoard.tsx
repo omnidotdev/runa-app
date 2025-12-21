@@ -21,10 +21,14 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 import BoardItem from "./OverviewBoardItem";
 
-import type { ProjectFragment } from "@/generated/graphql";
+import type { ProjectsQuery } from "@/generated/graphql";
+
+type ProjectWithPreferences = NonNullable<
+  ProjectsQuery["projects"]
+>["nodes"][number];
 
 interface Props {
-  projects: ProjectFragment[];
+  projects: ProjectWithPreferences[];
 }
 
 const EDGE_THRESHOLD = 150;

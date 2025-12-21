@@ -8635,10 +8635,11 @@ export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Pro
 export type ProjectsQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, color?: string | null, viewMode: string, hiddenColumnIds: Array<string | null> }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } | null };
 
 export type TaskQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -9255,7 +9256,7 @@ export const ProjectDocument = gql`
 }
     `;
 export const ProjectsDocument = gql`
-    query Projects($workspaceId: UUID!, $search: String = "") {
+    query Projects($workspaceId: UUID!, $search: String = "", $userId: UUID) {
   projects(
     condition: {workspaceId: $workspaceId}
     filter: {name: {includesInsensitive: $search}}
@@ -9263,6 +9264,14 @@ export const ProjectsDocument = gql`
   ) {
     nodes {
       ...Project
+      userPreferences(condition: {userId: $userId}, first: 1) {
+        nodes {
+          rowId
+          color
+          viewMode
+          hiddenColumnIds
+        }
+      }
     }
   }
 }

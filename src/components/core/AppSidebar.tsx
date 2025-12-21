@@ -66,10 +66,7 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
       <Sidebar collapsible="icon" {...props}>
         <AppSidebarHeader />
 
-        <AppSidebarContent
-          selectedProject={selectedProject}
-          setSelectedProject={setSelectedProject}
-        />
+        <AppSidebarContent setSelectedProject={setSelectedProject} />
 
         <AppSidebarFooter />
 

@@ -56,6 +56,8 @@ export function getRouter() {
     routeTree,
     context: { queryClient, session: null },
     defaultPreload: "intent",
+    // delegate caching to React Query instead of router's built-in cache
+    defaultPreloadStaleTime: 0,
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
   });
