@@ -1,25 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
-import {
-  useNavigate,
-  useParams,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 
-import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
 
-import type { ProjectFragment } from "@/generated/graphql";
+import type { ProjectsQuery } from "@/generated/graphql";
+
+type ProjectWithPreferences = NonNullable<
+  ProjectsQuery["projects"]
+>["nodes"][number];
 
 interface Props {
-  project: ProjectFragment;
+  project: ProjectWithPreferences;
 }
 
 const ListItem = ({ project }: Props) => {
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/projects/",
-  });
-
-  const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
@@ -36,13 +30,7 @@ const ListItem = ({ project }: Props) => {
   const progressPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  const { data: userPreferences } = useQuery({
-    ...userPreferencesOptions({
-      userId: session?.user?.rowId!,
-      projectId: project.rowId,
-    }),
-    select: (data) => data?.userPreferenceByUserIdAndProjectId,
-  });
+  const userPreferences = project.userPreferences?.nodes?.[0];
 
   return (
     <div

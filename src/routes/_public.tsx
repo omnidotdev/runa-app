@@ -1,5 +1,5 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
-import { XIcon as CloseIcon, MegaphoneIcon, MenuIcon } from "lucide-react";
+import { XIcon as CloseIcon, MenuIcon } from "lucide-react";
 import { useState } from "react";
 import { LuGithub as GithubIcon } from "react-icons/lu";
 import {

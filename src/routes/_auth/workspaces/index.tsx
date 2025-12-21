@@ -30,7 +30,6 @@ export const Route = createFileRoute("/_auth/workspaces/")({
   loader: async ({ context: { queryClient, session } }) =>
     await queryClient.ensureQueryData({
       ...workspacesOptions({ userId: session?.user?.rowId!, limit: 4 }),
-      revalidateIfStale: true,
     }),
 });
 

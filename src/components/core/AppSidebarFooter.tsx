@@ -7,7 +7,6 @@ import {
 import {
   BookOpenIcon,
   LogOutIcon,
-  MessageSquareIcon,
   MoonIcon,
   MoreHorizontalIcon,
   PanelLeftCloseIcon,

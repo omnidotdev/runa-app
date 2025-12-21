@@ -1,10 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   useLoaderData,
   useLocation,
   useNavigate,
   useParams,
   useRouteContext,
+  useRouter,
 } from "@tanstack/react-router";
 import {
   BoxIcon,
@@ -19,7 +20,7 @@ import {
   Settings2,
   Settings2Icon,
 } from "lucide-react";
-import { useId, useState } from "react";
+import { useCallback, useId, useState } from "react";
 
 import {
   CollapsibleContent,
@@ -51,6 +52,7 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
+import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import Shortcut from "./Shortcut";
@@ -65,16 +67,43 @@ interface SidebarMenuItemType {
 }
 
 interface Props {
-  selectedProject?: { rowId: string; name: string };
   setSelectedProject: (project: { rowId: string; name: string }) => void;
 }
 
-const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
+// TODO break up this behemoth
+
+const AppSidebarContent = ({ setSelectedProject }: Props) => {
   const { workspaceId } = useLoaderData({ from: "/_auth" });
-  const { session, queryClient } = useRouteContext({ from: "/_auth" });
-  const { workspaceSlug } = useParams({ strict: false });
+  const { session } = useRouteContext({ from: "/_auth" });
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const navigate = useNavigate();
+  const { workspaceSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
+
+  // prefetch project data on hover
+  const prefetchProject = useCallback(
+    (projectSlug: string, projectId: string) => {
+      // prefetch route (runs loader)
+      router.preloadRoute({
+        to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+        params: { workspaceSlug: workspaceSlug!, projectSlug },
+      });
+      queryClient.prefetchQuery(tasksOptions({ projectId }));
+    },
+    [router, queryClient, workspaceSlug],
+  );
+
+  // prefetch workspace routes on hover
+  const prefetchWorkspaceRoute = useCallback(
+    (to: string) => {
+      router.preloadRoute({
+        to,
+        params: { workspaceSlug: workspaceSlug! },
+      });
+    },
+    [router, workspaceSlug],
+  );
 
   const [isProjectMenuOpen, setProjectMenuOpen] = useState(false);
 
@@ -87,7 +116,6 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
     select: (data) => data.workspace,
   });
 
-  // Conditionalize on currentWorkspace existing since we use `useQuery` and it is not suspenseful
   const isMember =
     workspace == null ||
     workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
@@ -101,7 +129,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
       invalidates: [getQueryKeyPrefix(useUserPreferencesQuery)],
     },
     onMutate: (variables) => {
-      // Update workspace cache for sidebar UI
+      // update workspace cache for sidebar UI
       queryClient.setQueryData(
         workspaceOptions({
           rowId: workspaceId!,
@@ -177,6 +205,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                 key={item.to}
                 isActive={item.isActive}
                 tooltip={item.tooltip}
+                onMouseEnter={() => prefetchWorkspaceRoute(item.to)}
                 onClick={() =>
                   navigate({
                     to: item.to,
@@ -300,6 +329,7 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                     <SidebarMenuButton
                       key={item.to}
                       isActive={item.isActive}
+                      onMouseEnter={() => prefetchWorkspaceRoute(item.to)}
                       onClick={() =>
                         navigate({
                           to: item.to,
@@ -373,6 +403,9 @@ const AppSidebarContent = ({ selectedProject, setSelectedProject }: Props) => {
                           isActive={
                             pathname ===
                             `/workspaces/${workspaceSlug}/projects/${project.slug}`
+                          }
+                          onMouseEnter={() =>
+                            prefetchProject(project.slug, project.rowId)
                           }
                           onClick={() =>
                             navigate({

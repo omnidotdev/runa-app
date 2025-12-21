@@ -23,6 +23,8 @@ import {
   useDeleteInvitationMutation,
   useDeleteWorkspaceMutation,
   useInvitationsQuery,
+  useWorkspaceBySlugQuery,
+  useWorkspaceUsersQuery,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -78,7 +80,15 @@ function ProfilePage() {
       invalidates: [getQueryKeyPrefix(useInvitationsQuery)],
     },
   });
-  const { mutateAsync: acceptInvitation } = useCreateWorkspaceUserMutation();
+  const { mutateAsync: acceptInvitation } = useCreateWorkspaceUserMutation({
+    meta: {
+      invalidates: [
+        workspacesOptions({ userId: session?.user.rowId! }).queryKey,
+        getQueryKeyPrefix(useWorkspaceBySlugQuery),
+        getQueryKeyPrefix(useWorkspaceUsersQuery),
+      ],
+    },
+  });
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
     meta: {
       invalidates: [

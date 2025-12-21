@@ -60,7 +60,7 @@ export const Route = createFileRoute(
   loaderDeps: ({ search: { search } }) => ({ search }),
   loader: async ({
     deps: { search },
-    context: { queryClient, workspaceBySlug },
+    context: { queryClient, workspaceBySlug, session },
   }) => {
     if (!workspaceBySlug) {
       throw notFound();
@@ -68,7 +68,11 @@ export const Route = createFileRoute(
 
     await Promise.all([
       queryClient.ensureQueryData(
-        projectsOptions({ workspaceId: workspaceBySlug.rowId!, search }),
+        projectsOptions({
+          workspaceId: workspaceBySlug.rowId!,
+          search,
+          userId: session?.user?.rowId,
+        }),
       ),
       queryClient.ensureQueryData(
         projectColumnsOptions({ workspaceId: workspaceBySlug.rowId!, search }),
@@ -112,8 +116,8 @@ function ProjectsOverviewPage() {
   const maxProjectsReached = useMaxProjectsReached();
 
   const projectsVariables = useMemo(
-    () => ({ workspaceId, search }),
-    [workspaceId, search],
+    () => ({ workspaceId, search, userId: session?.user?.rowId }),
+    [workspaceId, search, session?.user?.rowId],
   );
 
   const { data: projects } = useSuspenseQuery({
