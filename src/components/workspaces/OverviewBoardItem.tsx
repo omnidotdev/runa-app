@@ -59,7 +59,7 @@ const BoardItem = ({ project }: Props) => {
       <div className="mt-3">
         <div className="mb-1 flex justify-end text-xs">
           <span className="text-base-900 dark:text-base-100">
-            {completedTasks}/{totalTasks} tasks
+            {completedTasks}/{totalTasks} {totalTasks === 1 ? "task" : "tasks"}
           </span>
         </div>
 
