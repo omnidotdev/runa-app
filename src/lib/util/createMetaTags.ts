@@ -2,13 +2,15 @@ import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 
 // TODO JSDoc
-interface CreateMetaTagsParams {
+interface Params {
   title?: string;
   description?: string;
   image?: string;
   keywords?: string;
   url?: string;
 }
+
+// TODO improve type safety
 
 /**
  * Create meta tags.
@@ -17,15 +19,15 @@ const createMetaTags = ({
   title: _title,
   description: _description,
   url: _url,
-  keywords,
   image,
-}: CreateMetaTagsParams = {}) => {
+  keywords,
+}: Params = {}) => {
   const title = _title ? `${_title} | ${app.name}` : app.name,
     description = _description ?? app.description,
     url = _url ?? BASE_URL;
 
   const tags = [
-    { title: title },
+    { title },
     {
       name: "description",
       content: description,
