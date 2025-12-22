@@ -18,7 +18,7 @@ import SidebarProvider from "@/providers/SidebarProvider";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { queryClient, session } }) => {
-    if (!session) throw redirect({ to: "/" });
+    if (!session?.user.rowId) throw redirect({ to: "/" });
 
     // if session exists but `rowId` is missing, the user may exist in the identity provider but not in the database (stale cookie or incomplete signup), so signed out to clear the stale session
     if (!session.user.rowId) {
