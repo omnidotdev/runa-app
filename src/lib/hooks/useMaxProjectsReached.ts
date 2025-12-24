@@ -8,6 +8,11 @@ import workspaceOptions from "@/lib/options/workspace.options";
 const FREE_TIER_MAX_PROJECTS = 2;
 const BASIC_TIER_MAX_PROJECTS = 10;
 
+const billingBypassSlugs: string[] =
+  import.meta.env.VITE_BILLING_BYPASS_SLUGS?.split(",")
+    .map((s: string) => s.trim())
+    .filter(Boolean) ?? [];
+
 const useMaxProjectsReached = () => {
   const { workspaceId } = useLoaderData({
     from: "/_auth",
@@ -23,6 +28,12 @@ const useMaxProjectsReached = () => {
     select: (data) => data.workspace?.tier,
   });
 
+  const { data: slug, isLoading: isSlugLoading } = useQuery({
+    ...workspaceOptions({ rowId: workspaceId!, userId: session?.user.rowId! }),
+    enabled: !!workspaceId && !!session?.user?.rowId,
+    select: (data) => data.workspace?.slug,
+  });
+
   const { data: totalProjects, isLoading: isProjectsLoading } = useQuery({
     ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
     enabled: !!workspaceId && !!session?.user?.rowId,
@@ -30,7 +41,10 @@ const useMaxProjectsReached = () => {
   });
 
   // Allow project creation while data is loading
-  if (isTierLoading || isProjectsLoading) return false;
+  if (isTierLoading || isProjectsLoading || isSlugLoading) return false;
+
+  // Bypass tier limits for exempt workspaces
+  if (slug && billingBypassSlugs.includes(slug)) return false;
 
   return match({ tier, totalProjects })
     .with({ tier: undefined }, () => false)

@@ -8,6 +8,11 @@ import workspaceOptions from "@/lib/options/workspace.options";
 const FREE_TIER_MAX_TASKS = 500;
 const BASIC_TIER_MAX_TASKS = 2000;
 
+const billingBypassSlugs: string[] =
+  import.meta.env.VITE_BILLING_BYPASS_SLUGS?.split(",")
+    .map((s: string) => s.trim())
+    .filter(Boolean) ?? [];
+
 const useMaxTasksReached = () => {
   const { workspaceId } = useLoaderData({
     from: "/_auth",
@@ -23,6 +28,12 @@ const useMaxTasksReached = () => {
     select: (data) => data.workspace?.tier,
   });
 
+  const { data: slug, isLoading: isSlugLoading } = useQuery({
+    ...workspaceOptions({ rowId: workspaceId!, userId: session?.user.rowId! }),
+    enabled: !!workspaceId && !!session?.user?.rowId,
+    select: (data) => data.workspace?.slug,
+  });
+
   const { data: totalTasks, isLoading: isTasksLoading } = useQuery({
     ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
     enabled: !!workspaceId && !!session?.user?.rowId,
@@ -34,7 +45,10 @@ const useMaxTasksReached = () => {
   });
 
   // Allow task creation while data is loading
-  if (isTierLoading || isTasksLoading) return false;
+  if (isTierLoading || isTasksLoading || isSlugLoading) return false;
+
+  // Bypass tier limits for exempt workspaces
+  if (slug && billingBypassSlugs.includes(slug)) return false;
 
   return match({ tier, totalTasks })
     .with({ tier: undefined }, () => false)
