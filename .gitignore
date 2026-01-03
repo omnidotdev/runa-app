@@ -1,6 +1,6 @@
 node_modules
 
-# Tanstack
+# TanStack
 .tanstack
 .nitro
 .output
