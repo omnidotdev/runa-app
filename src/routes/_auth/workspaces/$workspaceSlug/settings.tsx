@@ -50,9 +50,8 @@ import { cn } from "@/lib/utils";
 import { FREE_PRICE } from "@/routes/_public/pricing";
 import { getPrices } from "@/server/functions/prices";
 import {
-  getCancelSubscriptionUrl,
+  getBillingPortalUrl,
   getCreateSubscriptionUrl,
-  getManageSubscriptionUrl,
   getSubscription,
   renewSubscription,
   revokeSubscription,
@@ -118,22 +117,11 @@ function SettingsPage() {
     select: (data) => data?.workspace,
   });
 
-  const { mutateAsync: manageSubscription } = useMutation({
+  const { mutateAsync: openBillingPortal } = useMutation({
     mutationFn: async () =>
-      await getManageSubscriptionUrl({
+      await getBillingPortalUrl({
         data: {
-          subscriptionId: workspace?.subscriptionId,
-          returnUrl: `${BASE_URL}/workspaces/${workspace?.slug}/settings`,
-        },
-      }),
-    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
-  });
-
-  const { mutateAsync: cancelSubscription } = useMutation({
-    mutationFn: async () =>
-      await getCancelSubscriptionUrl({
-        data: {
-          subscriptionId: workspace?.subscriptionId,
+          workspaceId: workspace?.rowId,
           returnUrl: `${BASE_URL}/workspaces/${workspace?.slug}/settings`,
         },
       }),
@@ -341,17 +329,14 @@ function SettingsPage() {
                     Renew Subscription
                   </Button>
                 ) : (
-                  <Button
-                    className="w-fit"
-                    onClick={() => manageSubscription()}
-                  >
+                  <Button className="w-fit" onClick={() => openBillingPortal()}>
                     Manage Subscription
                   </Button>
                 )}
 
                 <Button
                   variant="outline"
-                  onClick={() => cancelSubscription()}
+                  onClick={() => openBillingPortal()}
                   disabled={!!subscription.cancelAt}
                 >
                   Cancel Subscription
