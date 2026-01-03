@@ -8,7 +8,7 @@ const app = {
     name: "Omni",
     website: "https://omni.dev",
     discord: "https://discord.gg/omnidotdev",
-    twitter: "https://x.com/omnidotdev",
+    x: "https://x.com/omnidotdev",
     linkedin: "https://www.linkedin.com/company/omnidotdev",
   },
   links: {

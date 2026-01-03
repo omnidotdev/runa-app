@@ -5,7 +5,7 @@ import { LuGithub as GithubIcon } from "react-icons/lu";
 import {
   SiDiscord as DiscordIcon,
   SiLinkedin as LinkedinIcon,
-  SiX as TwitterIcon,
+  SiX as XIcon,
 } from "react-icons/si";
 
 import { Link, ThemeToggle } from "@/components/core";
@@ -258,12 +258,12 @@ function PublicLayout() {
                   <GithubIcon size={20} />
                 </a>
                 <a
-                  href={app.organization.twitter}
+                  href={app.organization.x}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-base-500 transition-colors hover:text-foreground"
                 >
-                  <TwitterIcon size={20} />
+                  <XIcon size={20} />
                 </a>
                 <a
                   href={app.organization.linkedin}
