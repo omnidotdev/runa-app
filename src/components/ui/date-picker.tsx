@@ -1,5 +1,3 @@
-"use client";
-
 import { DatePicker as ArkDatePicker } from "@ark-ui/react/date-picker";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -88,7 +86,7 @@ const DatePickerContent = ({
 }: ComponentProps<typeof ArkDatePicker.Content>) => (
   <ArkDatePicker.Content
     className={cn(
-      "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-10 flex w-[344px] min-w-fit origin-(--transform-origin) flex-col rounded-md border bg-background p-4 shadow-lg duration-300 data-[state=closed]:animate-out data-[state=open]:animate-in",
+      "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-10 flex w-86 min-w-fit origin-(--transform-origin) flex-col rounded-md border bg-background p-4 shadow-lg duration-300 data-[state=closed]:animate-out data-[state=open]:animate-in",
       className,
     )}
     {...rest}
