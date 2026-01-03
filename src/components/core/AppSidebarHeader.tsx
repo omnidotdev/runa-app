@@ -90,7 +90,7 @@ const AppSidebarHeader = () => {
             </SidebarMenuButton>
           </MenuTrigger>
 
-          <MenuPositioner className="!w-[var(--reference-width)]">
+          <MenuPositioner className="w-(--reference-width)!">
             <MenuContent className="no-scrollbar flex max-h-80 w-full flex-col gap-1 overflow-auto rounded-lg focus:outline-none">
               {workspaces?.map((workspace) => {
                 const isWorkspaceSelected =
