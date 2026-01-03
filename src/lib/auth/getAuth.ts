@@ -3,7 +3,7 @@ import { createRemoteJWKSet, jwtVerify } from "jose";
 
 import { getSdk } from "@/generated/graphql.sdk";
 import auth from "@/lib/auth/auth";
-import { API_GRAPHQL_URL, AUTH_ISSUER_URL } from "@/lib/config/env.config";
+import { API_GRAPHQL_URL, AUTH_BASE_URL } from "@/lib/config/env.config";
 
 const OMNI_CLAIMS_KEY = "https://manifold.omni.dev/@omni/claims/organizations";
 
@@ -36,7 +36,7 @@ export async function getAuth(request: Request) {
 
       // extract claims from the ID token
       if (tokenResult?.idToken) {
-        const jwks = createRemoteJWKSet(new URL(`${AUTH_ISSUER_URL}/jwks`));
+        const jwks = createRemoteJWKSet(new URL(`${AUTH_BASE_URL}/jwks`));
         const { payload } = await jwtVerify(tokenResult.idToken, jwks);
         identityProviderId = payload.sub;
 

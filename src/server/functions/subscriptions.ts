@@ -6,10 +6,8 @@ import { BILLING_BASE_URL } from "@/lib/config/env.config";
 import payments from "@/lib/payments";
 import { customerMiddleware } from "@/server/middleware";
 
-import type Stripe from "stripe";
-
-const subscriptionSchema = z.object({
-  subscriptionId: z.string().startsWith("sub_").nullable(),
+const workspaceSchema = z.object({
+  workspaceId: z.guid(),
 });
 
 const billingPortalSchema = z.object({
@@ -23,45 +21,76 @@ const createSubscriptionSchema = z.object({
   successUrl: z.url(),
 });
 
-const renewSubscriptionSchema = z.object({
-  subscriptionId: z.string().startsWith("sub_"),
-});
-
+/**
+ * Get subscription details for a workspace via billing service.
+ */
 export const getSubscription = createServerFn()
-  .inputValidator((data) => subscriptionSchema.parse(data))
-  .handler(async ({ data }) => {
-    if (!data.subscriptionId) return null;
+  .inputValidator((data) => workspaceSchema.parse(data))
+  .middleware([customerMiddleware])
+  .handler(async ({ data, context }) => {
+    if (!context.session) return null;
 
-    const subscription = await payments.subscriptions.retrieve(
-      data.subscriptionId,
+    const response = await fetch(
+      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}`,
       {
-        expand: ["items.data.price.product"],
+        headers: {
+          Authorization: `Bearer ${context.session.accessToken}`,
+        },
       },
     );
 
-    return {
-      id: subscription.id,
-      cancelAt: subscription.cancel_at,
-      product: subscription.items.data[0].price.product as Stripe.Product,
-    };
+    if (!response.ok) {
+      console.error("Failed to fetch subscription:", await response.text());
+      return null;
+    }
+
+    const { subscription } = await response.json();
+    return subscription as {
+      id: string;
+      status: string;
+      cancelAt: number | null;
+      currentPeriodEnd: number;
+      priceId: string;
+      product: {
+        id: string;
+        name: string;
+        description: string | null;
+        marketing_features: Array<{ name: string }>;
+      } | null;
+    } | null;
   });
 
+/**
+ * Cancel a subscription for a workspace via billing service.
+ */
 export const revokeSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => subscriptionSchema.parse(data))
+  .inputValidator((data) => workspaceSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
-    if (!context.customer) throw new Error("Unauthorized");
+    if (!context.session) throw new Error("Unauthorized");
 
-    const subscription = await payments.subscriptions.cancel(
-      data.subscriptionId!,
+    const response = await fetch(
+      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}/cancel`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${context.session.accessToken}`,
+        },
+      },
     );
 
-    return subscription.id;
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || "Failed to cancel subscription");
+    }
+
+    const { id } = await response.json();
+    return id as string;
   });
 
 /**
  * Get billing portal URL.
- * This creates a Stripe billing portal session through Aether,
+ * This creates a Stripe billing portal session through billing service,
  * which looks up the billing account by workspace ID.
  */
 export const getBillingPortalUrl = createServerFn({ method: "POST" })
@@ -94,6 +123,10 @@ export const getBillingPortalUrl = createServerFn({ method: "POST" })
     return url as string;
   });
 
+/**
+ * Create a checkout session for a new subscription.
+ * This still uses Stripe directly as checkout sessions are created by the app.
+ */
 export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => createSubscriptionSchema.parse(data))
   .middleware([customerMiddleware])
@@ -118,7 +151,6 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
       subscription_data: {
         metadata: {
           workspaceId: data.workspaceId,
-          // TODO make more robust, handle edge cases like multi-word app name
           omniProduct: app.name.toLowerCase(),
         },
       },
@@ -127,13 +159,27 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
     return checkout.url!;
   });
 
+/**
+ * Renew a subscription (remove scheduled cancellation) via billing service.
+ */
 export const renewSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => renewSubscriptionSchema.parse(data))
+  .inputValidator((data) => workspaceSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
-    if (!context.customer) throw new Error("Unauthorized");
+    if (!context.session) throw new Error("Unauthorized");
 
-    await payments.subscriptions.update(data.subscriptionId, {
-      cancel_at: null,
-    });
+    const response = await fetch(
+      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}/renew`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${context.session.accessToken}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || "Failed to renew subscription");
+    }
   });
