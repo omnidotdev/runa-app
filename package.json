@@ -9,7 +9,7 @@
     "check": "biome check --diagnostic-level=error",
     "format": "biome format --write",
     "lint": "biome lint --diagnostic-level=error",
-    "email:preview": "email dev --dir src/components/emails",
+    "email:preview": "email dev --dir src/components/emails --port 3001",
     "graphql:generate": "NODE_PATH=src/ dotenv -e .env.development -- graphql-codegen --config src/lib/graphql/codegen.config.ts",
     "graphql:generate:watch": "bun graphql:generate -w",
     "knip": "knip-bun",
