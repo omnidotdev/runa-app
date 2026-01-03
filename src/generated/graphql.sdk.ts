@@ -7615,6 +7615,7 @@ export type UserToManyWorkspaceUserFilter = {
 
 export type Workspace = Node & {
   __typename?: 'Workspace';
+  billingAccountId?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['Datetime']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
@@ -7695,6 +7696,8 @@ export type WorkspaceAggregates = {
  * for equality and combined with a logical ‘and.’
  */
 export type WorkspaceCondition = {
+  /** Checks for equality with the object’s `billingAccountId` field. */
+  billingAccountId?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `name` field. */
@@ -7739,6 +7742,8 @@ export type WorkspaceConnectionGroupedAggregatesArgs = {
 
 export type WorkspaceDistinctCountAggregates = {
   __typename?: 'WorkspaceDistinctCountAggregates';
+  /** Distinct count of billingAccountId across the matching connection */
+  billingAccountId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
@@ -7770,6 +7775,8 @@ export type WorkspaceEdge = {
 export type WorkspaceFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<WorkspaceFilter>>;
+  /** Filter by the object’s `billingAccountId` field. */
+  billingAccountId?: InputMaybe<StringFilter>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `invitations` relation. */
@@ -7810,6 +7817,7 @@ export type WorkspaceFilter = {
 
 /** Grouping methods for `Workspace` for usage during aggregation. */
 export enum WorkspaceGroupBy {
+  BillingAccountId = 'BILLING_ACCOUNT_ID',
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
@@ -7884,6 +7892,7 @@ export type WorkspaceHavingVarianceSampleInput = {
 
 /** An input for mutations affecting `Workspace` */
 export type WorkspaceInput = {
+  billingAccountId?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   name: Scalars['String']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -7894,6 +7903,8 @@ export type WorkspaceInput = {
 
 /** Methods to use when ordering `Workspace`. */
 export enum WorkspaceOrderBy {
+  BillingAccountIdAsc = 'BILLING_ACCOUNT_ID_ASC',
+  BillingAccountIdDesc = 'BILLING_ACCOUNT_ID_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   InvitationsCountAsc = 'INVITATIONS_COUNT_ASC',
@@ -8011,6 +8022,7 @@ export enum WorkspaceOrderBy {
 
 /** Represents an update to a `Workspace`. Fields that are set will be updated. */
 export type WorkspacePatch = {
+  billingAccountId?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;

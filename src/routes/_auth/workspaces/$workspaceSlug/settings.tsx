@@ -67,7 +67,7 @@ export const Route = createFileRoute(
 
     const [subscription, prices] = await Promise.all([
       getSubscription({
-        data: { subscriptionId: workspaceBySlug.subscriptionId },
+        data: { workspaceId: workspaceBySlug.rowId },
       }),
       getPrices(),
       queryClient.ensureQueryData({
@@ -143,7 +143,7 @@ function SettingsPage() {
   const { mutateAsync: handleRenewSubscription } = useMutation({
     mutationFn: async () =>
       await renewSubscription({
-        data: { subscriptionId: workspace?.subscriptionId },
+        data: { workspaceId: workspace?.rowId },
       }),
     onSuccess: () => router.invalidate(),
   });
@@ -427,13 +427,13 @@ function SettingsPage() {
             </span>
           }
           onConfirm={async () => {
-            if (workspace?.subscriptionId) {
-              const revokedSubscriptionId = await revokeSubscription({
-                data: { subscriptionId: workspace.subscriptionId },
+            // Cancel any active subscription before deleting workspace
+            try {
+              await revokeSubscription({
+                data: { workspaceId: workspace?.rowId },
               });
-
-              if (!revokedSubscriptionId)
-                throw new Error("Issue revoking subscription");
+            } catch {
+              // Subscription may not exist, continue with deletion
             }
 
             deleteWorkspace({ rowId: workspace?.rowId! });

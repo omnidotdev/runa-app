@@ -34,7 +34,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { revokeSubscription } from "@/server/functions/subscriptions";
 
-import type { Maybe, Workspace } from "@/generated/graphql";
+import type { Workspace } from "@/generated/graphql";
 
 export const Route = createFileRoute("/_auth/profile/$userId")({
   head: (context) => ({
@@ -99,22 +99,12 @@ function ProfilePage() {
   });
 
   const { mutateAsync: handleDeleteWorkspace } = useMutation({
-    // TODO: make transactional
-    mutationFn: async ({
-      workspaceId,
-      subscriptionId,
-    }: {
-      workspaceId: string;
-      subscriptionId: Maybe<string> | undefined;
-    }) => {
-      // cancel subscription if it exists
-      if (subscriptionId) {
-        const revokedSubscriptionId = await revokeSubscription({
-          data: { subscriptionId },
-        });
-
-        if (!revokedSubscriptionId)
-          throw new Error("Issue revoking subscription");
+    mutationFn: async ({ workspaceId }: { workspaceId: string }) => {
+      // Cancel any active subscription before deleting workspace
+      try {
+        await revokeSubscription({ data: { workspaceId } });
+      } catch {
+        // Subscription may not exist, continue with deletion
       }
 
       // delete workspace
@@ -236,7 +226,6 @@ function ProfilePage() {
           onConfirm={() => {
             handleDeleteWorkspace({
               workspaceId: workspaceToDelete.rowId!,
-              subscriptionId: workspaceToDelete.subscriptionId,
             });
           }}
           dialogType={DialogType.DeleteWorkspace}
