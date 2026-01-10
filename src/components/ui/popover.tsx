@@ -98,6 +98,7 @@ const PopoverDescription = ({
   />
 );
 
+/** @knipignore */
 export {
   PopoverRoot,
   PopoverTrigger,

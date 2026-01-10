@@ -39,6 +39,7 @@ const TooltipContent = ({
   />
 );
 
+/** @knipignore */
 export {
   TooltipContent,
   TooltipPositioner,

@@ -179,6 +179,7 @@ const DatePickerTableCellTrigger = ({
   />
 );
 
+/** @knipignore */
 export {
   DatePickerRoot,
   DatePickerLabel,

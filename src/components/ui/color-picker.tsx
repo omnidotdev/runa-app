@@ -275,6 +275,7 @@ const ColorPickerEyeDropperTrigger = ({
 
 const ColorPickerHiddenInput = ArkColorPicker.HiddenInput;
 
+/** @knipignore */
 export {
   ColorPickerRoot,
   ColorPickerLabel,

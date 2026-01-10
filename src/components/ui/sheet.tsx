@@ -110,6 +110,7 @@ const SheetCloseTrigger = ({
   );
 };
 
+/** @knipignore */
 export {
   SheetRoot,
   SheetTrigger,
