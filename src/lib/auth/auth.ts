@@ -18,6 +18,10 @@ const auth = betterAuth({
   baseURL: BASE_URL,
   basePath: "/api/auth",
   secret: AUTH_SECRET,
+  advanced: {
+    // use custom cookie prefix to avoid collision with gatekeeper (IDP) cookies
+    cookiePrefix: "runa",
+  },
   session: {
     // extend session expiration to 30 days
     expiresIn: 60 * 60 * 24 * 30,
