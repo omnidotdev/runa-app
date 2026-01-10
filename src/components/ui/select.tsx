@@ -180,6 +180,7 @@ const SelectSeparator = ({
   />
 );
 
+/** @knipignore */
 export {
   Select,
   SelectRoot,
@@ -203,4 +204,5 @@ export {
 };
 
 // Re-export createListCollection for convenience
+/** @knipignore */
 export { createListCollection } from "@ark-ui/react";

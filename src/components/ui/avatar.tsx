@@ -72,4 +72,5 @@ const AvatarImage = ({
   />
 );
 
+/** @knipignore */
 export { AvatarRoot, AvatarFallback, AvatarImage, AvatarProvider, useAvatar };

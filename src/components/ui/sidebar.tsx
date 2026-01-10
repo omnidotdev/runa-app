@@ -728,6 +728,7 @@ const SidebarMenuSubButton = ({
   );
 };
 
+/** @knipignore */
 export {
   Sidebar,
   SidebarContent,

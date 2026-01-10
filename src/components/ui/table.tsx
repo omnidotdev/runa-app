@@ -84,6 +84,7 @@ const TableCaption = ({ className, ...rest }: ComponentProps<"caption">) => (
   />
 );
 
+/** @knipignore */
 export {
   Table,
   TableHeader,

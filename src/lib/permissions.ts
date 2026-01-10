@@ -1,5 +1,10 @@
 /**
- * Centralized permission definitions for RBAC. Mirrors the backend permission system for consistent UI gating.
+ * UI-level permission helpers for role-based access control.
+ *
+ * IMPORTANT: These functions are for UI/UX purposes only (e.g., hiding buttons, disabling actions).
+ * Actual authorization is enforced server-side via Warden (PDP).
+ * The API is the security boundary - these checks simply provide a better user experience
+ * by preventing users from attempting actions they cannot perform.
  */
 
 import { Role } from "@/generated/graphql";

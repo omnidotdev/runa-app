@@ -165,6 +165,7 @@ const ComboboxItemText = ({
   <ArkCombobox.ItemText className={className} {...rest} />
 );
 
+/** @knipignore */
 export {
   ComboboxRoot,
   ComboboxLabel,

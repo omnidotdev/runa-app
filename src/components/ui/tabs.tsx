@@ -66,6 +66,7 @@ const TabsIndicator = ({
   />
 );
 
+/** @knipignore */
 export {
   TabsRoot,
   TabsList,
