@@ -2,7 +2,11 @@ v1alpha1.extension_repo(name='omni', url='https://github.com/omnidotdev/tilt-ext
 v1alpha1.extension(name='dotenv_values', repo_name='omni', repo_path='dotenv_values')
 load('ext://dotenv_values', 'dotenv_values')
 
+env_development = dotenv_values(".env.development")
 env_local = dotenv_values(".env.local")
+# merge env files (.env.local takes precedence)
+env = dict(env_development)
+env.update(env_local)
 project_name = "runa-app"
 
 local_resource(
@@ -16,12 +20,12 @@ local_resource(
     "dev-%s" % project_name,
     serve_cmd="bun dev",
     labels=[project_name],
-	env=env_local,
+	env=env,
 )
 
 local_resource(
     "email-preview-%s" % project_name,
     serve_cmd="bun email:preview",
     labels=[project_name],
-	env=env_local,
+	env=env,
 )
