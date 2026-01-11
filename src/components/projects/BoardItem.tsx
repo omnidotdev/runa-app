@@ -1,7 +1,7 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { format } from "date-fns";
+import dayjs from "dayjs";
 import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
@@ -220,7 +220,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                     <div className="col-span-1 mr-1 flex h-5 items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
                       <CalendarIcon className="h-3 w-3" />
                       {/* TODO: timezone handling */}
-                      <span>{format(new Date(task.dueDate), "MMM d")}</span>
+                      <span>{dayjs(task.dueDate).format("MMM D")}</span>
                     </div>
                   ) : (
                     <Badge

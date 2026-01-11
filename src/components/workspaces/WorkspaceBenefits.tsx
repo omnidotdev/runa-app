@@ -1,7 +1,7 @@
 import { Format } from "@ark-ui/react";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { getRouteApi, useRouter } from "@tanstack/react-router";
-import { format } from "date-fns";
+import dayjs from "dayjs";
 import { AlertTriangleIcon } from "lucide-react";
 import { Fragment } from "react";
 
@@ -95,7 +95,7 @@ export default function WorkspaceBenefits() {
           <div className="flex items-center gap-1 text-sm text-yellow-600 dark:text-yellow-400">
             <AlertTriangleIcon className="size-4" />
             The current subscription is set to be canceled on{" "}
-            {format(new Date(subscription.cancelAt * 1000), "MMM d, yyyy")}. To
+            {dayjs(subscription.cancelAt * 1000).format("MMM D, YYYY")}. To
             avoid losing the current workspace benefits, renew your subscription
             prior to this date.
           </div>

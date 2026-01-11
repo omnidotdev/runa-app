@@ -1,8 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
-import * as dateFns from "date-fns";
-// @ts-expect-error no declaration file
-import { createParseHumanRelativeTime } from "parse-human-relative-time/date-fns.js";
+import * as chrono from "chrono-node";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
@@ -34,8 +32,6 @@ const UpdateDueDateDialog = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { taskId: paramsTaskId } = useParams({ strict: false });
-
-  const parseHumanRelativeTime = createParseHumanRelativeTime(dateFns);
 
   const { taskId: storeTaskId } = useTaskStore();
 
@@ -148,14 +144,11 @@ const UpdateDueDateDialog = () => {
                 {(field) => (
                   <Input
                     ref={inputRef}
-                    onChange={async (e) => {
-                      try {
-                        const date = await parseHumanRelativeTime(
-                          e.target.value,
-                        );
-
-                        field.handleChange(new Date(date).toISOString());
-                      } catch (_error) {
+                    onChange={(e) => {
+                      const parsed = chrono.parseDate(e.target.value);
+                      if (parsed) {
+                        field.handleChange(parsed.toISOString());
+                      } else {
                         field.handleChange("");
                       }
                     }}
