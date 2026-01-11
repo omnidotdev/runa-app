@@ -1,7 +1,7 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import { format } from "date-fns";
+import dayjs from "dayjs";
 import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
@@ -197,7 +197,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
                 task?.dueDate ? (
                   <div className="flex h-5 items-center gap-1 text-base-500 text-xs dark:text-base-400">
                     <CalendarIcon className="h-3 w-3" />
-                    <span>{format(new Date(task.dueDate), "MMM d")}</span>
+                    <span>{dayjs(task.dueDate).format("MMM D")}</span>
                   </div>
                 ) : (
                   <Badge

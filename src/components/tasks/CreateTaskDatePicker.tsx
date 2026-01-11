@@ -1,5 +1,5 @@
 import { parseAbsoluteToLocal } from "@internationalized/date";
-import { format, parseISO } from "date-fns";
+import dayjs from "dayjs";
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -62,7 +62,7 @@ const CreateTaskDatePicker = withForm({
                   <p className="">
                     {field.state.value.length
                       ? // TODO: timezone handling
-                        format(parseISO(field.state.value), "MMM d, yyyy")
+                        dayjs(field.state.value).format("MMM D, YYYY")
                       : "Set due date"}
                   </p>
                 </Button>

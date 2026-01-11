@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouteContext } from "@tanstack/react-router";
-import { format } from "date-fns";
+import dayjs from "dayjs";
 import { MoreHorizontalIcon, PenLineIcon, Trash2Icon } from "lucide-react";
 import { Suspense, useEffect, useRef, useState } from "react";
 
@@ -124,7 +124,7 @@ const Comments = () => {
                         </span>
 
                         <span className="text-base-500 text-xs dark:text-base-400">
-                          {format(new Date(post.createdAt!), "MMM d, yyyy")}
+                          {dayjs(post.createdAt).format("MMM D, YYYY")}
                         </span>
 
                         <div className="ml-auto flex items-center gap-2">

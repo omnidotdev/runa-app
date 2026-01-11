@@ -1,6 +1,6 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { format } from "date-fns";
+import dayjs from "dayjs";
 import {
   ArrowLeftIcon,
   CalendarIcon,
@@ -290,7 +290,7 @@ function TaskPage() {
                 {task?.dueDate ? (
                   <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
                     <CalendarIcon className="size-3" />
-                    {format(new Date(task.dueDate), "MMM d, yyyy")}
+                    {dayjs(task.dueDate).format("MMM D, YYYY")}
                   </div>
                 ) : (
                   <p className="text-sm">Set due date</p>

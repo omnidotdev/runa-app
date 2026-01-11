@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
-import { format } from "date-fns";
+import dayjs from "dayjs";
 import { CalendarIcon } from "lucide-react";
 
 import { Label, Shortcut } from "@/components/core";
@@ -138,14 +138,14 @@ const TaskSidebar = () => {
           <div className="flex items-center justify-between text-xs">
             <span className="text-base-500 dark:text-base-400">Created</span>
             <span className="text-base-900 dark:text-base-100">
-              {format(new Date(task?.createdAt!), "MMM d, yyyy")}
+              {dayjs(task?.createdAt).format("MMM D, YYYY")}
             </span>
           </div>
 
           <div className="flex items-center justify-between text-xs">
             <span className="text-base-500 dark:text-base-400">Updated</span>
             <span className="text-base-900 dark:text-base-100">
-              {format(new Date(task?.updatedAt!), "MMM d, yyyy")}
+              {dayjs(task?.updatedAt).format("MMM D, YYYY")}
             </span>
           </div>
 
@@ -162,7 +162,7 @@ const TaskSidebar = () => {
             {task?.dueDate ? (
               <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
                 <CalendarIcon className="size-3" />
-                {format(new Date(task.dueDate), "MMM d, yyyy")}
+                {dayjs(task.dueDate).format("MMM D, YYYY")}
               </div>
             ) : (
               <div>--</div>
