@@ -6,5 +6,8 @@ export { default as ListItem } from "./ListItem";
 export { default as ProjectColorPicker } from "./ProjectColorPicker";
 export { default as ProjectColumnForm } from "./ProjectColumnForm";
 export { default as ProjectColumnsForm } from "./ProjectColumnsForm";
+export { default as ProjectDangerZone } from "./ProjectDangerZone";
+export { default as ProjectDataSection } from "./ProjectDataSection";
 export { default as ProjectLabelForm } from "./ProjectLabelForm";
 export { default as ProjectLabelsForm } from "./ProjectLabelsForm";
+export { default as ProjectSettingsHeader } from "./ProjectSettingsHeader";
