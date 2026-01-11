@@ -14,6 +14,7 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
+import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
 
 export const Route = createFileRoute("/_auth")({
@@ -94,18 +95,21 @@ export const Route = createFileRoute("/_auth")({
 });
 
 function AuthenticatedLayout() {
+  const { session } = Route.useRouteContext();
   return (
-    <SidebarProvider>
-      <div className="flex h-dvh w-full">
-        <AppSidebar variant="inset" />
+    <OrganizationProvider organizations={session?.organizations ?? []}>
+      <SidebarProvider>
+        <div className="flex h-dvh w-full">
+          <AppSidebar variant="inset" />
 
-        <SidebarInset className="flex-1 overflow-hidden">
-          <Outlet />
-        </SidebarInset>
-      </div>
+          <SidebarInset className="flex-1 overflow-hidden">
+            <Outlet />
+          </SidebarInset>
+        </div>
 
-      <CreateProjectDialog />
-      <CreateWorkspaceDialog />
-    </SidebarProvider>
+        <CreateProjectDialog />
+        <CreateWorkspaceDialog />
+      </SidebarProvider>
+    </OrganizationProvider>
   );
 }

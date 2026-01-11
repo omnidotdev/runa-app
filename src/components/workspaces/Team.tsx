@@ -88,11 +88,11 @@ const Team = () => {
   const { setIsOpen: setIsDeleteTeamMemberOpen } = useDialogStore({
       type: DialogType.DeleteTeamMember,
     }),
-    { setIsOpen: setIsInviteTeamMemberOpen } = useDialogStore({
+    { setIsOpen: _setIsInviteTeamMemberOpen } = useDialogStore({
       type: DialogType.InviteTeamMember,
     });
 
-  const maxNumberOfMembersReached = match(workspace?.tier)
+  const _maxNumberOfMembersReached = match(workspace?.tier)
     .with(Tier.Team, () => false)
     .with(Tier.Basic, () => members!.nodes.length >= 10)
     .otherwise(() => members!.nodes.length >= 3);

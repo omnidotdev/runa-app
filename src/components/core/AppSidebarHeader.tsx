@@ -12,6 +12,7 @@ import {
   PlusIcon,
 } from "lucide-react";
 
+import OrganizationSwitcher from "@/components/layout/OrganizationSwitcher";
 import {
   MenuContent,
   MenuItem,
@@ -78,6 +79,7 @@ const AppSidebarHeader = () => {
         </Badge>
       </div>
 
+      <OrganizationSwitcher />
       {workspaces?.length ? (
         <MenuRoot>
           <MenuTrigger asChild>

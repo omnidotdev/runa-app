@@ -19,7 +19,7 @@ const auth = betterAuth({
   basePath: "/api/auth",
   secret: AUTH_SECRET,
   advanced: {
-    // use custom cookie prefix to avoid collision with gatekeeper (IDP) cookies
+    // use custom cookie prefix to avoid collision with IDP cookies
     cookiePrefix: "runa",
   },
   session: {

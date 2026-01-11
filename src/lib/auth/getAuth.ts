@@ -76,6 +76,7 @@ async function getJwks(): Promise<jose.JWTVerifyGetKey> {
 export interface OrganizationClaim {
   id: string;
   slug: string;
+  type: "personal" | "team";
   roles: string[];
   teams: Array<{ id: string; name: string }>;
 }

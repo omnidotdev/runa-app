@@ -68,7 +68,7 @@ function PricingPage() {
   const _router = useRouter();
   const _canGoBack = useCanGoBack();
   const { prices } = Route.useLoaderData();
-  const { session } = Route.useRouteContext();
+  const { session: _session } = Route.useRouteContext();
   const _navigate = Route.useNavigate();
 
   const tabs = useTabs({ defaultValue: "month" });

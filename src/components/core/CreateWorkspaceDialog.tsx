@@ -29,6 +29,7 @@ import useForm from "@/lib/hooks/useForm";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { useOrganization } from "@/providers/OrganizationProvider";
 import { getCreateSubscriptionUrl } from "@/server/functions/subscriptions";
 
 const DEFAULT_PROJECT_COLUMNS = [
@@ -52,6 +53,7 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
   const nameRef = useRef<HTMLInputElement>(null);
 
   const { session } = useRouteContext({ strict: false });
+  const { currentOrganization } = useOrganization();
 
   const { isOpen: isCreateWorkspaceOpen, setIsOpen: setIsCreateWorkspaceOpen } =
     useDialogStore({
@@ -177,6 +179,7 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
             workspace: {
               name: value.name,
               slug: generateSlug(value.name),
+              organizationId: currentOrganization.id,
             },
           },
         }),
