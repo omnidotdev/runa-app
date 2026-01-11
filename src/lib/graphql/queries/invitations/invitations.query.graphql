@@ -10,7 +10,7 @@ query Invitations($email: String) {
             rowId
           }
         }
-        workspaceUsers {
+        members {
           totalCount
         }
       }

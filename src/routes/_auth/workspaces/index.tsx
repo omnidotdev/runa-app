@@ -94,7 +94,7 @@ function WorkspacesOverviewPage() {
                   </h3>
 
                   <p className="mt-1 text-base-600 text-sm dark:text-base-400">
-                    {workspace?.workspaceUsers?.totalCount} members
+                    {workspace?.members?.totalCount} members
                   </p>
 
                   <WorkspaceTier

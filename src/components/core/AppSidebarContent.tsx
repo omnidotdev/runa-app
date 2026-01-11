@@ -117,8 +117,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
   });
 
   const isMember =
-    workspace == null ||
-    workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
+    workspace == null || workspace?.members?.nodes?.[0]?.role === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();
 

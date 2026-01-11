@@ -10,10 +10,10 @@ import { NotFound } from "@/components/layout";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/workspaces";
 import invitationsOptions from "@/lib/options/invitations.options";
+import membersOptions from "@/lib/options/members.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
-import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
 
@@ -48,9 +48,9 @@ export const Route = createFileRoute("/_auth")({
 
       if (!workspaceBySlug) throw notFound();
 
-      const [{ workspaceUsers }] = await Promise.all([
+      const [{ members }] = await Promise.all([
         queryClient.ensureQueryData({
-          ...workspaceUsersOptions({
+          ...membersOptions({
             workspaceId: workspaceBySlug.rowId,
             filter: {
               userId: { equalTo: session.user.rowId! },
@@ -58,7 +58,7 @@ export const Route = createFileRoute("/_auth")({
           }),
         }),
         queryClient.prefetchQuery({
-          ...workspaceUsersOptions({
+          ...membersOptions({
             workspaceId: workspaceBySlug.rowId,
           }),
         }),
@@ -70,7 +70,7 @@ export const Route = createFileRoute("/_auth")({
         }),
       ]);
 
-      if (!workspaceUsers?.nodes.length) throw notFound();
+      if (!members?.nodes.length) throw notFound();
 
       return { workspaceBySlug };
     } else {

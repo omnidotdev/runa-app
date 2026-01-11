@@ -15,7 +15,7 @@ interface InvitationNode {
   workspace?: {
     rowId: string;
     name: string;
-    workspaceUsers: {
+    members: {
       totalCount: number;
     };
     projects: {
@@ -63,10 +63,8 @@ const InvitationsTable = ({ invitations, onAccept, onReject }: Props) => {
             </TableCell>
             <TableCell className="py-4 pl-1">
               <span className="text-muted-foreground text-sm">
-                {invitation.workspace?.workspaceUsers.totalCount ?? 0} member
-                {invitation.workspace?.workspaceUsers.totalCount === 1
-                  ? ""
-                  : "s"}
+                {invitation.workspace?.members.totalCount ?? 0} member
+                {invitation.workspace?.members.totalCount === 1 ? "" : "s"}
               </span>
             </TableCell>
             <TableCell className="py-4 pr-3 text-right">

@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/combobox";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
-import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
+import membersOptions from "@/lib/options/members.options";
 
 import type { ComponentProps } from "react";
 
@@ -49,9 +49,9 @@ const UpdateAssignees = withForm({
     const { contains } = useFilter({ sensitivity: "base" });
 
     const { data: users } = useQuery({
-      ...workspaceUsersOptions({ workspaceId: workspaceId! }),
+      ...membersOptions({ workspaceId: workspaceId! }),
       enabled: !!workspaceId,
-      select: (data) => data?.workspaceUsers?.nodes.map((user) => user.user),
+      select: (data) => data?.members?.nodes.map((user) => user.user),
     });
 
     const { collection: usersCollection, filter } =

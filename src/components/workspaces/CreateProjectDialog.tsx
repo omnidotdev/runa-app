@@ -68,7 +68,7 @@ const CreateProjectDialog = () => {
   // Conditionalize on currentWorkspace existing since we use `useQuery` and it is not suspenseful
   const isMember =
     currentWorkspace == null ||
-    currentWorkspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
+    currentWorkspace?.members?.nodes?.[0]?.role === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();
 

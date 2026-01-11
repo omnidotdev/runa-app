@@ -28,16 +28,16 @@ import {
 import {
   Role,
   Tier,
-  useDeleteWorkspaceUserMutation,
-  useUpdateWorkspaceUserMutation,
+  useDeleteMemberMutation,
+  useUpdateMemberMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import {
   canModifyMember,
   useCanManageTeam,
 } from "@/lib/hooks/useCanManageTeam";
+import membersOptions from "@/lib/options/members.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 import InviteMemberDialog from "./InviteMemberDialog";
 
@@ -67,23 +67,21 @@ const Team = () => {
   });
 
   const { data: members } = useSuspenseQuery({
-    ...workspaceUsersOptions({ workspaceId: workspaceId }),
-    select: (data) => data?.workspaceUsers,
+    ...membersOptions({ workspaceId: workspaceId }),
+    select: (data) => data?.members,
   });
 
-  const currentUserRole = workspace?.workspaceUsers?.nodes?.[0]?.role;
+  const currentUserRole = workspace?.members?.nodes?.[0]?.role;
   const { canInvite, canChangeRoles, canRemoveMembers } =
     useCanManageTeam(currentUserRole);
 
-  const { mutate: deleteMember } = useDeleteWorkspaceUserMutation({
+  const { mutate: deleteMember } = useDeleteMemberMutation({
     meta: {
-      invalidates: [
-        workspaceUsersOptions({ workspaceId: workspaceId }).queryKey,
-      ],
+      invalidates: [membersOptions({ workspaceId: workspaceId }).queryKey],
     },
   });
 
-  const { mutate: editMember } = useUpdateWorkspaceUserMutation();
+  const { mutate: editMember } = useUpdateMemberMutation();
 
   const { setIsOpen: setIsDeleteTeamMemberOpen } = useDialogStore({
       type: DialogType.DeleteTeamMember,

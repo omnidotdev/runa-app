@@ -64,7 +64,7 @@ const Projects = () => {
     select: (data) => data?.workspace,
   });
 
-  const currentUserRole = workspace?.workspaceUsers?.nodes?.[0]?.role;
+  const currentUserRole = workspace?.members?.nodes?.[0]?.role;
   const canManageProjects = currentUserRole && isAdminOrOwner(currentUserRole);
 
   const maxProjectsReached = useMaxProjectsReached();
