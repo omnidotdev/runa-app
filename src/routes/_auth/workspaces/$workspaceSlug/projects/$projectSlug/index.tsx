@@ -524,7 +524,6 @@ function ProjectPage() {
     [updateTask, setDraggableId, tasksVariables, queryClient, setIsDragging],
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: `setIsDragging` is stable
   const onDragStart = useCallback(
     (start: DragStart) => {
       setIsDragging(true);
