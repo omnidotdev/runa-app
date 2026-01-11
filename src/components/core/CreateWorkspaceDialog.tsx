@@ -16,9 +16,9 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   Role,
+  useCreateMemberMutation,
   useCreateProjectColumnMutation,
   useCreateWorkspaceMutation,
-  useCreateWorkspaceUserMutation,
   useProjectColumnsQuery,
   useWorkspacesQuery,
 } from "@/generated/graphql";
@@ -69,7 +69,7 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
     [setIsCreateWorkspaceOpen, isCreateWorkspaceOpen, state],
   );
 
-  const { mutateAsync: createTeamMember } = useCreateWorkspaceUserMutation();
+  const { mutateAsync: createTeamMember } = useCreateMemberMutation();
 
   const { mutateAsync: createNewWorkspace } = useCreateWorkspaceMutation({
     meta: {
@@ -81,7 +81,7 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
       // NB: important to create team member first, as being an "owner" is required to create project columns
       await createTeamMember({
         input: {
-          workspaceUser: {
+          member: {
             userId: session?.user?.rowId!,
             workspaceId: createWorkspace?.workspace?.rowId!,
             role: Role.Owner,

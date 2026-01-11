@@ -1,9 +1,9 @@
-query WorkspaceUsers(
+query Members(
   $workspaceId: UUID!
-  $filter: WorkspaceUserFilter
-  $orderBy: [WorkspaceUserOrderBy!] = [CREATED_AT_ASC]
+  $filter: MemberFilter
+  $orderBy: [MemberOrderBy!] = [CREATED_AT_ASC]
 ) {
-  workspaceUsers(
+  members(
     condition: { workspaceId: $workspaceId }
     filter: $filter
     orderBy: $orderBy

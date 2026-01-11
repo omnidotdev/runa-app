@@ -1,6 +1,6 @@
 query Workspaces($userId: UUID!, $limit: Int) {
   workspaces(
-    filter: { workspaceUsers: { some: { userId: { equalTo: $userId } } } }
+    filter: { members: { some: { userId: { equalTo: $userId } } } }
     orderBy: NAME_ASC
     first: $limit
   ) {
@@ -9,10 +9,10 @@ query Workspaces($userId: UUID!, $limit: Int) {
       name
       slug
       tier
-      workspaceUsers {
+      members {
         totalCount
       }
-      currentUser: workspaceUsers(condition: { userId: $userId }) {
+      currentUser: members(condition: { userId: $userId }) {
         nodes {
           role
         }

@@ -33,8 +33,8 @@ import {
   MenuTriggerItem,
 } from "@/components/ui/menu";
 import { Hotkeys } from "@/lib/constants/hotkeys";
+import membersOptions from "@/lib/options/members.options";
 import projectOptions from "@/lib/options/project.options";
-import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import { cn } from "@/lib/utils";
 
 const Filter = () => {
@@ -59,8 +59,8 @@ const Filter = () => {
   });
 
   const { data: users } = useSuspenseQuery({
-    ...workspaceUsersOptions({ workspaceId: workspaceId }),
-    select: (data) => data?.workspaceUsers?.nodes.flatMap((user) => user?.user),
+    ...membersOptions({ workspaceId: workspaceId }),
+    select: (data) => data?.members?.nodes.flatMap((user) => user?.user),
   });
 
   useHotkeys(Hotkeys.ToggleFilter, () => setIsFilterOpen(!isFilterOpen), [

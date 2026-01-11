@@ -26,7 +26,7 @@ export default function WorkspaceDangerZone() {
     select: (data) => data?.workspace,
   });
 
-  const currentUserRole = workspace?.workspaceUsers?.nodes?.[0]?.role;
+  const currentUserRole = workspace?.members?.nodes?.[0]?.role;
   const canDeleteWorkspace = currentUserRole && isOwner(currentUserRole);
 
   const { setIsOpen: setIsDeleteWorkspaceOpen } = useDialogStore({

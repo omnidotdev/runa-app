@@ -22,8 +22,8 @@ import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
+import membersOptions from "@/lib/options/members.options";
 import taskOptions from "@/lib/options/task.options";
-import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import UpdateAssignees from "./UpdateAssignees";
 
@@ -47,10 +47,10 @@ const UpdateAssigneesDialog = () => {
     type: DialogType.UpdateAssignees,
   });
 
-  const { data: workspaceUsers } = useQuery({
-    ...workspaceUsersOptions({ workspaceId: workspaceId! }),
+  const { data: members } = useQuery({
+    ...membersOptions({ workspaceId: workspaceId! }),
     enabled: !!workspaceId,
-    select: (data) => data?.workspaceUsers?.nodes.map((wu) => wu.user),
+    select: (data) => data?.members?.nodes.map((wu) => wu.user),
   });
 
   useHotkeys(
@@ -77,7 +77,7 @@ const UpdateAssigneesDialog = () => {
       await queryClient.cancelQueries({ queryKey: taskQueryKey });
       const previousTask = queryClient.getQueryData(taskQueryKey);
 
-      const user = workspaceUsers?.find(
+      const user = members?.find(
         (u) => u?.rowId === variables.input.assignee?.userId,
       );
 

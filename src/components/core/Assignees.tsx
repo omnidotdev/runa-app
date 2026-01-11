@@ -6,7 +6,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@/components/ui/avatar";
-import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
+import membersOptions from "@/lib/options/members.options";
 import { cn } from "@/lib/utils";
 
 import type { ComponentProps } from "react";
@@ -25,13 +25,13 @@ const Assignees = ({
 }: Props) => {
   const { workspaceId } = useLoaderData({ from: "/_auth" });
 
-  const { data: workspaceUsers } = useQuery({
-    ...workspaceUsersOptions({ workspaceId: workspaceId! }),
+  const { data: members } = useQuery({
+    ...membersOptions({ workspaceId: workspaceId! }),
     enabled: !!workspaceId,
-    select: (data) => data?.workspaceUsers?.nodes.map((user) => user?.user),
+    select: (data) => data?.members?.nodes.map((user) => user?.user),
   });
 
-  const assignedUsers = workspaceUsers?.filter((user) =>
+  const assignedUsers = members?.filter((user) =>
     assignees?.includes(user?.rowId!),
   );
 

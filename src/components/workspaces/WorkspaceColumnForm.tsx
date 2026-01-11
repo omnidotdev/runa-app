@@ -75,7 +75,7 @@ const ColumnForm = ({
     select: (data) => data?.workspace,
   });
 
-  const isMember = workspace?.workspaceUsers?.nodes?.[0]?.role === Role.Member;
+  const isMember = workspace?.members?.nodes?.[0]?.role === Role.Member;
 
   const [isHovering, setIsHovering] = useState(false);
 

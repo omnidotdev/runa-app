@@ -18,13 +18,13 @@ import {
 } from "@/components/ui/tabs";
 import {
   Role,
+  useCreateMemberMutation,
   useCreateUserPreferenceMutation,
-  useCreateWorkspaceUserMutation,
   useDeleteInvitationMutation,
   useDeleteWorkspaceMutation,
   useInvitationsQuery,
+  useMembersQuery,
   useWorkspaceBySlugQuery,
-  useWorkspaceUsersQuery,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -80,12 +80,12 @@ function ProfilePage() {
       invalidates: [getQueryKeyPrefix(useInvitationsQuery)],
     },
   });
-  const { mutateAsync: acceptInvitation } = useCreateWorkspaceUserMutation({
+  const { mutateAsync: acceptInvitation } = useCreateMemberMutation({
     meta: {
       invalidates: [
         workspacesOptions({ userId: session?.user.rowId! }).queryKey,
         getQueryKeyPrefix(useWorkspaceBySlugQuery),
-        getQueryKeyPrefix(useWorkspaceUsersQuery),
+        getQueryKeyPrefix(useMembersQuery),
       ],
     },
   });
@@ -125,7 +125,7 @@ function ProfilePage() {
       // The invitation must exist for authorization to pass
       await acceptInvitation({
         input: {
-          workspaceUser: {
+          member: {
             userId: session?.user.rowId!,
             workspaceId: invitation.workspace?.rowId!,
             role: Role.Member,

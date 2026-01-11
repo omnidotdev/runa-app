@@ -27,7 +27,7 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
-import workspaceUsersOptions from "@/lib/options/workspaceUsers.options";
+import membersOptions from "@/lib/options/members.options";
 import { cn } from "@/lib/utils";
 
 const CreateTaskAssignees = withForm({
@@ -36,10 +36,9 @@ const CreateTaskAssignees = withForm({
     const { workspaceId } = useLoaderData({ from: "/_auth" });
 
     const { data: users } = useQuery({
-      ...workspaceUsersOptions({ workspaceId: workspaceId! }),
+      ...membersOptions({ workspaceId: workspaceId! }),
       enabled: !!workspaceId,
-      select: (data) =>
-        data?.workspaceUsers?.nodes.flatMap((user) => user.user),
+      select: (data) => data?.members?.nodes.flatMap((user) => user.user),
     });
 
     const field = useField({ form, name: "assignees" });

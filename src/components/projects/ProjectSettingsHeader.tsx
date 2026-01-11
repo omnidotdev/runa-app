@@ -35,7 +35,7 @@ export default function ProjectSettingsHeader() {
 
   const { data: role } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace?.workspaceUsers.nodes?.[0]?.role,
+    select: (data) => data.workspace?.members.nodes?.[0]?.role,
   });
 
   const isMember = role === Role.Member;
