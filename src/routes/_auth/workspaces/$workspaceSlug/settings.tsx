@@ -19,9 +19,7 @@ export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
 )({
   loader: async ({ context: { queryClient, workspaceBySlug } }) => {
-    if (!workspaceBySlug) {
-      throw notFound();
-    }
+    if (!workspaceBySlug) throw notFound();
 
     const [subscription, prices] = await Promise.all([
       getSubscription({
