@@ -6,5 +6,8 @@ export { default as OverviewList } from "./OverviewList";
 export { default as OverviewListItem } from "./OverviewListItem";
 export { default as Projects } from "./Projects";
 export { default as Team } from "./Team";
+export { default as WorkspaceBenefits } from "./WorkspaceBenefits";
 export { default as WorkspaceColumnForm } from "./WorkspaceColumnForm";
 export { default as WorkspaceColumnsForm } from "./WorkspaceColumnsForm";
+export { default as WorkspaceDangerZone } from "./WorkspaceDangerZone";
+export { default as WorkspaceSettingsHeader } from "./WorkspaceSettingsHeader";
