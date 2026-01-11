@@ -30,34 +30,39 @@ export const getSubscription = createServerFn()
   .handler(async ({ data, context }) => {
     if (!context.session) return null;
 
-    const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${context.session.accessToken}`,
+    try {
+      const response = await fetch(
+        `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${context.session.accessToken}`,
+          },
         },
-      },
-    );
+      );
 
-    if (!response.ok) {
-      console.error("Failed to fetch subscription:", await response.text());
+      if (!response.ok) {
+        console.error("Failed to fetch subscription:", await response.text());
+        return null;
+      }
+
+      const { subscription } = await response.json();
+      return subscription as {
+        id: string;
+        status: string;
+        cancelAt: number | null;
+        currentPeriodEnd: number;
+        priceId: string;
+        product: {
+          id: string;
+          name: string;
+          description: string | null;
+          marketing_features: Array<{ name: string }>;
+        } | null;
+      } | null;
+    } catch (error) {
+      console.error("Failed to fetch subscription:", error);
       return null;
     }
-
-    const { subscription } = await response.json();
-    return subscription as {
-      id: string;
-      status: string;
-      cancelAt: number | null;
-      currentPeriodEnd: number;
-      priceId: string;
-      product: {
-        id: string;
-        name: string;
-        description: string | null;
-        marketing_features: Array<{ name: string }>;
-      } | null;
-    } | null;
   });
 
 /**
