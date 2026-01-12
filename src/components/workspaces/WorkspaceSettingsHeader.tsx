@@ -17,7 +17,7 @@ import {
 import getSdk from "@/lib/graphql/getSdk";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { isAdminOrOwner } from "@/lib/permissions";
-import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
@@ -146,7 +146,7 @@ export default function WorkspaceSettingsHeader() {
           )}
         </div>
         <Badge className="bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
-          {firstLetterToUppercase(workspace?.tier!)}
+          {capitalizeFirstLetter(workspace?.tier!)}
         </Badge>
       </div>
     </div>

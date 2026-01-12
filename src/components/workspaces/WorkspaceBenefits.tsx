@@ -20,7 +20,7 @@ import {
 import { BASE_URL } from "@/lib/config/env.config";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { isOwner } from "@/lib/permissions";
-import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
 import { FREE_PRICE } from "@/routes/_public/pricing";
 import {
@@ -151,7 +151,7 @@ export default function WorkspaceBenefits() {
                   <Fragment key={tier}>
                     <MenuItemGroup>
                       <MenuItemGroupLabel className="text-muted-foreground">
-                        {firstLetterToUppercase(tier)}
+                        {capitalizeFirstLetter(tier)}
                       </MenuItemGroupLabel>
 
                       {prices
@@ -164,7 +164,7 @@ export default function WorkspaceBenefits() {
                           >
                             <MenuItemText className="flex w-full items-center justify-between">
                               <span className="font-medium text-sm">
-                                {firstLetterToUppercase(
+                                {capitalizeFirstLetter(
                                   price.recurring?.interval!,
                                 )}
                                 ly

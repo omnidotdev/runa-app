@@ -2,7 +2,7 @@ import { match } from "ts-pattern";
 
 import { Badge, badgeVariants } from "@/components/ui/badge";
 import { Tier } from "@/generated/graphql";
-import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
 
 import type { ComponentProps } from "react";
@@ -38,7 +38,7 @@ const WorkspaceTier = ({ tier, className, variant, ...rest }: Props) => {
       className={cn(badgeVariants({ variant }), tierStyles, className)}
       {...rest}
     >
-      {firstLetterToUppercase(tier!)}
+      {capitalizeFirstLetter(tier!)}
     </Badge>
   );
 };
