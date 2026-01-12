@@ -151,7 +151,13 @@ function AuthenticatedLayout() {
   const organizations = useMemo(() => {
     const orgs = [...(session?.organizations ?? [])];
     if (fetchedOrg && !orgs.some((o) => o.id === fetchedOrg.id)) {
-      orgs.push(fetchedOrg);
+      // augment with missing fields to match `OrganizationClaim` shape
+      orgs.push({
+        ...fetchedOrg,
+        // user just created this org, mark as owner
+        roles: ["owner"],
+        teams: [],
+      });
     }
     return orgs;
   }, [session?.organizations, fetchedOrg]);
