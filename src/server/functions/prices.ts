@@ -14,7 +14,7 @@ export interface ExpandedProductPrice extends Stripe.Price {
 
 export const getPrices = createServerFn().handler(async () => {
   const prices = await payments.prices.search({
-    query: `metadata['app']:'${app.name}'`,
+    query: `active:"true" AND metadata["app"]:"${app.name.toLowerCase()}"`,
     expand: ["data.product"],
   });
 
