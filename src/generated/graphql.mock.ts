@@ -1152,19 +1152,19 @@ export const mockWorkspaceQuery = (resolver: GraphQLResponseResolver<Types.Works
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
- * mockWorkspaceBySlugQuery(
+ * mockWorkspaceByOrganizationIdQuery(
  *   ({ query, variables }) => {
- *     const { slug, projectSlug } = variables;
+ *     const { organizationId, projectSlug } = variables;
  *     return HttpResponse.json({
- *       data: { workspaceBySlug }
+ *       data: { workspaceByOrganizationId }
  *     })
  *   },
  *   requestOptions
  * )
  */
-export const mockWorkspaceBySlugQuery = (resolver: GraphQLResponseResolver<Types.WorkspaceBySlugQuery, Types.WorkspaceBySlugQueryVariables>, options?: RequestHandlerOptions) =>
-  graphql.query<Types.WorkspaceBySlugQuery, Types.WorkspaceBySlugQueryVariables>(
-    'WorkspaceBySlug',
+export const mockWorkspaceByOrganizationIdQuery = (resolver: GraphQLResponseResolver<Types.WorkspaceByOrganizationIdQuery, Types.WorkspaceByOrganizationIdQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.WorkspaceByOrganizationIdQuery, Types.WorkspaceByOrganizationIdQueryVariables>(
+    'WorkspaceByOrganizationId',
     resolver,
     options
   )

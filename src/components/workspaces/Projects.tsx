@@ -35,6 +35,7 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import { isAdminOrOwner } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
+import { useOrganization } from "@/providers/OrganizationProvider";
 
 const Projects = () => {
   const { workspaceSlug } = useParams({
@@ -55,6 +56,7 @@ const Projects = () => {
   }>();
 
   const navigate = useNavigate();
+  const orgContext = useOrganization();
 
   const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({
@@ -63,6 +65,11 @@ const Projects = () => {
     }),
     select: (data) => data?.workspace,
   });
+
+  // Resolve org name from JWT claims
+  const orgName = workspace?.organizationId
+    ? orgContext?.getOrganizationById(workspace.organizationId)?.name
+    : undefined;
 
   const currentUserRole = workspace?.members?.nodes?.[0]?.role;
   const canManageProjects = currentUserRole && isAdminOrOwner(currentUserRole);
@@ -275,7 +282,7 @@ const Projects = () => {
 
       <DestructiveActionDialog
         title="Danger Zone"
-        description={`This will delete the project "${selectedProject?.name}" from ${workspace?.name} workspace. This action cannot be undone.`}
+        description={`This will delete the project "${selectedProject?.name}" from ${orgName} workspace. This action cannot be undone.`}
         onConfirm={() => {
           deleteProject({ rowId: selectedProject?.rowId! });
         }}

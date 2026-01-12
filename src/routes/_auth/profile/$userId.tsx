@@ -24,7 +24,7 @@ import {
   useDeleteWorkspaceMutation,
   useInvitationsQuery,
   useMembersQuery,
-  useWorkspaceBySlugQuery,
+  useWorkspaceByOrganizationIdQuery,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -32,9 +32,8 @@ import invitationsOptions from "@/lib/options/invitations.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { useOrganization } from "@/providers/OrganizationProvider";
 import { revokeSubscription } from "@/server/functions/subscriptions";
-
-import type { Workspace } from "@/generated/graphql";
 
 export const Route = createFileRoute("/_auth/profile/$userId")({
   head: (context) => ({
@@ -51,10 +50,11 @@ export const Route = createFileRoute("/_auth/profile/$userId")({
 
 function ProfilePage() {
   const [workspaceToDelete, setWorkspaceToDelete] = useState<
-    Partial<Workspace> | undefined
+    { rowId: string; organizationId: string } | undefined
   >(undefined);
 
   const { session } = Route.useRouteContext();
+  const orgContext = useOrganization();
 
   const isOmniMember =
     session?.organizations?.some((org) => org.slug === "omni") ?? false;
@@ -84,7 +84,7 @@ function ProfilePage() {
     meta: {
       invalidates: [
         workspacesOptions({ userId: session?.user.rowId! }).queryKey,
-        getQueryKeyPrefix(useWorkspaceBySlugQuery),
+        getQueryKeyPrefix(useWorkspaceByOrganizationIdQuery),
         getQueryKeyPrefix(useMembersQuery),
       ],
     },
@@ -210,29 +210,35 @@ function ProfilePage() {
         </div>
       </div>
 
-      {!!workspaceToDelete && (
-        <DestructiveActionDialog
-          title="Danger Zone"
-          description={
-            <span>
-              This will delete{" "}
-              <strong className="font-medium text-base-900 dark:text-base-100">
-                {workspaceToDelete?.name}
-              </strong>{" "}
-              and all associated data. Any subscription associated with this
-              workspace will be revoked. This action cannot be undone.
-            </span>
-          }
-          onConfirm={() => {
-            handleDeleteWorkspace({
-              workspaceId: workspaceToDelete.rowId!,
-            });
-          }}
-          dialogType={DialogType.DeleteWorkspace}
-          confirmation={`permanently delete ${workspaceToDelete?.name}`}
-          onExitComplete={() => setWorkspaceToDelete(undefined)}
-        />
-      )}
+      {!!workspaceToDelete &&
+        (() => {
+          const orgName = orgContext?.getOrganizationById(
+            workspaceToDelete.organizationId,
+          )?.name;
+          return (
+            <DestructiveActionDialog
+              title="Danger Zone"
+              description={
+                <span>
+                  This will delete{" "}
+                  <strong className="font-medium text-base-900 dark:text-base-100">
+                    {orgName}
+                  </strong>{" "}
+                  and all associated data. Any subscription associated with this
+                  workspace will be revoked. This action cannot be undone.
+                </span>
+              }
+              onConfirm={() => {
+                handleDeleteWorkspace({
+                  workspaceId: workspaceToDelete.rowId,
+                });
+              }}
+              dialogType={DialogType.DeleteWorkspace}
+              confirmation={`permanently delete ${orgName}`}
+              onExitComplete={() => setWorkspaceToDelete(undefined)}
+            />
+          );
+        })()}
     </div>
   );
 }

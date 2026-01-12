@@ -1,0 +1,16 @@
+query WorkspaceByOrganizationId(
+  $organizationId: String!
+  $projectSlug: String
+) {
+  workspaceByOrganizationId(organizationId: $organizationId) {
+    rowId
+    organizationId
+    tier
+    projects(condition: { slug: $projectSlug }) {
+      nodes {
+        name
+        rowId
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import { isOwner } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
+import { useOrganization } from "@/providers/OrganizationProvider";
 import { revokeSubscription } from "@/server/functions/subscriptions";
 
 const routeApi = getRouteApi("/_auth/workspaces/$workspaceSlug/settings");
@@ -17,6 +18,7 @@ export default function WorkspaceDangerZone() {
   const { session } = routeApi.useRouteContext();
   const { workspaceId } = routeApi.useLoaderData();
   const navigate = routeApi.useNavigate();
+  const orgContext = useOrganization();
 
   const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({
@@ -25,6 +27,11 @@ export default function WorkspaceDangerZone() {
     }),
     select: (data) => data?.workspace,
   });
+
+  // Resolve org name from JWT claims
+  const orgName = workspace?.organizationId
+    ? orgContext?.getOrganizationById(workspace.organizationId)?.name
+    : undefined;
 
   const currentUserRole = workspace?.members?.nodes?.[0]?.role;
   const canDeleteWorkspace = currentUserRole && isOwner(currentUserRole);
@@ -68,7 +75,7 @@ export default function WorkspaceDangerZone() {
           <span>
             This will delete{" "}
             <strong className="font-medium text-base-900 dark:text-base-100">
-              {workspace?.name}
+              {orgName}
             </strong>{" "}
             and all associated data. Any subscription associated with this
             workspace will be revoked. This action cannot be undone.
@@ -88,7 +95,7 @@ export default function WorkspaceDangerZone() {
           navigate({ to: "/workspaces", replace: true });
         }}
         dialogType={DialogType.DeleteWorkspace}
-        confirmation={`permanently delete ${workspace?.name}`}
+        confirmation={`permanently delete ${orgName}`}
       />
     </>
   );

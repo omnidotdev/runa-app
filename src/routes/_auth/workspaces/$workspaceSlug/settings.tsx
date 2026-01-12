@@ -18,38 +18,36 @@ import { getSubscription } from "@/server/functions/subscriptions";
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
 )({
-  loader: async ({ context: { queryClient, workspaceBySlug } }) => {
-    if (!workspaceBySlug) throw notFound();
+  loader: async ({ context: { queryClient, workspaceByOrganizationId } }) => {
+    if (!workspaceByOrganizationId) throw notFound();
 
     const [subscription, prices] = await Promise.all([
       getSubscription({
-        data: { workspaceId: workspaceBySlug.rowId },
+        data: { workspaceId: workspaceByOrganizationId.rowId },
       }),
       getPrices(),
       queryClient.ensureQueryData({
         ...projectColumnsOptions({
-          workspaceId: workspaceBySlug.rowId!,
+          workspaceId: workspaceByOrganizationId.rowId!,
         }),
       }),
     ]);
 
     return {
-      name: workspaceBySlug.name,
-      workspaceId: workspaceBySlug.rowId,
+      workspaceId: workspaceByOrganizationId.rowId,
+      organizationId: workspaceByOrganizationId.organizationId,
       subscription,
       prices,
     };
   },
-  head: ({ loaderData, params }) => ({
-    meta: loaderData
-      ? [
-          ...createMetaTags({
-            title: `${loaderData.name} Settings`,
-            description: `Settings for the ${loaderData.name} workspace.`,
-            url: `${BASE_URL}/workspaces/${params.workspaceSlug}/settings`,
-          }),
-        ]
-      : undefined,
+  head: ({ params }) => ({
+    meta: [
+      ...createMetaTags({
+        title: "Workspace Settings",
+        description: "Settings for this workspace.",
+        url: `${BASE_URL}/workspaces/${params.workspaceSlug}/settings`,
+      }),
+    ],
   }),
   notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,
   component: SettingsPage,

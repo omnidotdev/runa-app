@@ -1,13 +1,12 @@
 query Workspaces($userId: UUID!, $limit: Int) {
   workspaces(
     filter: { members: { some: { userId: { equalTo: $userId } } } }
-    orderBy: NAME_ASC
+    orderBy: CREATED_AT_ASC
     first: $limit
   ) {
     nodes {
       rowId
-      name
-      slug
+      organizationId
       tier
       members {
         totalCount

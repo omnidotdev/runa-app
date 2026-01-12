@@ -17,13 +17,16 @@ import createMetaTags from "@/lib/util/createMetaTags";
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
 )({
-  loader: async ({ context: { queryClient, workspaceBySlug } }) => {
-    if (!workspaceBySlug || !workspaceBySlug.projects.nodes.length) {
+  loader: async ({ context: { queryClient, workspaceByOrganizationId } }) => {
+    if (
+      !workspaceByOrganizationId ||
+      !workspaceByOrganizationId.projects.nodes.length
+    ) {
       throw notFound();
     }
 
-    const projectId = workspaceBySlug.projects.nodes[0].rowId;
-    const projectName = workspaceBySlug.projects.nodes[0].name;
+    const projectId = workspaceByOrganizationId.projects.nodes[0].rowId;
+    const projectName = workspaceByOrganizationId.projects.nodes[0].name;
 
     await Promise.all([
       queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
@@ -31,7 +34,11 @@ export const Route = createFileRoute(
       queryClient.ensureQueryData(columnsOptions({ projectId })),
     ]);
 
-    return { name: projectName, projectId, workspaceId: workspaceBySlug.rowId };
+    return {
+      name: projectName,
+      projectId,
+      workspaceId: workspaceByOrganizationId.rowId,
+    };
   },
   head: ({ loaderData, params }) => ({
     meta: loaderData

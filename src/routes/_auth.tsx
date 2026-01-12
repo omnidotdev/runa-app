@@ -4,6 +4,7 @@ import {
   notFound,
   redirect,
 } from "@tanstack/react-router";
+import { useMemo } from "react";
 
 import { AppSidebar, CreateWorkspaceDialog } from "@/components/core";
 import { NotFound } from "@/components/layout";
@@ -12,10 +13,12 @@ import { CreateProjectDialog } from "@/components/workspaces";
 import invitationsOptions from "@/lib/options/invitations.options";
 import membersOptions from "@/lib/options/members.options";
 import workspaceOptions from "@/lib/options/workspace.options";
-import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
+import workspaceByOrganizationIdOptions from "@/lib/options/workspaceByOrganizationId.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
+import { getOrganizationBySlug } from "@/server/functions/organizations";
+import { provisionWorkspace } from "@/server/functions/workspaces";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { queryClient, session } }) => {
@@ -32,12 +35,31 @@ export const Route = createFileRoute("/_auth")({
       projectSlug?: string;
     };
 
+    // workspaceSlug in the URL is actually the org slug from JWT claims
+    // We need to resolve it to organizationId to query the workspace
+    // Note: orgFromSlug may be undefined if JWT claims are stale (user just created the org)
+    const orgFromSlug = workspaceSlug
+      ? session.organizations?.find((org) => org.slug === workspaceSlug)
+      : undefined;
+
     // validate the user belongs to the workspace when applicable
     if (workspaceSlug) {
-      const [{ workspaceBySlug }] = await Promise.all([
+      // If org not in JWT claims (stale token after creating new org),
+      // fetch it directly from Gatekeeper
+      let organizationId = orgFromSlug?.id;
+      let fetchedOrg: Awaited<ReturnType<typeof getOrganizationBySlug>> = null;
+      if (!organizationId) {
+        fetchedOrg = await getOrganizationBySlug({
+          data: { slug: workspaceSlug },
+        });
+        if (!fetchedOrg) throw notFound();
+        organizationId = fetchedOrg.id;
+      }
+
+      let [{ workspaceByOrganizationId }] = await Promise.all([
         queryClient.ensureQueryData({
-          ...workspaceBySlugOptions({
-            slug: workspaceSlug,
+          ...workspaceByOrganizationIdOptions({
+            organizationId,
             projectSlug,
           }),
         }),
@@ -46,12 +68,38 @@ export const Route = createFileRoute("/_auth")({
         }),
       ]);
 
-      if (!workspaceBySlug) throw notFound();
+      // Auto-provision workspace if it doesn't exist for this organization
+      if (!workspaceByOrganizationId) {
+        await provisionWorkspace({
+          data: { organizationId },
+        });
+
+        // Invalidate and refetch to get workspace with proper shape
+        await queryClient.invalidateQueries({
+          queryKey: workspaceByOrganizationIdOptions({
+            organizationId,
+          }).queryKey,
+        });
+        await queryClient.invalidateQueries({
+          queryKey: workspacesOptions({ userId: session.user.rowId! }).queryKey,
+        });
+
+        // Refetch the workspace with full data
+        const result = await queryClient.fetchQuery({
+          ...workspaceByOrganizationIdOptions({
+            organizationId,
+            projectSlug,
+          }),
+        });
+        workspaceByOrganizationId = result.workspaceByOrganizationId;
+      }
+
+      if (!workspaceByOrganizationId) throw notFound();
 
       const [{ members }] = await Promise.all([
         queryClient.ensureQueryData({
           ...membersOptions({
-            workspaceId: workspaceBySlug.rowId,
+            workspaceId: workspaceByOrganizationId.rowId,
             filter: {
               userId: { equalTo: session.user.rowId! },
             },
@@ -59,12 +107,12 @@ export const Route = createFileRoute("/_auth")({
         }),
         queryClient.prefetchQuery({
           ...membersOptions({
-            workspaceId: workspaceBySlug.rowId,
+            workspaceId: workspaceByOrganizationId.rowId,
           }),
         }),
         queryClient.prefetchQuery({
           ...workspaceOptions({
-            rowId: workspaceBySlug.rowId,
+            rowId: workspaceByOrganizationId.rowId,
             userId: session.user.rowId!,
           }),
         }),
@@ -72,13 +120,13 @@ export const Route = createFileRoute("/_auth")({
 
       if (!members?.nodes.length) throw notFound();
 
-      return { workspaceBySlug };
+      return { workspaceByOrganizationId, fetchedOrg };
     } else {
       await queryClient.ensureQueryData({
         ...workspacesOptions({ userId: session.user.rowId! }),
       });
 
-      return { workspaceBySlug: undefined };
+      return { workspaceByOrganizationId: undefined, fetchedOrg: null };
     }
   },
   loader: async ({ context }) => {
@@ -87,7 +135,8 @@ export const Route = createFileRoute("/_auth")({
     });
 
     return {
-      workspaceId: context.workspaceBySlug?.rowId,
+      workspaceId: context.workspaceByOrganizationId?.rowId,
+      fetchedOrg: context.fetchedOrg,
     };
   },
   notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,
@@ -96,8 +145,19 @@ export const Route = createFileRoute("/_auth")({
 
 function AuthenticatedLayout() {
   const { session } = Route.useRouteContext();
+  const { fetchedOrg } = Route.useLoaderData();
+
+  // Merge JWT organizations with any dynamically fetched org (for stale JWT cases)
+  const organizations = useMemo(() => {
+    const orgs = [...(session?.organizations ?? [])];
+    if (fetchedOrg && !orgs.some((o) => o.id === fetchedOrg.id)) {
+      orgs.push(fetchedOrg);
+    }
+    return orgs;
+  }, [session?.organizations, fetchedOrg]);
+
   return (
-    <OrganizationProvider organizations={session?.organizations ?? []}>
+    <OrganizationProvider organizations={organizations}>
       <SidebarProvider>
         <div className="flex h-dvh w-full">
           <AppSidebar variant="inset" />

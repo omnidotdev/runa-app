@@ -4,7 +4,7 @@ query Invitations($email: String) {
       rowId
       workspace {
         rowId
-        name
+        organizationId
         projects {
           nodes {
             rowId

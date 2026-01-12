@@ -39,6 +39,7 @@ import {
 import membersOptions from "@/lib/options/members.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
+import { useOrganization } from "@/providers/OrganizationProvider";
 import InviteMemberDialog from "./InviteMemberDialog";
 
 const Team = () => {
@@ -58,6 +59,8 @@ const Team = () => {
     rowId: string;
   }>();
 
+  const orgContext = useOrganization();
+
   const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({
       rowId: workspaceId,
@@ -65,6 +68,11 @@ const Team = () => {
     }),
     select: (data) => data?.workspace,
   });
+
+  // Resolve org name from JWT claims
+  const orgName = workspace?.organizationId
+    ? orgContext?.getOrganizationById(workspace.organizationId)?.name
+    : undefined;
 
   const { data: members } = useSuspenseQuery({
     ...membersOptions({ workspaceId: workspaceId }),
@@ -309,7 +317,7 @@ const Team = () => {
 
       <DestructiveActionDialog
         title="Danger Zone"
-        description={`This will delete ${selectedMember?.name} from ${workspace?.name} workspace. This action cannot be undone.`}
+        description={`This will delete ${selectedMember?.name} from ${orgName} workspace. This action cannot be undone.`}
         onConfirm={() =>
           deleteMember({ userId: selectedMember?.rowId!, workspaceId })
         }

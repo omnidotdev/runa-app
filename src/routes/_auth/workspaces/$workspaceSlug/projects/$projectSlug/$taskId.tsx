@@ -54,9 +54,9 @@ export const Route = createFileRoute(
 )({
   loader: async ({
     params: { taskId },
-    context: { queryClient, workspaceBySlug },
+    context: { queryClient, workspaceByOrganizationId },
   }) => {
-    if (!workspaceBySlug) {
+    if (!workspaceByOrganizationId) {
       throw notFound();
     }
 
@@ -69,9 +69,9 @@ export const Route = createFileRoute(
     }
 
     return {
-      workspaceId: workspaceBySlug.rowId,
-      projectId: workspaceBySlug.projects?.nodes?.[0]?.rowId!,
-      projectName: workspaceBySlug.projects.nodes?.[0]?.name!,
+      workspaceId: workspaceByOrganizationId.rowId,
+      projectId: workspaceByOrganizationId.projects?.nodes?.[0]?.rowId!,
+      projectName: workspaceByOrganizationId.projects.nodes?.[0]?.name!,
     };
   },
   head: ({ loaderData, params }) => ({

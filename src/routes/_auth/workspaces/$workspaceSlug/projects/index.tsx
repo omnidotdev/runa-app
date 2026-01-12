@@ -60,37 +60,41 @@ export const Route = createFileRoute(
   loaderDeps: ({ search: { search } }) => ({ search }),
   loader: async ({
     deps: { search },
-    context: { queryClient, workspaceBySlug, session },
+    context: { queryClient, workspaceByOrganizationId, session },
   }) => {
-    if (!workspaceBySlug) {
+    if (!workspaceByOrganizationId) {
       throw notFound();
     }
 
     await Promise.all([
       queryClient.ensureQueryData(
         projectsOptions({
-          workspaceId: workspaceBySlug.rowId!,
+          workspaceId: workspaceByOrganizationId.rowId!,
           search,
           userId: session?.user?.rowId,
         }),
       ),
       queryClient.ensureQueryData(
-        projectColumnsOptions({ workspaceId: workspaceBySlug.rowId!, search }),
+        projectColumnsOptions({
+          workspaceId: workspaceByOrganizationId.rowId!,
+          search,
+        }),
       ),
     ]);
 
-    return { name: workspaceBySlug.name, workspaceId: workspaceBySlug.rowId };
+    return {
+      workspaceId: workspaceByOrganizationId.rowId,
+      organizationId: workspaceByOrganizationId.organizationId,
+    };
   },
-  head: ({ loaderData, params }) => ({
-    meta: loaderData
-      ? [
-          ...createMetaTags({
-            title: `${loaderData.name} Projects`,
-            description: `Manage and track all projects for the ${loaderData.name} workspace.`,
-            url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects`,
-          }),
-        ]
-      : undefined,
+  head: ({ params }) => ({
+    meta: [
+      ...createMetaTags({
+        title: "Projects",
+        description: "Manage and track all projects for this workspace.",
+        url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects`,
+      }),
+    ],
   }),
   notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,
   component: ProjectsOverviewPage,
