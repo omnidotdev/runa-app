@@ -27,9 +27,9 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import workspacesOptions from "@/lib/options/workspaces.options";
-import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
+import { createOrganization } from "@/server/functions/organizations";
 import { getCreateSubscriptionUrl } from "@/server/functions/subscriptions";
 
 const DEFAULT_PROJECT_COLUMNS = [
@@ -77,51 +77,9 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
         workspacesOptions({ userId: session?.user.rowId! }).queryKey,
       ],
     },
-    onSuccess: async ({ createWorkspace }) => {
-      // NB: important to create team member first, as being an "owner" is required to create project columns
-      await createTeamMember({
-        input: {
-          member: {
-            userId: session?.user?.rowId!,
-            workspaceId: createWorkspace?.workspace?.rowId!,
-            role: Role.Owner,
-          },
-        },
-      });
-
-      await Promise.all([
-        ...DEFAULT_PROJECT_COLUMNS.map((column) =>
-          createProjectColumn({
-            input: {
-              projectColumn: {
-                ...column,
-                workspaceId: createWorkspace?.workspace?.rowId!,
-              },
-            },
-          }),
-        ),
-      ]);
-
-      if (priceId) {
-        const checkoutUrl = await getCreateSubscriptionUrl({
-          data: {
-            workspaceId: createWorkspace?.workspace?.rowId,
-            priceId,
-            successUrl: `${BASE_URL}/workspaces/${createWorkspace?.workspace?.slug}/projects`,
-          },
-        });
-
-        navigate({ href: checkoutUrl, reloadDocument: true });
-      } else {
-        navigate({
-          to: "/workspaces/$workspaceSlug/projects",
-          params: { workspaceSlug: createWorkspace?.workspace?.slug! },
-        });
-      }
-    },
   });
 
-  const { mutate: createProjectColumn } = useCreateProjectColumnMutation({
+  const { mutateAsync: createProjectColumn } = useCreateProjectColumnMutation({
     meta: {
       invalidates: [
         getQueryKeyPrefix(useWorkspacesQuery),
@@ -136,11 +94,13 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
   });
 
   const isWorkspaceNameAvailable = async (name: string) => {
-    if (!workspaces) return true;
+    if (!workspaces || !orgContext) return true;
 
-    return !workspaces.some(
-      (workspace) => workspace.name.toLowerCase() === name.toLowerCase(),
-    );
+    // Check if any workspace's org name matches the input name
+    return !workspaces.some((ws) => {
+      const wsOrgName = orgContext.getOrganizationById(ws.organizationId)?.name;
+      return wsOrgName?.toLowerCase() === name.toLowerCase();
+    });
   };
 
   const form = useForm({
@@ -170,35 +130,86 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
         return null;
       },
     },
-    onSubmit: ({ value, formApi }) => {
+    onSubmit: async ({ value, formApi }) => {
       if (!value.name.trim()) return;
 
+      setIsCreateWorkspaceOpen(false);
+
       toast.promise(
-        createNewWorkspace({
-          input: {
-            workspace: {
-              name: value.name,
-              slug: generateSlug(value.name),
-              organizationId: currentOrganization.id,
+        (async () => {
+          // Step 1: Create organization in Gatekeeper (IDP)
+          const org = await createOrganization({
+            data: { name: value.name.trim() },
+          });
+
+          // Step 2: Create workspace in Runa linked to the new org
+          const { createWorkspace } = await createNewWorkspace({
+            input: {
+              workspace: {
+                organizationId: org.id,
+              },
             },
-          },
-        }),
+          });
+
+          const workspaceId = createWorkspace?.workspace?.rowId!;
+
+          // Step 3: Create owner membership (required before creating project columns)
+          await createTeamMember({
+            input: {
+              member: {
+                userId: session?.user?.rowId!,
+                workspaceId,
+                role: Role.Owner,
+              },
+            },
+          });
+
+          // Step 4: Create default project columns
+          await Promise.all(
+            DEFAULT_PROJECT_COLUMNS.map((column) =>
+              createProjectColumn({
+                input: {
+                  projectColumn: {
+                    ...column,
+                    workspaceId,
+                  },
+                },
+              }),
+            ),
+          );
+
+          // Step 5: Navigate to the new workspace
+          // Use org.slug directly since JWT claims won't have the new org yet
+          if (priceId) {
+            const checkoutUrl = await getCreateSubscriptionUrl({
+              data: {
+                workspaceId,
+                priceId,
+                successUrl: `${BASE_URL}/workspaces/${org.slug}/projects`,
+              },
+            });
+            navigate({ href: checkoutUrl, reloadDocument: true });
+          } else {
+            // Force page reload to refresh JWT claims with new org
+            window.location.href = `/workspaces/${org.slug}/projects`;
+          }
+
+          return org;
+        })(),
         {
           loading: "Creating Workspace...",
           success: "Workspace created successfully!",
-          error: "Something went wrong! Please try again.",
+          error: (err) =>
+            err?.message || "Something went wrong! Please try again.",
         },
       );
 
-      setIsCreateWorkspaceOpen(false);
       formApi.reset();
     },
   });
 
-  // Don't render if no organization context (e.g., on pricing page without auth)
-  if (!orgContext) return null;
-
-  const { currentOrganization } = orgContext;
+  // Don't render if no session (unauthenticated)
+  if (!session) return null;
 
   return (
     <DialogRoot

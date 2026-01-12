@@ -1,8 +1,7 @@
 query Workspace($rowId: UUID!, $userId: UUID!) {
   workspace(rowId: $rowId) {
     rowId
-    name
-    slug
+    organizationId
     viewMode
     tier
     members(condition: { userId: $userId }) {

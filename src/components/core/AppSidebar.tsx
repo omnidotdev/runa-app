@@ -18,6 +18,7 @@ import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { useOrganization } from "@/providers/OrganizationProvider";
 import AppSidebarContent from "./AppSidebarContent";
 import AppSidebarFooter from "./AppSidebarFooter";
 import AppSidebarHeader from "./AppSidebarHeader";
@@ -30,6 +31,7 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
   const { session } = useRouteContext({ strict: false });
   const { workspaceSlug } = useParams({ strict: false });
   const navigate = useNavigate();
+  const orgContext = useOrganization();
   const [selectedProject, setSelectedProject] = useState<{
     rowId: string;
     name: string;
@@ -43,6 +45,11 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
     enabled: !!workspaceId,
     select: (data) => data.workspace,
   });
+
+  // Resolve organization name from JWT claims
+  const orgName = workspace?.organizationId
+    ? orgContext?.getOrganizationById(workspace.organizationId)?.name
+    : undefined;
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
@@ -76,7 +83,7 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
       {/* Delete Project */}
       <DestructiveActionDialog
         title="Danger Zone"
-        description={`This will delete the project "${selectedProject?.name}" from ${workspace?.name} workspace. This action cannot be undone.`}
+        description={`This will delete the project "${selectedProject?.name}" from ${orgName} workspace. This action cannot be undone.`}
         onConfirm={() => {
           deleteProject({ rowId: selectedProject?.rowId! });
           navigate({

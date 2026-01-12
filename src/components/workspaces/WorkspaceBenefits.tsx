@@ -22,6 +22,7 @@ import workspaceOptions from "@/lib/options/workspace.options";
 import { isOwner } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
+import { useOrganization } from "@/providers/OrganizationProvider";
 import { FREE_PRICE } from "@/routes/_public/pricing";
 import {
   getBillingPortalUrl,
@@ -36,6 +37,8 @@ export default function WorkspaceBenefits() {
   const { workspaceId, subscription, prices } = routeApi.useLoaderData();
   const router = useRouter();
   const navigate = routeApi.useNavigate();
+  const orgContext = useOrganization();
+  const { workspaceSlug } = routeApi.useParams();
 
   const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({
@@ -45,6 +48,9 @@ export default function WorkspaceBenefits() {
     select: (data) => data?.workspace,
   });
 
+  // Resolve org slug from JWT claims (workspaceSlug in URL is already org slug)
+  const orgSlug = workspaceSlug;
+
   const currentUserRole = workspace?.members?.nodes?.[0]?.role;
   const canDeleteWorkspace = currentUserRole && isOwner(currentUserRole);
 
@@ -53,7 +59,7 @@ export default function WorkspaceBenefits() {
       await getBillingPortalUrl({
         data: {
           workspaceId: workspace?.rowId,
-          returnUrl: `${BASE_URL}/workspaces/${workspace?.slug}/settings`,
+          returnUrl: `${BASE_URL}/workspaces/${orgSlug}/settings`,
         },
       }),
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
@@ -65,7 +71,7 @@ export default function WorkspaceBenefits() {
         data: {
           workspaceId: workspace?.rowId,
           priceId,
-          successUrl: `${BASE_URL}/workspaces/${workspace?.slug}/settings`,
+          successUrl: `${BASE_URL}/workspaces/${orgSlug}/settings`,
         },
       }),
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),

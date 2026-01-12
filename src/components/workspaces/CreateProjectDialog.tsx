@@ -23,8 +23,10 @@ import { Input } from "@/components/ui/input";
 import {
   Role,
   useCreateColumnMutation,
+  useCreateProjectColumnMutation,
   useCreateProjectMutation,
   useCreateUserPreferenceMutation,
+  useProjectColumnsQuery,
   useProjectsQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -37,6 +39,7 @@ import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { useOrganization } from "@/providers/OrganizationProvider";
 
 const DEFAULT_COLUMNS = [
   { title: "Backlog", index: 0, emoji: "📚" },
@@ -46,6 +49,12 @@ const DEFAULT_COLUMNS = [
   { title: "Done", index: 4, emoji: "✅" },
 ];
 
+const DEFAULT_PROJECT_COLUMNS = [
+  { title: "Planned", index: 0, emoji: "🗓" },
+  { title: "In Progress", index: 1, emoji: "🚧" },
+  { title: "Completed", index: 2, emoji: "✅" },
+];
+
 const CreateProjectDialog = () => {
   const { session } = useRouteContext({ from: "/_auth" });
   const { workspaceId } = useLoaderData({ from: "/_auth" });
@@ -53,6 +62,7 @@ const CreateProjectDialog = () => {
 
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
+  const orgContext = useOrganization();
 
   const { projectColumnId, setProjectColumnId } = useProjectStore();
 
@@ -64,6 +74,11 @@ const CreateProjectDialog = () => {
     enabled: !!workspaceId,
     select: (data) => data?.workspace,
   });
+
+  // Resolve org name from JWT claims
+  const orgName = currentWorkspace?.organizationId
+    ? orgContext?.getOrganizationById(currentWorkspace.organizationId)?.name
+    : undefined;
 
   // Conditionalize on currentWorkspace existing since we use `useQuery` and it is not suspenseful
   const isMember =
@@ -107,6 +122,17 @@ const CreateProjectDialog = () => {
   const { mutateAsync: createColumn } = useCreateColumnMutation();
   const { mutateAsync: createUserPreference } =
     useCreateUserPreferenceMutation();
+  const { mutateAsync: createProjectColumn } = useCreateProjectColumnMutation({
+    meta: {
+      invalidates: [
+        getQueryKeyPrefix(useProjectColumnsQuery),
+        workspaceOptions({
+          rowId: workspaceId!,
+          userId: session?.user?.rowId!,
+        }).queryKey,
+      ],
+    },
+  });
 
   const { mutateAsync: createNewProject } = useCreateProjectMutation({
     meta: {
@@ -193,18 +219,47 @@ const CreateProjectDialog = () => {
     },
     onSubmit: async ({ value, formApi }) => {
       toast.promise(
-        createNewProject({
-          input: {
-            project: {
-              workspaceId: workspaceId!,
-              name: value.name,
-              slug: generateSlug(value.name),
-              description: value.description,
-              projectColumnId: value.projectColumnId!,
-              columnIndex: value.columnIndex,
+        (async () => {
+          let projectColumnId = value.projectColumnId;
+
+          // If no project columns exist, create default ones first
+          if (!projectColumnId) {
+            const results = await Promise.all(
+              DEFAULT_PROJECT_COLUMNS.map((col) =>
+                createProjectColumn({
+                  input: {
+                    projectColumn: {
+                      workspaceId: workspaceId!,
+                      title: col.title,
+                      index: col.index,
+                      emoji: col.emoji,
+                    },
+                  },
+                }),
+              ),
+            );
+            // Use the first column (Planned) as the default
+            projectColumnId =
+              results[0]?.createProjectColumn?.projectColumn?.rowId;
+          }
+
+          if (!projectColumnId) {
+            throw new Error("Failed to create project columns");
+          }
+
+          return createNewProject({
+            input: {
+              project: {
+                workspaceId: workspaceId!,
+                name: value.name,
+                slug: generateSlug(value.name),
+                description: value.description,
+                projectColumnId,
+                columnIndex: value.columnIndex,
+              },
             },
-          },
-        }),
+          });
+        })(),
         {
           loading: "Creating Project...",
           success: "Project created successfully!",
@@ -241,8 +296,7 @@ const CreateProjectDialog = () => {
           <DialogTitle>Create Project</DialogTitle>
           <DialogDescription>
             Create a new project for the{" "}
-            <strong className="text-primary">{currentWorkspace?.name}</strong>{" "}
-            workspace.
+            <strong className="text-primary">{orgName}</strong> workspace.
           </DialogDescription>
 
           <form

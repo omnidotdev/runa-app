@@ -11,9 +11,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import workspaceBySlugOptions from "@/lib/options/workspaceBySlug.options";
+import workspaceByOrganizationIdOptions from "@/lib/options/workspaceByOrganizationId.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import createMetaTags from "@/lib/util/createMetaTags";
+import { useOrganization } from "@/providers/OrganizationProvider";
 
 export const Route = createFileRoute("/_auth/workspaces/")({
   head: () => ({
@@ -36,6 +37,7 @@ export const Route = createFileRoute("/_auth/workspaces/")({
 function WorkspacesOverviewPage() {
   const { session } = Route.useRouteContext();
   const queryClient = useQueryClient();
+  const orgContext = useOrganization();
 
   const { data: recentWorkspaces } = useSuspenseQuery({
     ...workspacesOptions({ userId: session?.user?.rowId!, limit: 4 }),
@@ -45,6 +47,10 @@ function WorkspacesOverviewPage() {
   const { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
     type: DialogType.CreateWorkspace,
   });
+
+  // Helper to resolve org details from JWT claims
+  const getOrgDetails = (organizationId: string) =>
+    orgContext?.getOrganizationById(organizationId);
 
   return (
     <div className="flex h-full items-center justify-center p-12">
@@ -61,49 +67,55 @@ function WorkspacesOverviewPage() {
 
         {!!recentWorkspaces?.length && (
           <div className="mb-8 grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] justify-center gap-6">
-            {recentWorkspaces?.map((workspace) => (
-              <Link
-                key={workspace.rowId}
-                to="/workspaces/$workspaceSlug/projects"
-                params={{ workspaceSlug: workspace.slug }}
-                preload="intent"
-                onMouseEnter={() => {
-                  queryClient.prefetchQuery(
-                    workspaceBySlugOptions({
-                      slug: workspace.slug,
-                      projectSlug: undefined,
-                    }),
-                  );
-                }}
-                variant="outline"
-                className="relative flex h-32 flex-col p-4"
-              >
-                <AvatarRoot size="lg">
-                  <AvatarImage src={undefined} alt={workspace?.name} />
-                  <AvatarFallback>
-                    {" "}
-                    <div className="flex size-full items-center justify-center border font-semibold uppercase">
-                      {workspace?.name?.charAt(0)}
-                    </div>
-                  </AvatarFallback>
-                </AvatarRoot>
+            {recentWorkspaces?.map((workspace) => {
+              const org = getOrgDetails(workspace.organizationId);
+              const orgName = org?.name;
+              const orgSlug = org?.slug;
 
-                <div className="flex flex-1 flex-col items-center">
-                  <h3 className="truncate font-semibold text-base-900 dark:text-base-100">
-                    {workspace?.name}
-                  </h3>
+              return (
+                <Link
+                  key={workspace.rowId}
+                  to="/workspaces/$workspaceSlug/projects"
+                  params={{ workspaceSlug: orgSlug! }}
+                  preload="intent"
+                  onMouseEnter={() => {
+                    queryClient.prefetchQuery(
+                      workspaceByOrganizationIdOptions({
+                        organizationId: workspace.organizationId,
+                        projectSlug: undefined,
+                      }),
+                    );
+                  }}
+                  variant="outline"
+                  className="relative flex h-32 flex-col p-4"
+                >
+                  <AvatarRoot size="lg">
+                    <AvatarImage src={undefined} alt={orgName} />
+                    <AvatarFallback>
+                      {" "}
+                      <div className="flex size-full items-center justify-center border font-semibold uppercase">
+                        {orgName?.charAt(0)}
+                      </div>
+                    </AvatarFallback>
+                  </AvatarRoot>
 
-                  <p className="mt-1 text-base-600 text-sm dark:text-base-400">
-                    {workspace?.members?.totalCount} members
-                  </p>
+                  <div className="flex flex-1 flex-col items-center">
+                    <h3 className="truncate font-semibold text-base-900 dark:text-base-100">
+                      {orgName}
+                    </h3>
 
-                  <WorkspaceTier
-                    tier={workspace.tier}
-                    className="absolute top-2 right-2"
-                  />
-                </div>
-              </Link>
-            ))}
+                    <p className="mt-1 text-base-600 text-sm dark:text-base-400">
+                      {workspace?.members?.totalCount} members
+                    </p>
+
+                    <WorkspaceTier
+                      tier={workspace.tier}
+                      className="absolute top-2 right-2"
+                    />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
 

@@ -12,7 +12,6 @@ import {
   PlusIcon,
 } from "lucide-react";
 
-import OrganizationSwitcher from "@/components/layout/OrganizationSwitcher";
 import {
   MenuContent,
   MenuItem,
@@ -31,6 +30,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import { cn } from "@/lib/utils";
+import { useOrganization } from "@/providers/OrganizationProvider";
 import { Badge } from "../ui/badge";
 
 const AppSidebarHeader = () => {
@@ -39,6 +39,7 @@ const AppSidebarHeader = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { toggleSidebar } = useSidebar();
+  const orgContext = useOrganization();
 
   const { data: workspaces } = useQuery({
     ...workspacesOptions({ userId: session?.user.rowId! }),
@@ -57,6 +58,11 @@ const AppSidebarHeader = () => {
   const { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
     type: DialogType.CreateWorkspace,
   });
+
+  // Resolve current workspace org details from JWT claims
+  const currentOrgName = workspace?.organizationId
+    ? orgContext?.getOrganizationById(workspace.organizationId)?.name
+    : undefined;
 
   return (
     <SidebarHeader>
@@ -79,7 +85,6 @@ const AppSidebarHeader = () => {
         </Badge>
       </div>
 
-      <OrganizationSwitcher />
       {workspaces?.length ? (
         <MenuRoot>
           <MenuTrigger asChild>
@@ -87,33 +92,39 @@ const AppSidebarHeader = () => {
               <ChevronsUpDown className="rotate-none!" />
 
               <span className="flex w-full items-center group-data-[collapsible=icon]:hidden">
-                {workspace?.name ?? "Select Workspace"}
+                {currentOrgName ?? "Select Workspace"}
               </span>
             </SidebarMenuButton>
           </MenuTrigger>
 
           <MenuPositioner className="w-(--reference-width)!">
             <MenuContent className="no-scrollbar flex max-h-80 w-full flex-col gap-1 overflow-auto rounded-lg focus:outline-none">
-              {workspaces?.map((workspace) => {
+              {workspaces?.map((ws) => {
+                // Resolve org details from JWT claims
+                const wsOrg = orgContext?.getOrganizationById(
+                  ws.organizationId,
+                );
+                const wsOrgName = wsOrg?.name ?? "Unknown";
+                const wsOrgSlug = wsOrg?.slug ?? ws.organizationId;
                 const isWorkspaceSelected =
-                  workspace.slug === pathname.split("/")[2];
+                  wsOrgSlug === pathname.split("/")[2];
 
                 return (
                   <MenuItem
-                    key={workspace?.rowId}
+                    key={ws?.rowId}
                     onClick={() => {
                       navigate({
                         to: "/workspaces/$workspaceSlug/projects",
-                        params: { workspaceSlug: workspace.slug },
+                        params: { workspaceSlug: wsOrgSlug },
                       });
                     }}
                     className={cn(
                       "cursor-pointer justify-between gap-1 px-2 py-1",
                       isWorkspaceSelected && "bg-sidebar-accent",
                     )}
-                    value={workspace.name}
+                    value={wsOrgName}
                   >
-                    {workspace.name}
+                    {wsOrgName}
 
                     {isWorkspaceSelected && <CheckIcon color="green" />}
                   </MenuItem>

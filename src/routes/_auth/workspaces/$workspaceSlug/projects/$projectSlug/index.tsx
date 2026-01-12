@@ -83,13 +83,16 @@ export const Route = createFileRoute(
   }),
   loader: async ({
     deps: { search, assignees, labels, priorities },
-    context: { session, queryClient, workspaceBySlug },
+    context: { session, queryClient, workspaceByOrganizationId },
   }) => {
-    if (!workspaceBySlug || !workspaceBySlug.projects.nodes.length) {
+    if (
+      !workspaceByOrganizationId ||
+      !workspaceByOrganizationId.projects.nodes.length
+    ) {
       throw notFound();
     }
 
-    const project = workspaceBySlug.projects.nodes[0];
+    const project = workspaceByOrganizationId.projects.nodes[0];
 
     const projectId = project.rowId;
     const projectName = project.name;
@@ -124,7 +127,7 @@ export const Route = createFileRoute(
     return {
       name: projectName,
       projectId,
-      workspaceId: workspaceBySlug.rowId,
+      workspaceId: workspaceByOrganizationId.rowId,
     };
   },
   validateSearch: zodValidator(projectSearchParamsSchema),
@@ -245,12 +248,14 @@ function ProjectPage() {
       if (!updatedSlug?.length || updatedSlug === ctx.value.currentSlug)
         return z.NEVER;
 
-      const { workspaceBySlug } = await sdk.WorkspaceBySlug({
-        slug: workspaceSlug,
-        projectSlug: updatedSlug,
-      });
+      const { workspaceByOrganizationId } = await sdk.WorkspaceByOrganizationId(
+        {
+          organizationId: workspaceId,
+          projectSlug: updatedSlug,
+        },
+      );
 
-      if (workspaceBySlug?.projects.nodes.length) {
+      if (workspaceByOrganizationId?.projects.nodes.length) {
         ctx.issues.push({
           code: "custom",
           message: "Project slug already exists for this workspace.",

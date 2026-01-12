@@ -34,6 +34,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import userOptions from "@/lib/options/user.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { useOrganization } from "@/providers/OrganizationProvider";
 import { inviteSchema, sendInviteEmail } from "@/server/functions/emails";
 
 import type { RefObject } from "react";
@@ -51,6 +52,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
   const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
+  const orgContext = useOrganization();
 
   const {
     isOpen: isInviteTeamMemberOpen,
@@ -74,6 +76,11 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     select: (data) => data?.workspace,
   });
 
+  // Resolve org name from JWT claims
+  const orgName = currentWorkspace?.organizationId
+    ? orgContext?.getOrganizationById(currentWorkspace.organizationId)?.name
+    : undefined;
+
   const { data: user } = useQuery({
     ...userOptions({ userId: session?.user?.rowId! }),
     select: (data) => data?.user,
@@ -94,7 +101,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
           inviterEmail: user?.email!,
           inviterUsername: user?.name!,
           recipientEmail: variables.input.invitation.email,
-          workspaceName: currentWorkspace?.name!,
+          workspaceName: orgName!,
         },
       });
     },
@@ -151,8 +158,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
           <DialogTitle>Invite Team Member</DialogTitle>
           <DialogDescription>
             Invite a new team member for the{" "}
-            <strong className="text-primary">{currentWorkspace?.name}</strong>{" "}
-            workspace.
+            <strong className="text-primary">{orgName}</strong> workspace.
           </DialogDescription>
 
           <form
