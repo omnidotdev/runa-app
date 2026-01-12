@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Role } from "@/generated/graphql";
-import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
 import type { Workspace } from "@/generated/graphql";
 
@@ -78,12 +78,12 @@ const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
             </TableCell>
             <TableCell className="py-4 pl-1">
               <Badge variant="outline">
-                {firstLetterToUppercase(workspace.tier)}
+                {capitalizeFirstLetter(workspace.tier)}
               </Badge>
             </TableCell>
             <TableCell className="py-4 pl-1">
               <Badge>
-                {firstLetterToUppercase(workspace.currentUser.nodes[0].role)}
+                {capitalizeFirstLetter(workspace.currentUser.nodes[0].role)}
               </Badge>
             </TableCell>
             <TableCell className="py-4 pr-3 text-right">

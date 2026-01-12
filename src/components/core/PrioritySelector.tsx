@@ -16,7 +16,7 @@ import {
   createListCollection,
 } from "@/components/ui/select";
 import { Hotkeys } from "@/lib/constants/hotkeys";
-import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import Shortcut from "./Shortcut";
 import Tooltip from "./Tooltip";
 
@@ -62,7 +62,7 @@ const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
                 <PriorityIcon priority={triggerValue} />
 
                 <p className="hidden text-sm md:flex">
-                  {firstLetterToUppercase(triggerValue!)}
+                  {capitalizeFirstLetter(triggerValue!)}
                 </p>
               </Button>
             </SelectTrigger>

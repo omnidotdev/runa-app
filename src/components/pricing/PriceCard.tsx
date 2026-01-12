@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import signIn from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
-import firstLetterToUppercase from "@/lib/util/firstLetterToUppercase";
+import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
 
 import type Stripe from "stripe";
@@ -66,7 +66,7 @@ export const PriceCard = ({ price }: Props) => {
           )}
         >
           <CardTitle className="font-bold text-2xl">
-            {firstLetterToUppercase(price.metadata?.tier as string)}
+            {capitalizeFirstLetter(price.metadata?.tier as string)}
           </CardTitle>
           <CardDescription className="mt-2 text-muted-foreground">
             {price.product?.description}
@@ -118,7 +118,7 @@ export const PriceCard = ({ price }: Props) => {
           >
             {price.metadata.tier === "free"
               ? "Create a Free Workspace"
-              : `Continue with ${firstLetterToUppercase(price.metadata.tier)}`}
+              : `Continue with ${capitalizeFirstLetter(price.metadata.tier)}`}
           </Button>
         </CardFooter>
       </CardRoot>
