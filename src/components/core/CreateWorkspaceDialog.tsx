@@ -53,7 +53,7 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
   const nameRef = useRef<HTMLInputElement>(null);
 
   const { session } = useRouteContext({ strict: false });
-  const { currentOrganization } = useOrganization();
+  const orgContext = useOrganization();
 
   const { isOpen: isCreateWorkspaceOpen, setIsOpen: setIsCreateWorkspaceOpen } =
     useDialogStore({
@@ -194,6 +194,11 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
       formApi.reset();
     },
   });
+
+  // Don't render if no organization context (e.g., on pricing page without auth)
+  if (!orgContext) return null;
+
+  const { currentOrganization } = orgContext;
 
   return (
     <DialogRoot
