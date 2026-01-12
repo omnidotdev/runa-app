@@ -220,7 +220,8 @@ const CreateProjectDialog = () => {
     onSubmit: async ({ value, formApi }) => {
       toast.promise(
         (async () => {
-          let projectColumnId = value.projectColumnId;
+          let projectColumnId: string | null | undefined =
+            value.projectColumnId;
 
           // If no project columns exist, create default ones first
           if (!projectColumnId) {
