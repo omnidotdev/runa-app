@@ -11,6 +11,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { DefaultCatchBoundary } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
+import { isDevEnv } from "@/lib/config/env.config";
 import appCss from "@/lib/styles/globals.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import ThemeProvider from "@/providers/ThemeProvider";
@@ -93,7 +94,33 @@ export const Route = createRootRouteWithContext<{
   component: RootComponent,
 });
 
+// Note: Production teaser is intentionally disabled for this app
+// To enable, uncomment the isDevEnv check in RootComponent
+function ComingSoon() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-zinc-900 to-zinc-800">
+      <div className="text-center">
+        <div className="text-9xl">⚙️</div>
+      </div>
+    </div>
+  );
+}
+
 function RootComponent() {
+  // Production teaser disabled - always show full app
+  // To enable teaser in production, uncomment the following:
+  // if (!isDevEnv) {
+  //   return (
+  //     <RootDocument>
+  //       <ComingSoon />
+  //     </RootDocument>
+  //   );
+  // }
+
+  // Suppress unused variable warning when teaser is disabled
+  void isDevEnv;
+  void ComingSoon;
+
   return (
     <RootDocument>
       <Outlet />
