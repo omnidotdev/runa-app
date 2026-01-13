@@ -1,5 +1,4 @@
-import { Role } from "@/generated/graphql";
-import { isAdminOrOwner, isOwner } from "@/lib/permissions";
+import { Role, isAdminOrOwner, isOwner } from "@/lib/permissions";
 
 /**
  * Hook for team management permission checks.

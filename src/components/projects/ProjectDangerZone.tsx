@@ -2,9 +2,10 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
-import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
 const routeApi = getRouteApi(
@@ -15,11 +16,13 @@ export default function ProjectDangerZone() {
   const { session } = routeApi.useRouteContext();
   const { workspaceId } = routeApi.useLoaderData();
 
-  const { data: role } = useSuspenseQuery({
+  const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace?.members.nodes?.[0]?.role,
+    select: (data) => data.workspace,
   });
 
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(workspace?.organizationId);
   const isOwner = role === Role.Owner;
 
   const { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({

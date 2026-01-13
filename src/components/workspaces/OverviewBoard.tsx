@@ -10,14 +10,15 @@ import {
 import { useEffect } from "react";
 
 import { ColumnHeader } from "@/components/core";
-import { Role } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import BoardItem from "./OverviewBoardItem";
 
@@ -108,11 +109,13 @@ const Board = ({ projects }: Props) => {
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
-  const { data: role } = useSuspenseQuery({
+  const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace?.members.nodes?.[0]?.role,
+    select: (data) => data.workspace,
   });
 
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(workspace?.organizationId);
   const isMember = role === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();

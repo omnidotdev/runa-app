@@ -29,6 +29,7 @@ import {
   useProjectsQuery,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import workspaceOptions from "@/lib/options/workspace.options";
@@ -71,7 +72,8 @@ const Projects = () => {
     ? orgContext?.getOrganizationById(workspace.organizationId)?.name
     : undefined;
 
-  const currentUserRole = workspace?.members?.nodes?.[0]?.role;
+  // Get role from IDP organization claims
+  const currentUserRole = useCurrentUserRole(workspace?.organizationId);
   const canManageProjects = currentUserRole && isAdminOrOwner(currentUserRole);
 
   const maxProjectsReached = useMaxProjectsReached();

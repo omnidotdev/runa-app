@@ -45,15 +45,16 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
-  Role,
   useUpdateUserPreferenceMutation,
   useUserPreferencesQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import tasksOptions from "@/lib/options/tasks.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import Shortcut from "./Shortcut";
 import Tooltip from "./Tooltip";
@@ -116,8 +117,9 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
     select: (data) => data.workspace,
   });
 
-  const isMember =
-    workspace == null || workspace?.members?.nodes?.[0]?.role === Role.Member;
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(workspace?.organizationId);
+  const isMember = workspace == null || role === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();
 

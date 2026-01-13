@@ -32,7 +32,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Role,
   useProjectQuery,
   useProjectsQuery,
   useTaskQuery,
@@ -47,10 +46,12 @@ import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import getSdk from "@/lib/graphql/getSdk";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
@@ -169,10 +170,14 @@ function ProjectPage() {
 
   const { queryClient } = Route.useRouteContext();
 
-  const { data: isOwner } = useSuspenseQuery({
+  const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data?.workspace?.members?.nodes?.[0]?.role === Role.Owner,
+    select: (data) => data?.workspace,
   });
+
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(workspace?.organizationId);
+  const isOwner = role === Role.Owner;
 
   const tasksVariables: TasksQueryVariables = useMemo(
     () => ({

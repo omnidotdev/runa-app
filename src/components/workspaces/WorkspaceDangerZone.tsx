@@ -5,6 +5,7 @@ import { DestructiveActionDialog } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import { useDeleteWorkspaceMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
 import { isOwner } from "@/lib/permissions";
@@ -33,7 +34,8 @@ export default function WorkspaceDangerZone() {
     ? orgContext?.getOrganizationById(workspace.organizationId)?.name
     : undefined;
 
-  const currentUserRole = workspace?.members?.nodes?.[0]?.role;
+  // Get role from IDP organization claims
+  const currentUserRole = useCurrentUserRole(workspace?.organizationId);
   const canDeleteWorkspace = currentUserRole && isOwner(currentUserRole);
 
   const { setIsOpen: setIsDeleteWorkspaceOpen } = useDialogStore({
@@ -42,9 +44,7 @@ export default function WorkspaceDangerZone() {
 
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
     meta: {
-      invalidates: [
-        workspacesOptions({ userId: session?.user.rowId! }).queryKey,
-      ],
+      invalidates: [workspacesOptions().queryKey],
     },
     onMutate: () => navigate({ to: "/workspaces", replace: true }),
     onSettled: () => setIsDeleteWorkspaceOpen(false),

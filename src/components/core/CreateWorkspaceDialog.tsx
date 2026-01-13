@@ -15,8 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
-  Role,
-  useCreateMemberMutation,
   useCreateProjectColumnMutation,
   useCreateWorkspaceMutation,
   useProjectColumnsQuery,
@@ -69,13 +67,9 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
     [setIsCreateWorkspaceOpen, isCreateWorkspaceOpen, state],
   );
 
-  const { mutateAsync: createTeamMember } = useCreateMemberMutation();
-
   const { mutateAsync: createNewWorkspace } = useCreateWorkspaceMutation({
     meta: {
-      invalidates: [
-        workspacesOptions({ userId: session?.user.rowId! }).queryKey,
-      ],
+      invalidates: [workspacesOptions().queryKey],
     },
   });
 
@@ -89,7 +83,7 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
   });
 
   const { data: workspaces } = useQuery({
-    ...workspacesOptions({ userId: session?.user.rowId! }),
+    ...workspacesOptions(),
     select: (data) => data.workspaces?.nodes,
   });
 
@@ -153,18 +147,9 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
 
           const workspaceId = createWorkspace?.workspace?.rowId!;
 
-          // Step 3: Create owner membership (required before creating project columns)
-          await createTeamMember({
-            input: {
-              member: {
-                userId: session?.user?.rowId!,
-                workspaceId,
-                role: Role.Owner,
-              },
-            },
-          });
+          // Note: Owner membership is automatically created in Gatekeeper when the organization is created
 
-          // Step 4: Create default project columns
+          // Step 3: Create default project columns
           await Promise.all(
             DEFAULT_PROJECT_COLUMNS.map((column) =>
               createProjectColumn({
@@ -178,7 +163,7 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
             ),
           );
 
-          // Step 5: Navigate to the new workspace
+          // Step 4: Navigate to the new workspace
           // Use org.slug directly since JWT claims won't have the new org yet
           if (priceId) {
             const checkoutUrl = await getCreateSubscriptionUrl({

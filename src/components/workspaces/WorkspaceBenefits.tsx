@@ -18,6 +18,7 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import { BASE_URL } from "@/lib/config/env.config";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { isOwner } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
@@ -51,7 +52,8 @@ export default function WorkspaceBenefits() {
   // Resolve org slug from JWT claims (workspaceSlug in URL is already org slug)
   const orgSlug = workspaceSlug;
 
-  const currentUserRole = workspace?.members?.nodes?.[0]?.role;
+  // Get role from IDP organization claims
+  const currentUserRole = useCurrentUserRole(workspace?.organizationId);
   const canDeleteWorkspace = currentUserRole && isOwner(currentUserRole);
 
   const { mutateAsync: openBillingPortal } = useMutation({

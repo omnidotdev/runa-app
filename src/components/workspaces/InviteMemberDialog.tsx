@@ -106,26 +106,26 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
 
   const queuer = useAsyncQueuer(
     async (recipientEmail: string) => {
-      await inviteMemberMutation({
-        organizationId: organizationId!,
-        email: recipientEmail,
-        role: "member",
-        accessToken: session?.accessToken!,
-      });
+      try {
+        await inviteMemberMutation({
+          organizationId: organizationId!,
+          email: recipientEmail,
+          role: "member",
+          accessToken: session?.accessToken!,
+        });
+        toast.success("Invitation sent");
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : "Failed to send invitation",
+        );
+        throw error;
+      }
     },
     {
       concurrency: 2,
       wait: ms("1s"),
       maxSize: MAX_NUMBER_OF_INVITES,
       started: false,
-      onItemComplete: () => {
-        toast.success("Invitation sent");
-      },
-      onItemError: (error) => {
-        toast.error(
-          error instanceof Error ? error.message : "Failed to send invitation",
-        );
-      },
     },
   );
 

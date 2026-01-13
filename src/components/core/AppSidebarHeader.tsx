@@ -42,7 +42,7 @@ const AppSidebarHeader = () => {
   const orgContext = useOrganization();
 
   const { data: workspaces } = useQuery({
-    ...workspacesOptions({ userId: session?.user.rowId! }),
+    ...workspacesOptions(),
     select: (data) => data.workspaces?.nodes,
   });
 

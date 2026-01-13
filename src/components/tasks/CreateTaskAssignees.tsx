@@ -1,7 +1,7 @@
 import { useSelect } from "@ark-ui/react/select";
 import { useField } from "@tanstack/react-form";
-import { useQuery } from "@tanstack/react-query";
-import { useLoaderData } from "@tanstack/react-router";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { UserPlusIcon, UserXIcon } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -27,30 +27,50 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
-import membersOptions from "@/lib/options/members.options";
+import organizationMembersOptions from "@/lib/options/organizationMembers.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 const CreateTaskAssignees = withForm({
   defaultValues: taskFormDefaults,
   render: ({ form }) => {
     const { workspaceId } = useLoaderData({ from: "/_auth" });
+    const { session } = useRouteContext({ from: "/_auth" });
 
-    const { data: users } = useQuery({
-      ...membersOptions({ workspaceId: workspaceId! }),
-      enabled: !!workspaceId,
-      select: (data) => data?.members?.nodes.flatMap((user) => user.user),
+    // Get workspace to find organizationId
+    const { data: workspace } = useSuspenseQuery({
+      ...workspaceOptions({
+        rowId: workspaceId!,
+        userId: session?.user?.rowId!,
+      }),
+      select: (data) => data.workspace,
     });
+
+    // Fetch organization members from IDP
+    const { data: membersData } = useQuery({
+      ...organizationMembersOptions({
+        organizationId: workspace?.organizationId!,
+        accessToken: session?.accessToken!,
+      }),
+      enabled: !!workspace?.organizationId && !!session?.accessToken,
+    });
+
+    const users = membersData?.members ?? [];
 
     const field = useField({ form, name: "assignees" });
 
     const usersCollection = createListCollection({
       items: [
         { label: "No Assignees", value: "none", user: undefined },
-        ...(users?.map((user) => ({
-          label: user?.name || "",
-          value: user?.rowId || "",
-          user,
-        })) ?? []),
+        ...users.map((member) => ({
+          label: member.user.name || "",
+          value: member.userId,
+          user: {
+            name: member.user.name,
+            avatarUrl: member.user.image,
+            rowId: member.userId,
+          },
+        })),
       ],
     });
 

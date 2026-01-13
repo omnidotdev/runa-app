@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
-  Role,
   useCreateColumnMutation,
   useCreateProjectColumnMutation,
   useCreateProjectMutation,
@@ -32,11 +31,13 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useForm from "@/lib/hooks/useForm";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
@@ -80,10 +81,10 @@ const CreateProjectDialog = () => {
     ? orgContext?.getOrganizationById(currentWorkspace.organizationId)?.name
     : undefined;
 
+  // Get role from IDP organization claims
+  const currentUserRole = useCurrentUserRole(currentWorkspace?.organizationId);
   // Conditionalize on currentWorkspace existing since we use `useQuery` and it is not suspenseful
-  const isMember =
-    currentWorkspace == null ||
-    currentWorkspace?.members?.nodes?.[0]?.role === Role.Member;
+  const isMember = currentWorkspace == null || currentUserRole === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();
 

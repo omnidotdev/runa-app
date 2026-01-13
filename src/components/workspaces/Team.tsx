@@ -41,7 +41,7 @@ import { cn } from "@/lib/utils";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import InviteMemberDialog from "./InviteMemberDialog";
 
-import type { Role } from "@/generated/graphql";
+import type { Role } from "@/lib/permissions";
 
 const Team = () => {
   const inviteRef = useRef<HTMLButtonElement>(null);

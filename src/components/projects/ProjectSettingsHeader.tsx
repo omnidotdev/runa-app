@@ -8,14 +8,15 @@ import { z } from "zod";
 import { Link, RichTextEditor } from "@/components/core";
 import { ProjectColorPicker } from "@/components/projects";
 import {
-  Role,
   useProjectQuery,
   useProjectsQuery,
   useUpdateProjectMutation,
 } from "@/generated/graphql";
 import getSdk from "@/lib/graphql/getSdk";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import projectOptions from "@/lib/options/project.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
@@ -33,11 +34,13 @@ export default function ProjectSettingsHeader() {
 
   const [parseError, setParseError] = useState<string | null>(null);
 
-  const { data: role } = useSuspenseQuery({
+  const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace?.members.nodes?.[0]?.role,
+    select: (data) => data.workspace,
   });
 
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(workspace?.organizationId);
   const isMember = role === Role.Member;
 
   const { data: project } = useSuspenseQuery({

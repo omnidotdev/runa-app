@@ -1,4 +1,3 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   useLocation,
   useNavigate,
@@ -39,7 +38,6 @@ import {
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
-import invitationsOptions from "@/lib/options/invitations.options";
 import { useTheme } from "@/providers/ThemeProvider";
 import Shortcut from "./Shortcut";
 import Tooltip from ".//Tooltip";
@@ -56,10 +54,8 @@ const AppSidebarFooter = () => {
 
   useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
 
-  const { data: invitations } = useSuspenseQuery({
-    ...invitationsOptions({ email: session?.user.email! }),
-    select: (data) => data?.invitations?.nodes ?? [],
-  });
+  // TODO: Fetch pending invitations from IDP
+  // const invitations = [];
 
   return (
     <SidebarFooter className="flex justify-center border-t">
@@ -200,9 +196,7 @@ const AppSidebarFooter = () => {
                   {session?.user.username}
                 </span>
 
-                {!!invitations.length && (
-                  <div className="absolute top-2 left-5 size-1.5 rounded-full bg-red-500" />
-                )}
+                {/* TODO: Show invitation indicator when IDP invitations are fetched */}
               </SidebarMenuButton>
 
               <MenuRoot

@@ -37,7 +37,7 @@ export const Route = createFileRoute("/_auth/workspaces/")({
     if (!hasOrganizations) {
       // Double-check by querying workspaces directly
       const { workspaces } = await queryClient.fetchQuery({
-        ...workspacesOptions({ userId: session.user.rowId }),
+        ...workspacesOptions(),
       });
 
       if (!workspaces?.nodes?.length) {
@@ -46,19 +46,18 @@ export const Route = createFileRoute("/_auth/workspaces/")({
       }
     }
   },
-  loader: async ({ context: { queryClient, session } }) =>
+  loader: async ({ context: { queryClient } }) =>
     await queryClient.ensureQueryData({
-      ...workspacesOptions({ userId: session?.user?.rowId!, limit: 4 }),
+      ...workspacesOptions({ limit: 4 }),
     }),
 });
 
 function WorkspacesOverviewPage() {
-  const { session } = Route.useRouteContext();
   const queryClient = useQueryClient();
   const orgContext = useOrganization();
 
   const { data: recentWorkspaces } = useSuspenseQuery({
-    ...workspacesOptions({ userId: session?.user?.rowId!, limit: 4 }),
+    ...workspacesOptions({ limit: 4 }),
     select: (data) => data?.workspaces?.nodes,
   });
 
@@ -121,10 +120,6 @@ function WorkspacesOverviewPage() {
                     <h3 className="truncate font-semibold text-base-900 dark:text-base-100">
                       {orgName}
                     </h3>
-
-                    <p className="mt-1 text-base-600 text-sm dark:text-base-400">
-                      {workspace?.members?.totalCount} members
-                    </p>
 
                     <WorkspaceTier
                       tier={workspace.tier}

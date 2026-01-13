@@ -24,7 +24,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OverviewBoard, OverviewList } from "@/components/workspaces";
 import {
-  Role,
   useProjectQuery,
   useProjectsQuery,
   useUpdateProjectMutation,
@@ -34,10 +33,12 @@ import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
@@ -115,7 +116,9 @@ function ProjectsOverviewPage() {
     select: (data) => data?.workspace,
   });
 
-  const isMember = workspace?.members?.nodes?.[0]?.role === Role.Member;
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(workspace?.organizationId);
+  const isMember = role === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();
 
