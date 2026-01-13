@@ -1,12 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { useLoaderData } from "@tanstack/react-router";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
 } from "@/components/ui/avatar";
-import membersOptions from "@/lib/options/members.options";
+import organizationMembersOptions from "@/lib/options/organizationMembers.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 import type { ComponentProps } from "react";
@@ -24,15 +25,27 @@ const Assignees = ({
   ...rest
 }: Props) => {
   const { workspaceId } = useLoaderData({ from: "/_auth" });
+  const { session } = useRouteContext({ from: "/_auth" });
 
-  const { data: members } = useQuery({
-    ...membersOptions({ workspaceId: workspaceId! }),
-    enabled: !!workspaceId,
-    select: (data) => data?.members?.nodes.map((user) => user?.user),
+  // Get workspace to find organizationId
+  const { data: workspace } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
+    select: (data) => data.workspace,
   });
 
-  const assignedUsers = members?.filter((user) =>
-    assignees?.includes(user?.rowId!),
+  // Fetch organization members from IDP
+  const { data: membersData } = useQuery({
+    ...organizationMembersOptions({
+      organizationId: workspace?.organizationId!,
+      accessToken: session?.accessToken!,
+    }),
+    enabled: !!workspace?.organizationId && !!session?.accessToken,
+  });
+
+  const members = membersData?.members ?? [];
+
+  const assignedUsers = members.filter((member) =>
+    assignees?.includes(member.userId),
   );
 
   if (!assignees?.length || !assignedUsers?.length) return null;
@@ -54,20 +67,20 @@ const Assignees = ({
           showUsername ? "flex-col gap-1" : "-space-x-6",
         )}
       >
-        {visibleUsers.map((user) => (
-          <div key={user?.rowId} className="flex items-center gap-0">
+        {visibleUsers.map((member) => (
+          <div key={member.userId} className="flex items-center gap-0">
             <AvatarRoot className="size-6 rounded-full border-2 bg-background font-medium text-xs">
               <AvatarImage
-                src={user?.avatarUrl ?? undefined}
-                alt={user?.name}
+                src={member.user.image ?? undefined}
+                alt={member.user.name}
               />
               <AvatarFallback>
-                {user?.name?.charAt(0).toUpperCase()}
+                {member.user.name?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </AvatarRoot>
 
             {showUsername && (
-              <p className="ml-2 hidden text-xs md:flex">{user?.name}</p>
+              <p className="ml-2 hidden text-xs md:flex">{member.user.name}</p>
             )}
           </div>
         ))}

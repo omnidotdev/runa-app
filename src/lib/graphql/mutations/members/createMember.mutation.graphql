@@ -1,7 +1,0 @@
-mutation CreateMember($input: CreateMemberInput!) {
-  createMember(input: $input) {
-    member {
-      id
-    }
-  }
-}

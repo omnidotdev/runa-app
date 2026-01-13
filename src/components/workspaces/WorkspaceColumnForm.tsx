@@ -23,15 +23,16 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import {
-  Role,
   useCreateProjectColumnMutation,
   useProjectColumnsQuery,
   useUpdateProjectColumnMutation,
   useWorkspaceQuery,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useForm from "@/lib/hooks/useForm";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +76,8 @@ const ColumnForm = ({
     select: (data) => data?.workspace,
   });
 
-  const isMember = workspace?.members?.nodes?.[0]?.role === Role.Member;
+  const role = useCurrentUserRole(workspace?.organizationId);
+  const isMember = role === Role.Member;
 
   const [isHovering, setIsHovering] = useState(false);
 

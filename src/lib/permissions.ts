@@ -7,7 +7,20 @@
  * by preventing users from attempting actions they cannot perform.
  */
 
-import { Role } from "@/generated/graphql";
+/**
+ * Role type matching the IDP organization member roles.
+ * This replaces the GraphQL Role enum since membership is now managed by the IDP.
+ */
+export type Role = "owner" | "admin" | "member";
+
+/**
+ * Role enum-like object for compatibility with existing code.
+ */
+export const Role = {
+  Owner: "owner" as const,
+  Admin: "admin" as const,
+  Member: "member" as const,
+};
 
 /**
  * Check if user has admin or owner role.

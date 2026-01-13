@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import { Role } from "@/generated/graphql";
 import getSdk from "@/lib/graphql/getSdk";
 import { authMiddleware } from "@/server/middleware";
 
@@ -53,16 +52,8 @@ export const provisionWorkspace = createServerFn({ method: "POST" })
       throw new Error("Failed to create workspace");
     }
 
-    // Create owner membership
-    await sdk.CreateMember({
-      input: {
-        member: {
-          userId: context.session.user.rowId!,
-          workspaceId,
-          role: Role.Owner,
-        },
-      },
-    });
+    // Note: Owner membership is managed in Gatekeeper (IDP), not in local database
+    // The user should already be a member of the organization in Gatekeeper
 
     // Create default project columns
     await Promise.all(

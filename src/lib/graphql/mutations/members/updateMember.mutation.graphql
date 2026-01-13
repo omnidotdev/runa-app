@@ -1,5 +1,0 @@
-mutation UpdateMember($input: UpdateMemberInput!) {
-  updateMember(input: $input) {
-    clientMutationId
-  }
-}

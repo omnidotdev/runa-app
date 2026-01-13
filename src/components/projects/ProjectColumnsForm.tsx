@@ -37,7 +37,6 @@ import {
   MenuTriggerItem,
 } from "@/components/ui/menu";
 import {
-  Role,
   useColumnsQuery,
   useDeleteColumnMutation,
   useProjectQuery,
@@ -46,10 +45,12 @@ import {
   useUserPreferencesQuery,
 } from "@/generated/graphql";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import columnsOptions from "@/lib/options/columns.options";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 import ColumnForm from "./ProjectColumnForm";
@@ -69,11 +70,13 @@ const ProjectColumnsForm = () => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
-  const { data: role } = useSuspenseQuery({
+  const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace?.members?.nodes?.[0]?.role,
+    select: (data) => data.workspace,
   });
 
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(workspace?.organizationId);
   const isMember = role === Role.Member;
 
   const { data: columns } = useSuspenseQuery({

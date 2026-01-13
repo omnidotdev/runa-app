@@ -1,5 +1,13 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLoaderData, useParams } from "@tanstack/react-router";
+import {
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import {
+  useLoaderData,
+  useParams,
+  useRouteContext,
+} from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
@@ -22,8 +30,9 @@ import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
-import membersOptions from "@/lib/options/members.options";
+import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import taskOptions from "@/lib/options/task.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import UpdateAssignees from "./UpdateAssignees";
 
@@ -35,6 +44,7 @@ const UpdateAssigneesDialog = () => {
   });
 
   const { workspaceId } = useLoaderData({ from: "/_auth" });
+  const { session } = useRouteContext({ from: "/_auth" });
 
   const { taskId: storeTaskId, setTaskId } = useTaskStore();
 
@@ -47,11 +57,22 @@ const UpdateAssigneesDialog = () => {
     type: DialogType.UpdateAssignees,
   });
 
-  const { data: members } = useQuery({
-    ...membersOptions({ workspaceId: workspaceId! }),
-    enabled: !!workspaceId,
-    select: (data) => data?.members?.nodes.map((wu) => wu.user),
+  // Get workspace to find organizationId
+  const { data: workspace } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
+    select: (data) => data.workspace,
   });
+
+  // Fetch organization members from IDP
+  const { data: membersData } = useQuery({
+    ...organizationMembersOptions({
+      organizationId: workspace?.organizationId!,
+      accessToken: session?.accessToken!,
+    }),
+    enabled: !!workspace?.organizationId && !!session?.accessToken,
+  });
+
+  const members = membersData?.members ?? [];
 
   useHotkeys(
     Hotkeys.UpdateAssignees,
@@ -77,11 +98,11 @@ const UpdateAssigneesDialog = () => {
       await queryClient.cancelQueries({ queryKey: taskQueryKey });
       const previousTask = queryClient.getQueryData(taskQueryKey);
 
-      const user = members?.find(
-        (u) => u?.rowId === variables.input.assignee?.userId,
+      const member = members.find(
+        (m) => m.userId === variables.input.assignee?.userId,
       );
 
-      if (user) {
+      if (member) {
         queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) => {
           if (!old?.task) return old;
           return {
@@ -95,12 +116,12 @@ const UpdateAssigneesDialog = () => {
                   {
                     __typename: "Assignee" as const,
                     taskId: variables.input.assignee?.taskId!,
-                    userId: user.rowId,
+                    userId: member.userId,
                     user: {
                       __typename: "User" as const,
-                      rowId: user.rowId,
-                      name: user.name,
-                      avatarUrl: user.avatarUrl,
+                      rowId: member.userId,
+                      name: member.user.name,
+                      avatarUrl: member.user.image,
                     },
                   },
                 ],

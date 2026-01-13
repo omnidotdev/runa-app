@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Role } from "@/generated/graphql";
+import { Role } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
@@ -19,11 +19,6 @@ interface WorkspaceNode {
   rowId: string;
   organizationId: string;
   tier: string;
-  currentUser: {
-    nodes: Array<{
-      role: Role;
-    }>;
-  };
 }
 
 interface Props {
@@ -40,6 +35,15 @@ const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
   // Helper to resolve org details from JWT claims
   const getOrgDetails = (organizationId: string) =>
     orgContext?.getOrganizationById(organizationId);
+
+  // Helper to get user's role for an organization from JWT claims
+  const getUserRole = (organizationId: string): Role => {
+    const org = orgContext?.getOrganizationById(organizationId);
+    if (!org) return Role.Member;
+    if (org.roles.includes("owner")) return Role.Owner;
+    if (org.roles.includes("admin")) return Role.Admin;
+    return Role.Member;
+  };
 
   if (!workspaces?.length) {
     return (
@@ -77,6 +81,7 @@ const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
           const org = getOrgDetails(workspace.organizationId);
           const orgName = org?.name;
           const orgSlug = org?.slug;
+          const userRole = getUserRole(workspace.organizationId);
 
           return (
             <TableRow key={workspace.rowId} className="hover:bg-background">
@@ -94,9 +99,7 @@ const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
                 </Badge>
               </TableCell>
               <TableCell className="py-4 pl-1">
-                <Badge>
-                  {capitalizeFirstLetter(workspace.currentUser.nodes[0].role)}
-                </Badge>
+                <Badge>{capitalizeFirstLetter(userRole)}</Badge>
               </TableCell>
               <TableCell className="py-4 pr-3 text-right">
                 <div className="flex justify-end gap-2">
@@ -109,7 +112,7 @@ const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
                   >
                     Settings
                   </Link>
-                  {workspace.currentUser.nodes[0].role === Role.Owner ? (
+                  {userRole === Role.Owner ? (
                     <div className="justify-center">
                       <Button
                         variant="outline"

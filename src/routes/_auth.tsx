@@ -10,8 +10,6 @@ import { AppSidebar, CreateWorkspaceDialog } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/workspaces";
-import invitationsOptions from "@/lib/options/invitations.options";
-import membersOptions from "@/lib/options/members.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import workspaceByOrganizationIdOptions from "@/lib/options/workspaceByOrganizationId.options";
 import workspacesOptions from "@/lib/options/workspaces.options";
@@ -64,7 +62,7 @@ export const Route = createFileRoute("/_auth")({
           }),
         }),
         queryClient.prefetchQuery({
-          ...workspacesOptions({ userId: session.user.rowId! }),
+          ...workspacesOptions(),
         }),
       ]);
 
@@ -81,7 +79,7 @@ export const Route = createFileRoute("/_auth")({
           }).queryKey,
         });
         await queryClient.invalidateQueries({
-          queryKey: workspacesOptions({ userId: session.user.rowId! }).queryKey,
+          queryKey: workspacesOptions().queryKey,
         });
 
         // Refetch the workspace with full data
@@ -96,44 +94,27 @@ export const Route = createFileRoute("/_auth")({
 
       if (!workspaceByOrganizationId) throw notFound();
 
-      const [{ members }] = await Promise.all([
-        queryClient.ensureQueryData({
-          ...membersOptions({
-            workspaceId: workspaceByOrganizationId.rowId,
-            filter: {
-              userId: { equalTo: session.user.rowId! },
-            },
-          }),
-        }),
-        queryClient.prefetchQuery({
-          ...membersOptions({
-            workspaceId: workspaceByOrganizationId.rowId,
-          }),
-        }),
-        queryClient.prefetchQuery({
-          ...workspaceOptions({
-            rowId: workspaceByOrganizationId.rowId,
-            userId: session.user.rowId!,
-          }),
-        }),
-      ]);
+      // Membership is now validated via JWT organization claims (IDP)
+      // The user has access if they have the org in their JWT claims or if we fetched it from Gatekeeper
+      // Authorization for specific actions is enforced server-side via PDP (Warden)
 
-      if (!members?.nodes.length) throw notFound();
+      await queryClient.prefetchQuery({
+        ...workspaceOptions({
+          rowId: workspaceByOrganizationId.rowId,
+          userId: session.user.rowId!,
+        }),
+      });
 
       return { workspaceByOrganizationId, fetchedOrg };
     } else {
       await queryClient.ensureQueryData({
-        ...workspacesOptions({ userId: session.user.rowId! }),
+        ...workspacesOptions(),
       });
 
       return { workspaceByOrganizationId: undefined, fetchedOrg: null };
     }
   },
   loader: async ({ context }) => {
-    context.queryClient.prefetchQuery({
-      ...invitationsOptions({ email: context.session?.user.email! }),
-    });
-
     return {
       workspaceId: context.workspaceByOrganizationId?.rowId,
       fetchedOrg: context.fetchedOrg,

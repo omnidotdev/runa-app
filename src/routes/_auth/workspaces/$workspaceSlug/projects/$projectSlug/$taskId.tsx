@@ -31,7 +31,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import {
-  Role,
   useDeleteTaskMutation,
   useProjectQuery,
   useTasksQuery,
@@ -39,10 +38,12 @@ import {
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import projectOptions from "@/lib/options/project.options";
 import taskOptions from "@/lib/options/task.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
@@ -96,11 +97,13 @@ function TaskPage() {
   const matches = useViewportSize({ breakpoint: Breakpoint.Large });
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
 
-  const { data: role } = useSuspenseQuery({
+  const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data?.workspace?.members?.nodes?.[0]?.role,
+    select: (data) => data?.workspace,
   });
 
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(workspace?.organizationId);
   const isMember = role === Role.Member;
 
   const { data: task } = useSuspenseQuery({

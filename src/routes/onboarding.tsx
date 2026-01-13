@@ -27,7 +27,7 @@ export const Route = createFileRoute("/onboarding")({
 
     // Double-check by querying workspaces directly
     const { workspaces } = await queryClient.fetchQuery({
-      ...workspacesOptions({ userId: session.user.rowId }),
+      ...workspacesOptions(),
     });
 
     if (workspaces?.nodes?.length) {

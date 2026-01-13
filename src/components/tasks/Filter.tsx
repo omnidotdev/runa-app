@@ -1,6 +1,11 @@
 import { useMenu } from "@ark-ui/react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useNavigate, useSearch } from "@tanstack/react-router";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useLoaderData,
+  useNavigate,
+  useRouteContext,
+  useSearch,
+} from "@tanstack/react-router";
 import {
   CircleAlertIcon,
   FunnelXIcon,
@@ -33,12 +38,17 @@ import {
   MenuTriggerItem,
 } from "@/components/ui/menu";
 import { Hotkeys } from "@/lib/constants/hotkeys";
-import membersOptions from "@/lib/options/members.options";
+import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import projectOptions from "@/lib/options/project.options";
+import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 const Filter = () => {
   const { workspaceId, projectId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+  });
+
+  const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
@@ -58,10 +68,22 @@ const Filter = () => {
     select: (data) => data?.project,
   });
 
-  const { data: users } = useSuspenseQuery({
-    ...membersOptions({ workspaceId: workspaceId }),
-    select: (data) => data?.members?.nodes.flatMap((user) => user?.user),
+  // Get workspace to find organizationId
+  const { data: workspace } = useSuspenseQuery({
+    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
+    select: (data) => data.workspace,
   });
+
+  // Fetch organization members from IDP
+  const { data: membersData } = useQuery({
+    ...organizationMembersOptions({
+      organizationId: workspace?.organizationId!,
+      accessToken: session?.accessToken!,
+    }),
+    enabled: !!workspace?.organizationId && !!session?.accessToken,
+  });
+
+  const users = membersData?.members ?? [];
 
   useHotkeys(Hotkeys.ToggleFilter, () => setIsFilterOpen(!isFilterOpen), [
     isFilterOpen,
@@ -195,12 +217,12 @@ const Filter = () => {
 
                 <MenuPositioner>
                   <MenuContent className="w-48">
-                    {users?.map((user) => (
+                    {users.map((member) => (
                       <MenuCheckboxItem
-                        key={user?.rowId}
+                        key={member.userId}
                         closeOnSelect={false}
-                        value={user?.rowId!}
-                        checked={assignees.includes(user?.rowId!)}
+                        value={member.userId}
+                        checked={assignees.includes(member.userId)}
                         onCheckedChange={(checked) => {
                           if (checked) {
                             navigate({
@@ -208,7 +230,7 @@ const Filter = () => {
                                 ...prev,
                                 assignees: [
                                   ...(prev.assignees ?? []),
-                                  user?.rowId!,
+                                  member.userId,
                                 ],
                               }),
                             });
@@ -217,7 +239,7 @@ const Filter = () => {
                               search: (prev) => ({
                                 ...prev,
                                 assignees: prev.assignees?.filter(
-                                  (id) => id !== user?.rowId!,
+                                  (id) => id !== member.userId,
                                 ),
                               }),
                             });
@@ -228,16 +250,16 @@ const Filter = () => {
                           <div className="flex h-6 items-center">
                             <AvatarRoot className="size-4 rounded-full">
                               <AvatarImage
-                                src={user?.avatarUrl ?? undefined}
-                                alt={user?.name}
+                                src={member.user.image ?? undefined}
+                                alt={member.user.name}
                               />
                               <AvatarFallback>
-                                {user?.name?.charAt(0)}
+                                {member.user.name?.charAt(0)}
                               </AvatarFallback>
                             </AvatarRoot>
                           </div>
                           <p className="-ml-2 font-light text-sm">
-                            {user?.name}
+                            {member.user.name}
                           </p>
                         </MenuItemText>
                         <MenuItemIndicator />

@@ -8,13 +8,11 @@ import { useDebounceCallback } from "usehooks-ts";
 
 import { RichTextEditor } from "@/components/core";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
-import {
-  Role,
-  useTasksQuery,
-  useUpdateTaskMutation,
-} from "@/generated/graphql";
+import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import taskOptions from "@/lib/options/task.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { TaskQuery } from "@/generated/graphql";
@@ -43,11 +41,13 @@ const TaskDescription = ({ task }: Props) => {
   const queryClient = useQueryClient();
   const taskQueryKey = taskOptions({ rowId: taskId }).queryKey;
 
-  const { data: role } = useSuspenseQuery({
+  const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace?.members.nodes?.[0]?.role,
+    select: (data) => data.workspace,
   });
 
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(workspace?.organizationId);
   const isMember = role === Role.Member;
 
   const { mutate: updateTask } = useUpdateTaskMutation({

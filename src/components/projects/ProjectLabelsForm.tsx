@@ -5,9 +5,10 @@ import { useState } from "react";
 
 import { Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
-import { Role } from "@/generated/graphql";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import labelsOptions from "@/lib/options/labels.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import LabelForm from "./ProjectLabelForm";
 
@@ -25,11 +26,12 @@ const ProjectLabelsForm = () => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
-  const { data: role } = useSuspenseQuery({
+  const { data: workspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace?.members?.nodes?.[0]?.role,
+    select: (data) => data.workspace,
   });
 
+  const role = useCurrentUserRole(workspace?.organizationId);
   const isMember = role === Role.Member;
 
   const { data: labels } = useQuery({

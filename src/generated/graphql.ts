@@ -887,39 +887,6 @@ export type CreateEmojiPayloadEmojiEdgeArgs = {
   orderBy?: Array<EmojiOrderBy>;
 };
 
-/** All input for the create `Invitation` mutation. */
-export type CreateInvitationInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The `Invitation` to be created by this mutation. */
-  invitation: InvitationInput;
-};
-
-/** The output of our create `Invitation` mutation. */
-export type CreateInvitationPayload = {
-  __typename?: 'CreateInvitationPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** The `Invitation` that was created by this mutation. */
-  invitation?: Maybe<Invitation>;
-  /** An edge for our `Invitation`. May be used by Relay 1. */
-  invitationEdge?: Maybe<InvitationEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our create `Invitation` mutation. */
-export type CreateInvitationPayloadInvitationEdgeArgs = {
-  orderBy?: Array<InvitationOrderBy>;
-};
-
 /** All input for the create `Label` mutation. */
 export type CreateLabelInput = {
   /**
@@ -951,39 +918,6 @@ export type CreateLabelPayload = {
 /** The output of our create `Label` mutation. */
 export type CreateLabelPayloadLabelEdgeArgs = {
   orderBy?: Array<LabelOrderBy>;
-};
-
-/** All input for the create `Member` mutation. */
-export type CreateMemberInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The `Member` to be created by this mutation. */
-  member: MemberInput;
-};
-
-/** The output of our create `Member` mutation. */
-export type CreateMemberPayload = {
-  __typename?: 'CreateMemberPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** The `Member` that was created by this mutation. */
-  member?: Maybe<Member>;
-  /** An edge for our `Member`. May be used by Relay 1. */
-  memberEdge?: Maybe<MemberEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our create `Member` mutation. */
-export type CreateMemberPayloadMemberEdgeArgs = {
-  orderBy?: Array<MemberOrderBy>;
 };
 
 /** All input for the create `Post` mutation. */
@@ -1409,50 +1343,6 @@ export type DeleteEmojiPayloadEmojiEdgeArgs = {
   orderBy?: Array<EmojiOrderBy>;
 };
 
-/** All input for the `deleteInvitationById` mutation. */
-export type DeleteInvitationByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Invitation` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteInvitation` mutation. */
-export type DeleteInvitationInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our delete `Invitation` mutation. */
-export type DeleteInvitationPayload = {
-  __typename?: 'DeleteInvitationPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedInvitationId?: Maybe<Scalars['ID']['output']>;
-  /** The `Invitation` that was deleted by this mutation. */
-  invitation?: Maybe<Invitation>;
-  /** An edge for our `Invitation`. May be used by Relay 1. */
-  invitationEdge?: Maybe<InvitationEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our delete `Invitation` mutation. */
-export type DeleteInvitationPayloadInvitationEdgeArgs = {
-  orderBy?: Array<InvitationOrderBy>;
-};
-
 /** All input for the `deleteLabelById` mutation. */
 export type DeleteLabelByIdInput = {
   /**
@@ -1495,51 +1385,6 @@ export type DeleteLabelPayload = {
 /** The output of our delete `Label` mutation. */
 export type DeleteLabelPayloadLabelEdgeArgs = {
   orderBy?: Array<LabelOrderBy>;
-};
-
-/** All input for the `deleteMemberById` mutation. */
-export type DeleteMemberByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Member` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteMember` mutation. */
-export type DeleteMemberInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  userId: Scalars['UUID']['input'];
-  workspaceId: Scalars['UUID']['input'];
-};
-
-/** The output of our delete `Member` mutation. */
-export type DeleteMemberPayload = {
-  __typename?: 'DeleteMemberPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedMemberId?: Maybe<Scalars['ID']['output']>;
-  /** The `Member` that was deleted by this mutation. */
-  member?: Maybe<Member>;
-  /** An edge for our `Member`. May be used by Relay 1. */
-  memberEdge?: Maybe<MemberEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our delete `Member` mutation. */
-export type DeleteMemberPayloadMemberEdgeArgs = {
-  orderBy?: Array<MemberOrderBy>;
 };
 
 /** All input for the `deletePostById` mutation. */
@@ -2182,235 +2027,6 @@ export type IntFilter = {
   notIn?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
-export type Invitation = Node & {
-  __typename?: 'Invitation';
-  createdAt: Scalars['Datetime']['output'];
-  email: Scalars['String']['output'];
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
-  rowId: Scalars['UUID']['output'];
-  updatedAt: Scalars['Datetime']['output'];
-  /** Reads a single `Workspace` that is related to this `Invitation`. */
-  workspace?: Maybe<Workspace>;
-  workspaceId: Scalars['UUID']['output'];
-};
-
-export type InvitationAggregates = {
-  __typename?: 'InvitationAggregates';
-  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  distinctCount?: Maybe<InvitationDistinctCountAggregates>;
-  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-};
-
-/** A filter to be used against aggregates of `Invitation` object types. */
-export type InvitationAggregatesFilter = {
-  /** Distinct count aggregate over matching `Invitation` objects. */
-  distinctCount?: InputMaybe<InvitationDistinctCountAggregateFilter>;
-  /** A filter that must pass for the relevant `Invitation` object to be included within the aggregate. */
-  filter?: InputMaybe<InvitationFilter>;
-};
-
-/**
- * A condition to be used against `Invitation` object types. All fields are tested
- * for equality and combined with a logical ‘and.’
- */
-export type InvitationCondition = {
-  /** Checks for equality with the object’s `createdAt` field. */
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `email` field. */
-  email?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `workspaceId` field. */
-  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
-};
-
-/** A connection to a list of `Invitation` values. */
-export type InvitationConnection = {
-  __typename?: 'InvitationConnection';
-  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  aggregates?: Maybe<InvitationAggregates>;
-  /** A list of edges which contains the `Invitation` and cursor to aid in pagination. */
-  edges: Array<InvitationEdge>;
-  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  groupedAggregates?: Maybe<Array<InvitationAggregates>>;
-  /** A list of `Invitation` objects. */
-  nodes: Array<Invitation>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `Invitation` you could get from the connection. */
-  totalCount: Scalars['Int']['output'];
-};
-
-
-/** A connection to a list of `Invitation` values. */
-export type InvitationConnectionGroupedAggregatesArgs = {
-  groupBy: Array<InvitationGroupBy>;
-  having?: InputMaybe<InvitationHavingInput>;
-};
-
-export type InvitationDistinctCountAggregateFilter = {
-  createdAt?: InputMaybe<BigIntFilter>;
-  email?: InputMaybe<BigIntFilter>;
-  rowId?: InputMaybe<BigIntFilter>;
-  updatedAt?: InputMaybe<BigIntFilter>;
-  workspaceId?: InputMaybe<BigIntFilter>;
-};
-
-export type InvitationDistinctCountAggregates = {
-  __typename?: 'InvitationDistinctCountAggregates';
-  /** Distinct count of createdAt across the matching connection */
-  createdAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of email across the matching connection */
-  email?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of rowId across the matching connection */
-  rowId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of updatedAt across the matching connection */
-  updatedAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of workspaceId across the matching connection */
-  workspaceId?: Maybe<Scalars['BigInt']['output']>;
-};
-
-/** A `Invitation` edge in the connection. */
-export type InvitationEdge = {
-  __typename?: 'InvitationEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  /** The `Invitation` at the end of the edge. */
-  node: Invitation;
-};
-
-/** A filter to be used against `Invitation` object types. All fields are combined with a logical ‘and.’ */
-export type InvitationFilter = {
-  /** Checks for all expressions in this list. */
-  and?: InputMaybe<Array<InvitationFilter>>;
-  /** Filter by the object’s `createdAt` field. */
-  createdAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `email` field. */
-  email?: InputMaybe<StringFilter>;
-  /** Negates the expression. */
-  not?: InputMaybe<InvitationFilter>;
-  /** Checks for any expressions in this list. */
-  or?: InputMaybe<Array<InvitationFilter>>;
-  /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `workspace` relation. */
-  workspace?: InputMaybe<WorkspaceFilter>;
-  /** Filter by the object’s `workspaceId` field. */
-  workspaceId?: InputMaybe<UuidFilter>;
-};
-
-/** Grouping methods for `Invitation` for usage during aggregation. */
-export enum InvitationGroupBy {
-  CreatedAt = 'CREATED_AT',
-  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
-  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
-  Email = 'EMAIL',
-  UpdatedAt = 'UPDATED_AT',
-  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
-  WorkspaceId = 'WORKSPACE_ID'
-}
-
-export type InvitationHavingAverageInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type InvitationHavingDistinctCountInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** Conditions for `Invitation` aggregates. */
-export type InvitationHavingInput = {
-  AND?: InputMaybe<Array<InvitationHavingInput>>;
-  OR?: InputMaybe<Array<InvitationHavingInput>>;
-  average?: InputMaybe<InvitationHavingAverageInput>;
-  distinctCount?: InputMaybe<InvitationHavingDistinctCountInput>;
-  max?: InputMaybe<InvitationHavingMaxInput>;
-  min?: InputMaybe<InvitationHavingMinInput>;
-  stddevPopulation?: InputMaybe<InvitationHavingStddevPopulationInput>;
-  stddevSample?: InputMaybe<InvitationHavingStddevSampleInput>;
-  sum?: InputMaybe<InvitationHavingSumInput>;
-  variancePopulation?: InputMaybe<InvitationHavingVariancePopulationInput>;
-  varianceSample?: InputMaybe<InvitationHavingVarianceSampleInput>;
-};
-
-export type InvitationHavingMaxInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type InvitationHavingMinInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type InvitationHavingStddevPopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type InvitationHavingStddevSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type InvitationHavingSumInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type InvitationHavingVariancePopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type InvitationHavingVarianceSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** An input for mutations affecting `Invitation` */
-export type InvitationInput = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  email: Scalars['String']['input'];
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  workspaceId: Scalars['UUID']['input'];
-};
-
-/** Methods to use when ordering `Invitation`. */
-export enum InvitationOrderBy {
-  CreatedAtAsc = 'CREATED_AT_ASC',
-  CreatedAtDesc = 'CREATED_AT_DESC',
-  EmailAsc = 'EMAIL_ASC',
-  EmailDesc = 'EMAIL_DESC',
-  Natural = 'NATURAL',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  RowIdAsc = 'ROW_ID_ASC',
-  RowIdDesc = 'ROW_ID_DESC',
-  UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC',
-  WorkspaceIdAsc = 'WORKSPACE_ID_ASC',
-  WorkspaceIdDesc = 'WORKSPACE_ID_DESC'
-}
-
-/** Represents an update to a `Invitation`. Fields that are set will be updated. */
-export type InvitationPatch = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
-};
-
 export type Label = Node & {
   __typename?: 'Label';
   color: Scalars['String']['output'];
@@ -2690,237 +2306,6 @@ export type LabelToManyTaskLabelFilter = {
   some?: InputMaybe<TaskLabelFilter>;
 };
 
-export type Member = Node & {
-  __typename?: 'Member';
-  createdAt: Scalars['Datetime']['output'];
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
-  role: Role;
-  updatedAt: Scalars['Datetime']['output'];
-  /** Reads a single `User` that is related to this `Member`. */
-  user?: Maybe<User>;
-  userId: Scalars['UUID']['output'];
-  /** Reads a single `Workspace` that is related to this `Member`. */
-  workspace?: Maybe<Workspace>;
-  workspaceId: Scalars['UUID']['output'];
-};
-
-export type MemberAggregates = {
-  __typename?: 'MemberAggregates';
-  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  distinctCount?: Maybe<MemberDistinctCountAggregates>;
-  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-};
-
-/** A filter to be used against aggregates of `Member` object types. */
-export type MemberAggregatesFilter = {
-  /** Distinct count aggregate over matching `Member` objects. */
-  distinctCount?: InputMaybe<MemberDistinctCountAggregateFilter>;
-  /** A filter that must pass for the relevant `Member` object to be included within the aggregate. */
-  filter?: InputMaybe<MemberFilter>;
-};
-
-/** A condition to be used against `Member` object types. All fields are tested for equality and combined with a logical ‘and.’ */
-export type MemberCondition = {
-  /** Checks for equality with the object’s `createdAt` field. */
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `role` field. */
-  role?: InputMaybe<Role>;
-  /** Checks for equality with the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `userId` field. */
-  userId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `workspaceId` field. */
-  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
-};
-
-/** A connection to a list of `Member` values. */
-export type MemberConnection = {
-  __typename?: 'MemberConnection';
-  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  aggregates?: Maybe<MemberAggregates>;
-  /** A list of edges which contains the `Member` and cursor to aid in pagination. */
-  edges: Array<MemberEdge>;
-  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  groupedAggregates?: Maybe<Array<MemberAggregates>>;
-  /** A list of `Member` objects. */
-  nodes: Array<Member>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `Member` you could get from the connection. */
-  totalCount: Scalars['Int']['output'];
-};
-
-
-/** A connection to a list of `Member` values. */
-export type MemberConnectionGroupedAggregatesArgs = {
-  groupBy: Array<MemberGroupBy>;
-  having?: InputMaybe<MemberHavingInput>;
-};
-
-export type MemberDistinctCountAggregateFilter = {
-  createdAt?: InputMaybe<BigIntFilter>;
-  role?: InputMaybe<BigIntFilter>;
-  updatedAt?: InputMaybe<BigIntFilter>;
-  userId?: InputMaybe<BigIntFilter>;
-  workspaceId?: InputMaybe<BigIntFilter>;
-};
-
-export type MemberDistinctCountAggregates = {
-  __typename?: 'MemberDistinctCountAggregates';
-  /** Distinct count of createdAt across the matching connection */
-  createdAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of role across the matching connection */
-  role?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of updatedAt across the matching connection */
-  updatedAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of userId across the matching connection */
-  userId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of workspaceId across the matching connection */
-  workspaceId?: Maybe<Scalars['BigInt']['output']>;
-};
-
-/** A `Member` edge in the connection. */
-export type MemberEdge = {
-  __typename?: 'MemberEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  /** The `Member` at the end of the edge. */
-  node: Member;
-};
-
-/** A filter to be used against `Member` object types. All fields are combined with a logical ‘and.’ */
-export type MemberFilter = {
-  /** Checks for all expressions in this list. */
-  and?: InputMaybe<Array<MemberFilter>>;
-  /** Filter by the object’s `createdAt` field. */
-  createdAt?: InputMaybe<DatetimeFilter>;
-  /** Negates the expression. */
-  not?: InputMaybe<MemberFilter>;
-  /** Checks for any expressions in this list. */
-  or?: InputMaybe<Array<MemberFilter>>;
-  /** Filter by the object’s `role` field. */
-  role?: InputMaybe<RoleFilter>;
-  /** Filter by the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `user` relation. */
-  user?: InputMaybe<UserFilter>;
-  /** Filter by the object’s `userId` field. */
-  userId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `workspace` relation. */
-  workspace?: InputMaybe<WorkspaceFilter>;
-  /** Filter by the object’s `workspaceId` field. */
-  workspaceId?: InputMaybe<UuidFilter>;
-};
-
-/** Grouping methods for `Member` for usage during aggregation. */
-export enum MemberGroupBy {
-  CreatedAt = 'CREATED_AT',
-  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
-  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
-  Role = 'ROLE',
-  UpdatedAt = 'UPDATED_AT',
-  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
-  UserId = 'USER_ID',
-  WorkspaceId = 'WORKSPACE_ID'
-}
-
-export type MemberHavingAverageInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type MemberHavingDistinctCountInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** Conditions for `Member` aggregates. */
-export type MemberHavingInput = {
-  AND?: InputMaybe<Array<MemberHavingInput>>;
-  OR?: InputMaybe<Array<MemberHavingInput>>;
-  average?: InputMaybe<MemberHavingAverageInput>;
-  distinctCount?: InputMaybe<MemberHavingDistinctCountInput>;
-  max?: InputMaybe<MemberHavingMaxInput>;
-  min?: InputMaybe<MemberHavingMinInput>;
-  stddevPopulation?: InputMaybe<MemberHavingStddevPopulationInput>;
-  stddevSample?: InputMaybe<MemberHavingStddevSampleInput>;
-  sum?: InputMaybe<MemberHavingSumInput>;
-  variancePopulation?: InputMaybe<MemberHavingVariancePopulationInput>;
-  varianceSample?: InputMaybe<MemberHavingVarianceSampleInput>;
-};
-
-export type MemberHavingMaxInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type MemberHavingMinInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type MemberHavingStddevPopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type MemberHavingStddevSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type MemberHavingSumInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type MemberHavingVariancePopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type MemberHavingVarianceSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** An input for mutations affecting `Member` */
-export type MemberInput = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  role?: InputMaybe<Role>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  userId: Scalars['UUID']['input'];
-  workspaceId: Scalars['UUID']['input'];
-};
-
-/** Methods to use when ordering `Member`. */
-export enum MemberOrderBy {
-  CreatedAtAsc = 'CREATED_AT_ASC',
-  CreatedAtDesc = 'CREATED_AT_DESC',
-  Natural = 'NATURAL',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  RoleAsc = 'ROLE_ASC',
-  RoleDesc = 'ROLE_DESC',
-  UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC',
-  UserIdAsc = 'USER_ID_ASC',
-  UserIdDesc = 'USER_ID_DESC',
-  WorkspaceIdAsc = 'WORKSPACE_ID_ASC',
-  WorkspaceIdDesc = 'WORKSPACE_ID_DESC'
-}
-
-/** Represents an update to a `Member`. Fields that are set will be updated. */
-export type MemberPatch = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  role?: InputMaybe<Role>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  userId?: InputMaybe<Scalars['UUID']['input']>;
-  workspaceId?: InputMaybe<Scalars['UUID']['input']>;
-};
-
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
@@ -2930,12 +2315,8 @@ export type Mutation = {
   createColumn?: Maybe<CreateColumnPayload>;
   /** Creates a single `Emoji`. */
   createEmoji?: Maybe<CreateEmojiPayload>;
-  /** Creates a single `Invitation`. */
-  createInvitation?: Maybe<CreateInvitationPayload>;
   /** Creates a single `Label`. */
   createLabel?: Maybe<CreateLabelPayload>;
-  /** Creates a single `Member`. */
-  createMember?: Maybe<CreateMemberPayload>;
   /** Creates a single `Post`. */
   createPost?: Maybe<CreatePostPayload>;
   /** Creates a single `Project`. */
@@ -2964,18 +2345,10 @@ export type Mutation = {
   deleteEmoji?: Maybe<DeleteEmojiPayload>;
   /** Deletes a single `Emoji` using its globally unique id. */
   deleteEmojiById?: Maybe<DeleteEmojiPayload>;
-  /** Deletes a single `Invitation` using a unique key. */
-  deleteInvitation?: Maybe<DeleteInvitationPayload>;
-  /** Deletes a single `Invitation` using its globally unique id. */
-  deleteInvitationById?: Maybe<DeleteInvitationPayload>;
   /** Deletes a single `Label` using a unique key. */
   deleteLabel?: Maybe<DeleteLabelPayload>;
   /** Deletes a single `Label` using its globally unique id. */
   deleteLabelById?: Maybe<DeleteLabelPayload>;
-  /** Deletes a single `Member` using a unique key. */
-  deleteMember?: Maybe<DeleteMemberPayload>;
-  /** Deletes a single `Member` using its globally unique id. */
-  deleteMemberById?: Maybe<DeleteMemberPayload>;
   /** Deletes a single `Post` using a unique key. */
   deletePost?: Maybe<DeletePostPayload>;
   /** Deletes a single `Post` using its globally unique id. */
@@ -3020,18 +2393,10 @@ export type Mutation = {
   updateEmoji?: Maybe<UpdateEmojiPayload>;
   /** Updates a single `Emoji` using its globally unique id and a patch. */
   updateEmojiById?: Maybe<UpdateEmojiPayload>;
-  /** Updates a single `Invitation` using a unique key and a patch. */
-  updateInvitation?: Maybe<UpdateInvitationPayload>;
-  /** Updates a single `Invitation` using its globally unique id and a patch. */
-  updateInvitationById?: Maybe<UpdateInvitationPayload>;
   /** Updates a single `Label` using a unique key and a patch. */
   updateLabel?: Maybe<UpdateLabelPayload>;
   /** Updates a single `Label` using its globally unique id and a patch. */
   updateLabelById?: Maybe<UpdateLabelPayload>;
-  /** Updates a single `Member` using a unique key and a patch. */
-  updateMember?: Maybe<UpdateMemberPayload>;
-  /** Updates a single `Member` using its globally unique id and a patch. */
-  updateMemberById?: Maybe<UpdateMemberPayload>;
   /** Updates a single `Post` using a unique key and a patch. */
   updatePost?: Maybe<UpdatePostPayload>;
   /** Updates a single `Post` using its globally unique id and a patch. */
@@ -3086,20 +2451,8 @@ export type MutationCreateEmojiArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateInvitationArgs = {
-  input: CreateInvitationInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateLabelArgs = {
   input: CreateLabelInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateMemberArgs = {
-  input: CreateMemberInput;
 };
 
 
@@ -3188,18 +2541,6 @@ export type MutationDeleteEmojiByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteInvitationArgs = {
-  input: DeleteInvitationInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteInvitationByIdArgs = {
-  input: DeleteInvitationByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteLabelArgs = {
   input: DeleteLabelInput;
 };
@@ -3208,18 +2549,6 @@ export type MutationDeleteLabelArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteLabelByIdArgs = {
   input: DeleteLabelByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteMemberArgs = {
-  input: DeleteMemberInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteMemberByIdArgs = {
-  input: DeleteMemberByIdInput;
 };
 
 
@@ -3356,18 +2685,6 @@ export type MutationUpdateEmojiByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateInvitationArgs = {
-  input: UpdateInvitationInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateInvitationByIdArgs = {
-  input: UpdateInvitationByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateLabelArgs = {
   input: UpdateLabelInput;
 };
@@ -3376,18 +2693,6 @@ export type MutationUpdateLabelArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateLabelByIdArgs = {
   input: UpdateLabelByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateMemberArgs = {
-  input: UpdateMemberInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateMemberByIdArgs = {
-  input: UpdateMemberByIdInput;
 };
 
 
@@ -4931,26 +4236,12 @@ export type Query = Node & {
   emojis?: Maybe<EmojiConnection>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
-  /** Get a single `Invitation`. */
-  invitation?: Maybe<Invitation>;
-  /** Reads a single `Invitation` using its globally unique `ID`. */
-  invitationById?: Maybe<Invitation>;
-  /** Get a single `Invitation`. */
-  invitationByWorkspaceIdAndEmail?: Maybe<Invitation>;
-  /** Reads and enables pagination through a set of `Invitation`. */
-  invitations?: Maybe<InvitationConnection>;
   /** Get a single `Label`. */
   label?: Maybe<Label>;
   /** Reads a single `Label` using its globally unique `ID`. */
   labelById?: Maybe<Label>;
   /** Reads and enables pagination through a set of `Label`. */
   labels?: Maybe<LabelConnection>;
-  /** Get a single `Member`. */
-  member?: Maybe<Member>;
-  /** Reads a single `Member` using its globally unique `ID`. */
-  memberById?: Maybe<Member>;
-  /** Reads and enables pagination through a set of `Member`. */
-  members?: Maybe<MemberConnection>;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
   /** Get a single `Post`. */
@@ -5105,38 +4396,6 @@ export type QueryEmojisArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryInvitationArgs = {
-  rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryInvitationByIdArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryInvitationByWorkspaceIdAndEmailArgs = {
-  email: Scalars['String']['input'];
-  workspaceId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryInvitationsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<InvitationCondition>;
-  filter?: InputMaybe<InvitationFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<InvitationOrderBy>>;
-};
-
-
-/** The root query type which gives access points into the data universe. */
 export type QueryLabelArgs = {
   rowId: Scalars['UUID']['input'];
 };
@@ -5158,32 +4417,6 @@ export type QueryLabelsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<LabelOrderBy>>;
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryMemberArgs = {
-  userId: Scalars['UUID']['input'];
-  workspaceId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryMemberByIdArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryMembersArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<MemberCondition>;
-  filter?: InputMaybe<MemberFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<MemberOrderBy>>;
 };
 
 
@@ -5430,38 +4663,6 @@ export type QueryWorkspacesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<WorkspaceOrderBy>>;
-};
-
-export enum Role {
-  Admin = 'admin',
-  Member = 'member',
-  Owner = 'owner'
-}
-
-/** A filter to be used against Role fields. All fields are combined with a logical ‘and.’ */
-export type RoleFilter = {
-  /** Not equal to the specified value, treating null like an ordinary value. */
-  distinctFrom?: InputMaybe<Role>;
-  /** Equal to the specified value. */
-  equalTo?: InputMaybe<Role>;
-  /** Greater than the specified value. */
-  greaterThan?: InputMaybe<Role>;
-  /** Greater than or equal to the specified value. */
-  greaterThanOrEqualTo?: InputMaybe<Role>;
-  /** Included in the specified list. */
-  in?: InputMaybe<Array<Role>>;
-  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
-  isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Less than the specified value. */
-  lessThan?: InputMaybe<Role>;
-  /** Less than or equal to the specified value. */
-  lessThanOrEqualTo?: InputMaybe<Role>;
-  /** Equal to the specified value, treating null like an ordinary value. */
-  notDistinctFrom?: InputMaybe<Role>;
-  /** Not equal to the specified value. */
-  notEqualTo?: InputMaybe<Role>;
-  /** Not included in the specified list. */
-  notIn?: InputMaybe<Array<Role>>;
 };
 
 /** A filter to be used against String fields. All fields are combined with a logical ‘and.’ */
@@ -6578,53 +5779,6 @@ export type UpdateEmojiPayloadEmojiEdgeArgs = {
   orderBy?: Array<EmojiOrderBy>;
 };
 
-/** All input for the `updateInvitationById` mutation. */
-export type UpdateInvitationByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Invitation` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `Invitation` being updated. */
-  patch: InvitationPatch;
-};
-
-/** All input for the `updateInvitation` mutation. */
-export type UpdateInvitationInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `Invitation` being updated. */
-  patch: InvitationPatch;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our update `Invitation` mutation. */
-export type UpdateInvitationPayload = {
-  __typename?: 'UpdateInvitationPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** The `Invitation` that was updated by this mutation. */
-  invitation?: Maybe<Invitation>;
-  /** An edge for our `Invitation`. May be used by Relay 1. */
-  invitationEdge?: Maybe<InvitationEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our update `Invitation` mutation. */
-export type UpdateInvitationPayloadInvitationEdgeArgs = {
-  orderBy?: Array<InvitationOrderBy>;
-};
-
 /** All input for the `updateLabelById` mutation. */
 export type UpdateLabelByIdInput = {
   /**
@@ -6670,54 +5824,6 @@ export type UpdateLabelPayload = {
 /** The output of our update `Label` mutation. */
 export type UpdateLabelPayloadLabelEdgeArgs = {
   orderBy?: Array<LabelOrderBy>;
-};
-
-/** All input for the `updateMemberById` mutation. */
-export type UpdateMemberByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `Member` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `Member` being updated. */
-  patch: MemberPatch;
-};
-
-/** All input for the `updateMember` mutation. */
-export type UpdateMemberInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `Member` being updated. */
-  patch: MemberPatch;
-  userId: Scalars['UUID']['input'];
-  workspaceId: Scalars['UUID']['input'];
-};
-
-/** The output of our update `Member` mutation. */
-export type UpdateMemberPayload = {
-  __typename?: 'UpdateMemberPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** The `Member` that was updated by this mutation. */
-  member?: Maybe<Member>;
-  /** An edge for our `Member`. May be used by Relay 1. */
-  memberEdge?: Maybe<MemberEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our update `Member` mutation. */
-export type UpdateMemberPayloadMemberEdgeArgs = {
-  orderBy?: Array<MemberOrderBy>;
 };
 
 /** All input for the `updatePostById` mutation. */
@@ -7113,8 +6219,6 @@ export type User = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   identityProviderId: Scalars['UUID']['output'];
-  /** Reads and enables pagination through a set of `Member`. */
-  members: MemberConnection;
   name: Scalars['String']['output'];
   rowId: Scalars['UUID']['output'];
   updatedAt: Scalars['Datetime']['output'];
@@ -7168,18 +6272,6 @@ export type UserEmojisArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<EmojiOrderBy>>;
-};
-
-
-export type UserMembersArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<MemberCondition>;
-  filter?: InputMaybe<MemberFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<MemberOrderBy>>;
 };
 
 
@@ -7298,10 +6390,6 @@ export type UserFilter = {
   emojisExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `identityProviderId` field. */
   identityProviderId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `members` relation. */
-  members?: InputMaybe<UserToManyMemberFilter>;
-  /** Some related `members` exist. */
-  membersExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
@@ -7493,18 +6581,6 @@ export enum UserOrderBy {
   EmojisDistinctCountUserIdDesc = 'EMOJIS_DISTINCT_COUNT_USER_ID_DESC',
   IdentityProviderIdAsc = 'IDENTITY_PROVIDER_ID_ASC',
   IdentityProviderIdDesc = 'IDENTITY_PROVIDER_ID_DESC',
-  MembersCountAsc = 'MEMBERS_COUNT_ASC',
-  MembersCountDesc = 'MEMBERS_COUNT_DESC',
-  MembersDistinctCountCreatedAtAsc = 'MEMBERS_DISTINCT_COUNT_CREATED_AT_ASC',
-  MembersDistinctCountCreatedAtDesc = 'MEMBERS_DISTINCT_COUNT_CREATED_AT_DESC',
-  MembersDistinctCountRoleAsc = 'MEMBERS_DISTINCT_COUNT_ROLE_ASC',
-  MembersDistinctCountRoleDesc = 'MEMBERS_DISTINCT_COUNT_ROLE_DESC',
-  MembersDistinctCountUpdatedAtAsc = 'MEMBERS_DISTINCT_COUNT_UPDATED_AT_ASC',
-  MembersDistinctCountUpdatedAtDesc = 'MEMBERS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  MembersDistinctCountUserIdAsc = 'MEMBERS_DISTINCT_COUNT_USER_ID_ASC',
-  MembersDistinctCountUserIdDesc = 'MEMBERS_DISTINCT_COUNT_USER_ID_DESC',
-  MembersDistinctCountWorkspaceIdAsc = 'MEMBERS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
-  MembersDistinctCountWorkspaceIdDesc = 'MEMBERS_DISTINCT_COUNT_WORKSPACE_ID_DESC',
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
@@ -7837,18 +6913,6 @@ export type UserToManyEmojiFilter = {
   some?: InputMaybe<EmojiFilter>;
 };
 
-/** A filter to be used against many `Member` object types. All fields are combined with a logical ‘and.’ */
-export type UserToManyMemberFilter = {
-  /** Aggregates across related `Member` match the filter criteria. */
-  aggregates?: InputMaybe<MemberAggregatesFilter>;
-  /** Every related `Member` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: InputMaybe<MemberFilter>;
-  /** No related `Member` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: InputMaybe<MemberFilter>;
-  /** Some related `Member` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: InputMaybe<MemberFilter>;
-};
-
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
 export type UserToManyPostFilter = {
   /** Aggregates across related `Post` match the filter criteria. */
@@ -7893,10 +6957,6 @@ export type Workspace = Node & {
   deletionReason?: Maybe<Scalars['String']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
-  /** Reads and enables pagination through a set of `Invitation`. */
-  invitations: InvitationConnection;
-  /** Reads and enables pagination through a set of `Member`. */
-  members: MemberConnection;
   organizationId: Scalars['String']['output'];
   /** Reads and enables pagination through a set of `ProjectColumn`. */
   projectColumns: ProjectColumnConnection;
@@ -7907,30 +6967,6 @@ export type Workspace = Node & {
   tier: Tier;
   updatedAt: Scalars['Datetime']['output'];
   viewMode: Scalars['String']['output'];
-};
-
-
-export type WorkspaceInvitationsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<InvitationCondition>;
-  filter?: InputMaybe<InvitationFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<InvitationOrderBy>>;
-};
-
-
-export type WorkspaceMembersArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<MemberCondition>;
-  filter?: InputMaybe<MemberFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<MemberOrderBy>>;
 };
 
 
@@ -8060,14 +7096,6 @@ export type WorkspaceFilter = {
   deletedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `deletionReason` field. */
   deletionReason?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `invitations` relation. */
-  invitations?: InputMaybe<WorkspaceToManyInvitationFilter>;
-  /** Some related `invitations` exist. */
-  invitationsExist?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Filter by the object’s `members` relation. */
-  members?: InputMaybe<WorkspaceToManyMemberFilter>;
-  /** Some related `members` exist. */
-  membersExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Negates the expression. */
   not?: InputMaybe<WorkspaceFilter>;
   /** Checks for any expressions in this list. */
@@ -8204,30 +7232,6 @@ export enum WorkspaceOrderBy {
   DeletedAtDesc = 'DELETED_AT_DESC',
   DeletionReasonAsc = 'DELETION_REASON_ASC',
   DeletionReasonDesc = 'DELETION_REASON_DESC',
-  InvitationsCountAsc = 'INVITATIONS_COUNT_ASC',
-  InvitationsCountDesc = 'INVITATIONS_COUNT_DESC',
-  InvitationsDistinctCountCreatedAtAsc = 'INVITATIONS_DISTINCT_COUNT_CREATED_AT_ASC',
-  InvitationsDistinctCountCreatedAtDesc = 'INVITATIONS_DISTINCT_COUNT_CREATED_AT_DESC',
-  InvitationsDistinctCountEmailAsc = 'INVITATIONS_DISTINCT_COUNT_EMAIL_ASC',
-  InvitationsDistinctCountEmailDesc = 'INVITATIONS_DISTINCT_COUNT_EMAIL_DESC',
-  InvitationsDistinctCountRowIdAsc = 'INVITATIONS_DISTINCT_COUNT_ROW_ID_ASC',
-  InvitationsDistinctCountRowIdDesc = 'INVITATIONS_DISTINCT_COUNT_ROW_ID_DESC',
-  InvitationsDistinctCountUpdatedAtAsc = 'INVITATIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
-  InvitationsDistinctCountUpdatedAtDesc = 'INVITATIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  InvitationsDistinctCountWorkspaceIdAsc = 'INVITATIONS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
-  InvitationsDistinctCountWorkspaceIdDesc = 'INVITATIONS_DISTINCT_COUNT_WORKSPACE_ID_DESC',
-  MembersCountAsc = 'MEMBERS_COUNT_ASC',
-  MembersCountDesc = 'MEMBERS_COUNT_DESC',
-  MembersDistinctCountCreatedAtAsc = 'MEMBERS_DISTINCT_COUNT_CREATED_AT_ASC',
-  MembersDistinctCountCreatedAtDesc = 'MEMBERS_DISTINCT_COUNT_CREATED_AT_DESC',
-  MembersDistinctCountRoleAsc = 'MEMBERS_DISTINCT_COUNT_ROLE_ASC',
-  MembersDistinctCountRoleDesc = 'MEMBERS_DISTINCT_COUNT_ROLE_DESC',
-  MembersDistinctCountUpdatedAtAsc = 'MEMBERS_DISTINCT_COUNT_UPDATED_AT_ASC',
-  MembersDistinctCountUpdatedAtDesc = 'MEMBERS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  MembersDistinctCountUserIdAsc = 'MEMBERS_DISTINCT_COUNT_USER_ID_ASC',
-  MembersDistinctCountUserIdDesc = 'MEMBERS_DISTINCT_COUNT_USER_ID_DESC',
-  MembersDistinctCountWorkspaceIdAsc = 'MEMBERS_DISTINCT_COUNT_WORKSPACE_ID_ASC',
-  MembersDistinctCountWorkspaceIdDesc = 'MEMBERS_DISTINCT_COUNT_WORKSPACE_ID_DESC',
   Natural = 'NATURAL',
   OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
   OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
@@ -8330,30 +7334,6 @@ export type WorkspacePatch = {
   viewMode?: InputMaybe<Scalars['String']['input']>;
 };
 
-/** A filter to be used against many `Invitation` object types. All fields are combined with a logical ‘and.’ */
-export type WorkspaceToManyInvitationFilter = {
-  /** Aggregates across related `Invitation` match the filter criteria. */
-  aggregates?: InputMaybe<InvitationAggregatesFilter>;
-  /** Every related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: InputMaybe<InvitationFilter>;
-  /** No related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: InputMaybe<InvitationFilter>;
-  /** Some related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: InputMaybe<InvitationFilter>;
-};
-
-/** A filter to be used against many `Member` object types. All fields are combined with a logical ‘and.’ */
-export type WorkspaceToManyMemberFilter = {
-  /** Aggregates across related `Member` match the filter criteria. */
-  aggregates?: InputMaybe<MemberAggregatesFilter>;
-  /** Every related `Member` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: InputMaybe<MemberFilter>;
-  /** No related `Member` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: InputMaybe<MemberFilter>;
-  /** Some related `Member` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: InputMaybe<MemberFilter>;
-};
-
 /** A filter to be used against many `ProjectColumn` object types. All fields are combined with a logical ‘and.’ */
 export type WorkspaceToManyProjectColumnFilter = {
   /** Aggregates across related `ProjectColumn` match the filter criteria. */
@@ -8446,20 +7426,6 @@ export type UpdatePostEmojiMutationVariables = Exact<{
 
 export type UpdatePostEmojiMutation = { __typename?: 'Mutation', updateEmoji?: { __typename?: 'UpdateEmojiPayload', emoji?: { __typename?: 'Emoji', rowId: string } | null } | null };
 
-export type CreateInvitationMutationVariables = Exact<{
-  input: CreateInvitationInput;
-}>;
-
-
-export type CreateInvitationMutation = { __typename?: 'Mutation', createInvitation?: { __typename?: 'CreateInvitationPayload', invitation?: { __typename?: 'Invitation', rowId: string } | null } | null };
-
-export type DeleteInvitationMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
-}>;
-
-
-export type DeleteInvitationMutation = { __typename?: 'Mutation', deleteInvitation?: { __typename?: 'DeleteInvitationPayload', invitation?: { __typename?: 'Invitation', rowId: string } | null } | null };
-
 export type CreateLabelMutationVariables = Exact<{
   input: CreateLabelInput;
 }>;
@@ -8481,28 +7447,6 @@ export type UpdateLabelMutationVariables = Exact<{
 
 
 export type UpdateLabelMutation = { __typename?: 'Mutation', updateLabel?: { __typename?: 'UpdateLabelPayload', label?: { __typename?: 'Label', rowId: string } | null } | null };
-
-export type CreateMemberMutationVariables = Exact<{
-  input: CreateMemberInput;
-}>;
-
-
-export type CreateMemberMutation = { __typename?: 'Mutation', createMember?: { __typename?: 'CreateMemberPayload', member?: { __typename?: 'Member', id: string } | null } | null };
-
-export type DeleteMemberMutationVariables = Exact<{
-  userId: Scalars['UUID']['input'];
-  workspaceId: Scalars['UUID']['input'];
-}>;
-
-
-export type DeleteMemberMutation = { __typename?: 'Mutation', deleteMember?: { __typename?: 'DeleteMemberPayload', clientMutationId?: string | null } | null };
-
-export type UpdateMemberMutationVariables = Exact<{
-  input: UpdateMemberInput;
-}>;
-
-
-export type UpdateMemberMutation = { __typename?: 'Mutation', updateMember?: { __typename?: 'UpdateMemberPayload', clientMutationId?: string | null } | null };
 
 export type CreatePostMutationVariables = Exact<{
   input: CreatePostInput;
@@ -8680,28 +7624,12 @@ export type UserEmojisQueryVariables = Exact<{
 
 export type UserEmojisQuery = { __typename?: 'Query', emojis?: { __typename?: 'EmojiConnection', nodes: Array<{ __typename?: 'Emoji', emoji?: string | null }> } | null };
 
-export type InvitationsQueryVariables = Exact<{
-  email?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type InvitationsQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', nodes: Array<{ __typename?: 'Invitation', rowId: string, workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string }> }, members: { __typename?: 'MemberConnection', totalCount: number } } | null }> } | null };
-
 export type LabelsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
 
 
 export type LabelsQuery = { __typename?: 'Query', labels?: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', color: string, name: string, rowId: string }> } | null };
-
-export type MembersQueryVariables = Exact<{
-  workspaceId: Scalars['UUID']['input'];
-  filter?: InputMaybe<MemberFilter>;
-  orderBy?: InputMaybe<Array<MemberOrderBy> | MemberOrderBy>;
-}>;
-
-
-export type MembersQuery = { __typename?: 'Query', members?: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', role: Role, user?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, assignedTasks: { __typename?: 'AssigneeConnection', totalCount: number }, completedTasks: { __typename?: 'AssigneeConnection', totalCount: number } } | null }> } | null };
 
 export type ProjectColumnsQueryVariables = Exact<{
   workspaceId: Scalars['UUID']['input'];
@@ -8773,7 +7701,7 @@ export type WorkspaceQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string, viewMode: string, tier: Tier, members: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', role: Role }> }, projectColumns: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', emoji?: string | null, rowId: string, title: string, index: number }> }, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string, color?: string | null }> }, projectColumn?: { __typename?: 'ProjectColumn', title: string, emoji?: string | null } | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string, viewMode: string, tier: Tier, projectColumns: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', emoji?: string | null, rowId: string, title: string, index: number }> }, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string, color?: string | null }> }, projectColumn?: { __typename?: 'ProjectColumn', title: string, emoji?: string | null } | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } } | null };
 
 export type WorkspaceByOrganizationIdQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -8784,12 +7712,11 @@ export type WorkspaceByOrganizationIdQueryVariables = Exact<{
 export type WorkspaceByOrganizationIdQuery = { __typename?: 'Query', workspaceByOrganizationId?: { __typename?: 'Workspace', rowId: string, organizationId: string, tier: Tier, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string }> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{
-  userId: Scalars['UUID']['input'];
   limit?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, organizationId: string, tier: Tier, members: { __typename?: 'MemberConnection', totalCount: number }, currentUser: { __typename?: 'MemberConnection', nodes: Array<{ __typename?: 'Member', role: Role }> } }> } | null };
+export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, organizationId: string, tier: Tier }> } | null };
 
 
 export const ProjectColumnFragmentDoc = `
@@ -9099,62 +8026,6 @@ useUpdatePostEmojiMutation.getKey = () => ['UpdatePostEmoji'];
 
 useUpdatePostEmojiMutation.fetcher = (variables: UpdatePostEmojiMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdatePostEmojiMutation, UpdatePostEmojiMutationVariables>(UpdatePostEmojiDocument, variables, options);
 
-export const CreateInvitationDocument = `
-    mutation CreateInvitation($input: CreateInvitationInput!) {
-  createInvitation(input: $input) {
-    invitation {
-      rowId
-    }
-  }
-}
-    `;
-
-export const useCreateInvitationMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<CreateInvitationMutation, TError, CreateInvitationMutationVariables, TContext>) => {
-    
-    return useMutation<CreateInvitationMutation, TError, CreateInvitationMutationVariables, TContext>(
-      {
-    mutationKey: ['CreateInvitation'],
-    mutationFn: (variables?: CreateInvitationMutationVariables) => graphqlFetch<CreateInvitationMutation, CreateInvitationMutationVariables>(CreateInvitationDocument, variables)(),
-    ...options
-  }
-    )};
-
-useCreateInvitationMutation.getKey = () => ['CreateInvitation'];
-
-
-useCreateInvitationMutation.fetcher = (variables: CreateInvitationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateInvitationMutation, CreateInvitationMutationVariables>(CreateInvitationDocument, variables, options);
-
-export const DeleteInvitationDocument = `
-    mutation DeleteInvitation($rowId: UUID!) {
-  deleteInvitation(input: {rowId: $rowId}) {
-    invitation {
-      rowId
-    }
-  }
-}
-    `;
-
-export const useDeleteInvitationMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteInvitationMutation, TError, DeleteInvitationMutationVariables, TContext>) => {
-    
-    return useMutation<DeleteInvitationMutation, TError, DeleteInvitationMutationVariables, TContext>(
-      {
-    mutationKey: ['DeleteInvitation'],
-    mutationFn: (variables?: DeleteInvitationMutationVariables) => graphqlFetch<DeleteInvitationMutation, DeleteInvitationMutationVariables>(DeleteInvitationDocument, variables)(),
-    ...options
-  }
-    )};
-
-useDeleteInvitationMutation.getKey = () => ['DeleteInvitation'];
-
-
-useDeleteInvitationMutation.fetcher = (variables: DeleteInvitationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteInvitationMutation, DeleteInvitationMutationVariables>(DeleteInvitationDocument, variables, options);
-
 export const CreateLabelDocument = `
     mutation CreateLabel($input: CreateLabelInput!) {
   createLabel(input: $input) {
@@ -9242,86 +8113,6 @@ useUpdateLabelMutation.getKey = () => ['UpdateLabel'];
 
 
 useUpdateLabelMutation.fetcher = (variables: UpdateLabelMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateLabelMutation, UpdateLabelMutationVariables>(UpdateLabelDocument, variables, options);
-
-export const CreateMemberDocument = `
-    mutation CreateMember($input: CreateMemberInput!) {
-  createMember(input: $input) {
-    member {
-      id
-    }
-  }
-}
-    `;
-
-export const useCreateMemberMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<CreateMemberMutation, TError, CreateMemberMutationVariables, TContext>) => {
-    
-    return useMutation<CreateMemberMutation, TError, CreateMemberMutationVariables, TContext>(
-      {
-    mutationKey: ['CreateMember'],
-    mutationFn: (variables?: CreateMemberMutationVariables) => graphqlFetch<CreateMemberMutation, CreateMemberMutationVariables>(CreateMemberDocument, variables)(),
-    ...options
-  }
-    )};
-
-useCreateMemberMutation.getKey = () => ['CreateMember'];
-
-
-useCreateMemberMutation.fetcher = (variables: CreateMemberMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateMemberMutation, CreateMemberMutationVariables>(CreateMemberDocument, variables, options);
-
-export const DeleteMemberDocument = `
-    mutation DeleteMember($userId: UUID!, $workspaceId: UUID!) {
-  deleteMember(input: {userId: $userId, workspaceId: $workspaceId}) {
-    clientMutationId
-  }
-}
-    `;
-
-export const useDeleteMemberMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteMemberMutation, TError, DeleteMemberMutationVariables, TContext>) => {
-    
-    return useMutation<DeleteMemberMutation, TError, DeleteMemberMutationVariables, TContext>(
-      {
-    mutationKey: ['DeleteMember'],
-    mutationFn: (variables?: DeleteMemberMutationVariables) => graphqlFetch<DeleteMemberMutation, DeleteMemberMutationVariables>(DeleteMemberDocument, variables)(),
-    ...options
-  }
-    )};
-
-useDeleteMemberMutation.getKey = () => ['DeleteMember'];
-
-
-useDeleteMemberMutation.fetcher = (variables: DeleteMemberMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteMemberMutation, DeleteMemberMutationVariables>(DeleteMemberDocument, variables, options);
-
-export const UpdateMemberDocument = `
-    mutation UpdateMember($input: UpdateMemberInput!) {
-  updateMember(input: $input) {
-    clientMutationId
-  }
-}
-    `;
-
-export const useUpdateMemberMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateMemberMutation, TError, UpdateMemberMutationVariables, TContext>) => {
-    
-    return useMutation<UpdateMemberMutation, TError, UpdateMemberMutationVariables, TContext>(
-      {
-    mutationKey: ['UpdateMember'],
-    mutationFn: (variables?: UpdateMemberMutationVariables) => graphqlFetch<UpdateMemberMutation, UpdateMemberMutationVariables>(UpdateMemberDocument, variables)(),
-    ...options
-  }
-    )};
-
-useUpdateMemberMutation.getKey = () => ['UpdateMember'];
-
-
-useUpdateMemberMutation.fetcher = (variables: UpdateMemberMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateMemberMutation, UpdateMemberMutationVariables>(UpdateMemberDocument, variables, options);
 
 export const CreatePostDocument = `
     mutation CreatePost($input: CreatePostInput!) {
@@ -10257,109 +9048,6 @@ useSuspenseInfiniteUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables
 
 useUserEmojisQuery.fetcher = (variables: UserEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, variables, options);
 
-export const InvitationsDocument = `
-    query Invitations($email: String) {
-  invitations(condition: {email: $email}) {
-    nodes {
-      rowId
-      workspace {
-        rowId
-        organizationId
-        projects {
-          nodes {
-            rowId
-          }
-        }
-        members {
-          totalCount
-        }
-      }
-    }
-  }
-}
-    `;
-
-export const useInvitationsQuery = <
-      TData = InvitationsQuery,
-      TError = unknown
-    >(
-      variables?: InvitationsQueryVariables,
-      options?: Omit<UseQueryOptions<InvitationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<InvitationsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<InvitationsQuery, TError, TData>(
-      {
-    queryKey: variables === undefined ? ['Invitations'] : ['Invitations', variables],
-    queryFn: graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables),
-    ...options
-  }
-    )};
-
-useInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['Invitations'] : ['Invitations', variables];
-
-export const useSuspenseInvitationsQuery = <
-      TData = InvitationsQuery,
-      TError = unknown
-    >(
-      variables?: InvitationsQueryVariables,
-      options?: Omit<UseSuspenseQueryOptions<InvitationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<InvitationsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useSuspenseQuery<InvitationsQuery, TError, TData>(
-      {
-    queryKey: variables === undefined ? ['InvitationsSuspense'] : ['InvitationsSuspense', variables],
-    queryFn: graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables),
-    ...options
-  }
-    )};
-
-useSuspenseInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['InvitationsSuspense'] : ['InvitationsSuspense', variables];
-
-export const useInfiniteInvitationsQuery = <
-      TData = InfiniteData<InvitationsQuery>,
-      TError = unknown
-    >(
-      variables: InvitationsQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<InvitationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<InvitationsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useInfiniteQuery<InvitationsQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['Invitations.infinite'] : ['Invitations.infinite', variables],
-      queryFn: (metaData) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['Invitations.infinite'] : ['Invitations.infinite', variables];
-
-export const useSuspenseInfiniteInvitationsQuery = <
-      TData = InfiniteData<InvitationsQuery>,
-      TError = unknown
-    >(
-      variables: InvitationsQueryVariables,
-      options: Omit<UseSuspenseInfiniteQueryOptions<InvitationsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<InvitationsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useSuspenseInfiniteQuery<InvitationsQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? variables === undefined ? ['Invitations.infiniteSuspense'] : ['Invitations.infiniteSuspense', variables],
-      queryFn: (metaData) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useSuspenseInfiniteInvitationsQuery.getKey = (variables?: InvitationsQueryVariables) => variables === undefined ? ['Invitations.infiniteSuspense'] : ['Invitations.infiniteSuspense', variables];
-
-
-useInvitationsQuery.fetcher = (variables?: InvitationsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<InvitationsQuery, InvitationsQueryVariables>(InvitationsDocument, variables, options);
-
 export const LabelsDocument = `
     query Labels($projectId: UUID!) {
   labels(condition: {projectId: $projectId}, orderBy: NAME_ASC) {
@@ -10450,116 +9138,6 @@ useSuspenseInfiniteLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['L
 
 
 useLabelsQuery.fetcher = (variables: LabelsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, variables, options);
-
-export const MembersDocument = `
-    query Members($workspaceId: UUID!, $filter: MemberFilter, $orderBy: [MemberOrderBy!] = [CREATED_AT_ASC]) {
-  members(
-    condition: {workspaceId: $workspaceId}
-    filter: $filter
-    orderBy: $orderBy
-  ) {
-    nodes {
-      role
-      user {
-        name
-        avatarUrl
-        rowId
-        assignedTasks: assignees(
-          filter: {task: {project: {workspaceId: {equalTo: $workspaceId}}}}
-        ) {
-          totalCount
-        }
-        completedTasks: assignees(
-          filter: {task: {project: {workspaceId: {equalTo: $workspaceId}}, column: {title: {equalTo: "Done"}}}}
-        ) {
-          totalCount
-        }
-      }
-    }
-  }
-}
-    `;
-
-export const useMembersQuery = <
-      TData = MembersQuery,
-      TError = unknown
-    >(
-      variables: MembersQueryVariables,
-      options?: Omit<UseQueryOptions<MembersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MembersQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<MembersQuery, TError, TData>(
-      {
-    queryKey: ['Members', variables],
-    queryFn: graphqlFetch<MembersQuery, MembersQueryVariables>(MembersDocument, variables),
-    ...options
-  }
-    )};
-
-useMembersQuery.getKey = (variables: MembersQueryVariables) => ['Members', variables];
-
-export const useSuspenseMembersQuery = <
-      TData = MembersQuery,
-      TError = unknown
-    >(
-      variables: MembersQueryVariables,
-      options?: Omit<UseSuspenseQueryOptions<MembersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<MembersQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useSuspenseQuery<MembersQuery, TError, TData>(
-      {
-    queryKey: ['MembersSuspense', variables],
-    queryFn: graphqlFetch<MembersQuery, MembersQueryVariables>(MembersDocument, variables),
-    ...options
-  }
-    )};
-
-useSuspenseMembersQuery.getKey = (variables: MembersQueryVariables) => ['MembersSuspense', variables];
-
-export const useInfiniteMembersQuery = <
-      TData = InfiniteData<MembersQuery>,
-      TError = unknown
-    >(
-      variables: MembersQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<MembersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<MembersQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useInfiniteQuery<MembersQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['Members.infinite', variables],
-      queryFn: (metaData) => graphqlFetch<MembersQuery, MembersQueryVariables>(MembersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteMembersQuery.getKey = (variables: MembersQueryVariables) => ['Members.infinite', variables];
-
-export const useSuspenseInfiniteMembersQuery = <
-      TData = InfiniteData<MembersQuery>,
-      TError = unknown
-    >(
-      variables: MembersQueryVariables,
-      options: Omit<UseSuspenseInfiniteQueryOptions<MembersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<MembersQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useSuspenseInfiniteQuery<MembersQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['Members.infiniteSuspense', variables],
-      queryFn: (metaData) => graphqlFetch<MembersQuery, MembersQueryVariables>(MembersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useSuspenseInfiniteMembersQuery.getKey = (variables: MembersQueryVariables) => ['Members.infiniteSuspense', variables];
-
-
-useMembersQuery.fetcher = (variables: MembersQueryVariables, options?: RequestInit['headers']) => graphqlFetch<MembersQuery, MembersQueryVariables>(MembersDocument, variables, options);
 
 export const ProjectColumnsDocument = `
     query ProjectColumns($workspaceId: UUID!, $search: String = "") {
@@ -11402,11 +9980,6 @@ export const WorkspaceDocument = `
     organizationId
     viewMode
     tier
-    members(condition: {userId: $userId}) {
-      nodes {
-        role
-      }
-    }
     projectColumns(orderBy: INDEX_ASC) {
       nodes {
         emoji
@@ -11632,24 +10205,12 @@ useSuspenseInfiniteWorkspaceByOrganizationIdQuery.getKey = (variables: Workspace
 useWorkspaceByOrganizationIdQuery.fetcher = (variables: WorkspaceByOrganizationIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceByOrganizationIdQuery, WorkspaceByOrganizationIdQueryVariables>(WorkspaceByOrganizationIdDocument, variables, options);
 
 export const WorkspacesDocument = `
-    query Workspaces($userId: UUID!, $limit: Int) {
-  workspaces(
-    filter: {members: {some: {userId: {equalTo: $userId}}}}
-    orderBy: CREATED_AT_ASC
-    first: $limit
-  ) {
+    query Workspaces($limit: Int) {
+  workspaces(orderBy: CREATED_AT_ASC, first: $limit) {
     nodes {
       rowId
       organizationId
       tier
-      members {
-        totalCount
-      }
-      currentUser: members(condition: {userId: $userId}) {
-        nodes {
-          role
-        }
-      }
     }
   }
 }
@@ -11659,37 +10220,37 @@ export const useWorkspacesQuery = <
       TData = WorkspacesQuery,
       TError = unknown
     >(
-      variables: WorkspacesQueryVariables,
+      variables?: WorkspacesQueryVariables,
       options?: Omit<UseQueryOptions<WorkspacesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<WorkspacesQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<WorkspacesQuery, TError, TData>(
       {
-    queryKey: ['Workspaces', variables],
+    queryKey: variables === undefined ? ['Workspaces'] : ['Workspaces', variables],
     queryFn: graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, variables),
     ...options
   }
     )};
 
-useWorkspacesQuery.getKey = (variables: WorkspacesQueryVariables) => ['Workspaces', variables];
+useWorkspacesQuery.getKey = (variables?: WorkspacesQueryVariables) => variables === undefined ? ['Workspaces'] : ['Workspaces', variables];
 
 export const useSuspenseWorkspacesQuery = <
       TData = WorkspacesQuery,
       TError = unknown
     >(
-      variables: WorkspacesQueryVariables,
+      variables?: WorkspacesQueryVariables,
       options?: Omit<UseSuspenseQueryOptions<WorkspacesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<WorkspacesQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useSuspenseQuery<WorkspacesQuery, TError, TData>(
       {
-    queryKey: ['WorkspacesSuspense', variables],
+    queryKey: variables === undefined ? ['WorkspacesSuspense'] : ['WorkspacesSuspense', variables],
     queryFn: graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, variables),
     ...options
   }
     )};
 
-useSuspenseWorkspacesQuery.getKey = (variables: WorkspacesQueryVariables) => ['WorkspacesSuspense', variables];
+useSuspenseWorkspacesQuery.getKey = (variables?: WorkspacesQueryVariables) => variables === undefined ? ['WorkspacesSuspense'] : ['WorkspacesSuspense', variables];
 
 export const useInfiniteWorkspacesQuery = <
       TData = InfiniteData<WorkspacesQuery>,
@@ -11703,14 +10264,14 @@ export const useInfiniteWorkspacesQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Workspaces.infinite', variables],
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Workspaces.infinite'] : ['Workspaces.infinite', variables],
       queryFn: (metaData) => graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useInfiniteWorkspacesQuery.getKey = (variables: WorkspacesQueryVariables) => ['Workspaces.infinite', variables];
+useInfiniteWorkspacesQuery.getKey = (variables?: WorkspacesQueryVariables) => variables === undefined ? ['Workspaces.infinite'] : ['Workspaces.infinite', variables];
 
 export const useSuspenseInfiniteWorkspacesQuery = <
       TData = InfiniteData<WorkspacesQuery>,
@@ -11724,14 +10285,14 @@ export const useSuspenseInfiniteWorkspacesQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Workspaces.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Workspaces.infiniteSuspense'] : ['Workspaces.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteWorkspacesQuery.getKey = (variables: WorkspacesQueryVariables) => ['Workspaces.infiniteSuspense', variables];
+useSuspenseInfiniteWorkspacesQuery.getKey = (variables?: WorkspacesQueryVariables) => variables === undefined ? ['Workspaces.infiniteSuspense'] : ['Workspaces.infiniteSuspense', variables];
 
 
-useWorkspacesQuery.fetcher = (variables: WorkspacesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, variables, options);
+useWorkspacesQuery.fetcher = (variables?: WorkspacesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspacesQuery, WorkspacesQueryVariables>(WorkspacesDocument, variables, options);

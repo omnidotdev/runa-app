@@ -24,15 +24,16 @@ import { useMemo, useState } from "react";
 import { DestructiveActionDialog, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import {
-  Role,
   useDeleteProjectColumnMutation,
   useProjectColumnsQuery,
   useUpdateProjectColumnMutation,
   useWorkspaceQuery,
 } from "@/generated/graphql";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
+import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import workspaceOptions from "@/lib/options/workspace.options";
+import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 import ColumnForm from "./WorkspaceColumnForm";
@@ -60,7 +61,8 @@ const ProjectColumnsForm = () => {
     select: (data) => data?.workspace,
   });
 
-  const isMember = workspace?.members?.nodes?.[0]?.role === Role.Member;
+  const role = useCurrentUserRole(workspace?.organizationId);
+  const isMember = role === Role.Member;
 
   const { data: projectColumns } = useSuspenseQuery({
     ...projectColumnsOptions({
