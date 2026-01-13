@@ -5,6 +5,7 @@ import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import ms from "ms";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,13 +30,14 @@ import {
   TagsInputLabel,
   TagsInputRoot,
 } from "@/components/ui/tags-input";
-import { useCreateInvitationMutation } from "@/generated/graphql";
+import { Tier } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
-import userOptions from "@/lib/options/user.options";
+import { useInviteMember } from "@/lib/hooks/useOrganizationMembers";
+import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { useOrganization } from "@/providers/OrganizationProvider";
-import { inviteSchema, sendInviteEmail } from "@/server/functions/emails";
+import { inviteSchema } from "@/server/functions/emails";
 
 import type { RefObject } from "react";
 
@@ -46,7 +48,7 @@ interface Props {
 }
 
 const InviteMemberDialog = ({ triggerRef }: Props) => {
-  const { workspaceId } = useLoaderData({
+  const { workspaceId, organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
   const { session } = useRouteContext({
@@ -61,30 +63,36 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     type: DialogType.InviteTeamMember,
   });
 
-  // TODO: re-enable when per-seat pricing is implemented
-  // useHotkeys(
-  //   Hotkeys.InviteMember,
-  //   () => setIsInviteTeamMemberOpen(!isInviteTeamMemberOpen),
-  //   {
-  //     description: "Invite Team Member",
-  //   },
-  //   [setIsInviteTeamMemberOpen, isInviteTeamMemberOpen],
-  // );
-
   const { data: currentWorkspace } = useSuspenseQuery({
     ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
     select: (data) => data?.workspace,
   });
 
   // Resolve org name from JWT claims
-  const orgName = currentWorkspace?.organizationId
-    ? orgContext?.getOrganizationById(currentWorkspace.organizationId)?.name
+  const orgName = organizationId
+    ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
-  const { data: user } = useQuery({
-    ...userOptions({ userId: session?.user?.rowId! }),
-    select: (data) => data?.user,
+  // Fetch current members to check limits
+  const { data: membersData } = useQuery({
+    ...organizationMembersOptions({
+      organizationId: organizationId!,
+      accessToken: session?.accessToken!,
+    }),
   });
+
+  const memberCount = membersData?.members?.length ?? 0;
+
+  // Tier-based member limits
+  // TODO: Fetch from Aether organization-level entitlements
+  const tier = currentWorkspace?.tier ?? Tier.Free;
+  const maxMembers =
+    tier === Tier.Team || tier === Tier.Enterprise
+      ? Infinity
+      : tier === Tier.Basic
+        ? 10
+        : 3;
+  const canInviteMore = memberCount < maxMembers;
 
   const [numberOfToasts, setNumberOfToasts] = useState(0);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -94,28 +102,15 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     window: ms("1s"),
   });
 
-  const { mutateAsync: inviteMember } = useCreateInvitationMutation({
-    onSuccess: async (_data, variables) => {
-      await sendInviteEmail({
-        data: {
-          inviterEmail: user?.email!,
-          inviterUsername: user?.name!,
-          recipientEmail: variables.input.invitation.email,
-          workspaceName: orgName!,
-        },
-      });
-    },
-  });
+  const { mutateAsync: inviteMemberMutation } = useInviteMember();
 
   const queuer = useAsyncQueuer(
     async (recipientEmail: string) => {
-      await inviteMember({
-        input: {
-          invitation: {
-            email: recipientEmail,
-            workspaceId,
-          },
-        },
+      await inviteMemberMutation({
+        organizationId: organizationId!,
+        email: recipientEmail,
+        role: "member",
+        accessToken: session?.accessToken!,
       });
     },
     {
@@ -123,6 +118,14 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
       wait: ms("1s"),
       maxSize: MAX_NUMBER_OF_INVITES,
       started: false,
+      onItemComplete: () => {
+        toast.success("Invitation sent");
+      },
+      onItemError: (error) => {
+        toast.error(
+          error instanceof Error ? error.message : "Failed to send invitation",
+        );
+      },
     },
   );
 

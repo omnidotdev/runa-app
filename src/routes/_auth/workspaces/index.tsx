@@ -1,5 +1,5 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { LayersIcon, PlusIcon } from "lucide-react";
 
 import { Link, WorkspaceTier } from "@/components/core";
@@ -28,6 +28,24 @@ export const Route = createFileRoute("/_auth/workspaces/")({
     ],
   }),
   component: WorkspacesOverviewPage,
+  beforeLoad: async ({ context: { queryClient, session } }) => {
+    if (!session?.user.rowId) return;
+
+    // Check if user has no organizations (first-time user)
+    const hasOrganizations = (session.organizations?.length ?? 0) > 0;
+
+    if (!hasOrganizations) {
+      // Double-check by querying workspaces directly
+      const { workspaces } = await queryClient.fetchQuery({
+        ...workspacesOptions({ userId: session.user.rowId }),
+      });
+
+      if (!workspaces?.nodes?.length) {
+        // Redirect to onboarding for first-time users
+        throw redirect({ to: "/onboarding" });
+      }
+    }
+  },
   loader: async ({ context: { queryClient, session } }) =>
     await queryClient.ensureQueryData({
       ...workspacesOptions({ userId: session?.user?.rowId!, limit: 4 }),

@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import {
   CheckIcon,
@@ -25,27 +25,28 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import {
-  Role,
-  Tier,
-  useDeleteMemberMutation,
-  useUpdateMemberMutation,
-} from "@/generated/graphql";
+import { Tier } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import {
   canModifyMember,
   useCanManageTeam,
 } from "@/lib/hooks/useCanManageTeam";
-import membersOptions from "@/lib/options/members.options";
+import {
+  useRemoveMember,
+  useUpdateMemberRole,
+} from "@/lib/hooks/useOrganizationMembers";
+import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import InviteMemberDialog from "./InviteMemberDialog";
 
+import type { Role } from "@/generated/graphql";
+
 const Team = () => {
   const inviteRef = useRef<HTMLButtonElement>(null);
 
-  const { workspaceId } = useLoaderData({
+  const { workspaceId, organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
@@ -56,7 +57,7 @@ const Team = () => {
   const [selectedMember, setSelectedMember] = useState<{
     name: string;
     avatarUrl?: string | null;
-    rowId: string;
+    id: string;
   }>();
 
   const orgContext = useOrganization();
@@ -70,51 +71,55 @@ const Team = () => {
   });
 
   // Resolve org name from JWT claims
-  const orgName = workspace?.organizationId
-    ? orgContext?.getOrganizationById(workspace.organizationId)?.name
+  const orgName = organizationId
+    ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
-  const { data: members } = useSuspenseQuery({
-    ...membersOptions({ workspaceId: workspaceId }),
-    select: (data) => data?.members,
+  // Fetch members from Gatekeeper (single source of truth for organization membership)
+  const { data: membersData } = useQuery({
+    ...organizationMembersOptions({
+      organizationId: organizationId!,
+      accessToken: session?.accessToken!,
+    }),
   });
 
-  const currentUserRole = workspace?.members?.nodes?.[0]?.role;
+  const members = membersData?.members ?? [];
+
+  // Find current user's role from Gatekeeper members
+  const currentUserMember = members.find(
+    (m) => m.user.id === session?.user?.identityProviderId,
+  );
+  const currentUserRole = currentUserMember?.role as Role | undefined;
   const { canInvite, canChangeRoles, canRemoveMembers } =
     useCanManageTeam(currentUserRole);
 
-  const { mutate: deleteMember } = useDeleteMemberMutation({
-    meta: {
-      invalidates: [membersOptions({ workspaceId: workspaceId }).queryKey],
-    },
-  });
-
-  const { mutate: editMember } = useUpdateMemberMutation();
+  const { mutate: removeMember } = useRemoveMember();
+  const { mutate: updateMemberRole } = useUpdateMemberRole();
 
   const { setIsOpen: setIsDeleteTeamMemberOpen } = useDialogStore({
       type: DialogType.DeleteTeamMember,
     }),
-    { setIsOpen: _setIsInviteTeamMemberOpen } = useDialogStore({
+    { setIsOpen: setIsInviteTeamMemberOpen } = useDialogStore({
       type: DialogType.InviteTeamMember,
     });
 
-  const _maxNumberOfMembersReached = match(workspace?.tier)
-    .with(Tier.Team, () => false)
-    .with(Tier.Basic, () => members!.nodes.length >= 10)
-    .otherwise(() => members!.nodes.length >= 3);
+  // TODO: Fetch tier from Aether organization-level entitlements
+  // For now, use workspace tier as fallback (deprecated)
+  const tier = workspace?.tier ?? Tier.Free;
 
-  const maxNumberofAdminsReached = match(workspace?.tier)
-    .with(Tier.Team, () => false)
+  const _maxNumberOfMembersReached = match(tier)
+    .with(Tier.Team, Tier.Enterprise, () => false)
+    .with(Tier.Basic, () => members.length >= 10)
+    .otherwise(() => members.length >= 3);
+
+  const maxNumberofAdminsReached = match(tier)
+    .with(Tier.Team, Tier.Enterprise, () => false)
     .with(
       Tier.Basic,
-      () =>
-        members!.nodes.filter((member) => member.role !== Role.Member).length >=
-        3,
+      () => members.filter((member) => member.role !== "member").length >= 3,
     )
     .otherwise(
-      () =>
-        members!.nodes.filter((member) => member.role !== Role.Member).length >=
-        1,
+      () => members.filter((member) => member.role !== "member").length >= 1,
     );
 
   return (
@@ -125,16 +130,13 @@ const Team = () => {
             Team Members
           </h2>
 
-          {/* TODO: re-enable when per-seat pricing is implemented */}
           <Tooltip
             positioning={{ placement: "left" }}
-            tooltip="Coming Soon"
-            // tooltip={
-            //   maxNumberOfMembersReached
-            //     ? "Upgrade workspace to invite members"
-            //     : "Invite Member"
-            // }
-            // shortcut={!maxNumberOfMembersReached ? "I" : undefined}
+            tooltip={
+              _maxNumberOfMembersReached
+                ? "Upgrade to invite more members"
+                : "Invite Member"
+            }
             trigger={
               <Button
                 variant="ghost"
@@ -144,8 +146,8 @@ const Team = () => {
                   "mr-2 hidden size-7 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:hover:bg-transparent dark:disabled:hover:bg-transparent",
                   canInvite && "inline-flex",
                 )}
-                // onClick={() => setIsInviteTeamMemberOpen(true)}
-                disabled
+                onClick={() => setIsInviteTeamMemberOpen(true)}
+                disabled={_maxNumberOfMembersReached}
                 ref={inviteRef}
               >
                 <PlusIcon />
@@ -154,25 +156,22 @@ const Team = () => {
           />
         </div>
 
-        {members?.nodes.length ? (
+        {members.length ? (
           <div className="flex flex-col divide-y border-y">
-            {members?.nodes?.map((member) => {
-              const completedTasks =
-                member?.user?.completedTasks?.totalCount ?? 0;
-              const totalTasks = member?.user?.assignedTasks?.totalCount ?? 0;
-
+            {members.map((member) => {
               // check if current user can modify this member
               const canModifyThisMember =
                 currentUserRole &&
                 member.role &&
-                canModifyMember(currentUserRole, member.role);
+                canModifyMember(currentUserRole, member.role as Role);
 
               // cannot modify self
-              const isSelf = member.user?.rowId === session?.user.rowId;
+              const isSelf =
+                member.user.id === session?.user?.identityProviderId;
 
               return (
                 <div
-                  key={member?.user?.rowId}
+                  key={member.id}
                   className="group flex h-10 w-full items-center px-2 hover:bg-accent lg:px-0"
                 >
                   <div className="flex w-full items-center">
@@ -182,17 +181,17 @@ const Team = () => {
                         className="size-6 rounded-full border bg-background font-medium text-sm uppercase shadow"
                       >
                         <AvatarImage
-                          src={member.user?.avatarUrl ?? undefined}
-                          alt={member.user?.name}
+                          src={member.user.image ?? undefined}
+                          alt={member.user.name}
                         />
                         <AvatarFallback>
-                          {member.user?.name?.charAt(0)}
+                          {member.user.name?.charAt(0)}
                         </AvatarFallback>
                       </AvatarRoot>
                     </div>
 
                     <span className="px-3 text-xs md:text-sm">
-                      {member?.user?.name}
+                      {member.user.name}
                     </span>
 
                     <MenuRoot
@@ -201,12 +200,11 @@ const Team = () => {
                         placement: "bottom-start",
                       }}
                       onSelect={({ value }) =>
-                        editMember({
-                          input: {
-                            userId: member?.user?.rowId!,
-                            workspaceId: workspace?.rowId!,
-                            patch: { role: value as Role },
-                          },
+                        updateMemberRole({
+                          organizationId: organizationId!,
+                          memberId: member.id,
+                          role: value as "owner" | "admin" | "member",
+                          accessToken: session?.accessToken!,
                         })
                       }
                     >
@@ -233,24 +231,24 @@ const Team = () => {
                       <MenuPositioner>
                         <MenuContent>
                           <MenuItem
-                            value={Role.Admin}
+                            value="admin"
                             disabled={
-                              member?.role === Role.Admin ||
+                              member.role === "admin" ||
                               maxNumberofAdminsReached
                             }
                           >
                             Admin
-                            {member?.role === Role.Admin && (
+                            {member.role === "admin" && (
                               <CheckIcon className="text-green-500" />
                             )}
                           </MenuItem>
                           <MenuItem
-                            value={Role.Member}
-                            disabled={member?.role === Role.Member}
+                            value="member"
+                            disabled={member.role === "member"}
                             className="justify-between"
                           >
                             Member
-                            {member?.role === Role.Member && (
+                            {member.role === "member" && (
                               <CheckIcon className="text-green-500" />
                             )}
                           </MenuItem>
@@ -259,10 +257,6 @@ const Team = () => {
                     </MenuRoot>
 
                     <div className="mr-2 ml-auto flex gap-1">
-                      <span className="flex items-center px-3 text-base-600 text-xs dark:text-base-400">
-                        {completedTasks}/{totalTasks} tasks
-                      </span>
-
                       <MenuRoot
                         positioning={{
                           strategy: "fixed",
@@ -292,7 +286,11 @@ const Team = () => {
                               variant="destructive"
                               onClick={() => {
                                 setIsDeleteTeamMemberOpen(true);
-                                setSelectedMember(member.user!);
+                                setSelectedMember({
+                                  name: member.user.name,
+                                  avatarUrl: member.user.image,
+                                  id: member.id,
+                                });
                               }}
                               disabled={isSelf}
                             >
@@ -317,9 +315,13 @@ const Team = () => {
 
       <DestructiveActionDialog
         title="Danger Zone"
-        description={`This will delete ${selectedMember?.name} from ${orgName} workspace. This action cannot be undone.`}
+        description={`This will remove ${selectedMember?.name} from ${orgName} organization. This action cannot be undone.`}
         onConfirm={() =>
-          deleteMember({ userId: selectedMember?.rowId!, workspaceId })
+          removeMember({
+            organizationId: organizationId!,
+            memberId: selectedMember?.id!,
+            accessToken: session?.accessToken!,
+          })
         }
         dialogType={DialogType.DeleteTeamMember}
         confirmation={selectedMember?.name}
