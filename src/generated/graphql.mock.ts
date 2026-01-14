@@ -1022,7 +1022,7 @@ export const mockWorkspaceByOrganizationIdQuery = (resolver: GraphQLResponseReso
  * @example
  * mockWorkspacesQuery(
  *   ({ query, variables }) => {
- *     const { limit } = variables;
+ *     const { limit, organizationIds } = variables;
  *     return HttpResponse.json({
  *       data: { workspaces }
  *     })

@@ -47,18 +47,21 @@ function ProfilePage() {
   const isOmniMember =
     session?.organizations?.some((org) => org.slug === "omni") ?? false;
 
+  // Get user's org IDs for filtering workspaces
+  const organizationIds = orgContext?.organizations?.map((o) => o.id) ?? [];
+
   const { setIsOpen: setIsDeleteWorkspaceOpen } = useDialogStore({
     type: DialogType.DeleteWorkspace,
   });
 
   const { data: workspaces } = useSuspenseQuery({
-    ...workspacesOptions(),
+    ...workspacesOptions({ organizationIds }),
     select: (data) => data.workspaces?.nodes,
   });
 
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
     meta: {
-      invalidates: [workspacesOptions().queryKey],
+      invalidates: [workspacesOptions({ organizationIds }).queryKey],
     },
     onSettled: () => setIsDeleteWorkspaceOpen(false),
   });

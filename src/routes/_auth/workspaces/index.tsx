@@ -1,5 +1,5 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { LayersIcon, PlusIcon } from "lucide-react";
 
 import { Link, WorkspaceTier } from "@/components/core";
@@ -28,36 +28,35 @@ export const Route = createFileRoute("/_auth/workspaces/")({
     ],
   }),
   component: WorkspacesOverviewPage,
-  beforeLoad: async ({ context: { queryClient, session } }) => {
+  beforeLoad: async ({ context: { session } }) => {
     if (!session?.user.rowId) return;
 
-    // Check if user has no organizations (first-time user)
-    const hasOrganizations = (session.organizations?.length ?? 0) > 0;
+    // Get user's org IDs for filtering workspaces
+    // Onboarding is now handled by Gatekeeper IDP - users should have orgs by the time they reach the app
+    const organizationIds = session.organizations?.map((o) => o.id) ?? [];
 
-    if (!hasOrganizations) {
-      // Double-check by querying workspaces directly
-      const { workspaces } = await queryClient.fetchQuery({
-        ...workspacesOptions(),
-      });
-
-      if (!workspaces?.nodes?.length) {
-        // Redirect to onboarding for first-time users
-        throw redirect({ to: "/onboarding" });
-      }
-    }
+    return { organizationIds };
   },
-  loader: async ({ context: { queryClient } }) =>
-    await queryClient.ensureQueryData({
-      ...workspacesOptions({ limit: 4 }),
-    }),
+  loader: async ({ context }) => {
+    const { queryClient } = context;
+    // organizationIds comes from beforeLoad return value
+    const organizationIds =
+      (context as { organizationIds?: string[] }).organizationIds ?? [];
+    return queryClient.ensureQueryData({
+      ...workspacesOptions({ limit: 4, organizationIds }),
+    });
+  },
 });
 
 function WorkspacesOverviewPage() {
   const queryClient = useQueryClient();
   const orgContext = useOrganization();
 
+  // Get user's org IDs for filtering workspaces
+  const organizationIds = orgContext?.organizations?.map((o) => o.id) ?? [];
+
   const { data: recentWorkspaces } = useSuspenseQuery({
-    ...workspacesOptions({ limit: 4 }),
+    ...workspacesOptions({ limit: 4, organizationIds }),
     select: (data) => data?.workspaces?.nodes,
   });
 

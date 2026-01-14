@@ -67,9 +67,12 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
     [setIsCreateWorkspaceOpen, isCreateWorkspaceOpen, state],
   );
 
+  // Get user's org IDs for filtering workspaces
+  const organizationIds = orgContext?.organizations?.map((o) => o.id) ?? [];
+
   const { mutateAsync: createNewWorkspace } = useCreateWorkspaceMutation({
     meta: {
-      invalidates: [workspacesOptions().queryKey],
+      invalidates: [workspacesOptions({ organizationIds }).queryKey],
     },
   });
 
@@ -83,7 +86,7 @@ const CreateWorkspaceDialog = ({ priceId, state }: Props) => {
   });
 
   const { data: workspaces } = useQuery({
-    ...workspacesOptions(),
+    ...workspacesOptions({ organizationIds }),
     select: (data) => data.workspaces?.nodes,
   });
 
