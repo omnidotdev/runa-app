@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { LayersIcon, PlusIcon } from "lucide-react";
+import { ExternalLinkIcon, InfoIcon, LayersIcon } from "lucide-react";
 
 import { Link } from "@/components/core";
 import {
@@ -8,7 +8,6 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -36,9 +35,10 @@ function WorkspacesOverviewPage() {
   const organizations = orgContext?.organizations ?? [];
 
   return (
-    <div className="flex h-full items-center justify-center p-12">
-      <div className="w-full max-w-4xl">
-        <div className="mb-12 flex flex-col items-center justify-center gap-4">
+    <div className="flex h-full flex-col">
+      {/* Sticky header */}
+      <div className="shrink-0 px-12 pt-12">
+        <div className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-4">
           <LayersIcon className="size-12 text-base-500 dark:text-base-400" />
 
           <h1 className="text-pretty text-center font-semibold text-2xl text-base-900 dark:text-base-100">
@@ -47,60 +47,74 @@ function WorkspacesOverviewPage() {
               : "Create a workspace to get started"}
           </h1>
         </div>
+      </div>
 
-        {!!organizations.length && (
-          <div className="mb-8 grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] justify-center gap-6">
-            {organizations.map((org) => {
-              const orgName = org.name;
-              const orgSlug = org.slug;
+      {/* Scrollable content */}
+      <div className="custom-scrollbar flex-1 overflow-y-auto px-12 py-8">
+        <div className="mx-auto w-full max-w-4xl">
+          {!!organizations.length && (
+            <div className="mb-8 grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] justify-center gap-6">
+              {organizations.map((org) => {
+                const orgName = org.name;
+                const orgSlug = org.slug;
 
-              return (
-                <Link
-                  key={org.id}
-                  to="/workspaces/$workspaceSlug/projects"
-                  params={{ workspaceSlug: orgSlug! }}
-                  preload="intent"
-                  onMouseEnter={() => {
-                    queryClient.prefetchQuery(
-                      settingByOrganizationIdOptions({
-                        organizationId: org.id,
-                      }),
-                    );
-                  }}
-                  variant="outline"
-                  className="relative flex h-32 flex-col p-4"
-                >
-                  <AvatarRoot size="lg">
-                    <AvatarImage src={undefined} alt={orgName} />
-                    <AvatarFallback>
-                      {" "}
-                      <div className="flex size-full items-center justify-center border font-semibold uppercase">
-                        {orgName?.charAt(0)}
-                      </div>
-                    </AvatarFallback>
-                  </AvatarRoot>
+                return (
+                  <Link
+                    key={org.id}
+                    to="/workspaces/$workspaceSlug/projects"
+                    params={{ workspaceSlug: orgSlug! }}
+                    preload="intent"
+                    onMouseEnter={() => {
+                      queryClient.prefetchQuery(
+                        settingByOrganizationIdOptions({
+                          organizationId: org.id,
+                        }),
+                      );
+                    }}
+                    variant="outline"
+                    className="relative flex h-32 flex-col p-4"
+                  >
+                    <AvatarRoot size="lg">
+                      <AvatarImage src={undefined} alt={orgName} />
+                      <AvatarFallback>
+                        {" "}
+                        <div className="flex size-full items-center justify-center border font-semibold uppercase">
+                          {orgName?.charAt(0)}
+                        </div>
+                      </AvatarFallback>
+                    </AvatarRoot>
 
-                  <div className="flex flex-1 flex-col items-center">
-                    <h3 className="truncate font-semibold text-base-900 dark:text-base-100">
-                      {orgName}
-                    </h3>
-                  </div>
-                </Link>
-              );
-            })}
+                    <div className="flex flex-1 flex-col items-center">
+                      <h3 className="truncate font-semibold text-base-900 dark:text-base-100">
+                        {orgName}
+                      </h3>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+
+          {/* TODO: Implement in-app organization creation once Gatekeeper API supports it */}
+          <div className="flex flex-col items-center gap-4 rounded-lg border border-base-300 border-dashed bg-base-50 p-8 text-center dark:border-base-700 dark:bg-base-900">
+            <InfoIcon className="size-6 text-base-500" />
+            <div className="space-y-2">
+              <p className="text-base-700 text-sm dark:text-base-300">
+                Workspaces are currently managed via Omni Organizations.
+              </p>
+              <p className="text-base-500 text-xs">
+                This experience will be improved soon.
+              </p>
+            </div>
+            <a
+              href={AUTH_BASE_URL}
+              className="inline-flex items-center gap-2 text-primary text-sm hover:underline"
+            >
+              Manage Organizations
+              <ExternalLinkIcon className="size-3" />
+            </a>
           </div>
-        )}
-
-        <Button
-          asChild
-          variant="outline"
-          className="flex w-full border-primary border-dashed bg-primary/5 p-12 hover:bg-primary/5 active:scale-[0.99]"
-        >
-          <a href={`${AUTH_BASE_URL}/profile`}>
-            <PlusIcon className="size-4" />
-            Create New Organization
-          </a>
-        </Button>
+        </div>
       </div>
     </div>
   );
