@@ -29,6 +29,7 @@ import {
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
@@ -70,15 +71,14 @@ const CreateTaskDialog = () => {
 
   const maxTasksReached = useMaxTasksReached();
 
+  const { isOpen: isCreateTaskOpen, setIsOpen: setIsCreateTaskOpen } =
+    useDialogStore({
+      type: DialogType.CreateTask,
+    });
+
   useHotkeys(
     Hotkeys.CreateTask,
-    () =>
-      navigate({
-        search: (prev) => ({
-          ...prev,
-          createTask: !createTask,
-        }),
-      }),
+    () => setIsCreateTaskOpen(true),
     {
       enabled: !maxTasksReached,
       description: "Create New Task",
@@ -209,12 +209,7 @@ const CreateTaskDialog = () => {
       formApi.reset();
       setTimeout(() => setColumnId(null), 350);
 
-      navigate({
-        search: (prev) => ({
-          ...prev,
-          createTask: false,
-        }),
-      });
+      setIsCreateTaskOpen(false);
     },
   });
 
@@ -222,15 +217,9 @@ const CreateTaskDialog = () => {
 
   return (
     <DialogRoot
-      open={createTask}
+      open={isCreateTaskOpen}
       onOpenChange={({ open }) => {
-        navigate({
-          search: (prev) => ({
-            ...prev,
-            createTask: open,
-          }),
-        });
-
+        setIsCreateTaskOpen(open);
         form.reset();
 
         if (!open) {

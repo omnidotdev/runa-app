@@ -67,7 +67,6 @@ const projectSearchParamsSchema = z.object({
   assignees: z.array(z.guid()).default([]),
   labels: z.array(z.guid()).default([]),
   priorities: z.array(z.enum(["low", "medium", "high"])).default([]),
-  createTask: z.boolean().default(false),
 });
 
 export const Route = createFileRoute(
@@ -147,7 +146,6 @@ export const Route = createFileRoute(
         assignees: [],
         labels: [],
         priorities: [],
-        createTask: false,
       }),
     ],
   },

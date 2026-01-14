@@ -1,13 +1,10 @@
 import { Droppable } from "@hello-pangea/dnd";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useNavigate,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 import { ColumnHeader } from "@/components/core";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
@@ -93,11 +90,11 @@ const Board = ({ tasks }: Props) => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
-  const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
-  });
-
   const { setColumnId } = useTaskStore();
+
+  const { setIsOpen: setIsCreateTaskOpen } = useDialogStore({
+    type: DialogType.CreateTask,
+  });
 
   const { data: userPreferences } = useSuspenseQuery({
     ...userPreferencesOptions({
@@ -171,12 +168,7 @@ const Board = ({ tasks }: Props) => {
                 emoji={column.emoji}
                 onCreate={() => {
                   setColumnId(column.rowId);
-                  navigate({
-                    search: (prev) => ({
-                      ...prev,
-                      createTask: true,
-                    }),
-                  });
+                  setIsCreateTaskOpen(true);
                 }}
                 // TODO: tooltip for disabled state
                 disabled={maxTasksReached}

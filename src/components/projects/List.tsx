@@ -1,16 +1,13 @@
 import { Droppable } from "@hello-pangea/dnd";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useNavigate,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 
 import { ColumnTrigger } from "@/components/core";
 import {
   CollapsibleContent,
   CollapsibleRoot,
 } from "@/components/ui/collapsible";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
@@ -46,11 +43,11 @@ const List = ({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
-  const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
-  });
-
   const { setColumnId } = useTaskStore();
+
+  const { setIsOpen: setIsCreateTaskOpen } = useDialogStore({
+    type: DialogType.CreateTask,
+  });
 
   const { data: userPreferences } = useSuspenseQuery({
     ...userPreferencesOptions({
@@ -139,12 +136,7 @@ const List = ({
               onCreate={(e) => {
                 e.preventDefault();
                 setColumnId(column.rowId);
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    createTask: true,
-                  }),
-                });
+                setIsCreateTaskOpen(true);
               }}
               // TODO: tooltip for disabled state
               disabled={maxTasksReached}
