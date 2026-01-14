@@ -5,7 +5,6 @@ query WorkspaceByOrganizationId(
   workspaceByOrganizationId(organizationId: $organizationId) {
     rowId
     organizationId
-    tier
     projects(condition: { slug: $projectSlug }) {
       nodes {
         name

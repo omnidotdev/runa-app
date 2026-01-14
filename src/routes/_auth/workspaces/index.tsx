@@ -2,7 +2,7 @@ import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { LayersIcon, PlusIcon } from "lucide-react";
 
-import { Link, WorkspaceTier } from "@/components/core";
+import { Link } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,
@@ -119,11 +119,6 @@ function WorkspacesOverviewPage() {
                     <h3 className="truncate font-semibold text-base-900 dark:text-base-100">
                       {orgName}
                     </h3>
-
-                    <WorkspaceTier
-                      tier={workspace.tier}
-                      className="absolute top-2 right-2"
-                    />
                   </div>
                 </Link>
               );

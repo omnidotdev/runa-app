@@ -1,4 +1,4 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import {
   CheckIcon,
@@ -25,7 +25,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { Tier } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import {
   canModifyMember,
@@ -36,7 +35,7 @@ import {
   useUpdateMemberRole,
 } from "@/lib/hooks/useOrganizationMembers";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
-import workspaceOptions from "@/lib/options/workspace.options";
+import { Tier, getTierFromSubscription } from "@/lib/types/tier";
 import { cn } from "@/lib/utils";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import InviteMemberDialog from "./InviteMemberDialog";
@@ -46,7 +45,7 @@ import type { Role } from "@/lib/permissions";
 const Team = () => {
   const inviteRef = useRef<HTMLButtonElement>(null);
 
-  const { workspaceId, organizationId } = useLoaderData({
+  const { organizationId, subscription, prices } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
@@ -61,14 +60,6 @@ const Team = () => {
   }>();
 
   const orgContext = useOrganization();
-
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({
-      rowId: workspaceId,
-      userId: session?.user?.rowId!,
-    }),
-    select: (data) => data?.workspace,
-  });
 
   // Resolve org name from JWT claims
   const orgName = organizationId
@@ -103,9 +94,12 @@ const Team = () => {
       type: DialogType.InviteTeamMember,
     });
 
-  // TODO: Fetch tier from Aether organization-level entitlements
-  // For now, use workspace tier as fallback (deprecated)
-  const tier = workspace?.tier ?? Tier.Free;
+  // Derive tier from subscription
+  const tier = getTierFromSubscription(
+    subscription,
+    prices,
+    subscription?.priceId,
+  );
 
   const _maxNumberOfMembersReached = match(tier)
     .with(Tier.Team, Tier.Enterprise, () => false)

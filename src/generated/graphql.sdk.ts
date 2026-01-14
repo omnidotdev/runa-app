@@ -5579,39 +5579,6 @@ export type TaskVarianceSampleAggregates = {
   columnIndex?: Maybe<Scalars['BigFloat']['output']>;
 };
 
-export enum Tier {
-  Basic = 'basic',
-  Enterprise = 'enterprise',
-  Free = 'free',
-  Team = 'team'
-}
-
-/** A filter to be used against Tier fields. All fields are combined with a logical ‘and.’ */
-export type TierFilter = {
-  /** Not equal to the specified value, treating null like an ordinary value. */
-  distinctFrom?: InputMaybe<Tier>;
-  /** Equal to the specified value. */
-  equalTo?: InputMaybe<Tier>;
-  /** Greater than the specified value. */
-  greaterThan?: InputMaybe<Tier>;
-  /** Greater than or equal to the specified value. */
-  greaterThanOrEqualTo?: InputMaybe<Tier>;
-  /** Included in the specified list. */
-  in?: InputMaybe<Array<Tier>>;
-  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
-  isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Less than the specified value. */
-  lessThan?: InputMaybe<Tier>;
-  /** Less than or equal to the specified value. */
-  lessThanOrEqualTo?: InputMaybe<Tier>;
-  /** Equal to the specified value, treating null like an ordinary value. */
-  notDistinctFrom?: InputMaybe<Tier>;
-  /** Not equal to the specified value. */
-  notEqualTo?: InputMaybe<Tier>;
-  /** Not included in the specified list. */
-  notIn?: InputMaybe<Array<Tier>>;
-};
-
 /** A filter to be used against UUID fields. All fields are combined with a logical ‘and.’ */
 export type UuidFilter = {
   /** Not equal to the specified value, treating null like an ordinary value. */
@@ -6965,7 +6932,6 @@ export type Workspace = Node & {
   projects: ProjectConnection;
   rowId: Scalars['UUID']['output'];
   subscriptionId?: Maybe<Scalars['String']['output']>;
-  tier: Tier;
   updatedAt: Scalars['Datetime']['output'];
   viewMode: Scalars['String']['output'];
 };
@@ -7020,8 +6986,6 @@ export type WorkspaceCondition = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `subscriptionId` field. */
   subscriptionId?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `tier` field. */
-  tier?: InputMaybe<Tier>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `viewMode` field. */
@@ -7068,8 +7032,6 @@ export type WorkspaceDistinctCountAggregates = {
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of subscriptionId across the matching connection */
   subscriptionId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of tier across the matching connection */
-  tier?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of viewMode across the matching connection */
@@ -7115,8 +7077,6 @@ export type WorkspaceFilter = {
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `subscriptionId` field. */
   subscriptionId?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `tier` field. */
-  tier?: InputMaybe<TierFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `viewMode` field. */
@@ -7134,7 +7094,6 @@ export enum WorkspaceGroupBy {
   DeletedAtTruncatedToHour = 'DELETED_AT_TRUNCATED_TO_HOUR',
   DeletionReason = 'DELETION_REASON',
   SubscriptionId = 'SUBSCRIPTION_ID',
-  Tier = 'TIER',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
@@ -7314,8 +7273,6 @@ export enum WorkspaceOrderBy {
   RowIdDesc = 'ROW_ID_DESC',
   SubscriptionIdAsc = 'SUBSCRIPTION_ID_ASC',
   SubscriptionIdDesc = 'SUBSCRIPTION_ID_DESC',
-  TierAsc = 'TIER_ASC',
-  TierDesc = 'TIER_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   ViewModeAsc = 'VIEW_MODE_ASC',
@@ -7702,7 +7659,7 @@ export type WorkspaceQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string, viewMode: string, tier: Tier, projectColumns: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', emoji?: string | null, rowId: string, title: string, index: number }> }, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string, color?: string | null }> }, projectColumn?: { __typename?: 'ProjectColumn', title: string, emoji?: string | null } | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } } | null };
+export type WorkspaceQuery = { __typename?: 'Query', workspace?: { __typename?: 'Workspace', rowId: string, organizationId: string, viewMode: string, projectColumns: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', emoji?: string | null, rowId: string, title: string, index: number }> }, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, prefix?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string, color?: string | null }> }, projectColumn?: { __typename?: 'ProjectColumn', title: string, emoji?: string | null } | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } } | null };
 
 export type WorkspaceByOrganizationIdQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -7710,7 +7667,7 @@ export type WorkspaceByOrganizationIdQueryVariables = Exact<{
 }>;
 
 
-export type WorkspaceByOrganizationIdQuery = { __typename?: 'Query', workspaceByOrganizationId?: { __typename?: 'Workspace', rowId: string, organizationId: string, tier: Tier, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string }> } } | null };
+export type WorkspaceByOrganizationIdQuery = { __typename?: 'Query', workspaceByOrganizationId?: { __typename?: 'Workspace', rowId: string, organizationId: string, projects: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', name: string, rowId: string }> } } | null };
 
 export type WorkspacesQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -7718,7 +7675,7 @@ export type WorkspacesQueryVariables = Exact<{
 }>;
 
 
-export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, organizationId: string, tier: Tier }> } | null };
+export type WorkspacesQuery = { __typename?: 'Query', workspaces?: { __typename?: 'WorkspaceConnection', nodes: Array<{ __typename?: 'Workspace', rowId: string, organizationId: string }> } | null };
 
 export const ProjectColumnFragmentDoc = gql`
     fragment ProjectColumn on ProjectColumn {
@@ -8325,7 +8282,6 @@ export const WorkspaceDocument = gql`
     rowId
     organizationId
     viewMode
-    tier
     projectColumns(orderBy: INDEX_ASC) {
       nodes {
         emoji
@@ -8376,7 +8332,6 @@ export const WorkspaceByOrganizationIdDocument = gql`
   workspaceByOrganizationId(organizationId: $organizationId) {
     rowId
     organizationId
-    tier
     projects(condition: {slug: $projectSlug}) {
       nodes {
         name
@@ -8396,7 +8351,6 @@ export const WorkspacesDocument = gql`
     nodes {
       rowId
       organizationId
-      tier
     }
   }
 }

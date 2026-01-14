@@ -3,7 +3,6 @@ query Workspace($rowId: UUID!, $userId: UUID!) {
     rowId
     organizationId
     viewMode
-    tier
     projectColumns(orderBy: INDEX_ASC) {
       nodes {
         emoji

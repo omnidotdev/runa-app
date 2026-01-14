@@ -1,6 +1,6 @@
 import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import { useRateLimiter } from "@tanstack/react-pacer/rate-limiter";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import ms from "ms";
@@ -30,12 +30,11 @@ import {
   TagsInputLabel,
   TagsInputRoot,
 } from "@/components/ui/tags-input";
-import { Tier } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import { useInviteMember } from "@/lib/hooks/useOrganizationMembers";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
-import workspaceOptions from "@/lib/options/workspace.options";
+import { Tier, getTierFromSubscription } from "@/lib/types/tier";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import { inviteSchema } from "@/server/functions/emails";
 
@@ -48,7 +47,7 @@ interface Props {
 }
 
 const InviteMemberDialog = ({ triggerRef }: Props) => {
-  const { workspaceId, organizationId } = useLoaderData({
+  const { organizationId, subscription, prices } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
   const { session } = useRouteContext({
@@ -61,11 +60,6 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     setIsOpen: setIsInviteTeamMemberOpen,
   } = useDialogStore({
     type: DialogType.InviteTeamMember,
-  });
-
-  const { data: currentWorkspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data?.workspace,
   });
 
   // Resolve org name from JWT claims
@@ -83,9 +77,12 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
 
   const memberCount = membersData?.members?.length ?? 0;
 
-  // Tier-based member limits
-  // TODO: Fetch from Aether organization-level entitlements
-  const tier = currentWorkspace?.tier ?? Tier.Free;
+  // Derive tier from subscription
+  const tier = getTierFromSubscription(
+    subscription,
+    prices,
+    subscription?.priceId,
+  );
   const maxMembers =
     tier === Tier.Team || tier === Tier.Enterprise
       ? Infinity
