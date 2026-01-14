@@ -1,0 +1,9 @@
+mutation UpdateSetting($rowId: UUID!, $patch: SettingPatch!) {
+  updateSetting(input: { rowId: $rowId, patch: $patch }) {
+    setting {
+      rowId
+      organizationId
+      viewMode
+    }
+  }
+}

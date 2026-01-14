@@ -26,8 +26,9 @@ import { OverviewBoard, OverviewList } from "@/components/workspaces";
 import {
   useProjectQuery,
   useProjectsQuery,
+  useSettingByOrganizationIdQuery,
   useUpdateProjectMutation,
-  useUpdateWorkspaceMutation,
+  useUpdateSettingMutation,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -37,7 +38,7 @@ import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
-import workspaceOptions from "@/lib/options/workspace.options";
+import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
@@ -61,32 +62,29 @@ export const Route = createFileRoute(
   loaderDeps: ({ search: { search } }) => ({ search }),
   loader: async ({
     deps: { search },
-    context: { queryClient, workspaceByOrganizationId, session },
+    context: { queryClient, organizationId, session },
   }) => {
-    if (!workspaceByOrganizationId) {
+    if (!organizationId) {
       throw notFound();
     }
 
     await Promise.all([
       queryClient.ensureQueryData(
         projectsOptions({
-          workspaceId: workspaceByOrganizationId.rowId!,
+          organizationId,
           search,
           userId: session?.user?.rowId,
         }),
       ),
       queryClient.ensureQueryData(
         projectColumnsOptions({
-          workspaceId: workspaceByOrganizationId.rowId!,
+          organizationId,
           search,
         }),
       ),
     ]);
 
-    return {
-      workspaceId: workspaceByOrganizationId.rowId,
-      organizationId: workspaceByOrganizationId.organizationId,
-    };
+    return { organizationId };
   },
   head: ({ params }) => ({
     meta: [
@@ -103,28 +101,25 @@ export const Route = createFileRoute(
 
 function ProjectsOverviewPage() {
   const { session } = Route.useRouteContext();
-  const { workspaceId } = Route.useLoaderData();
+  const { organizationId } = Route.useLoaderData();
   const { search } = Route.useSearch();
   const navigate = Route.useNavigate();
   const { queryClient } = Route.useRouteContext();
 
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({
-      rowId: workspaceId,
-      userId: session?.user?.rowId!,
-    }),
-    select: (data) => data?.workspace,
+  const { data: settings } = useSuspenseQuery({
+    ...settingByOrganizationIdOptions({ organizationId }),
+    select: (data) => data?.settingByOrganizationId,
   });
 
   // Get role from IDP organization claims
-  const role = useCurrentUserRole(workspace?.organizationId);
+  const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();
 
   const projectsVariables = useMemo(
-    () => ({ workspaceId, search, userId: session?.user?.rowId }),
-    [workspaceId, search, session?.user?.rowId],
+    () => ({ organizationId, search, userId: session?.user?.rowId }),
+    [organizationId, search, session?.user?.rowId],
   );
 
   const { data: projects } = useSuspenseQuery({
@@ -134,24 +129,16 @@ function ProjectsOverviewPage() {
 
   const { setDraggableId, setIsDragging } = useDragStore();
 
-  const { mutate: updateViewMode } = useUpdateWorkspaceMutation({
+  const { mutate: updateViewMode } = useUpdateSettingMutation({
     meta: {
-      invalidates: [
-        workspaceOptions({
-          rowId: workspaceId,
-          userId: session?.user?.rowId!,
-        }).queryKey,
-      ],
+      invalidates: [getQueryKeyPrefix(useSettingByOrganizationIdQuery)],
     },
     onMutate: (variables) => {
       queryClient.setQueryData(
-        workspaceOptions({
-          rowId: workspaceId,
-          userId: session?.user?.rowId!,
-        }).queryKey,
+        settingByOrganizationIdOptions({ organizationId }).queryKey,
         (old) => ({
-          workspace: {
-            ...old?.workspace!,
+          settingByOrganizationId: {
+            ...old?.settingByOrganizationId!,
             viewMode: variables?.patch?.viewMode!,
           },
         }),
@@ -163,12 +150,12 @@ function ProjectsOverviewPage() {
     Hotkeys.ToggleViewMode,
     () =>
       updateViewMode({
-        rowId: workspaceId,
+        rowId: settings?.rowId!,
         patch: {
-          viewMode: workspace?.viewMode === "board" ? "list" : "board",
+          viewMode: settings?.viewMode === "board" ? "list" : "board",
         },
       }),
-    [updateViewMode, workspace?.viewMode, workspaceId],
+    [updateViewMode, settings?.viewMode, settings?.rowId],
   );
 
   const { mutateAsync: updateProject } = useUpdateProjectMutation({
@@ -408,7 +395,7 @@ function ProjectsOverviewPage() {
               <Tooltip
                 positioning={{ placement: "bottom" }}
                 tooltip={
-                  workspace?.viewMode === "list" ? "Board View" : "List View"
+                  settings?.viewMode === "list" ? "Board View" : "List View"
                 }
                 shortcut="V"
                 trigger={
@@ -417,20 +404,18 @@ function ProjectsOverviewPage() {
                     size="icon"
                     onClick={() =>
                       updateViewMode({
-                        rowId: workspaceId,
+                        rowId: settings?.rowId!,
                         patch: {
                           viewMode:
-                            workspace?.viewMode === "board" ? "list" : "board",
+                            settings?.viewMode === "board" ? "list" : "board",
                         },
                       })
                     }
                     aria-label={
-                      workspace?.viewMode === "list"
-                        ? "Board View"
-                        : "List View"
+                      settings?.viewMode === "list" ? "Board View" : "List View"
                     }
                   >
-                    {workspace?.viewMode === "list" ? (
+                    {settings?.viewMode === "list" ? (
                       <Grid2X2Icon />
                     ) : (
                       <ListIcon />
@@ -462,7 +447,7 @@ function ProjectsOverviewPage() {
         </div>
 
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-          {workspace?.viewMode === "board" ? (
+          {settings?.viewMode === "board" ? (
             <OverviewBoard projects={projects} />
           ) : (
             <OverviewList projects={projects} />

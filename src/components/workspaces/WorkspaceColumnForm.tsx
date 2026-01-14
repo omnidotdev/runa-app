@@ -1,7 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import {
   CheckIcon,
   GripVerticalIcon,
@@ -26,12 +25,10 @@ import {
   useCreateProjectColumnMutation,
   useProjectColumnsQuery,
   useUpdateProjectColumnMutation,
-  useWorkspaceQuery,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useForm from "@/lib/hooks/useForm";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
@@ -60,23 +57,12 @@ const ColumnForm = ({
 }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { workspaceId } = useLoaderData({
+  const { organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
-  const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
-  });
-
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({
-      rowId: workspaceId,
-      userId: session?.user?.rowId!,
-    }),
-    select: (data) => data?.workspace,
-  });
-
-  const role = useCurrentUserRole(workspace?.organizationId);
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
   const [isHovering, setIsHovering] = useState(false);
@@ -106,10 +92,7 @@ const ColumnForm = ({
 
   const { mutate: createProjectColumn } = useCreateProjectColumnMutation({
       meta: {
-        invalidates: [
-          getQueryKeyPrefix(useProjectColumnsQuery),
-          getQueryKeyPrefix(useWorkspaceQuery),
-        ],
+        invalidates: [getQueryKeyPrefix(useProjectColumnsQuery)],
       },
       onError: (error) => console.error(error),
       onSuccess: (data) => {
@@ -122,10 +105,7 @@ const ColumnForm = ({
     }),
     { mutate: updateColumn } = useUpdateProjectColumnMutation({
       meta: {
-        invalidates: [
-          getQueryKeyPrefix(useProjectColumnsQuery),
-          getQueryKeyPrefix(useWorkspaceQuery),
-        ],
+        invalidates: [getQueryKeyPrefix(useProjectColumnsQuery)],
       },
       onError: (error) => console.error(error),
     });
@@ -141,7 +121,7 @@ const ColumnForm = ({
         createProjectColumn({
           input: {
             projectColumn: {
-              workspaceId,
+              organizationId: organizationId!,
               title: value.title,
               index: value.index,
               emoji: value.emoji,

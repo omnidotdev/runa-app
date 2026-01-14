@@ -15,7 +15,6 @@ import {
 import getSdk from "@/lib/graphql/getSdk";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import projectOptions from "@/lib/options/project.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
@@ -27,20 +26,14 @@ const routeApi = getRouteApi(
 );
 
 export default function ProjectSettingsHeader() {
-  const { session } = routeApi.useRouteContext();
   const { workspaceSlug, projectSlug } = routeApi.useParams();
-  const { projectId, workspaceId } = routeApi.useLoaderData();
+  const { projectId, organizationId } = routeApi.useLoaderData();
   const navigate = routeApi.useNavigate();
 
   const [parseError, setParseError] = useState<string | null>(null);
 
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace,
-  });
-
   // Get role from IDP organization claims
-  const role = useCurrentUserRole(workspace?.organizationId);
+  const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
   const { data: project } = useSuspenseQuery({
@@ -64,14 +57,11 @@ export default function ProjectSettingsHeader() {
       if (!updatedSlug?.length || updatedSlug === ctx.value.currentSlug)
         return z.NEVER;
 
-      const { workspaceByOrganizationId } = await sdk.WorkspaceByOrganizationId(
-        {
-          organizationId: workspaceId,
-          projectSlug: updatedSlug,
-        },
-      );
+      const { projects } = await sdk.Projects({
+        organizationId,
+      });
 
-      if (workspaceByOrganizationId?.projects.nodes.length) {
+      if (projects?.nodes?.some((p) => p.slug === updatedSlug)) {
         ctx.issues.push({
           code: "custom",
           message: "Project slug already exists for this workspace.",

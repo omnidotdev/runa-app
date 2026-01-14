@@ -17,7 +17,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -27,12 +27,10 @@ import {
   useDeleteProjectColumnMutation,
   useProjectColumnsQuery,
   useUpdateProjectColumnMutation,
-  useWorkspaceQuery,
 } from "@/generated/graphql";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
@@ -45,28 +43,17 @@ const ProjectColumnsForm = () => {
   const [isCreatingColumn, setIsCreatingColumn] = useState(false);
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
 
-  const { workspaceId } = useLoaderData({
+  const { organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
-  const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
-  });
-
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({
-      rowId: workspaceId,
-      userId: session?.user?.rowId!,
-    }),
-    select: (data) => data?.workspace,
-  });
-
-  const role = useCurrentUserRole(workspace?.organizationId);
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
   const { data: projectColumns } = useSuspenseQuery({
     ...projectColumnsOptions({
-      workspaceId,
+      organizationId: organizationId!,
     }),
     select: (data) => data?.projectColumns?.nodes,
   });
@@ -78,18 +65,12 @@ const ProjectColumnsForm = () => {
 
   const { mutate: updateProjectColumn } = useUpdateProjectColumnMutation({
       meta: {
-        invalidates: [
-          getQueryKeyPrefix(useProjectColumnsQuery),
-          getQueryKeyPrefix(useWorkspaceQuery),
-        ],
+        invalidates: [getQueryKeyPrefix(useProjectColumnsQuery)],
       },
     }),
     { mutate: deleteProjectColumn } = useDeleteProjectColumnMutation({
       meta: {
-        invalidates: [
-          getQueryKeyPrefix(useProjectColumnsQuery),
-          getQueryKeyPrefix(useWorkspaceQuery),
-        ],
+        invalidates: [getQueryKeyPrefix(useProjectColumnsQuery)],
       },
       onSuccess: (_data, variables) =>
         setLocalColumns((prev) =>

@@ -1,9 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
 import {
   useLoaderData,
   useLocation,
   useNavigate,
-  useRouteContext,
 } from "@tanstack/react-router";
 import {
   CheckIcon,
@@ -26,45 +24,24 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import app from "@/lib/config/app.config";
-import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import workspaceOptions from "@/lib/options/workspace.options";
-import workspacesOptions from "@/lib/options/workspaces.options";
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import { Badge } from "../ui/badge";
 
 const AppSidebarHeader = () => {
-  const { workspaceId } = useLoaderData({ from: "/_auth" });
-  const { session } = useRouteContext({ strict: false });
+  const { organizationId } = useLoaderData({ from: "/_auth" });
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { toggleSidebar } = useSidebar();
   const orgContext = useOrganization();
 
-  // Get user's org IDs for filtering workspaces
-  const organizationIds = orgContext?.organizations?.map((o) => o.id) ?? [];
+  // Get user's organizations from context
+  const organizations = orgContext?.organizations ?? [];
 
-  const { data: workspaces } = useQuery({
-    ...workspacesOptions({ organizationIds }),
-    select: (data) => data.workspaces?.nodes,
-  });
-
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({
-      rowId: workspaceId!,
-      userId: session?.user?.rowId!,
-    }),
-    enabled: !!workspaceId,
-    select: (data) => data.workspace,
-  });
-
-  const { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
-    type: DialogType.CreateWorkspace,
-  });
-
-  // Resolve current workspace org details from JWT claims
-  const currentOrgName = workspace?.organizationId
-    ? orgContext?.getOrganizationById(workspace.organizationId)?.name
+  // Resolve current organization details from JWT claims
+  const currentOrgName = organizationId
+    ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
   return (
@@ -88,7 +65,7 @@ const AppSidebarHeader = () => {
         </Badge>
       </div>
 
-      {workspaces?.length ? (
+      {organizations?.length ? (
         <MenuRoot>
           <MenuTrigger asChild>
             <SidebarMenuButton className="bg-sidebar-accent focus-visible:ring-offset-background">
@@ -102,32 +79,26 @@ const AppSidebarHeader = () => {
 
           <MenuPositioner className="w-(--reference-width)!">
             <MenuContent className="no-scrollbar flex max-h-80 w-full flex-col gap-1 overflow-auto rounded-lg focus:outline-none">
-              {workspaces?.map((ws) => {
-                // Resolve org details from JWT claims
-                const wsOrg = orgContext?.getOrganizationById(
-                  ws.organizationId,
-                );
-                const wsOrgName = wsOrg?.name ?? "Unknown";
-                const wsOrgSlug = wsOrg?.slug ?? ws.organizationId;
-                const isWorkspaceSelected =
-                  wsOrgSlug === pathname.split("/")[2];
+              {organizations?.map((org) => {
+                const orgSlug = org?.slug ?? org.id;
+                const isWorkspaceSelected = orgSlug === pathname.split("/")[2];
 
                 return (
                   <MenuItem
-                    key={ws?.rowId}
+                    key={org?.id}
                     onClick={() => {
                       navigate({
                         to: "/workspaces/$workspaceSlug/projects",
-                        params: { workspaceSlug: wsOrgSlug },
+                        params: { workspaceSlug: orgSlug },
                       });
                     }}
                     className={cn(
                       "cursor-pointer justify-between gap-1 px-2 py-1",
                       isWorkspaceSelected && "bg-sidebar-accent",
                     )}
-                    value={wsOrgName}
+                    value={org.name}
                   >
-                    {wsOrgName}
+                    {org.name}
 
                     {isWorkspaceSelected && <CheckIcon color="green" />}
                   </MenuItem>
@@ -144,17 +115,30 @@ const AppSidebarHeader = () => {
                 <LayoutGridIcon className="size-4" />
                 All Workspaces
               </MenuItem>
+
+              <MenuItem
+                asChild
+                className="cursor-pointer gap-2 px-2 py-1"
+                value="create-organization"
+              >
+                <a href={`${AUTH_BASE_URL}/profile`}>
+                  <PlusIcon className="size-4" />
+                  Create Organization
+                </a>
+              </MenuItem>
             </MenuContent>
           </MenuPositioner>
         </MenuRoot>
       ) : (
         <SidebarMenuButton
-          onClick={() => setIsCreateWorkspaceOpen(true)}
+          asChild
           className="border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
         >
-          <PlusIcon />
+          <a href={`${AUTH_BASE_URL}/profile`}>
+            <PlusIcon />
 
-          <span>Create Workspace</span>
+            <span>Create Organization</span>
+          </a>
         </SidebarMenuButton>
       )}
     </SidebarHeader>

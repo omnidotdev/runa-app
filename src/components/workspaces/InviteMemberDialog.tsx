@@ -89,7 +89,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
       : tier === Tier.Basic
         ? 10
         : 3;
-  const canInviteMore = memberCount < maxMembers;
+  const _canInviteMore = memberCount < maxMembers;
 
   const [numberOfToasts, setNumberOfToasts] = useState(0);
   const emailRef = useRef<HTMLInputElement>(null);

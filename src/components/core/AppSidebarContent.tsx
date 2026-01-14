@@ -52,8 +52,9 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
+import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import projectsOptions from "@/lib/options/projects.options";
 import tasksOptions from "@/lib/options/tasks.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import Shortcut from "./Shortcut";
@@ -74,7 +75,7 @@ interface Props {
 // TODO break up this behemoth
 
 const AppSidebarContent = ({ setSelectedProject }: Props) => {
-  const { workspaceId } = useLoaderData({ from: "/_auth" });
+  const { organizationId } = useLoaderData({ from: "/_auth" });
   const { session } = useRouteContext({ from: "/_auth" });
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -108,18 +109,26 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
 
   const [isProjectMenuOpen, setProjectMenuOpen] = useState(false);
 
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({
-      rowId: workspaceId!,
+  const { data: projects } = useQuery({
+    ...projectsOptions({
+      organizationId: organizationId!,
       userId: session?.user?.rowId!,
     }),
-    enabled: !!workspaceId,
-    select: (data) => data.workspace,
+    enabled: !!organizationId,
+    select: (data) => data.projects?.nodes,
+  });
+
+  const { data: projectColumns } = useQuery({
+    ...projectColumnsOptions({
+      organizationId: organizationId!,
+    }),
+    enabled: !!organizationId,
+    select: (data) => data.projectColumns?.nodes,
   });
 
   // Get role from IDP organization claims
-  const role = useCurrentUserRole(workspace?.organizationId);
-  const isMember = workspace == null || role === Role.Member;
+  const role = useCurrentUserRole(organizationId);
+  const isMember = organizationId == null || role === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();
 
@@ -130,39 +139,36 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
       invalidates: [getQueryKeyPrefix(useUserPreferencesQuery)],
     },
     onMutate: (variables) => {
-      // update workspace cache for sidebar UI
+      // update projects cache for sidebar UI
       queryClient.setQueryData(
-        workspaceOptions({
-          rowId: workspaceId!,
+        projectsOptions({
+          organizationId: organizationId!,
           userId: session?.user?.rowId!,
         }).queryKey,
         (old) => {
-          if (!old?.workspace) return old;
+          if (!old?.projects) return old;
           return {
             ...old,
-            workspace: {
-              ...old.workspace,
-              projects: {
-                ...old.workspace.projects,
-                nodes: old.workspace.projects.nodes.map((project) => {
-                  const userPref = project.userPreferences?.nodes?.[0];
-                  if (userPref?.rowId === variables.rowId) {
-                    return {
-                      ...project,
-                      userPreferences: {
-                        ...project.userPreferences,
-                        nodes: [
-                          {
-                            ...userPref,
-                            viewMode: variables.patch?.viewMode!,
-                          },
-                        ],
-                      },
-                    };
-                  }
-                  return project;
-                }),
-              },
+            projects: {
+              ...old.projects,
+              nodes: old.projects.nodes.map((project) => {
+                const userPref = project.userPreferences?.nodes?.[0];
+                if (userPref?.rowId === variables.rowId) {
+                  return {
+                    ...project,
+                    userPreferences: {
+                      ...project.userPreferences,
+                      nodes: [
+                        {
+                          ...userPref,
+                          viewMode: variables.patch?.viewMode!,
+                        },
+                      ],
+                    },
+                  };
+                }
+                return project;
+              }),
             },
           };
         },
@@ -171,11 +177,8 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
   });
 
   const { setIsOpen: setIsCreateProjectOpen } = useDialogStore({
-      type: DialogType.CreateProject,
-    }),
-    { setIsOpen: setIsCreateWorkspaceOpen } = useDialogStore({
-      type: DialogType.CreateWorkspace,
-    });
+    type: DialogType.CreateProject,
+  });
 
   const sidebarMenuItems: SidebarMenuItemType[] = [
     {
@@ -219,7 +222,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
             ))}
 
             {/* Mobile projects menu */}
-            {!open && !!workspace?.projects?.nodes?.length && (
+            {!open && !!projects?.length && (
               <MenuRoot
                 positioning={{ placement: "bottom-start" }}
                 open={isProjectMenuOpen}
@@ -246,7 +249,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
 
                 <MenuPositioner>
                   <MenuContent className="flex w-40 flex-col gap-1 rounded-lg">
-                    {workspace?.projects.nodes.map((project) => {
+                    {projects?.map((project) => {
                       const userPreferences =
                         project?.userPreferences?.nodes?.[0];
 
@@ -305,23 +308,6 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
               <CollapsibleTrigger className="gap-2 p-0 px-1">
                 <SidebarGroupLabel>Workspace</SidebarGroupLabel>
                 <ChevronRightIcon size={12} className="mr-auto text-base-400" />
-
-                <Tooltip
-                  positioning={{ placement: "right" }}
-                  tooltip="Create Workspace"
-                  shortcut={Hotkeys.CreateWorkspace.toUpperCase()}
-                  trigger={
-                    <SidebarGroupAction
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsCreateWorkspaceOpen(true);
-                      }}
-                    >
-                      <PlusIcon />
-                      <span className="sr-only">Create Workspace</span>
-                    </SidebarGroupAction>
-                  }
-                />
               </CollapsibleTrigger>
 
               <CollapsibleContent className="-mx-2 p-0">
@@ -354,7 +340,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
             <SidebarGroup>
               <CollapsibleTrigger className="mt-1 gap-2 p-0 px-1">
                 <SidebarGroupLabel>Projects</SidebarGroupLabel>
-                {!!workspace?.projects?.nodes?.length && (
+                {!!projects?.length && (
                   <ChevronRightIcon
                     size={12}
                     className="mr-auto text-base-400"
@@ -362,7 +348,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                 )}
 
                 <Tooltip
-                  disabled={!workspace?.projectColumns.nodes.length}
+                  disabled={!projectColumns?.length}
                   positioning={{ placement: "right" }}
                   tooltip={
                     isMember || maxProjectsReached
@@ -391,7 +377,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
 
               <CollapsibleContent className="-mx-2 p-0">
                 <SidebarMenu className="my-1 px-2">
-                  {workspace?.projects.nodes.map((project) => {
+                  {projects?.map((project) => {
                     const userPreferences =
                       project?.userPreferences?.nodes?.[0];
 

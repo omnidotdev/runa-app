@@ -1,6 +1,5 @@
 import { useField } from "@tanstack/react-form";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import { CheckIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -11,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import { withForm } from "@/lib/hooks/useForm";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
@@ -23,24 +21,11 @@ const TaskLabelsForm = withForm({
       color: "blue",
     });
 
-    const { workspaceId } = useLoaderData({
+    const { organizationId } = useLoaderData({
       from: "/_auth",
     });
 
-    const { session } = useRouteContext({
-      from: "/_auth",
-    });
-
-    const { data: workspace } = useSuspenseQuery({
-      // TODO: determine if the non-null assertion on `workspaceId` is ok
-      ...workspaceOptions({
-        rowId: workspaceId!,
-        userId: session?.user?.rowId!,
-      }),
-      select: (data) => data?.workspace,
-    });
-
-    const role = useCurrentUserRole(workspace?.organizationId);
+    const role = useCurrentUserRole(organizationId);
     const isMember = role === Role.Member;
 
     const field = useField({ form, name: "labels" });

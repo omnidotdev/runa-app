@@ -67,6 +67,7 @@ export const getSubscription = createServerFn()
 
 /**
  * Cancel a subscription for a workspace via billing service.
+ * @knipignore
  */
 export const revokeSubscription = createServerFn({ method: "POST" })
   .inputValidator((data) => workspaceSchema.parse(data))

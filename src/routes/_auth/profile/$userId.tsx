@@ -1,9 +1,5 @@
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { toast } from "sonner";
 
-import { DestructiveActionDialog } from "@/components/core";
 import {
   CustomizationTab,
   ProfileHeader,
@@ -15,13 +11,9 @@ import {
   TabsRoot,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { useDeleteWorkspaceMutation } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
-import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
-import workspacesOptions from "@/lib/options/workspaces.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { useOrganization } from "@/providers/OrganizationProvider";
-import { revokeSubscription } from "@/server/functions/subscriptions";
 
 export const Route = createFileRoute("/_auth/profile/$userId")({
   head: (context) => ({
@@ -37,49 +29,14 @@ export const Route = createFileRoute("/_auth/profile/$userId")({
 });
 
 function ProfilePage() {
-  const [workspaceToDelete, setWorkspaceToDelete] = useState<
-    { rowId: string; organizationId: string } | undefined
-  >(undefined);
-
   const { session } = Route.useRouteContext();
   const orgContext = useOrganization();
 
   const isOmniMember =
     session?.organizations?.some((org) => org.slug === "omni") ?? false;
 
-  // Get user's org IDs for filtering workspaces
-  const organizationIds = orgContext?.organizations?.map((o) => o.id) ?? [];
-
-  const { setIsOpen: setIsDeleteWorkspaceOpen } = useDialogStore({
-    type: DialogType.DeleteWorkspace,
-  });
-
-  const { data: workspaces } = useSuspenseQuery({
-    ...workspacesOptions({ organizationIds }),
-    select: (data) => data.workspaces?.nodes,
-  });
-
-  const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
-    meta: {
-      invalidates: [workspacesOptions({ organizationIds }).queryKey],
-    },
-    onSettled: () => setIsDeleteWorkspaceOpen(false),
-  });
-
-  const { mutateAsync: handleDeleteWorkspace } = useMutation({
-    mutationFn: async ({ workspaceId }: { workspaceId: string }) => {
-      // Cancel any active subscription before deleting workspace
-      try {
-        await revokeSubscription({ data: { workspaceId } });
-      } catch {
-        // Subscription may not exist, continue with deletion
-      }
-
-      // delete workspace
-      deleteWorkspace({ rowId: workspaceId });
-    },
-    onError: (err) => toast.error(err.message),
-  });
+  // Get user's organizations from JWT claims
+  const organizations = orgContext?.organizations ?? [];
 
   return (
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-linear-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
@@ -100,13 +57,7 @@ function ProfilePage() {
                 <div className="mt-4 space-y-8">
                   <div className="space-y-4">
                     <h2 className="font-bold text-lg">Current Workspaces</h2>
-                    <WorkspacesTable
-                      workspaces={workspaces}
-                      onDeleteWorkspace={(workspace) => {
-                        setWorkspaceToDelete(workspace);
-                        setIsDeleteWorkspaceOpen(true);
-                      }}
-                    />
+                    <WorkspacesTable organizations={organizations} />
                   </div>
 
                   {/* Invitations are now managed via Gatekeeper (IDP) */}
@@ -121,36 +72,6 @@ function ProfilePage() {
           </div>
         </div>
       </div>
-
-      {!!workspaceToDelete &&
-        (() => {
-          const orgName = orgContext?.getOrganizationById(
-            workspaceToDelete.organizationId,
-          )?.name;
-          return (
-            <DestructiveActionDialog
-              title="Danger Zone"
-              description={
-                <span>
-                  This will delete{" "}
-                  <strong className="font-medium text-base-900 dark:text-base-100">
-                    {orgName}
-                  </strong>{" "}
-                  and all associated data. Any subscription associated with this
-                  workspace will be revoked. This action cannot be undone.
-                </span>
-              }
-              onConfirm={() => {
-                handleDeleteWorkspace({
-                  workspaceId: workspaceToDelete.rowId,
-                });
-              }}
-              dialogType={DialogType.DeleteWorkspace}
-              confirmation={`permanently delete ${orgName}`}
-              onExitComplete={() => setWorkspaceToDelete(undefined)}
-            />
-          );
-        })()}
     </div>
   );
 }

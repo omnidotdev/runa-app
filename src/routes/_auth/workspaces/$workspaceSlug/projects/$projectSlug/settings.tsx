@@ -12,21 +12,33 @@ import { BASE_URL } from "@/lib/config/env.config";
 import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
+import projectsOptions from "@/lib/options/projects.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
 )({
-  loader: async ({ context: { queryClient, workspaceByOrganizationId } }) => {
-    if (
-      !workspaceByOrganizationId ||
-      !workspaceByOrganizationId.projects.nodes.length
-    ) {
+  loader: async ({
+    params: { projectSlug },
+    context: { queryClient, organizationId },
+  }) => {
+    if (!organizationId) {
       throw notFound();
     }
 
-    const projectId = workspaceByOrganizationId.projects.nodes[0].rowId;
-    const projectName = workspaceByOrganizationId.projects.nodes[0].name;
+    // Fetch projects for this organization
+    const { projects } = await queryClient.ensureQueryData(
+      projectsOptions({ organizationId }),
+    );
+
+    // Find the project matching the slug
+    const project = projects?.nodes?.find((p) => p.slug === projectSlug);
+    if (!project) {
+      throw notFound();
+    }
+
+    const projectId = project.rowId;
+    const projectName = project.name;
 
     await Promise.all([
       queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
@@ -37,7 +49,7 @@ export const Route = createFileRoute(
     return {
       name: projectName,
       projectId,
-      workspaceId: workspaceByOrganizationId.rowId,
+      organizationId,
     };
   },
   head: ({ loaderData, params }) => ({

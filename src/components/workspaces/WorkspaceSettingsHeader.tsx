@@ -1,10 +1,8 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { getRouteApi, useCanGoBack, useRouter } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { getTierFromSubscription } from "@/lib/types/tier";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { useOrganization } from "@/providers/OrganizationProvider";
@@ -12,25 +10,16 @@ import { useOrganization } from "@/providers/OrganizationProvider";
 const routeApi = getRouteApi("/_auth/workspaces/$workspaceSlug/settings");
 
 export default function WorkspaceSettingsHeader() {
-  const { session } = routeApi.useRouteContext();
-  const { workspaceId, subscription, prices } = routeApi.useLoaderData();
+  const { organizationId, subscription, prices } = routeApi.useLoaderData();
   const { workspaceSlug } = routeApi.useParams();
   const router = useRouter();
   const navigate = routeApi.useNavigate();
   const canGoBack = useCanGoBack();
   const orgContext = useOrganization();
 
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({
-      rowId: workspaceId,
-      userId: session?.user?.rowId!,
-    }),
-    select: (data) => data?.workspace,
-  });
-
   // Resolve org name from JWT claims
-  const orgName = workspace?.organizationId
-    ? orgContext?.getOrganizationById(workspace.organizationId)?.name
+  const orgName = organizationId
+    ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
   // Derive tier from subscription

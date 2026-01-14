@@ -23,7 +23,6 @@ import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import columnOptions from "@/lib/options/column.options";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
@@ -33,7 +32,7 @@ interface Props {
 }
 
 const ColumnMenu = ({ columnId }: Props) => {
-  const { projectId, workspaceId } = useLoaderData({
+  const { projectId, organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
@@ -48,13 +47,8 @@ const ColumnMenu = ({ columnId }: Props) => {
   const { columnId: storedColumnId, setColumnId: setStoredColumnId } =
     useTaskStore();
 
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace,
-  });
-
-  // Get role from IDP organization claims instead of local member table
-  const role = useCurrentUserRole(workspace?.organizationId);
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
   const { data: userPreferences } = useSuspenseQuery({

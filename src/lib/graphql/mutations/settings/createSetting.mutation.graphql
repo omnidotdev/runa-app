@@ -1,0 +1,9 @@
+mutation CreateSetting($input: CreateSettingInput!) {
+  createSetting(input: $input) {
+    setting {
+      rowId
+      organizationId
+      viewMode
+    }
+  }
+}

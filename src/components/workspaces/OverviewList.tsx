@@ -1,10 +1,6 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useRouteContext,
-  useSearch,
-} from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useLoaderData, useSearch } from "@tanstack/react-router";
 
 import { ColumnTrigger } from "@/components/core";
 import {
@@ -16,7 +12,6 @@ import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import ListItem from "./OverviewListItem";
@@ -32,11 +27,7 @@ interface Props {
 }
 
 const List = ({ projects }: Props) => {
-  const { workspaceId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/",
-  });
-
-  const { session } = useRouteContext({
+  const { organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
@@ -44,18 +35,14 @@ const List = ({ projects }: Props) => {
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data?.workspace,
-  });
-
-  const role = useCurrentUserRole(workspace?.organizationId);
+  // Get role from IDP organization claims
+  const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();
 
   const { data: projectColumns } = useQuery({
-    ...projectColumnsOptions({ workspaceId: workspaceId!, search }),
+    ...projectColumnsOptions({ organizationId, search }),
     select: (data) => data?.projectColumns?.nodes,
   });
 

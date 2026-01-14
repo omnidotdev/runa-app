@@ -1,8 +1,4 @@
-import {
-  useQuery,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   useLoaderData,
   useParams,
@@ -32,7 +28,6 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import taskOptions from "@/lib/options/task.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import UpdateAssignees from "./UpdateAssignees";
 
@@ -43,7 +38,7 @@ const UpdateAssigneesDialog = () => {
     strict: false,
   });
 
-  const { workspaceId } = useLoaderData({ from: "/_auth" });
+  const { organizationId } = useLoaderData({ from: "/_auth" });
   const { session } = useRouteContext({ from: "/_auth" });
 
   const { taskId: storeTaskId, setTaskId } = useTaskStore();
@@ -57,19 +52,13 @@ const UpdateAssigneesDialog = () => {
     type: DialogType.UpdateAssignees,
   });
 
-  // Get workspace to find organizationId
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace,
-  });
-
   // Fetch organization members from IDP
   const { data: membersData } = useQuery({
     ...organizationMembersOptions({
-      organizationId: workspace?.organizationId!,
+      organizationId: organizationId!,
       accessToken: session?.accessToken!,
     }),
-    enabled: !!workspace?.organizationId && !!session?.accessToken,
+    enabled: !!organizationId && !!session?.accessToken,
   });
 
   const members = membersData?.members ?? [];

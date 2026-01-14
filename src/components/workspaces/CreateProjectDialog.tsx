@@ -36,7 +36,6 @@ import useForm from "@/lib/hooks/useForm";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
@@ -58,7 +57,7 @@ const DEFAULT_PROJECT_COLUMNS = [
 
 const CreateProjectDialog = () => {
   const { session } = useRouteContext({ from: "/_auth" });
-  const { workspaceId } = useLoaderData({ from: "/_auth" });
+  const { organizationId } = useLoaderData({ from: "/_auth" });
   const { workspaceSlug } = useParams({ strict: false });
 
   const navigate = useNavigate();
@@ -67,41 +66,35 @@ const CreateProjectDialog = () => {
 
   const { projectColumnId, setProjectColumnId } = useProjectStore();
 
-  const { data: currentWorkspace } = useQuery({
-    ...workspaceOptions({
-      rowId: workspaceId!,
-      userId: session?.user?.rowId!,
-    }),
-    enabled: !!workspaceId,
-    select: (data) => data?.workspace,
-  });
-
   // Resolve org name from JWT claims
-  const orgName = currentWorkspace?.organizationId
-    ? orgContext?.getOrganizationById(currentWorkspace.organizationId)?.name
+  const orgName = organizationId
+    ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
   // Get role from IDP organization claims
-  const currentUserRole = useCurrentUserRole(currentWorkspace?.organizationId);
-  // Conditionalize on currentWorkspace existing since we use `useQuery` and it is not suspenseful
-  const isMember = currentWorkspace == null || currentUserRole === Role.Member;
+  const currentUserRole = useCurrentUserRole(organizationId);
+  const isMember = !organizationId || currentUserRole === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();
 
   const { data: projects } = useQuery({
-    ...projectsOptions({ workspaceId: workspaceId! }),
-    enabled: !!workspaceId,
+    ...projectsOptions({ organizationId: organizationId! }),
+    enabled: !!organizationId,
     select: (data) => data?.projects?.nodes ?? [],
   });
 
+  const { data: projectColumns } = useQuery({
+    ...projectColumnsOptions({ organizationId: organizationId! }),
+    enabled: !!organizationId,
+    select: (data) => data?.projectColumns?.nodes ?? [],
+  });
+
   const newProjectColumnId =
-    projectColumnId ??
-    currentWorkspace?.projectColumns?.nodes[0]?.rowId ??
-    null;
+    projectColumnId ?? projectColumns?.[0]?.rowId ?? null;
 
   const { data: projectColumnIndex } = useQuery({
-    ...projectColumnsOptions({ workspaceId: workspaceId! }),
-    enabled: !!workspaceId && !!currentWorkspace,
+    ...projectColumnsOptions({ organizationId: organizationId! }),
+    enabled: !!organizationId,
     select: (data) =>
       data?.projectColumns?.nodes?.find(
         (col) => col.rowId === newProjectColumnId,
@@ -125,13 +118,7 @@ const CreateProjectDialog = () => {
     useCreateUserPreferenceMutation();
   const { mutateAsync: createProjectColumn } = useCreateProjectColumnMutation({
     meta: {
-      invalidates: [
-        getQueryKeyPrefix(useProjectColumnsQuery),
-        workspaceOptions({
-          rowId: workspaceId!,
-          userId: session?.user?.rowId!,
-        }).queryKey,
-      ],
+      invalidates: [getQueryKeyPrefix(useProjectColumnsQuery)],
     },
   });
 
@@ -139,11 +126,7 @@ const CreateProjectDialog = () => {
     meta: {
       invalidates: [
         getQueryKeyPrefix(useProjectsQuery),
-        workspaceOptions({
-          rowId: workspaceId!,
-          userId: session?.user?.rowId!,
-        }).queryKey,
-        projectColumnsOptions({ workspaceId: workspaceId! }).queryKey,
+        getQueryKeyPrefix(useProjectColumnsQuery),
       ],
     },
     onSuccess: async ({ createProject }) => {
@@ -231,7 +214,7 @@ const CreateProjectDialog = () => {
                 createProjectColumn({
                   input: {
                     projectColumn: {
-                      workspaceId: workspaceId!,
+                      organizationId: organizationId!,
                       title: col.title,
                       index: col.index,
                       emoji: col.emoji,
@@ -252,7 +235,7 @@ const CreateProjectDialog = () => {
           return createNewProject({
             input: {
               project: {
-                workspaceId: workspaceId!,
+                organizationId: organizationId!,
                 name: value.name,
                 slug: generateSlug(value.name),
                 description: value.description,
