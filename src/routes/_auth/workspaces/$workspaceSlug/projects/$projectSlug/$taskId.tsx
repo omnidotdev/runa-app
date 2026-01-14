@@ -57,9 +57,7 @@ export const Route = createFileRoute(
     params: { taskId, projectSlug },
     context: { queryClient, organizationId },
   }) => {
-    if (!organizationId) {
-      throw notFound();
-    }
+    if (!organizationId) throw notFound();
 
     // Fetch projects for this organization
     const { projects } = await queryClient.ensureQueryData(

@@ -10,6 +10,7 @@ import {
 } from "@/components/workspaces";
 import { BASE_URL } from "@/lib/config/env.config";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { getPrices } from "@/server/functions/prices";
 import { getSubscription } from "@/server/functions/subscriptions";
@@ -17,9 +18,13 @@ import { getSubscription } from "@/server/functions/subscriptions";
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
 )({
-  loader: async ({
-    context: { queryClient, settingByOrganizationId, organizationId },
-  }) => {
+  loader: async ({ context: { queryClient, organizationId } }) => {
+    if (!organizationId) throw notFound();
+
+    const { settingByOrganizationId } = await queryClient.ensureQueryData(
+      settingByOrganizationIdOptions({ organizationId }),
+    );
+
     if (!settingByOrganizationId) throw notFound();
 
     const [subscription, prices] = await Promise.all([

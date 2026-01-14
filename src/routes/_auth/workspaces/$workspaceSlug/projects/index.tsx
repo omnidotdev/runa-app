@@ -64,9 +64,7 @@ export const Route = createFileRoute(
     deps: { search },
     context: { queryClient, organizationId, session },
   }) => {
-    if (!organizationId) {
-      throw notFound();
-    }
+    if (!organizationId) throw notFound();
 
     await Promise.all([
       queryClient.ensureQueryData(
