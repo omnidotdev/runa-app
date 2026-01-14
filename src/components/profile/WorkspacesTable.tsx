@@ -18,7 +18,6 @@ import { useOrganization } from "@/providers/OrganizationProvider";
 interface WorkspaceNode {
   rowId: string;
   organizationId: string;
-  tier: string;
 }
 
 interface Props {
@@ -68,7 +67,6 @@ const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
       <TableHeader>
         <TableRow className="bg-muted hover:bg-muted">
           <TableHead className="pl-3 font-semibold">Workspace</TableHead>
-          <TableHead className="font-semibold">Tier</TableHead>
           <TableHead className="font-semibold">Role</TableHead>
           <TableHead className="pr-3 text-right font-semibold">
             Actions
@@ -92,11 +90,6 @@ const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
                   </div>
                   <span className="font-medium">{orgName}</span>
                 </div>
-              </TableCell>
-              <TableCell className="py-4 pl-1">
-                <Badge variant="outline">
-                  {capitalizeFirstLetter(workspace.tier)}
-                </Badge>
               </TableCell>
               <TableCell className="py-4 pl-1">
                 <Badge>{capitalizeFirstLetter(userRole)}</Badge>

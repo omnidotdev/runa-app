@@ -1,66 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { match } from "ts-pattern";
-
-import { Tier } from "@/generated/graphql";
-import workspaceOptions from "@/lib/options/workspace.options";
-
-const FREE_TIER_MAX_PROJECTS = 2;
-const BASIC_TIER_MAX_PROJECTS = 10;
-
-const billingBypassOrgIds: string[] =
-  import.meta.env.VITE_BILLING_BYPASS_ORG_IDS?.split(",")
-    .map((s: string) => s.trim())
-    .filter(Boolean) ?? [];
-
+/**
+ * Hook to check if maximum projects limit is reached.
+ *
+ * Limit enforcement is handled server-side via Aether entitlements.
+ * This hook is kept for API compatibility but always returns false.
+ * The server will return an error if the limit is exceeded.
+ */
 const useMaxProjectsReached = () => {
-  const { workspaceId } = useLoaderData({
-    from: "/_auth",
-  });
-
-  const { session } = useRouteContext({
-    from: "/_auth",
-  });
-
-  const { data: tier, isLoading: isTierLoading } = useQuery({
-    ...workspaceOptions({ rowId: workspaceId!, userId: session?.user.rowId! }),
-    enabled: !!workspaceId && !!session?.user?.rowId,
-    select: (data) => data.workspace?.tier,
-  });
-
-  const { data: organizationId, isLoading: isOrgIdLoading } = useQuery({
-    ...workspaceOptions({ rowId: workspaceId!, userId: session?.user.rowId! }),
-    enabled: !!workspaceId && !!session?.user?.rowId,
-    select: (data) => data.workspace?.organizationId,
-  });
-
-  const { data: totalProjects, isLoading: isProjectsLoading } = useQuery({
-    ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
-    enabled: !!workspaceId && !!session?.user?.rowId,
-    select: (data) => data?.workspace?.projects?.totalCount,
-  });
-
-  // Allow project creation while data is loading
-  if (isTierLoading || isProjectsLoading || isOrgIdLoading) return false;
-
-  // Bypass tier limits for exempt organizations
-  if (organizationId && billingBypassOrgIds.includes(organizationId))
-    return false;
-
-  return match({ tier, totalProjects })
-    .with({ tier: undefined }, () => false)
-    .with({ totalProjects: undefined }, () => false)
-    .with(
-      { tier: Tier.Free },
-      ({ totalProjects }) => Number(totalProjects) >= FREE_TIER_MAX_PROJECTS,
-    )
-    .with(
-      { tier: Tier.Basic },
-      ({ totalProjects }) => Number(totalProjects) >= BASIC_TIER_MAX_PROJECTS,
-    )
-    .with({ tier: Tier.Team }, () => false)
-    .with({ tier: Tier.Enterprise }, () => false)
-    .exhaustive();
+  // Limits are enforced server-side via Aether entitlements
+  // The server will reject mutations that exceed limits
+  return false;
 };
 
 export default useMaxProjectsReached;

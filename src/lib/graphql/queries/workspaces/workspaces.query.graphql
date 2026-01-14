@@ -7,7 +7,6 @@ query Workspaces($limit: Int, $organizationIds: [String!]) {
     nodes {
       rowId
       organizationId
-      tier
     }
   }
 }
