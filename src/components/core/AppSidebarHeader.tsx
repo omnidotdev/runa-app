@@ -41,8 +41,11 @@ const AppSidebarHeader = () => {
   const { toggleSidebar } = useSidebar();
   const orgContext = useOrganization();
 
+  // Get user's org IDs for filtering workspaces
+  const organizationIds = orgContext?.organizations?.map((o) => o.id) ?? [];
+
   const { data: workspaces } = useQuery({
-    ...workspacesOptions(),
+    ...workspacesOptions({ organizationIds }),
     select: (data) => data.workspaces?.nodes,
   });
 

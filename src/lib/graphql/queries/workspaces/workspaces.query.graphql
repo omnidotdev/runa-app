@@ -1,5 +1,9 @@
-query Workspaces($limit: Int) {
-  workspaces(orderBy: CREATED_AT_ASC, first: $limit) {
+query Workspaces($limit: Int, $organizationIds: [String!]) {
+  workspaces(
+    orderBy: CREATED_AT_ASC
+    first: $limit
+    filter: { organizationId: { in: $organizationIds } }
+  ) {
     nodes {
       rowId
       organizationId

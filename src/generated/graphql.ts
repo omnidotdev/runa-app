@@ -7713,6 +7713,7 @@ export type WorkspaceByOrganizationIdQuery = { __typename?: 'Query', workspaceBy
 
 export type WorkspacesQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>;
+  organizationIds?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
 }>;
 
 
@@ -10205,8 +10206,12 @@ useSuspenseInfiniteWorkspaceByOrganizationIdQuery.getKey = (variables: Workspace
 useWorkspaceByOrganizationIdQuery.fetcher = (variables: WorkspaceByOrganizationIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceByOrganizationIdQuery, WorkspaceByOrganizationIdQueryVariables>(WorkspaceByOrganizationIdDocument, variables, options);
 
 export const WorkspacesDocument = `
-    query Workspaces($limit: Int) {
-  workspaces(orderBy: CREATED_AT_ASC, first: $limit) {
+    query Workspaces($limit: Int, $organizationIds: [String!]) {
+  workspaces(
+    orderBy: CREATED_AT_ASC
+    first: $limit
+    filter: {organizationId: {in: $organizationIds}}
+  ) {
     nodes {
       rowId
       organizationId

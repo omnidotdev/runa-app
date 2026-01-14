@@ -38,13 +38,16 @@ export default function WorkspaceDangerZone() {
   const currentUserRole = useCurrentUserRole(workspace?.organizationId);
   const canDeleteWorkspace = currentUserRole && isOwner(currentUserRole);
 
+  // Get user's org IDs for filtering workspaces
+  const organizationIds = orgContext?.organizations?.map((o) => o.id) ?? [];
+
   const { setIsOpen: setIsDeleteWorkspaceOpen } = useDialogStore({
     type: DialogType.DeleteWorkspace,
   });
 
   const { mutate: deleteWorkspace } = useDeleteWorkspaceMutation({
     meta: {
-      invalidates: [workspacesOptions().queryKey],
+      invalidates: [workspacesOptions({ organizationIds }).queryKey],
     },
     onMutate: () => navigate({ to: "/workspaces", replace: true }),
     onSettled: () => setIsDeleteWorkspaceOpen(false),

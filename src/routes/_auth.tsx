@@ -54,6 +54,9 @@ export const Route = createFileRoute("/_auth")({
         organizationId = fetchedOrg.id;
       }
 
+      // Get user's org IDs for filtering workspaces
+      const organizationIds = session.organizations?.map((o) => o.id) ?? [];
+
       let [{ workspaceByOrganizationId }] = await Promise.all([
         queryClient.ensureQueryData({
           ...workspaceByOrganizationIdOptions({
@@ -62,7 +65,7 @@ export const Route = createFileRoute("/_auth")({
           }),
         }),
         queryClient.prefetchQuery({
-          ...workspacesOptions(),
+          ...workspacesOptions({ organizationIds }),
         }),
       ]);
 
@@ -79,7 +82,7 @@ export const Route = createFileRoute("/_auth")({
           }).queryKey,
         });
         await queryClient.invalidateQueries({
-          queryKey: workspacesOptions().queryKey,
+          queryKey: workspacesOptions({ organizationIds }).queryKey,
         });
 
         // Refetch the workspace with full data
@@ -107,8 +110,11 @@ export const Route = createFileRoute("/_auth")({
 
       return { workspaceByOrganizationId, fetchedOrg };
     } else {
+      // Get user's org IDs for filtering workspaces
+      const organizationIds = session.organizations?.map((o) => o.id) ?? [];
+
       await queryClient.ensureQueryData({
-        ...workspacesOptions(),
+        ...workspacesOptions({ organizationIds }),
       });
 
       return { workspaceByOrganizationId: undefined, fetchedOrg: null };
