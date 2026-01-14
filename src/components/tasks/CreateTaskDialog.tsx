@@ -3,7 +3,6 @@ import {
   useLoaderData,
   useNavigate,
   useRouteContext,
-  useSearch,
 } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -50,10 +49,6 @@ const CreateTaskDialog = () => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
-  const { createTask } = useSearch({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
-  });
-
   const navigate = useNavigate({
     from: "/workspaces/$workspaceSlug/projects/$projectSlug",
   });
@@ -83,7 +78,7 @@ const CreateTaskDialog = () => {
       enabled: !maxTasksReached,
       description: "Create New Task",
     },
-    [navigate, createTask, maxTasksReached],
+    [navigate, maxTasksReached],
   );
 
   const totalTasks = project?.columns?.nodes?.flatMap((column) =>
