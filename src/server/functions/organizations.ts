@@ -28,6 +28,7 @@ function generateSlug(name: string): string {
 /**
  * Create a new organization in Gatekeeper (IDP).
  * This allows RPs to create organizations on behalf of users.
+ * @knipignore
  */
 export const createOrganization = createServerFn({ method: "POST" })
   .inputValidator((data) => createOrganizationSchema.parse(data))

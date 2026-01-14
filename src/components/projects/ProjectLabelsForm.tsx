@@ -1,5 +1,5 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useLoaderData } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -7,7 +7,6 @@ import { Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import labelsOptions from "@/lib/options/labels.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import LabelForm from "./ProjectLabelForm";
@@ -18,20 +17,11 @@ const ProjectLabelsForm = () => {
   const [isCreatingLabel, setIsCreatingLabel] = useState(false);
   const [activeLabelId, setActiveLabelId] = useState<string | null>(null);
 
-  const { projectId, workspaceId } = useLoaderData({
+  const { projectId, organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
-  const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-  });
-
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace,
-  });
-
-  const role = useCurrentUserRole(workspace?.organizationId);
+  const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
   const { data: labels } = useQuery({

@@ -40,11 +40,10 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import projectOptions from "@/lib/options/project.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 const Filter = () => {
-  const { workspaceId, projectId } = useLoaderData({
+  const { organizationId, projectId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
@@ -68,19 +67,13 @@ const Filter = () => {
     select: (data) => data?.project,
   });
 
-  // Get workspace to find organizationId
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace,
-  });
-
   // Fetch organization members from IDP
   const { data: membersData } = useQuery({
     ...organizationMembersOptions({
-      organizationId: workspace?.organizationId!,
+      organizationId: organizationId!,
       accessToken: session?.accessToken!,
     }),
-    enabled: !!workspace?.organizationId && !!session?.accessToken,
+    enabled: !!organizationId && !!session?.accessToken,
   });
 
   const users = membersData?.members ?? [];

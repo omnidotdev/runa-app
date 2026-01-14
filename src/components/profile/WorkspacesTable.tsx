@@ -11,51 +11,35 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { Role } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
-import { useOrganization } from "@/providers/OrganizationProvider";
 
-interface WorkspaceNode {
-  rowId: string;
-  organizationId: string;
-}
+import type { OrganizationClaim } from "@/lib/auth/getAuth";
 
 interface Props {
-  workspaces: WorkspaceNode[] | undefined;
-  onDeleteWorkspace: (workspace: {
-    rowId: string;
-    organizationId: string;
-  }) => void;
+  organizations: OrganizationClaim[];
 }
 
-const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
-  const orgContext = useOrganization();
-
-  // Helper to resolve org details from JWT claims
-  const getOrgDetails = (organizationId: string) =>
-    orgContext?.getOrganizationById(organizationId);
-
+const WorkspacesTable = ({ organizations }: Props) => {
   // Helper to get user's role for an organization from JWT claims
-  const getUserRole = (organizationId: string): Role => {
-    const org = orgContext?.getOrganizationById(organizationId);
-    if (!org) return Role.Member;
+  const getUserRole = (org: OrganizationClaim): Role => {
     if (org.roles.includes("owner")) return Role.Owner;
     if (org.roles.includes("admin")) return Role.Admin;
     return Role.Member;
   };
 
-  if (!workspaces?.length) {
+  if (!organizations?.length) {
     return (
       <div className="flex flex-col gap-2">
         <p>
           No current workspaces.{" "}
-          <Link
-            to="/pricing"
-            variant="unstyled"
+          <a
+            href={`${AUTH_BASE_URL}/profile`}
             className="p-0 text-md text-primary-600 underline"
           >
             Create a workspace
-          </Link>{" "}
+          </a>{" "}
           to get started.
         </p>
       </div>
@@ -75,20 +59,17 @@ const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
       </TableHeader>
 
       <TableBody>
-        {workspaces.map((workspace) => {
-          const org = getOrgDetails(workspace.organizationId);
-          const orgName = org?.name;
-          const orgSlug = org?.slug;
-          const userRole = getUserRole(workspace.organizationId);
+        {organizations.map((org) => {
+          const userRole = getUserRole(org);
 
           return (
-            <TableRow key={workspace.rowId} className="hover:bg-background">
+            <TableRow key={org.id} className="hover:bg-background">
               <TableCell className="py-4 pl-3">
                 <div className="flex items-center gap-3">
                   <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
                     <Building2 className="size-4 text-primary" />
                   </div>
-                  <span className="font-medium">{orgName}</span>
+                  <span className="font-medium">{org.name}</span>
                 </div>
               </TableCell>
               <TableCell className="py-4 pl-1">
@@ -98,7 +79,7 @@ const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
                 <div className="flex justify-end gap-2">
                   <Link
                     to="/workspaces/$workspaceSlug/settings"
-                    params={{ workspaceSlug: orgSlug! }}
+                    params={{ workspaceSlug: org.slug! }}
                     variant="outline"
                     size="sm"
                     className="hover:border-green-200 hover:bg-green-50 hover:text-green-700 dark:hover:border-green-800 dark:hover:bg-green-950 dark:hover:text-green-300"
@@ -107,30 +88,26 @@ const WorkspacesTable = ({ workspaces, onDeleteWorkspace }: Props) => {
                   </Link>
                   {userRole === Role.Owner ? (
                     <div className="justify-center">
+                      {/* Organizations are managed via Gatekeeper IDP */}
                       <Button
+                        asChild
                         variant="outline"
                         size="sm"
                         className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
-                        onClick={() => {
-                          onDeleteWorkspace({
-                            rowId: workspace.rowId,
-                            organizationId: workspace.organizationId,
-                          });
-                        }}
                       >
-                        Delete
+                        <a href={`${AUTH_BASE_URL}/profile`}>Manage</a>
                       </Button>
                     </div>
                   ) : (
                     <div className="justify-center">
+                      {/* Leave organization via Gatekeeper IDP */}
                       <Button
+                        asChild
                         variant="outline"
                         size="sm"
                         className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
-                        // TODO: add leave workspace functionality
-                        disabled
                       >
-                        Leave
+                        <a href={`${AUTH_BASE_URL}/profile`}>Leave</a>
                       </Button>
                     </div>
                   )}

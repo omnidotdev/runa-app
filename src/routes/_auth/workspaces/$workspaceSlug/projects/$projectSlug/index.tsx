@@ -34,13 +34,13 @@ import { Input } from "@/components/ui/input";
 import {
   useProjectQuery,
   useProjectsQuery,
+  useSettingByOrganizationIdQuery,
   useTaskQuery,
   useTasksQuery,
   useUpdateProjectMutation,
   useUpdateTaskMutation,
   useUpdateUserPreferenceMutation,
   useUserPreferencesQuery,
-  useWorkspaceQuery,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -48,9 +48,10 @@ import getSdk from "@/lib/graphql/getSdk";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import projectOptions from "@/lib/options/project.options";
+import projectsOptions from "@/lib/options/projects.options";
+import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
 import generateSlug from "@/lib/util/generateSlug";
@@ -84,16 +85,23 @@ export const Route = createFileRoute(
   }),
   loader: async ({
     deps: { search, assignees, labels, priorities },
-    context: { session, queryClient, workspaceByOrganizationId },
+    params: { projectSlug },
+    context: { session, queryClient, organizationId },
   }) => {
-    if (
-      !workspaceByOrganizationId ||
-      !workspaceByOrganizationId.projects.nodes.length
-    ) {
+    if (!organizationId) {
       throw notFound();
     }
 
-    const project = workspaceByOrganizationId.projects.nodes[0];
+    // Fetch projects for this organization
+    const { projects } = await queryClient.ensureQueryData(
+      projectsOptions({ organizationId }),
+    );
+
+    // Find the project matching the slug
+    const project = projects?.nodes?.find((p) => p.slug === projectSlug);
+    if (!project) {
+      throw notFound();
+    }
 
     const projectId = project.rowId;
     const projectName = project.name;
@@ -128,7 +136,7 @@ export const Route = createFileRoute(
     return {
       name: projectName,
       projectId,
-      workspaceId: workspaceByOrganizationId.rowId,
+      organizationId,
     };
   },
   validateSearch: zodValidator(projectSearchParamsSchema),
@@ -161,7 +169,7 @@ export const Route = createFileRoute(
 function ProjectPage() {
   const { session } = Route.useRouteContext();
   const { projectSlug, workspaceSlug } = Route.useParams();
-  const { projectId, workspaceId } = Route.useLoaderData();
+  const { projectId, organizationId } = Route.useLoaderData();
   const { search, assignees, labels, priorities } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
@@ -170,13 +178,8 @@ function ProjectPage() {
 
   const { queryClient } = Route.useRouteContext();
 
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data?.workspace,
-  });
-
   // Get role from IDP organization claims
-  const role = useCurrentUserRole(workspace?.organizationId);
+  const role = useCurrentUserRole(organizationId);
   const isOwner = role === Role.Owner;
 
   const tasksVariables: TasksQueryVariables = useMemo(
@@ -253,14 +256,11 @@ function ProjectPage() {
       if (!updatedSlug?.length || updatedSlug === ctx.value.currentSlug)
         return z.NEVER;
 
-      const { workspaceByOrganizationId } = await sdk.WorkspaceByOrganizationId(
-        {
-          organizationId: workspaceId,
-          projectSlug: updatedSlug,
-        },
-      );
+      const { projects } = await sdk.Projects({
+        organizationId,
+      });
 
-      if (workspaceByOrganizationId?.projects.nodes.length) {
+      if (projects?.nodes?.some((p) => p.slug === updatedSlug)) {
         ctx.issues.push({
           code: "custom",
           message: "Project slug already exists for this workspace.",
@@ -287,7 +287,7 @@ function ProjectPage() {
     meta: {
       invalidates: [
         getQueryKeyPrefix(useUserPreferencesQuery),
-        getQueryKeyPrefix(useWorkspaceQuery),
+        getQueryKeyPrefix(useSettingByOrganizationIdQuery),
       ],
     },
     onMutate: (variables) => {
@@ -305,39 +305,19 @@ function ProjectPage() {
         }),
       );
 
-      // Update workspace cache for sidebar icon
+      // Update settings cache for sidebar icon
       queryClient.setQueryData(
-        workspaceOptions({
-          rowId: workspaceId,
-          userId: session?.user?.rowId!,
+        settingByOrganizationIdOptions({
+          organizationId,
         }).queryKey,
         (old) => {
-          if (!old?.workspace) return old;
+          if (!old?.settingByOrganizationId) return old;
           return {
             ...old,
-            workspace: {
-              ...old.workspace,
-              projects: {
-                ...old.workspace.projects,
-                nodes: old.workspace.projects.nodes.map((project) => {
-                  const userPref = project.userPreferences?.nodes?.[0];
-                  if (userPref?.rowId === variables.rowId) {
-                    return {
-                      ...project,
-                      userPreferences: {
-                        ...project.userPreferences,
-                        nodes: [
-                          {
-                            ...userPref,
-                            viewMode: variables.patch?.viewMode!,
-                          },
-                        ],
-                      },
-                    };
-                  }
-                  return project;
-                }),
-              },
+            settingByOrganizationId: {
+              ...old.settingByOrganizationId,
+              // Settings don't contain project userPreferences, so this is a no-op
+              // The sidebar will refetch via invalidation
             },
           };
         },

@@ -7,7 +7,6 @@ export { default as ColorSelector } from "./ColorSelector";
 export { default as ColumnHeader } from "./ColumnHeader";
 export { default as ColumnSelector } from "./ColumnSelector";
 export { default as ColumnTrigger } from "./ColumnTrigger";
-export { default as CreateWorkspaceDialog } from "./CreateWorkspaceDialog";
 export { default as DestructiveActionDialog } from "./DestructiveActionDialog";
 export { default as EmojiSelector } from "./EmojiSelector";
 export { default as Label } from "./Label";

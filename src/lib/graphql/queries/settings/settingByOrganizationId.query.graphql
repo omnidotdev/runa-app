@@ -1,0 +1,9 @@
+query SettingByOrganizationId($organizationId: String!) {
+  settingByOrganizationId(organizationId: $organizationId) {
+    rowId
+    organizationId
+    viewMode
+    subscriptionId
+    billingAccountId
+  }
+}

@@ -1,10 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useNavigate,
-  useParams,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { useLoaderData, useNavigate, useParams } from "@tanstack/react-router";
 import {
   BoxIcon,
   MoreHorizontalIcon,
@@ -32,7 +27,8 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
-import workspaceOptions from "@/lib/options/workspace.options";
+import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import projectsOptions from "@/lib/options/projects.options";
 import { isAdminOrOwner } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
@@ -43,11 +39,7 @@ const Projects = () => {
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
-  const { workspaceId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
-  });
-
-  const { session } = useRouteContext({
+  const { organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
@@ -59,21 +51,25 @@ const Projects = () => {
   const navigate = useNavigate();
   const orgContext = useOrganization();
 
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({
-      rowId: workspaceId,
-      userId: session?.user?.rowId!,
-    }),
-    select: (data) => data?.workspace,
+  // Fetch projects for this organization
+  const { data: projects } = useSuspenseQuery({
+    ...projectsOptions({ organizationId: organizationId! }),
+    select: (data) => data?.projects?.nodes ?? [],
+  });
+
+  // Fetch project columns for this organization
+  const { data: projectColumns } = useSuspenseQuery({
+    ...projectColumnsOptions({ organizationId: organizationId! }),
+    select: (data) => data?.projectColumns?.nodes ?? [],
   });
 
   // Resolve org name from JWT claims
-  const orgName = workspace?.organizationId
-    ? orgContext?.getOrganizationById(workspace.organizationId)?.name
+  const orgName = organizationId
+    ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
   // Get role from IDP organization claims
-  const currentUserRole = useCurrentUserRole(workspace?.organizationId);
+  const currentUserRole = useCurrentUserRole(organizationId);
   const canManageProjects = currentUserRole && isAdminOrOwner(currentUserRole);
 
   const maxProjectsReached = useMaxProjectsReached();
@@ -81,13 +77,7 @@ const Projects = () => {
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
-      invalidates: [
-        getQueryKeyPrefix(useProjectsQuery),
-        workspaceOptions({
-          rowId: workspaceId,
-          userId: session?.user?.rowId!,
-        }).queryKey,
-      ],
+      invalidates: [getQueryKeyPrefix(useProjectsQuery)],
     },
   });
 
@@ -129,16 +119,17 @@ const Projects = () => {
           />
         </div>
 
-        {workspace?.projects.nodes.length ? (
+        {projects.length ? (
           <div className="flex flex-col divide-y border-y px-2 lg:px-0">
-            {workspace?.projects.nodes.map((project) => {
+            {projects.map((project) => {
               const completedTasks = project.columns?.nodes?.reduce(
-                (acc, col) => acc + (col?.completedTasks.totalCount || 0),
+                (acc: number, col) =>
+                  acc + (col?.completedTasks.totalCount || 0),
                 0,
               );
 
               const totalTasks = project.columns?.nodes?.reduce(
-                (acc, col) => acc + (col?.allTasks.totalCount || 0),
+                (acc: number, col) => acc + (col?.allTasks.totalCount || 0),
                 0,
               );
 
@@ -153,7 +144,7 @@ const Projects = () => {
                         className="flex size-6 items-center justify-center rounded-full border bg-primary font-medium text-background text-sm uppercase shadow"
                         style={{
                           backgroundColor:
-                            project?.userPreferences.nodes?.[0].color ??
+                            project?.userPreferences.nodes?.[0]?.color ??
                             undefined,
                         }}
                       >
@@ -163,10 +154,6 @@ const Projects = () => {
 
                     <span className="px-3 text-xs md:text-sm">
                       {project?.name}
-                    </span>
-
-                    <span className="text-base-600 text-sm dark:text-base-400">
-                      {project.projectColumn?.emoji}
                     </span>
                   </div>
 
@@ -275,7 +262,7 @@ const Projects = () => {
           </div>
         ) : (
           <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
-            {!workspace?.projectColumns.nodes.length
+            {!projectColumns.length
               ? "Please create workspace columns first"
               : "No workspace projects"}
           </div>

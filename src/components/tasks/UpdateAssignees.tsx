@@ -1,5 +1,5 @@
 import { useFilter, useListCollection } from "@ark-ui/react";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { TrashIcon } from "lucide-react";
 
@@ -23,7 +23,6 @@ import {
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 
 import type { ComponentProps } from "react";
 
@@ -45,27 +44,18 @@ const UpdateAssignees = withForm({
   defaultValues: taskFormDefaults,
   props: {} as AdditionalProps,
   render: ({ form, comboboxInputProps }) => {
-    const { workspaceId } = useLoaderData({ from: "/_auth" });
+    const { organizationId } = useLoaderData({ from: "/_auth" });
     const { session } = useRouteContext({ from: "/_auth" });
 
     const { contains } = useFilter({ sensitivity: "base" });
 
-    // Get workspace to find organizationId
-    const { data: workspace } = useSuspenseQuery({
-      ...workspaceOptions({
-        rowId: workspaceId!,
-        userId: session?.user?.rowId!,
-      }),
-      select: (data) => data.workspace,
-    });
-
     // Fetch organization members from IDP
     const { data: membersData } = useQuery({
       ...organizationMembersOptions({
-        organizationId: workspace?.organizationId!,
+        organizationId: organizationId!,
         accessToken: session?.accessToken!,
       }),
-      enabled: !!workspace?.organizationId && !!session?.accessToken,
+      enabled: !!organizationId && !!session?.accessToken,
     });
 
     const members = membersData?.members ?? [];

@@ -1,5 +1,8 @@
-query ProjectColumns($workspaceId: UUID!, $search: String = "") {
-  projectColumns(condition: { workspaceId: $workspaceId }, orderBy: INDEX_ASC) {
+query ProjectColumns($organizationId: UUID!, $search: String = "") {
+  projectColumns(
+    condition: { organizationId: $organizationId }
+    orderBy: INDEX_ASC
+  ) {
     nodes {
       title
       index

@@ -1,5 +1,5 @@
 import { Format } from "@ark-ui/react";
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { getRouteApi, useRouter } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { AlertTriangleIcon } from "lucide-react";
@@ -19,11 +19,9 @@ import {
 } from "@/components/ui/menu";
 import { BASE_URL } from "@/lib/config/env.config";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { isOwner } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
-import { useOrganization } from "@/providers/OrganizationProvider";
 import { FREE_PRICE } from "@/routes/_public/pricing";
 import {
   getBillingPortalUrl,
@@ -34,33 +32,24 @@ import {
 const routeApi = getRouteApi("/_auth/workspaces/$workspaceSlug/settings");
 
 export default function WorkspaceBenefits() {
-  const { session } = routeApi.useRouteContext();
-  const { workspaceId, subscription, prices } = routeApi.useLoaderData();
+  const { settingId, organizationId, subscription, prices } =
+    routeApi.useLoaderData();
   const router = useRouter();
   const navigate = routeApi.useNavigate();
-  const orgContext = useOrganization();
   const { workspaceSlug } = routeApi.useParams();
-
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({
-      rowId: workspaceId,
-      userId: session?.user?.rowId!,
-    }),
-    select: (data) => data?.workspace,
-  });
 
   // Resolve org slug from JWT claims (workspaceSlug in URL is already org slug)
   const orgSlug = workspaceSlug;
 
   // Get role from IDP organization claims
-  const currentUserRole = useCurrentUserRole(workspace?.organizationId);
+  const currentUserRole = useCurrentUserRole(organizationId);
   const canDeleteWorkspace = currentUserRole && isOwner(currentUserRole);
 
   const { mutateAsync: openBillingPortal } = useMutation({
     mutationFn: async () =>
       await getBillingPortalUrl({
         data: {
-          workspaceId: workspace?.rowId,
+          settingId: settingId,
           returnUrl: `${BASE_URL}/workspaces/${orgSlug}/settings`,
         },
       }),
@@ -71,7 +60,7 @@ export default function WorkspaceBenefits() {
     mutationFn: async ({ priceId }: { priceId: string }) =>
       await getCreateSubscriptionUrl({
         data: {
-          workspaceId: workspace?.rowId,
+          settingId: settingId,
           priceId,
           successUrl: `${BASE_URL}/workspaces/${orgSlug}/settings`,
         },
@@ -82,7 +71,7 @@ export default function WorkspaceBenefits() {
   const { mutateAsync: handleRenewSubscription } = useMutation({
     mutationFn: async () =>
       await renewSubscription({
-        data: { workspaceId: workspace?.rowId },
+        data: { settingId: settingId },
       }),
     onSuccess: () => router.invalidate(),
   });

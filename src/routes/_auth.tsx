@@ -6,17 +6,15 @@ import {
 } from "@tanstack/react-router";
 import { useMemo } from "react";
 
-import { AppSidebar, CreateWorkspaceDialog } from "@/components/core";
+import { AppSidebar } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/workspaces";
-import workspaceOptions from "@/lib/options/workspace.options";
-import workspaceByOrganizationIdOptions from "@/lib/options/workspaceByOrganizationId.options";
-import workspacesOptions from "@/lib/options/workspaces.options";
+import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
 import { getOrganizationBySlug } from "@/server/functions/organizations";
-import { provisionWorkspace } from "@/server/functions/workspaces";
+import { provisionSettings } from "@/server/functions/settings";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { queryClient, session } }) => {
@@ -34,13 +32,12 @@ export const Route = createFileRoute("/_auth")({
     };
 
     // workspaceSlug in the URL is actually the org slug from JWT claims
-    // We need to resolve it to organizationId to query the workspace
-    // Note: orgFromSlug may be undefined if JWT claims are stale (user just created the org)
+    // We need to resolve it to organizationId to query the settings
     const orgFromSlug = workspaceSlug
       ? session.organizations?.find((org) => org.slug === workspaceSlug)
       : undefined;
 
-    // validate the user belongs to the workspace when applicable
+    // validate the user belongs to the organization when applicable
     if (workspaceSlug) {
       // If org not in JWT claims (stale token after creating new org),
       // fetch it directly from Gatekeeper
@@ -54,75 +51,49 @@ export const Route = createFileRoute("/_auth")({
         organizationId = fetchedOrg.id;
       }
 
-      // Get user's org IDs for filtering workspaces
-      const organizationIds = session.organizations?.map((o) => o.id) ?? [];
+      let { settingByOrganizationId } = await queryClient.ensureQueryData({
+        ...settingByOrganizationIdOptions({ organizationId }),
+      });
 
-      let [{ workspaceByOrganizationId }] = await Promise.all([
-        queryClient.ensureQueryData({
-          ...workspaceByOrganizationIdOptions({
-            organizationId,
-            projectSlug,
-          }),
-        }),
-        queryClient.prefetchQuery({
-          ...workspacesOptions({ organizationIds }),
-        }),
-      ]);
-
-      // Auto-provision workspace if it doesn't exist for this organization
-      if (!workspaceByOrganizationId) {
-        await provisionWorkspace({
+      // Auto-provision settings if they don't exist for this organization
+      if (!settingByOrganizationId) {
+        await provisionSettings({
           data: { organizationId },
         });
 
-        // Invalidate and refetch to get workspace with proper shape
+        // Invalidate and refetch to get settings with proper shape
         await queryClient.invalidateQueries({
-          queryKey: workspaceByOrganizationIdOptions({
-            organizationId,
-          }).queryKey,
-        });
-        await queryClient.invalidateQueries({
-          queryKey: workspacesOptions({ organizationIds }).queryKey,
+          queryKey: settingByOrganizationIdOptions({ organizationId }).queryKey,
         });
 
-        // Refetch the workspace with full data
+        // Refetch the settings with full data
         const result = await queryClient.fetchQuery({
-          ...workspaceByOrganizationIdOptions({
-            organizationId,
-            projectSlug,
-          }),
+          ...settingByOrganizationIdOptions({ organizationId }),
         });
-        workspaceByOrganizationId = result.workspaceByOrganizationId;
+        settingByOrganizationId = result.settingByOrganizationId;
       }
 
-      if (!workspaceByOrganizationId) throw notFound();
+      // Settings must exist at this point (auto-provisioned)
+      // But membership is validated via JWT claims - if org not in claims and not fetchable, already threw notFound
 
-      // Membership is now validated via JWT organization claims (IDP)
-      // The user has access if they have the org in their JWT claims or if we fetched it from Gatekeeper
-      // Authorization for specific actions is enforced server-side via PDP (Warden)
-
-      await queryClient.prefetchQuery({
-        ...workspaceOptions({
-          rowId: workspaceByOrganizationId.rowId,
-          userId: session.user.rowId!,
-        }),
-      });
-
-      return { workspaceByOrganizationId, fetchedOrg };
+      return {
+        organizationId,
+        settingByOrganizationId,
+        fetchedOrg,
+        projectSlug,
+      };
     } else {
-      // Get user's org IDs for filtering workspaces
-      const organizationIds = session.organizations?.map((o) => o.id) ?? [];
-
-      await queryClient.ensureQueryData({
-        ...workspacesOptions({ organizationIds }),
-      });
-
-      return { workspaceByOrganizationId: undefined, fetchedOrg: null };
+      return {
+        organizationId: undefined,
+        settingByOrganizationId: undefined,
+        fetchedOrg: null,
+        projectSlug: undefined,
+      };
     }
   },
   loader: async ({ context }) => {
     return {
-      workspaceId: context.workspaceByOrganizationId?.rowId,
+      organizationId: context.organizationId,
       fetchedOrg: context.fetchedOrg,
     };
   },
@@ -161,7 +132,6 @@ function AuthenticatedLayout() {
         </div>
 
         <CreateProjectDialog />
-        <CreateWorkspaceDialog />
       </SidebarProvider>
     </OrganizationProvider>
   );

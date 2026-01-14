@@ -4,7 +4,6 @@ import {
   useLoaderData,
   useNavigate,
   useParams,
-  useRouteContext,
   useSearch,
 } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -17,7 +16,6 @@ import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import BoardItem from "./OverviewBoardItem";
@@ -98,30 +96,21 @@ const Board = ({ projects }: Props) => {
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
-  const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/",
-  });
-
-  const { workspaceId } = useLoaderData({
+  const { organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
   const { search } = useSearch({
     from: "/_auth/workspaces/$workspaceSlug/projects/",
   });
 
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace,
-  });
-
   // Get role from IDP organization claims
-  const role = useCurrentUserRole(workspace?.organizationId);
+  const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
   const maxProjectsReached = useMaxProjectsReached();
 
   const { data: projectColumns } = useSuspenseQuery({
-    ...projectColumnsOptions({ workspaceId: workspaceId!, search }),
+    ...projectColumnsOptions({ organizationId, search }),
     select: (data) => data?.projectColumns?.nodes,
   });
 

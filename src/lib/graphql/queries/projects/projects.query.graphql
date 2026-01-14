@@ -1,6 +1,6 @@
-query Projects($workspaceId: UUID!, $search: String = "", $userId: UUID) {
+query Projects($organizationId: UUID!, $search: String = "", $userId: UUID) {
   projects(
-    condition: { workspaceId: $workspaceId }
+    condition: { organizationId: $organizationId }
     filter: { name: { includesInsensitive: $search } }
     orderBy: COLUMN_INDEX_ASC
   ) {

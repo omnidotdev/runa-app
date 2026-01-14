@@ -6,7 +6,6 @@ import {
   Team,
   WorkspaceBenefits,
   WorkspaceColumnsForm,
-  WorkspaceDangerZone,
   WorkspaceSettingsHeader,
 } from "@/components/workspaces";
 import { BASE_URL } from "@/lib/config/env.config";
@@ -18,24 +17,27 @@ import { getSubscription } from "@/server/functions/subscriptions";
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
 )({
-  loader: async ({ context: { queryClient, workspaceByOrganizationId } }) => {
-    if (!workspaceByOrganizationId) throw notFound();
+  loader: async ({
+    context: { queryClient, settingByOrganizationId, organizationId },
+  }) => {
+    if (!settingByOrganizationId) throw notFound();
 
     const [subscription, prices] = await Promise.all([
       getSubscription({
-        data: { workspaceId: workspaceByOrganizationId.rowId },
+        data: { settingId: settingByOrganizationId.rowId },
       }),
       getPrices(),
       queryClient.ensureQueryData({
         ...projectColumnsOptions({
-          workspaceId: workspaceByOrganizationId.rowId!,
+          organizationId: organizationId!,
         }),
       }),
     ]);
 
     return {
-      workspaceId: workspaceByOrganizationId.rowId,
-      organizationId: workspaceByOrganizationId.organizationId,
+      settingId: settingByOrganizationId.rowId,
+      organizationId,
+      setting: settingByOrganizationId,
       subscription,
       prices,
     };
@@ -66,8 +68,6 @@ function SettingsPage() {
         <WorkspaceColumnsForm />
 
         <WorkspaceBenefits />
-
-        <WorkspaceDangerZone />
       </div>
     </div>
   );

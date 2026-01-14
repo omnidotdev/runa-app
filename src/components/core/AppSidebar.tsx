@@ -1,22 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useNavigate,
-  useParams,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { useLoaderData, useNavigate, useParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Sidebar, SidebarRail, useSidebar } from "@/components/ui/sidebar";
 import {
   useDeleteProjectMutation,
+  useProjectColumnsQuery,
   useProjectsQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
-import projectColumnsOptions from "@/lib/options/projectColumns.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import AppSidebarContent from "./AppSidebarContent";
@@ -27,8 +20,7 @@ import DestructiveActionDialog from "./DestructiveActionDialog";
 import type { ComponentProps } from "react";
 
 const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
-  const { workspaceId } = useLoaderData({ from: "/_auth" });
-  const { session } = useRouteContext({ strict: false });
+  const { organizationId } = useLoaderData({ from: "/_auth" });
   const { workspaceSlug } = useParams({ strict: false });
   const navigate = useNavigate();
   const orgContext = useOrganization();
@@ -37,29 +29,16 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
     name: string;
   }>();
 
-  const { data: workspace } = useQuery({
-    ...workspaceOptions({
-      rowId: workspaceId!,
-      userId: session?.user?.rowId!,
-    }),
-    enabled: !!workspaceId,
-    select: (data) => data.workspace,
-  });
-
   // Resolve organization name from JWT claims
-  const orgName = workspace?.organizationId
-    ? orgContext?.getOrganizationById(workspace.organizationId)?.name
+  const orgName = organizationId
+    ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
       invalidates: [
         getQueryKeyPrefix(useProjectsQuery),
-        workspaceOptions({
-          rowId: workspaceId!,
-          userId: session?.user?.rowId!,
-        }).queryKey,
-        projectColumnsOptions({ workspaceId: workspaceId! }).queryKey,
+        getQueryKeyPrefix(useProjectColumnsQuery),
       ],
     },
   });

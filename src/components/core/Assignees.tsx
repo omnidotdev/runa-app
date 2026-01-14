@@ -1,4 +1,4 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 
 import {
@@ -7,7 +7,6 @@ import {
   AvatarRoot,
 } from "@/components/ui/avatar";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { cn } from "@/lib/utils";
 
 import type { ComponentProps } from "react";
@@ -24,22 +23,16 @@ const Assignees = ({
   maxVisible = 3,
   ...rest
 }: Props) => {
-  const { workspaceId } = useLoaderData({ from: "/_auth" });
+  const { organizationId } = useLoaderData({ from: "/_auth" });
   const { session } = useRouteContext({ from: "/_auth" });
-
-  // Get workspace to find organizationId
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId!, userId: session?.user?.rowId! }),
-    select: (data) => data.workspace,
-  });
 
   // Fetch organization members from IDP
   const { data: membersData } = useQuery({
     ...organizationMembersOptions({
-      organizationId: workspace?.organizationId!,
+      organizationId: organizationId!,
       accessToken: session?.accessToken!,
     }),
-    enabled: !!workspace?.organizationId && !!session?.accessToken,
+    enabled: !!organizationId && !!session?.accessToken,
   });
 
   const members = membersData?.members ?? [];

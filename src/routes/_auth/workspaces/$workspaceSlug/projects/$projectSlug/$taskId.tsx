@@ -41,8 +41,8 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import projectOptions from "@/lib/options/project.options";
+import projectsOptions from "@/lib/options/projects.options";
 import taskOptions from "@/lib/options/task.options";
-import workspaceOptions from "@/lib/options/workspace.options";
 import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
@@ -54,10 +54,21 @@ export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
 )({
   loader: async ({
-    params: { taskId },
-    context: { queryClient, workspaceByOrganizationId },
+    params: { taskId, projectSlug },
+    context: { queryClient, organizationId },
   }) => {
-    if (!workspaceByOrganizationId) {
+    if (!organizationId) {
+      throw notFound();
+    }
+
+    // Fetch projects for this organization
+    const { projects } = await queryClient.ensureQueryData(
+      projectsOptions({ organizationId }),
+    );
+
+    // Find the project matching the slug
+    const project = projects?.nodes?.find((p) => p.slug === projectSlug);
+    if (!project) {
       throw notFound();
     }
 
@@ -70,9 +81,9 @@ export const Route = createFileRoute(
     }
 
     return {
-      workspaceId: workspaceByOrganizationId.rowId,
-      projectId: workspaceByOrganizationId.projects?.nodes?.[0]?.rowId!,
-      projectName: workspaceByOrganizationId.projects.nodes?.[0]?.name!,
+      organizationId,
+      projectId: project.rowId,
+      projectName: project.name,
     };
   },
   head: ({ loaderData, params }) => ({
@@ -90,20 +101,15 @@ export const Route = createFileRoute(
 
 function TaskPage() {
   const navigate = Route.useNavigate();
-  const { projectId, workspaceId } = Route.useLoaderData();
+  const { projectId, organizationId } = Route.useLoaderData();
   const { session } = Route.useRouteContext();
   const { workspaceSlug, projectSlug, taskId } = Route.useParams();
 
   const matches = useViewportSize({ breakpoint: Breakpoint.Large });
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
 
-  const { data: workspace } = useSuspenseQuery({
-    ...workspaceOptions({ rowId: workspaceId, userId: session?.user?.rowId! }),
-    select: (data) => data?.workspace,
-  });
-
   // Get role from IDP organization claims
-  const role = useCurrentUserRole(workspace?.organizationId);
+  const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
   const { data: task } = useSuspenseQuery({
