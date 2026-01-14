@@ -6,33 +6,33 @@ import { BILLING_BASE_URL } from "@/lib/config/env.config";
 import payments from "@/lib/payments";
 import { customerMiddleware } from "@/server/middleware";
 
-const workspaceSchema = z.object({
-  workspaceId: z.guid(),
+const settingSchema = z.object({
+  settingId: z.guid(),
 });
 
 const billingPortalSchema = z.object({
-  workspaceId: z.guid(),
+  settingId: z.guid(),
   returnUrl: z.url(),
 });
 
 const createSubscriptionSchema = z.object({
-  workspaceId: z.guid(),
+  settingId: z.guid(),
   priceId: z.string().startsWith("price_"),
   successUrl: z.url(),
 });
 
 /**
- * Get subscription details for a workspace via billing service.
+ * Get subscription details for a setting via billing service.
  */
 export const getSubscription = createServerFn()
-  .inputValidator((data) => workspaceSchema.parse(data))
+  .inputValidator((data) => settingSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session) return null;
 
     try {
       const response = await fetch(
-        `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}`,
+        `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}`,
         {
           headers: {
             Authorization: `Bearer ${context.session.accessToken}`,
@@ -66,17 +66,17 @@ export const getSubscription = createServerFn()
   });
 
 /**
- * Cancel a subscription for a workspace via billing service.
+ * Cancel a subscription for a setting via billing service.
  * @knipignore
  */
 export const revokeSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => workspaceSchema.parse(data))
+  .inputValidator((data) => settingSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session) throw new Error("Unauthorized");
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}/cancel`,
+      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}/cancel`,
       {
         method: "POST",
         headers: {
@@ -97,7 +97,7 @@ export const revokeSubscription = createServerFn({ method: "POST" })
 /**
  * Get billing portal URL.
  * This creates a Stripe billing portal session through billing service,
- * which looks up the billing account by workspace ID.
+ * which looks up the billing account by setting ID.
  */
 export const getBillingPortalUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => billingPortalSchema.parse(data))
@@ -106,7 +106,7 @@ export const getBillingPortalUrl = createServerFn({ method: "POST" })
     if (!context.session) throw new Error("Unauthorized");
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/workspace/${data.workspaceId}`,
+      `${BILLING_BASE_URL}/billing-portal/workspace/${data.settingId}`,
       {
         method: "POST",
         headers: {
@@ -156,7 +156,7 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
       line_items: [{ price: data.priceId, quantity: 1 }],
       subscription_data: {
         metadata: {
-          workspaceId: data.workspaceId,
+          workspaceId: data.settingId,
           omniProduct: app.name.toLowerCase(),
         },
       },
@@ -169,13 +169,13 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
  * Renew a subscription (remove scheduled cancellation) via billing service.
  */
 export const renewSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => workspaceSchema.parse(data))
+  .inputValidator((data) => settingSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session) throw new Error("Unauthorized");
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.workspaceId}/renew`,
+      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}/renew`,
       {
         method: "POST",
         headers: {
