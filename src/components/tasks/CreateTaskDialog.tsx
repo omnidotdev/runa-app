@@ -1,9 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useNavigate,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
@@ -49,10 +45,6 @@ const CreateTaskDialog = () => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
-  const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
-  });
-
   const titleRef = useRef<HTMLInputElement>(null);
 
   const { data: project } = useSuspenseQuery({
@@ -78,7 +70,7 @@ const CreateTaskDialog = () => {
       enabled: !maxTasksReached,
       description: "Create New Task",
     },
-    [navigate, maxTasksReached],
+    [maxTasksReached],
   );
 
   const totalTasks = project?.columns?.nodes?.flatMap((column) =>
