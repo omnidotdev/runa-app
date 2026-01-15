@@ -1,4 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { all } from "better-all";
 
 import { NotFound } from "@/components/layout";
 import {
@@ -24,25 +25,38 @@ export const Route = createFileRoute(
   }) => {
     if (!organizationId) throw notFound();
 
-    const { projectBySlugAndOrganizationId: project } =
-      await queryClient.ensureQueryData(
-        projectBySlugOptions({ slug: projectSlug, organizationId }),
-      );
-
-    if (!project) throw notFound();
-
-    const projectId = project.rowId;
-    const projectName = project.name;
-
-    await Promise.all([
-      queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
-      queryClient.ensureQueryData(labelsOptions({ projectId })),
-      queryClient.ensureQueryData(columnsOptions({ projectId })),
-    ]);
+    const { project } = await all({
+      async project() {
+        const { projectBySlugAndOrganizationId } =
+          await queryClient.ensureQueryData(
+            projectBySlugOptions({ slug: projectSlug, organizationId }),
+          );
+        if (!projectBySlugAndOrganizationId) throw notFound();
+        return projectBySlugAndOrganizationId;
+      },
+      async projectData() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          projectOptions({ rowId: project.rowId }),
+        );
+      },
+      async labels() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          labelsOptions({ projectId: project.rowId }),
+        );
+      },
+      async columns() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          columnsOptions({ projectId: project.rowId }),
+        );
+      },
+    });
 
     return {
-      name: projectName,
-      projectId,
+      name: project.name,
+      projectId: project.rowId,
       organizationId,
     };
   },

@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
+import { all } from "better-all";
 
 import { DefaultCatchBoundary } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
@@ -54,21 +55,26 @@ const fetchSessionAndMaintenanceMode = createServerFn({
 }).handler(async () => {
   const syncMaintenanceMode = getMaintenanceModeSync();
 
-  if (syncMaintenanceMode !== null) {
-    const { session } = await fetchSession();
-    return { session, isMaintenanceMode: syncMaintenanceMode };
-  }
+  const { session, isMaintenanceMode } = await all({
+    async session() {
+      const { session } = await fetchSession();
+      return session;
+    },
+    async isMaintenanceMode() {
+      // If sync mode available, use it immediately (no dependency on session)
+      if (syncMaintenanceMode !== null) return syncMaintenanceMode;
 
-  const { session } = await fetchSession();
-
-  const gb = await createGrowthBook({
-    userId: session?.user?.id,
-    email: session?.user?.email,
+      // Otherwise, create GrowthBook after session is available
+      const session = await this.$.session;
+      const gb = await createGrowthBook({
+        userId: session?.user?.id,
+        email: session?.user?.email,
+      });
+      const flag = getFlag<boolean>(gb, FLAGS.MAINTENANCE);
+      gb.destroy();
+      return flag;
+    },
   });
-
-  const isMaintenanceMode = getFlag<boolean>(gb, FLAGS.MAINTENANCE);
-
-  gb.destroy();
 
   return { session, isMaintenanceMode };
 });

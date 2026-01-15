@@ -1,5 +1,6 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { all } from "better-all";
 import dayjs from "dayjs";
 import {
   ArrowLeftIcon,
@@ -59,18 +60,23 @@ export const Route = createFileRoute(
   }) => {
     if (!organizationId) throw notFound();
 
-    const [projectResult, taskResult] = await Promise.all([
-      queryClient.ensureQueryData(
-        projectBySlugOptions({ slug: projectSlug, organizationId }),
-      ),
-      queryClient.ensureQueryData(taskOptions({ rowId: taskId })),
-    ]);
-
-    const project = projectResult.projectBySlugAndOrganizationId;
-    const task = taskResult.task;
-
-    if (!project) throw notFound();
-    if (!task) throw notFound();
+    const { project, task } = await all({
+      async project() {
+        const { projectBySlugAndOrganizationId } =
+          await queryClient.ensureQueryData(
+            projectBySlugOptions({ slug: projectSlug, organizationId }),
+          );
+        if (!projectBySlugAndOrganizationId) throw notFound();
+        return projectBySlugAndOrganizationId;
+      },
+      async task() {
+        const { task } = await queryClient.ensureQueryData(
+          taskOptions({ rowId: taskId }),
+        );
+        if (!task) throw notFound();
+        return task;
+      },
+    });
 
     return {
       organizationId,

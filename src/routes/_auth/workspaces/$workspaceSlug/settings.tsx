@@ -1,4 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { all } from "better-all";
 
 import { NotFound } from "@/components/layout";
 import {
@@ -21,26 +22,32 @@ export const Route = createFileRoute(
   loader: async ({ context: { queryClient, organizationId } }) => {
     if (!organizationId) throw notFound();
 
-    const { settingByOrganizationId } = await queryClient.ensureQueryData(
-      settingByOrganizationIdOptions({ organizationId }),
-    );
-
-    if (!settingByOrganizationId) throw notFound();
-
-    const [subscription, prices] = await Promise.all([
-      queryClient.ensureQueryData(
-        subscriptionOptions(settingByOrganizationId.rowId),
-      ),
-      queryClient.ensureQueryData(pricesOptions()),
-      queryClient.ensureQueryData(
-        projectColumnsOptions({ organizationId: organizationId! }),
-      ),
-    ]);
+    const { setting, subscription, prices } = await all({
+      async setting() {
+        const { settingByOrganizationId } = await queryClient.ensureQueryData(
+          settingByOrganizationIdOptions({ organizationId }),
+        );
+        if (!settingByOrganizationId) throw notFound();
+        return settingByOrganizationId;
+      },
+      async prices() {
+        return queryClient.ensureQueryData(pricesOptions());
+      },
+      async projectColumns() {
+        return queryClient.ensureQueryData(
+          projectColumnsOptions({ organizationId: organizationId! }),
+        );
+      },
+      async subscription() {
+        const setting = await this.$.setting;
+        return queryClient.ensureQueryData(subscriptionOptions(setting.rowId));
+      },
+    });
 
     return {
-      settingId: settingByOrganizationId.rowId,
+      settingId: setting.rowId,
       organizationId,
-      setting: settingByOrganizationId,
+      setting,
       subscription,
       prices,
     };
