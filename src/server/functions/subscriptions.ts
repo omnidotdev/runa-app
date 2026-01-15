@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import app from "@/lib/config/app.config";
-import { BILLING_BASE_URL } from "@/lib/config/env.config";
 import payments from "@/lib/payments";
 import { customerMiddleware } from "@/server/middleware";
 
@@ -32,7 +31,7 @@ export const getSubscription = createServerFn()
 
     try {
       const response = await fetch(
-        `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}`,
+        `${process.env.BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}`,
         {
           headers: {
             Authorization: `Bearer ${context.session.accessToken}`,
@@ -76,7 +75,7 @@ export const revokeSubscription = createServerFn({ method: "POST" })
     if (!context.session) throw new Error("Unauthorized");
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}/cancel`,
+      `${process.env.BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}/cancel`,
       {
         method: "POST",
         headers: {
@@ -106,7 +105,7 @@ export const getBillingPortalUrl = createServerFn({ method: "POST" })
     if (!context.session) throw new Error("Unauthorized");
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/workspace/${data.settingId}`,
+      `${process.env.BILLING_BASE_URL}/billing-portal/workspace/${data.settingId}`,
       {
         method: "POST",
         headers: {
@@ -175,7 +174,7 @@ export const renewSubscription = createServerFn({ method: "POST" })
     if (!context.session) throw new Error("Unauthorized");
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}/renew`,
+      `${process.env.BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}/renew`,
       {
         method: "POST",
         headers: {
