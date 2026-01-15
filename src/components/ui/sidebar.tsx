@@ -224,7 +224,7 @@ const Sidebar = ({
 
   return (
     <div
-      // initial hidden for small viewports to wait for hydration so the `isMobile` check is not null
+      // initially hidden for small viewports in order to wait for hydration on `isMobile`
       className="group peer hidden text-sidebar-foreground md:block"
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
