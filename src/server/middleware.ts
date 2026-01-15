@@ -8,9 +8,6 @@ export const authMiddleware = createMiddleware().server(async ({ next }) => {
 
   if (!session) throw new Error("Unauthorized");
 
-  // biome-ignore lint: debugging
-  console.log(session);
-
   return next({ context: { session } });
 });
 
