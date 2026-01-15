@@ -5,6 +5,7 @@ import {
   useParams,
   useRouteContext,
 } from "@tanstack/react-router";
+import { all } from "better-all";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
@@ -130,28 +131,36 @@ const CreateProjectDialog = () => {
       ],
     },
     onSuccess: async ({ createProject }) => {
-      await Promise.all([
-        ...DEFAULT_COLUMNS.map((column) =>
-          createColumn({
+      const projectId = createProject?.project?.rowId!;
+
+      await all({
+        async columns() {
+          return Promise.all(
+            DEFAULT_COLUMNS.map((column) =>
+              createColumn({
+                input: {
+                  column: {
+                    title: column.title,
+                    index: column.index,
+                    projectId,
+                    emoji: column.emoji,
+                  },
+                },
+              }),
+            ),
+          );
+        },
+        async userPreference() {
+          return createUserPreference({
             input: {
-              column: {
-                title: column.title,
-                index: column.index,
-                projectId: createProject?.project?.rowId!,
-                emoji: column.emoji,
+              userPreference: {
+                projectId,
+                userId: session?.user?.rowId!,
               },
             },
-          }),
-        ),
-        createUserPreference({
-          input: {
-            userPreference: {
-              projectId: createProject?.project?.rowId!,
-              userId: session?.user?.rowId!,
-            },
-          },
-        }),
-      ]);
+          });
+        },
+      });
 
       navigate({
         to: "/workspaces/$workspaceSlug/projects/$projectSlug",
@@ -209,23 +218,27 @@ const CreateProjectDialog = () => {
 
           // If no project columns exist, create default ones first
           if (!projectColumnId) {
-            const results = await Promise.all(
-              DEFAULT_PROJECT_COLUMNS.map((col) =>
-                createProjectColumn({
-                  input: {
-                    projectColumn: {
-                      organizationId: organizationId!,
-                      title: col.title,
-                      index: col.index,
-                      emoji: col.emoji,
-                    },
-                  },
-                }),
-              ),
-            );
+            const { columns } = await all({
+              async columns() {
+                return Promise.all(
+                  DEFAULT_PROJECT_COLUMNS.map((col) =>
+                    createProjectColumn({
+                      input: {
+                        projectColumn: {
+                          organizationId: organizationId!,
+                          title: col.title,
+                          index: col.index,
+                          emoji: col.emoji,
+                        },
+                      },
+                    }),
+                  ),
+                );
+              },
+            });
             // Use the first column (Planned) as the default
             projectColumnId =
-              results[0]?.createProjectColumn?.projectColumn?.rowId;
+              columns[0]?.createProjectColumn?.projectColumn?.rowId;
           }
 
           if (!projectColumnId) {

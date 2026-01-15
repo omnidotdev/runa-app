@@ -1,0 +1,27 @@
+query ProjectBySlug($slug: String!, $organizationId: UUID!) {
+  projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
+    ...Project
+    labels {
+      nodes {
+        name
+        color
+        rowId
+      }
+    }
+    orderedColumns: columns(orderBy: INDEX_ASC) {
+      nodes {
+        rowId
+        index
+        title
+        emoji
+        tasks {
+          totalCount
+          nodes {
+            rowId
+            createdAt
+          }
+        }
+      }
+    }
+  }
+}

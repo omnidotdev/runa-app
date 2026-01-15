@@ -9,11 +9,17 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
+import { all } from "better-all";
 
 import { DefaultCatchBoundary } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
-import { FLAGS, createGrowthBook, getFlag } from "@/lib/flags";
+import {
+  FLAGS,
+  createGrowthBook,
+  getFlag,
+  getMaintenanceModeSync,
+} from "@/lib/flags";
 import appCss from "@/lib/styles/globals.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import ThemeProvider from "@/providers/ThemeProvider";
@@ -44,22 +50,34 @@ interface ExtendedSession extends Omit<Session, "user"> {
 
 // TODO add test suite
 
-const fetchMaintenanceMode = createServerFn({ method: "GET" }).handler(
-  async () => {
-    const { session } = await fetchSession();
+const fetchSessionAndMaintenanceMode = createServerFn({
+  method: "GET",
+}).handler(async () => {
+  const syncMaintenanceMode = getMaintenanceModeSync();
 
-    const gb = await createGrowthBook({
-      userId: session?.user?.id,
-      email: session?.user?.email,
-    });
+  const { session, isMaintenanceMode } = await all({
+    async session() {
+      const { session } = await fetchSession();
+      return session;
+    },
+    async isMaintenanceMode() {
+      // If sync mode available, use it immediately (no dependency on session)
+      if (syncMaintenanceMode !== null) return syncMaintenanceMode;
 
-    const isMaintenanceMode = getFlag<boolean>(gb, FLAGS.MAINTENANCE);
+      // Otherwise, create GrowthBook after session is available
+      const session = await this.$.session;
+      const gb = await createGrowthBook({
+        userId: session?.user?.id,
+        email: session?.user?.email,
+      });
+      const flag = getFlag<boolean>(gb, FLAGS.MAINTENANCE);
+      gb.destroy();
+      return flag;
+    },
+  });
 
-    gb.destroy();
-
-    return { isMaintenanceMode };
-  },
-);
+  return { session, isMaintenanceMode };
+});
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -67,12 +85,11 @@ export const Route = createRootRouteWithContext<{
   isMaintenanceMode: boolean;
 }>()({
   beforeLoad: async () => {
-    const { isMaintenanceMode } = await fetchMaintenanceMode();
+    const { session, isMaintenanceMode } =
+      await fetchSessionAndMaintenanceMode();
 
     // Skip auth when maintenance page is shown
     if (isMaintenanceMode) return { session: null, isMaintenanceMode };
-
-    const { session } = await fetchSession();
 
     return { session, isMaintenanceMode };
   },

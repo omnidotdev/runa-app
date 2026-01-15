@@ -4,6 +4,8 @@ mutation CreateSetting($input: CreateSettingInput!) {
       rowId
       organizationId
       viewMode
+      subscriptionId
+      billingAccountId
     }
   }
 }

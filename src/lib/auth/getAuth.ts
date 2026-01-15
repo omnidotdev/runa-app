@@ -1,3 +1,4 @@
+import { all } from "better-all";
 import { GraphQLClient } from "graphql-request";
 import * as jose from "jose";
 import ms from "ms";
@@ -104,10 +105,14 @@ export async function getAuth(request: Request) {
 
       // extract claims from the ID token
       if (tokenResult?.idToken) {
-        const [discovery, jwks] = await Promise.all([
-          getOidcDiscovery(),
-          getJwks(),
-        ]);
+        const { discovery, jwks } = await all({
+          async discovery() {
+            return getOidcDiscovery();
+          },
+          async jwks() {
+            return getJwks();
+          },
+        });
         const { payload } = await jose.jwtVerify(tokenResult.idToken, jwks, {
           issuer: discovery.issuer,
         });

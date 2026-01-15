@@ -1,10 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useNavigate,
-  useRouteContext,
-  useSearch,
-} from "@tanstack/react-router";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { all } from "better-all";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
@@ -29,6 +25,7 @@ import {
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
@@ -49,14 +46,6 @@ const CreateTaskDialog = () => {
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
-  const { createTask } = useSearch({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
-  });
-
-  const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
-  });
-
   const titleRef = useRef<HTMLInputElement>(null);
 
   const { data: project } = useSuspenseQuery({
@@ -70,20 +59,19 @@ const CreateTaskDialog = () => {
 
   const maxTasksReached = useMaxTasksReached();
 
+  const { isOpen: isCreateTaskOpen, setIsOpen: setIsCreateTaskOpen } =
+    useDialogStore({
+      type: DialogType.CreateTask,
+    });
+
   useHotkeys(
     Hotkeys.CreateTask,
-    () =>
-      navigate({
-        search: (prev) => ({
-          ...prev,
-          createTask: !createTask,
-        }),
-      }),
+    () => setIsCreateTaskOpen(true),
     {
       enabled: !maxTasksReached,
       description: "Create New Task",
     },
-    [navigate, createTask, maxTasksReached],
+    [maxTasksReached],
   );
 
   const totalTasks = project?.columns?.nodes?.flatMap((column) =>
@@ -117,80 +105,87 @@ const CreateTaskDialog = () => {
     onSubmit: async ({ value, formApi }) => {
       const createTaskOperation = async () => {
         const allTaskLabels = value.labels.filter((l) => l.checked);
-
-        const newLabels = value.labels.filter((l) => l.rowId === "pending");
-
-        const data = await Promise.all(
-          newLabels.map((label) =>
-            updateProjectLabel({
-              input: {
-                label: {
-                  name: label.name,
-                  color: label.color,
-                  projectId,
-                },
-              },
-            }),
-          ),
-        );
-
-        const newlyAddedLabels = data.map(
-          (mutation) => mutation.createLabel?.label!,
-        );
-        const restOfTaskLabels = allTaskLabels.filter(
+        const pendingLabels = value.labels.filter((l) => l.rowId === "pending");
+        const existingTaskLabels = allTaskLabels.filter(
           (label) => label.rowId !== "pending",
         );
 
-        const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
-
-        const [{ createTask }] = await Promise.all([
-          addNewTask({
-            input: {
-              task: {
-                content: value.title,
-                description: value.description,
-                projectId,
-                columnId: value.columnId,
-                authorId: session?.user?.rowId!,
-                dueDate: value.dueDate.length
-                  ? new Date(value.dueDate)
-                  : undefined,
-                priority: value.priority,
-                columnIndex: totalTasks ?? 0,
-              },
-            },
-          }),
-        ]);
-
-        const taskId = createTask?.task?.rowId!;
-
-        await Promise.all(
-          newTaskLabels.map((label) =>
-            createTaskLabel({
-              input: {
-                taskLabel: {
-                  labelId: label.rowId,
-                  taskId,
-                },
-              },
-            }),
-          ),
-        );
-
-        if (createTask && value.assignees.length) {
-          await Promise.all(
-            value.assignees.map((assignee) =>
-              addNewAssignee({
-                input: {
-                  assignee: {
-                    userId: assignee,
-                    taskId: createTask.task?.rowId!,
+        await all({
+          async newLabels() {
+            return Promise.all(
+              pendingLabels.map((label) =>
+                updateProjectLabel({
+                  input: {
+                    label: {
+                      name: label.name,
+                      color: label.color,
+                      projectId,
+                    },
                   },
+                }),
+              ),
+            );
+          },
+          async task() {
+            return addNewTask({
+              input: {
+                task: {
+                  content: value.title,
+                  description: value.description,
+                  projectId,
+                  columnId: value.columnId,
+                  authorId: session?.user?.rowId!,
+                  dueDate: value.dueDate.length
+                    ? new Date(value.dueDate)
+                    : undefined,
+                  priority: value.priority,
+                  columnIndex: totalTasks ?? 0,
                 },
-              }),
-            ),
-          );
-        }
+              },
+            });
+          },
+          async taskLabels() {
+            const [newLabels, task] = await Promise.all([
+              this.$.newLabels,
+              this.$.task,
+            ]);
+            const newlyAddedLabels = newLabels.map(
+              (mutation) => mutation.createLabel?.label!,
+            );
+            const allLabels = [...existingTaskLabels, ...newlyAddedLabels];
+            const taskId = task.createTask?.task?.rowId!;
+
+            return Promise.all(
+              allLabels.map((label) =>
+                createTaskLabel({
+                  input: {
+                    taskLabel: {
+                      labelId: label.rowId,
+                      taskId,
+                    },
+                  },
+                }),
+              ),
+            );
+          },
+          async assignees() {
+            const task = await this.$.task;
+            if (!task.createTask || !value.assignees.length) return;
+
+            return Promise.all(
+              value.assignees.map((assignee) =>
+                addNewAssignee({
+                  input: {
+                    assignee: {
+                      userId: assignee,
+                      taskId: task.createTask?.task?.rowId!,
+                    },
+                  },
+                }),
+              ),
+            );
+          },
+        });
 
         queryClient.invalidateQueries({
           queryKey: getQueryKeyPrefix(useTasksQuery),
@@ -209,12 +204,7 @@ const CreateTaskDialog = () => {
       formApi.reset();
       setTimeout(() => setColumnId(null), 350);
 
-      navigate({
-        search: (prev) => ({
-          ...prev,
-          createTask: false,
-        }),
-      });
+      setIsCreateTaskOpen(false);
     },
   });
 
@@ -222,15 +212,9 @@ const CreateTaskDialog = () => {
 
   return (
     <DialogRoot
-      open={createTask}
+      open={isCreateTaskOpen}
       onOpenChange={({ open }) => {
-        navigate({
-          search: (prev) => ({
-            ...prev,
-            createTask: open,
-          }),
-        });
-
+        setIsCreateTaskOpen(open);
         form.reset();
 
         if (!open) {

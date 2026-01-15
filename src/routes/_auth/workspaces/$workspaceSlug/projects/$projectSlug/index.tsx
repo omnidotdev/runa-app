@@ -6,6 +6,7 @@ import {
   stripSearchParams,
 } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
+import { all } from "better-all";
 import {
   Grid2X2Icon,
   ListIcon,
@@ -48,7 +49,7 @@ import getSdk from "@/lib/graphql/getSdk";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import projectOptions from "@/lib/options/project.options";
-import projectsOptions from "@/lib/options/projects.options";
+import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
@@ -67,7 +68,6 @@ const projectSearchParamsSchema = z.object({
   assignees: z.array(z.guid()).default([]),
   labels: z.array(z.guid()).default([]),
   priorities: z.array(z.enum(["low", "medium", "high"])).default([]),
-  createTask: z.boolean().default(false),
 });
 
 export const Route = createFileRoute(
@@ -88,54 +88,53 @@ export const Route = createFileRoute(
     params: { projectSlug },
     context: { session, queryClient, organizationId },
   }) => {
-    if (!organizationId) {
-      throw notFound();
-    }
+    if (!organizationId) throw notFound();
 
-    // Fetch projects for this organization
-    const { projects } = await queryClient.ensureQueryData(
-      projectsOptions({ organizationId }),
-    );
-
-    // Find the project matching the slug
-    const project = projects?.nodes?.find((p) => p.slug === projectSlug);
-    if (!project) {
-      throw notFound();
-    }
-
-    const projectId = project.rowId;
-    const projectName = project.name;
-
-    await Promise.all([
-      queryClient.ensureQueryData(
-        projectOptions({
-          rowId: projectId,
-        }),
-      ),
-      queryClient.ensureQueryData(
-        userPreferencesOptions({
-          userId: session?.user.rowId!,
-          projectId,
-        }),
-      ),
-      queryClient.ensureQueryData(
-        tasksOptions({
-          projectId,
-          search,
-          assignees: assignees.length
-            ? { some: { user: { rowId: { in: assignees } } } }
-            : undefined,
-          labels: labels.length
-            ? { some: { label: { rowId: { in: labels } } } }
-            : undefined,
-          priorities: priorities.length ? priorities : undefined,
-        }),
-      ),
-    ]);
+    const { project } = await all({
+      async project() {
+        const { projectBySlugAndOrganizationId } =
+          await queryClient.ensureQueryData(
+            projectBySlugOptions({ slug: projectSlug, organizationId }),
+          );
+        if (!projectBySlugAndOrganizationId) throw notFound();
+        return projectBySlugAndOrganizationId;
+      },
+      async projectData() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          projectOptions({ rowId: project.rowId }),
+        );
+      },
+      async userPreferences() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          userPreferencesOptions({
+            userId: session?.user.rowId!,
+            projectId: project.rowId,
+          }),
+        );
+      },
+      async tasks() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          tasksOptions({
+            projectId: project.rowId,
+            search,
+            assignees: assignees.length
+              ? { some: { user: { rowId: { in: assignees } } } }
+              : undefined,
+            labels: labels.length
+              ? { some: { label: { rowId: { in: labels } } } }
+              : undefined,
+            priorities: priorities.length ? priorities : undefined,
+          }),
+        );
+      },
+    });
 
     return {
-      name: projectName,
-      projectId,
+      name: project.name,
+      projectId: project.rowId,
       organizationId,
     };
   },
@@ -147,7 +146,6 @@ export const Route = createFileRoute(
         assignees: [],
         labels: [],
         priorities: [],
-        createTask: false,
       }),
     ],
   },
@@ -427,16 +425,20 @@ function ProjectPage() {
         });
 
         // Persist to server
-        await Promise.all(
-          reorderedColumnTasks.filter(Boolean).map((task, index) =>
-            updateTask({
-              rowId: task.rowId,
-              patch: {
-                columnIndex: index,
-              },
-            }),
-          ),
-        );
+        await all({
+          async reorder() {
+            return Promise.all(
+              reorderedColumnTasks.filter(Boolean).map((task, index) =>
+                updateTask({
+                  rowId: task.rowId,
+                  patch: {
+                    columnIndex: index,
+                  },
+                }),
+              ),
+            );
+          },
+        });
       } else {
         // Cross-column move
         const sourceColumnTasksExcludingMovedTask = currentTasks.filter(
@@ -479,28 +481,36 @@ function ProjectPage() {
         });
 
         // Persist to server
-        await Promise.all([
-          ...sourceColumnTasksExcludingMovedTask.map((task, index) =>
-            updateTask({
-              rowId: task.rowId,
-              patch: {
-                columnIndex: index,
-              },
-            }),
-          ),
-          ...tasksWithMovedInDestination.map((task, index) =>
-            updateTask({
-              rowId: task.rowId,
-              patch: {
-                columnIndex: index,
-                columnId:
-                  task.rowId === currentTask.rowId
-                    ? destination.droppableId
-                    : task.columnId,
-              },
-            }),
-          ),
-        ]);
+        await all({
+          async updateSourceColumn() {
+            return Promise.all(
+              sourceColumnTasksExcludingMovedTask.map((task, index) =>
+                updateTask({
+                  rowId: task.rowId,
+                  patch: {
+                    columnIndex: index,
+                  },
+                }),
+              ),
+            );
+          },
+          async updateDestinationColumn() {
+            return Promise.all(
+              tasksWithMovedInDestination.map((task, index) =>
+                updateTask({
+                  rowId: task.rowId,
+                  patch: {
+                    columnIndex: index,
+                    columnId:
+                      task.rowId === currentTask.rowId
+                        ? destination.droppableId
+                        : task.columnId,
+                  },
+                }),
+              ),
+            );
+          },
+        });
       }
 
       setDraggableId(null);

@@ -86,6 +86,9 @@ const Projects = () => {
     }),
     { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({
       type: DialogType.DeleteProject,
+    }),
+    { setIsOpen: setIsCreateTaskOpen } = useDialogStore({
+      type: DialogType.CreateTask,
     });
 
   return (
@@ -224,10 +227,8 @@ const Projects = () => {
                                   workspaceSlug,
                                   projectSlug: project.slug,
                                 },
-                                search: {
-                                  createTask: true,
-                                },
                               });
+                              setIsCreateTaskOpen(true);
                             }}
                           >
                             <PlusIcon />

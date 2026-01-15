@@ -145,7 +145,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
                   ) : (
                     <AvatarRoot
                       aria-label="No Assignees"
-                      className="mr-2 size-5.5"
+                      className="mr-0.5 size-5.5"
                     >
                       <AvatarFallback className="border border-border border-dashed bg-transparent p-1 text-muted-foreground">
                         <UserIcon />

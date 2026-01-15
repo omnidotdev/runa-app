@@ -1,5 +1,6 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { all } from "better-all";
 import dayjs from "dayjs";
 import {
   ArrowLeftIcon,
@@ -41,7 +42,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import projectOptions from "@/lib/options/project.options";
-import projectsOptions from "@/lib/options/projects.options";
+import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import taskOptions from "@/lib/options/task.options";
 import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -57,28 +58,25 @@ export const Route = createFileRoute(
     params: { taskId, projectSlug },
     context: { queryClient, organizationId },
   }) => {
-    if (!organizationId) {
-      throw notFound();
-    }
+    if (!organizationId) throw notFound();
 
-    // Fetch projects for this organization
-    const { projects } = await queryClient.ensureQueryData(
-      projectsOptions({ organizationId }),
-    );
-
-    // Find the project matching the slug
-    const project = projects?.nodes?.find((p) => p.slug === projectSlug);
-    if (!project) {
-      throw notFound();
-    }
-
-    const { task } = await queryClient.ensureQueryData(
-      taskOptions({ rowId: taskId }),
-    );
-
-    if (!task) {
-      throw notFound();
-    }
+    const { project, task } = await all({
+      async project() {
+        const { projectBySlugAndOrganizationId } =
+          await queryClient.ensureQueryData(
+            projectBySlugOptions({ slug: projectSlug, organizationId }),
+          );
+        if (!projectBySlugAndOrganizationId) throw notFound();
+        return projectBySlugAndOrganizationId;
+      },
+      async task() {
+        const { task } = await queryClient.ensureQueryData(
+          taskOptions({ rowId: taskId }),
+        );
+        if (!task) throw notFound();
+        return task;
+      },
+    });
 
     return {
       organizationId,

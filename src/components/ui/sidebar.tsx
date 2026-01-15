@@ -179,17 +179,6 @@ const Sidebar = ({
   const { isMobile, state, openMobile, setOpenMobile, isDraggingRail } =
     useSidebar();
 
-  // On mobile, don't render until hydration completes to keep drawer UX snappy.
-  // On desktop, render a collapsed-size placeholder to prevent layout shift.
-  if (isMobile === null) {
-    return (
-      <div
-        data-slot="sidebar-placeholder"
-        className="hidden w-[calc(var(--sidebar-width-icon)+(--spacing(4)))] shrink-0 md:block"
-      />
-    );
-  }
-
   if (collapsible === "none") {
     return (
       <div
@@ -235,7 +224,8 @@ const Sidebar = ({
 
   return (
     <div
-      className="group peer block text-sidebar-foreground"
+      // initially hidden for small viewports in order to wait for hydration on `isMobile`
+      className="group peer hidden text-sidebar-foreground md:block"
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}

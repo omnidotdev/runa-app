@@ -1,5 +1,5 @@
 import { Format } from "@ark-ui/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getRouteApi, useRouter } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { AlertTriangleIcon } from "lucide-react";
@@ -34,6 +34,7 @@ const routeApi = getRouteApi("/_auth/workspaces/$workspaceSlug/settings");
 export default function WorkspaceBenefits() {
   const { settingId, organizationId, subscription, prices } =
     routeApi.useLoaderData();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const navigate = routeApi.useNavigate();
   const { workspaceSlug } = routeApi.useParams();
@@ -73,7 +74,12 @@ export default function WorkspaceBenefits() {
       await renewSubscription({
         data: { settingId: settingId },
       }),
-    onSuccess: () => router.invalidate(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["stripe", "subscription", settingId],
+      });
+      router.invalidate();
+    },
   });
 
   return (

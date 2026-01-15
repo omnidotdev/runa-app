@@ -1,4 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { all } from "better-all";
 
 import { NotFound } from "@/components/layout";
 import {
@@ -9,35 +10,44 @@ import {
   WorkspaceSettingsHeader,
 } from "@/components/workspaces";
 import { BASE_URL } from "@/lib/config/env.config";
+import pricesOptions from "@/lib/options/prices.options";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
+import subscriptionOptions from "@/lib/options/subscription.options";
 import createMetaTags from "@/lib/util/createMetaTags";
-import { getPrices } from "@/server/functions/prices";
-import { getSubscription } from "@/server/functions/subscriptions";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/settings",
 )({
-  loader: async ({
-    context: { queryClient, settingByOrganizationId, organizationId },
-  }) => {
-    if (!settingByOrganizationId) throw notFound();
+  loader: async ({ context: { queryClient, organizationId } }) => {
+    if (!organizationId) throw notFound();
 
-    const [subscription, prices] = await Promise.all([
-      getSubscription({
-        data: { settingId: settingByOrganizationId.rowId },
-      }),
-      getPrices(),
-      queryClient.ensureQueryData({
-        ...projectColumnsOptions({
-          organizationId: organizationId!,
-        }),
-      }),
-    ]);
+    const { setting, subscription, prices } = await all({
+      async setting() {
+        const { settingByOrganizationId } = await queryClient.ensureQueryData(
+          settingByOrganizationIdOptions({ organizationId }),
+        );
+        if (!settingByOrganizationId) throw notFound();
+        return settingByOrganizationId;
+      },
+      async prices() {
+        return queryClient.ensureQueryData(pricesOptions());
+      },
+      async projectColumns() {
+        return queryClient.ensureQueryData(
+          projectColumnsOptions({ organizationId: organizationId! }),
+        );
+      },
+      async subscription() {
+        const setting = await this.$.setting;
+        return queryClient.ensureQueryData(subscriptionOptions(setting.rowId));
+      },
+    });
 
     return {
-      settingId: settingByOrganizationId.rowId,
+      settingId: setting.rowId,
       organizationId,
-      setting: settingByOrganizationId,
+      setting,
       subscription,
       prices,
     };

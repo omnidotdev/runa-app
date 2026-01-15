@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
+import { all } from "better-all";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
@@ -81,32 +82,10 @@ const UpdateTaskLabelsDialog = () => {
     },
     onSubmit: async ({ value, formApi }) => {
       const allTaskLabels = value.labels.filter((l) => l.checked);
-
-      const newLabels = value.labels.filter((l) => l.rowId === "pending");
-
-      // Add all new labels to project labels
-      const data = await Promise.all(
-        newLabels.map((label) =>
-          updateProjectLabel({
-            input: {
-              label: {
-                name: label.name,
-                color: label.color,
-                projectId: project?.rowId!,
-              },
-            },
-          }),
-        ),
-      );
-
-      const newlyAddedLabels = data.map(
-        (mutation) => mutation.createLabel?.label!,
-      );
-      const restOfTaskLabels = allTaskLabels.filter(
+      const pendingLabels = value.labels.filter((l) => l.rowId === "pending");
+      const existingTaskLabels = allTaskLabels.filter(
         (label) => label.rowId !== "pending",
       );
-
-      const newTaskLabels = [...restOfTaskLabels, ...newlyAddedLabels];
 
       const currentTaskLabels =
         task?.taskLabels?.nodes?.map((l) => ({
@@ -114,22 +93,50 @@ const UpdateTaskLabelsDialog = () => {
           labelId: l.labelId,
         })) ?? [];
 
-      // delete all current labels and add all checked task labels. This is to provide ease of functionality rather than needing to compare on each current label to see if it is still valid.
-      await Promise.all([
-        ...currentTaskLabels.map(({ taskId, labelId }) =>
-          deleteTaskLabel({ taskId, labelId }),
-        ),
-        ...newTaskLabels.map((label) =>
-          createTaskLabel({
-            input: {
-              taskLabel: {
-                labelId: label.rowId,
-                taskId: taskId!,
-              },
-            },
-          }),
-        ),
-      ]);
+      await all({
+        async newLabels() {
+          return Promise.all(
+            pendingLabels.map((label) =>
+              updateProjectLabel({
+                input: {
+                  label: {
+                    name: label.name,
+                    color: label.color,
+                    projectId: project?.rowId!,
+                  },
+                },
+              }),
+            ),
+          );
+        },
+        async deleteCurrentLabels() {
+          return Promise.all(
+            currentTaskLabels.map(({ taskId, labelId }) =>
+              deleteTaskLabel({ taskId, labelId }),
+            ),
+          );
+        },
+        async createTaskLabels() {
+          const newLabels = await this.$.newLabels;
+          const newlyAddedLabels = newLabels.map(
+            (mutation) => mutation.createLabel?.label!,
+          );
+          const allLabels = [...existingTaskLabels, ...newlyAddedLabels];
+
+          return Promise.all(
+            allLabels.map((label) =>
+              createTaskLabel({
+                input: {
+                  taskLabel: {
+                    labelId: label.rowId,
+                    taskId: taskId!,
+                  },
+                },
+              }),
+            ),
+          );
+        },
+      });
 
       queryClient.invalidateQueries({ queryKey: taskQueryKey });
       queryClient.invalidateQueries({
