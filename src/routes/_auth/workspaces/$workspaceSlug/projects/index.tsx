@@ -6,6 +6,7 @@ import {
   stripSearchParams,
 } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
+import { all } from "better-all";
 import {
   ColumnsIcon,
   Grid2X2Icon,
@@ -64,25 +65,27 @@ export const Route = createFileRoute(
     deps: { search },
     context: { queryClient, organizationId, session },
   }) => {
-    if (!organizationId) {
-      throw notFound();
-    }
+    if (!organizationId) throw notFound();
 
-    await Promise.all([
-      queryClient.ensureQueryData(
-        projectsOptions({
-          organizationId,
-          search,
-          userId: session?.user?.rowId,
-        }),
-      ),
-      queryClient.ensureQueryData(
-        projectColumnsOptions({
-          organizationId,
-          search,
-        }),
-      ),
-    ]);
+    await all({
+      async projects() {
+        return queryClient.ensureQueryData(
+          projectsOptions({
+            organizationId,
+            search,
+            userId: session?.user?.rowId,
+          }),
+        );
+      },
+      async projectColumns() {
+        return queryClient.ensureQueryData(
+          projectColumnsOptions({
+            organizationId,
+            search,
+          }),
+        );
+      },
+    });
 
     return { organizationId };
   },
@@ -264,16 +267,20 @@ function ProjectsOverviewPage() {
         });
 
         // Persist to server
-        await Promise.all(
-          reorderedColumnProjects.map((project, index) =>
-            updateProject({
-              rowId: project.rowId,
-              patch: {
-                columnIndex: index,
-              },
-            }),
-          ),
-        );
+        await all({
+          async reorder() {
+            return Promise.all(
+              reorderedColumnProjects.map((project, index) =>
+                updateProject({
+                  rowId: project.rowId,
+                  patch: {
+                    columnIndex: index,
+                  },
+                }),
+              ),
+            );
+          },
+        });
       } else {
         // Cross-column move
         const sourceColumnProjectsExcludingMovedProject =
@@ -324,28 +331,36 @@ function ProjectsOverviewPage() {
         });
 
         // Persist to server
-        await Promise.all([
-          ...sourceColumnProjectsExcludingMovedProject.map((project, index) =>
-            updateProject({
-              rowId: project.rowId,
-              patch: {
-                columnIndex: index,
-              },
-            }),
-          ),
-          ...projectsWithMovedInDestination.map((project, index) =>
-            updateProject({
-              rowId: project.rowId,
-              patch: {
-                columnIndex: index,
-                projectColumnId:
-                  project.rowId === currentProject.rowId
-                    ? destination.droppableId
-                    : project.projectColumnId,
-              },
-            }),
-          ),
-        ]);
+        await all({
+          async updateSourceColumn() {
+            return Promise.all(
+              sourceColumnProjectsExcludingMovedProject.map((project, index) =>
+                updateProject({
+                  rowId: project.rowId,
+                  patch: {
+                    columnIndex: index,
+                  },
+                }),
+              ),
+            );
+          },
+          async updateDestinationColumn() {
+            return Promise.all(
+              projectsWithMovedInDestination.map((project, index) =>
+                updateProject({
+                  rowId: project.rowId,
+                  patch: {
+                    columnIndex: index,
+                    projectColumnId:
+                      project.rowId === currentProject.rowId
+                        ? destination.droppableId
+                        : project.projectColumnId,
+                  },
+                }),
+              ),
+            );
+          },
+        });
       }
 
       setDraggableId(null);

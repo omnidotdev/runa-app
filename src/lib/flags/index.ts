@@ -5,7 +5,7 @@ import {
   FLAGS_CLIENT_KEY,
   isProdEnv,
 } from "@/lib/config/env.config";
-import { defaultFlags } from "./defaults";
+import { FLAGS, defaultFlags } from "./defaults";
 
 import type { FlagConfig } from "./defaults";
 
@@ -13,6 +13,18 @@ export interface FlagContext {
   userId?: string;
   email?: string;
   [key: string]: string | undefined;
+}
+
+export function getMaintenanceModeSync(): boolean | null {
+  if (!isProdEnv || !FLAGS_API_HOST || !FLAGS_CLIENT_KEY) {
+    const flagConfig = defaultFlags[FLAGS.MAINTENANCE] as
+      | FlagConfig
+      | undefined;
+    return flagConfig
+      ? (flagConfig.variants[flagConfig.defaultVariant] as boolean)
+      : false;
+  }
+  return null;
 }
 
 /**

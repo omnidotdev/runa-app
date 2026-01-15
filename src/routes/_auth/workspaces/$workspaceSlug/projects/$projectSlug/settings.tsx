@@ -1,4 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { all } from "better-all";
 
 import { NotFound } from "@/components/layout";
 import {
@@ -12,7 +13,7 @@ import { BASE_URL } from "@/lib/config/env.config";
 import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
-import projectsOptions from "@/lib/options/projects.options";
+import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
@@ -22,33 +23,40 @@ export const Route = createFileRoute(
     params: { projectSlug },
     context: { queryClient, organizationId },
   }) => {
-    if (!organizationId) {
-      throw notFound();
-    }
+    if (!organizationId) throw notFound();
 
-    // Fetch projects for this organization
-    const { projects } = await queryClient.ensureQueryData(
-      projectsOptions({ organizationId }),
-    );
-
-    // Find the project matching the slug
-    const project = projects?.nodes?.find((p) => p.slug === projectSlug);
-    if (!project) {
-      throw notFound();
-    }
-
-    const projectId = project.rowId;
-    const projectName = project.name;
-
-    await Promise.all([
-      queryClient.ensureQueryData(projectOptions({ rowId: projectId })),
-      queryClient.ensureQueryData(labelsOptions({ projectId })),
-      queryClient.ensureQueryData(columnsOptions({ projectId })),
-    ]);
+    const { project } = await all({
+      async project() {
+        const { projectBySlugAndOrganizationId } =
+          await queryClient.ensureQueryData(
+            projectBySlugOptions({ slug: projectSlug, organizationId }),
+          );
+        if (!projectBySlugAndOrganizationId) throw notFound();
+        return projectBySlugAndOrganizationId;
+      },
+      async projectData() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          projectOptions({ rowId: project.rowId }),
+        );
+      },
+      async labels() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          labelsOptions({ projectId: project.rowId }),
+        );
+      },
+      async columns() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          columnsOptions({ projectId: project.rowId }),
+        );
+      },
+    });
 
     return {
-      name: projectName,
-      projectId,
+      name: project.name,
+      projectId: project.rowId,
       organizationId,
     };
   },

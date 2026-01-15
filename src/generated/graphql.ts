@@ -7266,7 +7266,7 @@ export type CreateSettingMutationVariables = Exact<{
 }>;
 
 
-export type CreateSettingMutation = { __typename?: 'Mutation', createSetting?: { __typename?: 'CreateSettingPayload', setting?: { __typename?: 'Setting', rowId: string, organizationId: string, viewMode: string } | null } | null };
+export type CreateSettingMutation = { __typename?: 'Mutation', createSetting?: { __typename?: 'CreateSettingPayload', setting?: { __typename?: 'Setting', rowId: string, organizationId: string, viewMode: string, subscriptionId?: string | null, billingAccountId?: string | null } | null } | null };
 
 export type UpdateSettingMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -7386,6 +7386,14 @@ export type ProjectQueryVariables = Exact<{
 
 
 export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> } } | null };
+
+export type ProjectBySlugQueryVariables = Exact<{
+  slug: Scalars['String']['input'];
+  organizationId: Scalars['UUID']['input'];
+}>;
+
+
+export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, orderedColumns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
   organizationId: Scalars['UUID']['input'];
@@ -8095,6 +8103,8 @@ export const CreateSettingDocument = `
       rowId
       organizationId
       viewMode
+      subscriptionId
+      billingAccountId
     }
   }
 }
@@ -9062,6 +9072,117 @@ useSuspenseInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => [
 
 
 useProjectQuery.fetcher = (variables: ProjectQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables, options);
+
+export const ProjectBySlugDocument = `
+    query ProjectBySlug($slug: String!, $organizationId: UUID!) {
+  projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
+    ...Project
+    labels {
+      nodes {
+        name
+        color
+        rowId
+      }
+    }
+    orderedColumns: columns(orderBy: INDEX_ASC) {
+      nodes {
+        rowId
+        index
+        title
+        emoji
+        tasks {
+          totalCount
+          nodes {
+            rowId
+            createdAt
+          }
+        }
+      }
+    }
+  }
+}
+    ${ProjectFragmentDoc}`;
+
+export const useProjectBySlugQuery = <
+      TData = ProjectBySlugQuery,
+      TError = unknown
+    >(
+      variables: ProjectBySlugQueryVariables,
+      options?: Omit<UseQueryOptions<ProjectBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectBySlugQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ProjectBySlugQuery, TError, TData>(
+      {
+    queryKey: ['ProjectBySlug', variables],
+    queryFn: graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables),
+    ...options
+  }
+    )};
+
+useProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug', variables];
+
+export const useSuspenseProjectBySlugQuery = <
+      TData = ProjectBySlugQuery,
+      TError = unknown
+    >(
+      variables: ProjectBySlugQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<ProjectBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<ProjectBySlugQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<ProjectBySlugQuery, TError, TData>(
+      {
+    queryKey: ['ProjectBySlugSuspense', variables],
+    queryFn: graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlugSuspense', variables];
+
+export const useInfiniteProjectBySlugQuery = <
+      TData = InfiniteData<ProjectBySlugQuery>,
+      TError = unknown
+    >(
+      variables: ProjectBySlugQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ProjectBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectBySlugQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ProjectBySlugQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['ProjectBySlug.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug.infinite', variables];
+
+export const useSuspenseInfiniteProjectBySlugQuery = <
+      TData = InfiniteData<ProjectBySlugQuery>,
+      TError = unknown
+    >(
+      variables: ProjectBySlugQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<ProjectBySlugQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<ProjectBySlugQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<ProjectBySlugQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['ProjectBySlug.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug.infiniteSuspense', variables];
+
+
+useProjectBySlugQuery.fetcher = (variables: ProjectBySlugQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables, options);
 
 export const ProjectsDocument = `
     query Projects($organizationId: UUID!, $search: String = "", $userId: UUID) {
