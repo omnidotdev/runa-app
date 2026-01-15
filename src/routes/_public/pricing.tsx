@@ -1,9 +1,5 @@
 import { useTabs } from "@ark-ui/react";
-import {
-  createFileRoute,
-  useCanGoBack,
-  useRouter,
-} from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 import { PriceCard } from "@/components/pricing";
 import {
@@ -65,11 +61,8 @@ export const Route = createFileRoute("/_public/pricing")({
 });
 
 function PricingPage() {
-  const _router = useRouter();
-  const _canGoBack = useCanGoBack();
   const { prices } = Route.useLoaderData();
   const { session: _session } = Route.useRouteContext();
-  const _navigate = Route.useNavigate();
 
   const tabs = useTabs({ defaultValue: "month" });
 
