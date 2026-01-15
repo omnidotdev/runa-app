@@ -1,9 +1,4 @@
-import {
-  Outlet,
-  createFileRoute,
-  notFound,
-  redirect,
-} from "@tanstack/react-router";
+import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 import { useMemo } from "react";
 
 import { AppSidebar } from "@/components/core";
@@ -18,10 +13,8 @@ import { provisionSettings } from "@/server/functions/settings";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { session } }) => {
-    if (!session?.user?.rowId) throw redirect({ to: "/" });
-
     // if session exists but `rowId` is missing, the user may exist in the identity provider but not in the database (stale cookie or incomplete signup), so signed out to clear the stale session
-    if (!session.user.rowId) {
+    if (!session?.user?.rowId) {
       const { signOutAndRedirect } = await import("@/server/functions/auth");
       await signOutAndRedirect();
     }
@@ -38,7 +31,7 @@ export const Route = createFileRoute("/_auth")({
     // workspaceSlug in the URL is actually the org slug from JWT claims
     // We need to resolve it to organizationId to query the settings
     const orgFromClaim = workspaceSlug
-      ? session.organizations?.find((org) => org.slug === workspaceSlug)
+      ? session?.organizations?.find((org) => org.slug === workspaceSlug)
       : undefined;
 
     if (orgFromClaim) {
@@ -67,25 +60,17 @@ export const Route = createFileRoute("/_auth")({
       ...settingByOrganizationIdOptions({ organizationId }),
     });
 
-    // Auto-provision settings if they don't exist for this organization
     if (!settingByOrganizationId) {
-      await provisionSettings({ data: { organizationId } });
+      const newSettings = await provisionSettings({ data: { organizationId } });
 
-      // Invalidate and refetch to get settings with proper shape
-      await queryClient.invalidateQueries({
-        queryKey: settingByOrganizationIdOptions({ organizationId }).queryKey,
-      });
-
-      // Refetch the settings with full data
-      const result = await queryClient.fetchQuery({
-        ...settingByOrganizationIdOptions({ organizationId }),
-      });
-
-      settingByOrganizationId = result.settingByOrganizationId;
+      if (newSettings) {
+        queryClient.setQueryData(
+          settingByOrganizationIdOptions({ organizationId }).queryKey,
+          { settingByOrganizationId: newSettings },
+        );
+        settingByOrganizationId = newSettings;
+      }
     }
-
-    // Settings must exist at this point (auto-provisioned)
-    // But membership is validated via JWT claims - if org not in claims and not fetchable, already threw notFound
 
     return {
       organizationId,

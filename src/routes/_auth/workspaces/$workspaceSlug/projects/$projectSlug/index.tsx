@@ -48,7 +48,7 @@ import getSdk from "@/lib/graphql/getSdk";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import projectOptions from "@/lib/options/project.options";
-import projectsOptions from "@/lib/options/projects.options";
+import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
@@ -89,16 +89,12 @@ export const Route = createFileRoute(
   }) => {
     if (!organizationId) throw notFound();
 
-    // Fetch projects for this organization
-    const { projects } = await queryClient.ensureQueryData(
-      projectsOptions({ organizationId }),
-    );
+    const { projectBySlugAndOrganizationId: project } =
+      await queryClient.ensureQueryData(
+        projectBySlugOptions({ slug: projectSlug, organizationId }),
+      );
 
-    // Find the project matching the slug
-    const project = projects?.nodes?.find((p) => p.slug === projectSlug);
-    if (!project) {
-      throw notFound();
-    }
+    if (!project) throw notFound();
 
     const projectId = project.rowId;
     const projectName = project.name;

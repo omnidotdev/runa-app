@@ -12,7 +12,7 @@ import { BASE_URL } from "@/lib/config/env.config";
 import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
-import projectsOptions from "@/lib/options/projects.options";
+import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
@@ -24,16 +24,12 @@ export const Route = createFileRoute(
   }) => {
     if (!organizationId) throw notFound();
 
-    // Fetch projects for this organization
-    const { projects } = await queryClient.ensureQueryData(
-      projectsOptions({ organizationId }),
-    );
+    const { projectBySlugAndOrganizationId: project } =
+      await queryClient.ensureQueryData(
+        projectBySlugOptions({ slug: projectSlug, organizationId }),
+      );
 
-    // Find the project matching the slug
-    const project = projects?.nodes?.find((p) => p.slug === projectSlug);
-    if (!project) {
-      throw notFound();
-    }
+    if (!project) throw notFound();
 
     const projectId = project.rowId;
     const projectName = project.name;

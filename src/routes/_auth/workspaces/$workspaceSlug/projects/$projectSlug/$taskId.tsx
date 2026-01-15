@@ -41,7 +41,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import projectOptions from "@/lib/options/project.options";
-import projectsOptions from "@/lib/options/projects.options";
+import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import taskOptions from "@/lib/options/task.options";
 import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -59,24 +59,18 @@ export const Route = createFileRoute(
   }) => {
     if (!organizationId) throw notFound();
 
-    // Fetch projects for this organization
-    const { projects } = await queryClient.ensureQueryData(
-      projectsOptions({ organizationId }),
-    );
+    const [projectResult, taskResult] = await Promise.all([
+      queryClient.ensureQueryData(
+        projectBySlugOptions({ slug: projectSlug, organizationId }),
+      ),
+      queryClient.ensureQueryData(taskOptions({ rowId: taskId })),
+    ]);
 
-    // Find the project matching the slug
-    const project = projects?.nodes?.find((p) => p.slug === projectSlug);
-    if (!project) {
-      throw notFound();
-    }
+    const project = projectResult.projectBySlugAndOrganizationId;
+    const task = taskResult.task;
 
-    const { task } = await queryClient.ensureQueryData(
-      taskOptions({ rowId: taskId }),
-    );
-
-    if (!task) {
-      throw notFound();
-    }
+    if (!project) throw notFound();
+    if (!task) throw notFound();
 
     return {
       organizationId,
