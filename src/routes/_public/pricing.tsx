@@ -16,8 +16,8 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { BASE_URL } from "@/lib/config/env.config";
+import pricesOptions from "@/lib/options/prices.options";
 import createMetaTags from "@/lib/util/createMetaTags";
-import { getPrices } from "@/server/functions/prices";
 
 export const FREE_PRICE = {
   id: "free",
@@ -52,8 +52,8 @@ export const Route = createFileRoute("/_public/pricing")({
       }),
     ],
   }),
-  loader: async () => {
-    const prices = await getPrices();
+  loader: async ({ context: { queryClient } }) => {
+    const prices = await queryClient.ensureQueryData(pricesOptions());
 
     return { prices };
   },
