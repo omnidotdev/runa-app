@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { authMiddleware } from "@/server/middleware";
 
 const createOrganizationSchema = z.object({
@@ -40,22 +41,19 @@ export const createOrganization = createServerFn({ method: "POST" })
     // (The OAuth access token is for RP-to-API calls, not IDP calls)
     const cookieHeader = request.headers.get("cookie") || "";
 
-    const response = await fetch(
-      `${process.env.AUTH_BASE_URL}/organization/create`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Cookie: cookieHeader,
-          // Use Gatekeeper's own origin for server-to-server calls
-          Origin: process.env.AUTH_BASE_URL!,
-        },
-        body: JSON.stringify({
-          name: data.name,
-          slug,
-        }),
+    const response = await fetch(`${AUTH_BASE_URL}/organization/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieHeader,
+        // Use Gatekeeper's own origin for server-to-server calls
+        Origin: AUTH_BASE_URL!,
       },
-    );
+      body: JSON.stringify({
+        name: data.name,
+        slug,
+      }),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -104,12 +102,12 @@ export const getOrganizationBySlug = createServerFn({ method: "GET" })
     const cookieHeader = request.headers.get("cookie") || "";
 
     const response = await fetch(
-      `${process.env.AUTH_BASE_URL}/organization/get-full-organization?query=${encodeURIComponent(JSON.stringify({ slug: data.slug }))}`,
+      `${AUTH_BASE_URL}/organization/get-full-organization?query=${encodeURIComponent(JSON.stringify({ slug: data.slug }))}`,
       {
         method: "GET",
         headers: {
           Cookie: cookieHeader,
-          Origin: process.env.AUTH_BASE_URL!,
+          Origin: AUTH_BASE_URL!,
         },
       },
     );
