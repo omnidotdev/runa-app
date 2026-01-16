@@ -22,8 +22,7 @@ export interface IdpMember {
 }
 
 export interface IdpMembersResponse {
-  members: IdpMember[];
-  total: number;
+  data: IdpMember[];
 }
 
 /**
