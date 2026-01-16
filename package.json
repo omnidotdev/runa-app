@@ -22,7 +22,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@emoji-mart/data": "^1.2.1",
     "@emoji-mart/react": "^1.1.1",
-    "@growthbook/growthbook": "^1.6.0",
+    "unleash-client": "^6.3.0",
     "@hello-pangea/dnd": "^18.0.1",
     "@internationalized/date": "^3.10.1",
     "@react-three/drei": "^10.7.7",

@@ -9,17 +9,11 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
-import { all } from "better-all";
 
 import { DefaultCatchBoundary } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
-import {
-  FLAGS,
-  createGrowthBook,
-  getFlag,
-  getMaintenanceModeSync,
-} from "@/lib/flags";
+import { fetchMaintenanceMode } from "@/lib/flags";
 import { setGraphQLAccessToken } from "@/lib/graphql/graphqlFetch";
 import appCss from "@/lib/styles/globals.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -49,33 +43,13 @@ interface ExtendedSession extends Omit<Session, "user"> {
   organizations?: OrganizationClaim[];
 }
 
-// TODO add test suite
-
 const fetchSessionAndMaintenanceMode = createServerFn({
   method: "GET",
 }).handler(async () => {
-  const syncMaintenanceMode = getMaintenanceModeSync();
-
-  const { session, isMaintenanceMode } = await all({
-    async session() {
-      const { session } = await fetchSession();
-      return session;
-    },
-    async isMaintenanceMode() {
-      // If sync mode available, use it immediately (no dependency on session)
-      if (syncMaintenanceMode !== null) return syncMaintenanceMode;
-
-      // Otherwise, create GrowthBook after session is available
-      const session = await this.$.session;
-      const gb = await createGrowthBook({
-        userId: session?.user?.id,
-        email: session?.user?.email,
-      });
-      const flag = getFlag<boolean>(gb, FLAGS.MAINTENANCE);
-      gb.destroy();
-      return flag;
-    },
-  });
+  const [{ session }, { isMaintenanceMode }] = await Promise.all([
+    fetchSession(),
+    fetchMaintenanceMode(),
+  ]);
 
   return { session, isMaintenanceMode };
 });
@@ -89,10 +63,18 @@ export const Route = createRootRouteWithContext<{
     const { session, isMaintenanceMode } =
       await fetchSessionAndMaintenanceMode();
 
-    // Skip auth when maintenance page is shown
-    if (isMaintenanceMode) return { session: null, isMaintenanceMode };
+    // Allow admin users to bypass maintenance mode
+    const adminDomain = process.env.ADMIN_EMAIL_DOMAIN;
+    const isAdminUser = adminDomain
+      ? (session?.user?.email?.endsWith(`@${adminDomain}`) ?? false)
+      : false;
+    const effectiveMaintenanceMode = isMaintenanceMode && !isAdminUser;
 
-    return { session, isMaintenanceMode };
+    // Skip auth when maintenance page is shown
+    if (effectiveMaintenanceMode)
+      return { session: null, isMaintenanceMode: effectiveMaintenanceMode };
+
+    return { session, isMaintenanceMode: effectiveMaintenanceMode };
   },
   loader: () => getTheme(),
   head: () => ({
@@ -155,8 +137,6 @@ function RootComponent() {
   const { isMaintenanceMode, session } = useRouteContext({ from: "__root__" });
 
   // Sync access token to GraphQL client for client-side requests
-  // This runs on every render to keep the token in sync
-  // Using the already-imported setGraphQLAccessToken directly (not dynamic import)
   if (session?.accessToken) {
     setGraphQLAccessToken(session.accessToken);
   }
