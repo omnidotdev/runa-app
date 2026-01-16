@@ -22,8 +22,7 @@ export interface IdpMember {
 }
 
 export interface IdpMembersResponse {
-  members: IdpMember[];
-  total: number;
+  data: IdpMember[];
 }
 
 /**
@@ -33,10 +32,8 @@ export async function fetchOrganizationMembers(
   organizationId: string,
   accessToken: string,
 ): Promise<IdpMembersResponse> {
-  const url = new URL(
-    `/api/organization/${organizationId}/members`,
-    AUTH_BASE_URL,
-  );
+  const url = new URL("/api/organization/members", AUTH_BASE_URL);
+  url.searchParams.set("orgId", organizationId);
 
   const response = await fetch(url, {
     headers: {
@@ -70,10 +67,9 @@ export async function updateMemberRole({
   role,
   accessToken,
 }: UpdateMemberRoleParams): Promise<IdpMember> {
-  const url = new URL(
-    `/api/organization/${organizationId}/members/${memberId}`,
-    AUTH_BASE_URL,
-  );
+  const url = new URL("/api/organization/members", AUTH_BASE_URL);
+  url.searchParams.set("orgId", organizationId);
+  url.searchParams.set("memberId", memberId);
 
   const response = await fetch(url, {
     method: "PATCH",
@@ -107,10 +103,9 @@ export async function removeMember({
   memberId,
   accessToken,
 }: RemoveMemberParams): Promise<void> {
-  const url = new URL(
-    `/api/organization/${organizationId}/members/${memberId}`,
-    AUTH_BASE_URL,
-  );
+  const url = new URL("/api/organization/members", AUTH_BASE_URL);
+  url.searchParams.set("orgId", organizationId);
+  url.searchParams.set("memberId", memberId);
 
   const response = await fetch(url, {
     method: "DELETE",
