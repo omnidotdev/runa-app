@@ -20,4 +20,5 @@ export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 // environment helpers
 /** @knipignore */
 export const isDevEnv = import.meta.env.DEV;
+/** @knipignore */
 export const isProdEnv = import.meta.env.PROD;
