@@ -6,17 +6,10 @@ fragment Project on Project {
   prefix
   projectColumnId
   columnIndex
-  columns {
-    nodes {
-      allTasks: tasks {
-        totalCount
-      }
-
-      completedTasks: tasks(
-        filter: { column: { title: { equalTo: "Done" } } }
-      ) {
-        totalCount
-      }
-    }
+  allTasks: tasks {
+    totalCount
+  }
+  completedTasks: tasks(filter: { column: { title: { equalTo: "Done" } } }) {
+    totalCount
   }
 }

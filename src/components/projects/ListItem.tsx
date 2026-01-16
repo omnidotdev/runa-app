@@ -1,5 +1,4 @@
 import { Draggable } from "@hello-pangea/dnd";
-import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
@@ -12,7 +11,6 @@ import { Badge } from "@/components/ui/badge";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
-import taskOptions from "@/lib/options/task.options";
 import { cn } from "@/lib/utils";
 
 import type { LabelFragment, TaskFragment } from "@/generated/graphql";
@@ -25,7 +23,6 @@ interface Props {
 
 const ListItem = ({ task, index, displayId }: Props) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { workspaceSlug, projectSlug } = useParams({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
@@ -51,8 +48,6 @@ const ListItem = ({ task, index, displayId }: Props) => {
     isUpdateTaskLabelsDialogOpen;
 
   const handleOnMouseEnter = () => {
-    queryClient.prefetchQuery(taskOptions({ rowId: task.rowId }));
-
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }

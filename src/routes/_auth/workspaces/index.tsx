@@ -9,7 +9,6 @@ import {
   AvatarRoot,
 } from "@/components/ui/avatar";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
-import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
@@ -64,13 +63,6 @@ function WorkspacesOverviewPage() {
                     to="/workspaces/$workspaceSlug/projects"
                     params={{ workspaceSlug: orgSlug! }}
                     preload="intent"
-                    onMouseEnter={() => {
-                      queryClient.prefetchQuery(
-                        settingByOrganizationIdOptions({
-                          organizationId: org.id,
-                        }),
-                      );
-                    }}
                     variant="outline"
                     className="relative flex h-32 flex-col p-4"
                   >

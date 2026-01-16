@@ -125,16 +125,8 @@ const Projects = () => {
         {projects.length ? (
           <div className="flex flex-col divide-y border-y px-2 lg:px-0">
             {projects.map((project) => {
-              const completedTasks = project.columns?.nodes?.reduce(
-                (acc: number, col) =>
-                  acc + (col?.completedTasks.totalCount || 0),
-                0,
-              );
-
-              const totalTasks = project.columns?.nodes?.reduce(
-                (acc: number, col) => acc + (col?.allTasks.totalCount || 0),
-                0,
-              );
+              const completedTasks = project.completedTasks?.totalCount ?? 0;
+              const totalTasks = project.allTasks?.totalCount ?? 0;
 
               return (
                 <div

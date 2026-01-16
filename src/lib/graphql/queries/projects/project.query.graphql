@@ -6,13 +6,6 @@ query Project($rowId: UUID!) {
     description
     prefix
     projectColumnId
-    labels {
-      nodes {
-        name
-        color
-        rowId
-      }
-    }
     tasks {
       totalCount
     }
@@ -24,10 +17,6 @@ query Project($rowId: UUID!) {
         emoji
         tasks {
           totalCount
-          nodes {
-            rowId
-            createdAt
-          }
         }
       }
     }

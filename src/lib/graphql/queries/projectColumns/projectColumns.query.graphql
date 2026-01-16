@@ -8,14 +8,8 @@ query ProjectColumns($organizationId: String!, $search: String = "") {
       index
       rowId
       emoji
-      projects(
-        filter: { name: { includesInsensitive: $search } }
-        orderBy: COLUMN_INDEX_ASC
-      ) {
+      projects(filter: { name: { includesInsensitive: $search } }) {
         totalCount
-        nodes {
-          ...Project
-        }
       }
     }
   }
