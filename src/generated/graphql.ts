@@ -3125,7 +3125,7 @@ export type Project = Node & {
   /** Reads and enables pagination through a set of `Label`. */
   labels: LabelConnection;
   name: Scalars['String']['output'];
-  organizationId: Scalars['UUID']['output'];
+  organizationId: Scalars['String']['output'];
   prefix?: Maybe<Scalars['String']['output']>;
   /** Reads a single `ProjectColumn` that is related to this `Project`. */
   projectColumn?: Maybe<ProjectColumn>;
@@ -3251,7 +3251,7 @@ export type ProjectColumn = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   index: Scalars['Int']['output'];
-  organizationId: Scalars['UUID']['output'];
+  organizationId: Scalars['String']['output'];
   /** Reads and enables pagination through a set of `Project`. */
   projects: ProjectConnection;
   rowId: Scalars['UUID']['output'];
@@ -3312,7 +3312,7 @@ export type ProjectColumnCondition = {
   /** Checks for equality with the object’s `index` field. */
   index?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `organizationId` field. */
-  organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `title` field. */
@@ -3387,7 +3387,7 @@ export type ProjectColumnFilter = {
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<ProjectColumnFilter>>;
   /** Filter by the object’s `organizationId` field. */
-  organizationId?: InputMaybe<UuidFilter>;
+  organizationId?: InputMaybe<StringFilter>;
   /** Filter by the object’s `projects` relation. */
   projects?: InputMaybe<ProjectColumnToManyProjectFilter>;
   /** Some related `projects` exist. */
@@ -3488,7 +3488,7 @@ export type ProjectColumnInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   emoji?: InputMaybe<Scalars['String']['input']>;
   index?: InputMaybe<Scalars['Int']['input']>;
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['String']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -3572,7 +3572,7 @@ export type ProjectColumnPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   emoji?: InputMaybe<Scalars['String']['input']>;
   index?: InputMaybe<Scalars['Int']['input']>;
-  organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -3633,7 +3633,7 @@ export type ProjectCondition = {
   /** Checks for equality with the object’s `name` field. */
   name?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `organizationId` field. */
-  organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `prefix` field. */
   prefix?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `projectColumnId` field. */
@@ -3746,7 +3746,7 @@ export type ProjectFilter = {
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<ProjectFilter>>;
   /** Filter by the object’s `organizationId` field. */
-  organizationId?: InputMaybe<UuidFilter>;
+  organizationId?: InputMaybe<StringFilter>;
   /** Filter by the object’s `prefix` field. */
   prefix?: InputMaybe<StringFilter>;
   /** Filter by the object’s `projectColumn` relation. */
@@ -3863,7 +3863,7 @@ export type ProjectInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   isPublic?: InputMaybe<Scalars['Boolean']['input']>;
   name: Scalars['String']['input'];
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['String']['input'];
   prefix?: InputMaybe<Scalars['String']['input']>;
   projectColumnId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -4031,7 +4031,7 @@ export type ProjectPatch = {
   description?: InputMaybe<Scalars['String']['input']>;
   isPublic?: InputMaybe<Scalars['Boolean']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  organizationId?: InputMaybe<Scalars['UUID']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
   prefix?: InputMaybe<Scalars['String']['input']>;
   projectColumnId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -4391,7 +4391,7 @@ export type QueryProjectByIdArgs = {
 
 /** The root query type which gives access points into the data universe. */
 export type QueryProjectBySlugAndOrganizationIdArgs = {
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['String']['input'];
   slug: Scalars['String']['input'];
 };
 
@@ -7373,7 +7373,7 @@ export type LabelsQueryVariables = Exact<{
 export type LabelsQuery = { __typename?: 'Query', labels?: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', color: string, name: string, rowId: string }> } | null };
 
 export type ProjectColumnsQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['String']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
@@ -7389,14 +7389,14 @@ export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Pro
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['String']['input'];
 }>;
 
 
 export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, orderedColumns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } } | null };
 
 export type ProjectsQueryVariables = Exact<{
-  organizationId: Scalars['UUID']['input'];
+  organizationId: Scalars['String']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
 }>;
@@ -8852,7 +8852,7 @@ useSuspenseInfiniteLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['L
 useLabelsQuery.fetcher = (variables: LabelsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, variables, options);
 
 export const ProjectColumnsDocument = `
-    query ProjectColumns($organizationId: UUID!, $search: String = "") {
+    query ProjectColumns($organizationId: String!, $search: String = "") {
   projectColumns(condition: {organizationId: $organizationId}, orderBy: INDEX_ASC) {
     nodes {
       title
@@ -9074,7 +9074,7 @@ useSuspenseInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => [
 useProjectQuery.fetcher = (variables: ProjectQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables, options);
 
 export const ProjectBySlugDocument = `
-    query ProjectBySlug($slug: String!, $organizationId: UUID!) {
+    query ProjectBySlug($slug: String!, $organizationId: String!) {
   projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
     ...Project
     labels {
@@ -9185,7 +9185,7 @@ useSuspenseInfiniteProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVar
 useProjectBySlugQuery.fetcher = (variables: ProjectBySlugQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables, options);
 
 export const ProjectsDocument = `
-    query Projects($organizationId: UUID!, $search: String = "", $userId: UUID) {
+    query Projects($organizationId: String!, $search: String = "", $userId: UUID) {
   projects(
     condition: {organizationId: $organizationId}
     filter: {name: {includesInsensitive: $search}}
