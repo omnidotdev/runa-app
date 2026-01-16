@@ -1,7 +1,7 @@
 import { Droppable } from "@hello-pangea/dnd";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { ColumnHeader } from "@/components/core";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -10,6 +10,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
+import projectTaskIndexOptions from "@/lib/options/projectTaskIndex.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -119,17 +120,20 @@ const Board = ({ tasks }: Props) => {
     }),
   });
 
+  const { data: taskIndexNodes } = useSuspenseQuery({
+    ...projectTaskIndexOptions({ projectId }),
+    select: (data) => data?.tasks?.nodes ?? [],
+  });
+
+  const taskIndexById = useMemo(
+    () =>
+      new Map((taskIndexNodes ?? []).map((task, index) => [task.rowId, index])),
+    [taskIndexNodes],
+  );
+
   const maxTasksReached = useMaxTasksReached();
 
-  const taskIndex = (taskId: string) =>
-    project?.columns?.nodes
-      ?.flatMap((column) => column?.tasks?.nodes?.map((task) => task))
-      .sort(
-        (a, b) =>
-          new Date(a.createdAt!).getTime() - new Date(b.createdAt!).getTime(),
-      )
-      .map((task) => task?.rowId)
-      .indexOf(taskId) ?? 0;
+  const taskIndex = (taskId: string) => taskIndexById.get(taskId) ?? 0;
 
   return (
     <div
@@ -156,11 +160,7 @@ const Board = ({ tasks }: Props) => {
             >
               <ColumnHeader
                 title={column.title}
-                count={
-                  project?.columns?.nodes?.find(
-                    (c) => c?.rowId === column?.rowId,
-                  )?.tasks?.totalCount ?? 0
-                }
+                count={column.tasks?.totalCount ?? 0}
                 tooltip={{
                   title: "Add Task",
                   shortcut: "C",

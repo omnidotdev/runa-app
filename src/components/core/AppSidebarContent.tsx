@@ -1,11 +1,11 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  Link,
   useLoaderData,
   useLocation,
   useNavigate,
   useParams,
   useRouteContext,
-  useRouter,
 } from "@tanstack/react-router";
 import {
   BoxIcon,
@@ -20,7 +20,7 @@ import {
   Settings2,
   Settings2Icon,
 } from "lucide-react";
-import { useCallback, useId, useState } from "react";
+import { useId, useState } from "react";
 
 import {
   CollapsibleContent,
@@ -54,7 +54,6 @@ import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
-import tasksOptions from "@/lib/options/tasks.options";
 import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import Shortcut from "./Shortcut";
@@ -78,34 +77,9 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
   const { organizationId } = useLoaderData({ from: "/_auth" });
   const { session } = useRouteContext({ from: "/_auth" });
   const queryClient = useQueryClient();
-  const router = useRouter();
   const navigate = useNavigate();
   const { workspaceSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
-
-  // prefetch project data on hover
-  const prefetchProject = useCallback(
-    (projectSlug: string, projectId: string) => {
-      // prefetch route (runs loader)
-      router.preloadRoute({
-        to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-        params: { workspaceSlug: workspaceSlug!, projectSlug },
-      });
-      queryClient.prefetchQuery(tasksOptions({ projectId }));
-    },
-    [router, queryClient, workspaceSlug],
-  );
-
-  // prefetch workspace routes on hover
-  const prefetchWorkspaceRoute = useCallback(
-    (to: string) => {
-      router.preloadRoute({
-        to,
-        params: { workspaceSlug: workspaceSlug! },
-      });
-    },
-    [router, workspaceSlug],
-  );
 
   const [isProjectMenuOpen, setProjectMenuOpen] = useState(false);
 
@@ -209,15 +183,11 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                 key={item.to}
                 isActive={item.isActive}
                 tooltip={item.tooltip}
-                onMouseEnter={() => prefetchWorkspaceRoute(item.to)}
-                onClick={() =>
-                  navigate({
-                    to: item.to,
-                    params: { workspaceSlug },
-                  })
-                }
+                asChild
               >
-                <item.icon />
+                <Link to={item.to} params={{ workspaceSlug }}>
+                  <item.icon />
+                </Link>
               </SidebarMenuButton>
             ))}
 
@@ -261,36 +231,36 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                           key={project.rowId}
                           value={project.name}
                           className="flex w-full cursor-pointer items-center gap-1"
-                          onSelect={() =>
-                            navigate({
-                              to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-                              params: {
-                                workspaceSlug,
-                                projectSlug: project.slug,
-                              },
-                            })
-                          }
+                          asChild
                         >
-                          {userPreferences?.viewMode === "board" ? (
-                            <Grid2X2Icon
-                              className="size-4 text-primary-500"
-                              style={{
-                                color: userPreferences?.color ?? undefined,
-                              }}
-                            />
-                          ) : (
-                            <ListIcon
-                              className="size-4 text-primary-500"
-                              style={{
-                                color: userPreferences?.color ?? undefined,
-                              }}
-                            />
-                          )}
-                          <span className="truncate">{project?.name}</span>
+                          <Link
+                            to="/workspaces/$workspaceSlug/projects/$projectSlug"
+                            params={{
+                              workspaceSlug,
+                              projectSlug: project.slug,
+                            }}
+                          >
+                            {userPreferences?.viewMode === "board" ? (
+                              <Grid2X2Icon
+                                className="size-4 text-primary-500"
+                                style={{
+                                  color: userPreferences?.color ?? undefined,
+                                }}
+                              />
+                            ) : (
+                              <ListIcon
+                                className="size-4 text-primary-500"
+                                style={{
+                                  color: userPreferences?.color ?? undefined,
+                                }}
+                              />
+                            )}
+                            <span className="truncate">{project?.name}</span>
 
-                          {isWorkspaceProjectSelected && (
-                            <CheckIcon color="green" className="ml-auto" />
-                          )}
+                            {isWorkspaceProjectSelected && (
+                              <CheckIcon color="green" className="ml-auto" />
+                            )}
+                          </Link>
                         </MenuItem>
                       );
                     })}
@@ -316,16 +286,12 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                     <SidebarMenuButton
                       key={item.to}
                       isActive={item.isActive}
-                      onMouseEnter={() => prefetchWorkspaceRoute(item.to)}
-                      onClick={() =>
-                        navigate({
-                          to: item.to,
-                          params: { workspaceSlug },
-                        })
-                      }
+                      asChild
                     >
-                      <item.icon />
-                      <span className="w-full truncate">{item.label}</span>
+                      <Link to={item.to} params={{ workspaceSlug }}>
+                        <item.icon />
+                        <span className="w-full truncate">{item.label}</span>
+                      </Link>
                     </SidebarMenuButton>
                   ))}
                 </SidebarMenu>
@@ -391,37 +357,34 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                             pathname ===
                             `/workspaces/${workspaceSlug}/projects/${project.slug}`
                           }
-                          onMouseEnter={() =>
-                            prefetchProject(project.slug, project.rowId)
-                          }
-                          onClick={() =>
-                            navigate({
-                              to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-                              params: {
-                                workspaceSlug,
-                                projectSlug: project.slug,
-                              },
-                            })
-                          }
+                          asChild
                         >
-                          {userPreferences?.viewMode === "board" ? (
-                            <Grid2X2Icon
-                              className="text-primary-500"
-                              style={{
-                                color: userPreferences?.color ?? undefined,
-                              }}
-                            />
-                          ) : (
-                            <ListIcon
-                              className="text-primary-500"
-                              style={{
-                                color: userPreferences?.color ?? undefined,
-                              }}
-                            />
-                          )}
-                          <span className="w-full truncate">
-                            {project?.name}
-                          </span>
+                          <Link
+                            to="/workspaces/$workspaceSlug/projects/$projectSlug"
+                            params={{
+                              workspaceSlug,
+                              projectSlug: project.slug,
+                            }}
+                          >
+                            {userPreferences?.viewMode === "board" ? (
+                              <Grid2X2Icon
+                                className="text-primary-500"
+                                style={{
+                                  color: userPreferences?.color ?? undefined,
+                                }}
+                              />
+                            ) : (
+                              <ListIcon
+                                className="text-primary-500"
+                                style={{
+                                  color: userPreferences?.color ?? undefined,
+                                }}
+                              />
+                            )}
+                            <span className="w-full truncate">
+                              {project?.name}
+                            </span>
+                          </Link>
                         </SidebarMenuButton>
 
                         <MenuRoot
@@ -488,20 +451,17 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                                 <Shortcut>{Hotkeys.ToggleViewMode}</Shortcut>
                               </MenuItem>
 
-                              <MenuItem
-                                value="settings"
-                                onClick={() => {
-                                  navigate({
-                                    to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-                                    params: {
-                                      workspaceSlug,
-                                      projectSlug: project.slug,
-                                    },
-                                  });
-                                }}
-                              >
-                                <Settings2 />
-                                Settings
+                              <MenuItem value="settings" asChild>
+                                <Link
+                                  to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
+                                  params={{
+                                    workspaceSlug,
+                                    projectSlug: project.slug,
+                                  }}
+                                >
+                                  <Settings2 />
+                                  Settings
+                                </Link>
                               </MenuItem>
                             </MenuContent>
                           </MenuPositioner>

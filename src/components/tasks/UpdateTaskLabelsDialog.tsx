@@ -24,7 +24,7 @@ import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
-import projectOptions from "@/lib/options/project.options";
+import labelsOptions from "@/lib/options/labels.options";
 import taskOptions from "@/lib/options/task.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import TaskLabelsForm from "./TaskLabelsForm";
@@ -56,20 +56,21 @@ const UpdateTaskLabelsDialog = () => {
     select: (data) => data?.task,
   });
 
-  const { data: project } = useQuery({
-    ...projectOptions({ rowId: task?.projectId! }),
-    enabled: !!task?.projectId,
-    select: (data) => data?.project,
+  const projectId = task?.projectId;
+
+  const { data: labels = [] } = useQuery({
+    ...labelsOptions({ projectId: projectId! }),
+    enabled: !!projectId,
+    select: (data) => data?.labels?.nodes ?? [],
   });
 
   const taskLabelIds =
     task?.taskLabels?.nodes?.map((label) => label.label?.rowId!) ?? [];
 
-  const defaultLabels =
-    project?.labels?.nodes?.map((label) => ({
-      ...label,
-      checked: taskLabelIds.includes(label.rowId),
-    })) ?? [];
+  const defaultLabels = labels.map((label) => ({
+    ...label,
+    checked: taskLabelIds.includes(label.rowId),
+  }));
 
   const { mutateAsync: updateProjectLabel } = useCreateLabelMutation();
   const { mutateAsync: deleteTaskLabel } = useDeleteTaskLabelMutation();
@@ -102,7 +103,7 @@ const UpdateTaskLabelsDialog = () => {
                   label: {
                     name: label.name,
                     color: label.color,
-                    projectId: project?.rowId!,
+                    projectId: projectId!,
                   },
                 },
               }),

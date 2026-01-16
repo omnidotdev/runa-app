@@ -38,8 +38,8 @@ import {
   MenuTriggerItem,
 } from "@/components/ui/menu";
 import { Hotkeys } from "@/lib/constants/hotkeys";
+import labelsOptions from "@/lib/options/labels.options";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
-import projectOptions from "@/lib/options/project.options";
 import { cn } from "@/lib/utils";
 
 const Filter = () => {
@@ -62,9 +62,9 @@ const Filter = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const triggerId = useId();
 
-  const { data: project } = useSuspenseQuery({
-    ...projectOptions({ rowId: projectId }),
-    select: (data) => data?.project,
+  const { data: projectLabels = [] } = useSuspenseQuery({
+    ...labelsOptions({ projectId }),
+    select: (data) => data?.labels?.nodes ?? [],
   });
 
   // Fetch organization members from IDP
@@ -162,7 +162,7 @@ const Filter = () => {
 
                 <MenuPositioner>
                   <MenuContent className="w-48">
-                    {project?.labels?.nodes?.map((label) => (
+                    {projectLabels.map((label) => (
                       <MenuCheckboxItem
                         key={label.rowId}
                         closeOnSelect={false}

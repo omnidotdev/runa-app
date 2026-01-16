@@ -19,14 +19,8 @@ const ListItem = ({ project }: Props) => {
 
   const navigate = useNavigate();
 
-  const completedTasks = project.columns?.nodes?.reduce(
-    (acc, col) => acc + (col?.completedTasks.totalCount || 0),
-    0,
-  );
-  const totalTasks = project.columns?.nodes?.reduce(
-    (acc, col) => acc + (col?.allTasks.totalCount || 0),
-    0,
-  );
+  const completedTasks = project.completedTasks?.totalCount ?? 0;
+  const totalTasks = project.allTasks?.totalCount ?? 0;
   const progressPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 

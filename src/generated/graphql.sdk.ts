@@ -7113,9 +7113,9 @@ export type LabelFragment = { __typename?: 'Label', color: string, name: string,
 
 export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: string, index: number, rowId: string, emoji?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } };
 
-export type TaskFragment = { __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } };
+export type TaskFragment = { __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } };
 
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
@@ -7379,14 +7379,14 @@ export type ProjectColumnsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectColumnsQuery = { __typename?: 'Query', projectColumns?: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', title: string, index: number, rowId: string, emoji?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number, nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } }> } | null };
+export type ProjectColumnsQuery = { __typename?: 'Query', projectColumns?: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', title: string, index: number, rowId: string, emoji?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } }> } | null };
 
 export type ProjectQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> } } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -7394,7 +7394,7 @@ export type ProjectBySlugQueryVariables = Exact<{
 }>;
 
 
-export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, labels: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', name: string, color: string, rowId: string }> }, orderedColumns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number, nodes: Array<{ __typename?: 'Task', rowId: string, createdAt: Date }> } }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } } | null };
+export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name: string } | null };
 
 export type ProjectsQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -7403,7 +7403,7 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, color?: string | null, viewMode: string, hiddenColumnIds: Array<string | null> }> }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } }> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, color?: string | null, viewMode: string }> }, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
 
 export type SettingByOrganizationIdQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -7411,6 +7411,13 @@ export type SettingByOrganizationIdQueryVariables = Exact<{
 
 
 export type SettingByOrganizationIdQuery = { __typename?: 'Query', settingByOrganizationId?: { __typename?: 'Setting', rowId: string, organizationId: string, viewMode: string, subscriptionId?: string | null, billingAccountId?: string | null } | null };
+
+export type ProjectTaskIndexQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+}>;
+
+
+export type ProjectTaskIndexQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string }> } | null };
 
 export type TaskQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -7428,7 +7435,7 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, projectId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, column?: { __typename?: 'Column', title: string, index: number, rowId: string, emoji?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
 
 export type UserPreferencesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -7452,6 +7459,17 @@ export type UserByIdentityProviderIdQueryVariables = Exact<{
 
 export type UserByIdentityProviderIdQuery = { __typename?: 'Query', userByIdentityProviderId?: { __typename?: 'User', rowId: string } | null };
 
+export const ColumnFragmentDoc = gql`
+    fragment Column on Column {
+  title
+  index
+  rowId
+  emoji
+  tasks {
+    totalCount
+  }
+}
+    `;
 export const ProjectColumnFragmentDoc = gql`
     fragment ProjectColumn on ProjectColumn {
   title
@@ -7472,25 +7490,10 @@ export const ProjectFragmentDoc = gql`
   prefix
   projectColumnId
   columnIndex
-  columns {
-    nodes {
-      allTasks: tasks {
-        totalCount
-      }
-      completedTasks: tasks(filter: {column: {title: {equalTo: "Done"}}}) {
-        totalCount
-      }
-    }
+  allTasks: tasks {
+    totalCount
   }
-}
-    `;
-export const ColumnFragmentDoc = gql`
-    fragment Column on Column {
-  title
-  index
-  rowId
-  emoji
-  tasks {
+  completedTasks: tasks(filter: {column: {title: {equalTo: "Done"}}}) {
     totalCount
   }
 }
@@ -7505,12 +7508,8 @@ export const LabelFragmentDoc = gql`
 export const TaskFragmentDoc = gql`
     fragment Task on Task {
   rowId
-  projectId
   columnId
   columnIndex
-  column {
-    ...Column
-  }
   content
   priority
   dueDate
@@ -7533,8 +7532,7 @@ export const TaskFragmentDoc = gql`
     }
   }
 }
-    ${ColumnFragmentDoc}
-${LabelFragmentDoc}`;
+    ${LabelFragmentDoc}`;
 export const CreateAssigneeDocument = gql`
     mutation CreateAssignee($input: CreateAssigneeInput!) {
   createAssignee(input: $input) {
@@ -7879,19 +7877,13 @@ export const ProjectColumnsDocument = gql`
       index
       rowId
       emoji
-      projects(
-        filter: {name: {includesInsensitive: $search}}
-        orderBy: COLUMN_INDEX_ASC
-      ) {
+      projects(filter: {name: {includesInsensitive: $search}}) {
         totalCount
-        nodes {
-          ...Project
-        }
       }
     }
   }
 }
-    ${ProjectFragmentDoc}`;
+    `;
 export const ProjectDocument = gql`
     query Project($rowId: UUID!) {
   project(rowId: $rowId) {
@@ -7901,13 +7893,6 @@ export const ProjectDocument = gql`
     description
     prefix
     projectColumnId
-    labels {
-      nodes {
-        name
-        color
-        rowId
-      }
-    }
     tasks {
       totalCount
     }
@@ -7919,10 +7904,6 @@ export const ProjectDocument = gql`
         emoji
         tasks {
           totalCount
-          nodes {
-            rowId
-            createdAt
-          }
         }
       }
     }
@@ -7932,32 +7913,11 @@ export const ProjectDocument = gql`
 export const ProjectBySlugDocument = gql`
     query ProjectBySlug($slug: String!, $organizationId: String!) {
   projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
-    ...Project
-    labels {
-      nodes {
-        name
-        color
-        rowId
-      }
-    }
-    orderedColumns: columns(orderBy: INDEX_ASC) {
-      nodes {
-        rowId
-        index
-        title
-        emoji
-        tasks {
-          totalCount
-          nodes {
-            rowId
-            createdAt
-          }
-        }
-      }
-    }
+    rowId
+    name
   }
 }
-    ${ProjectFragmentDoc}`;
+    `;
 export const ProjectsDocument = gql`
     query Projects($organizationId: String!, $search: String = "", $userId: UUID) {
   projects(
@@ -7972,7 +7932,6 @@ export const ProjectsDocument = gql`
           rowId
           color
           viewMode
-          hiddenColumnIds
         }
       }
     }
@@ -7987,6 +7946,15 @@ export const SettingByOrganizationIdDocument = gql`
     viewMode
     subscriptionId
     billingAccountId
+  }
+}
+    `;
+export const ProjectTaskIndexDocument = gql`
+    query ProjectTaskIndex($projectId: UUID!) {
+  tasks(condition: {projectId: $projectId}, orderBy: CREATED_AT_ASC) {
+    nodes {
+      rowId
+    }
   }
 }
     `;
@@ -8216,6 +8184,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     SettingByOrganizationId(variables: SettingByOrganizationIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<SettingByOrganizationIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<SettingByOrganizationIdQuery>({ document: SettingByOrganizationIdDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'SettingByOrganizationId', 'query', variables);
+    },
+    ProjectTaskIndex(variables: ProjectTaskIndexQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectTaskIndexQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ProjectTaskIndexQuery>({ document: ProjectTaskIndexDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'ProjectTaskIndex', 'query', variables);
     },
     Task(variables: TaskQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<TaskQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TaskQuery>({ document: TaskDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Task', 'query', variables);

@@ -29,6 +29,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
+import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import CreateTaskAssignees from "./CreateTaskAssignees";
@@ -53,6 +54,11 @@ const CreateTaskDialog = () => {
     select: (data) => data?.project,
   });
 
+  const { data: labels } = useSuspenseQuery({
+    ...labelsOptions({ projectId }),
+    select: (data) => data?.labels?.nodes ?? [],
+  });
+
   const defaultColumnId = project?.columns?.nodes?.[0]?.rowId! ?? null;
 
   const { columnId, setColumnId } = useTaskStore();
@@ -74,9 +80,7 @@ const CreateTaskDialog = () => {
     [maxTasksReached],
   );
 
-  const totalTasks = project?.columns?.nodes?.flatMap((column) =>
-    column?.tasks?.nodes?.map((task) => task?.rowId),
-  )?.length;
+  const totalTasks = project?.tasks?.totalCount ?? 0;
 
   const projectLabels: {
     name: string;
@@ -84,12 +88,10 @@ const CreateTaskDialog = () => {
     rowId: string;
     checked: boolean;
   }[] =
-    project?.labels?.nodes.map(
-      (label: { name: string; color: string; rowId: string }) => ({
-        ...label,
-        checked: false,
-      }),
-    ) ?? [];
+    labels.map((label) => ({
+      ...label,
+      checked: false,
+    })) ?? [];
 
   const { mutateAsync: addNewTask } = useCreateTaskMutation();
   const { mutate: addNewAssignee } = useCreateAssigneeMutation();

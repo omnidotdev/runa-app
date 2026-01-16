@@ -1,11 +1,7 @@
 fragment Task on Task {
   rowId
-  projectId
   columnId
   columnIndex
-  column {
-    ...Column
-  }
   content
   priority
   dueDate

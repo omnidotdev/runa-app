@@ -1,0 +1,7 @@
+query ProjectTaskIndex($projectId: UUID!) {
+  tasks(condition: { projectId: $projectId }, orderBy: CREATED_AT_ASC) {
+    nodes {
+      rowId
+    }
+  }
+}
