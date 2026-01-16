@@ -155,52 +155,15 @@ export async function getAuth(request: Request) {
       }
     }
 
-    // Explicitly construct the result object with only serializable properties
-    // to avoid spreading non-serializable data from better-auth session
-    // Note: better-auth returns { session: {...}, user: {...} } structure
-    const sessionData = session.session;
-    const userData = session.user;
-
     const result = {
-      // Session core fields (avoid spreading entire session which may have non-serializable data)
-      id: sessionData.id,
-      expiresAt:
-        sessionData.expiresAt instanceof Date
-          ? sessionData.expiresAt.toISOString()
-          : sessionData.expiresAt,
-      createdAt:
-        sessionData.createdAt instanceof Date
-          ? sessionData.createdAt.toISOString()
-          : sessionData.createdAt,
-      updatedAt:
-        sessionData.updatedAt instanceof Date
-          ? sessionData.updatedAt.toISOString()
-          : sessionData.updatedAt,
-      token: sessionData.token,
-      ipAddress: sessionData.ipAddress,
-      userAgent: sessionData.userAgent,
-      // OAuth tokens and claims
+      ...session,
       accessToken,
       organizations,
-      // User object with extended fields
       user: {
-        id: userData.id,
-        email: userData.email,
-        name: userData.name,
-        image: userData.image,
-        createdAt:
-          userData.createdAt instanceof Date
-            ? userData.createdAt.toISOString()
-            : userData.createdAt,
-        updatedAt:
-          userData.updatedAt instanceof Date
-            ? userData.updatedAt.toISOString()
-            : userData.updatedAt,
-        emailVerified: userData.emailVerified,
-        // Extended fields
+        ...session.user,
         rowId,
         identityProviderId,
-        username: userData.name || userData.email,
+        username: session.user.name || session.user.email,
       },
     };
 
