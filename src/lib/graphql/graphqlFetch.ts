@@ -2,7 +2,6 @@ import { parse } from "graphql";
 import { GraphQLClient, gql } from "graphql-request";
 
 import { API_GRAPHQL_URL } from "@/lib/config/env.config";
-import { fetchSession } from "@/server/functions/auth";
 
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import type { Variables } from "graphql-request";
@@ -11,6 +10,22 @@ type FetchOptions = {
   /** Request cache setting. */
   cache?: RequestCache;
 };
+
+// Module-level token storage for client-side requests
+let cachedAccessToken: string | null = null;
+
+/**
+ * Set the access token for GraphQL requests.
+ * Called during SSR/hydration to pass the token to client-side code.
+ */
+export const setGraphQLAccessToken = (token: string | null | undefined) => {
+  cachedAccessToken = token ?? null;
+};
+
+/**
+ * Get the current access token.
+ */
+export const getGraphQLAccessToken = () => cachedAccessToken;
 
 /**
  * GraphQL fetch wrapper. This is a wrapper around `graphql-request` that adds support for request options.
@@ -23,14 +38,12 @@ export const graphqlFetch =
     options?: (HeadersInit & FetchOptions) | FetchOptions,
   ) =>
   async (): Promise<TData> => {
-    const { session } = await fetchSession();
-
     const { cache, ...restOptions } = options || {};
 
     const client = new GraphQLClient(API_GRAPHQL_URL!, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.accessToken ?? ""}`,
+        Authorization: `Bearer ${cachedAccessToken ?? ""}`,
         ...restOptions,
       },
       cache,
