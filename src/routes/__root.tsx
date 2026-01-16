@@ -20,6 +20,7 @@ import {
   getFlag,
   getMaintenanceModeSync,
 } from "@/lib/flags";
+import { setGraphQLAccessToken } from "@/lib/graphql/graphqlFetch";
 import appCss from "@/lib/styles/globals.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import ThemeProvider from "@/providers/ThemeProvider";
@@ -151,7 +152,14 @@ function MaintenancePage() {
 }
 
 function RootComponent() {
-  const { isMaintenanceMode } = useRouteContext({ from: "__root__" });
+  const { isMaintenanceMode, session } = useRouteContext({ from: "__root__" });
+
+  // Sync access token to GraphQL client for client-side requests
+  // This runs on every render to keep the token in sync
+  // Using the already-imported setGraphQLAccessToken directly (not dynamic import)
+  if (session?.accessToken) {
+    setGraphQLAccessToken(session.accessToken);
+  }
 
   // Show maintenance page when flag is enabled
   if (isMaintenanceMode) {
