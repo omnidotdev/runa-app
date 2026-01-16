@@ -74,7 +74,7 @@ const Team = () => {
     }),
   });
 
-  const members = membersData?.members ?? [];
+  const members = membersData?.data ?? [];
 
   // Find current user's role from Gatekeeper members
   const currentUserMember = members.find(
