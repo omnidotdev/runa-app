@@ -1,4 +1,4 @@
-query ProjectBySlug($slug: String!, $organizationId: UUID!) {
+query ProjectBySlug($slug: String!, $organizationId: String!) {
   projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
     ...Project
     labels {
