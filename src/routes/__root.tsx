@@ -139,7 +139,7 @@ export const Route = createRootRouteWithContext<{
 
 function MaintenancePage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-zinc-900 to-zinc-800 p-8 text-white">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-linear-to-br from-zinc-900 to-zinc-800 p-8 text-white">
       <div className="text-center">
         <div className="mb-6 text-9xl">🌙</div>
         <h1 className="mb-4 font-bold text-4xl">In a Lunar Phase</h1>
