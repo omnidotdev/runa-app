@@ -1,5 +1,5 @@
 import { useMenu } from "@ark-ui/react";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   useLoaderData,
   useNavigate,
@@ -62,9 +62,10 @@ const Filter = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const triggerId = useId();
 
-  const { data: projectLabels = [] } = useSuspenseQuery({
+  const { data: projectLabels = [] } = useQuery({
     ...labelsOptions({ projectId }),
     select: (data) => data?.labels?.nodes ?? [],
+    enabled: !!projectId,
   });
 
   // Fetch organization members from IDP
@@ -76,7 +77,7 @@ const Filter = () => {
     enabled: !!organizationId && !!session?.accessToken,
   });
 
-  const users = membersData?.members ?? [];
+  const users = membersData?.data ?? [];
 
   useHotkeys(Hotkeys.ToggleFilter, () => setIsFilterOpen(!isFilterOpen), [
     isFilterOpen,
