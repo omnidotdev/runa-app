@@ -61,7 +61,7 @@ const UpdateAssigneesDialog = () => {
     enabled: !!organizationId && !!session?.accessToken,
   });
 
-  const members = membersData?.members ?? [];
+  const members = membersData?.data ?? [];
 
   useHotkeys(
     Hotkeys.UpdateAssignees,

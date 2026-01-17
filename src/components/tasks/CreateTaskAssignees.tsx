@@ -45,7 +45,7 @@ const CreateTaskAssignees = withForm({
       enabled: !!organizationId && !!session?.accessToken,
     });
 
-    const users = membersData?.members ?? [];
+    const users = membersData?.data ?? [];
 
     const field = useField({ form, name: "assignees" });
 

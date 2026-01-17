@@ -58,7 +58,7 @@ const UpdateAssignees = withForm({
       enabled: !!organizationId && !!session?.accessToken,
     });
 
-    const members = membersData?.members ?? [];
+    const members = membersData?.data ?? [];
 
     const { collection: usersCollection, filter } =
       useListCollection<WorkspaceUser>({
