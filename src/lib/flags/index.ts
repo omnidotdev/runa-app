@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { isEnabled } from "./client";
 
 export const FLAGS = {
-  MAINTENANCE: "runa-maintenance-mode",
+  MAINTENANCE: "runa-app-maintenance-mode",
 } as const;
 
 /**
