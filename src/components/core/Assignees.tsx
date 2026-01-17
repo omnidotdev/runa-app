@@ -35,7 +35,7 @@ const Assignees = ({
     enabled: !!organizationId && !!session?.accessToken,
   });
 
-  const members = membersData?.members ?? [];
+  const members = membersData?.data ?? [];
 
   const assignedUsers = members.filter((member) =>
     assignees?.includes(member.userId),

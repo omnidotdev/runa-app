@@ -75,7 +75,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     }),
   });
 
-  const memberCount = membersData?.members?.length ?? 0;
+  const memberCount = membersData?.data?.length ?? 0;
 
   // Derive tier from subscription
   const tier = getTierFromSubscription(
