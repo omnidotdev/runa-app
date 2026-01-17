@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { all } from "better-all";
 import { useRef } from "react";
@@ -54,9 +54,10 @@ const CreateTaskDialog = () => {
     select: (data) => data?.project,
   });
 
-  const { data: labels } = useSuspenseQuery({
+  const { data: labels } = useQuery({
     ...labelsOptions({ projectId }),
     select: (data) => data?.labels?.nodes ?? [],
+    enabled: !!projectId,
   });
 
   const defaultColumnId = project?.columns?.nodes?.[0]?.rowId! ?? null;
@@ -88,7 +89,7 @@ const CreateTaskDialog = () => {
     rowId: string;
     checked: boolean;
   }[] =
-    labels.map((label) => ({
+    labels?.map((label) => ({
       ...label,
       checked: false,
     })) ?? [];

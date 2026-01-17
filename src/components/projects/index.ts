@@ -10,4 +10,5 @@ export { default as ProjectDangerZone } from "./ProjectDangerZone";
 export { default as ProjectDataSection } from "./ProjectDataSection";
 export { default as ProjectLabelForm } from "./ProjectLabelForm";
 export { default as ProjectLabelsForm } from "./ProjectLabelsForm";
+export { default as ProjectPageSkeleton } from "./ProjectPageSkeleton";
 export { default as ProjectSettingsHeader } from "./ProjectSettingsHeader";

@@ -22,7 +22,7 @@ import { z } from "zod";
 
 import { Link, RichTextEditor, Tooltip } from "@/components/core";
 import { NotFound } from "@/components/layout";
-import { Board, List } from "@/components/projects";
+import { Board, List, ProjectPageSkeleton } from "@/components/projects";
 import {
   CreateTaskDialog,
   Filter,
@@ -74,10 +74,8 @@ const projectSearchParamsSchema = z.object({
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
 )({
-  // TODO: scaffold out. `loader` work takes longer than the preload of `intent` so without the `pendingComponent` we get flash of content
-  // pendingComponent: () => (
-  //   <div className="flex size-full items-center justify-center">Loading...</div>
-  // ),
+  pendingComponent: ProjectPageSkeleton,
+  pendingMinMs: 500,
   loaderDeps: ({ search: { search, assignees, labels, priorities } }) => ({
     search,
     assignees,
