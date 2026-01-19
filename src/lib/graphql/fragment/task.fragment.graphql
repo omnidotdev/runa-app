@@ -1,5 +1,6 @@
 fragment Task on Task {
   rowId
+  number
   columnId
   columnIndex
   content

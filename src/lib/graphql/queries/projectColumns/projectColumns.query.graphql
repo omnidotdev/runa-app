@@ -1,4 +1,4 @@
-query ProjectColumns($organizationId: String!, $search: String = "") {
+query ProjectColumns($organizationId: UUID!, $search: String = "") {
   projectColumns(
     condition: { organizationId: $organizationId }
     orderBy: INDEX_ASC

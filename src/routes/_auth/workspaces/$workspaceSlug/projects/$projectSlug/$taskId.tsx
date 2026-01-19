@@ -43,7 +43,6 @@ import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
-import projectTaskIndexOptions from "@/lib/options/projectTaskIndex.options";
 import taskOptions from "@/lib/options/task.options";
 import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -76,12 +75,6 @@ export const Route = createFileRoute(
         );
         if (!task) throw notFound();
         return task;
-      },
-      async taskIndex() {
-        const project = await this.$.project;
-        return queryClient.ensureQueryData(
-          projectTaskIndexOptions({ projectId: project.rowId }),
-        );
       },
     });
 
@@ -185,16 +178,6 @@ function TaskPage() {
 
   const handleTaskUpdate = useDebounceCallback(updateTask, 300);
 
-  const { data: taskIndexNodes } = useSuspenseQuery({
-    ...projectTaskIndexOptions({ projectId }),
-    select: (data) => data?.tasks?.nodes ?? [],
-  });
-
-  const rawTaskIndex = taskIndexNodes.findIndex(
-    (task) => task.rowId === taskId,
-  );
-  const taskIndex = rawTaskIndex < 0 ? 0 : rawTaskIndex;
-
   const { setIsOpen: setIsUpdateDueDateDialogOpen } = useDialogStore({
     type: DialogType.UpdateDueDate,
   });
@@ -245,7 +228,7 @@ function TaskPage() {
           />
 
           <div className="flex items-center gap-2 font-mono text-base-500 text-sm dark:text-base-400">
-            {`${project?.prefix ? project.prefix : "PROJ"}-${(taskIndex ?? 0) + 1}`}
+            {`${project?.prefix ? project.prefix : "PROJ"}-${task?.number}`}
           </div>
         </div>
       </div>

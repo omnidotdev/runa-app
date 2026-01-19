@@ -50,7 +50,6 @@ import useDragStore from "@/lib/hooks/store/useDragStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
-import projectTaskIndexOptions from "@/lib/options/projectTaskIndex.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
@@ -127,12 +126,6 @@ export const Route = createFileRoute(
               : undefined,
             priorities: priorities.length ? priorities : undefined,
           }),
-        );
-      },
-      async taskIndex() {
-        const project = await this.$.project;
-        return queryClient.ensureQueryData(
-          projectTaskIndexOptions({ projectId: project.rowId }),
         );
       },
     });
