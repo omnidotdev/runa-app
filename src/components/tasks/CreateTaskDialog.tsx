@@ -81,7 +81,7 @@ const CreateTaskDialog = () => {
     [maxTasksReached],
   );
 
-  const totalTasks = project?.tasks?.totalCount ?? 0;
+  const nextTaskNumber = project?.nextTaskNumber ?? 1;
 
   const projectLabels: {
     name: string;
@@ -142,7 +142,7 @@ const CreateTaskDialog = () => {
                     ? new Date(value.dueDate)
                     : undefined,
                   priority: value.priority,
-                  columnIndex: totalTasks ?? 0,
+                  columnIndex: project?.tasks?.totalCount ?? 0,
                 },
               },
             });
@@ -235,8 +235,8 @@ const CreateTaskDialog = () => {
 
           <span className="text-nowrap font-medium font-mono text-base-400 dark:text-base-500">
             {project?.prefix
-              ? `${project?.prefix}-${totalTasks}`
-              : `PROJ-${totalTasks}`}
+              ? `${project?.prefix}-${nextTaskNumber}`
+              : `PROJ-${nextTaskNumber}`}
           </span>
 
           <form

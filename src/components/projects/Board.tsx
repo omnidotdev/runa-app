@@ -1,7 +1,7 @@
 import { Droppable } from "@hello-pangea/dnd";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 import { ColumnHeader } from "@/components/core";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -10,7 +10,6 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
-import projectTaskIndexOptions from "@/lib/options/projectTaskIndex.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -120,20 +119,7 @@ const Board = ({ tasks }: Props) => {
     }),
   });
 
-  const { data: taskIndexNodes } = useSuspenseQuery({
-    ...projectTaskIndexOptions({ projectId }),
-    select: (data) => data?.tasks?.nodes ?? [],
-  });
-
-  const taskIndexById = useMemo(
-    () =>
-      new Map((taskIndexNodes ?? []).map((task, index) => [task.rowId, index])),
-    [taskIndexNodes],
-  );
-
   const maxTasksReached = useMaxTasksReached();
-
-  const taskIndex = (taskId: string) => taskIndexById.get(taskId) ?? 0;
 
   return (
     <div
@@ -197,18 +183,14 @@ const Board = ({ tasks }: Props) => {
                       <div className="no-scrollbar flex h-full flex-col overflow-y-auto">
                         {tasks
                           .filter((task) => task.columnId === column.rowId)
-                          .map((task, index) => {
-                            const displayId = `${project?.prefix ?? "PROJ"}-${taskIndex(task.rowId) + 1}`;
-
-                            return (
-                              <BoardItem
-                                key={task.rowId}
-                                task={task}
-                                index={index}
-                                displayId={displayId}
-                              />
-                            );
-                          })}
+                          .map((task, index) => (
+                            <BoardItem
+                              key={task.rowId}
+                              task={task}
+                              index={index}
+                              displayId={`${project?.prefix ?? "PROJ"}-${task.number}`}
+                            />
+                          ))}
                         {provided.placeholder}
                       </div>
                     </div>

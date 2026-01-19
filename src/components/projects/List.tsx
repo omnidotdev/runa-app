@@ -1,7 +1,6 @@
 import { Droppable } from "@hello-pangea/dnd";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { useMemo } from "react";
 
 import { ColumnTrigger } from "@/components/core";
 import {
@@ -12,7 +11,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
-import projectTaskIndexOptions from "@/lib/options/projectTaskIndex.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -74,20 +72,7 @@ const List = ({
     }),
   });
 
-  const { data: taskIndexNodes } = useSuspenseQuery({
-    ...projectTaskIndexOptions({ projectId }),
-    select: (data) => data?.tasks?.nodes ?? [],
-  });
-
-  const taskIndexById = useMemo(
-    () =>
-      new Map((taskIndexNodes ?? []).map((task, index) => [task.rowId, index])),
-    [taskIndexNodes],
-  );
-
   const maxTasksReached = useMaxTasksReached();
-
-  const taskIndex = (taskId: string) => taskIndexById.get(taskId) ?? 0;
 
   return (
     <div
@@ -176,18 +161,14 @@ const List = ({
                         No tasks
                       </p>
                     ) : (
-                      columnTasks.map((task, index) => {
-                        const displayId = `${project?.prefix ?? "PROJ"}-${taskIndex(task.rowId) + 1}`;
-
-                        return (
-                          <ListItem
-                            key={task.rowId}
-                            task={task}
-                            index={index}
-                            displayId={displayId}
-                          />
-                        );
-                      })
+                      columnTasks.map((task, index) => (
+                        <ListItem
+                          key={task.rowId}
+                          task={task}
+                          index={index}
+                          displayId={`${project?.prefix ?? "PROJ"}-${task.number}`}
+                        />
+                      ))
                     )}
                     {provided.placeholder}
                   </div>
