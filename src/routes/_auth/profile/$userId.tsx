@@ -56,7 +56,7 @@ function ProfilePage() {
               <TabsContent value="account">
                 <div className="mt-4 space-y-8">
                   <div className="space-y-4">
-                    <h2 className="font-bold text-lg">Current Workspaces</h2>
+                    <h2 className="font-bold text-lg">Workspaces</h2>
                     <WorkspacesTable organizations={organizations} />
                   </div>
 
