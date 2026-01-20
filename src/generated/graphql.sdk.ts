@@ -8143,13 +8143,6 @@ export type DeleteUserMutationVariables = Exact<{
 
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser?: { __typename?: 'DeleteUserPayload', clientMutationId?: string | null } | null };
 
-export type ColumnQueryVariables = Exact<{
-  columnId: Scalars['UUID']['input'];
-}>;
-
-
-export type ColumnQuery = { __typename?: 'Query', column?: { __typename?: 'Column', tasks: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string }> } } | null };
-
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -8211,6 +8204,14 @@ export type ProjectsQueryVariables = Exact<{
 
 
 export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, color?: string | null, viewMode: string }> }, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
+
+export type ProjectsSidebarQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+}>;
+
+
+export type ProjectsSidebarQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, color?: string | null, viewMode: string }> } }> } | null };
 
 export type SettingByOrganizationIdQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -8608,17 +8609,6 @@ export const DeleteUserDocument = gql`
   }
 }
     `;
-export const ColumnDocument = gql`
-    query Column($columnId: UUID!) {
-  column(rowId: $columnId) {
-    tasks {
-      nodes {
-        rowId
-      }
-    }
-  }
-}
-    `;
 export const ColumnsDocument = gql`
     query Columns($projectId: UUID!) {
   columns(condition: {projectId: $projectId}, orderBy: INDEX_ASC) {
@@ -8740,6 +8730,27 @@ export const ProjectsDocument = gql`
   }
 }
     ${ProjectFragmentDoc}`;
+export const ProjectsSidebarDocument = gql`
+    query ProjectsSidebar($organizationId: String!, $userId: UUID) {
+  projects(
+    condition: {organizationId: $organizationId}
+    orderBy: COLUMN_INDEX_ASC
+  ) {
+    nodes {
+      rowId
+      name
+      slug
+      userPreferences(condition: {userId: $userId}, first: 1) {
+        nodes {
+          rowId
+          color
+          viewMode
+        }
+      }
+    }
+  }
+}
+    `;
 export const SettingByOrganizationIdDocument = gql`
     query SettingByOrganizationId($organizationId: String!) {
   settingByOrganizationId(organizationId: $organizationId) {
@@ -8949,9 +8960,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     DeleteUser(variables: DeleteUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DeleteUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeleteUserMutation>({ document: DeleteUserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DeleteUser', 'mutation', variables);
     },
-    Column(variables: ColumnQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ColumnQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<ColumnQuery>({ document: ColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Column', 'query', variables);
-    },
     Columns(variables: ColumnsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ColumnsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ColumnsQuery>({ document: ColumnsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Columns', 'query', variables);
     },
@@ -8975,6 +8983,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Projects(variables: ProjectsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ProjectsQuery>({ document: ProjectsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Projects', 'query', variables);
+    },
+    ProjectsSidebar(variables: ProjectsSidebarQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ProjectsSidebarQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ProjectsSidebarQuery>({ document: ProjectsSidebarDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'ProjectsSidebar', 'query', variables);
     },
     SettingByOrganizationId(variables: SettingByOrganizationIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<SettingByOrganizationIdQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<SettingByOrganizationIdQuery>({ document: SettingByOrganizationIdDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'SettingByOrganizationId', 'query', variables);

@@ -1,5 +1,10 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useNavigate, useParams } from "@tanstack/react-router";
+import {
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useRouteContext,
+} from "@tanstack/react-router";
 import {
   MoreHorizontalIcon,
   Plus,
@@ -40,6 +45,10 @@ const Projects = () => {
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
+  });
+
   const [selectedProject, setSelectedProject] = useState<{
     rowId: string;
     name: string;
@@ -50,7 +59,10 @@ const Projects = () => {
 
   // Fetch projects for this organization
   const { data: projects } = useSuspenseQuery({
-    ...projectsOptions({ organizationId: organizationId! }),
+    ...projectsOptions({
+      organizationId: organizationId!,
+      userId: session?.user?.rowId,
+    }),
     select: (data) =>
       [...(data?.projects?.nodes ?? [])].sort((a, b) =>
         a.name.localeCompare(b.name),

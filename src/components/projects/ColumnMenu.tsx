@@ -1,4 +1,4 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { EyeOffIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 
@@ -20,7 +20,6 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
-import columnOptions from "@/lib/options/column.options";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { Role } from "@/lib/permissions";
@@ -29,9 +28,10 @@ import { cn } from "@/lib/utils";
 
 interface Props {
   columnId: string;
+  taskIds: string[];
 }
 
-const ColumnMenu = ({ columnId }: Props) => {
+const ColumnMenu = ({ columnId, taskIds }: Props) => {
   const { projectId, organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
@@ -65,11 +65,6 @@ const ColumnMenu = ({ columnId }: Props) => {
     }),
     select: (data) =>
       data?.project?.columns?.nodes?.find((col) => col.rowId === columnId),
-  });
-
-  const { data: taskIds } = useQuery({
-    ...columnOptions({ columnId }),
-    select: (data) => data?.column?.tasks?.nodes?.map((task) => task.rowId),
   });
 
   const { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
@@ -138,7 +133,7 @@ const ColumnMenu = ({ columnId }: Props) => {
                 isMember && "hidden",
               )}
               variant="destructive"
-              disabled={!taskIds?.length}
+              disabled={!taskIds.length}
               onClick={() => {
                 setStoredColumnId(columnId);
                 setIsOpen(true);
@@ -158,7 +153,7 @@ const ColumnMenu = ({ columnId }: Props) => {
           confirmation={`permanently delete ${column?.title} tasks`}
           dialogType={DialogType.DeleteColumnTasks}
           onConfirm={() => {
-            if (taskIds?.length) {
+            if (taskIds.length) {
               for (const taskId of taskIds) {
                 deleteTask({ rowId: taskId });
               }
