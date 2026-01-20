@@ -8,7 +8,7 @@ import {
   TagIcon,
   UserIcon,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Shortcut, Tooltip } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/dialog";
 import signIn from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
+import useAutoScrollOnDrag from "@/lib/hooks/useAutoScrollOnDrag";
+import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
 import DemoBoardItem from "./DemoBoardItem";
@@ -45,6 +47,7 @@ const DEMO_PROJECT_PREFIX = "DEMO";
 const COLUMN_WIDTH = 320;
 const COLUMN_GAP = 12;
 const CONTAINER_PADDING = 32; // p-4 = 16px * 2
+const BOARD_HEIGHT = 420; // Fixed height to prevent layout shift
 
 /**
  * Demo board for users to try the app.
@@ -54,10 +57,21 @@ const DemoBoard = () => {
   const [tasks, setTasks] = useState<DemoTask[]>(initialDemoTasks);
   const [selectedTask, setSelectedTask] = useState<DemoTask | null>(null);
   const [viewMode, setViewMode] = useState<"board" | "list">("board");
-  const [_isDragging, setIsDragging] = useState(false);
   const [columnOpenStates, setColumnOpenStates] = useState(
     demoColumns.map(() => true),
   );
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isInViewport, setIsInViewport] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Inertial scroll for drag-to-scroll with momentum
+  const {
+    scrollContainerRef,
+    handleMouseDown,
+    handleMouseUp,
+    handleMouseMove,
+    handleMouseLeave,
+  } = useInertialScroll();
 
   const toggleViewMode = useCallback(
     () => setViewMode((prev) => (prev === "board" ? "list" : "board")),
@@ -69,8 +83,24 @@ const DemoBoard = () => {
     [theme, setTheme],
   );
 
-  // Keyboard shortcuts
+  // Track viewport visibility
   useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInViewport(entry.isIntersecting),
+      { threshold: 0.1 },
+    );
+
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  // Keyboard shortcuts (only when in viewport)
+  useEffect(() => {
+    if (!isInViewport) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
         e.metaKey ||
@@ -91,7 +121,13 @@ const DemoBoard = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [toggleViewMode, toggleTheme]);
+  }, [toggleViewMode, toggleTheme, isInViewport]);
+
+  // Auto-scroll when dragging near edges
+  useAutoScrollOnDrag({
+    isDragging: isDragging && viewMode === "board",
+    scrollContainerRef,
+  });
 
   const onDragStart = (_start: DragStart) => {
     setIsDragging(true);
@@ -177,8 +213,8 @@ const DemoBoard = () => {
 
   return (
     <div
-      className="overflow-hidden rounded-2xl bg-white/95 ring-1 ring-primary-500/10 dark:bg-base-900/95"
-      style={{ width: boardWidth }}
+      ref={containerRef}
+      className="max-w-full overflow-hidden rounded-2xl bg-white/95 ring-1 ring-primary-500/10 dark:bg-base-900/95"
     >
       {/* Toolbar header */}
       <div className="flex items-center justify-end gap-1 border-primary-500/10 border-b px-4 py-2">
@@ -233,27 +269,34 @@ const DemoBoard = () => {
       <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
         {viewMode === "board" ? (
           <div
-            className="bg-primary-100/30 p-4 dark:bg-primary-950/15"
-            style={{ width: boardWidth }}
+            ref={scrollContainerRef}
+            className="custom-scrollbar max-w-full cursor-grab overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
+            style={{ height: BOARD_HEIGHT }}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
           >
-            <div className="flex gap-3">
+            <div className="flex h-full w-max gap-3 p-4">
               {demoColumns.map((column) => {
                 const columnTasks = getColumnTasks(column.rowId);
 
                 return (
                   <div
                     key={column.rowId}
-                    className="relative flex w-[320px] flex-col gap-2"
+                    className="relative flex h-full w-80 shrink-0 flex-col gap-2"
                   >
                     {/* column header */}
-                    <div className="mb-1 flex items-center gap-2 rounded-lg py-2">
-                      <span>{column.emoji}</span>
-                      <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
-                        {column.title}
-                      </h3>
-                      <span className="flex size-7 items-center justify-center rounded-full font-semibold text-foreground text-xs tabular-nums">
-                        {columnTasks.length}
-                      </span>
+                    <div className="mb-1 flex items-center justify-between rounded-lg py-2">
+                      <div className="flex items-center gap-2">
+                        <span>{column.emoji}</span>
+                        <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
+                          {column.title}
+                        </h3>
+                        <span className="flex size-7 items-center justify-center rounded-full font-semibold text-foreground text-xs tabular-nums">
+                          {columnTasks.length}
+                        </span>
+                      </div>
                     </div>
 
                     {/* droppable column */}
@@ -263,8 +306,7 @@ const DemoBoard = () => {
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                           className={cn(
-                            "flex flex-1 flex-col rounded-xl",
-                            "h-80 overflow-y-auto transition-colors",
+                            "custom-scrollbar flex flex-1 flex-col overflow-y-auto rounded-xl",
                             snapshot.isDraggingOver &&
                               "bg-primary-100/40 dark:bg-primary-950/40",
                           )}
@@ -276,6 +318,7 @@ const DemoBoard = () => {
                               index={index}
                               displayId={getDisplayId(task)}
                               onSelect={() => setSelectedTask(task)}
+                              isFirst={index === 0}
                             />
                           ))}
                           {provided.placeholder}
@@ -288,7 +331,10 @@ const DemoBoard = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-primary-100/30 p-4 dark:bg-primary-950/15">
+          <div
+            className="custom-scrollbar overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/15"
+            style={{ height: BOARD_HEIGHT, width: boardWidth }}
+          >
             {demoColumns.map((column, index) => {
               const columnTasks = getColumnTasks(column.rowId);
 

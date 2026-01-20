@@ -12,12 +12,19 @@ interface Props {
   index: number;
   displayId: string;
   onSelect: () => void;
+  isFirst?: boolean;
 }
 
 /**
  * Item on the demo board.
  */
-const DemoBoardItem = ({ task, index, displayId, onSelect }: Props) => (
+const DemoBoardItem = ({
+  task,
+  index,
+  displayId,
+  onSelect,
+  isFirst,
+}: Props) => (
   <Draggable draggableId={task.rowId} index={index}>
     {(provided, snapshot) => (
       <div
@@ -34,7 +41,8 @@ const DemoBoardItem = ({ task, index, displayId, onSelect }: Props) => (
           }
         }}
         className={cn(
-          "mb-2 h-35 shrink-0 cursor-pointer overflow-hidden rounded-lg border bg-background p-3 outline-hidden dark:border-border",
+          "mb-2 h-35 shrink-0 cursor-pointer overflow-hidden border bg-background p-3 outline-hidden dark:border-border",
+          isFirst ? "rounded-xl" : "rounded-lg",
           snapshot.isDragging
             ? "cursor-grabbing shadow-xl ring-2 ring-primary-500/30"
             : "hover:shadow-sm dark:shadow-gray-400/10",
