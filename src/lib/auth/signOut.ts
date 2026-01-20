@@ -1,4 +1,5 @@
 import authClient from "@/lib/auth/authClient";
+import { clearRowIdCache } from "@/server/functions/auth";
 
 /**
  * Sign out from the application.
@@ -9,7 +10,9 @@ import authClient from "@/lib/auth/authClient";
 const signOut = async () => {
   await authClient.signOut({
     fetchOptions: {
-      onSuccess: () => {
+      onSuccess: async () => {
+        // Clear the rowId cache cookie
+        await clearRowIdCache();
         window.location.href = "/";
       },
     },

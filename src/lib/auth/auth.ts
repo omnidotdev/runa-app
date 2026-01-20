@@ -1,7 +1,9 @@
+import { getCookie } from "@tanstack/react-start/server";
 import { betterAuth } from "better-auth/minimal";
-import { genericOAuth } from "better-auth/plugins";
+import { customSession, genericOAuth } from "better-auth/plugins";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
+import { COOKIE_NAME, decryptCache } from "@/lib/auth/rowIdCache";
 import {
   AUTH_BASE_URL,
   AUTH_CLIENT_ID,
@@ -69,6 +71,35 @@ const auth = betterAuth({
           }),
         },
       ],
+    }),
+    customSession(async ({ user, session }) => {
+      // Try to get rowId and identityProviderId from cache
+      // The identityProviderId (IDP sub) is stored in the cache and extracted
+      // from the ID token in getAuth().
+      let rowId: string | null = null;
+      let identityProviderId: string | null = null;
+
+      const cachedValue = getCookie(COOKIE_NAME);
+      if (cachedValue) {
+        const cached = await decryptCache(cachedValue);
+        if (cached) {
+          rowId = cached.rowId;
+          identityProviderId = cached.identityProviderId;
+        }
+      }
+
+      // If cache miss, rowId and identityProviderId will be null.
+      // The getAuth() function will handle fetching from the API and
+      // populating the cache when it has access to the ID token.
+
+      return {
+        user: {
+          ...user,
+          rowId,
+          identityProviderId,
+        },
+        session,
+      };
     }),
     // NB: must be the last plugin in the array
     tanstackStartCookies(),

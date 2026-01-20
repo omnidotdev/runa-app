@@ -21,6 +21,9 @@ certificates
 # environment
 *.env*
 
+# typescript
+tsconfig.tsbuildinfo
+
 # below are safe to commit
 !.env
 !.env.development

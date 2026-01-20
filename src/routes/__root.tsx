@@ -14,7 +14,7 @@ import { DefaultCatchBoundary } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
 import { fetchMaintenanceMode } from "@/lib/flags";
-import { setGraphQLAccessToken } from "@/lib/graphql/graphqlFetch";
+import { setAccessToken } from "@/lib/graphql/graphqlClientFactory";
 import appCss from "@/lib/styles/globals.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import ThemeProvider from "@/providers/ThemeProvider";
@@ -138,7 +138,7 @@ function RootComponent() {
 
   // Sync access token to GraphQL client for client-side requests
   if (session?.accessToken) {
-    setGraphQLAccessToken(session.accessToken);
+    setAccessToken(session.accessToken);
   }
 
   // Show maintenance page when flag is enabled

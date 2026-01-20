@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { OverviewBoard, OverviewList } from "@/components/workspaces";
 import {
-  useCreateProjectColumnMutation,
   useProjectQuery,
   useProjectsQuery,
   useSettingByOrganizationIdQuery,
@@ -43,12 +42,6 @@ import { cn } from "@/lib/utils";
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
 import type { ProjectsQuery } from "@/generated/graphql";
-
-const DEFAULT_PROJECT_COLUMNS = [
-  { title: "Planned", index: 0, emoji: "🗓" },
-  { title: "In Progress", index: 1, emoji: "🚧" },
-  { title: "Completed", index: 2, emoji: "✅" },
-];
 
 const projectsSearchSchema = z.object({
   search: z.string().default(""),
@@ -79,29 +72,6 @@ export const Route = createFileRoute(
         );
       },
       async projectColumns() {
-        const { projectColumns } = await queryClient.ensureQueryData(
-          projectColumnsOptions({
-            organizationId,
-          }),
-        );
-
-        // Handle scenario where a workspace has no project columns.
-        if (!projectColumns?.nodes.length) {
-          await Promise.all(
-            DEFAULT_PROJECT_COLUMNS.map(
-              async (data) =>
-                await useCreateProjectColumnMutation.fetcher({
-                  input: {
-                    projectColumn: {
-                      organizationId,
-                      ...data,
-                    },
-                  },
-                })(),
-            ),
-          );
-        }
-
         return queryClient.ensureQueryData(
           projectColumnsOptions({
             organizationId,
