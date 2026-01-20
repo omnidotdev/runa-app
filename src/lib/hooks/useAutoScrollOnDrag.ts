@@ -15,7 +15,7 @@ interface UseAutoScrollOnDragOptions {
 
 /**
  * Auto-scroll a container when dragging near its edges.
- * When a drag operation is in progress and the mouse moves near the left or right
+ * When a drag operation is in progress and the pointer moves near the left or right
  * edge of the container, this hook will automatically scroll in that direction.
  */
 const useAutoScrollOnDrag = ({
@@ -30,25 +30,34 @@ const useAutoScrollOnDrag = ({
     let animationFrameId: number;
     let scrollSpeed = 0;
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const updateScrollSpeed = (clientX: number) => {
       const container = scrollContainerRef.current;
       if (!container) return;
 
       const rect = container.getBoundingClientRect();
-      const mouseX = e.clientX;
 
-      if (mouseX < rect.left + edgeThreshold) {
-        // Mouse near left edge - scroll left
-        const distanceFromEdge = mouseX - rect.left;
+      if (clientX < rect.left + edgeThreshold) {
+        // Pointer near left edge - scroll left
+        const distanceFromEdge = clientX - rect.left;
         const intensity = 1 - distanceFromEdge / edgeThreshold;
         scrollSpeed = -maxScrollSpeed * intensity ** 2;
-      } else if (mouseX > rect.right - edgeThreshold) {
-        // Mouse near right edge - scroll right
-        const distanceFromEdge = rect.right - mouseX;
+      } else if (clientX > rect.right - edgeThreshold) {
+        // Pointer near right edge - scroll right
+        const distanceFromEdge = rect.right - clientX;
         const intensity = 1 - distanceFromEdge / edgeThreshold;
         scrollSpeed = maxScrollSpeed * intensity ** 2;
       } else {
         scrollSpeed = 0;
+      }
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      updateScrollSpeed(e.clientX);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        updateScrollSpeed(e.touches[0].clientX);
       }
     };
 
@@ -61,10 +70,12 @@ const useAutoScrollOnDrag = ({
     };
 
     document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("touchmove", handleTouchMove, { passive: true });
     animationFrameId = requestAnimationFrame(scrollStep);
 
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("touchmove", handleTouchMove);
       cancelAnimationFrame(animationFrameId);
     };
   }, [isDragging, scrollContainerRef, edgeThreshold, maxScrollSpeed]);
