@@ -89,7 +89,10 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
       userId: session?.user?.rowId!,
     }),
     enabled: !!organizationId,
-    select: (data) => data.projects?.nodes,
+    select: (data) =>
+      data.projects?.nodes?.toSorted((a, b) =>
+        a.name.localeCompare(b.name, undefined, { sensitivity: "base" }),
+      ),
   });
 
   const { data: projectColumns } = useQuery({
