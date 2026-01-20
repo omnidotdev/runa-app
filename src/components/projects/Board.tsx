@@ -1,6 +1,7 @@
 import { Droppable } from "@hello-pangea/dnd";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { useMemo } from "react";
 
 import { ColumnHeader } from "@/components/core";
 import {
@@ -30,6 +31,18 @@ interface Props {
 const Board = ({ tasks }: Props) => {
   const { theme } = useTheme();
   const { isDragging } = useDragStore();
+
+  // Compute task IDs by column to pass to ColumnMenu (avoids N+1 Column queries)
+  const taskIdsByColumn = useMemo(() => {
+    return tasks.reduce(
+      (acc, task) => {
+        if (!acc[task.columnId]) acc[task.columnId] = [];
+        acc[task.columnId].push(task.rowId);
+        return acc;
+      },
+      {} as Record<string, string[]>,
+    );
+  }, [tasks]);
 
   // Inertial scroll for drag-to-scroll with momentum
   const {
@@ -117,7 +130,10 @@ const Board = ({ tasks }: Props) => {
                 // TODO: tooltip for disabled state
                 disabled={maxTasksReached}
               >
-                <ColumnMenu columnId={column.rowId} />
+                <ColumnMenu
+                  columnId={column.rowId}
+                  taskIds={taskIdsByColumn[column.rowId] ?? []}
+                />
               </ColumnHeader>
 
               <div className="flex h-full overflow-hidden">

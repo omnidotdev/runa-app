@@ -8142,13 +8142,6 @@ export type DeleteUserMutationVariables = Exact<{
 
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser?: { __typename?: 'DeleteUserPayload', clientMutationId?: string | null } | null };
 
-export type ColumnQueryVariables = Exact<{
-  columnId: Scalars['UUID']['input'];
-}>;
-
-
-export type ColumnQuery = { __typename?: 'Query', column?: { __typename?: 'Column', tasks: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string }> } } | null };
-
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -8210,6 +8203,14 @@ export type ProjectsQueryVariables = Exact<{
 
 
 export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, color?: string | null, viewMode: string }> }, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
+
+export type ProjectsSidebarQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+}>;
+
+
+export type ProjectsSidebarQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, color?: string | null, viewMode: string }> } }> } | null };
 
 export type SettingByOrganizationIdQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -9178,99 +9179,6 @@ useDeleteUserMutation.getKey = () => ['DeleteUser'];
 
 useDeleteUserMutation.fetcher = (variables: DeleteUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, variables, options);
 
-export const ColumnDocument = `
-    query Column($columnId: UUID!) {
-  column(rowId: $columnId) {
-    tasks {
-      nodes {
-        rowId
-      }
-    }
-  }
-}
-    `;
-
-export const useColumnQuery = <
-      TData = ColumnQuery,
-      TError = unknown
-    >(
-      variables: ColumnQueryVariables,
-      options?: Omit<UseQueryOptions<ColumnQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ColumnQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<ColumnQuery, TError, TData>(
-      {
-    queryKey: ['Column', variables],
-    queryFn: graphqlFetch<ColumnQuery, ColumnQueryVariables>(ColumnDocument, variables),
-    ...options
-  }
-    )};
-
-useColumnQuery.getKey = (variables: ColumnQueryVariables) => ['Column', variables];
-
-export const useSuspenseColumnQuery = <
-      TData = ColumnQuery,
-      TError = unknown
-    >(
-      variables: ColumnQueryVariables,
-      options?: Omit<UseSuspenseQueryOptions<ColumnQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<ColumnQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useSuspenseQuery<ColumnQuery, TError, TData>(
-      {
-    queryKey: ['ColumnSuspense', variables],
-    queryFn: graphqlFetch<ColumnQuery, ColumnQueryVariables>(ColumnDocument, variables),
-    ...options
-  }
-    )};
-
-useSuspenseColumnQuery.getKey = (variables: ColumnQueryVariables) => ['ColumnSuspense', variables];
-
-export const useInfiniteColumnQuery = <
-      TData = InfiniteData<ColumnQuery>,
-      TError = unknown
-    >(
-      variables: ColumnQueryVariables,
-      options: Omit<UseInfiniteQueryOptions<ColumnQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ColumnQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useInfiniteQuery<ColumnQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['Column.infinite', variables],
-      queryFn: (metaData) => graphqlFetch<ColumnQuery, ColumnQueryVariables>(ColumnDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useInfiniteColumnQuery.getKey = (variables: ColumnQueryVariables) => ['Column.infinite', variables];
-
-export const useSuspenseInfiniteColumnQuery = <
-      TData = InfiniteData<ColumnQuery>,
-      TError = unknown
-    >(
-      variables: ColumnQueryVariables,
-      options: Omit<UseSuspenseInfiniteQueryOptions<ColumnQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<ColumnQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useSuspenseInfiniteQuery<ColumnQuery, TError, TData>(
-      (() => {
-    const { queryKey: optionsQueryKey, ...restOptions } = options;
-    return {
-      queryKey: optionsQueryKey ?? ['Column.infiniteSuspense', variables],
-      queryFn: (metaData) => graphqlFetch<ColumnQuery, ColumnQueryVariables>(ColumnDocument, {...variables, ...(metaData.pageParam ?? {})})(),
-      ...restOptions
-    }
-  })()
-    )};
-
-useSuspenseInfiniteColumnQuery.getKey = (variables: ColumnQueryVariables) => ['Column.infiniteSuspense', variables];
-
-
-useColumnQuery.fetcher = (variables: ColumnQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ColumnQuery, ColumnQueryVariables>(ColumnDocument, variables, options);
-
 export const ColumnsDocument = `
     query Columns($projectId: UUID!) {
   columns(condition: {projectId: $projectId}, orderBy: INDEX_ASC) {
@@ -10047,6 +9955,109 @@ useSuspenseInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) =>
 
 
 useProjectsQuery.fetcher = (variables: ProjectsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables, options);
+
+export const ProjectsSidebarDocument = `
+    query ProjectsSidebar($organizationId: String!, $userId: UUID) {
+  projects(
+    condition: {organizationId: $organizationId}
+    orderBy: COLUMN_INDEX_ASC
+  ) {
+    nodes {
+      rowId
+      name
+      slug
+      userPreferences(condition: {userId: $userId}, first: 1) {
+        nodes {
+          rowId
+          color
+          viewMode
+        }
+      }
+    }
+  }
+}
+    `;
+
+export const useProjectsSidebarQuery = <
+      TData = ProjectsSidebarQuery,
+      TError = unknown
+    >(
+      variables: ProjectsSidebarQueryVariables,
+      options?: Omit<UseQueryOptions<ProjectsSidebarQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ProjectsSidebarQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ProjectsSidebarQuery, TError, TData>(
+      {
+    queryKey: ['ProjectsSidebar', variables],
+    queryFn: graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, variables),
+    ...options
+  }
+    )};
+
+useProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebar', variables];
+
+export const useSuspenseProjectsSidebarQuery = <
+      TData = ProjectsSidebarQuery,
+      TError = unknown
+    >(
+      variables: ProjectsSidebarQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<ProjectsSidebarQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<ProjectsSidebarQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<ProjectsSidebarQuery, TError, TData>(
+      {
+    queryKey: ['ProjectsSidebarSuspense', variables],
+    queryFn: graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebarSuspense', variables];
+
+export const useInfiniteProjectsSidebarQuery = <
+      TData = InfiniteData<ProjectsSidebarQuery>,
+      TError = unknown
+    >(
+      variables: ProjectsSidebarQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ProjectsSidebarQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ProjectsSidebarQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ProjectsSidebarQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['ProjectsSidebar.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebar.infinite', variables];
+
+export const useSuspenseInfiniteProjectsSidebarQuery = <
+      TData = InfiniteData<ProjectsSidebarQuery>,
+      TError = unknown
+    >(
+      variables: ProjectsSidebarQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<ProjectsSidebarQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<ProjectsSidebarQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<ProjectsSidebarQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['ProjectsSidebar.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebar.infiniteSuspense', variables];
+
+
+useProjectsSidebarQuery.fetcher = (variables: ProjectsSidebarQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, variables, options);
 
 export const SettingByOrganizationIdDocument = `
     query SettingByOrganizationId($organizationId: String!) {

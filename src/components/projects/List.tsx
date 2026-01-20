@@ -1,6 +1,7 @@
 import { Droppable } from "@hello-pangea/dnd";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { useMemo } from "react";
 
 import { ColumnTrigger } from "@/components/core";
 import {
@@ -34,6 +35,18 @@ const List = ({
   setIsForceClosed,
 }: Props) => {
   const { theme } = useTheme();
+
+  // Compute task IDs by column to pass to ColumnMenu (avoids N+1 Column queries)
+  const taskIdsByColumn = useMemo(() => {
+    return tasks.reduce(
+      (acc, task) => {
+        if (!acc[task.columnId]) acc[task.columnId] = [];
+        acc[task.columnId].push(task.rowId);
+        return acc;
+      },
+      {} as Record<string, string[]>,
+    );
+  }, [tasks]);
 
   const { projectId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
@@ -128,7 +141,10 @@ const List = ({
               // TODO: tooltip for disabled state
               disabled={maxTasksReached}
             >
-              <ColumnMenu columnId={column.rowId} />
+              <ColumnMenu
+                columnId={column.rowId}
+                taskIds={taskIdsByColumn[column.rowId] ?? []}
+              />
             </ColumnTrigger>
 
             <CollapsibleContent className="rounded-b-lg p-0">

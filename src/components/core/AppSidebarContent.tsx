@@ -53,7 +53,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
-import projectsOptions from "@/lib/options/projects.options";
+import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
 import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import Shortcut from "./Shortcut";
@@ -84,7 +84,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
   const [isProjectMenuOpen, setProjectMenuOpen] = useState(false);
 
   const { data: projects } = useQuery({
-    ...projectsOptions({
+    ...projectsSidebarOptions({
       organizationId: organizationId!,
       userId: session?.user?.rowId!,
     }),
@@ -118,7 +118,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
     onMutate: (variables) => {
       // update projects cache for sidebar UI
       queryClient.setQueryData(
-        projectsOptions({
+        projectsSidebarOptions({
           organizationId: organizationId!,
           userId: session?.user?.rowId!,
         }).queryKey,
