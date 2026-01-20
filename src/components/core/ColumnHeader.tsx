@@ -20,7 +20,7 @@ interface Props extends ButtonProps {
  * Column header.
  */
 const ColumnHeader = ({
-  emoji = "😀",
+  emoji,
   title,
   count,
   tooltip,
@@ -31,7 +31,7 @@ const ColumnHeader = ({
 }: Props) => (
   <div className="mb-1 flex items-center justify-between rounded-lg py-2">
     <div className="flex items-center gap-2">
-      <span>{emoji}</span>
+      {emoji && <span>{emoji}</span>}
       <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
         {title}
       </h3>

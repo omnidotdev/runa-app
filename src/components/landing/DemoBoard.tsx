@@ -1,6 +1,6 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { PriorityIcon } from "@/components/tasks";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
@@ -16,7 +16,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import signIn from "@/lib/auth/signIn";
+import {
+  boardColumnStyles,
+  boardContainerStyles,
+  boardLayoutStyles,
+} from "@/lib/board/styles";
 import { BASE_URL } from "@/lib/config/env.config";
+import useAutoScrollOnDrag from "@/lib/hooks/useAutoScrollOnDrag";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import { cn } from "@/lib/utils";
 import DemoBoardItem from "./DemoBoardItem";
@@ -24,11 +30,6 @@ import { demoColumns, initialDemoTasks } from "./demoBoardData";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { DemoTask } from "./demoBoardData";
-
-const EDGE_THRESHOLD = 150;
-const MAX_SCROLL_SPEED = 25;
-
-// TODO deduplicate with `Board.tsx`
 
 /**
  * Demo board for users to try the app.
@@ -48,48 +49,7 @@ const DemoBoard = () => {
   } = useInertialScroll();
 
   // Auto-scroll during card drag
-  useEffect(() => {
-    if (!isDragging) return;
-
-    let animationFrameId: number;
-    let scrollSpeed = 0;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const container = scrollContainerRef.current;
-      if (!container) return;
-
-      const rect = container.getBoundingClientRect();
-      const mouseX = e.clientX;
-
-      if (mouseX < rect.left + EDGE_THRESHOLD) {
-        const distanceFromEdge = mouseX - rect.left;
-        const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
-        scrollSpeed = -MAX_SCROLL_SPEED * intensity ** 2;
-      } else if (mouseX > rect.right - EDGE_THRESHOLD) {
-        const distanceFromEdge = rect.right - mouseX;
-        const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
-        scrollSpeed = MAX_SCROLL_SPEED * intensity ** 2;
-      } else {
-        scrollSpeed = 0;
-      }
-    };
-
-    const scrollStep = () => {
-      const container = scrollContainerRef.current;
-      if (container && scrollSpeed !== 0) {
-        container.scrollLeft += scrollSpeed;
-      }
-      animationFrameId = requestAnimationFrame(scrollStep);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    animationFrameId = requestAnimationFrame(scrollStep);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [isDragging, scrollContainerRef]);
+  useAutoScrollOnDrag({ isDragging, scrollContainerRef });
 
   const onDragStart = (_start: DragStart) => {
     setIsDragging(true);
@@ -168,20 +128,23 @@ const DemoBoard = () => {
     <div className="overflow-hidden rounded-2xl border border-primary-500/10 bg-white/95 dark:border-primary-500/10 dark:bg-base-900/95">
       <div
         ref={scrollContainerRef}
-        className="custom-scrollbar cursor-grab select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
+        className={cn(
+          boardContainerStyles.base,
+          boardContainerStyles.background,
+        )}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="min-w-fit p-4">
+        <div className={boardLayoutStyles.innerPadding}>
           <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-            <div className="flex gap-3">
+            <div className={boardLayoutStyles.columnsGap}>
               {demoColumns.map((column) => {
                 const columnTasks = getColumnTasks(column.rowId);
 
                 return (
-                  <div key={column.rowId} className="flex w-72 flex-col gap-2">
+                  <div key={column.rowId} className={boardColumnStyles.wrapper}>
                     {/* column header */}
                     <div className="mb-1 flex items-center gap-2 rounded-lg py-2">
                       <span>{column.emoji}</span>
@@ -200,9 +163,10 @@ const DemoBoard = () => {
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                           className={cn(
-                            "flex h-80 flex-col overflow-y-auto rounded-xl transition-colors",
+                            boardColumnStyles.droppable,
+                            "h-80 overflow-y-auto transition-colors",
                             snapshot.isDraggingOver &&
-                              "bg-primary-200/40 dark:bg-primary-900/40",
+                              boardColumnStyles.droppableActive,
                           )}
                         >
                           {columnTasks.map((task, index) => (

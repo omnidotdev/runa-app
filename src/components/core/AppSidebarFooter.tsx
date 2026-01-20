@@ -6,6 +6,7 @@ import {
 import {
   BookOpenIcon,
   LogOutIcon,
+  MessageSquareIcon,
   MoonIcon,
   MoreHorizontalIcon,
   PanelLeftCloseIcon,
@@ -119,8 +120,7 @@ const AppSidebarFooter = () => {
           }
         />
 
-        {/* TODO enable after Backfeed `next`/`redirectTo`, public boards, TanStack migration, and brand repaint */}
-        {/* <Tooltip
+        <Tooltip
           positioning={{ placement: "right" }}
           tooltip="Send Feedback"
           disabled={isMobile || open}
@@ -138,7 +138,7 @@ const AppSidebarFooter = () => {
               </a>
             </SidebarMenuButton>
           }
-        /> */}
+        />
 
         <Tooltip
           positioning={{ placement: "right" }}

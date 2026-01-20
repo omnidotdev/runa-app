@@ -33,25 +33,27 @@ const DemoBoardItem = ({ task, index, onSelect }: Props) => (
           }
         }}
         className={cn(
-          "mb-2 cursor-pointer rounded-xl border border-border bg-white p-3 outline-hidden dark:bg-base-900",
+          "mb-2 h-[140px] cursor-pointer rounded-lg border bg-background p-3 outline-hidden dark:border-border",
           snapshot.isDragging
             ? "cursor-grabbing shadow-xl ring-2 ring-primary-500/30"
             : "hover:shadow-sm dark:shadow-gray-400/10",
         )}
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex h-full flex-col">
           <div className="flex items-start gap-2">
             <div className="mt-0.5 min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 {task.priority && (
                   <PriorityIcon
                     priority={task.priority}
-                    className="scale-75 opacity-60"
+                    className="size-2.5 shrink-0 opacity-60"
                   />
                 )}
               </div>
 
-              <p className="mt-1 text-foreground text-sm">{task.content}</p>
+              <p className="line-clamp-2 py-2 text-foreground text-xs">
+                {task.content}
+              </p>
             </div>
 
             {task.assignees.length > 0 && (
@@ -78,7 +80,7 @@ const DemoBoardItem = ({ task, index, onSelect }: Props) => (
           </div>
 
           {task.labels.length > 0 && (
-            <div className="flex flex-wrap gap-1">
+            <div className="mt-auto flex max-h-[20px] flex-wrap gap-1 overflow-hidden">
               {task.labels.map((label) => (
                 <Badge
                   key={label.name}

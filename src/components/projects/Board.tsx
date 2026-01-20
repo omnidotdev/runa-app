@@ -1,12 +1,17 @@
 import { Droppable } from "@hello-pangea/dnd";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { useEffect } from "react";
 
 import { ColumnHeader } from "@/components/core";
+import {
+  boardColumnStyles,
+  boardContainerStyles,
+  boardLayoutStyles,
+} from "@/lib/board/styles";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import useAutoScrollOnDrag from "@/lib/hooks/useAutoScrollOnDrag";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
@@ -22,9 +27,6 @@ interface Props {
   tasks: TaskFragment[];
 }
 
-const EDGE_THRESHOLD = 150;
-const MAX_SCROLL_SPEED = 25;
-
 const Board = ({ tasks }: Props) => {
   const { theme } = useTheme();
   const { isDragging } = useDragStore();
@@ -39,48 +41,7 @@ const Board = ({ tasks }: Props) => {
   } = useInertialScroll();
 
   // Auto-scroll during card drag
-  useEffect(() => {
-    if (!isDragging) return;
-
-    let animationFrameId: number;
-    let scrollSpeed = 0;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const container = scrollContainerRef.current;
-      if (!container) return;
-
-      const rect = container.getBoundingClientRect();
-      const mouseX = e.clientX;
-
-      if (mouseX < rect.left + EDGE_THRESHOLD) {
-        const distanceFromEdge = mouseX - rect.left;
-        const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
-        scrollSpeed = -MAX_SCROLL_SPEED * intensity ** 2;
-      } else if (mouseX > rect.right - EDGE_THRESHOLD) {
-        const distanceFromEdge = rect.right - mouseX;
-        const intensity = 1 - distanceFromEdge / EDGE_THRESHOLD;
-        scrollSpeed = MAX_SCROLL_SPEED * intensity ** 2;
-      } else {
-        scrollSpeed = 0;
-      }
-    };
-
-    const scrollStep = () => {
-      const container = scrollContainerRef.current;
-      if (container && scrollSpeed !== 0) {
-        container.scrollLeft += scrollSpeed;
-      }
-      animationFrameId = requestAnimationFrame(scrollStep);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    animationFrameId = requestAnimationFrame(scrollStep);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [isDragging, scrollContainerRef]);
+  useAutoScrollOnDrag({ isDragging, scrollContainerRef });
 
   const { projectId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
@@ -124,7 +85,7 @@ const Board = ({ tasks }: Props) => {
   return (
     <div
       ref={scrollContainerRef}
-      className="custom-scrollbar h-full cursor-grab select-none overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
+      className={cn(boardContainerStyles.base, boardContainerStyles.background)}
       style={{
         backgroundColor: userPreferences?.color
           ? theme === "dark"
@@ -137,13 +98,10 @@ const Board = ({ tasks }: Props) => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="h-full min-w-fit p-4">
-        <div className="flex h-full gap-3">
+      <div className={boardLayoutStyles.innerPadding}>
+        <div className={boardLayoutStyles.columnsGap}>
           {project?.columns?.nodes?.map((column) => (
-            <div
-              key={column?.rowId}
-              className="relative flex h-full w-[320px] flex-col gap-2"
-            >
+            <div key={column?.rowId} className={boardColumnStyles.wrapper}>
               <ColumnHeader
                 title={column.title}
                 count={column.tasks?.totalCount ?? 0}
@@ -169,9 +127,9 @@ const Board = ({ tasks }: Props) => {
                       ref={provided.innerRef}
                       {...provided.droppableProps}
                       className={cn(
-                        "flex flex-1 flex-col rounded-xl",
+                        boardColumnStyles.droppable,
                         snapshot.isDraggingOver &&
-                          "bg-primary-100/40 dark:bg-primary-950/40",
+                          boardColumnStyles.droppableActive,
                       )}
                       style={{
                         backgroundColor:
@@ -180,7 +138,7 @@ const Board = ({ tasks }: Props) => {
                             : undefined,
                       }}
                     >
-                      <div className="no-scrollbar flex h-full flex-col overflow-y-auto">
+                      <div className={boardColumnStyles.itemsContainer}>
                         {tasks
                           .filter((task) => task.columnId === column.rowId)
                           .map((task, index) => (
