@@ -25,9 +25,9 @@ import {
 } from "@/components/ui/sidebar";
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
-import { setLastWorkspaceSlug } from "@/lib/util/workspaceStorage";
 import { cn } from "@/lib/utils";
 import { useOrganization } from "@/providers/OrganizationProvider";
+import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 import { Badge } from "../ui/badge";
 
 const AppSidebarHeader = () => {
@@ -88,7 +88,7 @@ const AppSidebarHeader = () => {
                   <MenuItem
                     key={org?.id}
                     onClick={() => {
-                      setLastWorkspaceSlug(orgSlug);
+                      setLastWorkspaceCookie({ data: orgSlug });
                       navigate({
                         to: "/workspaces/$workspaceSlug/projects",
                         params: { workspaceSlug: orgSlug },
