@@ -1,23 +1,7 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, useCanGoBack, useRouter } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { useState } from "react";
-import { useDebounceCallback } from "usehooks-ts";
-import { z } from "zod";
 
-import { Link, RichTextEditor } from "@/components/core";
-import { ProjectColorPicker } from "@/components/projects";
-import {
-  useProjectQuery,
-  useProjectsQuery,
-  useUpdateProjectMutation,
-} from "@/generated/graphql";
-import getSdk from "@/lib/graphql/getSdk";
-import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
-import projectOptions from "@/lib/options/project.options";
-import { Role } from "@/lib/permissions";
-import generateSlug from "@/lib/util/generateSlug";
-import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { Button } from "@/components/ui/button";
 
 const routeApi = getRouteApi(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
@@ -25,179 +9,30 @@ const routeApi = getRouteApi(
 
 export default function ProjectSettingsHeader() {
   const { workspaceSlug, projectSlug } = routeApi.useParams();
-  const { projectId, organizationId } = routeApi.useLoaderData();
+  const { name } = routeApi.useLoaderData();
+  const router = useRouter();
   const navigate = routeApi.useNavigate();
-
-  const [parseError, setParseError] = useState<string | null>(null);
-
-  // Get role from IDP organization claims
-  const role = useCurrentUserRole(organizationId);
-  const isMember = role === Role.Member;
-
-  const { data: project } = useSuspenseQuery({
-    ...projectOptions({ rowId: projectId }),
-    select: (data) => data?.project,
-  });
-
-  const editNameSchema = z
-    .object({
-      name: z
-        .string()
-        .min(3, { error: "Name must be at least 3 characters." })
-        .default(project?.name!),
-      currentSlug: z.string().default(project?.slug!),
-    })
-    .check(async (ctx) => {
-      const sdk = await getSdk();
-
-      const updatedSlug = generateSlug(ctx.value.name);
-
-      if (!updatedSlug?.length || updatedSlug === ctx.value.currentSlug)
-        return z.NEVER;
-
-      const { projects } = await sdk.Projects({
-        organizationId,
-      });
-
-      if (projects?.nodes?.some((p) => p.slug === updatedSlug)) {
-        ctx.issues.push({
-          code: "custom",
-          message: "Project slug already exists for this workspace.",
-          input: ctx.value.name,
-        });
-      }
-    });
-
-  const { mutate: updateProject } = useUpdateProjectMutation({
-    meta: {
-      invalidates: [
-        getQueryKeyPrefix(useProjectQuery),
-        getQueryKeyPrefix(useProjectsQuery),
-      ],
-    },
-    onSuccess: (_data, variables) => {
-      if (variables.patch.slug) {
-        navigate({
-          to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-          params: { workspaceSlug, projectSlug: variables.patch.slug },
-          replace: true,
-        });
-      }
-    },
-  });
-
-  // TODO: determine how to properly keep focus after successful callback. Issue is that the mutation invalidates the project query (necessary) but that forces a re-render and thus focus is lost
-  // The above applies to each callback below
-  const updateProjectName = useDebounceCallback(
-    async ({ getText }: { getText: () => string }) => {
-      const text = getText().trim();
-
-      const result = await editNameSchema.safeParseAsync({
-        name: text,
-      });
-
-      if (!result.success) {
-        setParseError(result.error.issues[0].message);
-        return;
-      }
-
-      setParseError(null);
-      updateProject({
-        rowId: projectId,
-        patch: { name: text, slug: generateSlug(text) },
-      });
-    },
-    500,
-  );
-
-  const updateProjectPrefix = useDebounceCallback(
-    async ({ getText }: { getText: () => string }) => {
-      const prefixSchema = z
-        .string()
-        .min(3, { error: "Prefix must be at least 3 characters" });
-
-      const result = await prefixSchema.safeParseAsync(getText().trim());
-
-      if (!result.success) {
-        setParseError(result.error.issues[0].message);
-        return;
-      }
-
-      setParseError(null);
-      updateProject({
-        rowId: projectId,
-        patch: { prefix: result.data },
-      });
-    },
-    500,
-  );
-
-  const updateProjectDescription = useDebounceCallback(
-    async ({ getText }: { getText: () => string }) => {
-      const text = getText().trim();
-
-      updateProject({
-        rowId: projectId,
-        patch: { description: text.length ? text : null },
-      });
-    },
-    500,
-  );
+  const canGoBack = useCanGoBack();
 
   return (
-    <div className="mb-10 flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <Link
-          to="/workspaces/$workspaceSlug/projects/$projectSlug"
-          params={{ workspaceSlug, projectSlug }}
-          variant="ghost"
-          size="icon"
-          aria-label="Back to project"
-        >
-          <ArrowLeft className="size-4" />
-        </Link>
+    <div className="mb-10 ml-2 flex items-center gap-3 lg:ml-0">
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label="Go back"
+        onClick={() =>
+          canGoBack
+            ? router.history.back()
+            : navigate({
+                to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+                params: { workspaceSlug, projectSlug },
+              })
+        }
+      >
+        <ArrowLeft className="size-4" />
+      </Button>
 
-        <div className="flex flex-col gap-2">
-          {/** NB: `w-fit` is to prevent layout shift when there is a `parseError` */}
-          <div className="flex w-fit items-center gap-2">
-            <ProjectColorPicker disabled={isMember} />
-
-            <RichTextEditor
-              defaultContent={project?.name}
-              editable={!isMember}
-              className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
-              skeletonClassName="h-8 w-80"
-              onUpdate={updateProjectName}
-            />
-            <div className="mt-1 flex items-center">
-              <span className="font-mono text-base-400 text-sm dark:text-base-500">
-                #
-              </span>
-              <RichTextEditor
-                defaultContent={project?.prefix || "PROJ"}
-                editable={!isMember}
-                className="min-h-0 border-0 bg-transparent p-0 font-mono text-base-400 text-sm dark:bg-transparent dark:text-base-500"
-                placeholder="prefix"
-                skeletonClassName="h-5 w-12"
-                onUpdate={updateProjectPrefix}
-              />
-            </div>
-          </div>
-
-          {parseError && (
-            <p className="mt-1 text-red-500 text-sm">{parseError}</p>
-          )}
-
-          <RichTextEditor
-            defaultContent={project?.description || ""}
-            editable={!isMember}
-            className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
-            placeholder="Add a short description..."
-            skeletonClassName="h-5 max-w-40"
-            onUpdate={updateProjectDescription}
-          />
-        </div>
-      </div>
+      <h1 className="font-semibold text-2xl">{name}</h1>
     </div>
   );
 }

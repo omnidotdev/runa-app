@@ -14,7 +14,7 @@ const app = {
   links: {
     docs: "https://docs.omni.dev/runa",
     github: "https://github.com/omnidotdev/runa",
-    feedback: "https://backfeed.omni.dev/organizations/omni/projects/runa",
+    feedback: "https://backfeed.omni.dev/workspaces/omni/projects/runa",
   },
 };
 

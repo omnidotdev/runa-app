@@ -1,6 +1,7 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import { ChevronDownIcon } from "lucide-react";
+import { SmilePlusIcon, XIcon } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,49 +10,86 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
 
 import type { ComponentProps } from "react";
 
 interface Props {
-  value: string;
-  onChange: (emoji: string) => void;
+  value: string | null;
+  onChange: (emoji: string | null) => void;
   triggerProps?: ComponentProps<typeof Button>;
+  allowClear?: boolean;
 }
 
-const EmojiSelector = ({ value, onChange, triggerProps }: Props) => {
+const EmojiSelector = ({
+  value,
+  onChange,
+  triggerProps,
+  allowClear = true,
+}: Props) => {
   const { theme } = useTheme();
+  const [isOpen, setIsOpen] = useState(false);
+  const isDisabled = triggerProps?.disabled;
 
   return (
-    <PopoverRoot lazyMount>
-      <PopoverTrigger asChild disabled>
+    <PopoverRoot
+      lazyMount
+      open={isOpen}
+      onOpenChange={(e) => setIsOpen(e.open)}
+    >
+      <PopoverTrigger asChild>
         <Button
           variant="ghost"
-          className="text-base-400 text-md hover:text-base-600 dark:hover:text-base-300"
+          className={cn(
+            "size-7 border border-transparent p-0 text-md transition-colors",
+            !isDisabled &&
+              "hover:border-border hover:bg-accent hover:text-base-600 dark:hover:text-base-300",
+            isDisabled &&
+              "cursor-default hover:border-transparent hover:bg-transparent",
+          )}
           {...triggerProps}
         >
-          {value || " "}
-
-          <ChevronDownIcon className="icon text-base-400" />
+          {value ? (
+            <span>{value}</span>
+          ) : (
+            <SmilePlusIcon className="size-4 text-base-400" />
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverPositioner>
         <PopoverContent className="h-full w-full rounded-xl border-0 p-0">
-          {/* TODO: option for removing emoji */}
-          <Picker
-            navPosition="none"
-            previewPosition="none"
-            skinTonePosition="none"
-            emojiButtonRadius="6px"
-            autoFocus={true}
-            data={data}
-            theme={theme === "dark" ? "dark" : "light"}
-            emojiSize={20}
-            emojiButtonSize={30}
-            perLine={14}
-            // biome-ignore lint/suspicious/noExplicitAny: Todo create type
-            onEmojiSelect={(emoji: any) => onChange(emoji.native || emoji.id)}
-          />
+          <div className="flex flex-col">
+            {allowClear && value && (
+              <button
+                type="button"
+                onClick={() => {
+                  onChange(null);
+                  setIsOpen(false);
+                }}
+                className="flex items-center gap-2 border-b px-3 py-2 text-base-500 text-sm transition-colors hover:bg-accent hover:text-base-700 dark:hover:text-base-300"
+              >
+                <XIcon className="size-4" />
+                Remove emoji
+              </button>
+            )}
+            <Picker
+              navPosition="none"
+              previewPosition="none"
+              skinTonePosition="none"
+              emojiButtonRadius="6px"
+              autoFocus={true}
+              data={data}
+              theme={theme === "dark" ? "dark" : "light"}
+              emojiSize={20}
+              emojiButtonSize={30}
+              perLine={14}
+              onEmojiSelect={(emoji: { native?: string; id?: string }) => {
+                onChange(emoji.native || emoji.id || null);
+                setIsOpen(false);
+              }}
+            />
+          </div>
         </PopoverContent>
       </PopoverPositioner>
     </PopoverRoot>

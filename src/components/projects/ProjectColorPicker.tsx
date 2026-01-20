@@ -114,15 +114,17 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
             onPointerDownOutside={() => setIsUpdatingColorPreferences(false)}
             {...props}
           >
-            <ColorPickerControl className="relative flex size-6 items-center disabled:cursor-default">
+            <ColorPickerControl className="relative flex items-center disabled:cursor-default">
               <ColorPickerTrigger
                 onClick={() =>
                   setIsUpdatingColorPreferences(!isUpdatingColorPreferences)
                 }
-                className="size-6 outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-default"
+                className="flex size-7 items-center justify-center rounded-md border border-transparent outline-none transition-colors hover:border-border hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-default disabled:hover:border-transparent disabled:hover:bg-transparent"
               >
-                <ColorPickerTransparencyGrid />
-                <ColorPickerValueSwatch />
+                <div className="size-5 overflow-hidden rounded">
+                  <ColorPickerTransparencyGrid />
+                  <ColorPickerValueSwatch />
+                </div>
               </ColorPickerTrigger>
             </ColorPickerControl>
 

@@ -1,10 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useNavigate, useParams } from "@tanstack/react-router";
 import {
-  BoxIcon,
   MoreHorizontalIcon,
   Plus,
-  PlusIcon,
   Settings2Icon,
   Trash2Icon,
 } from "lucide-react";
@@ -26,7 +24,6 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
-import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import { isAdminOrOwner } from "@/lib/permissions";
@@ -54,7 +51,10 @@ const Projects = () => {
   // Fetch projects for this organization
   const { data: projects } = useSuspenseQuery({
     ...projectsOptions({ organizationId: organizationId! }),
-    select: (data) => data?.projects?.nodes ?? [],
+    select: (data) =>
+      [...(data?.projects?.nodes ?? [])].sort((a, b) =>
+        a.name.localeCompare(b.name),
+      ),
   });
 
   // Fetch project columns for this organization
@@ -73,7 +73,6 @@ const Projects = () => {
   const canManageProjects = currentUserRole && isAdminOrOwner(currentUserRole);
 
   const maxProjectsReached = useMaxProjectsReached();
-  const maxTasksReached = useMaxTasksReached();
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
@@ -86,9 +85,6 @@ const Projects = () => {
     }),
     { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({
       type: DialogType.DeleteProject,
-    }),
-    { setIsOpen: setIsCreateTaskOpen } = useDialogStore({
-      type: DialogType.CreateTask,
     });
 
   return (
@@ -123,7 +119,7 @@ const Projects = () => {
         </div>
 
         {projects.length ? (
-          <div className="flex flex-col divide-y border-y px-2 lg:px-0">
+          <div className="flex flex-col divide-y border-y">
             {projects.map((project) => {
               const completedTasks = project.completedTasks?.totalCount ?? 0;
               const totalTasks = project.allTasks?.totalCount ?? 0;
@@ -131,7 +127,16 @@ const Projects = () => {
               return (
                 <div
                   key={project?.rowId}
-                  className="group flex h-10 w-full items-center hover:bg-accent"
+                  className="group flex h-10 w-full cursor-pointer items-center hover:bg-accent"
+                  onClick={() =>
+                    navigate({
+                      to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+                      params: {
+                        workspaceSlug,
+                        projectSlug: project.slug,
+                      },
+                    })
+                  }
                 >
                   <div className="flex items-center">
                     <div className="flex size-10 items-center justify-center">
@@ -169,6 +174,7 @@ const Projects = () => {
                           size="icon"
                           className="size-7 text-base-400"
                           aria-label="More project options"
+                          onClick={(evt) => evt.stopPropagation()}
                         >
                           <MoreHorizontalIcon />
                         </Button>
@@ -177,24 +183,9 @@ const Projects = () => {
                       <MenuPositioner>
                         <MenuContent className="focus-within:outline-none">
                           <MenuItem
-                            value="view project"
-                            onClick={() => {
-                              navigate({
-                                to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-                                params: {
-                                  workspaceSlug,
-                                  projectSlug: project.slug,
-                                },
-                              });
-                            }}
-                          >
-                            <BoxIcon />
-                            <span> View Project </span>
-                          </MenuItem>
-
-                          <MenuItem
-                            value="project settings"
-                            onClick={() => {
+                            value="settings"
+                            onClick={(evt) => {
+                              evt.stopPropagation();
                               navigate({
                                 to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
                                 params: {
@@ -205,26 +196,7 @@ const Projects = () => {
                             }}
                           >
                             <Settings2Icon />
-                            <span> Project Settings </span>
-                          </MenuItem>
-
-                          <MenuItem
-                            value="add task"
-                            // TODO: add tooltip description for disabled state
-                            disabled={maxTasksReached}
-                            onClick={() => {
-                              navigate({
-                                to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-                                params: {
-                                  workspaceSlug,
-                                  projectSlug: project.slug,
-                                },
-                              });
-                              setIsCreateTaskOpen(true);
-                            }}
-                          >
-                            <PlusIcon />
-                            <span> Add Task </span>
+                            <span>Settings</span>
                           </MenuItem>
 
                           <MenuItem
@@ -234,7 +206,8 @@ const Projects = () => {
                               "hidden",
                               canManageProjects && "flex",
                             )}
-                            onClick={() => {
+                            onClick={(evt) => {
+                              evt.stopPropagation();
                               setIsDeleteProjectOpen(true);
                               setSelectedProject({
                                 rowId: project.rowId,

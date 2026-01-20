@@ -13,6 +13,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { EmojiSelector, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
@@ -179,13 +180,17 @@ const ColumnForm = ({
           },
         });
       }
+
+      toast.info(`Column "${column.title}" hidden`, {
+        description: "You can unhide it from project settings.",
+      });
     }
   };
 
   const form = useForm({
     defaultValues: {
       title: column.title,
-      emoji: column.emoji || "😀",
+      emoji: column.emoji as string | null,
       index: column.index,
     },
     onSubmit: ({ value, formApi }) => {
@@ -274,9 +279,6 @@ const ColumnForm = ({
             value={field.state.value}
             onChange={(emoji) => field.handleChange(emoji)}
             triggerProps={{
-              variant: "outline",
-              className:
-                "flex justify-between dark:bg-inherit border-0 shadow-none bg-inherit disabled:opacity-100 [&_.icon]:hidden focus-visible:ring-offset-0 transition-[color,box-shadow]",
               disabled: !isActive,
             }}
           />
