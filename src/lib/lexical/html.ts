@@ -1,5 +1,5 @@
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
-import { $getRoot, $insertNodes } from "lexical";
+import { $getRoot, $insertNodes, $setSelection } from "lexical";
 
 import type { LexicalEditor } from "lexical";
 
@@ -26,6 +26,8 @@ export function importFromHtml(editor: LexicalEditor, html: string): void {
     const root = $getRoot();
     root.clear();
     $insertNodes(nodes);
+    // Clear selection to prevent auto-focus on navigation
+    $setSelection(null);
   });
 }
 

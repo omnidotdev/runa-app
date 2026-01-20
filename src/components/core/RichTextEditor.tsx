@@ -198,12 +198,14 @@ const RichTextEditor = ({
           >
             <RichTextPlugin
               contentEditable={
-                <ContentEditable
-                  className="prose-sm min-h-full focus:outline-none"
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                  spellCheck={false}
-                />
+                <div className="block">
+                  <ContentEditable
+                    className="prose-sm min-h-full focus:outline-none"
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    spellCheck={false}
+                  />
+                </div>
               }
               ErrorBoundary={LexicalErrorBoundary}
             />
