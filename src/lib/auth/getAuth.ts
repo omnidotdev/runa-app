@@ -1,11 +1,16 @@
+import { setCookie } from "@tanstack/react-start/server";
 import { all } from "better-all";
-import { GraphQLClient } from "graphql-request";
 import * as jose from "jose";
 import ms from "ms";
 
-import { getSdk } from "@/generated/graphql.sdk";
 import auth from "@/lib/auth/auth";
-import { API_GRAPHQL_URL, AUTH_BASE_URL } from "@/lib/config/env.config";
+import {
+  COOKIE_NAME,
+  COOKIE_TTL_SECONDS,
+  encryptRowId,
+  fetchRowIdFromApi,
+} from "@/lib/auth/rowIdCache";
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 
 const OMNI_CLAIMS_KEY = "https://manifold.omni.dev/@omni/claims/organizations";
 
@@ -91,10 +96,13 @@ export async function getAuth(request: Request) {
 
     if (!session) return null;
 
-    // get access token and id token for GraphQL requests
+    // get access token and organizations for GraphQL requests
     let accessToken: string | undefined;
-    let identityProviderId: string | undefined;
     let organizations: OrganizationClaim[] | undefined;
+
+    // rowId and identityProviderId may come from customSession cache
+    let identityProviderId = session.user.identityProviderId;
+    let rowId = session.user.rowId;
 
     try {
       const tokenResult = await auth.api.getAccessToken({
@@ -117,7 +125,11 @@ export async function getAuth(request: Request) {
           const { payload } = await jose.jwtVerify(tokenResult.idToken, jwks, {
             issuer: discovery.issuer,
           });
-          identityProviderId = payload.sub;
+
+          // Extract identityProviderId from ID token if not in cache
+          if (!identityProviderId) {
+            identityProviderId = payload.sub ?? null;
+          }
 
           // extract organization claims from the ID token
           const orgClaims = payload[OMNI_CLAIMS_KEY];
@@ -128,65 +140,28 @@ export async function getAuth(request: Request) {
         }
       }
 
-      // Fallback: if JWT verification failed but we have an access token,
-      // fetch user info from the userinfo endpoint to get the sub claim
-      if (accessToken && !identityProviderId) {
-        try {
-          const userInfoResponse = await fetch(
-            `${AUTH_BASE_URL}/oauth2/userinfo`,
-            {
-              headers: { Authorization: `Bearer ${accessToken}` },
-            },
-          );
+      // Handle rowId cache miss: fetch from API and populate cache
+      if (!rowId && accessToken && identityProviderId) {
+        rowId =
+          (await fetchRowIdFromApi(accessToken, identityProviderId)) ?? null;
 
-          if (userInfoResponse.ok) {
-            const userInfo = await userInfoResponse.json();
-            identityProviderId = userInfo.sub;
-
-            // Also extract org claims from userinfo if not already set
-            if (!organizations && Array.isArray(userInfo[OMNI_CLAIMS_KEY])) {
-              organizations = userInfo[OMNI_CLAIMS_KEY] as OrganizationClaim[];
-            }
-          }
-        } catch (userInfoError) {
-          console.error("[getAuth] Userinfo fetch failed:", userInfoError);
+        // Cache the rowId for subsequent requests
+        if (rowId) {
+          const encrypted = await encryptRowId(rowId, identityProviderId);
+          setCookie(COOKIE_NAME, encrypted, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+            maxAge: COOKIE_TTL_SECONDS,
+          });
         }
       }
     } catch (err) {
       console.error("[getAuth] Token fetch error:", err);
     }
 
-    let rowId: string | undefined;
-
-    // Fetch the database `rowId` using the IDP ID (`identityProviderId` from `idToken.sub`)
-    // If identityProviderId is available, use it; otherwise fall back to a user query that
-    // doesn't require it (when Observer query is available)
-    if (accessToken && identityProviderId) {
-      try {
-        const graphqlClient = new GraphQLClient(API_GRAPHQL_URL!, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        const sdk = getSdk(graphqlClient);
-
-        const { userByIdentityProviderId } = await sdk.UserByIdentityProviderId(
-          {
-            identityProviderId,
-          },
-        );
-
-        if (userByIdentityProviderId) rowId = userByIdentityProviderId.rowId;
-      } catch (error) {
-        console.error(
-          "[getAuth] Error fetching user rowId from GraphQL:",
-          error,
-        );
-      }
-    }
-
-    const result = {
+    return {
       ...session,
       accessToken,
       organizations,
@@ -197,8 +172,6 @@ export async function getAuth(request: Request) {
         username: session.user.name || session.user.email,
       },
     };
-
-    return result;
   } catch (error) {
     console.error("Failed to get auth session:", error);
     return null;
