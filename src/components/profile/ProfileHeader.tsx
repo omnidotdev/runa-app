@@ -1,13 +1,9 @@
-import { LogOut } from "lucide-react";
-
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
 } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import signOut from "@/lib/auth/signOut";
 
 interface Props {
   session: {
@@ -26,17 +22,6 @@ interface Props {
  */
 const ProfileHeader = ({ session, isOmniTeamMember }: Props) => (
   <div className="mb-8 flex flex-col items-center gap-6 rounded-2xl p-6">
-    <Button
-      variant="outline"
-      size="sm"
-      className="mt-4 self-end hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
-      onClick={signOut}
-      aria-label="Sign out"
-    >
-      <LogOut className="size-4" />
-      Sign Out
-    </Button>
-
     <AvatarRoot className="size-28 ring-4 ring-primary/10">
       <AvatarImage
         src={session?.user.image ?? undefined}

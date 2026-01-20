@@ -1,16 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { LogOut } from "lucide-react";
 
 import {
   CustomizationTab,
   ProfileHeader,
   WorkspacesTable,
 } from "@/components/profile";
+import { Button } from "@/components/ui/button";
 import {
   TabsContent,
   TabsList,
   TabsRoot,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import signOut from "@/lib/auth/signOut";
 import { BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { useOrganization } from "@/providers/OrganizationProvider";
@@ -47,6 +50,19 @@ function ProfilePage() {
           </div>
 
           <div className="xl:col-span-8">
+            <div className="mb-4 flex justify-end xl:mb-0">
+              <Button
+                variant="outline"
+                size="sm"
+                className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
+                onClick={signOut}
+                aria-label="Sign out"
+              >
+                <LogOut className="size-4" />
+                Sign Out
+              </Button>
+            </div>
+
             <TabsRoot defaultValue="account">
               <TabsList>
                 <TabsTrigger value="account">Account</TabsTrigger>
