@@ -76,13 +76,13 @@ const TaskDescription = ({ task }: Props) => {
           editable={task.isAuthor || !isMember}
           className="border-0"
           skeletonClassName="h-[120px] rounded-t-none"
-          onUpdate={({ editor }) => {
-            !editor.isEmpty &&
+          onUpdate={({ getHTML, isEmpty }) => {
+            !isEmpty &&
               handleTaskUpdate({
                 rowId: task?.rowId,
                 patch: {
                   // TODO: discuss if description should be nullable. Current schema structure doesn't allow it
-                  description: editor.getHTML(),
+                  description: getHTML(),
                 },
               });
           }}

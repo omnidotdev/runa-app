@@ -142,7 +142,7 @@ const Board = ({ tasks }: Props) => {
           {project?.columns?.nodes?.map((column) => (
             <div
               key={column?.rowId}
-              className="relative flex h-full w-85 flex-col gap-2"
+              className="relative flex h-full w-[320px] flex-col gap-2"
             >
               <ColumnHeader
                 title={column.title}

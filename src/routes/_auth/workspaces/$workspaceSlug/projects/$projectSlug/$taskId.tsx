@@ -216,12 +216,12 @@ function TaskPage() {
             className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
             skeletonClassName="h-8 min-w-40"
             editable={isAuthor || !isMember}
-            onUpdate={({ editor }) =>
-              !editor.isEmpty &&
+            onUpdate={({ getHTML, isEmpty }) =>
+              !isEmpty &&
               handleTaskUpdate({
                 rowId: taskId,
                 patch: {
-                  content: editor.getHTML(),
+                  content: getHTML(),
                 },
               })
             }

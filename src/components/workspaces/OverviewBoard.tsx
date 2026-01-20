@@ -133,7 +133,7 @@ const Board = ({ projects }: Props) => {
           {projectColumns?.map((column) => (
             <div
               key={column.rowId}
-              className="relative flex h-full w-80 flex-col gap-2 bg-inherit"
+              className="relative flex h-full w-[320px] flex-col gap-2 bg-inherit"
             >
               <ColumnHeader
                 title={column.title}

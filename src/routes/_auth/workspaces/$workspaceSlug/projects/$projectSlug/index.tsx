@@ -552,8 +552,8 @@ function ProjectPage() {
               editable={isOwner}
               className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
               skeletonClassName="h-8 max-w-80"
-              onUpdate={async ({ editor }) => {
-                const text = editor.getText().trim();
+              onUpdate={async ({ getText }) => {
+                const text = getText().trim();
 
                 const result = await editNameSchema.safeParseAsync({
                   name: text,
@@ -583,11 +583,11 @@ function ProjectPage() {
               className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
               placeholder="Add a short description..."
               skeletonClassName="h-5 max-w-40"
-              onUpdate={({ editor }) =>
+              onUpdate={({ getText }) =>
                 handleProjectUpdate({
                   rowId: projectId,
                   patch: {
-                    description: editor.getText(),
+                    description: getText(),
                   },
                 })
               }

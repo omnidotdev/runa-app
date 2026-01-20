@@ -19,8 +19,6 @@ import { Role } from "@/lib/permissions";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
-import type { Editor } from "@tiptap/core";
-
 const routeApi = getRouteApi(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
 );
@@ -91,8 +89,8 @@ export default function ProjectSettingsHeader() {
   // TODO: determine how to properly keep focus after successful callback. Issue is that the mutation invalidates the project query (necessary) but that forces a re-render and thus focus is lost
   // The above applies to each callback below
   const updateProjectName = useDebounceCallback(
-    async ({ editor }: { editor: Editor }) => {
-      const text = editor.getText().trim();
+    async ({ getText }: { getText: () => string }) => {
+      const text = getText().trim();
 
       const result = await editNameSchema.safeParseAsync({
         name: text,
@@ -113,12 +111,12 @@ export default function ProjectSettingsHeader() {
   );
 
   const updateProjectPrefix = useDebounceCallback(
-    async ({ editor }: { editor: Editor }) => {
+    async ({ getText }: { getText: () => string }) => {
       const prefixSchema = z
         .string()
         .min(3, { error: "Prefix must be at least 3 characters" });
 
-      const result = await prefixSchema.safeParseAsync(editor.getText().trim());
+      const result = await prefixSchema.safeParseAsync(getText().trim());
 
       if (!result.success) {
         setParseError(result.error.issues[0].message);
@@ -135,8 +133,8 @@ export default function ProjectSettingsHeader() {
   );
 
   const updateProjectDescription = useDebounceCallback(
-    async ({ editor }: { editor: Editor }) => {
-      const text = editor.getText().trim();
+    async ({ getText }: { getText: () => string }) => {
+      const text = getText().trim();
 
       updateProject({
         rowId: projectId,

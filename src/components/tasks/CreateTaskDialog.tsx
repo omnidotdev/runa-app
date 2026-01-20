@@ -278,8 +278,8 @@ const CreateTaskDialog = () => {
             <RichTextEditor
               className="min-h-40 text-xs placeholder:text-xs md:text-sm"
               placeholder="Task description..."
-              onUpdate={({ editor }) =>
-                form.setFieldValue("description", editor.getHTML())
+              onUpdate={({ getHTML }) =>
+                form.setFieldValue("description", getHTML())
               }
             />
 
