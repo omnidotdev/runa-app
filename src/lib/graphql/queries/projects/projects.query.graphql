@@ -1,4 +1,4 @@
-query Projects($organizationId: UUID!, $search: String = "", $userId: UUID) {
+query Projects($organizationId: String!, $search: String = "", $userId: UUID) {
   projects(
     condition: { organizationId: $organizationId }
     filter: { name: { includesInsensitive: $search } }
