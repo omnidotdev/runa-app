@@ -38,6 +38,7 @@ import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import { Role } from "@/lib/permissions";
+import generatePrefix from "@/lib/util/generatePrefix";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
@@ -251,6 +252,7 @@ const CreateProjectDialog = () => {
                 organizationId: organizationId!,
                 name: value.name,
                 slug: generateSlug(value.name),
+                prefix: generatePrefix(value.name),
                 description: value.description,
                 projectColumnId,
                 columnIndex: value.columnIndex,
