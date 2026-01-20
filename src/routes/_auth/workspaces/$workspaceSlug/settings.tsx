@@ -13,6 +13,7 @@ import { BASE_URL } from "@/lib/config/env.config";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import pricesOptions from "@/lib/options/prices.options";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
+import projectsOptions from "@/lib/options/projects.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import subscriptionOptions from "@/lib/options/subscription.options";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -37,6 +38,14 @@ export const Route = createFileRoute(
       async projectColumns() {
         return queryClient.ensureQueryData(
           projectColumnsOptions({ organizationId: organizationId! }),
+        );
+      },
+      async projects() {
+        return queryClient.ensureQueryData(
+          projectsOptions({
+            organizationId: organizationId!,
+            userId: session?.user?.rowId,
+          }),
         );
       },
       async subscription() {
