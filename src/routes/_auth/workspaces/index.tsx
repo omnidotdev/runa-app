@@ -1,6 +1,6 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ExternalLinkIcon, InfoIcon, LayersIcon } from "lucide-react";
+import { useEffect } from "react";
 
 import { Link } from "@/components/core";
 import {
@@ -10,6 +10,10 @@ import {
 } from "@/components/ui/avatar";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
+import {
+  getLastWorkspaceSlug,
+  setLastWorkspaceSlug,
+} from "@/lib/util/workspaceStorage";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
 export const Route = createFileRoute("/_auth/workspaces/")({
@@ -27,11 +31,23 @@ export const Route = createFileRoute("/_auth/workspaces/")({
 });
 
 function WorkspacesOverviewPage() {
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const orgContext = useOrganization();
 
   // Get user's organizations from JWT claims
   const organizations = orgContext?.organizations ?? [];
+
+  // Auto-redirect to last workspace if available
+  useEffect(() => {
+    const lastSlug = getLastWorkspaceSlug();
+    if (lastSlug && organizations.some((org) => org.slug === lastSlug)) {
+      navigate({
+        to: "/workspaces/$workspaceSlug/projects",
+        params: { workspaceSlug: lastSlug },
+        replace: true,
+      });
+    }
+  }, [navigate, organizations]);
 
   return (
     <div className="flex h-full flex-col">
@@ -65,6 +81,7 @@ function WorkspacesOverviewPage() {
                     preload="intent"
                     variant="outline"
                     className="relative flex h-32 flex-col p-4"
+                    onClick={() => setLastWorkspaceSlug(orgSlug!)}
                   >
                     <AvatarRoot size="lg">
                       <AvatarImage src={undefined} alt={orgName} />
