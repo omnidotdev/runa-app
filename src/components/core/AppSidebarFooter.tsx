@@ -54,9 +54,6 @@ const AppSidebarFooter = () => {
 
   useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
 
-  // TODO: Fetch pending invitations from IDP
-  // const invitations = [];
-
   return (
     <SidebarFooter className="flex justify-center border-t">
       <SidebarMenu className="gap-1 group-data-[collapsible=icon]:w-fit">
@@ -195,8 +192,6 @@ const AppSidebarFooter = () => {
                 <span className="text-primary-500">
                   {session?.user.username}
                 </span>
-
-                {/* TODO: Show invitation indicator when IDP invitations are fetched */}
               </SidebarMenuButton>
 
               <MenuRoot
