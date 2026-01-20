@@ -70,7 +70,7 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
     defaultValues: {
       color: userPreferences?.color ?? "#09b8b5",
     },
-    onSubmit: ({ value, formApi }) => {
+    onSubmit: ({ value }) => {
       updateUserPreferences({
         rowId: userPreferences?.rowId!,
         patch: {
@@ -79,7 +79,6 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
       });
 
       setIsUpdatingColorPreferences(false);
-      formApi.reset();
     },
   });
 
@@ -116,9 +115,10 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
           >
             <ColorPickerControl className="relative flex items-center disabled:cursor-default">
               <ColorPickerTrigger
-                onClick={() =>
-                  setIsUpdatingColorPreferences(!isUpdatingColorPreferences)
-                }
+                onClick={() => {
+                  if (props.disabled) return;
+                  setIsUpdatingColorPreferences(!isUpdatingColorPreferences);
+                }}
                 className="flex size-7 items-center justify-center rounded-md border border-transparent outline-none transition-colors hover:border-border hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-default disabled:hover:border-transparent disabled:hover:bg-transparent"
               >
                 <div className="size-5 overflow-hidden rounded">
