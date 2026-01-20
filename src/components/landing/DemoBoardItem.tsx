@@ -33,7 +33,7 @@ const DemoBoardItem = ({ task, index, onSelect }: Props) => (
           }
         }}
         className={cn(
-          "mb-2 h-[140px] cursor-pointer rounded-lg border bg-background p-3 outline-hidden dark:border-border",
+          "mb-2 h-35 cursor-pointer rounded-lg border bg-background p-3 outline-hidden dark:border-border",
           snapshot.isDragging
             ? "cursor-grabbing shadow-xl ring-2 ring-primary-500/30"
             : "hover:shadow-sm dark:shadow-gray-400/10",
@@ -80,7 +80,7 @@ const DemoBoardItem = ({ task, index, onSelect }: Props) => (
           </div>
 
           {task.labels.length > 0 && (
-            <div className="mt-auto flex max-h-[20px] flex-wrap gap-1 overflow-hidden">
+            <div className="mt-auto flex max-h-5 flex-wrap gap-1 overflow-hidden">
               {task.labels.map((label) => (
                 <Badge
                   key={label.name}

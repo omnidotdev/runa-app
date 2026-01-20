@@ -109,7 +109,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
             }
           }}
           className={cn(
-            "mb-2 h-[140px] cursor-pointer rounded-lg border bg-background p-3 outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-border",
+            "mb-2 h-35 cursor-pointer rounded-lg border bg-background p-3 outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-border",
             !snapshot.isDragging && "hover:shadow-sm dark:shadow-gray-400/10",
           )}
         >
@@ -148,7 +148,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
 
             <div className="mt-auto flex items-end justify-between">
               {task.taskLabels.nodes.length > 0 && (
-                <div className="flex max-h-[20px] flex-wrap gap-1 overflow-hidden">
+                <div className="flex max-h-5 flex-wrap gap-1 overflow-hidden">
                   {task.taskLabels.nodes.slice(0, 3).map(({ label }) => (
                     <Label key={label?.rowId} label={label as LabelFragment} />
                   ))}
