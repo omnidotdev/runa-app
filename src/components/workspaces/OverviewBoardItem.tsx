@@ -38,7 +38,7 @@ const BoardItem = ({ project }: Props) => {
           },
         })
       }
-      className="h-[140px] cursor-pointer rounded-lg border bg-background p-3 outline-hidden hover:shadow-sm dark:border-border dark:shadow-gray-400/10"
+      className="h-35 cursor-pointer rounded-lg border bg-background p-3 outline-hidden hover:shadow-sm dark:border-border dark:shadow-gray-400/10"
     >
       <div className="flex h-full flex-col">
         <div className="flex flex-col gap-1">
