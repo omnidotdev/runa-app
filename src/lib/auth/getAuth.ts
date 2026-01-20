@@ -103,33 +103,64 @@ export async function getAuth(request: Request) {
       });
       accessToken = tokenResult?.accessToken;
 
-      // extract claims from the ID token
+      // extract claims from the ID token via JWKS verification
       if (tokenResult?.idToken) {
-        const { discovery, jwks } = await all({
-          async discovery() {
-            return getOidcDiscovery();
-          },
-          async jwks() {
-            return getJwks();
-          },
-        });
-        const { payload } = await jose.jwtVerify(tokenResult.idToken, jwks, {
-          issuer: discovery.issuer,
-        });
-        identityProviderId = payload.sub;
+        try {
+          const { discovery, jwks } = await all({
+            async discovery() {
+              return getOidcDiscovery();
+            },
+            async jwks() {
+              return getJwks();
+            },
+          });
+          const { payload } = await jose.jwtVerify(tokenResult.idToken, jwks, {
+            issuer: discovery.issuer,
+          });
+          identityProviderId = payload.sub;
 
-        // extract organization claims from the ID token
-        const orgClaims = payload[OMNI_CLAIMS_KEY];
-        if (Array.isArray(orgClaims))
-          organizations = orgClaims as OrganizationClaim[];
+          // extract organization claims from the ID token
+          const orgClaims = payload[OMNI_CLAIMS_KEY];
+          if (Array.isArray(orgClaims))
+            organizations = orgClaims as OrganizationClaim[];
+        } catch (jwtError) {
+          console.error("[getAuth] JWT verification failed:", jwtError);
+        }
+      }
+
+      // Fallback: if JWT verification failed but we have an access token,
+      // fetch user info from the userinfo endpoint to get the sub claim
+      if (accessToken && !identityProviderId) {
+        try {
+          const userInfoResponse = await fetch(
+            `${AUTH_BASE_URL}/oauth2/userinfo`,
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            },
+          );
+
+          if (userInfoResponse.ok) {
+            const userInfo = await userInfoResponse.json();
+            identityProviderId = userInfo.sub;
+
+            // Also extract org claims from userinfo if not already set
+            if (!organizations && Array.isArray(userInfo[OMNI_CLAIMS_KEY])) {
+              organizations = userInfo[OMNI_CLAIMS_KEY] as OrganizationClaim[];
+            }
+          }
+        } catch (userInfoError) {
+          console.error("[getAuth] Userinfo fetch failed:", userInfoError);
+        }
       }
     } catch (err) {
-      console.error(err);
+      console.error("[getAuth] Token fetch error:", err);
     }
 
     let rowId: string | undefined;
 
-    // fetch the database `rowId` using the IDP ID (`identityProviderId` from `idToken.sub`)
+    // Fetch the database `rowId` using the IDP ID (`identityProviderId` from `idToken.sub`)
+    // If identityProviderId is available, use it; otherwise fall back to a user query that
+    // doesn't require it (when Observer query is available)
     if (accessToken && identityProviderId) {
       try {
         const graphqlClient = new GraphQLClient(API_GRAPHQL_URL!, {
