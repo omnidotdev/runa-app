@@ -1,10 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "highlight.js/styles/github.css";
-
-html.dark {
-  @import "highlight.js/styles/github-dark.css";
-}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -220,12 +215,30 @@ html.dark {
   .font-text {
     font-weight: var(--text-weight);
   }
-  .tiptap p.is-empty::before {
-    content: attr(data-placeholder);
-    float: left;
-    color: var(--base-400);
-    pointer-events: none;
-    height: 0;
+  /* Lexical editor styles */
+  .lexical-editor-container code[data-lexical-code] {
+    display: block;
+    background: var(--base-50);
+    border-left: 1px solid var(--base-200);
+    border-right: 1px solid var(--base-200);
+    border-bottom: 1px solid var(--base-200);
+    border-radius: 0 0 0.5rem 0.5rem;
+    padding: 1rem;
+    font-size: 0.875rem;
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+      "Courier New", monospace;
+    overflow-x: auto;
+    margin-top: 0;
+  }
+
+  .dark .lexical-editor-container code[data-lexical-code] {
+    background: var(--base-950);
+    border-color: var(--base-800);
+  }
+
+  .lexical-editor-container .code-block-header-container {
+    margin-top: 0.5rem;
   }
 
   /* handle autofill states on light mode */

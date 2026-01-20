@@ -1,12 +1,11 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import dayjs from "dayjs";
-import { CalendarIcon, TagIcon, UserIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
-import { Assignees, Label, RichTextEditor, Tooltip } from "@/components/core";
+import { Assignees, Label, RichTextEditor } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
-import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
@@ -110,123 +109,64 @@ const BoardItem = ({ task, index, displayId }: Props) => {
             }
           }}
           className={cn(
-            "mb-2 cursor-pointer rounded-lg border bg-background p-3 outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-border",
+            "mb-2 h-[140px] cursor-pointer rounded-lg border bg-background p-3 outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-border",
             !snapshot.isDragging && "hover:shadow-sm dark:shadow-gray-400/10",
           )}
         >
-          <div className="flex flex-col gap-1">
+          <div className="flex h-full flex-col">
             <div className="flex items-start gap-2">
               <div className="mt-0.5 min-w-0 flex-1">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <PriorityIcon
+                    priority={task.priority}
+                    className="size-2.5 shrink-0 opacity-60"
+                  />
                   <span className="shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-400">
                     {displayId}
                   </span>
-
-                  <PriorityIcon
-                    priority={task.priority}
-                    className="scale-75 opacity-50"
-                  />
                 </div>
 
-                <div className="py-4">
+                <div className="line-clamp-2 py-2">
                   <RichTextEditor
                     defaultContent={task?.content}
-                    className="min-h-0 w-fit border-0 p-0 text-xs dark:bg-background"
+                    className="min-h-0 w-fit border-0 p-0 text-xs dark:bg-background [&_.ProseMirror]:line-clamp-2 [&_.ProseMirror]:overflow-hidden"
                     skeletonClassName="h-4 w-40"
                     editable={false}
                   />
                 </div>
               </div>
 
-              <Tooltip
-                positioning={{
-                  placement: "bottom-end",
-                  gutter: -4,
-                }}
-                openDelay={1000}
-                tooltip="Update Assignees"
-                shortcut="A"
-                trigger={
-                  <div className="-mt-1 flex items-center gap-1">
-                    {task.assignees.nodes.length ? (
-                      <Assignees
-                        assignees={task?.assignees.nodes.map(
-                          (assignee) => assignee.user?.rowId!,
-                        )}
-                        className="flex w-fit items-center"
-                      />
-                    ) : (
-                      <AvatarRoot
-                        aria-label="No Assignees"
-                        className="mt-2.5 mr-0.5 size-5.5"
-                      >
-                        <AvatarFallback className="border border-border border-dashed bg-transparent p-1 text-muted-foreground">
-                          <UserIcon />
-                        </AvatarFallback>
-                      </AvatarRoot>
-                    )}
-                  </div>
-                }
-              />
+              {task.assignees.nodes.length > 0 && (
+                <Assignees
+                  assignees={task.assignees.nodes.map(
+                    (assignee) => assignee.user?.rowId!,
+                  )}
+                  className="flex w-fit items-center"
+                />
+              )}
             </div>
 
-            <div className="grid grid-cols-4">
-              <div className="col-span-3 -m-3 flex items-end p-2.5">
-                <Tooltip
-                  positioning={{
-                    placement: "top-start",
-                    shift: -6,
-                  }}
-                  openDelay={1000}
-                  tooltip="Update Labels"
-                  shortcut="L"
-                  trigger={
-                    task.taskLabels.nodes.length ? (
-                      <div className="flex flex-wrap gap-1">
-                        {task.taskLabels.nodes?.map(({ label }) => (
-                          <Label
-                            key={label?.rowId}
-                            label={label as LabelFragment}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <Badge
-                        variant="outline"
-                        className="border-border border-dashed"
-                      >
-                        <TagIcon className="size-2.5!" />
-                      </Badge>
-                    )
-                  }
-                />
-              </div>
-
-              <Tooltip
-                positioning={{
-                  placement: "top-end",
-                  shift: -8,
-                }}
-                openDelay={1000}
-                tooltip="Update Due Date"
-                shortcut="D"
-                trigger={
-                  task?.dueDate ? (
-                    <div className="col-span-1 mr-1 flex h-5 items-center justify-end gap-1 place-self-end text-base-500 text-xs dark:text-base-400">
-                      <CalendarIcon className="h-3 w-3" />
-                      {/* TODO: timezone handling */}
-                      <span>{dayjs(task.dueDate).format("MMM D")}</span>
-                    </div>
-                  ) : (
-                    <Badge
-                      variant="outline"
-                      className="h-5 w-fit place-self-end border-border border-dashed"
-                    >
-                      <CalendarIcon className="size-2.5!" />
+            <div className="mt-auto flex items-end justify-between">
+              {task.taskLabels.nodes.length > 0 && (
+                <div className="flex max-h-[20px] flex-wrap gap-1 overflow-hidden">
+                  {task.taskLabels.nodes.slice(0, 3).map(({ label }) => (
+                    <Label key={label?.rowId} label={label as LabelFragment} />
+                  ))}
+                  {task.taskLabels.nodes.length > 3 && (
+                    <Badge variant="outline" className="border-border text-xs">
+                      +{task.taskLabels.nodes.length - 3}
                     </Badge>
-                  )
-                }
-              />
+                  )}
+                </div>
+              )}
+
+              {task.dueDate && (
+                <div className="ml-auto flex h-5 items-center gap-1 text-base-500 text-xs dark:text-base-400">
+                  <CalendarIcon className="h-3 w-3" />
+                  {/* TODO: timezone handling */}
+                  <span>{dayjs(task.dueDate).format("MMM D")}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
