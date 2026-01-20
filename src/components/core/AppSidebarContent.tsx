@@ -77,7 +77,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
   const { organizationId } = useLoaderData({ from: "/_auth" });
   const { session } = useRouteContext({ from: "/_auth" });
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const { workspaceSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
 

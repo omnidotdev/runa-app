@@ -10,13 +10,14 @@ import type { DemoTask } from "./demoBoardData";
 interface Props {
   task: DemoTask;
   index: number;
+  displayId: string;
   onSelect: () => void;
 }
 
 /**
  * Item on the demo board.
  */
-const DemoBoardItem = ({ task, index, onSelect }: Props) => (
+const DemoBoardItem = ({ task, index, displayId, onSelect }: Props) => (
   <Draggable draggableId={task.rowId} index={index}>
     {(provided, snapshot) => (
       <div
@@ -33,22 +34,25 @@ const DemoBoardItem = ({ task, index, onSelect }: Props) => (
           }
         }}
         className={cn(
-          "mb-2 h-35 cursor-pointer rounded-lg border bg-background p-3 outline-hidden dark:border-border",
+          "mb-2 h-35 shrink-0 cursor-pointer overflow-hidden rounded-lg border bg-background p-3 outline-hidden dark:border-border",
           snapshot.isDragging
             ? "cursor-grabbing shadow-xl ring-2 ring-primary-500/30"
             : "hover:shadow-sm dark:shadow-gray-400/10",
         )}
       >
-        <div className="flex h-full flex-col">
+        <div className="flex h-full flex-col overflow-hidden">
           <div className="flex items-start gap-2">
             <div className="mt-0.5 min-w-0 flex-1">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 {task.priority && (
                   <PriorityIcon
                     priority={task.priority}
                     className="size-2.5 shrink-0 opacity-60"
                   />
                 )}
+                <span className="shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-400">
+                  {displayId}
+                </span>
               </div>
 
               <p className="line-clamp-2 py-2 text-foreground text-xs">
@@ -63,7 +67,13 @@ const DemoBoardItem = ({ task, index, onSelect }: Props) => (
                     key={assignee.name}
                     className="size-6 border-2 border-background"
                   >
-                    <AvatarFallback className="bg-primary-100 text-primary-700 text-xs dark:bg-primary-900 dark:text-primary-300">
+                    <AvatarFallback
+                      className="text-xs"
+                      style={{
+                        backgroundColor: `${assignee.color}20`,
+                        color: assignee.color,
+                      }}
+                    >
                       {assignee.name.charAt(0)}
                     </AvatarFallback>
                   </AvatarRoot>
@@ -79,23 +89,25 @@ const DemoBoardItem = ({ task, index, onSelect }: Props) => (
             )}
           </div>
 
-          {task.labels.length > 0 && (
-            <div className="mt-auto flex max-h-5 flex-wrap gap-1 overflow-hidden">
-              {task.labels.map((label) => (
-                <Badge
-                  key={label.name}
-                  variant="outline"
-                  className="border-0 px-1.5 py-0 text-xs"
-                  style={{
-                    backgroundColor: `${label.color}20`,
-                    color: label.color,
-                  }}
-                >
-                  {label.name}
-                </Badge>
-              ))}
-            </div>
-          )}
+          <div className="mt-auto flex items-end justify-between">
+            {task.labels.length > 0 && (
+              <div className="flex max-h-5 flex-wrap gap-1 overflow-hidden">
+                {task.labels.map((label) => (
+                  <Badge
+                    key={label.name}
+                    variant="outline"
+                    className="border-0 px-1.5 py-0 text-xs"
+                    style={{
+                      backgroundColor: `${label.color}20`,
+                      color: label.color,
+                    }}
+                  >
+                    {label.name}
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     )}

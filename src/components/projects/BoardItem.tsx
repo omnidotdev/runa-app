@@ -109,7 +109,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
             }
           }}
           className={cn(
-            "mb-2 h-35 cursor-pointer rounded-lg border bg-background p-3 outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-border",
+            "mb-2 h-35 shrink-0 cursor-pointer overflow-hidden rounded-lg border bg-background p-3 outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-border",
             !snapshot.isDragging && "hover:shadow-sm dark:shadow-gray-400/10",
           )}
         >
@@ -129,7 +129,7 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                 <div className="line-clamp-2 py-2">
                   <RichTextEditor
                     defaultContent={task?.content}
-                    className="min-h-0 w-fit border-0 p-0 text-xs dark:bg-background [&_.ProseMirror]:line-clamp-2 [&_.ProseMirror]:overflow-hidden"
+                    className="min-h-0! w-fit border-0 p-0 text-xs dark:bg-background [&_.ProseMirror]:line-clamp-2 [&_.ProseMirror]:overflow-hidden"
                     skeletonClassName="h-4 w-40"
                     editable={false}
                   />
