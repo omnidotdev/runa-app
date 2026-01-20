@@ -163,7 +163,7 @@ const RichTextEditor = ({
     ],
   };
 
-  const handleChange = (editorState: EditorState, editor: LexicalEditor) => {
+  const handleChange = (_editorState: EditorState, editor: LexicalEditor) => {
     const empty = isEditorEmpty(editor);
     setIsEmpty(empty);
 

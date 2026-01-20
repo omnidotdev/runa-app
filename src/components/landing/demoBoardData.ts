@@ -5,6 +5,7 @@ export interface DemoLabel {
 
 export interface DemoAssignee {
   name: string;
+  color: string;
   avatarUrl?: string;
 }
 
@@ -12,6 +13,7 @@ export interface DemoTask {
   rowId: string;
   columnId: string;
   columnIndex: number;
+  number: number;
   content: string;
   priority: "high" | "medium" | "low" | null;
   labels: DemoLabel[];
@@ -35,15 +37,17 @@ export const initialDemoTasks: DemoTask[] = [
     rowId: "task-1",
     columnId: "col-todo",
     columnIndex: 0,
+    number: 1,
     content: "Design homepage mockups",
     priority: "high",
     labels: [{ name: "Design", color: "#8b5cf6" }],
-    assignees: [{ name: "Alex" }],
+    assignees: [{ name: "Alex", color: "#3b82f6" }],
   },
   {
     rowId: "task-2",
     columnId: "col-todo",
     columnIndex: 1,
+    number: 2,
     content: "Set up CI/CD pipeline",
     priority: "medium",
     labels: [{ name: "DevOps", color: "#f59e0b" }],
@@ -52,19 +56,24 @@ export const initialDemoTasks: DemoTask[] = [
   {
     rowId: "task-3",
     columnId: "col-progress",
-    columnIndex: 1,
+    columnIndex: 0,
+    number: 3,
     content: "Write API documentation",
     priority: "low",
     labels: [{ name: "Docs", color: "#6366f1" }],
-    assignees: [{ name: "Casey" }],
+    assignees: [{ name: "Casey", color: "#10b981" }],
   },
   {
     rowId: "task-4",
     columnId: "col-done",
-    columnIndex: 1,
+    columnIndex: 0,
+    number: 4,
     content: "Deploy to staging",
     priority: "high",
     labels: [{ name: "DevOps", color: "#f59e0b" }],
-    assignees: [{ name: "Alex" }, { name: "Jordan" }],
+    assignees: [
+      { name: "Alex", color: "#3b82f6" },
+      { name: "Jordan", color: "#ec4899" },
+    ],
   },
 ];

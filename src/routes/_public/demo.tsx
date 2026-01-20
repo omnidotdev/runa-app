@@ -30,7 +30,9 @@ function DemoPage() {
           </p>
         </div>
 
-        <DemoBoard />
+        <div className="flex justify-center">
+          <DemoBoard />
+        </div>
 
         <p className="mt-6 text-center text-base-500 text-sm">
           Sign up to create your own boards with unlimited customization.

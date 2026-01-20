@@ -20,7 +20,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
-import { Link, RichTextEditor, Tooltip } from "@/components/core";
+import { Link, Tooltip } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import { Board, List, ProjectPageSkeleton } from "@/components/projects";
 import {
@@ -33,29 +33,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  useProjectQuery,
-  useProjectsQuery,
   useSettingByOrganizationIdQuery,
   useTaskQuery,
   useTasksQuery,
-  useUpdateProjectMutation,
   useUpdateTaskMutation,
   useUpdateUserPreferenceMutation,
   useUserPreferencesQuery,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
-import getSdk from "@/lib/graphql/getSdk";
 import useDragStore from "@/lib/hooks/store/useDragStore";
-import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
-import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
-import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
@@ -168,15 +161,10 @@ function ProjectPage() {
   const { projectId, organizationId } = Route.useLoaderData();
   const { search, assignees, labels, priorities } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
-  const [nameError, setNameError] = useState<string | null>(null);
 
   const navigate = Route.useNavigate();
 
   const { queryClient } = Route.useRouteContext();
-
-  // Get role from IDP organization claims
-  const role = useCurrentUserRole(organizationId);
-  const isOwner = role === Role.Owner;
 
   const tasksVariables: TasksQueryVariables = useMemo(
     () => ({
@@ -236,35 +224,6 @@ function ProjectPage() {
     }),
   });
 
-  const editNameSchema = z
-    .object({
-      name: z
-        .string()
-        .min(3, { error: "Name must be at least 3 characters." })
-        .default(project?.name!),
-      currentSlug: z.string().default(project?.slug!),
-    })
-    .check(async (ctx) => {
-      const sdk = await getSdk();
-
-      const updatedSlug = generateSlug(ctx.value.name);
-
-      if (!updatedSlug?.length || updatedSlug === ctx.value.currentSlug)
-        return z.NEVER;
-
-      const { projects } = await sdk.Projects({
-        organizationId,
-      });
-
-      if (projects?.nodes?.some((p) => p.slug === updatedSlug)) {
-        ctx.issues.push({
-          code: "custom",
-          message: "Project slug already exists for this workspace.",
-          input: ctx.value.name,
-        });
-      }
-    });
-
   const [projectColumnOpenStates, setProjectColumnOpenStates] = useState(
     project?.columns?.nodes?.map(() => true) ?? [],
   );
@@ -320,26 +279,6 @@ function ProjectPage() {
       );
     },
   });
-
-  const { mutate: updateProject } = useUpdateProjectMutation({
-    meta: {
-      invalidates: [
-        getQueryKeyPrefix(useProjectQuery),
-        getQueryKeyPrefix(useProjectsQuery),
-      ],
-    },
-    onSuccess: (_data, variables) => {
-      if (variables.patch.slug) {
-        navigate({
-          to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-          params: { workspaceSlug, projectSlug: variables.patch.slug },
-          replace: true,
-        });
-      }
-    },
-  });
-
-  const handleProjectUpdate = useDebounceCallback(updateProject, 300);
 
   const { mutateAsync: updateTask } = useUpdateTaskMutation({
     meta: {
@@ -546,52 +485,13 @@ function ProjectPage() {
       <div className="flex size-full flex-col">
         <div className="border-b px-6 py-4">
           <div className="flex flex-col gap-2">
-            <RichTextEditor
-              key={project?.name}
-              defaultContent={project?.name}
-              editable={isOwner}
-              className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
-              skeletonClassName="h-8 max-w-80"
-              onUpdate={async ({ getText }) => {
-                const text = getText().trim();
+            <h1 className="font-semibold text-2xl">{project?.name}</h1>
 
-                const result = await editNameSchema.safeParseAsync({
-                  name: text,
-                });
-
-                if (!result.success) {
-                  setNameError(result.error.issues[0].message);
-                  return;
-                }
-
-                setNameError(null);
-                handleProjectUpdate({
-                  rowId: projectId,
-                  patch: { name: text, slug: generateSlug(text) },
-                });
-              }}
-            />
-
-            {nameError && (
-              <p className="mt-1 text-red-500 text-sm">{nameError}</p>
+            {project?.description && (
+              <p className="text-base-600 text-sm dark:text-base-400">
+                {project.description}
+              </p>
             )}
-
-            <RichTextEditor
-              key={project?.description}
-              defaultContent={project?.description || ""}
-              editable={isOwner}
-              className="min-h-0 border-0 bg-transparent p-0 text-base-600 text-sm dark:bg-transparent dark:text-base-400"
-              placeholder="Add a short description..."
-              skeletonClassName="h-5 max-w-40"
-              onUpdate={({ getText }) =>
-                handleProjectUpdate({
-                  rowId: projectId,
-                  patch: {
-                    description: getText(),
-                  },
-                })
-              }
-            />
 
             <div className="mt-2 flex flex-wrap gap-2 sm:flex-nowrap">
               <div className="relative flex-1 sm:flex-none">
