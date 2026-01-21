@@ -34,7 +34,7 @@ const AppSidebarHeader = () => {
   const { organizationId } = useLoaderData({ from: "/_auth" });
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, closeMobileSidebar } = useSidebar();
   const orgContext = useOrganization();
 
   // Get user's organizations from context
@@ -88,6 +88,7 @@ const AppSidebarHeader = () => {
                   <MenuItem
                     key={org?.id}
                     onClick={() => {
+                      closeMobileSidebar();
                       setLastWorkspaceCookie({ data: orgSlug });
                       navigate({
                         to: "/workspaces/$workspaceSlug/projects",
@@ -110,7 +111,10 @@ const AppSidebarHeader = () => {
               <MenuSeparator />
 
               <MenuItem
-                onClick={() => navigate({ to: "/workspaces" })}
+                onClick={() => {
+                  closeMobileSidebar();
+                  navigate({ to: "/workspaces" });
+                }}
                 className="cursor-pointer gap-2 px-2 py-1"
                 value="view-all-workspaces"
               >

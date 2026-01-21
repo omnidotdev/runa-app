@@ -109,7 +109,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
 
   const maxProjectsReached = useMaxProjectsReached();
 
-  const { isMobile, open } = useSidebar();
+  const { isMobile, open, closeMobileSidebar } = useSidebar();
 
   const { mutate: updateViewMode } = useUpdateUserPreferenceMutation({
     meta: {
@@ -188,7 +188,11 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                 tooltip={item.tooltip}
                 asChild
               >
-                <Link to={item.to} params={{ workspaceSlug }}>
+                <Link
+                  to={item.to}
+                  params={{ workspaceSlug }}
+                  onClick={closeMobileSidebar}
+                >
                   <item.icon />
                 </Link>
               </SidebarMenuButton>
@@ -242,6 +246,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                               workspaceSlug,
                               projectSlug: project.slug,
                             }}
+                            onClick={closeMobileSidebar}
                           >
                             {userPreferences?.viewMode === "board" ? (
                               <Grid2X2Icon
@@ -291,7 +296,11 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                       isActive={item.isActive}
                       asChild
                     >
-                      <Link to={item.to} params={{ workspaceSlug }}>
+                      <Link
+                        to={item.to}
+                        params={{ workspaceSlug }}
+                        onClick={closeMobileSidebar}
+                      >
                         <item.icon />
                         <span className="w-full truncate">{item.label}</span>
                       </Link>
@@ -368,6 +377,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                               workspaceSlug,
                               projectSlug: project.slug,
                             }}
+                            onClick={closeMobileSidebar}
                           >
                             {userPreferences?.viewMode === "board" ? (
                               <Grid2X2Icon
@@ -461,6 +471,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                                     workspaceSlug,
                                     projectSlug: project.slug,
                                   }}
+                                  onClick={closeMobileSidebar}
                                 >
                                   <Settings2 />
                                   Settings
