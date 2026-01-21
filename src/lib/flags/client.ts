@@ -18,6 +18,8 @@ export const getFlagClient = async () => {
     customHeaders: {
       Authorization: FLAGS_CLIENT_KEY!,
     },
+    timeout: 15000, // 15 second timeout for cross-service calls
+    refreshInterval: 30000, // poll every 30s instead of default 15s
   });
 
   return flagClient;
