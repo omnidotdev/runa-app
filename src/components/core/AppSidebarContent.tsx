@@ -3,7 +3,6 @@ import {
   Link,
   useLoaderData,
   useLocation,
-  useNavigate,
   useParams,
   useRouteContext,
 } from "@tanstack/react-router";
@@ -77,7 +76,6 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
   const { organizationId } = useLoaderData({ from: "/_auth" });
   const { session } = useRouteContext({ from: "/_auth" });
   const queryClient = useQueryClient();
-  const _navigate = useNavigate();
   const { workspaceSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
 
@@ -248,7 +246,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                             }}
                             onClick={closeMobileSidebar}
                           >
-                            {userPreferences?.viewMode === "board" ? (
+                            {userPreferences?.viewMode !== "list" ? (
                               <Grid2X2Icon
                                 className="size-4 text-primary-500"
                                 style={{
@@ -379,7 +377,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                             }}
                             onClick={closeMobileSidebar}
                           >
-                            {userPreferences?.viewMode === "board" ? (
+                            {userPreferences?.viewMode !== "list" ? (
                               <Grid2X2Icon
                                 className="text-primary-500"
                                 style={{
@@ -440,7 +438,7 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                                     patch: {
                                       viewMode:
                                         project?.userPreferences?.nodes?.[0]
-                                          ?.viewMode === "board"
+                                          ?.viewMode !== "list"
                                           ? "list"
                                           : "board",
                                     },
