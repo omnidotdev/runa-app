@@ -133,7 +133,7 @@ const LabelForm = ({
   const form = useForm({
     defaultValues: {
       name: label.name,
-      color: label.color ?? "#09b8b5",
+      color: label.color ?? "#e4a21b",
     },
     onSubmit: ({ value, formApi }) => {
       if (label.rowId === "pending") {
@@ -202,7 +202,7 @@ const LabelForm = ({
               strategy: "fixed",
               placement: "bottom",
             }}
-            value={parseColor(field.state.value ?? "#09b8b5")}
+            value={parseColor(field.state.value ?? "#e4a21b")}
             onValueChange={({ value }) => {
               field.handleChange(value.toString("hex"));
             }}
