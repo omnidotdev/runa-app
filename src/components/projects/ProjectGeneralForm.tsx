@@ -192,7 +192,7 @@ export default function ProjectGeneralForm() {
           </div>
 
           <div className="flex flex-1 items-center gap-2">
-            <ProjectColorPicker disabled={!isEditing} />
+            <ProjectColorPicker />
 
             <form.Field name="name">
               {(field) => (
