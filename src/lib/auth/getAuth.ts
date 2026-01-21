@@ -44,7 +44,9 @@ async function getOidcDiscovery(): Promise<OIDCDiscovery> {
     "/.well-known/openid-configuration",
     AUTH_BASE_URL,
   );
-  const response = await fetch(discoveryUrl);
+  const response = await fetch(discoveryUrl, {
+    signal: AbortSignal.timeout(15000), // 15 second timeout
+  });
 
   if (!response.ok)
     throw new Error(
@@ -73,7 +75,10 @@ async function getJwks(): Promise<jose.JWTVerifyGetKey> {
   }
 
   const discovery = await getOidcDiscovery();
-  jwksCache = jose.createRemoteJWKSet(new URL(discovery.jwks_uri));
+  jwksCache = jose.createRemoteJWKSet(new URL(discovery.jwks_uri), {
+    timeoutDuration: 15000, // 15 seconds - longer timeout for cross-service calls
+    cooldownDuration: 30000, // wait 30s before retrying after failure
+  });
   jwksCacheExpiry = now + JWKS_CACHE_TTL;
 
   return jwksCache;
