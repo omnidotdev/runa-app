@@ -47,7 +47,7 @@ const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { isMobile, setOpen, open } = useSidebar();
+  const { isMobile, setOpen, open, closeMobileSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () =>
@@ -95,7 +95,12 @@ const AppSidebarFooter = () => {
           tooltip="Pricing"
           disabled={isMobile || open}
           trigger={
-            <SidebarMenuButton onClick={() => navigate({ to: "/pricing" })}>
+            <SidebarMenuButton
+              onClick={() => {
+                closeMobileSidebar();
+                navigate({ to: "/pricing" });
+              }}
+            >
               <TagIcon />
               <span className="flex w-full items-center">Pricing</span>
             </SidebarMenuButton>
@@ -171,12 +176,13 @@ const AppSidebarFooter = () => {
                   pathname === `/profile/${session?.user.identityProviderId}`
                 }
                 tooltip="Profile"
-                onClick={() =>
+                onClick={() => {
+                  closeMobileSidebar();
                   navigate({
                     to: "/profile/$userId",
                     params: { userId: session?.user.identityProviderId! },
-                  })
-                }
+                  });
+                }}
               >
                 <AvatarRoot className="size-4">
                   <AvatarImage

@@ -51,6 +51,7 @@ interface SidebarContextProps {
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean | null;
   toggleSidebar: () => void;
+  closeMobileSidebar: () => void;
   width: string;
   setWidth: (width: string) => void;
   isDraggingRail: boolean;
@@ -113,6 +114,13 @@ const SidebarProvider = ({
     return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
   }, [isMobile, setOpen]);
 
+  // Helper to close the mobile sidebar (for navigation handlers).
+  const closeMobileSidebar = useCallback(() => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  }, [isMobile]);
+
   const state = open ? "expanded" : "collapsed";
 
   const contextValue = useMemo<SidebarContextProps>(
@@ -124,6 +132,7 @@ const SidebarProvider = ({
       openMobile,
       setOpenMobile,
       toggleSidebar,
+      closeMobileSidebar,
       width,
       setWidth,
       isDraggingRail,
@@ -136,6 +145,7 @@ const SidebarProvider = ({
       isMobile,
       openMobile,
       toggleSidebar,
+      closeMobileSidebar,
       width,
       isDraggingRail,
     ],
