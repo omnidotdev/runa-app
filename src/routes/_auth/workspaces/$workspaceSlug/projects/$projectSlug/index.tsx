@@ -474,7 +474,7 @@ function ProjectPage() {
       updateViewMode({
         rowId: userPreferences?.rowId!,
         patch: {
-          viewMode: userPreferences?.viewMode === "board" ? "list" : "board",
+          viewMode: userPreferences?.viewMode !== "list" ? "list" : "board",
         },
       }),
     [updateViewMode, userPreferences?.viewMode, projectId],
@@ -524,7 +524,7 @@ function ProjectPage() {
                         rowId: userPreferences?.rowId!,
                         patch: {
                           viewMode:
-                            userPreferences?.viewMode === "board"
+                            userPreferences?.viewMode !== "list"
                               ? "list"
                               : "board",
                         },
@@ -584,7 +584,7 @@ function ProjectPage() {
         </div>
 
         <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-          {userPreferences?.viewMode === "board" ? (
+          {userPreferences?.viewMode !== "list" ? (
             <Board tasks={tasks} />
           ) : (
             <List
