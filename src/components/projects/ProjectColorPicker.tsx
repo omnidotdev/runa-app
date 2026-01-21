@@ -29,6 +29,7 @@ import {
   parseColor,
 } from "@/components/ui/color-picker";
 import {
+  useCreateUserPreferenceMutation,
   useProjectsSidebarQuery,
   useUpdateUserPreferenceMutation,
 } from "@/generated/graphql";
@@ -73,17 +74,38 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
     },
   });
 
+  const { mutate: createUserPreference } = useCreateUserPreferenceMutation({
+    meta: {
+      invalidates: [
+        userPreferencesQueryKey,
+        getQueryKeyPrefix(useProjectsSidebarQuery),
+      ],
+    },
+  });
+
   const form = useForm({
     defaultValues: {
       color: userPreferences?.color ?? "#e4a21b",
     },
     onSubmit: ({ value }) => {
-      updateUserPreferences({
-        rowId: userPreferences?.rowId!,
-        patch: {
-          color: value.color,
-        },
-      });
+      if (!userPreferences) {
+        createUserPreference({
+          input: {
+            userPreference: {
+              userId: session?.user?.rowId!,
+              projectId,
+              color: value.color,
+            },
+          },
+        });
+      } else {
+        updateUserPreferences({
+          rowId: userPreferences.rowId,
+          patch: {
+            color: value.color,
+          },
+        });
+      }
 
       setIsUpdatingColorPreferences(false);
     },
