@@ -28,10 +28,14 @@ import {
   ColorPickerView,
   parseColor,
 } from "@/components/ui/color-picker";
-import { useUpdateUserPreferenceMutation } from "@/generated/graphql";
+import {
+  useProjectsSidebarQuery,
+  useUpdateUserPreferenceMutation,
+} from "@/generated/graphql";
 import { colors } from "@/lib/constants/colors";
 import useForm from "@/lib/hooks/useForm";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { ComponentProps } from "react";
 
@@ -62,13 +66,16 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
 
   const { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
     meta: {
-      invalidates: [userPreferencesQueryKey],
+      invalidates: [
+        userPreferencesQueryKey,
+        getQueryKeyPrefix(useProjectsSidebarQuery),
+      ],
     },
   });
 
   const form = useForm({
     defaultValues: {
-      color: userPreferences?.color ?? "#09b8b5",
+      color: userPreferences?.color ?? "#e4a21b",
     },
     onSubmit: ({ value }) => {
       updateUserPreferences({
@@ -83,14 +90,7 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
   });
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        form.handleSubmit();
-      }}
-      className="flex flex-col gap-2"
-    >
+    <div className="flex flex-col gap-2">
       <form.Field name="color">
         {(field) => (
           <ColorPickerRoot
@@ -98,7 +98,7 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
               strategy: "fixed",
               placement: "bottom-start",
             }}
-            value={parseColor(field.state.value ?? "#09b8b5")}
+            value={parseColor(field.state.value ?? "#e4a21b")}
             onValueChange={({ value }) => {
               setIsUpdatingColorPreferences(true);
               field.handleChange(value.toString("hex"));
@@ -191,9 +191,10 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
                       </Button>
 
                       <Button
-                        type="submit"
+                        type="button"
                         size="sm"
                         disabled={!canSubmit || isSubmitting || isDefaultValue}
+                        onClick={() => form.handleSubmit()}
                       >
                         Save
                       </Button>
@@ -206,7 +207,7 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
           </ColorPickerRoot>
         )}
       </form.Field>
-    </form>
+    </div>
   );
 };
 

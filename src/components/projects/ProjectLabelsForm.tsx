@@ -79,7 +79,7 @@ const ProjectLabelsForm = () => {
           label={{
             rowId: "pending",
             name: "",
-            color: "#09b8b5",
+            color: "#e4a21b",
           }}
           isActive={true}
           onSetActive={handleSetActiveLabel}
