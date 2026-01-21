@@ -7,6 +7,8 @@ export const {
   VITE_API_BASE_URL: API_BASE_URL,
   VITE_AUTH_BASE_URL: AUTH_BASE_URL,
   VITE_BILLING_BASE_URL: BILLING_BASE_URL,
+  VITE_SELF_HOSTED,
+  SELF_HOSTED,
   // auth (server-side secrets)
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
@@ -22,3 +24,6 @@ export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 export const isDevEnv = import.meta.env.DEV;
 /** @knipignore */
 export const isProdEnv = import.meta.env.PROD;
+/** @knipignore */
+export const isSelfHosted =
+  SELF_HOSTED === "true" || VITE_SELF_HOSTED === "true";
