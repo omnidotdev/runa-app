@@ -66,13 +66,9 @@ interface SidebarMenuItemType {
   label: string;
 }
 
-interface Props {
-  setSelectedProject: (project: { rowId: string; name: string }) => void;
-}
-
 // TODO break up this behemoth
 
-const AppSidebarContent = ({ setSelectedProject }: Props) => {
+const AppSidebarContent = () => {
   const { organizationId } = useLoaderData({ from: "/_auth" });
   const { session } = useRouteContext({ from: "/_auth" });
   const queryClient = useQueryClient();
@@ -404,12 +400,6 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                                 `/workspaces/${workspaceSlug}/projects/${project.slug}`
                               }
                               showOnHover
-                              onClick={() =>
-                                setSelectedProject({
-                                  rowId: project.rowId,
-                                  name: project.name,
-                                })
-                              }
                             >
                               <MoreHorizontalIcon />
                               <span className="sr-only">More</span>

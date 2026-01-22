@@ -1,6 +1,7 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { all } from "better-all";
 
+import DestructiveActionDialog from "@/components/core/DestructiveActionDialog";
 import { NotFound } from "@/components/layout";
 import {
   ProjectColumnsForm,
@@ -10,12 +11,21 @@ import {
   ProjectLabelsForm,
   ProjectSettingsHeader,
 } from "@/components/projects";
+import {
+  useDeleteProjectMutation,
+  useProjectColumnsQuery,
+  useProjectsQuery,
+  useProjectsSidebarQuery,
+} from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
+import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import createMetaTags from "@/lib/util/createMetaTags";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { useOrganization } from "@/providers/OrganizationProvider";
 
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
@@ -77,6 +87,27 @@ export const Route = createFileRoute(
 });
 
 function ProjectSettingsPage() {
+  const { projectId, organizationId } = Route.useLoaderData();
+  const { projectSlug, workspaceSlug } = Route.useParams();
+
+  const navigate = useNavigate();
+  const orgContext = useOrganization();
+
+  // Resolve organization name from JWT claims
+  const orgName = organizationId
+    ? orgContext?.getOrganizationById(organizationId)?.name
+    : undefined;
+
+  const { mutate: deleteProject } = useDeleteProjectMutation({
+    meta: {
+      invalidates: [
+        getQueryKeyPrefix(useProjectsQuery),
+        getQueryKeyPrefix(useProjectColumnsQuery),
+        getQueryKeyPrefix(useProjectsSidebarQuery),
+      ],
+    },
+  });
+
   return (
     <div className="no-scrollbar relative h-full overflow-auto px-4 py-8 lg:p-12">
       <ProjectSettingsHeader />
@@ -92,6 +123,32 @@ function ProjectSettingsPage() {
 
         <ProjectDangerZone />
       </div>
+
+      <DestructiveActionDialog
+        title="Danger Zone"
+        // TODO: should we use name or is slug okay here?
+        description={
+          <span>
+            This will delete the project{" "}
+            <strong className="font-medium text-base-900 dark:text-base-100">
+              {projectSlug}
+            </strong>{" "}
+            from{" "}
+            <strong className="font-medium text-base-900 dark:text-base-100">
+              {orgName}
+            </strong>{" "}
+            workspace . This action cannot be undone.
+          </span>
+        }
+        onConfirm={() => {
+          deleteProject({ rowId: projectId });
+          navigate({
+            to: "/workspaces/$workspaceSlug/projects",
+            params: { workspaceSlug: workspaceSlug! },
+          });
+        }}
+        dialogType={DialogType.DeleteProject}
+      />
     </div>
   );
 }

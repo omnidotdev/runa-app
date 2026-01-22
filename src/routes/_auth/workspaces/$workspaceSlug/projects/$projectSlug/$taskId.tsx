@@ -346,7 +346,6 @@ function TaskPage() {
         This action cannot be undone."
         onConfirm={() => deleteTask({ rowId: taskId })}
         dialogType={DialogType.DeleteTask}
-        confirmation="permanently delete this task"
       />
     </div>
   );

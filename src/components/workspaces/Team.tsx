@@ -307,6 +307,7 @@ const Team = () => {
         )}
       </div>
 
+      {/* TODO: test delete team member and make sure the hold to delete button works */}
       <DestructiveActionDialog
         title="Danger Zone"
         description={`This will remove ${selectedMember?.name} from ${orgName} organization. This action cannot be undone.`}
@@ -318,7 +319,6 @@ const Team = () => {
           })
         }
         dialogType={DialogType.DeleteTeamMember}
-        confirmation={selectedMember?.name}
       />
 
       <InviteMemberDialog triggerRef={inviteRef} />

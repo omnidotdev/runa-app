@@ -11,9 +11,8 @@ import {
   DialogRoot,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import useDialogStore from "@/lib/hooks/store/useDialogStore";
-import useForm from "@/lib/hooks/useForm";
+import ClipPathButton from "./ClipPathButton";
 
 import type { ComponentProps, ReactNode } from "react";
 import type { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -24,7 +23,6 @@ interface DestructiveActionDialogProps
   description: string | ReactNode;
   onConfirm: () => void;
   dialogType: DialogType;
-  confirmation?: string;
 }
 
 const DestructiveActionDialog = ({
@@ -32,27 +30,16 @@ const DestructiveActionDialog = ({
   description,
   onConfirm,
   dialogType,
-  confirmation = "",
   onOpenChange,
   ...rest
 }: DestructiveActionDialogProps) => {
   const { isOpen, setIsOpen } = useDialogStore({ type: dialogType });
-  const inputRef = useRef<HTMLInputElement>(null);
+  const deleteButtonRef = useRef<HTMLButtonElement>(null);
 
-  const form = useForm({
-    defaultValues: {
-      confirmationInput: "",
-    },
-    validators: {
-      onChangeAsync: async ({ value }) =>
-        value.confirmationInput !== confirmation,
-    },
-    onSubmit: async ({ formApi }) => {
-      onConfirm();
-      formApi.reset();
-      setIsOpen(false);
-    },
-  });
+  const handleConfirm = () => {
+    onConfirm();
+    setIsOpen(false);
+  };
 
   return (
     <DialogRoot
@@ -60,9 +47,8 @@ const DestructiveActionDialog = ({
       onOpenChange={(details) => {
         setIsOpen(details.open);
         onOpenChange?.(details);
-        form.reset();
       }}
-      initialFocusEl={() => inputRef.current}
+      initialFocusEl={() => deleteButtonRef.current}
       {...rest}
     >
       <DialogBackdrop />
@@ -74,71 +60,18 @@ const DestructiveActionDialog = ({
             <div className="flex size-10 items-center justify-center rounded-full border border-destructive bg-destructive/10">
               <AlertTriangle className="size-5 text-destructive" />
             </div>
+
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
           </div>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
-            }}
-            className="flex flex-col gap-2"
-          >
-            <form.Field name="confirmationInput">
-              {(field) => (
-                <div className="flex flex-col gap-2">
-                  <label
-                    className="text-foreground text-sm"
-                    htmlFor={`confirmationInput-${confirmation}`}
-                  >
-                    Type{" "}
-                    <strong className="text-destructive">{confirmation}</strong>{" "}
-                    to confirm deletion
-                  </label>
+          <div className="flex flex-col gap-2">
+            <DialogCloseTrigger asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogCloseTrigger>
 
-                  <Input
-                    ref={inputRef}
-                    id={`confirmationInput-${confirmation}`}
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter confirmation text..."
-                    autoComplete="off"
-                    autoCorrect="off"
-                    spellCheck="false"
-                    className="focus-visible:ring-red-500"
-                  />
-                </div>
-              )}
-            </form.Field>
-
-            <div className="mt-4 flex justify-end gap-2">
-              <DialogCloseTrigger asChild>
-                <Button variant="outline" onClick={() => form.reset()}>
-                  Cancel
-                </Button>
-              </DialogCloseTrigger>
-
-              <form.Subscribe
-                selector={(state) => [
-                  state.canSubmit,
-                  state.isSubmitting,
-                  state.isDefaultValue,
-                ]}
-              >
-                {([canSubmit, isSubmitting, isDefaultValue]) => (
-                  <Button
-                    type="submit"
-                    variant="destructive"
-                    disabled={!canSubmit || isSubmitting || isDefaultValue}
-                  >
-                    Delete
-                  </Button>
-                )}
-              </form.Subscribe>
-            </div>
-          </form>
+            <ClipPathButton onConfirm={handleConfirm} ref={deleteButtonRef} />
+          </div>
         </DialogContent>
       </DialogPositioner>
     </DialogRoot>

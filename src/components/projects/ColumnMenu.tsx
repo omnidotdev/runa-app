@@ -146,13 +146,25 @@ const ColumnMenu = ({ columnId, taskIds }: Props) => {
         </MenuPositioner>
       </MenuRoot>
 
+      {/* 
+      TODO: The hold-to-delete button's overlay animation doesn't complete before the dialog closes. 
+      Need to ensure the dialog stays open until the hold duration finishes, 
+      so users see the full "Deleting..." animation before the dialog disappears.
+    */}
       {storedColumnId === columnId && (
         <DestructiveActionDialog
           title="Danger Zone"
-          description={`This will delete all tasks from ${column?.title}. This action cannot be undone`}
-          confirmation={`permanently delete ${column?.title} tasks`}
+          description={
+            <span>
+              This will delete all tasks from{" "}
+              <strong className="font-medium text-base-900 dark:text-base-100">
+                {column?.title}
+              </strong>
+              . This action cannot be undone.
+            </span>
+          }
           dialogType={DialogType.DeleteColumnTasks}
-          onConfirm={() => {
+          onConfirm={async () => {
             if (taskIds.length) {
               for (const taskId of taskIds) {
                 deleteTask({ rowId: taskId });

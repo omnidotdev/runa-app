@@ -147,6 +147,10 @@ export default function ProjectGeneralForm() {
     form.reset();
   };
 
+  const canEdit = !isMember;
+  const showEditButton = canEdit && !isEditing;
+  const showEditActions = canEdit && isEditing;
+
   return (
     <div className="flex flex-col">
       <form
@@ -162,7 +166,7 @@ export default function ProjectGeneralForm() {
             General
           </h2>
 
-          {!isMember && !isEditing && (
+          {showEditButton && (
             <Tooltip
               positioning={{ placement: "left" }}
               tooltip="Edit project details"
@@ -179,7 +183,8 @@ export default function ProjectGeneralForm() {
               }
             />
           )}
-          {isEditing && (
+
+          {showEditActions && (
             <div className="flex items-center justify-between px-2 py-2">
               <div>
                 {parseError && (
@@ -195,7 +200,7 @@ export default function ProjectGeneralForm() {
                 ]}
               >
                 {([canSubmit, isSubmitting, isDefaultValue]) => (
-                  <div className="ml-2 flex items-center justify-center gap-1">
+                  <div className="ml-2 flex items-center gap-1">
                     <Tooltip
                       tooltip="Cancel"
                       trigger={
@@ -210,6 +215,7 @@ export default function ProjectGeneralForm() {
                         </Button>
                       }
                     />
+
                     <Tooltip
                       tooltip="Save"
                       trigger={

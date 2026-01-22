@@ -387,7 +387,6 @@ const ProjectColumnsForm = () => {
           }
         }}
         dialogType={DialogType.DeleteColumn}
-        confirmation={`Delete ${columnToDelete?.title}`}
       />
     </>
   );
