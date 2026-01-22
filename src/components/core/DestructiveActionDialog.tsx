@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import useDialogStore from "@/lib/hooks/store/useDialogStore";
-import ClipPathButton from "./ClipPathButton";
+import HoldToDeleteButton from "./HoldToDeleteButton";
 
 import type { ComponentProps, ReactNode } from "react";
 import type { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -70,7 +70,10 @@ const DestructiveActionDialog = ({
               <Button variant="outline">Cancel</Button>
             </DialogCloseTrigger>
 
-            <ClipPathButton onConfirm={handleConfirm} ref={deleteButtonRef} />
+            <HoldToDeleteButton
+              onConfirm={handleConfirm}
+              ref={deleteButtonRef}
+            />
           </div>
         </DialogContent>
       </DialogPositioner>

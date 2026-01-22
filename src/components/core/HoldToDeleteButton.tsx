@@ -13,7 +13,7 @@ interface Props extends ButtonProps {
   onConfirm: () => void;
 }
 
-const ClipPathButton = ({ onConfirm, className, ...props }: Props) => {
+const HoldToDeleteButton = ({ onConfirm, className, ...props }: Props) => {
   const [isActive, setIsActive] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const timeoutRef = useRef<number | null>(null);
@@ -73,4 +73,4 @@ const ClipPathButton = ({ onConfirm, className, ...props }: Props) => {
   );
 };
 
-export default ClipPathButton;
+export default HoldToDeleteButton;
