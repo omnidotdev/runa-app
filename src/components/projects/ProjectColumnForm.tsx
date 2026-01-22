@@ -302,7 +302,6 @@ const ColumnForm = ({
 
       {!isActive ? (
         <MenuRoot
-          defaultHighlightedValue="edit"
           positioning={{
             strategy: "fixed",
             placement: "left",
@@ -322,7 +321,6 @@ const ColumnForm = ({
           <MenuPositioner>
             <MenuContent className="focus-within:outline-none">
               <MenuItem
-                autoFocus
                 value="edit"
                 onClick={() => onSetActive(column.rowId!)}
                 className={cn("hidden", !isMember && "flex")}

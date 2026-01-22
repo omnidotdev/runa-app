@@ -249,16 +249,13 @@ const ColumnForm = ({
 
           <MenuPositioner>
             <MenuContent className="focus-within:outline-none">
-              <MenuItem
-                value="reset"
-                onClick={() => onSetActive(column.rowId!)}
-              >
+              <MenuItem value="edit" onClick={() => onSetActive(column.rowId!)}>
                 <PenLineIcon />
                 <span> Edit</span>
               </MenuItem>
 
               <MenuItem
-                value="reset"
+                value="delete"
                 variant="destructive"
                 onClick={() => {
                   setColumnToDelete?.(column);

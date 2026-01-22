@@ -1,6 +1,6 @@
 # Sidebar-specific projects query without expensive task counts.
 # Used for navigation - only fetches fields needed for display and routing.
-query ProjectsSidebar($organizationId: UUID!, $userId: UUID) {
+query ProjectsSidebar($organizationId: String!, $userId: UUID) {
   projects(
     condition: { organizationId: $organizationId }
     orderBy: COLUMN_INDEX_ASC
