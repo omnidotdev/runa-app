@@ -9,25 +9,6 @@ import AppSidebarHeader from "./AppSidebarHeader";
 import type { ComponentProps } from "react";
 
 const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
-  // const { organizationId } = useLoaderData({ from: "/_auth" });
-  // const { workspaceSlug } = useParams({ strict: false });
-  // const navigate = useNavigate();
-  // const orgContext = useOrganization();
-
-  // // Resolve organization name from JWT claims
-  // const orgName = organizationId
-  //   ? orgContext?.getOrganizationById(organizationId)?.name
-  //   : undefined;
-
-  // const { mutate: deleteProject } = useDeleteProjectMutation({
-  //   meta: {
-  //     invalidates: [
-  //       getQueryKeyPrefix(useProjectsQuery),
-  //       getQueryKeyPrefix(useProjectColumnsQuery),
-  //     ],
-  //   },
-  // });
-
   const { toggleSidebar } = useSidebar();
 
   useHotkeys(Hotkeys.ToggleSidebar, toggleSidebar, [toggleSidebar]);
