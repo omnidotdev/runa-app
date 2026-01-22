@@ -57,6 +57,8 @@ export function getRouter() {
     defaultPreload: "intent",
     // delegate caching to React Query instead of router's built-in cache
     defaultPreloadStaleTime: 0,
+    // Scroll restoration on navigation
+    scrollRestoration: true,
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
   });
