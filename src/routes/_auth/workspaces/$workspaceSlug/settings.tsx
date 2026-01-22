@@ -50,7 +50,9 @@ export const Route = createFileRoute(
       },
       async subscription() {
         const setting = await this.$.setting;
-        return queryClient.ensureQueryData(subscriptionOptions(setting.rowId));
+        return queryClient.ensureQueryData(
+          subscriptionOptions(setting.organizationId),
+        );
       },
       async members() {
         return queryClient.ensureQueryData(
@@ -63,7 +65,6 @@ export const Route = createFileRoute(
     });
 
     return {
-      settingId: setting.rowId,
       organizationId,
       setting,
       subscription,

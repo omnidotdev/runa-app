@@ -32,8 +32,7 @@ import {
 const routeApi = getRouteApi("/_auth/workspaces/$workspaceSlug/settings");
 
 export default function WorkspaceBenefits() {
-  const { settingId, organizationId, subscription, prices } =
-    routeApi.useLoaderData();
+  const { organizationId, subscription, prices } = routeApi.useLoaderData();
   const queryClient = useQueryClient();
   const router = useRouter();
   const navigate = routeApi.useNavigate();
@@ -50,7 +49,7 @@ export default function WorkspaceBenefits() {
     mutationFn: async () =>
       await getBillingPortalUrl({
         data: {
-          settingId: settingId,
+          organizationId,
           returnUrl: `${BASE_URL}/workspaces/${orgSlug}/settings`,
         },
       }),
@@ -61,7 +60,7 @@ export default function WorkspaceBenefits() {
     mutationFn: async ({ priceId }: { priceId: string }) =>
       await getCreateSubscriptionUrl({
         data: {
-          settingId: settingId,
+          organizationId,
           priceId,
           successUrl: `${BASE_URL}/workspaces/${orgSlug}/settings`,
         },
@@ -72,11 +71,11 @@ export default function WorkspaceBenefits() {
   const { mutateAsync: handleRenewSubscription } = useMutation({
     mutationFn: async () =>
       await renewSubscription({
-        data: { settingId: settingId },
+        data: { organizationId },
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["stripe", "subscription", settingId],
+        queryKey: ["stripe", "subscription", organizationId],
       });
       router.invalidate();
     },
