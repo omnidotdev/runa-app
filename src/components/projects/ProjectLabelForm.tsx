@@ -329,7 +329,7 @@ const LabelForm = ({
           ]}
         >
           {([canSubmit, isSubmitting, isDefaultValue]) => (
-            <div className="ml-2 flex items-center justify-center">
+            <div className="ml-2 flex items-center justify-center gap-1">
               <Tooltip
                 tooltip="Cancel"
                 trigger={
@@ -341,9 +341,9 @@ const LabelForm = ({
                       form.reset();
                     }}
                     disabled={isSubmitting}
-                    className="focus-visible:ring-offset-0"
+                    className="size-7 hover:text-destructive focus-visible:ring-offset-0"
                   >
-                    <XIcon />
+                    <XIcon className="size-4" />
                   </Button>
                 }
               />
@@ -355,9 +355,9 @@ const LabelForm = ({
                     variant="ghost"
                     size="icon"
                     disabled={!canSubmit || isSubmitting || isDefaultValue}
-                    className="focus-visible:ring-offset-0"
+                    className="size-7 hover:text-green-500 focus-visible:ring-offset-0"
                   >
-                    <CheckIcon />
+                    <CheckIcon className="size-4" />
                   </Button>
                 }
               />

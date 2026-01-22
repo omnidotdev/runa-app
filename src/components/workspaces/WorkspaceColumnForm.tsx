@@ -277,7 +277,7 @@ const ColumnForm = ({
           ]}
         >
           {([canSubmit, isSubmitting, isDefaultValue]) => (
-            <div className="ml-2 flex items-center justify-center">
+            <div className="ml-2 flex items-center justify-center gap-1">
               <Tooltip
                 tooltip="Cancel"
                 trigger={
@@ -289,10 +289,10 @@ const ColumnForm = ({
                       form.reset();
                     }}
                     disabled={isSubmitting}
-                    className="focus-visible:ring-offset-0"
+                    className="size-7 hover:text-destructive focus-visible:ring-offset-0"
                     aria-label="Cancel"
                   >
-                    <XIcon size={12} />
+                    <XIcon className="size-4" />
                   </Button>
                 }
               />
@@ -305,10 +305,10 @@ const ColumnForm = ({
                     variant="ghost"
                     size="icon"
                     disabled={!canSubmit || isSubmitting || isDefaultValue}
-                    className="focus-visible:ring-offset-0"
+                    className="size-7 hover:text-green-500 focus-visible:ring-offset-0"
                     aria-label="Save"
                   >
-                    <CheckIcon size={12} />
+                    <CheckIcon className="size-4" />
                   </Button>
                 }
               />

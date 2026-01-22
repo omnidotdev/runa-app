@@ -227,7 +227,12 @@ const ProjectColumnsForm = () => {
                       positioning={{ placement: "right-start" }}
                       closeOnSelect={false}
                     >
-                      <MenuTriggerItem>
+                      <MenuTriggerItem
+                        className={cn(
+                          "",
+                          !hasColumns && "pointer-events-none opacity-50",
+                        )}
+                      >
                         <AlignJustifyIcon className="rotate-90" />
                         Columns
                       </MenuTriggerItem>

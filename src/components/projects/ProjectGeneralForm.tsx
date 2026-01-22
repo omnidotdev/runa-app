@@ -149,38 +149,90 @@ export default function ProjectGeneralForm() {
 
   return (
     <div className="flex flex-col">
-      <div className="mb-1 flex h-10 items-center justify-between">
-        <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
-          General
-        </h2>
-
-        {!isMember && !isEditing && (
-          <Tooltip
-            positioning={{ placement: "left" }}
-            tooltip="Edit project details"
-            trigger={
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Edit project details"
-                className="mr-2 size-7"
-                onClick={() => setIsEditing(true)}
-              >
-                <PenLineIcon />
-              </Button>
-            }
-          />
-        )}
-      </div>
-
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           form.handleSubmit();
         }}
-        className="flex flex-col divide-y border-y"
+        className="flex flex-col divide-y"
       >
+        <div className="flex h-10 items-center justify-between pb-1">
+          <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+            General
+          </h2>
+
+          {!isMember && !isEditing && (
+            <Tooltip
+              positioning={{ placement: "left" }}
+              tooltip="Edit project details"
+              trigger={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Edit project details"
+                  className="mr-2 size-7"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <PenLineIcon className="size-4" />
+                </Button>
+              }
+            />
+          )}
+          {isEditing && (
+            <div className="flex items-center justify-between px-2 py-2">
+              <div>
+                {parseError && (
+                  <p className="text-red-500 text-sm">{parseError}</p>
+                )}
+              </div>
+
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isSubmitting,
+                  state.isDefaultValue,
+                ]}
+              >
+                {([canSubmit, isSubmitting, isDefaultValue]) => (
+                  <div className="ml-2 flex items-center justify-center gap-1">
+                    <Tooltip
+                      tooltip="Cancel"
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={handleCancel}
+                          disabled={isSubmitting}
+                          className="size-7 hover:text-destructive focus-visible:ring-offset-0"
+                        >
+                          <XIcon className="size-4" />
+                        </Button>
+                      }
+                    />
+                    <Tooltip
+                      tooltip="Save"
+                      trigger={
+                        <Button
+                          type="submit"
+                          variant="ghost"
+                          size="icon"
+                          disabled={
+                            !canSubmit || isSubmitting || isDefaultValue
+                          }
+                          className="size-7 hover:text-green-500 focus-visible:ring-offset-0"
+                        >
+                          <CheckIcon className="size-4" />
+                        </Button>
+                      }
+                    />
+                  </div>
+                )}
+              </form.Subscribe>
+            </div>
+          )}
+        </div>
+
         <div
           className={cn(
             "group flex h-10 w-full items-center",
@@ -259,58 +311,6 @@ export default function ProjectGeneralForm() {
             )}
           </form.Field>
         </div>
-
-        {isEditing && (
-          <div className="flex items-center justify-between bg-accent px-2 py-2">
-            <div>
-              {parseError && (
-                <p className="text-red-500 text-sm">{parseError}</p>
-              )}
-            </div>
-
-            <form.Subscribe
-              selector={(state) => [
-                state.canSubmit,
-                state.isSubmitting,
-                state.isDefaultValue,
-              ]}
-            >
-              {([canSubmit, isSubmitting, isDefaultValue]) => (
-                <div className="flex items-center gap-1">
-                  <Tooltip
-                    tooltip="Cancel"
-                    trigger={
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleCancel}
-                        disabled={isSubmitting}
-                      >
-                        <XIcon className="mr-1 size-4" />
-                        Cancel
-                      </Button>
-                    }
-                  />
-                  <Tooltip
-                    tooltip="Save changes"
-                    trigger={
-                      <Button
-                        type="submit"
-                        variant="solid"
-                        size="sm"
-                        disabled={!canSubmit || isSubmitting || isDefaultValue}
-                      >
-                        <CheckIcon className="mr-1 size-4" />
-                        Save
-                      </Button>
-                    }
-                  />
-                </div>
-              )}
-            </form.Subscribe>
-          </div>
-        )}
       </form>
     </div>
   );

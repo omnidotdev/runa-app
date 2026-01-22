@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { SmilePlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -74,7 +75,11 @@ const ColumnSelector = ({
           <SelectControl>
             <SelectTrigger asChild>
               <Button variant="outline" className="w-fit">
-                {triggerEmoji && <p className="text-lg">{triggerEmoji}</p>}
+                {triggerEmoji ? (
+                  <p className="text-lg">{triggerEmoji}</p>
+                ) : (
+                  <SmilePlusIcon className="size-4 rotate-none! md:hidden" />
+                )}
 
                 <p className="hidden text-sm md:flex">{triggerLabel}</p>
               </Button>
