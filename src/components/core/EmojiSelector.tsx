@@ -1,7 +1,7 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import { SmilePlusIcon, XIcon } from "lucide-react";
-import { useState } from "react";
+import { SmilePlusIcon, Trash2Icon } from "lucide-react";
+import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,14 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
 
 import type { ComponentProps } from "react";
+
+interface EmojiProps {
+  id: string;
+  keywords: string[];
+  name: string;
+  skins: { native: string; shortcodes: string; unified: string }[];
+  version: number;
+}
 
 interface Props {
   value: string | null;
@@ -31,6 +39,16 @@ const EmojiSelector = ({
   const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const isDisabled = triggerProps?.disabled;
+
+  const allEmojis = useMemo(() => data, []);
+
+  const getEmojiData = Object.values(
+    // @ts-expect-error
+    allEmojis.emojis,
+  ).find((e) => {
+    const emoji = e as EmojiProps;
+    return emoji?.skins?.[0]?.native === value;
+  }) as EmojiProps | undefined;
 
   return (
     <PopoverRoot
@@ -58,25 +76,43 @@ const EmojiSelector = ({
         </Button>
       </PopoverTrigger>
       <PopoverPositioner>
-        <PopoverContent className="h-full w-full rounded-xl border-0 p-0">
-          <div className="flex flex-col">
-            {allowClear && value && (
-              <button
-                type="button"
-                onClick={() => {
-                  onChange(null);
-                  setIsOpen(false);
-                }}
-                className="flex items-center gap-2 border-b px-3 py-2 text-base-500 text-sm transition-colors hover:bg-accent hover:text-base-700 dark:hover:text-base-300"
-              >
-                <XIcon className="size-4" />
-                Remove emoji
-              </button>
-            )}
+        <PopoverContent className="no-scrollbar h-full w-full rounded-xl p-0">
+          <div className="flex flex-col gap-0">
+            <div className="flex items-center justify-center">
+              {allowClear && value && (
+                <div className="w-full">
+                  <div className="flex w-full items-center justify-between gap-3 rounded-lg p-1 px-4">
+                    <div className="flex items-center gap-2">
+                      <div className="text-3xl" aria-hidden="true">
+                        {value}
+                      </div>
+                      <p className="text-sm">{getEmojiData?.name}</p>
+                    </div>
+
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        onChange(null);
+                      }}
+                      className="flex items-center gap-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      aria-label="Remove selected emoji"
+                    >
+                      <Trash2Icon className="size-4" />
+                      <span className="font-medium text-sm">Remove</span>
+                    </Button>
+                  </div>
+
+                  <hr />
+                </div>
+              )}
+            </div>
+
             <Picker
+              noResultsEmoji={value}
               navPosition="none"
               previewPosition="none"
-              skinTonePosition="none"
+              previewEmoji="none"
+              skinTonePosition="search"
               emojiButtonRadius="6px"
               autoFocus={true}
               data={data}
@@ -86,8 +122,8 @@ const EmojiSelector = ({
               perLine={14}
               onEmojiSelect={(emoji: { native?: string; id?: string }) => {
                 onChange(emoji.native || emoji.id || null);
-                setIsOpen(false);
               }}
+              onEm
             />
           </div>
         </PopoverContent>

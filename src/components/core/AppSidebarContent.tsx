@@ -180,20 +180,14 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
         <>
           <SidebarMenu className="ml-2 hidden gap-1 group-data-[collapsible=icon]:flex">
             {sidebarMenuItems.map((item) => (
-              <SidebarMenuButton
-                key={item.to}
-                isActive={item.isActive}
-                tooltip={item.tooltip}
-                asChild
-              >
-                <Link
-                  to={item.to}
-                  params={{ workspaceSlug }}
-                  onClick={closeMobileSidebar}
+              <Link key={item.to} to={item.to} params={{ workspaceSlug }}>
+                <SidebarMenuButton
+                  isActive={item.isActive}
+                  tooltip={item.tooltip}
                 >
                   <item.icon />
-                </Link>
-              </SidebarMenuButton>
+                </SidebarMenuButton>
+              </Link>
             ))}
 
             {/* Mobile projects menu */}
@@ -289,20 +283,17 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
               <CollapsibleContent className="-mx-2 p-0">
                 <SidebarMenu className="my-1 px-2">
                   {sidebarMenuItems.map((item) => (
-                    <SidebarMenuButton
+                    <Link
                       key={item.to}
-                      isActive={item.isActive}
-                      asChild
+                      to={item.to}
+                      params={{ workspaceSlug }}
+                      onClick={closeMobileSidebar}
                     >
-                      <Link
-                        to={item.to}
-                        params={{ workspaceSlug }}
-                        onClick={closeMobileSidebar}
-                      >
+                      <SidebarMenuButton isActive={item.isActive}>
                         <item.icon />
                         <span className="w-full truncate">{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
+                      </SidebarMenuButton>
+                    </Link>
                   ))}
                 </SidebarMenu>
               </CollapsibleContent>
@@ -362,19 +353,18 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                         key={project?.rowId}
                         className="group/menu-item relative"
                       >
-                        <SidebarMenuButton
-                          isActive={
-                            pathname ===
-                            `/workspaces/${workspaceSlug}/projects/${project.slug}`
-                          }
-                          asChild
+                        <Link
+                          to="/workspaces/$workspaceSlug/projects/$projectSlug"
+                          params={{
+                            workspaceSlug,
+                            projectSlug: project.slug,
+                          }}
                         >
-                          <Link
-                            to="/workspaces/$workspaceSlug/projects/$projectSlug"
-                            params={{
-                              workspaceSlug,
-                              projectSlug: project.slug,
-                            }}
+                          <SidebarMenuButton
+                            isActive={
+                              pathname ===
+                              `/workspaces/${workspaceSlug}/projects/${project.slug}`
+                            }
                             onClick={closeMobileSidebar}
                           >
                             {userPreferences?.viewMode !== "list" ? (
@@ -395,8 +385,8 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                             <span className="w-full truncate">
                               {project?.name}
                             </span>
-                          </Link>
-                        </SidebarMenuButton>
+                          </SidebarMenuButton>
+                        </Link>
 
                         <MenuRoot
                           positioning={{

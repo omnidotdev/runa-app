@@ -1,4 +1,5 @@
 import {
+  Link,
   useLocation,
   useNavigate,
   useRouteContext,
@@ -34,6 +35,7 @@ import {
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
+  SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar";
 import signOut from "@/lib/auth/signOut";
@@ -47,7 +49,7 @@ const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { isMobile, setOpen, open, closeMobileSidebar } = useSidebar();
+  const { toggleSidebar, isMobile, open, closeMobileSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
 
   const toggleTheme = () =>
@@ -56,15 +58,17 @@ const AppSidebarFooter = () => {
   useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
 
   return (
-    <SidebarFooter className="flex justify-center border-t">
+    <SidebarFooter className="flex justify-center">
       <SidebarMenu className="gap-1 group-data-[collapsible=icon]:w-fit">
+        <SidebarSeparator className="my-1" />
+
         <Tooltip
           positioning={{ placement: "right" }}
           tooltip="Expand Sidebar"
           shortcut={Hotkeys.ToggleSidebar}
           disabled={isMobile || open}
           trigger={
-            <SidebarMenuButton onClick={() => setOpen(!open)}>
+            <SidebarMenuButton onClick={toggleSidebar}>
               {open ? <PanelLeftCloseIcon /> : <PanelLeftIcon />}
               <span className="flex w-full items-center">
                 Collapse Sidebar
@@ -80,7 +84,7 @@ const AppSidebarFooter = () => {
           shortcut={Hotkeys.ToggleTheme}
           disabled={isMobile || open}
           trigger={
-            <SidebarMenuButton onClick={() => toggleTheme()}>
+            <SidebarMenuButton onClick={toggleTheme}>
               {theme === "dark" ? <MoonIcon /> : <SunIcon />}
               <span className="flex w-full items-center">
                 Toggle Theme
@@ -95,15 +99,12 @@ const AppSidebarFooter = () => {
           tooltip="Pricing"
           disabled={isMobile || open}
           trigger={
-            <SidebarMenuButton
-              onClick={() => {
-                closeMobileSidebar();
-                navigate({ to: "/pricing" });
-              }}
-            >
-              <TagIcon />
-              <span className="flex w-full items-center">Pricing</span>
-            </SidebarMenuButton>
+            <Link to="/pricing" preload="intent" className="w-full">
+              <SidebarMenuButton onClick={closeMobileSidebar}>
+                <TagIcon />
+                <span className="flex w-full items-center">Pricing</span>
+              </SidebarMenuButton>
+            </Link>
           }
         />
 
@@ -165,12 +166,14 @@ const AppSidebarFooter = () => {
           }
         />
 
+        <SidebarSeparator className="my-1" />
+
         <Tooltip
           positioning={{ placement: "right" }}
           tooltip="Profile"
           disabled={isMobile || open}
           trigger={
-            <div className="group/menu-item relative border-t">
+            <div className="group/menu-item relative">
               <SidebarMenuButton
                 isActive={
                   pathname === `/profile/${session?.user.identityProviderId}`
