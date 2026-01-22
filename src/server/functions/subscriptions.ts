@@ -1,38 +1,41 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import app from "@/lib/config/app.config";
-import { BILLING_BASE_URL } from "@/lib/config/env.config";
+import { BILLING_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import payments from "@/lib/payments";
 import { customerMiddleware } from "@/server/middleware";
 
-const settingSchema = z.object({
-  settingId: z.guid(),
+const organizationSchema = z.object({
+  organizationId: z.string().min(1),
 });
 
 const billingPortalSchema = z.object({
-  settingId: z.guid(),
+  organizationId: z.string().min(1),
   returnUrl: z.url(),
 });
 
 const createSubscriptionSchema = z.object({
-  settingId: z.guid(),
+  organizationId: z.string().min(1),
   priceId: z.string().startsWith("price_"),
   successUrl: z.url(),
 });
 
 /**
- * Get subscription details for a setting via billing service.
+ * Get subscription details for an organization via billing service.
  */
 export const getSubscription = createServerFn()
-  .inputValidator((data) => settingSchema.parse(data))
+  .inputValidator((data) => organizationSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session) return null;
 
+    if (isSelfHosted) {
+      return null;
+    }
+
     try {
       const response = await fetch(
-        `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}`,
+        `${BILLING_BASE_URL}/billing-portal/subscription/runa/organization/${data.organizationId}`,
         {
           headers: {
             Authorization: `Bearer ${context.session.accessToken}`,
@@ -66,17 +69,21 @@ export const getSubscription = createServerFn()
   });
 
 /**
- * Cancel a subscription for a setting via billing service.
+ * Cancel a subscription for an organization via billing service.
  * @knipignore
  */
 export const revokeSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => settingSchema.parse(data))
+  .inputValidator((data) => organizationSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session) throw new Error("Unauthorized");
 
+    if (isSelfHosted) {
+      throw new Error("Billing is disabled in self-hosted mode");
+    }
+
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}/cancel`,
+      `${BILLING_BASE_URL}/billing-portal/subscription/runa/organization/${data.organizationId}/cancel`,
       {
         method: "POST",
         headers: {
@@ -96,8 +103,7 @@ export const revokeSubscription = createServerFn({ method: "POST" })
 
 /**
  * Get billing portal URL.
- * This creates a Stripe billing portal session through billing service,
- * which looks up the billing account by setting ID.
+ * This creates a Stripe billing portal session through billing service.
  */
 export const getBillingPortalUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => billingPortalSchema.parse(data))
@@ -105,8 +111,12 @@ export const getBillingPortalUrl = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     if (!context.session) throw new Error("Unauthorized");
 
+    if (isSelfHosted) {
+      throw new Error("Billing is disabled in self-hosted mode");
+    }
+
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/workspace/${data.settingId}`,
+      `${BILLING_BASE_URL}/billing-portal/runa/organization/${data.organizationId}`,
       {
         method: "POST",
         headers: {
@@ -114,7 +124,6 @@ export const getBillingPortalUrl = createServerFn({ method: "POST" })
           Authorization: `Bearer ${context.session.accessToken}`,
         },
         body: JSON.stringify({
-          productId: "runa",
           returnUrl: data.returnUrl,
         }),
       },
@@ -137,6 +146,10 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
   .inputValidator((data) => createSubscriptionSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
+    if (isSelfHosted) {
+      throw new Error("Billing is disabled in self-hosted mode");
+    }
+
     let customer = context.customer;
 
     if (!customer) {
@@ -156,8 +169,9 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
       line_items: [{ price: data.priceId, quantity: 1 }],
       subscription_data: {
         metadata: {
-          workspaceId: data.settingId,
-          omniProduct: app.name.toLowerCase(),
+          app_id: "runa",
+          entity_type: "organization",
+          entity_id: data.organizationId,
         },
       },
     });
@@ -169,13 +183,17 @@ export const getCreateSubscriptionUrl = createServerFn({ method: "POST" })
  * Renew a subscription (remove scheduled cancellation) via billing service.
  */
 export const renewSubscription = createServerFn({ method: "POST" })
-  .inputValidator((data) => settingSchema.parse(data))
+  .inputValidator((data) => organizationSchema.parse(data))
   .middleware([customerMiddleware])
   .handler(async ({ data, context }) => {
     if (!context.session) throw new Error("Unauthorized");
 
+    if (isSelfHosted) {
+      throw new Error("Billing is disabled in self-hosted mode");
+    }
+
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/workspace/${data.settingId}/renew`,
+      `${BILLING_BASE_URL}/billing-portal/subscription/runa/organization/${data.organizationId}/renew`,
       {
         method: "POST",
         headers: {
