@@ -79,7 +79,7 @@ const UpdateAssigneesDialog = () => {
   });
 
   const defaultAssignees = task?.assignees?.nodes?.map(
-    (assignee) => assignee?.user?.rowId!,
+    (assignee) => assignee?.user?.identityProviderId!,
   );
 
   const { mutate: addNewAssignee } = useCreateAssigneeMutation({
