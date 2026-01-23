@@ -4,6 +4,7 @@ import { TagIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { parseColor } from "@/components/ui/color-picker";
 import getLabelColors from "@/lib/util/getLabelColors";
+import { useTheme } from "@/providers/ThemeProvider";
 
 import type { LabelFragment } from "@/generated/graphql";
 
@@ -12,12 +13,16 @@ interface Props {
 }
 
 const Label = ({ label }: Props) => {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   const colorPicker = useColorPicker({
     value: parseColor(label.color),
   });
 
   const { backgroundColor, textColor } = getLabelColors(
     colorPicker.value.toString("rgb"),
+    isDark,
   );
 
   return (
@@ -33,7 +38,9 @@ const Label = ({ label }: Props) => {
       >
         <TagIcon
           className="size-2.5!"
-          style={{ color: colorPicker.value.toString("css") }}
+          style={{
+            color: isDark ? textColor : colorPicker.value.toString("css"),
+          }}
         />
         <span className="font-medium text-[10px]">{label.name}</span>
       </Badge>
