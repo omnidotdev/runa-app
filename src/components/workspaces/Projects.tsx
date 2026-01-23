@@ -25,6 +25,7 @@ import {
 import {
   useDeleteProjectMutation,
   useProjectsQuery,
+  useProjectsSidebarQuery,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
@@ -88,7 +89,10 @@ const Projects = () => {
 
   const { mutate: deleteProject } = useDeleteProjectMutation({
     meta: {
-      invalidates: [getQueryKeyPrefix(useProjectsQuery)],
+      invalidates: [
+        getQueryKeyPrefix(useProjectsQuery),
+        getQueryKeyPrefix(useProjectsSidebarQuery),
+      ],
     },
   });
 

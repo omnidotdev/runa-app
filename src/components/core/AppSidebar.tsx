@@ -7,6 +7,7 @@ import {
   useDeleteProjectMutation,
   useProjectColumnsQuery,
   useProjectsQuery,
+  useProjectsSidebarQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -39,6 +40,7 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
       invalidates: [
         getQueryKeyPrefix(useProjectsQuery),
         getQueryKeyPrefix(useProjectColumnsQuery),
+        getQueryKeyPrefix(useProjectsSidebarQuery),
       ],
     },
   });
