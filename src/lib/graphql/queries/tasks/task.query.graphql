@@ -51,6 +51,7 @@ query Task($rowId: UUID!) {
         userId
         user {
           rowId
+          identityProviderId
           name
           avatarUrl
         }
