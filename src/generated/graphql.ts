@@ -8068,13 +8068,6 @@ export type UpdateProjectMutationVariables = Exact<{
 
 export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
 
-export type CreateSettingMutationVariables = Exact<{
-  input: CreateSettingInput;
-}>;
-
-
-export type CreateSettingMutation = { __typename?: 'Mutation', createSetting?: { __typename?: 'CreateSettingPayload', setting?: { __typename?: 'Setting', rowId: string, organizationId: string, viewMode: string, subscriptionId?: string | null, billingAccountId?: string | null } | null } | null };
-
 export type UpdateSettingMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
   patch: SettingPatch;
@@ -8896,38 +8889,6 @@ useUpdateProjectMutation.getKey = () => ['UpdateProject'];
 
 
 useUpdateProjectMutation.fetcher = (variables: UpdateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, variables, options);
-
-export const CreateSettingDocument = `
-    mutation CreateSetting($input: CreateSettingInput!) {
-  createSetting(input: $input) {
-    setting {
-      rowId
-      organizationId
-      viewMode
-      subscriptionId
-      billingAccountId
-    }
-  }
-}
-    `;
-
-export const useCreateSettingMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<CreateSettingMutation, TError, CreateSettingMutationVariables, TContext>) => {
-    
-    return useMutation<CreateSettingMutation, TError, CreateSettingMutationVariables, TContext>(
-      {
-    mutationKey: ['CreateSetting'],
-    mutationFn: (variables?: CreateSettingMutationVariables) => graphqlFetch<CreateSettingMutation, CreateSettingMutationVariables>(CreateSettingDocument, variables)(),
-    ...options
-  }
-    )};
-
-useCreateSettingMutation.getKey = () => ['CreateSetting'];
-
-
-useCreateSettingMutation.fetcher = (variables: CreateSettingMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateSettingMutation, CreateSettingMutationVariables>(CreateSettingDocument, variables, options);
 
 export const UpdateSettingDocument = `
     mutation UpdateSetting($rowId: UUID!, $patch: SettingPatch!) {

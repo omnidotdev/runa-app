@@ -11,7 +11,6 @@ import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationI
 import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
 import { getOrganizationBySlug } from "@/server/functions/organizations";
-import { provisionSettings } from "@/server/functions/settings";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { session } }) => {
@@ -60,7 +59,7 @@ export const Route = createFileRoute("/_auth")({
       };
     }
 
-    let {
+    const {
       setting: { settingByOrganizationId },
     } = await all({
       async setting() {
@@ -77,18 +76,6 @@ export const Route = createFileRoute("/_auth")({
         );
       },
     });
-
-    if (!settingByOrganizationId) {
-      const newSettings = await provisionSettings({ data: { organizationId } });
-
-      if (newSettings) {
-        queryClient.setQueryData(
-          settingByOrganizationIdOptions({ organizationId }).queryKey,
-          { settingByOrganizationId: newSettings },
-        );
-        settingByOrganizationId = newSettings;
-      }
-    }
 
     return {
       organizationId,
