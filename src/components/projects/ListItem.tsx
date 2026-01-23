@@ -133,7 +133,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
                   {task.assignees.nodes.length ? (
                     <Assignees
                       assignees={task.assignees.nodes.map(
-                        (assignee) => assignee.user?.rowId!,
+                        (assignee) => assignee.user?.identityProviderId!,
                       )}
                       className="flex w-fit items-center -space-x-4"
                     />
