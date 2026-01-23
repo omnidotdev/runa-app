@@ -198,9 +198,9 @@ const RichTextEditor = ({
           >
             <RichTextPlugin
               contentEditable={
-                <div className="block">
+                <div className="flex min-h-full flex-1 flex-col">
                   <ContentEditable
-                    className="prose-sm min-h-full focus:outline-none"
+                    className="prose-sm min-h-full flex-1 focus:outline-none"
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     spellCheck={false}
