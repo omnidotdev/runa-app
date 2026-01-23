@@ -8069,13 +8069,6 @@ export type UpdateProjectMutationVariables = Exact<{
 
 export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
 
-export type CreateSettingMutationVariables = Exact<{
-  input: CreateSettingInput;
-}>;
-
-
-export type CreateSettingMutation = { __typename?: 'Mutation', createSetting?: { __typename?: 'CreateSettingPayload', setting?: { __typename?: 'Setting', rowId: string, organizationId: string, viewMode: string, subscriptionId?: string | null, billingAccountId?: string | null } | null } | null };
-
 export type UpdateSettingMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
   patch: SettingPatch;
@@ -8517,19 +8510,6 @@ export const UpdateProjectDocument = gql`
   }
 }
     `;
-export const CreateSettingDocument = gql`
-    mutation CreateSetting($input: CreateSettingInput!) {
-  createSetting(input: $input) {
-    setting {
-      rowId
-      organizationId
-      viewMode
-      subscriptionId
-      billingAccountId
-    }
-  }
-}
-    `;
 export const UpdateSettingDocument = gql`
     mutation UpdateSetting($rowId: UUID!, $patch: SettingPatch!) {
   updateSetting(input: {rowId: $rowId, patch: $patch}) {
@@ -8931,9 +8911,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UpdateProject(variables: UpdateProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateProjectMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateProjectMutation>({ document: UpdateProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateProject', 'mutation', variables);
-    },
-    CreateSetting(variables: CreateSettingMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateSettingMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreateSettingMutation>({ document: CreateSettingDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateSetting', 'mutation', variables);
     },
     UpdateSetting(variables: UpdateSettingMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateSettingMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateSettingMutation>({ document: UpdateSettingDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateSetting', 'mutation', variables);
