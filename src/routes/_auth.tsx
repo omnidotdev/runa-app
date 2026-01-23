@@ -1,10 +1,12 @@
 import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
+import { all } from "better-all";
 import { useMemo } from "react";
 
 import { AppSidebar } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/workspaces";
+import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
@@ -47,7 +49,9 @@ export const Route = createFileRoute("/_auth")({
 
     return { organizationId: fetchedOrg.id, projectSlug, fetchedOrg };
   },
-  loader: async ({ context: { queryClient, organizationId, fetchedOrg } }) => {
+  loader: async ({
+    context: { queryClient, organizationId, fetchedOrg, session },
+  }) => {
     if (!organizationId) {
       return {
         organizationId: undefined,
@@ -56,8 +60,22 @@ export const Route = createFileRoute("/_auth")({
       };
     }
 
-    let { settingByOrganizationId } = await queryClient.ensureQueryData({
-      ...settingByOrganizationIdOptions({ organizationId }),
+    let {
+      setting: { settingByOrganizationId },
+    } = await all({
+      async setting() {
+        return await queryClient.ensureQueryData({
+          ...settingByOrganizationIdOptions({ organizationId }),
+        });
+      },
+      async sidebarProjects() {
+        return await queryClient.ensureQueryData(
+          projectsSidebarOptions({
+            organizationId,
+            userId: session?.user?.rowId,
+          }),
+        );
+      },
     });
 
     if (!settingByOrganizationId) {
