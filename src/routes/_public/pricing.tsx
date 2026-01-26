@@ -19,11 +19,18 @@ import { BASE_URL } from "@/lib/config/env.config";
 import pricesOptions from "@/lib/options/prices.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 
-export const FREE_PRICE = {
+import type { Price } from "@/lib/providers/billing";
+
+export const FREE_PRICE: Price = {
   id: "free",
+  active: true,
+  currency: "usd",
   unit_amount: 0,
+  recurring: null,
   metadata: { tier: "free" },
   product: {
+    id: "free-product",
+    name: "Free",
     description: "Start for free.",
     marketing_features: [{ name: "2 projects" }, { name: "500 total tasks" }],
   },

@@ -16,19 +16,10 @@ import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
 
-import type Stripe from "stripe";
+import type { Price } from "@/lib/providers/billing";
 
 interface Props {
-  price: {
-    id: Stripe.Price["id"];
-    unit_amount: Stripe.Price["unit_amount"];
-    recurring?: Stripe.Price["recurring"];
-    metadata: Stripe.Price["metadata"];
-    product: {
-      description: Stripe.Product["description"];
-      marketing_features: Stripe.Product["marketing_features"];
-    };
-  };
+  price: Price;
 }
 
 export const PriceCard = ({ price }: Props) => {
