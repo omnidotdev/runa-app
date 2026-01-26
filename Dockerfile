@@ -15,8 +15,8 @@ FROM base AS runner
 ENV NODE_ENV=production
 
 COPY --from=builder /app/.output ./.output
-COPY --from=builder /app/package.json /app/bun.lock ./
-RUN bun install --frozen-lockfile --production --ignore-scripts
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
 
 EXPOSE 3000
 CMD ["bun", "run", "start"]
