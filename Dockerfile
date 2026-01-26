@@ -10,7 +10,10 @@ RUN bun install --frozen-lockfile
 COPY . .
 RUN bun run build
 
-# Run with Node.js for proper module resolution
+# TODO: Switch back to Bun runtime once module resolution is fixed
+# Bun doesn't properly resolve externalized Nitro packages (srvx, react-dom/server)
+# Error: Cannot find package 'srvx' from '/app/.output/server/chunks/virtual/entry.mjs'
+# Error: Cannot find module 'react-dom/server'
 FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
