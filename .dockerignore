@@ -1,0 +1,10 @@
+node_modules
+.git
+.env*
+!.env.production
+!.env.local.template
+.output
+*.log
+.turbo
+coverage
+.nyc_output

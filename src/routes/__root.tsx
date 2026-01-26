@@ -14,7 +14,6 @@ import { DefaultCatchBoundary } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
 import { fetchMaintenanceMode } from "@/lib/flags";
-import { setAccessToken } from "@/lib/graphql/graphqlClientFactory";
 import appCss from "@/lib/styles/globals.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import ThemeProvider from "@/providers/ThemeProvider";
@@ -134,12 +133,7 @@ function MaintenancePage() {
 }
 
 function RootComponent() {
-  const { isMaintenanceMode, session } = useRouteContext({ from: "__root__" });
-
-  // Sync access token to GraphQL client for client-side requests
-  if (session?.accessToken) {
-    setAccessToken(session.accessToken);
-  }
+  const { isMaintenanceMode } = useRouteContext({ from: "__root__" });
 
   // Show maintenance page when flag is enabled
   if (isMaintenanceMode) {

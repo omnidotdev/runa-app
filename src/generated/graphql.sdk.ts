@@ -7922,7 +7922,7 @@ export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: strin
 
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, projectColumnId: string, columnIndex: number, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } };
 
-export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } };
+export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } };
 
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
@@ -8068,13 +8068,6 @@ export type UpdateProjectMutationVariables = Exact<{
 
 
 export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject?: { __typename?: 'UpdateProjectPayload', project?: { __typename?: 'Project', rowId: string } | null } | null };
-
-export type CreateSettingMutationVariables = Exact<{
-  input: CreateSettingInput;
-}>;
-
-
-export type CreateSettingMutation = { __typename?: 'Mutation', createSetting?: { __typename?: 'CreateSettingPayload', setting?: { __typename?: 'Setting', rowId: string, organizationId: string, viewMode: string, subscriptionId?: string | null, billingAccountId?: string | null } | null } | null };
 
 export type UpdateSettingMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -8225,7 +8218,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, emoji?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, emoji?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -8236,7 +8229,7 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: number, content: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
 
 export type UserPreferencesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -8328,6 +8321,7 @@ export const TaskFragmentDoc = gql`
       userId
       user {
         rowId
+        identityProviderId
         name
         avatarUrl
       }
@@ -8512,19 +8506,6 @@ export const UpdateProjectDocument = gql`
   updateProject(input: {rowId: $rowId, patch: $patch}) {
     project {
       rowId
-    }
-  }
-}
-    `;
-export const CreateSettingDocument = gql`
-    mutation CreateSetting($input: CreateSettingInput!) {
-  createSetting(input: $input) {
-    setting {
-      rowId
-      organizationId
-      viewMode
-      subscriptionId
-      billingAccountId
     }
   }
 }
@@ -8816,6 +8797,7 @@ export const TaskDocument = gql`
         userId
         user {
           rowId
+          identityProviderId
           name
           avatarUrl
         }
@@ -8929,9 +8911,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UpdateProject(variables: UpdateProjectMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateProjectMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateProjectMutation>({ document: UpdateProjectDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateProject', 'mutation', variables);
-    },
-    CreateSetting(variables: CreateSettingMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateSettingMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreateSettingMutation>({ document: CreateSettingDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateSetting', 'mutation', variables);
     },
     UpdateSetting(variables: UpdateSettingMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateSettingMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateSettingMutation>({ document: UpdateSettingDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateSetting', 'mutation', variables);

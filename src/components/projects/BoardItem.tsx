@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { CalendarIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
-import { Assignees, Label, RichTextEditor } from "@/components/core";
+import { Assignees, Label, RichTextEditor, Tooltip } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
 import { Badge } from "@/components/ui/badge";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -137,35 +137,62 @@ const BoardItem = ({ task, index, displayId }: Props) => {
               </div>
 
               {task.assignees.nodes.length > 0 && (
-                <Assignees
-                  assignees={task.assignees.nodes.map(
-                    (assignee) => assignee.user?.rowId!,
-                  )}
-                  className="flex w-fit items-center"
+                <Tooltip
+                  positioning={{ placement: "bottom-end", gutter: -4 }}
+                  tooltip="Update Assignees"
+                  shortcut="A"
+                  trigger={
+                    <Assignees
+                      assignees={task.assignees.nodes.map(
+                        (assignee) => assignee.user?.identityProviderId!,
+                      )}
+                      className="flex w-fit items-center"
+                    />
+                  }
                 />
               )}
             </div>
 
             <div className="mt-auto flex items-end justify-between">
               {task.taskLabels.nodes.length > 0 && (
-                <div className="flex max-h-5 flex-wrap gap-1 overflow-hidden">
-                  {task.taskLabels.nodes.slice(0, 3).map(({ label }) => (
-                    <Label key={label?.rowId} label={label as LabelFragment} />
-                  ))}
-                  {task.taskLabels.nodes.length > 3 && (
-                    <Badge variant="outline" className="border-border text-xs">
-                      +{task.taskLabels.nodes.length - 3}
-                    </Badge>
-                  )}
-                </div>
+                <Tooltip
+                  positioning={{ placement: "top-start", shift: -6 }}
+                  tooltip="Update Labels"
+                  shortcut="L"
+                  trigger={
+                    <div className="flex max-h-5 flex-wrap gap-1 overflow-hidden">
+                      {task.taskLabels.nodes.slice(0, 3).map(({ label }) => (
+                        <Label
+                          key={label?.rowId}
+                          label={label as LabelFragment}
+                        />
+                      ))}
+                      {task.taskLabels.nodes.length > 3 && (
+                        <Badge
+                          variant="outline"
+                          className="border-border text-xs"
+                        >
+                          +{task.taskLabels.nodes.length - 3}
+                        </Badge>
+                      )}
+                    </div>
+                  }
+                />
               )}
 
               {task.dueDate && (
-                <div className="ml-auto flex h-5 items-center gap-1 text-base-500 text-xs dark:text-base-400">
-                  <CalendarIcon className="h-3 w-3" />
-                  {/* TODO: timezone handling */}
-                  <span>{dayjs(task.dueDate).format("MMM D")}</span>
-                </div>
+                <Tooltip
+                  positioning={{ placement: "top-end", shift: -8 }}
+                  tooltip="Update Due Date"
+                  shortcut="D"
+                  trigger={
+                    <div className="ml-auto flex h-5 items-center gap-1 text-base-500 text-xs dark:text-base-400">
+                      <CalendarIcon className="h-3 w-3" />
+                      {/* TODO: timezone handling */}
+                      <span>{dayjs(task.dueDate).format("MMM D")}</span>
+                    </div>
+                  }
+                />
               )}
             </div>
           </div>

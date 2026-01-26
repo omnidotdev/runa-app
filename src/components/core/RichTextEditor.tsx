@@ -64,6 +64,17 @@ const CodeHighlightPlugin = () => {
 // Custom hook to get the composer context
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
+// Plugin to sync editable state with Lexical's internal state
+const EditablePlugin = ({ editable }: { editable: boolean }) => {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    editor.setEditable(editable);
+  }, [editor, editable]);
+
+  return null;
+};
+
 // Plugin to handle initial content and editorApi ref
 const EditorApiPlugin = ({
   editorApi,
@@ -198,9 +209,9 @@ const RichTextEditor = ({
           >
             <RichTextPlugin
               contentEditable={
-                <div className="block">
+                <div className="block min-h-full flex-1">
                   <ContentEditable
-                    className="prose-sm min-h-full focus:outline-none"
+                    className="prose-sm min-h-full flex-1 focus:outline-none"
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     spellCheck={false}
@@ -216,6 +227,7 @@ const RichTextEditor = ({
             <CodeHighlightPlugin />
             <CodeBlockPlugin />
             <OnChangePlugin onChange={handleChange} />
+            <EditablePlugin editable={editable} />
             <EditorApiPlugin
               editorApi={editorApi}
               defaultContent={defaultContent}

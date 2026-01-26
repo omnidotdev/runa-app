@@ -18,6 +18,9 @@ coverage
 # TLS/HTTPS
 certificates
 
+# tooling
+.claude
+
 # environment
 *.env*
 
