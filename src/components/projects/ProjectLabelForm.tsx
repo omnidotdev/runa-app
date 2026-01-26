@@ -190,7 +190,7 @@ const LabelForm = ({
         form.handleSubmit();
       }}
       className={cn(
-        "group flex h-10 w-full items-center px-2",
+        "group flex h-10 w-full items-center gap-2 px-2",
         isActive || label.rowId === "pending" ? "bg-accent" : "hover:bg-accent",
         hasActiveLabel && !isActive && "pointer-events-none",
       )}
@@ -208,10 +208,17 @@ const LabelForm = ({
             }}
             disabled={!isActive}
           >
-            <ColorPickerControl className="ml-5.5 flex items-center disabled:cursor-default">
-              <ColorPickerTrigger className="size-4 rounded-full outline-none transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-default">
-                <ColorPickerTransparencyGrid />
-                <ColorPickerValueSwatch />
+            <ColorPickerControl className="relative flex items-center disabled:cursor-default">
+              <ColorPickerTrigger
+                className={cn(
+                  "relative flex size-9 items-center justify-center rounded-md border border-transparent transition-all hover:border-primary hover:bg-accent focus-visible:rounded-md focus-visible:border-2 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-offset-0 focus-visible:ring-offset-background disabled:cursor-default disabled:border-none data-[state=open]:border-primary data-[state=open]:ring-0",
+                  isActive ? "border border-primary" : "pointer-events-none",
+                )}
+              >
+                <div className="size-5 overflow-hidden rounded">
+                  <ColorPickerTransparencyGrid />
+                  <ColorPickerValueSwatch />
+                </div>
               </ColorPickerTrigger>
             </ColorPickerControl>
 
@@ -264,12 +271,15 @@ const LabelForm = ({
       <form.Field name="name">
         {(field) => (
           <Input
-            ref={inputRef}
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
             disabled={!isActive}
             placeholder="Enter a label name..."
-            className="ml-3 rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+            className={cn(
+              "rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
+              isActive &&
+                "border border-primary bg-background focus-visible:ring-0",
+            )}
             id="label-name-input"
             autoComplete="off"
           />

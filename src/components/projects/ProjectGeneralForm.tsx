@@ -209,7 +209,8 @@ export default function ProjectGeneralForm() {
                           size="icon"
                           onClick={handleCancel}
                           disabled={isSubmitting}
-                          className="size-7 hover:text-destructive focus-visible:ring-offset-0"
+                          className="size-7 hover:text-destructive focus-visible:ring-destructive focus-visible:ring-offset-0"
+                          aria-label="Cancel"
                         >
                           <XIcon className="size-4" />
                         </Button>
@@ -226,7 +227,8 @@ export default function ProjectGeneralForm() {
                           disabled={
                             !canSubmit || isSubmitting || isDefaultValue
                           }
-                          className="size-7 hover:text-green-500 focus-visible:ring-offset-0"
+                          className="size-7 hover:text-green-500 focus-visible:ring-green-500 focus-visible:ring-offset-0"
+                          aria-label="Save"
                         >
                           <CheckIcon className="size-4" />
                         </Button>
@@ -245,8 +247,8 @@ export default function ProjectGeneralForm() {
             isEditing && "bg-accent",
           )}
         >
-          <div className="flex w-24 shrink-0 items-center pl-2 lg:pl-0">
-            <span className="text-base-500 text-sm">Name</span>
+          <div className="flex w-24 shrink-0 items-center pl-2">
+            <span className="text-base-500 text-xs">Name</span>
           </div>
 
           <div className="flex flex-1 items-center gap-2">
@@ -255,12 +257,15 @@ export default function ProjectGeneralForm() {
             <form.Field name="name">
               {(field) => (
                 <Input
-                  ref={inputRef}
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   disabled={!isEditing}
                   placeholder="Project name"
-                  className="rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+                  className={cn(
+                    "rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
+                    isEditing &&
+                      "border border-primary bg-background focus-visible:ring-0",
+                  )}
                   autoComplete="off"
                 />
               )}
@@ -274,8 +279,8 @@ export default function ProjectGeneralForm() {
             isEditing && "bg-accent",
           )}
         >
-          <div className="flex w-24 shrink-0 items-center pl-2 lg:pl-0">
-            <span className="text-base-500 text-sm">Prefix</span>
+          <div className="flex w-24 shrink-0 items-center pl-2">
+            <span className="text-base-500 text-xs">Prefix</span>
           </div>
 
           <form.Field name="prefix">
@@ -287,7 +292,11 @@ export default function ProjectGeneralForm() {
                 }
                 disabled={!isEditing}
                 placeholder="PROJ"
-                className="rounded border-0 font-mono shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+                className={cn(
+                  "rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
+                  isEditing &&
+                    "border border-primary bg-background focus-visible:ring-0",
+                )}
                 autoComplete="off"
               />
             )}
@@ -300,8 +309,8 @@ export default function ProjectGeneralForm() {
             isEditing && "bg-accent",
           )}
         >
-          <div className="flex w-24 shrink-0 items-center pl-2 lg:pl-0">
-            <span className="text-base-500 text-sm">Description</span>
+          <div className="flex w-24 shrink-0 items-center pl-2">
+            <span className="text-base-500 text-xs">Description</span>
           </div>
 
           <form.Field name="description">
@@ -311,7 +320,11 @@ export default function ProjectGeneralForm() {
                 onChange={(e) => field.handleChange(e.target.value)}
                 disabled={!isEditing}
                 placeholder="Add a short description..."
-                className="rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+                className={cn(
+                  "rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
+                  isEditing &&
+                    "border border-primary bg-background focus-visible:ring-0",
+                )}
                 autoComplete="off"
               />
             )}
