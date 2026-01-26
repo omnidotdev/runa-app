@@ -25,8 +25,8 @@ const viteConfig = defineConfig(({ command }) => ({
     tanstackStart(),
     nitroV2Plugin({
       preset: "node-server",
-      // Inline srvx to avoid module resolution issues with Bun runtime
-      externals: { inline: ["srvx"] },
+      // Inline modules to avoid resolution issues with Bun runtime
+      externals: { inline: ["srvx", "react-dom"] },
     }),
     react(),
   ],
