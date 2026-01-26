@@ -27,6 +27,8 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
+// TODO: Warn users about unsaved changes when attempting to navigate away from this page.
+
 export const Route = createFileRoute(
   "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
 )({

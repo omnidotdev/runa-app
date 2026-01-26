@@ -52,9 +52,10 @@ const AppSidebarHeader = () => {
         <div className="flex items-center gap-2">
           <SidebarMenuButton
             onClick={toggleSidebar}
-            className="cursor-pointer hover:bg-transparent"
+            className="cursor-pointer border border-transparent focus-visible:border focus-visible:border-primary focus-visible:ring-0! focus-visible:ring-offset-0"
+            aria-label="Toggle sidebar"
           >
-            🌙
+            <span>🌙</span>
           </SidebarMenuButton>
 
           <span className="font-semibold group-data-[collapsible=icon]:hidden">

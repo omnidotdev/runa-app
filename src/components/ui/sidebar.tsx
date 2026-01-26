@@ -578,7 +578,7 @@ const SidebarMenuButton = ({
         // Hover styles
         "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         // Focus styles
-        "outline-hidden focus-visible:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring! focus-visible:ring-offset-2! focus-visible:ring-offset-background",
+        "outline-hidden focus-visible:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring! focus-visible:ring-offset-2! focus-visible:ring-offset-background!",
         // Active styles
         "active:text-sidebar-accent-foreground",
         // Disabled and aria-disabled styles

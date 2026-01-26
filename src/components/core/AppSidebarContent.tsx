@@ -176,7 +176,12 @@ const AppSidebarContent = () => {
         <>
           <SidebarMenu className="ml-2 hidden gap-1 group-data-[collapsible=icon]:flex">
             {sidebarMenuItems.map((item) => (
-              <Link key={item.to} to={item.to} params={{ workspaceSlug }}>
+              <Link
+                key={item.to}
+                to={item.to}
+                params={{ workspaceSlug }}
+                tabIndex={-1}
+              >
                 <SidebarMenuButton
                   isActive={item.isActive}
                   tooltip={item.tooltip}
@@ -284,6 +289,7 @@ const AppSidebarContent = () => {
                       to={item.to}
                       params={{ workspaceSlug }}
                       onClick={closeMobileSidebar}
+                      tabIndex={-1}
                     >
                       <SidebarMenuButton isActive={item.isActive}>
                         <item.icon />
@@ -355,6 +361,7 @@ const AppSidebarContent = () => {
                             workspaceSlug,
                             projectSlug: project.slug,
                           }}
+                          tabIndex={-1}
                         >
                           <SidebarMenuButton
                             isActive={
