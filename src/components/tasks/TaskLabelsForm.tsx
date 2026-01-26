@@ -72,7 +72,7 @@ const TaskLabelsForm = withForm({
                 <Input
                   id="label-name"
                   autoComplete="off"
-                  className="h-7 rounded border-0 px-2 shadow-none"
+                  className="rounded border-0 px-2 shadow-none"
                   placeholder="Add new label..."
                   value={newLabel.name}
                   onChange={(e) =>

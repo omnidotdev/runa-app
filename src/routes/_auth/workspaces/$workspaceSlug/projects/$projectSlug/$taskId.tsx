@@ -60,7 +60,7 @@ export const Route = createFileRoute(
   }) => {
     if (!organizationId) throw notFound();
 
-    const { project, task } = await all({
+    const { project } = await all({
       async project() {
         const { projectBySlugAndOrganizationId } =
           await queryClient.ensureQueryData(
@@ -346,7 +346,6 @@ function TaskPage() {
         This action cannot be undone."
         onConfirm={() => deleteTask({ rowId: taskId })}
         dialogType={DialogType.DeleteTask}
-        confirmation="permanently delete this task"
       />
     </div>
   );

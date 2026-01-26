@@ -253,12 +253,23 @@ const Projects = () => {
 
       <DestructiveActionDialog
         title="Danger Zone"
-        description={`This will delete the project "${selectedProject?.name}" from ${orgName} workspace. This action cannot be undone.`}
+        description={
+          <span>
+            This will delete the project{" "}
+            <strong className="font-medium text-base-900 dark:text-base-100">
+              {selectedProject?.name}
+            </strong>{" "}
+            from{" "}
+            <strong className="font-medium text-base-900 dark:text-base-100">
+              {orgName}
+            </strong>{" "}
+            workspace . This action cannot be undone.
+          </span>
+        }
         onConfirm={() => {
           deleteProject({ rowId: selectedProject?.rowId! });
         }}
         dialogType={DialogType.DeleteProject}
-        confirmation={`permanently delete ${selectedProject?.name}`}
       />
     </>
   );
