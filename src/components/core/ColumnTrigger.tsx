@@ -3,6 +3,7 @@ import { ChevronRightIcon, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
+import LabelIcon from "./LabelIcon";
 import Tooltip from "./Tooltip";
 
 import type { MouseEventHandler } from "react";
@@ -16,11 +17,11 @@ interface Props extends ButtonProps {
     shortcut?: string;
   };
   onCreate: MouseEventHandler<HTMLButtonElement>;
-  emoji?: string | null;
+  icon?: string | null;
 }
 
 const ColumnTrigger = ({
-  emoji = "😀",
+  icon,
   title,
   count,
   tooltip,
@@ -40,7 +41,7 @@ const ColumnTrigger = ({
         className="flex items-center justify-between px-3 py-2"
       >
         <div className="flex items-center gap-2">
-          <p className="text-xs">{emoji}</p>
+          <LabelIcon icon={icon} className="size-4" />
 
           <h3 className="text-base-800 text-sm dark:text-base-100">{title}</h3>
 

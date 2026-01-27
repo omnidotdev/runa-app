@@ -38,7 +38,7 @@ query Task($rowId: UUID!) {
     }
     column {
       title
-      emoji
+      icon
     }
     author {
       name

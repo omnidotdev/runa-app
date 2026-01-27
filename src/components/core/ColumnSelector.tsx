@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";
+import LabelIcon from "./LabelIcon";
 import Shortcut from "./Shortcut";
 import Tooltip from "./Tooltip";
 
@@ -26,13 +27,13 @@ interface Props extends Omit<ComponentProps<typeof Select>, "collection"> {
   // TODO: remove in favor of route loader or similar
   projectId: string;
   triggerLabel?: string;
-  triggerEmoji?: string;
+  triggerIcon?: string | null;
 }
 
 const ColumnSelector = ({
   projectId,
   triggerLabel,
-  triggerEmoji,
+  triggerIcon,
   ...rest
 }: Props) => {
   const { data: project } = useQuery({
@@ -45,7 +46,7 @@ const ColumnSelector = ({
       project?.columns?.nodes?.map((column) => ({
         label: column?.title ?? "",
         value: column?.rowId ?? "",
-        emoji: column?.emoji ?? "",
+        icon: column?.icon ?? null,
       })) ?? [],
   });
 
@@ -74,7 +75,7 @@ const ColumnSelector = ({
           <SelectControl>
             <SelectTrigger asChild>
               <Button variant="outline" className="w-fit">
-                {triggerEmoji && <p className="text-lg">{triggerEmoji}</p>}
+                <LabelIcon icon={triggerIcon} className="size-4" />
 
                 <p className="hidden text-sm md:flex">{triggerLabel}</p>
               </Button>
@@ -93,7 +94,7 @@ const ColumnSelector = ({
             {columnCollection.items.map((column) => (
               <SelectItem key={column.value} item={column}>
                 <SelectItemText>
-                  {column.emoji}
+                  <LabelIcon icon={column.icon} className="size-4" />
 
                   <p className="ml-1">{column.label}</p>
                 </SelectItemText>
