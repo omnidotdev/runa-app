@@ -17,7 +17,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { BASE_URL } from "@/lib/config/env.config";
+import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import { isOwner } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
@@ -120,7 +120,8 @@ export default function WorkspaceBenefits() {
           </ul>
         </div>
 
-        {subscription ? (
+        {/* Hide billing buttons for self-hosted (no billing portal) */}
+        {subscription && !isSelfHosted ? (
           <div className="flex gap-2">
             {subscription.cancelAt ? (
               <Button onClick={() => handleRenewSubscription()}>
@@ -141,62 +142,64 @@ export default function WorkspaceBenefits() {
             </Button>
           </div>
         ) : (
-          <MenuRoot
-            onSelect={({ value }) => createSubscription({ priceId: value })}
-          >
-            <MenuTrigger asChild>
-              <Button className="mt-2 w-fit">Upgrade Workspace</Button>
-            </MenuTrigger>
-            <MenuPositioner>
-              <MenuContent className="w-60">
-                {(["basic", "team"] as const).map((tier, index) => (
-                  <Fragment key={tier}>
-                    <MenuItemGroup>
-                      <MenuItemGroupLabel className="text-muted-foreground">
-                        {capitalizeFirstLetter(tier)}
-                      </MenuItemGroupLabel>
+          !isSelfHosted && (
+            <MenuRoot
+              onSelect={({ value }) => createSubscription({ priceId: value })}
+            >
+              <MenuTrigger asChild>
+                <Button className="mt-2 w-fit">Upgrade Workspace</Button>
+              </MenuTrigger>
+              <MenuPositioner>
+                <MenuContent className="w-60">
+                  {(["basic", "team"] as const).map((tier, index) => (
+                    <Fragment key={tier}>
+                      <MenuItemGroup>
+                        <MenuItemGroupLabel className="text-muted-foreground">
+                          {capitalizeFirstLetter(tier)}
+                        </MenuItemGroupLabel>
 
-                      {prices
-                        .filter((price) => price.metadata.tier === tier)
-                        .map((price) => (
-                          <MenuItem
-                            key={price.id}
-                            value={price.id}
-                            className="cursor-pointer"
-                          >
-                            <MenuItemText className="flex w-full items-center justify-between">
-                              <span className="font-medium text-sm">
-                                {capitalizeFirstLetter(
-                                  price.recurring?.interval!,
-                                )}
-                                ly
-                              </span>
-
-                              <span className="font-semibold text-sm">
-                                <Format.Number
-                                  value={price.unit_amount! / 100}
-                                  currency="USD"
-                                  style="currency"
-                                  notation="compact"
-                                />
-                                <span className="font-normal text-muted-foreground">
-                                  /
-                                  {price.recurring?.interval === "month"
-                                    ? "mo"
-                                    : "yr"}
+                        {prices
+                          .filter((price) => price.metadata.tier === tier)
+                          .map((price) => (
+                            <MenuItem
+                              key={price.id}
+                              value={price.id}
+                              className="cursor-pointer"
+                            >
+                              <MenuItemText className="flex w-full items-center justify-between">
+                                <span className="font-medium text-sm">
+                                  {capitalizeFirstLetter(
+                                    price.recurring?.interval!,
+                                  )}
+                                  ly
                                 </span>
-                              </span>
-                            </MenuItemText>
-                          </MenuItem>
-                        ))}
-                    </MenuItemGroup>
 
-                    {index < 1 && <MenuSeparator />}
-                  </Fragment>
-                ))}
-              </MenuContent>
-            </MenuPositioner>
-          </MenuRoot>
+                                <span className="font-semibold text-sm">
+                                  <Format.Number
+                                    value={price.unit_amount! / 100}
+                                    currency="USD"
+                                    style="currency"
+                                    notation="compact"
+                                  />
+                                  <span className="font-normal text-muted-foreground">
+                                    /
+                                    {price.recurring?.interval === "month"
+                                      ? "mo"
+                                      : "yr"}
+                                  </span>
+                                </span>
+                              </MenuItemText>
+                            </MenuItem>
+                          ))}
+                      </MenuItemGroup>
+
+                      {index < 1 && <MenuSeparator />}
+                    </Fragment>
+                  ))}
+                </MenuContent>
+              </MenuPositioner>
+            </MenuRoot>
+          )
         )}
       </div>
     </div>

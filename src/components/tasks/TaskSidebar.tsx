@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import taskOptions from "@/lib/options/task.options";
 
 import type { LabelFragment } from "@/generated/graphql";
@@ -26,6 +27,8 @@ const TaskSidebar = () => {
     ...taskOptions({ rowId: taskId }),
     select: (data) => data?.task,
   });
+
+  const { setTaskId } = useTaskStore();
 
   const { setIsOpen: setIsUpdateAssigneesDialogOpen } = useDialogStore({
       type: DialogType.UpdateAssignees,
@@ -45,10 +48,14 @@ const TaskSidebar = () => {
       <CardRoot
         tabIndex={0}
         role="button"
-        onClick={() => setIsUpdateAssigneesDialogOpen(true)}
+        onClick={() => {
+          setTaskId(taskId);
+          setIsUpdateAssigneesDialogOpen(true);
+        }}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
+            setTaskId(taskId);
             setIsUpdateAssigneesDialogOpen(true);
           }
         }}
@@ -89,10 +96,14 @@ const TaskSidebar = () => {
       <CardRoot
         tabIndex={0}
         role="button"
-        onClick={() => setIsUpdateTaskLabelsDialogOpen(true)}
+        onClick={() => {
+          setTaskId(taskId);
+          setIsUpdateTaskLabelsDialogOpen(true);
+        }}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
+            setTaskId(taskId);
             setIsUpdateTaskLabelsDialogOpen(true);
           }
         }}

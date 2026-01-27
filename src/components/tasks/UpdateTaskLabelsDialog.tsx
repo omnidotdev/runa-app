@@ -139,11 +139,10 @@ const UpdateTaskLabelsDialog = () => {
         },
       });
 
-      queryClient.invalidateQueries({ queryKey: taskQueryKey });
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({ queryKey: taskQueryKey });
+      await queryClient.invalidateQueries({
         queryKey: getQueryKeyPrefix(useTasksQuery),
       });
-      formApi.reset();
       setIsOpen(false);
       setTaskId(null);
     },
@@ -156,7 +155,7 @@ const UpdateTaskLabelsDialog = () => {
       open={isOpen}
       onOpenChange={({ open }) => {
         setIsOpen(open);
-        form.reset();
+        form.reset({ ...taskFormDefaults, labels: defaultLabels });
 
         if (!open) {
           setTaskId(null);

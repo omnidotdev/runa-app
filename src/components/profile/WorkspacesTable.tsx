@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { AUTH_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import { Role } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
@@ -33,14 +33,20 @@ const WorkspacesTable = ({ organizations }: Props) => {
     return (
       <div className="flex flex-col gap-2">
         <p>
-          No current workspaces.{" "}
-          <a
-            href={`${AUTH_BASE_URL}/profile`}
-            className="p-0 text-md text-primary-600 underline"
-          >
-            Create a workspace
-          </a>{" "}
-          to get started.
+          {isSelfHosted ? (
+            "Setting up your workspace..."
+          ) : (
+            <>
+              No current workspaces.{" "}
+              <a
+                href={`${AUTH_BASE_URL}/profile`}
+                className="p-0 text-md text-primary-600 underline"
+              >
+                Create a workspace
+              </a>{" "}
+              to get started.
+            </>
+          )}
         </p>
       </div>
     );
@@ -86,9 +92,9 @@ const WorkspacesTable = ({ organizations }: Props) => {
                   >
                     Settings
                   </Link>
-                  {userRole === Role.Owner ? (
-                    <div className="justify-center">
-                      {/* Organizations are managed via Gatekeeper IDP */}
+                  {/* Manage/Leave via IDP - not available in self-hosted (personal workspace only) */}
+                  {!isSelfHosted &&
+                    (userRole === Role.Owner ? (
                       <Button
                         asChild
                         variant="outline"
@@ -97,10 +103,7 @@ const WorkspacesTable = ({ organizations }: Props) => {
                       >
                         <a href={`${AUTH_BASE_URL}/profile`}>Manage</a>
                       </Button>
-                    </div>
-                  ) : (
-                    <div className="justify-center">
-                      {/* Leave organization via Gatekeeper IDP */}
+                    ) : (
                       <Button
                         asChild
                         variant="outline"
@@ -109,8 +112,7 @@ const WorkspacesTable = ({ organizations }: Props) => {
                       >
                         <a href={`${AUTH_BASE_URL}/profile`}>Leave</a>
                       </Button>
-                    </div>
-                  )}
+                    ))}
                 </div>
               </TableCell>
             </TableRow>

@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LuGithub as GithubIcon } from "react-icons/lu";
 import { SiGoogle as GoogleIcon } from "react-icons/si";
 
@@ -15,10 +15,12 @@ import { Input } from "@/components/ui/input";
 import authClient from "@/lib/auth/authClient";
 import app from "@/lib/config/app.config";
 import {
+  AUTH_CLIENT_ID,
   BASE_URL,
   GITHUB_CLIENT_ID,
   GOOGLE_CLIENT_ID,
   OIDC_ISSUER,
+  isSelfHosted,
 } from "@/lib/config/env.config";
 
 export const Route = createFileRoute("/_public/login")({
@@ -27,55 +29,26 @@ export const Route = createFileRoute("/_public/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
+  // SaaS mode: Omni OAuth configured
+  const hasOmni = !!AUTH_CLIENT_ID;
   const hasGoogle = !!GOOGLE_CLIENT_ID;
   const hasGithub = !!GITHUB_CLIENT_ID;
   const hasOidc = !!OIDC_ISSUER;
   const hasOAuth = hasGoogle || hasGithub || hasOidc;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+  // Self-hosted mode: email/password available
+  const hasEmailPassword = isSelfHosted;
 
-    try {
-      if (isLogin) {
-        const { error } = await authClient.signIn.email({
-          email,
-          password,
-          callbackURL: BASE_URL,
-        });
-        if (error) {
-          setError(error.message || "Invalid email or password");
-          return;
-        }
-      } else {
-        const { error } = await authClient.signUp.email({
-          email,
-          password,
-          name,
-          callbackURL: BASE_URL,
-        });
-        if (error) {
-          setError(error.message || "Failed to create account");
-          return;
-        }
-      }
-      navigate({ to: "/" });
-    } catch {
-      setError("An unexpected error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleOAuth = async (provider: "google" | "github" | "oidc") => {
+  const handleOAuth = async (
+    provider: "omni" | "google" | "github" | "oidc",
+  ) => {
     setError(null);
     try {
       await authClient.signIn.oauth2({
@@ -87,6 +60,59 @@ function LoginPage() {
     }
   };
 
+  const handleEmailPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    try {
+      if (isSignUp) {
+        const { error } = await authClient.signUp.email({
+          email,
+          password,
+          name,
+          callbackURL: BASE_URL,
+        });
+        if (error) {
+          setError(error.message || "Failed to create account");
+          return;
+        }
+      } else {
+        const { error } = await authClient.signIn.email({
+          email,
+          password,
+          callbackURL: BASE_URL,
+        });
+        if (error) {
+          setError(error.message || "Invalid email or password");
+          return;
+        }
+      }
+      navigate({ to: "/" });
+    } catch {
+      setError("An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // SaaS mode: auto-redirect to Omni OAuth (no login screen needed)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional one-time redirect
+  useEffect(() => {
+    if (hasOmni) {
+      handleOAuth("omni");
+    }
+  }, [hasOmni]);
+
+  // SaaS mode: show loading while redirecting to Omni
+  if (hasOmni) {
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center">
+        <p className="text-muted-foreground">Redirecting to sign in...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-[80vh] items-center justify-center px-4 py-12">
       <CardRoot className="w-full max-w-md border-base-200/50 bg-white/80 backdrop-blur-xl dark:border-base-800/50 dark:bg-base-900/80">
@@ -94,7 +120,7 @@ function LoginPage() {
           <div className="mb-2 text-4xl">🌙</div>
           <CardTitle className="text-2xl">{app.name}</CardTitle>
           <CardDescription>
-            {isLogin ? "Sign in to your account" : "Create a new account"}
+            {isSignUp ? "Create a new account" : "Sign in to your account"}
           </CardDescription>
         </CardHeader>
 
@@ -105,53 +131,86 @@ function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
-              <Input
-                type="text"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required={!isLogin}
-              />
-            )}
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
-            />
-            <Button
-              type="submit"
-              className="w-full bg-primary-500 text-base-950 hover:bg-primary-400"
-              disabled={loading}
-            >
-              {loading ? "..." : isLogin ? "Sign In" : "Create Account"}
-            </Button>
-          </form>
+          {/* Self-hosted: email/password form */}
+          {hasEmailPassword && (
+            <>
+              <form onSubmit={handleEmailPassword} className="space-y-4">
+                {isSignUp && (
+                  <Input
+                    type="text"
+                    placeholder="Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                )}
+                <Input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <Input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={8}
+                />
+                <Button
+                  type="submit"
+                  className="w-full bg-primary-500 text-base-950 hover:bg-primary-400"
+                  disabled={loading}
+                >
+                  {loading ? "..." : isSignUp ? "Create Account" : "Sign In"}
+                </Button>
+              </form>
 
+              <div className="text-center text-sm">
+                {isSignUp ? (
+                  <span className="text-muted-foreground">
+                    Already have an account?{" "}
+                    <button
+                      type="button"
+                      onClick={() => setIsSignUp(false)}
+                      className="cursor-pointer text-primary-500 hover:underline"
+                    >
+                      Sign in
+                    </button>
+                  </span>
+                ) : (
+                  <span className="text-muted-foreground">
+                    Don't have an account?{" "}
+                    <button
+                      type="button"
+                      onClick={() => setIsSignUp(true)}
+                      className="cursor-pointer text-primary-500 hover:underline"
+                    >
+                      Sign up
+                    </button>
+                  </span>
+                )}
+              </div>
+            </>
+          )}
+
+          {/* OAuth providers (optional for self-hosted) */}
           {hasOAuth && (
             <>
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-base-200 border-t dark:border-base-700" />
+              {hasEmailPassword && (
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-base-200 border-t dark:border-base-700" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white px-2 text-muted-foreground dark:bg-base-900">
+                      or continue with
+                    </span>
+                  </div>
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-muted-foreground dark:bg-base-900">
-                    or continue with
-                  </span>
-                </div>
-              </div>
-
+              )}
               <div className="flex flex-col gap-2">
                 {hasGoogle && (
                   <Button
@@ -161,7 +220,7 @@ function LoginPage() {
                     onClick={() => handleOAuth("google")}
                   >
                     <GoogleIcon className="mr-2 size-4" />
-                    Google
+                    Continue with Google
                   </Button>
                 )}
                 {hasGithub && (
@@ -172,7 +231,7 @@ function LoginPage() {
                     onClick={() => handleOAuth("github")}
                   >
                     <GithubIcon className="mr-2 size-4" />
-                    GitHub
+                    Continue with GitHub
                   </Button>
                 )}
                 {hasOidc && (
@@ -182,38 +241,19 @@ function LoginPage() {
                     className="w-full"
                     onClick={() => handleOAuth("oidc")}
                   >
-                    SSO
+                    Continue with SSO
                   </Button>
                 )}
               </div>
             </>
           )}
 
-          <div className="text-center text-sm">
-            {isLogin ? (
-              <span className="text-muted-foreground">
-                Don't have an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => setIsLogin(false)}
-                  className="cursor-pointer text-primary-500 hover:underline"
-                >
-                  Sign up
-                </button>
-              </span>
-            ) : (
-              <span className="text-muted-foreground">
-                Already have an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => setIsLogin(true)}
-                  className="cursor-pointer text-primary-500 hover:underline"
-                >
-                  Sign in
-                </button>
-              </span>
-            )}
-          </div>
+          {/* No auth configured (shouldn't happen in production) */}
+          {!hasEmailPassword && !hasOAuth && (
+            <div className="text-center text-muted-foreground text-sm">
+              No authentication method available.
+            </div>
+          )}
         </CardContent>
       </CardRoot>
     </div>

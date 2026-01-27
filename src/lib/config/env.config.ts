@@ -17,6 +17,13 @@ const clientEnv = getClientEnv();
 // Core URLs (injected at runtime for client, read from process.env for server)
 export const BASE_URL = clientEnv.BASE_URL;
 export const API_BASE_URL = clientEnv.API_BASE_URL;
+
+// Internal API URL for server-to-server communication (Docker service name)
+// Falls back to API_BASE_URL for non-Docker environments
+export const API_INTERNAL_URL =
+  typeof window === "undefined"
+    ? process.env.API_INTERNAL_URL || clientEnv.API_BASE_URL
+    : clientEnv.API_BASE_URL;
 export const BILLING_BASE_URL =
   env.BILLING_BASE_URL || env.VITE_BILLING_BASE_URL;
 
@@ -47,6 +54,9 @@ export const FLAGS_CLIENT_KEY =
   env.FLAGS_CLIENT_KEY || env.VITE_FLAGS_CLIENT_KEY;
 
 export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
+
+// Internal GraphQL URL for server-side requests
+export const API_INTERNAL_GRAPHQL_URL = `${API_INTERNAL_URL}/graphql`;
 
 // environment helpers
 /** @knipignore */
