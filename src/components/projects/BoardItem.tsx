@@ -1,7 +1,7 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import dayjs from "dayjs";
-import { CalendarIcon } from "lucide-react";
+import { AlignLeftIcon, CalendarIcon, MessageCircleIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
 import { Assignees, Label, RichTextEditor, Tooltip } from "@/components/core";
@@ -153,14 +153,14 @@ const BoardItem = ({ task, index, displayId }: Props) => {
               )}
             </div>
 
-            <div className="mt-auto flex items-end justify-between">
+            <div className="mt-auto flex items-end justify-between gap-2">
               {task.taskLabels.nodes.length > 0 && (
                 <Tooltip
                   positioning={{ placement: "top-start", shift: -6 }}
                   tooltip="Update Labels"
                   shortcut="L"
                   trigger={
-                    <div className="flex max-h-5 flex-wrap gap-1 overflow-hidden">
+                    <div className="flex max-h-6 flex-wrap gap-1 overflow-hidden">
                       {task.taskLabels.nodes.slice(0, 3).map(({ label }) => (
                         <Label
                           key={label?.rowId}
@@ -180,20 +180,47 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                 />
               )}
 
-              {task.dueDate && (
-                <Tooltip
-                  positioning={{ placement: "top-end", shift: -8 }}
-                  tooltip="Update Due Date"
-                  shortcut="D"
-                  trigger={
-                    <div className="ml-auto flex h-5 items-center gap-1 text-base-500 text-xs dark:text-base-400">
-                      <CalendarIcon className="h-3 w-3" />
-                      {/* TODO: timezone handling */}
-                      <span>{dayjs(task.dueDate).format("MMM D")}</span>
-                    </div>
-                  }
-                />
-              )}
+              <div className="ml-auto flex items-center gap-2 text-base-500 text-xs dark:text-base-400">
+                {task.description && (
+                  <Tooltip
+                    positioning={{ placement: "top" }}
+                    tooltip="Has description"
+                    trigger={
+                      <div className="flex items-center">
+                        <AlignLeftIcon className="size-3" />
+                      </div>
+                    }
+                  />
+                )}
+
+                {task.posts.totalCount > 0 && (
+                  <Tooltip
+                    positioning={{ placement: "top" }}
+                    tooltip={`${task.posts.totalCount} comment${task.posts.totalCount === 1 ? "" : "s"}`}
+                    trigger={
+                      <div className="flex items-center gap-0.5">
+                        <MessageCircleIcon className="size-3" />
+                        <span>{task.posts.totalCount}</span>
+                      </div>
+                    }
+                  />
+                )}
+
+                {task.dueDate && (
+                  <Tooltip
+                    positioning={{ placement: "top-end", shift: -8 }}
+                    tooltip="Update Due Date"
+                    shortcut="D"
+                    trigger={
+                      <div className="flex items-center gap-1">
+                        <CalendarIcon className="size-3" />
+                        {/* TODO: timezone handling */}
+                        <span>{dayjs(task.dueDate).format("MMM D")}</span>
+                      </div>
+                    }
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
