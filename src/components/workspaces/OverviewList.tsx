@@ -71,7 +71,7 @@ const List = ({ projects }: Props) => {
                 : "Create Project",
               shortcut: !maxProjectsReached ? "P" : undefined,
             }}
-            emoji={column.emoji}
+            icon={column.icon}
             onCreate={(e) => {
               e.preventDefault();
               setProjectColumnId(column.rowId);

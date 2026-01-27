@@ -99,7 +99,7 @@ const Board = ({ projects }: Props) => {
                     : "Create Project",
                   shortcut: !maxProjectsReached ? "P" : undefined,
                 }}
-                emoji={column.emoji}
+                icon={column.icon}
                 onCreate={() => {
                   setProjectColumnId(column.rowId);
                   setIsCreateProjectDialogOpen(true);

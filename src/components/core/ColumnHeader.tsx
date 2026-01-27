@@ -1,6 +1,7 @@
 import { PlusIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import LabelIcon from "./LabelIcon";
 import Tooltip from "./Tooltip";
 
 import type { ButtonProps } from "@/components/ui/button";
@@ -13,14 +14,14 @@ interface Props extends ButtonProps {
     shortcut?: string;
   };
   onCreate: () => void;
-  emoji?: string | null;
+  icon?: string | null;
 }
 
 /**
  * Column header.
  */
 const ColumnHeader = ({
-  emoji,
+  icon,
   title,
   count,
   tooltip,
@@ -31,7 +32,7 @@ const ColumnHeader = ({
 }: Props) => (
   <div className="mb-1 flex items-center justify-between rounded-lg py-2">
     <div className="flex items-center gap-2">
-      {emoji && <span>{emoji}</span>}
+      <LabelIcon icon={icon} className="size-4" />
       <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
         {title}
       </h3>

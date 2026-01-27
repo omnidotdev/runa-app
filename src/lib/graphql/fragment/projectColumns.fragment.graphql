@@ -2,7 +2,7 @@ fragment ProjectColumn on ProjectColumn {
   title
   index
   rowId
-  emoji
+  icon
   projects {
     totalCount
   }

@@ -9,7 +9,7 @@
  * These are injected into the client via window.__ENV__ at runtime.
  * See clientEnv.ts for implementation details.
  */
-import getClientEnv from "@/lib/config/clientEnv";
+import getClientEnv from "./clientEnv";
 
 const env = { ...import.meta.env, ...process.env };
 const clientEnv = getClientEnv();

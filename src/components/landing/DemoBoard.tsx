@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Shortcut, Tooltip } from "@/components/core";
+import { LabelIcon, Shortcut, Tooltip } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -289,7 +289,7 @@ const DemoBoard = () => {
                     {/* column header */}
                     <div className="mb-1 flex items-center justify-between rounded-lg py-2">
                       <div className="flex items-center gap-2">
-                        <span>{column.emoji}</span>
+                        <LabelIcon icon={column.icon} className="size-4" />
                         <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
                           {column.title}
                         </h3>
@@ -362,7 +362,7 @@ const DemoBoard = () => {
                       })
                     }
                   >
-                    <span>{column.emoji}</span>
+                    <LabelIcon icon={column.icon} className="size-4" />
                     <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
                       {column.title}
                     </h3>

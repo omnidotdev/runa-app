@@ -122,7 +122,7 @@ const Board = ({ tasks }: Props) => {
                   title: "Add Task",
                   shortcut: "C",
                 }}
-                emoji={column.emoji}
+                icon={column.icon}
                 onCreate={() => {
                   setColumnId(column.rowId);
                   setIsCreateTaskOpen(true);
