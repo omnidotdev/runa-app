@@ -1,4 +1,4 @@
-import { TagIcon, icons } from "lucide-react";
+import { icons } from "lucide-react";
 
 import parseIcon from "@/lib/util/parseIcon";
 import { cn } from "@/lib/utils";
@@ -21,7 +21,7 @@ const LabelIcon = ({ icon, ...props }: Props) => {
   const parsed = parseIcon(icon);
 
   if (!parsed) {
-    return <TagIcon {...props} />;
+    return null;
   }
 
   if (parsed.type === "emoji") {
@@ -50,11 +50,10 @@ const LabelIcon = ({ icon, ...props }: Props) => {
       return <IconComponent {...props} />;
     }
 
-    // Fallback if icon name not found
-    return <TagIcon {...props} />;
+    return null;
   }
 
-  return <TagIcon {...props} />;
+  return null;
 };
 
 export default LabelIcon;
