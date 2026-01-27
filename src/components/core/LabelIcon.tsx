@@ -1,6 +1,7 @@
 import { TagIcon, icons } from "lucide-react";
 
 import parseIcon from "@/lib/util/parseIcon";
+import { cn } from "@/lib/utils";
 
 import type { LucideProps } from "lucide-react";
 
@@ -24,7 +25,16 @@ const LabelIcon = ({ icon, ...props }: Props) => {
   }
 
   if (parsed.type === "emoji") {
-    return <span className={props.className}>{parsed.value}</span>;
+    return (
+      <span
+        className={cn(
+          "inline-flex items-center justify-center",
+          props.className,
+        )}
+      >
+        {parsed.value}
+      </span>
+    );
   }
 
   if (parsed.type === "lucide") {
