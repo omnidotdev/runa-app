@@ -1,6 +1,6 @@
 import { useColorPicker } from "@ark-ui/react/color-picker";
-import { TagIcon } from "lucide-react";
 
+import LabelIcon from "@/components/core/LabelIcon";
 import { Badge } from "@/components/ui/badge";
 import { parseColor } from "@/components/ui/color-picker";
 import getLabelColors from "@/lib/util/getLabelColors";
@@ -36,7 +36,8 @@ const Label = ({ label }: Props) => {
           color: textColor,
         }}
       >
-        <TagIcon
+        <LabelIcon
+          icon={label.icon}
           className="size-2.5!"
           style={{
             color: isDark ? textColor : colorPicker.value.toString("css"),
