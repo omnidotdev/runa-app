@@ -13,6 +13,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { DefaultCatchBoundary } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
+import getClientEnv from "@/lib/config/clientEnv";
 import { fetchMaintenanceMode } from "@/lib/flags";
 import appCss from "@/lib/styles/globals.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -75,8 +76,19 @@ export const Route = createRootRouteWithContext<{
 
     return { session, isMaintenanceMode };
   },
-  loader: () => getTheme(),
-  head: () => ({
+  loader: async () => {
+    const theme = await getTheme();
+    // Get client env vars on server to inject into HTML
+    const clientEnv = getClientEnv();
+    return { theme, clientEnv };
+  },
+  head: ({ loaderData }) => ({
+    scripts: [
+      {
+        // Inject runtime env vars for client-side access
+        children: `window.__ENV__=${JSON.stringify(loaderData?.clientEnv ?? {})};`,
+      },
+    ],
     meta: [
       {
         charSet: "utf-8",
@@ -152,7 +164,7 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  const theme = Route.useLoaderData();
+  const { theme } = Route.useLoaderData();
 
   return (
     <html lang="en" className={theme}>

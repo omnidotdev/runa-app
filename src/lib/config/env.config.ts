@@ -1,19 +1,27 @@
 /**
  * Environment variables.
  *
- * Runtime env vars (process.env) override build-time vars (import.meta.env).
+ * For self-hosted deployments, set these runtime env vars (without VITE_ prefix):
+ * - BASE_URL: Your app's public URL (e.g., https://runa.example.com)
+ * - API_BASE_URL: Your API's public URL (e.g., https://api.runa.example.com)
+ * - SELF_HOSTED: Set to "true" for self-hosted mode
+ *
+ * These are injected into the client via window.__ENV__ at runtime.
+ * See clientEnv.ts for implementation details.
  */
-const env = { ...import.meta.env, ...process.env };
+import getClientEnv from "@/lib/config/clientEnv";
 
-// Core URLs
-export const BASE_URL = env.BASE_URL || env.VITE_BASE_URL;
-export const API_BASE_URL = env.API_BASE_URL || env.VITE_API_BASE_URL;
+const env = { ...import.meta.env, ...process.env };
+const clientEnv = getClientEnv();
+
+// Core URLs (injected at runtime for client, read from process.env for server)
+export const BASE_URL = clientEnv.BASE_URL;
+export const API_BASE_URL = clientEnv.API_BASE_URL;
 export const BILLING_BASE_URL =
   env.BILLING_BASE_URL || env.VITE_BILLING_BASE_URL;
 
 // Self-hosted flag
-export const VITE_SELF_HOSTED = env.VITE_SELF_HOSTED;
-export const SELF_HOSTED = env.SELF_HOSTED;
+export const SELF_HOSTED = clientEnv.SELF_HOSTED;
 
 // Auth: Omni/Gatekeeper (SaaS)
 export const AUTH_BASE_URL = env.AUTH_BASE_URL || env.VITE_AUTH_BASE_URL;
@@ -46,8 +54,7 @@ export const isDevEnv = import.meta.env.DEV;
 /** @knipignore */
 export const isProdEnv = import.meta.env.PROD;
 /** @knipignore */
-export const isSelfHosted =
-  SELF_HOSTED === "true" || VITE_SELF_HOSTED === "true";
+export const isSelfHosted = SELF_HOSTED === "true";
 
 /**
  * Billing provider to use.
