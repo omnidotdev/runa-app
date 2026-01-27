@@ -60,7 +60,7 @@ const DEFAULT_PROJECT_COLUMNS = [
 const CreateProjectDialog = () => {
   const { session } = useRouteContext({ from: "/_auth" });
   const { organizationId } = useLoaderData({ from: "/_auth" });
-  const { workspaceSlug } = useParams({ strict: false });
+  const { workspaceSlug, projectSlug } = useParams({ strict: false });
 
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
@@ -111,8 +111,8 @@ const CreateProjectDialog = () => {
   useHotkeys(
     Hotkeys.CreateProject,
     () => setIsCreateProjectOpen(!isCreateProjectOpen),
-    { enabled: !!workspaceSlug },
-    [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug],
+    { enabled: !!workspaceSlug && !projectSlug },
+    [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug, projectSlug],
   );
 
   const { mutateAsync: createColumn } = useCreateColumnMutation();
