@@ -1,7 +1,9 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { fetchServerSentEvents, useChat } from "@tanstack/ai-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { API_BASE_URL } from "@/lib/config/env.config";
+import { WRITE_TOOL_NAMES } from "./constants";
 
 interface UseAgentChatOptions {
   projectId: string;
@@ -19,11 +21,19 @@ interface UseAgentChatOptions {
  * Session ID is captured from the `X-Agent-Session-Id` response header
  * via a custom `fetchClient` wrapper, since `onResponse` does not receive
  * the Response object in the current TanStack AI version.
+ *
+ * When write tools complete, React Query caches for board data are
+ * invalidated so the UI reflects agent-made changes in real time.
  */
 export function useAgentChat({ projectId, accessToken }: UseAgentChatOptions) {
+  const queryClient = useQueryClient();
   const sessionIdRef = useRef<string | null>(null);
   const accessTokenRef = useRef(accessToken);
   const projectIdRef = useRef(projectId);
+  const invalidationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const lastWriteCountRef = useRef(0);
 
   // Keep refs in sync with latest prop values
   accessTokenRef.current = accessToken;
@@ -53,5 +63,48 @@ export function useAgentChat({ projectId, accessToken }: UseAgentChatOptions) {
     [],
   );
 
-  return useChat({ connection });
+  const chatResult = useChat({ connection });
+
+  // Invalidate React Query cache when new write tools complete
+  useEffect(() => {
+    let completedWriteCount = 0;
+
+    for (const message of chatResult.messages) {
+      if (message.role !== "assistant") continue;
+      for (const part of message.parts) {
+        if (
+          part.type === "tool-call" &&
+          WRITE_TOOL_NAMES.has(part.name) &&
+          part.output !== undefined
+        ) {
+          completedWriteCount++;
+        }
+      }
+    }
+
+    // Only invalidate when new write completions appear
+    if (completedWriteCount <= lastWriteCountRef.current) return;
+    lastWriteCountRef.current = completedWriteCount;
+
+    // Debounce to prevent rapid-fire invalidations during multi-tool sequences
+    if (invalidationTimerRef.current) {
+      clearTimeout(invalidationTimerRef.current);
+    }
+
+    invalidationTimerRef.current = setTimeout(() => {
+      queryClient.invalidateQueries({ queryKey: ["Tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["Task"] });
+      queryClient.invalidateQueries({ queryKey: ["Project"] });
+      invalidationTimerRef.current = null;
+    }, 500);
+
+    return () => {
+      if (invalidationTimerRef.current) {
+        clearTimeout(invalidationTimerRef.current);
+        invalidationTimerRef.current = null;
+      }
+    };
+  }, [chatResult.messages, queryClient]);
+
+  return chatResult;
 }

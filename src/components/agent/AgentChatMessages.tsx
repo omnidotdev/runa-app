@@ -1,12 +1,14 @@
 import {
   BotIcon,
   Loader2Icon,
+  PencilIcon,
   SparklesIcon,
   UserIcon,
   WrenchIcon,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
 
+import { WRITE_TOOL_NAMES } from "@/lib/ai/constants";
 import { cn } from "@/lib/utils";
 
 import type { UIMessage } from "@tanstack/ai-client";
@@ -15,6 +17,56 @@ interface AgentChatMessagesProps {
   messages: UIMessage[];
   isLoading: boolean;
   error: Error | undefined;
+}
+
+/** Format a camelCase tool name into a human-readable label. */
+function formatToolName(name: string): string {
+  return name.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase());
+}
+
+/**
+ * Format a write tool result into a human-readable summary.
+ * Falls back to tool name if the output format is unexpected.
+ */
+function formatWriteResult(name: string, output: unknown): string {
+  if (!output || typeof output !== "object") return "Done";
+
+  const data = output as Record<string, unknown>;
+
+  switch (name) {
+    case "createTask": {
+      const task = data.task as Record<string, unknown> | undefined;
+      if (!task) return "Task created";
+      const num = task.number ? `T-${task.number}: ` : "";
+      return `Created ${num}${task.title ?? "task"}`;
+    }
+    case "updateTask": {
+      const task = data.task as Record<string, unknown> | undefined;
+      if (!task) return "Task updated";
+      const num = task.number ? `T-${task.number}: ` : "";
+      return `Updated ${num}${task.title ?? "task"}`;
+    }
+    case "moveTask": {
+      const task = data.task as Record<string, unknown> | undefined;
+      const num = task?.number ? `T-${task.number}: ` : "";
+      return `Moved ${num}${data.fromColumn ?? "?"} → ${data.toColumn ?? "?"}`;
+    }
+    case "assignTask": {
+      const action = data.action === "remove" ? "Unassigned" : "Assigned";
+      return `${action} ${data.userName ?? "user"}`;
+    }
+    case "addLabel": {
+      return `Added "${data.labelName ?? "label"}"`;
+    }
+    case "removeLabel": {
+      return `Removed "${data.labelName ?? "label"}"`;
+    }
+    case "addComment": {
+      return "Comment added";
+    }
+    default:
+      return "Done";
+  }
 }
 
 export function AgentChatMessages({
@@ -135,22 +187,42 @@ function MessageBubble({ message }: { message: UIMessage }) {
           }
 
           if (part.type === "tool-call") {
+            const isWrite = WRITE_TOOL_NAMES.has(part.name);
             const isComplete =
               part.state === "input-complete" || part.output !== undefined;
 
             return (
               <div
                 key={part.id}
-                className="flex items-center gap-1.5 rounded-md bg-muted/50 px-2.5 py-1.5 text-muted-foreground text-xs"
+                className={cn(
+                  "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs",
+                  isWrite
+                    ? "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300"
+                    : "bg-muted/50 text-muted-foreground",
+                )}
               >
-                <WrenchIcon className="size-3" />
-                <span className="font-medium">{part.name}</span>
+                {isWrite ? (
+                  <PencilIcon className="size-3" />
+                ) : (
+                  <WrenchIcon className="size-3" />
+                )}
+                <span className="font-medium">
+                  {formatToolName(part.name)}
+                </span>
                 {!isComplete && (
                   <Loader2Icon className="size-3 animate-spin" />
                 )}
                 {isComplete && (
-                  <span className="text-green-600 dark:text-green-400">
-                    Done
+                  <span
+                    className={
+                      isWrite
+                        ? "text-blue-600 dark:text-blue-400"
+                        : "text-green-600 dark:text-green-400"
+                    }
+                  >
+                    {isWrite
+                      ? formatWriteResult(part.name, part.output)
+                      : "Done"}
                   </span>
                 )}
               </div>
