@@ -1,0 +1,296 @@
+import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { Loader2Icon, SettingsIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { API_BASE_URL } from "@/lib/config/env.config";
+
+interface AgentConfig {
+  requireApprovalForDestructive: boolean;
+  requireApprovalForCreate: boolean;
+  maxIterationsPerRequest: number;
+  customInstructions: string | null;
+}
+
+function agentConfigQueryKey(organizationId: string) {
+  return ["AgentConfig", organizationId] as const;
+}
+
+async function fetchAgentConfig(
+  organizationId: string,
+  accessToken: string,
+): Promise<AgentConfig> {
+  const url = new URL(`${API_BASE_URL}/api/ai/config`);
+  url.searchParams.set("organizationId", organizationId);
+
+  const response = await fetch(url.toString(), {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch agent config");
+  }
+
+  const data = (await response.json()) as { config: AgentConfig };
+  return data.config;
+}
+
+async function updateAgentConfig(
+  organizationId: string,
+  accessToken: string,
+  config: Partial<AgentConfig>,
+): Promise<AgentConfig> {
+  const response = await fetch(`${API_BASE_URL}/api/ai/config`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ organizationId, ...config }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update agent config");
+  }
+
+  const data = (await response.json()) as { config: AgentConfig };
+  return data.config;
+}
+
+/**
+ * A minimal toggle switch built with a button element.
+ * Styled to look like a standard toggle/switch control.
+ */
+function ToggleSwitch({
+  checked,
+  onChange,
+  disabled,
+  label,
+  description,
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  disabled?: boolean;
+  label: string;
+  description: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
+      className="flex w-full items-start justify-between gap-4 rounded-md p-2 text-left transition-colors hover:bg-muted/50 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      <div className="flex flex-col gap-0.5">
+        <span className="font-medium text-sm">{label}</span>
+        <span className="text-muted-foreground text-xs">{description}</span>
+      </div>
+      <div
+        className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
+          checked ? "bg-primary" : "bg-muted-foreground/30"
+        } ${disabled ? "cursor-not-allowed" : ""}`}
+      >
+        <span
+          className={`pointer-events-none inline-block size-4 rounded-full bg-white shadow-sm transition-transform ${
+            checked ? "translate-x-4" : "translate-x-0"
+          }`}
+        />
+      </div>
+    </button>
+  );
+}
+
+export function AgentConfigSection() {
+  const { organizationId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
+  });
+  const { session } = useRouteContext({
+    from: "/_auth/workspaces/$workspaceSlug/settings",
+  });
+
+  const accessToken = session?.accessToken;
+  const queryClient = useQueryClient();
+
+  const { data: config, isLoading } = useQuery({
+    queryKey: agentConfigQueryKey(organizationId!),
+    queryFn: () => fetchAgentConfig(organizationId!, accessToken!),
+    enabled: !!organizationId && !!accessToken,
+  });
+
+  // Local state for optimistic UI
+  const [localConfig, setLocalConfig] = useState<AgentConfig | null>(null);
+
+  useEffect(() => {
+    if (config) {
+      setLocalConfig(config);
+    }
+  }, [config]);
+
+  const { mutate: saveConfig, isPending: isSaving } = useMutation({
+    mutationFn: (updates: Partial<AgentConfig>) =>
+      updateAgentConfig(organizationId!, accessToken!, updates),
+    onSuccess: (saved) => {
+      setLocalConfig(saved);
+      queryClient.setQueryData(
+        agentConfigQueryKey(organizationId!),
+        saved,
+      );
+    },
+  });
+
+  const handleToggle = useCallback(
+    (field: keyof AgentConfig, value: boolean) => {
+      if (!localConfig) return;
+      const updated = { ...localConfig, [field]: value };
+      setLocalConfig(updated);
+      saveConfig({ [field]: value });
+    },
+    [localConfig, saveConfig],
+  );
+
+  const handleMaxIterationsChange = useCallback(
+    (value: number) => {
+      if (!localConfig) return;
+      const clamped = Math.max(1, Math.min(20, value));
+      setLocalConfig({ ...localConfig, maxIterationsPerRequest: clamped });
+    },
+    [localConfig],
+  );
+
+  const handleMaxIterationsSave = useCallback(() => {
+    if (!localConfig) return;
+    saveConfig({ maxIterationsPerRequest: localConfig.maxIterationsPerRequest });
+  }, [localConfig, saveConfig]);
+
+  const [customInstructionsDraft, setCustomInstructionsDraft] = useState("");
+
+  useEffect(() => {
+    if (config?.customInstructions !== undefined) {
+      setCustomInstructionsDraft(config.customInstructions ?? "");
+    }
+  }, [config?.customInstructions]);
+
+  const handleSaveInstructions = useCallback(() => {
+    const value = customInstructionsDraft.trim() || null;
+    if (!localConfig) return;
+    const updated = { ...localConfig, customInstructions: value };
+    setLocalConfig(updated);
+    saveConfig({ customInstructions: value });
+  }, [localConfig, customInstructionsDraft, saveConfig]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col">
+        <div className="mb-1 flex h-10 items-center">
+          <h2 className="font-semibold text-lg">Agent Settings</h2>
+        </div>
+        <div className="flex items-center gap-2 py-4 text-muted-foreground text-sm">
+          <Loader2Icon className="size-4 animate-spin" />
+          Loading agent settings...
+        </div>
+      </div>
+    );
+  }
+
+  if (!localConfig) return null;
+
+  return (
+    <div className="flex flex-col">
+      <div className="mb-1 flex h-10 items-center gap-2">
+        <SettingsIcon className="size-4 text-muted-foreground" />
+        <h2 className="font-semibold text-lg">Agent Settings</h2>
+        {isSaving && (
+          <Loader2Icon className="size-3.5 animate-spin text-muted-foreground" />
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1 rounded-lg border p-3">
+        <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
+          Approval Controls
+        </h3>
+
+        <ToggleSwitch
+          checked={localConfig.requireApprovalForDestructive}
+          onChange={(v) => handleToggle("requireApprovalForDestructive", v)}
+          disabled={isSaving}
+          label="Require approval for destructive actions"
+          description="Delete, batch move, batch update, and batch delete will pause for user approval."
+        />
+
+        <ToggleSwitch
+          checked={localConfig.requireApprovalForCreate}
+          onChange={(v) => handleToggle("requireApprovalForCreate", v)}
+          disabled={isSaving}
+          label="Require approval for task creation"
+          description="Creating new tasks will pause for user approval."
+        />
+      </div>
+
+      <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
+        <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
+          Agent Behavior
+        </h3>
+
+        <div className="flex items-center justify-between gap-4 p-2">
+          <div className="flex flex-col gap-0.5">
+            <span className="font-medium text-sm">Max iterations per request</span>
+            <span className="text-muted-foreground text-xs">
+              Maximum tool call loops before the agent stops (1-20).
+            </span>
+          </div>
+          <Input
+            type="number"
+            min={1}
+            max={20}
+            value={localConfig.maxIterationsPerRequest}
+            onChange={(e) =>
+              handleMaxIterationsChange(
+                Number.parseInt(e.target.value, 10) || 10,
+              )
+            }
+            onBlur={handleMaxIterationsSave}
+            disabled={isSaving}
+            className="w-20"
+          />
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
+        <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
+          Custom Instructions
+        </h3>
+        <p className="text-muted-foreground text-xs">
+          Additional instructions appended to the agent&apos;s system prompt.
+        </p>
+        <textarea
+          value={customInstructionsDraft}
+          onChange={(e) => setCustomInstructionsDraft(e.target.value)}
+          disabled={isSaving}
+          placeholder="e.g., Always use high priority for security-related tasks..."
+          maxLength={2000}
+          rows={3}
+          className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSaveInstructions}
+            disabled={
+              isSaving ||
+              (customInstructionsDraft.trim() || null) ===
+                (localConfig.customInstructions ?? null)
+            }
+          >
+            Save Instructions
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

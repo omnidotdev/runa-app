@@ -2,6 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { all } from "better-all";
 
 import { NotFound } from "@/components/layout";
+import { AgentConfigSection } from "@/components/agent/AgentConfigSection";
 import {
   Projects,
   Team,
@@ -97,6 +98,8 @@ function SettingsPage() {
         <Projects />
 
         <WorkspaceColumnsForm />
+
+        <AgentConfigSection />
 
         <WorkspaceBenefits />
       </div>

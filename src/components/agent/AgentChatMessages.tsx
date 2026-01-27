@@ -1,15 +1,21 @@
 import {
+  AlertTriangleIcon,
   BotIcon,
+  CheckCircleIcon,
   Loader2Icon,
   PencilIcon,
   SparklesIcon,
+  Trash2Icon,
   UserIcon,
   WrenchIcon,
+  XCircleIcon,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
 
-import { WRITE_TOOL_NAMES } from "@/lib/ai/constants";
+import { DESTRUCTIVE_TOOL_NAMES, WRITE_TOOL_NAMES } from "@/lib/ai/constants";
 import { cn } from "@/lib/utils";
+
+import { ToolApprovalActions } from "./ToolApprovalActions";
 
 import type { UIMessage } from "@tanstack/ai-client";
 
@@ -17,6 +23,7 @@ interface AgentChatMessagesProps {
   messages: UIMessage[];
   isLoading: boolean;
   error: Error | undefined;
+  onApprovalResponse: (response: { id: string; approved: boolean }) => void;
 }
 
 /** Format a camelCase tool name into a human-readable label. */
@@ -64,6 +71,31 @@ function formatWriteResult(name: string, output: unknown): string {
     case "addComment": {
       return "Comment added";
     }
+    case "deleteTask": {
+      const num = data.deletedTaskNumber
+        ? `T-${data.deletedTaskNumber}: `
+        : "";
+      return `Deleted ${num}${data.deletedTaskTitle ?? "task"}`;
+    }
+    case "batchMoveTasks": {
+      const count = (data.movedCount as number) ?? 0;
+      const target = data.targetColumn ?? "?";
+      const errCount = (data.errors as Array<unknown>)?.length ?? 0;
+      const suffix = errCount > 0 ? ` (${errCount} failed)` : "";
+      return `Moved ${count} task${count !== 1 ? "s" : ""} → ${target}${suffix}`;
+    }
+    case "batchUpdateTasks": {
+      const count = (data.updatedCount as number) ?? 0;
+      const errCount = (data.errors as Array<unknown>)?.length ?? 0;
+      const suffix = errCount > 0 ? ` (${errCount} failed)` : "";
+      return `Updated ${count} task${count !== 1 ? "s" : ""}${suffix}`;
+    }
+    case "batchDeleteTasks": {
+      const count = (data.deletedCount as number) ?? 0;
+      const errCount = (data.errors as Array<unknown>)?.length ?? 0;
+      const suffix = errCount > 0 ? ` (${errCount} failed)` : "";
+      return `Deleted ${count} task${count !== 1 ? "s" : ""}${suffix}`;
+    }
     default:
       return "Done";
   }
@@ -73,6 +105,7 @@ export function AgentChatMessages({
   messages,
   isLoading,
   error,
+  onApprovalResponse,
 }: AgentChatMessagesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -116,7 +149,11 @@ export function AgentChatMessages({
     >
       <div className="flex flex-col gap-4">
         {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} />
+          <MessageBubble
+            key={message.id}
+            message={message}
+            onApprovalResponse={onApprovalResponse}
+          />
         ))}
         {isLoading && (
           <div className="flex items-center gap-2 text-muted-foreground text-xs">
@@ -134,7 +171,13 @@ export function AgentChatMessages({
   );
 }
 
-function MessageBubble({ message }: { message: UIMessage }) {
+function MessageBubble({
+  message,
+  onApprovalResponse,
+}: {
+  message: UIMessage;
+  onApprovalResponse: (response: { id: string; approved: boolean }) => void;
+}) {
   const isUser = message.role === "user";
 
   return (
@@ -187,51 +230,124 @@ function MessageBubble({ message }: { message: UIMessage }) {
           }
 
           if (part.type === "tool-call") {
-            const isWrite = WRITE_TOOL_NAMES.has(part.name);
-            const isComplete =
-              part.state === "input-complete" || part.output !== undefined;
-
             return (
-              <div
+              <ToolCallBubble
                 key={part.id}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs",
-                  isWrite
-                    ? "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300"
-                    : "bg-muted/50 text-muted-foreground",
-                )}
-              >
-                {isWrite ? (
-                  <PencilIcon className="size-3" />
-                ) : (
-                  <WrenchIcon className="size-3" />
-                )}
-                <span className="font-medium">
-                  {formatToolName(part.name)}
-                </span>
-                {!isComplete && (
-                  <Loader2Icon className="size-3 animate-spin" />
-                )}
-                {isComplete && (
-                  <span
-                    className={
-                      isWrite
-                        ? "text-blue-600 dark:text-blue-400"
-                        : "text-green-600 dark:text-green-400"
-                    }
-                  >
-                    {isWrite
-                      ? formatWriteResult(part.name, part.output)
-                      : "Done"}
-                  </span>
-                )}
-              </div>
+                part={part}
+                onApprovalResponse={onApprovalResponse}
+              />
             );
           }
 
           return null;
         })}
       </div>
+    </div>
+  );
+}
+
+function ToolCallBubble({
+  part,
+  onApprovalResponse,
+}: {
+  part: Extract<UIMessage["parts"][number], { type: "tool-call" }>;
+  onApprovalResponse: (response: { id: string; approved: boolean }) => void;
+}) {
+  const isWrite = WRITE_TOOL_NAMES.has(part.name);
+  const isDestructive = DESTRUCTIVE_TOOL_NAMES.has(part.name);
+  const isApprovalRequested = part.state === "approval-requested";
+  const isApprovalResponded = part.state === "approval-responded";
+  const isApproved = isApprovalResponded && part.approval?.approved === true;
+  const isDenied = isApprovalResponded && part.approval?.approved === false;
+  const isComplete =
+    part.state === "input-complete" || part.output !== undefined;
+
+  // Approval requested — amber background with approve/deny actions
+  if (isApprovalRequested && part.approval) {
+    return (
+      <div className="flex flex-col gap-2 rounded-md border border-amber-300 bg-amber-50 px-2.5 py-2 dark:border-amber-700 dark:bg-amber-950/50">
+        <div className="flex items-center gap-1.5 text-xs text-amber-700 dark:text-amber-300">
+          <AlertTriangleIcon className="size-3" />
+          <span className="font-medium">
+            {formatToolName(part.name)}
+          </span>
+          <span className="text-amber-600 dark:text-amber-400">
+            — Approval required
+          </span>
+        </div>
+        <ToolApprovalActions
+          approvalId={part.approval.id}
+          toolName={part.name}
+          input={part.input}
+          onApprovalResponse={onApprovalResponse}
+        />
+      </div>
+    );
+  }
+
+  // Approved, executing — green with spinner
+  if (isApproved && part.output === undefined) {
+    return (
+      <div className="flex items-center gap-1.5 rounded-md bg-green-50 px-2.5 py-1.5 text-xs text-green-700 dark:bg-green-950/50 dark:text-green-300">
+        <CheckCircleIcon className="size-3" />
+        <span className="font-medium">{formatToolName(part.name)}</span>
+        <span className="text-green-600 dark:text-green-400">
+          Approved, executing...
+        </span>
+        <Loader2Icon className="size-3 animate-spin" />
+      </div>
+    );
+  }
+
+  // Denied — red badge
+  if (isDenied) {
+    return (
+      <div className="flex items-center gap-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs text-red-700 dark:bg-red-950/50 dark:text-red-300">
+        <XCircleIcon className="size-3" />
+        <span className="font-medium">{formatToolName(part.name)}</span>
+        <span className="text-red-600 dark:text-red-400">Denied</span>
+      </div>
+    );
+  }
+
+  // Default tool call display (same as before, with destructive icon variant)
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs",
+        isDestructive
+          ? "bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-300"
+          : isWrite
+            ? "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300"
+            : "bg-muted/50 text-muted-foreground",
+      )}
+    >
+      {isDestructive ? (
+        <Trash2Icon className="size-3" />
+      ) : isWrite ? (
+        <PencilIcon className="size-3" />
+      ) : (
+        <WrenchIcon className="size-3" />
+      )}
+      <span className="font-medium">{formatToolName(part.name)}</span>
+      {!isComplete && !isApprovalResponded && (
+        <Loader2Icon className="size-3 animate-spin" />
+      )}
+      {(isComplete || isApproved) && part.output !== undefined && (
+        <span
+          className={
+            isDestructive
+              ? "text-red-600 dark:text-red-400"
+              : isWrite
+                ? "text-blue-600 dark:text-blue-400"
+                : "text-green-600 dark:text-green-400"
+          }
+        >
+          {isWrite
+            ? formatWriteResult(part.name, part.output)
+            : "Done"}
+        </span>
+      )}
     </div>
   );
 }

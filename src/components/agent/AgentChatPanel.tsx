@@ -17,10 +17,11 @@ export function AgentChatPanel({
   accessToken,
   onClose,
 }: AgentChatPanelProps) {
-  const { messages, sendMessage, isLoading, stop, error } = useAgentChat({
-    projectId,
-    accessToken,
-  });
+  const { messages, sendMessage, isLoading, stop, error, addToolApprovalResponse } =
+    useAgentChat({
+      projectId,
+      accessToken,
+    });
 
   return (
     <div className="flex h-full w-[400px] shrink-0 flex-col border-l bg-background">
@@ -43,6 +44,7 @@ export function AgentChatPanel({
         messages={messages}
         isLoading={isLoading}
         error={error}
+        onApprovalResponse={addToolApprovalResponse}
       />
 
       <AgentChatInput onSend={sendMessage} onStop={stop} isLoading={isLoading} />
