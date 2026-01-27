@@ -24,7 +24,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import app from "@/lib/config/app.config";
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { AUTH_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
@@ -122,32 +122,37 @@ const AppSidebarHeader = () => {
                 All Workspaces
               </MenuItem>
 
-              {/* TODO: Implement in-app organization creation once Gatekeeper API supports it */}
-              <MenuItem
-                asChild
-                className="cursor-pointer gap-2 px-2 py-1"
-                value="manage-organizations"
-              >
-                <a href={AUTH_BASE_URL}>
-                  <PlusIcon className="size-4" />
-                  Manage Organizations
-                </a>
-              </MenuItem>
+              {/* TODO: Implement in-app workspace creation for self-hosted */}
+              {!isSelfHosted && AUTH_BASE_URL && (
+                <MenuItem
+                  asChild
+                  className="cursor-pointer gap-2 px-2 py-1"
+                  value="manage-organizations"
+                >
+                  <a href={AUTH_BASE_URL}>
+                    <PlusIcon className="size-4" />
+                    Manage Organizations
+                  </a>
+                </MenuItem>
+              )}
             </MenuContent>
           </MenuPositioner>
         </MenuRoot>
       ) : (
-        // TODO: Implement in-app organization creation once Gatekeeper API supports it
-        <SidebarMenuButton
-          asChild
-          className="border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
-        >
-          <a href={AUTH_BASE_URL}>
-            <PlusIcon />
+        // TODO: Implement in-app workspace creation for self-hosted
+        !isSelfHosted &&
+        AUTH_BASE_URL && (
+          <SidebarMenuButton
+            asChild
+            className="border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
+          >
+            <a href={AUTH_BASE_URL}>
+              <PlusIcon />
 
-            <span>Manage Organizations</span>
-          </a>
-        </SidebarMenuButton>
+              <span>Manage Organizations</span>
+            </a>
+          </SidebarMenuButton>
+        )
       )}
     </SidebarHeader>
   );

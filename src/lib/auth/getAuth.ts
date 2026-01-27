@@ -7,12 +7,15 @@ import auth from "@/lib/auth/auth";
 import {
   COOKIE_NAME,
   COOKIE_TTL_SECONDS,
+  OMNI_CLAIMS_ORGANIZATIONS,
   encryptRowId,
   fetchRowIdFromApi,
+  generateUuidV5,
+  syncSelfHostedUser,
 } from "@/lib/auth/rowIdCache";
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { AUTH_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 
-const OMNI_CLAIMS_KEY = "https://manifold.omni.dev/@omni/claims/organizations";
+import type { OrganizationClaim } from "@/lib/auth/rowIdCache";
 
 /**
  * OIDC Discovery document structure.
@@ -84,13 +87,19 @@ async function getJwks(): Promise<jose.JWTVerifyGetKey> {
   return jwksCache;
 }
 
-export interface OrganizationClaim {
-  id: string;
-  name: string;
-  slug: string;
-  type: "personal" | "team";
-  roles: string[];
-  teams: Array<{ id: string; name: string }>;
+// Re-export from rowIdCache for backward compatibility
+export type { OrganizationClaim } from "@/lib/auth/rowIdCache";
+
+/**
+ * Extract organization claims from a JWT payload.
+ * Works for both HIDRA (SaaS) and self-hosted tokens - same claim structure.
+ */
+function extractOrganizations(payload: jose.JWTPayload): OrganizationClaim[] {
+  const orgClaims = payload[OMNI_CLAIMS_ORGANIZATIONS];
+  if (Array.isArray(orgClaims)) {
+    return orgClaims as OrganizationClaim[];
+  }
+  return [];
 }
 
 export async function getAuth(request: Request) {
@@ -101,69 +110,113 @@ export async function getAuth(request: Request) {
 
     if (!session) return null;
 
-    // get access token and organizations for GraphQL requests
+    // These will be populated from JWT claims (same path for SaaS and self-hosted)
     let accessToken: string | undefined;
-    let organizations: OrganizationClaim[] | undefined;
+    let organizations: OrganizationClaim[] = [];
+    // Cast to access custom session properties added by customSession plugin
+    const customUser = session.user as typeof session.user & {
+      identityProviderId?: string | null;
+      rowId?: string | null;
+    };
+    let identityProviderId = customUser.identityProviderId;
+    let rowId = customUser.rowId;
 
-    // rowId and identityProviderId may come from customSession cache
-    let identityProviderId = session.user.identityProviderId;
-    let rowId = session.user.rowId;
+    if (isSelfHosted) {
+      // Self-hosted: sync with API, get back JWT with org claims embedded
+      if (!identityProviderId) {
+        identityProviderId = await generateUuidV5(session.user.id);
+      }
 
-    try {
-      const tokenResult = await auth.api.getAccessToken({
-        body: { providerId: "omni" },
-        headers: request.headers,
-      });
-      accessToken = tokenResult?.accessToken;
+      try {
+        const syncResult = await syncSelfHostedUser({
+          id: session.user.id,
+          email: session.user.email,
+          name: session.user.name || session.user.email,
+          image: session.user.image,
+        });
 
-      // extract claims from the ID token via JWKS verification
-      if (tokenResult?.idToken) {
-        try {
-          const { discovery, jwks } = await all({
-            async discovery() {
-              return getOidcDiscovery();
-            },
-            async jwks() {
-              return getJwks();
-            },
-          });
-          const { payload } = await jose.jwtVerify(tokenResult.idToken, jwks, {
-            issuer: discovery.issuer,
-          });
+        if (syncResult) {
+          accessToken = syncResult.accessToken;
+          if (!rowId) rowId = syncResult.rowId;
+          identityProviderId = syncResult.identityProviderId;
 
-          // Extract identityProviderId from ID token if not in cache
-          if (!identityProviderId) {
-            identityProviderId = payload.sub ?? null;
+          // Extract orgs from JWT - SAME as SaaS path below
+          const payload = jose.decodeJwt(accessToken);
+          organizations = extractOrganizations(payload);
+
+          // Cache rowId
+          if (rowId && identityProviderId) {
+            const encrypted = await encryptRowId(rowId, identityProviderId);
+            setCookie(COOKIE_NAME, encrypted, {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: "lax",
+              path: "/",
+              maxAge: COOKIE_TTL_SECONDS,
+            });
           }
-
-          // extract organization claims from the ID token
-          const orgClaims = payload[OMNI_CLAIMS_KEY];
-          if (Array.isArray(orgClaims))
-            organizations = orgClaims as OrganizationClaim[];
-        } catch (jwtError) {
-          console.error("[getAuth] JWT verification failed:", jwtError);
         }
+      } catch (err) {
+        console.error("[getAuth] Self-hosted sync error:", err);
       }
+    } else {
+      // SaaS: get tokens from HIDRA via Better Auth
+      try {
+        const tokenResult = await auth.api.getAccessToken({
+          body: { providerId: "omni" },
+          headers: request.headers,
+        });
+        accessToken = tokenResult?.accessToken;
 
-      // Handle rowId cache miss: fetch from API and populate cache
-      if (!rowId && accessToken && identityProviderId) {
-        rowId =
-          (await fetchRowIdFromApi(accessToken, identityProviderId)) ?? null;
+        // Extract claims from ID token (verified via JWKS)
+        if (tokenResult?.idToken) {
+          try {
+            const { discovery, jwks } = await all({
+              async discovery() {
+                return getOidcDiscovery();
+              },
+              async jwks() {
+                return getJwks();
+              },
+            });
+            const { payload } = await jose.jwtVerify(
+              tokenResult.idToken,
+              jwks,
+              {
+                issuer: discovery.issuer,
+              },
+            );
 
-        // Cache the rowId for subsequent requests
-        if (rowId) {
-          const encrypted = await encryptRowId(rowId, identityProviderId);
-          setCookie(COOKIE_NAME, encrypted, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-            maxAge: COOKIE_TTL_SECONDS,
-          });
+            if (!identityProviderId) {
+              identityProviderId = payload.sub ?? null;
+            }
+
+            // Extract orgs from JWT - SAME as self-hosted path above
+            organizations = extractOrganizations(payload);
+          } catch (jwtError) {
+            console.error("[getAuth] JWT verification failed:", jwtError);
+          }
         }
+
+        // Handle rowId cache miss
+        if (!rowId && accessToken && identityProviderId) {
+          rowId =
+            (await fetchRowIdFromApi(accessToken, identityProviderId)) ?? null;
+
+          if (rowId) {
+            const encrypted = await encryptRowId(rowId, identityProviderId);
+            setCookie(COOKIE_NAME, encrypted, {
+              httpOnly: true,
+              secure: process.env.NODE_ENV === "production",
+              sameSite: "lax",
+              path: "/",
+              maxAge: COOKIE_TTL_SECONDS,
+            });
+          }
+        }
+      } catch (err) {
+        console.error("[getAuth] Token fetch error:", err);
       }
-    } catch (err) {
-      console.error("[getAuth] Token fetch error:", err);
     }
 
     return {

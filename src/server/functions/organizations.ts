@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { AUTH_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import { authMiddleware } from "@/server/middleware";
 
 const createOrganizationSchema = z.object({
@@ -34,6 +34,14 @@ export const createOrganization = createServerFn({ method: "POST" })
   .inputValidator((data) => createOrganizationSchema.parse(data))
   .middleware([authMiddleware])
   .handler(async ({ data }) => {
+    // Self-hosted: team workspaces not yet supported
+    // TODO(self-hosted): Implement local team workspace creation
+    if (isSelfHosted) {
+      throw new Error(
+        "Team workspace creation is not available in self-hosted mode.",
+      );
+    }
+
     const slug = data.slug || generateSlug(data.name);
     const request = getRequest();
 
@@ -98,6 +106,9 @@ export const getOrganizationBySlug = createServerFn({ method: "GET" })
   .inputValidator((data) => getOrganizationBySlugSchema.parse(data))
   .middleware([authMiddleware])
   .handler(async ({ data }) => {
+    // Self-hosted: orgs come from JWT claims, not IDP
+    if (isSelfHosted) return null;
+
     const request = getRequest();
     const cookieHeader = request.headers.get("cookie") || "";
 

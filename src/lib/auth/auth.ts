@@ -17,6 +17,7 @@ import {
   OIDC_CLIENT_SECRET,
   OIDC_ISSUER,
 } from "@/lib/config/env.config";
+import { pgPool } from "@/lib/db";
 
 const { AUTH_SECRET } = process.env;
 
@@ -140,21 +141,32 @@ plugins.push(
 );
 
 /**
+ * Whether running in SaaS mode (Omni OAuth configured).
+ * SaaS mode is stateless - no database, no email/password.
+ */
+const isSaaSMode = !!AUTH_CLIENT_ID;
+
+/**
  * Auth server client.
  */
 const auth = betterAuth({
   baseURL: BASE_URL,
   basePath: "/api/auth",
   secret: AUTH_SECRET,
-  // Email/password auth (always available, no external deps)
-  emailAndPassword: {
-    enabled: true,
-  },
-  advanced: {
-    // use custom cookie prefix to avoid collision with IDP cookies
-    cookiePrefix: "runa",
+  // Trust the app's own origin for auth requests
+  trustedOrigins: BASE_URL ? [BASE_URL] : [],
+  // Database for self-hosted mode only (email/password auth)
+  // SaaS mode stays stateless - no database connection
+  ...(pgPool && {
+    database: pgPool,
+  }),
+  // Use prefixed tables to avoid collision with app's user table
+  // These tables are only used in self-hosted mode with email/password
+  user: {
+    modelName: "ba_user",
   },
   session: {
+    modelName: "ba_session",
     // extend session expiration to 30 days
     expiresIn: 60 * 60 * 24 * 30,
     // refresh session if older than 1 day
@@ -171,8 +183,20 @@ const auth = betterAuth({
     },
   },
   account: {
-    // store OAuth tokens (access token, refresh token) in a signed cookie for stateless mode to enable automatic token refresh without a database
+    modelName: "ba_account",
+    // store OAuth tokens in a signed cookie for stateless mode
     storeAccountCookie: true,
+  },
+  verification: {
+    modelName: "ba_verification",
+  },
+  // Email/password enabled only in self-hosted mode with database
+  emailAndPassword: {
+    enabled: !isSaaSMode && !!pgPool,
+  },
+  advanced: {
+    // use custom cookie prefix to avoid collision with IDP cookies
+    cookiePrefix: "runa",
   },
   plugins,
 });

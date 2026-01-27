@@ -30,6 +30,7 @@ import {
   TagsInputLabel,
   TagsInputRoot,
 } from "@/components/ui/tags-input";
+import { isSelfHosted } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import { useInviteMember } from "@/lib/hooks/useOrganizationMembers";
@@ -67,12 +68,13 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
-  // Fetch current members to check limits
+  // Fetch current members to check limits (SaaS only)
   const { data: membersData } = useQuery({
     ...organizationMembersOptions({
       organizationId: organizationId!,
       accessToken: session?.accessToken!,
     }),
+    enabled: !isSelfHosted && !!organizationId && !!session?.accessToken,
   });
 
   const memberCount = membersData?.data?.length ?? 0;

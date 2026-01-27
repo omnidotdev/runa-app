@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import signIn from "@/lib/auth/signIn";
-import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
+import { AUTH_BASE_URL, BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
 
@@ -36,8 +36,14 @@ export const PriceCard = ({ price }: Props) => {
     }
 
     if (!session.organizations?.length) {
-      // Logged in but no orgs - redirect to Gatekeeper to create one
-      window.location.href = `${AUTH_BASE_URL}/profile`;
+      // Logged in but no orgs
+      if (isSelfHosted) {
+        // Self-hosted: workspace auto-provisions on sign-in, just redirect to workspaces
+        navigate({ to: "/workspaces" });
+      } else {
+        // SaaS: redirect to Gatekeeper to create org
+        window.location.href = `${AUTH_BASE_URL}/profile`;
+      }
       return;
     }
 
