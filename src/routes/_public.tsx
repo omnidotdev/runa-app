@@ -64,7 +64,7 @@ function PublicLayout() {
       <div className="sticky top-0 z-50">
         <div className="flex w-full items-center justify-center gap-2 border-primary-500/20 border-b bg-primary-500/20 px-4 py-2 text-sm backdrop-blur-sm sm:gap-3">
           <span className="text-base-700 dark:text-base-300">
-            <strong className="font-semibold">Runa is in open alpha</strong> —
+            <strong className="font-semibold">Runa is in early access</strong> —
             help shape it!
           </span>
 
@@ -106,7 +106,7 @@ function PublicLayout() {
                   {app.name}
                 </span>
                 <Badge className="hidden border-primary-500/20 bg-primary-500/10 text-shimmer text-xs sm:inline-flex">
-                  Alpha
+                  Early Access
                 </Badge>
               </Link>
 

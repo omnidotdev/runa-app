@@ -62,7 +62,7 @@ const AppSidebarHeader = () => {
         </div>
 
         <Badge className="border-primary-500/20 bg-primary-500/10 text-primary-500 text-xs group-data-[collapsible=icon]:hidden">
-          Alpha
+          Early Access
         </Badge>
       </div>
 
