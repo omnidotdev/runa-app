@@ -14,12 +14,14 @@ import {
   Minimize2Icon,
   SearchIcon,
   Settings2,
+  SparklesIcon,
 } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
+import { AgentChatPanel } from "@/components/agent";
 import { Link, Tooltip } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import { Board, List, ProjectPageSkeleton } from "@/components/projects";
@@ -161,6 +163,7 @@ function ProjectPage() {
   const { projectId, organizationId } = Route.useLoaderData();
   const { search, assignees, labels, priorities } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
+  const [isAgentOpen, setIsAgentOpen] = useState(false);
 
   const navigate = Route.useNavigate();
 
@@ -480,9 +483,15 @@ function ProjectPage() {
     [updateViewMode, userPreferences?.viewMode, projectId],
   );
 
+  useHotkeys(
+    Hotkeys.ToggleAgent,
+    () => setIsAgentOpen((prev) => !prev),
+    [],
+  );
+
   return (
     <div className="flex size-full">
-      <div className="flex size-full flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         <div className="border-b px-6 py-4">
           <div className="flex flex-col gap-2">
             <h1 className="font-semibold text-2xl">{project?.name}</h1>
@@ -561,6 +570,22 @@ function ProjectPage() {
                 }
               />
 
+              <Tooltip
+                positioning={{ placement: "bottom" }}
+                tooltip="Agent Chat"
+                shortcut="Shift+A"
+                trigger={
+                  <Button
+                    variant={isAgentOpen ? "muted" : "outline"}
+                    size="icon"
+                    onClick={() => setIsAgentOpen((prev) => !prev)}
+                    aria-label="Toggle agent chat"
+                  >
+                    <SparklesIcon />
+                  </Button>
+                }
+              />
+
               {userPreferences?.viewMode === "list" && (
                 <Tooltip
                   positioning={{ placement: "bottom" }}
@@ -596,6 +621,14 @@ function ProjectPage() {
           )}
         </DragDropContext>
       </div>
+
+      {isAgentOpen && session?.accessToken && (
+        <AgentChatPanel
+          projectId={projectId}
+          accessToken={session.accessToken}
+          onClose={() => setIsAgentOpen(false)}
+        />
+      )}
 
       <CreateTaskDialog />
       <UpdateAssigneesDialog />

@@ -19,7 +19,1192 @@ export type Scalars = {
   BigInt: { input: string; output: string; }
   Cursor: { input: string; output: string; }
   Datetime: { input: Date; output: Date; }
+  JSON: { input: any; output: any; }
   UUID: { input: string; output: string; }
+};
+
+export type AgentActivity = Node & {
+  __typename?: 'AgentActivity';
+  affectedTaskIds: Scalars['JSON']['output'];
+  approvalStatus?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['Datetime']['output'];
+  errorMessage?: Maybe<Scalars['String']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  organizationId: Scalars['String']['output'];
+  /** Reads a single `Project` that is related to this `AgentActivity`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  requiresApproval: Scalars['Boolean']['output'];
+  rowId: Scalars['UUID']['output'];
+  /** Reads a single `AgentSession` that is related to this `AgentActivity`. */
+  session?: Maybe<AgentSession>;
+  sessionId: Scalars['UUID']['output'];
+  status: Scalars['String']['output'];
+  toolInput: Scalars['JSON']['output'];
+  toolName: Scalars['String']['output'];
+  toolOutput?: Maybe<Scalars['JSON']['output']>;
+  /** Reads a single `User` that is related to this `AgentActivity`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+};
+
+export type AgentActivityAggregates = {
+  __typename?: 'AgentActivityAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<AgentActivityDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `AgentActivity` object types. */
+export type AgentActivityAggregatesFilter = {
+  /** Distinct count aggregate over matching `AgentActivity` objects. */
+  distinctCount?: InputMaybe<AgentActivityDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `AgentActivity` object to be included within the aggregate. */
+  filter?: InputMaybe<AgentActivityFilter>;
+};
+
+/**
+ * A condition to be used against `AgentActivity` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type AgentActivityCondition = {
+  /** Checks for equality with the object’s `approvalStatus` field. */
+  approvalStatus?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `errorMessage` field. */
+  errorMessage?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `requiresApproval` field. */
+  requiresApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `sessionId` field. */
+  sessionId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `toolName` field. */
+  toolName?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `AgentActivity` values. */
+export type AgentActivityConnection = {
+  __typename?: 'AgentActivityConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<AgentActivityAggregates>;
+  /** A list of edges which contains the `AgentActivity` and cursor to aid in pagination. */
+  edges: Array<AgentActivityEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<AgentActivityAggregates>>;
+  /** A list of `AgentActivity` objects. */
+  nodes: Array<AgentActivity>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `AgentActivity` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `AgentActivity` values. */
+export type AgentActivityConnectionGroupedAggregatesArgs = {
+  groupBy: Array<AgentActivityGroupBy>;
+  having?: InputMaybe<AgentActivityHavingInput>;
+};
+
+export type AgentActivityDistinctCountAggregateFilter = {
+  affectedTaskIds?: InputMaybe<BigIntFilter>;
+  approvalStatus?: InputMaybe<BigIntFilter>;
+  createdAt?: InputMaybe<BigIntFilter>;
+  errorMessage?: InputMaybe<BigIntFilter>;
+  organizationId?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  requiresApproval?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  sessionId?: InputMaybe<BigIntFilter>;
+  status?: InputMaybe<BigIntFilter>;
+  toolInput?: InputMaybe<BigIntFilter>;
+  toolName?: InputMaybe<BigIntFilter>;
+  toolOutput?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type AgentActivityDistinctCountAggregates = {
+  __typename?: 'AgentActivityDistinctCountAggregates';
+  /** Distinct count of affectedTaskIds across the matching connection */
+  affectedTaskIds?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of approvalStatus across the matching connection */
+  approvalStatus?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of errorMessage across the matching connection */
+  errorMessage?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of requiresApproval across the matching connection */
+  requiresApproval?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of sessionId across the matching connection */
+  sessionId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of status across the matching connection */
+  status?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of toolInput across the matching connection */
+  toolInput?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of toolName across the matching connection */
+  toolName?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of toolOutput across the matching connection */
+  toolOutput?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `AgentActivity` edge in the connection. */
+export type AgentActivityEdge = {
+  __typename?: 'AgentActivityEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `AgentActivity` at the end of the edge. */
+  node: AgentActivity;
+};
+
+/** A filter to be used against `AgentActivity` object types. All fields are combined with a logical ‘and.’ */
+export type AgentActivityFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AgentActivityFilter>>;
+  /** Filter by the object’s `approvalStatus` field. */
+  approvalStatus?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `errorMessage` field. */
+  errorMessage?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AgentActivityFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AgentActivityFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `requiresApproval` field. */
+  requiresApproval?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `session` relation. */
+  session?: InputMaybe<AgentSessionFilter>;
+  /** Filter by the object’s `sessionId` field. */
+  sessionId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `status` field. */
+  status?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `toolName` field. */
+  toolName?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `AgentActivity` for usage during aggregation. */
+export enum AgentActivityGroupBy {
+  AffectedTaskIds = 'AFFECTED_TASK_IDS',
+  ApprovalStatus = 'APPROVAL_STATUS',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  ErrorMessage = 'ERROR_MESSAGE',
+  OrganizationId = 'ORGANIZATION_ID',
+  ProjectId = 'PROJECT_ID',
+  RequiresApproval = 'REQUIRES_APPROVAL',
+  SessionId = 'SESSION_ID',
+  Status = 'STATUS',
+  ToolInput = 'TOOL_INPUT',
+  ToolName = 'TOOL_NAME',
+  ToolOutput = 'TOOL_OUTPUT',
+  UserId = 'USER_ID'
+}
+
+export type AgentActivityHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `AgentActivity` aggregates. */
+export type AgentActivityHavingInput = {
+  AND?: InputMaybe<Array<AgentActivityHavingInput>>;
+  OR?: InputMaybe<Array<AgentActivityHavingInput>>;
+  average?: InputMaybe<AgentActivityHavingAverageInput>;
+  distinctCount?: InputMaybe<AgentActivityHavingDistinctCountInput>;
+  max?: InputMaybe<AgentActivityHavingMaxInput>;
+  min?: InputMaybe<AgentActivityHavingMinInput>;
+  stddevPopulation?: InputMaybe<AgentActivityHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<AgentActivityHavingStddevSampleInput>;
+  sum?: InputMaybe<AgentActivityHavingSumInput>;
+  variancePopulation?: InputMaybe<AgentActivityHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<AgentActivityHavingVarianceSampleInput>;
+};
+
+export type AgentActivityHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `AgentActivity` */
+export type AgentActivityInput = {
+  affectedTaskIds?: InputMaybe<Scalars['JSON']['input']>;
+  approvalStatus?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  errorMessage?: InputMaybe<Scalars['String']['input']>;
+  organizationId: Scalars['String']['input'];
+  projectId: Scalars['UUID']['input'];
+  requiresApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sessionId: Scalars['UUID']['input'];
+  status?: InputMaybe<Scalars['String']['input']>;
+  toolInput: Scalars['JSON']['input'];
+  toolName: Scalars['String']['input'];
+  toolOutput?: InputMaybe<Scalars['JSON']['input']>;
+  userId: Scalars['UUID']['input'];
+};
+
+/** Methods to use when ordering `AgentActivity`. */
+export enum AgentActivityOrderBy {
+  ApprovalStatusAsc = 'APPROVAL_STATUS_ASC',
+  ApprovalStatusDesc = 'APPROVAL_STATUS_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  ErrorMessageAsc = 'ERROR_MESSAGE_ASC',
+  ErrorMessageDesc = 'ERROR_MESSAGE_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RequiresApprovalAsc = 'REQUIRES_APPROVAL_ASC',
+  RequiresApprovalDesc = 'REQUIRES_APPROVAL_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  SessionIdAsc = 'SESSION_ID_ASC',
+  SessionIdDesc = 'SESSION_ID_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  ToolNameAsc = 'TOOL_NAME_ASC',
+  ToolNameDesc = 'TOOL_NAME_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `AgentActivity`. Fields that are set will be updated. */
+export type AgentActivityPatch = {
+  affectedTaskIds?: InputMaybe<Scalars['JSON']['input']>;
+  approvalStatus?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  errorMessage?: InputMaybe<Scalars['String']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  requiresApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sessionId?: InputMaybe<Scalars['UUID']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  toolInput?: InputMaybe<Scalars['JSON']['input']>;
+  toolName?: InputMaybe<Scalars['String']['input']>;
+  toolOutput?: InputMaybe<Scalars['JSON']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type AgentConfig = Node & {
+  __typename?: 'AgentConfig';
+  createdAt: Scalars['Datetime']['output'];
+  customInstructions?: Maybe<Scalars['String']['output']>;
+  enabled: Scalars['Boolean']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  maxIterationsPerRequest: Scalars['Int']['output'];
+  model: Scalars['String']['output'];
+  organizationId: Scalars['String']['output'];
+  provider: Scalars['String']['output'];
+  requireApprovalForCreate: Scalars['Boolean']['output'];
+  requireApprovalForDestructive: Scalars['Boolean']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+export type AgentConfigAggregates = {
+  __typename?: 'AgentConfigAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<AgentConfigAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<AgentConfigDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<AgentConfigMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<AgentConfigMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<AgentConfigStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<AgentConfigStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<AgentConfigSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<AgentConfigVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<AgentConfigVarianceSampleAggregates>;
+};
+
+export type AgentConfigAverageAggregates = {
+  __typename?: 'AgentConfigAverageAggregates';
+  /** Mean average of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+/**
+ * A condition to be used against `AgentConfig` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type AgentConfigCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `customInstructions` field. */
+  customInstructions?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `enabled` field. */
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `maxIterationsPerRequest` field. */
+  maxIterationsPerRequest?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `model` field. */
+  model?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `provider` field. */
+  provider?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `requireApprovalForCreate` field. */
+  requireApprovalForCreate?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `requireApprovalForDestructive` field. */
+  requireApprovalForDestructive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `AgentConfig` values. */
+export type AgentConfigConnection = {
+  __typename?: 'AgentConfigConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<AgentConfigAggregates>;
+  /** A list of edges which contains the `AgentConfig` and cursor to aid in pagination. */
+  edges: Array<AgentConfigEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<AgentConfigAggregates>>;
+  /** A list of `AgentConfig` objects. */
+  nodes: Array<AgentConfig>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `AgentConfig` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `AgentConfig` values. */
+export type AgentConfigConnectionGroupedAggregatesArgs = {
+  groupBy: Array<AgentConfigGroupBy>;
+  having?: InputMaybe<AgentConfigHavingInput>;
+};
+
+export type AgentConfigDistinctCountAggregates = {
+  __typename?: 'AgentConfigDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of customInstructions across the matching connection */
+  customInstructions?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of enabled across the matching connection */
+  enabled?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of model across the matching connection */
+  model?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of provider across the matching connection */
+  provider?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of requireApprovalForCreate across the matching connection */
+  requireApprovalForCreate?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of requireApprovalForDestructive across the matching connection */
+  requireApprovalForDestructive?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `AgentConfig` edge in the connection. */
+export type AgentConfigEdge = {
+  __typename?: 'AgentConfigEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `AgentConfig` at the end of the edge. */
+  node: AgentConfig;
+};
+
+/** A filter to be used against `AgentConfig` object types. All fields are combined with a logical ‘and.’ */
+export type AgentConfigFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AgentConfigFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `customInstructions` field. */
+  customInstructions?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `enabled` field. */
+  enabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `maxIterationsPerRequest` field. */
+  maxIterationsPerRequest?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `model` field. */
+  model?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AgentConfigFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AgentConfigFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `provider` field. */
+  provider?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `requireApprovalForCreate` field. */
+  requireApprovalForCreate?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `requireApprovalForDestructive` field. */
+  requireApprovalForDestructive?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `AgentConfig` for usage during aggregation. */
+export enum AgentConfigGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  CustomInstructions = 'CUSTOM_INSTRUCTIONS',
+  Enabled = 'ENABLED',
+  MaxIterationsPerRequest = 'MAX_ITERATIONS_PER_REQUEST',
+  Model = 'MODEL',
+  Provider = 'PROVIDER',
+  RequireApprovalForCreate = 'REQUIRE_APPROVAL_FOR_CREATE',
+  RequireApprovalForDestructive = 'REQUIRE_APPROVAL_FOR_DESTRUCTIVE',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type AgentConfigHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `AgentConfig` aggregates. */
+export type AgentConfigHavingInput = {
+  AND?: InputMaybe<Array<AgentConfigHavingInput>>;
+  OR?: InputMaybe<Array<AgentConfigHavingInput>>;
+  average?: InputMaybe<AgentConfigHavingAverageInput>;
+  distinctCount?: InputMaybe<AgentConfigHavingDistinctCountInput>;
+  max?: InputMaybe<AgentConfigHavingMaxInput>;
+  min?: InputMaybe<AgentConfigHavingMinInput>;
+  stddevPopulation?: InputMaybe<AgentConfigHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<AgentConfigHavingStddevSampleInput>;
+  sum?: InputMaybe<AgentConfigHavingSumInput>;
+  variancePopulation?: InputMaybe<AgentConfigHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<AgentConfigHavingVarianceSampleInput>;
+};
+
+export type AgentConfigHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `AgentConfig` */
+export type AgentConfigInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  customInstructions?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  maxIterationsPerRequest?: InputMaybe<Scalars['Int']['input']>;
+  model?: InputMaybe<Scalars['String']['input']>;
+  organizationId: Scalars['String']['input'];
+  provider?: InputMaybe<Scalars['String']['input']>;
+  requireApprovalForCreate?: InputMaybe<Scalars['Boolean']['input']>;
+  requireApprovalForDestructive?: InputMaybe<Scalars['Boolean']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type AgentConfigMaxAggregates = {
+  __typename?: 'AgentConfigMaxAggregates';
+  /** Maximum of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['Int']['output']>;
+};
+
+export type AgentConfigMinAggregates = {
+  __typename?: 'AgentConfigMinAggregates';
+  /** Minimum of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Methods to use when ordering `AgentConfig`. */
+export enum AgentConfigOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  CustomInstructionsAsc = 'CUSTOM_INSTRUCTIONS_ASC',
+  CustomInstructionsDesc = 'CUSTOM_INSTRUCTIONS_DESC',
+  EnabledAsc = 'ENABLED_ASC',
+  EnabledDesc = 'ENABLED_DESC',
+  MaxIterationsPerRequestAsc = 'MAX_ITERATIONS_PER_REQUEST_ASC',
+  MaxIterationsPerRequestDesc = 'MAX_ITERATIONS_PER_REQUEST_DESC',
+  ModelAsc = 'MODEL_ASC',
+  ModelDesc = 'MODEL_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProviderAsc = 'PROVIDER_ASC',
+  ProviderDesc = 'PROVIDER_DESC',
+  RequireApprovalForCreateAsc = 'REQUIRE_APPROVAL_FOR_CREATE_ASC',
+  RequireApprovalForCreateDesc = 'REQUIRE_APPROVAL_FOR_CREATE_DESC',
+  RequireApprovalForDestructiveAsc = 'REQUIRE_APPROVAL_FOR_DESTRUCTIVE_ASC',
+  RequireApprovalForDestructiveDesc = 'REQUIRE_APPROVAL_FOR_DESTRUCTIVE_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `AgentConfig`. Fields that are set will be updated. */
+export type AgentConfigPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  customInstructions?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  maxIterationsPerRequest?: InputMaybe<Scalars['Int']['input']>;
+  model?: InputMaybe<Scalars['String']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  provider?: InputMaybe<Scalars['String']['input']>;
+  requireApprovalForCreate?: InputMaybe<Scalars['Boolean']['input']>;
+  requireApprovalForDestructive?: InputMaybe<Scalars['Boolean']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type AgentConfigStddevPopulationAggregates = {
+  __typename?: 'AgentConfigStddevPopulationAggregates';
+  /** Population standard deviation of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentConfigStddevSampleAggregates = {
+  __typename?: 'AgentConfigStddevSampleAggregates';
+  /** Sample standard deviation of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentConfigSumAggregates = {
+  __typename?: 'AgentConfigSumAggregates';
+  /** Sum of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest: Scalars['BigInt']['output'];
+};
+
+export type AgentConfigVariancePopulationAggregates = {
+  __typename?: 'AgentConfigVariancePopulationAggregates';
+  /** Population variance of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentConfigVarianceSampleAggregates = {
+  __typename?: 'AgentConfigVarianceSampleAggregates';
+  /** Sample variance of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentSession = Node & {
+  __typename?: 'AgentSession';
+  /** Reads and enables pagination through a set of `AgentActivity`. */
+  agentActivitiesBySessionId: AgentActivityConnection;
+  createdAt: Scalars['Datetime']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  messages: Scalars['JSON']['output'];
+  organizationId: Scalars['String']['output'];
+  /** Reads a single `Project` that is related to this `AgentSession`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  title?: Maybe<Scalars['String']['output']>;
+  toolCallCount: Scalars['Int']['output'];
+  totalTokensUsed: Scalars['Int']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+  /** Reads a single `User` that is related to this `AgentSession`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+};
+
+
+export type AgentSessionAgentActivitiesBySessionIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentActivityCondition>;
+  filter?: InputMaybe<AgentActivityFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentActivityOrderBy>>;
+};
+
+export type AgentSessionAggregates = {
+  __typename?: 'AgentSessionAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<AgentSessionAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<AgentSessionDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<AgentSessionMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<AgentSessionMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<AgentSessionStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<AgentSessionStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<AgentSessionSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<AgentSessionVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<AgentSessionVarianceSampleAggregates>;
+};
+
+/** A filter to be used against aggregates of `AgentSession` object types. */
+export type AgentSessionAggregatesFilter = {
+  /** Mean average aggregate over matching `AgentSession` objects. */
+  average?: InputMaybe<AgentSessionAverageAggregateFilter>;
+  /** Distinct count aggregate over matching `AgentSession` objects. */
+  distinctCount?: InputMaybe<AgentSessionDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `AgentSession` object to be included within the aggregate. */
+  filter?: InputMaybe<AgentSessionFilter>;
+  /** Maximum aggregate over matching `AgentSession` objects. */
+  max?: InputMaybe<AgentSessionMaxAggregateFilter>;
+  /** Minimum aggregate over matching `AgentSession` objects. */
+  min?: InputMaybe<AgentSessionMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `AgentSession` objects. */
+  stddevPopulation?: InputMaybe<AgentSessionStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `AgentSession` objects. */
+  stddevSample?: InputMaybe<AgentSessionStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `AgentSession` objects. */
+  sum?: InputMaybe<AgentSessionSumAggregateFilter>;
+  /** Population variance aggregate over matching `AgentSession` objects. */
+  variancePopulation?: InputMaybe<AgentSessionVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `AgentSession` objects. */
+  varianceSample?: InputMaybe<AgentSessionVarianceSampleAggregateFilter>;
+};
+
+export type AgentSessionAverageAggregateFilter = {
+  toolCallCount?: InputMaybe<BigFloatFilter>;
+  totalTokensUsed?: InputMaybe<BigFloatFilter>;
+};
+
+export type AgentSessionAverageAggregates = {
+  __typename?: 'AgentSessionAverageAggregates';
+  /** Mean average of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
+  /** Mean average of totalTokensUsed across the matching connection */
+  totalTokensUsed?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+/**
+ * A condition to be used against `AgentSession` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type AgentSessionCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `title` field. */
+  title?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `toolCallCount` field. */
+  toolCallCount?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `totalTokensUsed` field. */
+  totalTokensUsed?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `AgentSession` values. */
+export type AgentSessionConnection = {
+  __typename?: 'AgentSessionConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<AgentSessionAggregates>;
+  /** A list of edges which contains the `AgentSession` and cursor to aid in pagination. */
+  edges: Array<AgentSessionEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<AgentSessionAggregates>>;
+  /** A list of `AgentSession` objects. */
+  nodes: Array<AgentSession>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `AgentSession` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `AgentSession` values. */
+export type AgentSessionConnectionGroupedAggregatesArgs = {
+  groupBy: Array<AgentSessionGroupBy>;
+  having?: InputMaybe<AgentSessionHavingInput>;
+};
+
+export type AgentSessionDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  messages?: InputMaybe<BigIntFilter>;
+  organizationId?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  title?: InputMaybe<BigIntFilter>;
+  toolCallCount?: InputMaybe<BigIntFilter>;
+  totalTokensUsed?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type AgentSessionDistinctCountAggregates = {
+  __typename?: 'AgentSessionDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of messages across the matching connection */
+  messages?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of title across the matching connection */
+  title?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of totalTokensUsed across the matching connection */
+  totalTokensUsed?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `AgentSession` edge in the connection. */
+export type AgentSessionEdge = {
+  __typename?: 'AgentSessionEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `AgentSession` at the end of the edge. */
+  node: AgentSession;
+};
+
+/** A filter to be used against `AgentSession` object types. All fields are combined with a logical ‘and.’ */
+export type AgentSessionFilter = {
+  /** Filter by the object’s `agentActivitiesBySessionId` relation. */
+  agentActivitiesBySessionId?: InputMaybe<AgentSessionToManyAgentActivityFilter>;
+  /** Some related `agentActivitiesBySessionId` exist. */
+  agentActivitiesBySessionIdExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AgentSessionFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AgentSessionFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AgentSessionFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `title` field. */
+  title?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `toolCallCount` field. */
+  toolCallCount?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `totalTokensUsed` field. */
+  totalTokensUsed?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `AgentSession` for usage during aggregation. */
+export enum AgentSessionGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Messages = 'MESSAGES',
+  OrganizationId = 'ORGANIZATION_ID',
+  ProjectId = 'PROJECT_ID',
+  Title = 'TITLE',
+  ToolCallCount = 'TOOL_CALL_COUNT',
+  TotalTokensUsed = 'TOTAL_TOKENS_USED',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type AgentSessionHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  totalTokensUsed?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  totalTokensUsed?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `AgentSession` aggregates. */
+export type AgentSessionHavingInput = {
+  AND?: InputMaybe<Array<AgentSessionHavingInput>>;
+  OR?: InputMaybe<Array<AgentSessionHavingInput>>;
+  average?: InputMaybe<AgentSessionHavingAverageInput>;
+  distinctCount?: InputMaybe<AgentSessionHavingDistinctCountInput>;
+  max?: InputMaybe<AgentSessionHavingMaxInput>;
+  min?: InputMaybe<AgentSessionHavingMinInput>;
+  stddevPopulation?: InputMaybe<AgentSessionHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<AgentSessionHavingStddevSampleInput>;
+  sum?: InputMaybe<AgentSessionHavingSumInput>;
+  variancePopulation?: InputMaybe<AgentSessionHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<AgentSessionHavingVarianceSampleInput>;
+};
+
+export type AgentSessionHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  totalTokensUsed?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  totalTokensUsed?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  totalTokensUsed?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  totalTokensUsed?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  totalTokensUsed?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  totalTokensUsed?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  totalTokensUsed?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `AgentSession` */
+export type AgentSessionInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  messages?: InputMaybe<Scalars['JSON']['input']>;
+  organizationId: Scalars['String']['input'];
+  projectId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  toolCallCount?: InputMaybe<Scalars['Int']['input']>;
+  totalTokensUsed?: InputMaybe<Scalars['Int']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId: Scalars['UUID']['input'];
+};
+
+export type AgentSessionMaxAggregateFilter = {
+  toolCallCount?: InputMaybe<IntFilter>;
+  totalTokensUsed?: InputMaybe<IntFilter>;
+};
+
+export type AgentSessionMaxAggregates = {
+  __typename?: 'AgentSessionMaxAggregates';
+  /** Maximum of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['Int']['output']>;
+  /** Maximum of totalTokensUsed across the matching connection */
+  totalTokensUsed?: Maybe<Scalars['Int']['output']>;
+};
+
+export type AgentSessionMinAggregateFilter = {
+  toolCallCount?: InputMaybe<IntFilter>;
+  totalTokensUsed?: InputMaybe<IntFilter>;
+};
+
+export type AgentSessionMinAggregates = {
+  __typename?: 'AgentSessionMinAggregates';
+  /** Minimum of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['Int']['output']>;
+  /** Minimum of totalTokensUsed across the matching connection */
+  totalTokensUsed?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Methods to use when ordering `AgentSession`. */
+export enum AgentSessionOrderBy {
+  AgentActivitiesBySessionIdCountAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_COUNT_ASC',
+  AgentActivitiesBySessionIdCountDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_COUNT_DESC',
+  AgentActivitiesBySessionIdDistinctCountAffectedTaskIdsAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_AFFECTED_TASK_IDS_ASC',
+  AgentActivitiesBySessionIdDistinctCountAffectedTaskIdsDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_AFFECTED_TASK_IDS_DESC',
+  AgentActivitiesBySessionIdDistinctCountApprovalStatusAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_APPROVAL_STATUS_ASC',
+  AgentActivitiesBySessionIdDistinctCountApprovalStatusDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_APPROVAL_STATUS_DESC',
+  AgentActivitiesBySessionIdDistinctCountCreatedAtAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  AgentActivitiesBySessionIdDistinctCountCreatedAtDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  AgentActivitiesBySessionIdDistinctCountErrorMessageAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ERROR_MESSAGE_ASC',
+  AgentActivitiesBySessionIdDistinctCountErrorMessageDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ERROR_MESSAGE_DESC',
+  AgentActivitiesBySessionIdDistinctCountOrganizationIdAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AgentActivitiesBySessionIdDistinctCountOrganizationIdDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AgentActivitiesBySessionIdDistinctCountProjectIdAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_PROJECT_ID_ASC',
+  AgentActivitiesBySessionIdDistinctCountProjectIdDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_PROJECT_ID_DESC',
+  AgentActivitiesBySessionIdDistinctCountRequiresApprovalAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_REQUIRES_APPROVAL_ASC',
+  AgentActivitiesBySessionIdDistinctCountRequiresApprovalDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_REQUIRES_APPROVAL_DESC',
+  AgentActivitiesBySessionIdDistinctCountRowIdAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  AgentActivitiesBySessionIdDistinctCountRowIdDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  AgentActivitiesBySessionIdDistinctCountSessionIdAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_SESSION_ID_ASC',
+  AgentActivitiesBySessionIdDistinctCountSessionIdDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_SESSION_ID_DESC',
+  AgentActivitiesBySessionIdDistinctCountStatusAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_STATUS_ASC',
+  AgentActivitiesBySessionIdDistinctCountStatusDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_STATUS_DESC',
+  AgentActivitiesBySessionIdDistinctCountToolInputAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_INPUT_ASC',
+  AgentActivitiesBySessionIdDistinctCountToolInputDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_INPUT_DESC',
+  AgentActivitiesBySessionIdDistinctCountToolNameAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_NAME_ASC',
+  AgentActivitiesBySessionIdDistinctCountToolNameDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_NAME_DESC',
+  AgentActivitiesBySessionIdDistinctCountToolOutputAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_OUTPUT_ASC',
+  AgentActivitiesBySessionIdDistinctCountToolOutputDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_OUTPUT_DESC',
+  AgentActivitiesBySessionIdDistinctCountUserIdAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_USER_ID_ASC',
+  AgentActivitiesBySessionIdDistinctCountUserIdDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_USER_ID_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  TitleAsc = 'TITLE_ASC',
+  TitleDesc = 'TITLE_DESC',
+  ToolCallCountAsc = 'TOOL_CALL_COUNT_ASC',
+  ToolCallCountDesc = 'TOOL_CALL_COUNT_DESC',
+  TotalTokensUsedAsc = 'TOTAL_TOKENS_USED_ASC',
+  TotalTokensUsedDesc = 'TOTAL_TOKENS_USED_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `AgentSession`. Fields that are set will be updated. */
+export type AgentSessionPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  messages?: InputMaybe<Scalars['JSON']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  toolCallCount?: InputMaybe<Scalars['Int']['input']>;
+  totalTokensUsed?: InputMaybe<Scalars['Int']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type AgentSessionStddevPopulationAggregateFilter = {
+  toolCallCount?: InputMaybe<BigFloatFilter>;
+  totalTokensUsed?: InputMaybe<BigFloatFilter>;
+};
+
+export type AgentSessionStddevPopulationAggregates = {
+  __typename?: 'AgentSessionStddevPopulationAggregates';
+  /** Population standard deviation of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
+  /** Population standard deviation of totalTokensUsed across the matching connection */
+  totalTokensUsed?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentSessionStddevSampleAggregateFilter = {
+  toolCallCount?: InputMaybe<BigFloatFilter>;
+  totalTokensUsed?: InputMaybe<BigFloatFilter>;
+};
+
+export type AgentSessionStddevSampleAggregates = {
+  __typename?: 'AgentSessionStddevSampleAggregates';
+  /** Sample standard deviation of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
+  /** Sample standard deviation of totalTokensUsed across the matching connection */
+  totalTokensUsed?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentSessionSumAggregateFilter = {
+  toolCallCount?: InputMaybe<BigIntFilter>;
+  totalTokensUsed?: InputMaybe<BigIntFilter>;
+};
+
+export type AgentSessionSumAggregates = {
+  __typename?: 'AgentSessionSumAggregates';
+  /** Sum of toolCallCount across the matching connection */
+  toolCallCount: Scalars['BigInt']['output'];
+  /** Sum of totalTokensUsed across the matching connection */
+  totalTokensUsed: Scalars['BigInt']['output'];
+};
+
+/** A filter to be used against many `AgentActivity` object types. All fields are combined with a logical ‘and.’ */
+export type AgentSessionToManyAgentActivityFilter = {
+  /** Aggregates across related `AgentActivity` match the filter criteria. */
+  aggregates?: InputMaybe<AgentActivityAggregatesFilter>;
+  /** Every related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AgentActivityFilter>;
+  /** No related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AgentActivityFilter>;
+  /** Some related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AgentActivityFilter>;
+};
+
+export type AgentSessionVariancePopulationAggregateFilter = {
+  toolCallCount?: InputMaybe<BigFloatFilter>;
+  totalTokensUsed?: InputMaybe<BigFloatFilter>;
+};
+
+export type AgentSessionVariancePopulationAggregates = {
+  __typename?: 'AgentSessionVariancePopulationAggregates';
+  /** Population variance of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
+  /** Population variance of totalTokensUsed across the matching connection */
+  totalTokensUsed?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentSessionVarianceSampleAggregateFilter = {
+  toolCallCount?: InputMaybe<BigFloatFilter>;
+  totalTokensUsed?: InputMaybe<BigFloatFilter>;
+};
+
+export type AgentSessionVarianceSampleAggregates = {
+  __typename?: 'AgentSessionVarianceSampleAggregates';
+  /** Sample variance of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
+  /** Sample variance of totalTokensUsed across the matching connection */
+  totalTokensUsed?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type Assignee = Node & {
@@ -806,6 +1991,105 @@ export type ColumnVarianceSampleAggregates = {
   index?: Maybe<Scalars['BigFloat']['output']>;
 };
 
+/** All input for the create `AgentActivity` mutation. */
+export type CreateAgentActivityInput = {
+  /** The `AgentActivity` to be created by this mutation. */
+  agentActivity: AgentActivityInput;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The output of our create `AgentActivity` mutation. */
+export type CreateAgentActivityPayload = {
+  __typename?: 'CreateAgentActivityPayload';
+  /** The `AgentActivity` that was created by this mutation. */
+  agentActivity?: Maybe<AgentActivity>;
+  /** An edge for our `AgentActivity`. May be used by Relay 1. */
+  agentActivityEdge?: Maybe<AgentActivityEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `AgentActivity` mutation. */
+export type CreateAgentActivityPayloadAgentActivityEdgeArgs = {
+  orderBy?: Array<AgentActivityOrderBy>;
+};
+
+/** All input for the create `AgentConfig` mutation. */
+export type CreateAgentConfigInput = {
+  /** The `AgentConfig` to be created by this mutation. */
+  agentConfig: AgentConfigInput;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The output of our create `AgentConfig` mutation. */
+export type CreateAgentConfigPayload = {
+  __typename?: 'CreateAgentConfigPayload';
+  /** The `AgentConfig` that was created by this mutation. */
+  agentConfig?: Maybe<AgentConfig>;
+  /** An edge for our `AgentConfig`. May be used by Relay 1. */
+  agentConfigEdge?: Maybe<AgentConfigEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `AgentConfig` mutation. */
+export type CreateAgentConfigPayloadAgentConfigEdgeArgs = {
+  orderBy?: Array<AgentConfigOrderBy>;
+};
+
+/** All input for the create `AgentSession` mutation. */
+export type CreateAgentSessionInput = {
+  /** The `AgentSession` to be created by this mutation. */
+  agentSession: AgentSessionInput;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The output of our create `AgentSession` mutation. */
+export type CreateAgentSessionPayload = {
+  __typename?: 'CreateAgentSessionPayload';
+  /** The `AgentSession` that was created by this mutation. */
+  agentSession?: Maybe<AgentSession>;
+  /** An edge for our `AgentSession`. May be used by Relay 1. */
+  agentSessionEdge?: Maybe<AgentSessionEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `AgentSession` mutation. */
+export type CreateAgentSessionPayloadAgentSessionEdgeArgs = {
+  orderBy?: Array<AgentSessionOrderBy>;
+};
+
 /** All input for the create `Assignee` mutation. */
 export type CreateAssigneeInput = {
   /** The `Assignee` to be created by this mutation. */
@@ -1325,6 +2609,138 @@ export type DatetimeFilter = {
   notEqualTo?: InputMaybe<Scalars['Datetime']['input']>;
   /** Not included in the specified list. */
   notIn?: InputMaybe<Array<Scalars['Datetime']['input']>>;
+};
+
+/** All input for the `deleteAgentActivityById` mutation. */
+export type DeleteAgentActivityByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentActivity` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteAgentActivity` mutation. */
+export type DeleteAgentActivityInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `AgentActivity` mutation. */
+export type DeleteAgentActivityPayload = {
+  __typename?: 'DeleteAgentActivityPayload';
+  /** The `AgentActivity` that was deleted by this mutation. */
+  agentActivity?: Maybe<AgentActivity>;
+  /** An edge for our `AgentActivity`. May be used by Relay 1. */
+  agentActivityEdge?: Maybe<AgentActivityEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedAgentActivityId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `AgentActivity` mutation. */
+export type DeleteAgentActivityPayloadAgentActivityEdgeArgs = {
+  orderBy?: Array<AgentActivityOrderBy>;
+};
+
+/** All input for the `deleteAgentConfigById` mutation. */
+export type DeleteAgentConfigByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentConfig` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteAgentConfig` mutation. */
+export type DeleteAgentConfigInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `AgentConfig` mutation. */
+export type DeleteAgentConfigPayload = {
+  __typename?: 'DeleteAgentConfigPayload';
+  /** The `AgentConfig` that was deleted by this mutation. */
+  agentConfig?: Maybe<AgentConfig>;
+  /** An edge for our `AgentConfig`. May be used by Relay 1. */
+  agentConfigEdge?: Maybe<AgentConfigEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedAgentConfigId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `AgentConfig` mutation. */
+export type DeleteAgentConfigPayloadAgentConfigEdgeArgs = {
+  orderBy?: Array<AgentConfigOrderBy>;
+};
+
+/** All input for the `deleteAgentSessionById` mutation. */
+export type DeleteAgentSessionByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentSession` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteAgentSession` mutation. */
+export type DeleteAgentSessionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `AgentSession` mutation. */
+export type DeleteAgentSessionPayload = {
+  __typename?: 'DeleteAgentSessionPayload';
+  /** The `AgentSession` that was deleted by this mutation. */
+  agentSession?: Maybe<AgentSession>;
+  /** An edge for our `AgentSession`. May be used by Relay 1. */
+  agentSessionEdge?: Maybe<AgentSessionEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedAgentSessionId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `AgentSession` mutation. */
+export type DeleteAgentSessionPayloadAgentSessionEdgeArgs = {
+  orderBy?: Array<AgentSessionOrderBy>;
 };
 
 /** All input for the `deleteAssigneeById` mutation. */
@@ -2619,6 +4035,12 @@ export type MemberRoleFilter = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Creates a single `AgentActivity`. */
+  createAgentActivity?: Maybe<CreateAgentActivityPayload>;
+  /** Creates a single `AgentConfig`. */
+  createAgentConfig?: Maybe<CreateAgentConfigPayload>;
+  /** Creates a single `AgentSession`. */
+  createAgentSession?: Maybe<CreateAgentSessionPayload>;
   /** Creates a single `Assignee`. */
   createAssignee?: Maybe<CreateAssigneePayload>;
   /** Creates a single `Column`. */
@@ -2649,6 +4071,18 @@ export type Mutation = {
   createUserOrganization?: Maybe<CreateUserOrganizationPayload>;
   /** Creates a single `UserPreference`. */
   createUserPreference?: Maybe<CreateUserPreferencePayload>;
+  /** Deletes a single `AgentActivity` using a unique key. */
+  deleteAgentActivity?: Maybe<DeleteAgentActivityPayload>;
+  /** Deletes a single `AgentActivity` using its globally unique id. */
+  deleteAgentActivityById?: Maybe<DeleteAgentActivityPayload>;
+  /** Deletes a single `AgentConfig` using a unique key. */
+  deleteAgentConfig?: Maybe<DeleteAgentConfigPayload>;
+  /** Deletes a single `AgentConfig` using its globally unique id. */
+  deleteAgentConfigById?: Maybe<DeleteAgentConfigPayload>;
+  /** Deletes a single `AgentSession` using a unique key. */
+  deleteAgentSession?: Maybe<DeleteAgentSessionPayload>;
+  /** Deletes a single `AgentSession` using its globally unique id. */
+  deleteAgentSessionById?: Maybe<DeleteAgentSessionPayload>;
   /** Deletes a single `Assignee` using a unique key. */
   deleteAssignee?: Maybe<DeleteAssigneePayload>;
   /** Deletes a single `Assignee` using its globally unique id. */
@@ -2709,6 +4143,18 @@ export type Mutation = {
   deleteUserPreference?: Maybe<DeleteUserPreferencePayload>;
   /** Deletes a single `UserPreference` using its globally unique id. */
   deleteUserPreferenceById?: Maybe<DeleteUserPreferencePayload>;
+  /** Updates a single `AgentActivity` using a unique key and a patch. */
+  updateAgentActivity?: Maybe<UpdateAgentActivityPayload>;
+  /** Updates a single `AgentActivity` using its globally unique id and a patch. */
+  updateAgentActivityById?: Maybe<UpdateAgentActivityPayload>;
+  /** Updates a single `AgentConfig` using a unique key and a patch. */
+  updateAgentConfig?: Maybe<UpdateAgentConfigPayload>;
+  /** Updates a single `AgentConfig` using its globally unique id and a patch. */
+  updateAgentConfigById?: Maybe<UpdateAgentConfigPayload>;
+  /** Updates a single `AgentSession` using a unique key and a patch. */
+  updateAgentSession?: Maybe<UpdateAgentSessionPayload>;
+  /** Updates a single `AgentSession` using its globally unique id and a patch. */
+  updateAgentSessionById?: Maybe<UpdateAgentSessionPayload>;
   /** Updates a single `Assignee` using a unique key and a patch. */
   updateAssignee?: Maybe<UpdateAssigneePayload>;
   /** Updates a single `Assignee` using its globally unique id and a patch. */
@@ -2769,6 +4215,24 @@ export type Mutation = {
   updateUserPreference?: Maybe<UpdateUserPreferencePayload>;
   /** Updates a single `UserPreference` using its globally unique id and a patch. */
   updateUserPreferenceById?: Maybe<UpdateUserPreferencePayload>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateAgentActivityArgs = {
+  input: CreateAgentActivityInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateAgentConfigArgs = {
+  input: CreateAgentConfigInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateAgentSessionArgs = {
+  input: CreateAgentSessionInput;
 };
 
 
@@ -2859,6 +4323,42 @@ export type MutationCreateUserOrganizationArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateUserPreferenceArgs = {
   input: CreateUserPreferenceInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentActivityArgs = {
+  input: DeleteAgentActivityInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentActivityByIdArgs = {
+  input: DeleteAgentActivityByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentConfigArgs = {
+  input: DeleteAgentConfigInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentConfigByIdArgs = {
+  input: DeleteAgentConfigByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentSessionArgs = {
+  input: DeleteAgentSessionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentSessionByIdArgs = {
+  input: DeleteAgentSessionByIdInput;
 };
 
 
@@ -3039,6 +4539,42 @@ export type MutationDeleteUserPreferenceArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteUserPreferenceByIdArgs = {
   input: DeleteUserPreferenceByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentActivityArgs = {
+  input: UpdateAgentActivityInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentActivityByIdArgs = {
+  input: UpdateAgentActivityByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentConfigArgs = {
+  input: UpdateAgentConfigInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentConfigByIdArgs = {
+  input: UpdateAgentConfigByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentSessionArgs = {
+  input: UpdateAgentSessionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentSessionByIdArgs = {
+  input: UpdateAgentSessionByIdInput;
 };
 
 
@@ -3584,6 +5120,10 @@ export type PostToManyEmojiFilter = {
 
 export type Project = Node & {
   __typename?: 'Project';
+  /** Reads and enables pagination through a set of `AgentActivity`. */
+  agentActivities: AgentActivityConnection;
+  /** Reads and enables pagination through a set of `AgentSession`. */
+  agentSessions: AgentSessionConnection;
   columnIndex: Scalars['Int']['output'];
   /** Reads and enables pagination through a set of `Column`. */
   columns: ColumnConnection;
@@ -3610,6 +5150,30 @@ export type Project = Node & {
   updatedAt: Scalars['Datetime']['output'];
   /** Reads and enables pagination through a set of `UserPreference`. */
   userPreferences: UserPreferenceConnection;
+};
+
+
+export type ProjectAgentActivitiesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentActivityCondition>;
+  filter?: InputMaybe<AgentActivityFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentActivityOrderBy>>;
+};
+
+
+export type ProjectAgentSessionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentSessionCondition>;
+  filter?: InputMaybe<AgentSessionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentSessionOrderBy>>;
 };
 
 
@@ -4232,6 +5796,14 @@ export type ProjectEdge = {
 
 /** A filter to be used against `Project` object types. All fields are combined with a logical ‘and.’ */
 export type ProjectFilter = {
+  /** Filter by the object’s `agentActivities` relation. */
+  agentActivities?: InputMaybe<ProjectToManyAgentActivityFilter>;
+  /** Some related `agentActivities` exist. */
+  agentActivitiesExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `agentSessions` relation. */
+  agentSessions?: InputMaybe<ProjectToManyAgentSessionFilter>;
+  /** Some related `agentSessions` exist. */
+  agentSessionsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<ProjectFilter>>;
   /** Filter by the object’s `columnIndex` field. */
@@ -4698,6 +6270,90 @@ export type ProjectMinAggregates = {
 
 /** Methods to use when ordering `Project`. */
 export enum ProjectOrderBy {
+  AgentActivitiesCountAsc = 'AGENT_ACTIVITIES_COUNT_ASC',
+  AgentActivitiesCountDesc = 'AGENT_ACTIVITIES_COUNT_DESC',
+  AgentActivitiesDistinctCountAffectedTaskIdsAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_AFFECTED_TASK_IDS_ASC',
+  AgentActivitiesDistinctCountAffectedTaskIdsDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_AFFECTED_TASK_IDS_DESC',
+  AgentActivitiesDistinctCountApprovalStatusAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_APPROVAL_STATUS_ASC',
+  AgentActivitiesDistinctCountApprovalStatusDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_APPROVAL_STATUS_DESC',
+  AgentActivitiesDistinctCountCreatedAtAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_CREATED_AT_ASC',
+  AgentActivitiesDistinctCountCreatedAtDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_CREATED_AT_DESC',
+  AgentActivitiesDistinctCountErrorMessageAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ERROR_MESSAGE_ASC',
+  AgentActivitiesDistinctCountErrorMessageDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ERROR_MESSAGE_DESC',
+  AgentActivitiesDistinctCountOrganizationIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AgentActivitiesDistinctCountOrganizationIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AgentActivitiesDistinctCountProjectIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_PROJECT_ID_ASC',
+  AgentActivitiesDistinctCountProjectIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_PROJECT_ID_DESC',
+  AgentActivitiesDistinctCountRequiresApprovalAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_REQUIRES_APPROVAL_ASC',
+  AgentActivitiesDistinctCountRequiresApprovalDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_REQUIRES_APPROVAL_DESC',
+  AgentActivitiesDistinctCountRowIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ROW_ID_ASC',
+  AgentActivitiesDistinctCountRowIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ROW_ID_DESC',
+  AgentActivitiesDistinctCountSessionIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SESSION_ID_ASC',
+  AgentActivitiesDistinctCountSessionIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SESSION_ID_DESC',
+  AgentActivitiesDistinctCountStatusAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_STATUS_ASC',
+  AgentActivitiesDistinctCountStatusDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_STATUS_DESC',
+  AgentActivitiesDistinctCountToolInputAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_INPUT_ASC',
+  AgentActivitiesDistinctCountToolInputDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_INPUT_DESC',
+  AgentActivitiesDistinctCountToolNameAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_NAME_ASC',
+  AgentActivitiesDistinctCountToolNameDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_NAME_DESC',
+  AgentActivitiesDistinctCountToolOutputAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_OUTPUT_ASC',
+  AgentActivitiesDistinctCountToolOutputDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_OUTPUT_DESC',
+  AgentActivitiesDistinctCountUserIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_USER_ID_ASC',
+  AgentActivitiesDistinctCountUserIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_USER_ID_DESC',
+  AgentSessionsAverageToolCallCountAsc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsAverageToolCallCountDesc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_DESC',
+  AgentSessionsAverageTotalTokensUsedAsc = 'AGENT_SESSIONS_AVERAGE_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsAverageTotalTokensUsedDesc = 'AGENT_SESSIONS_AVERAGE_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsCountAsc = 'AGENT_SESSIONS_COUNT_ASC',
+  AgentSessionsCountDesc = 'AGENT_SESSIONS_COUNT_DESC',
+  AgentSessionsDistinctCountCreatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  AgentSessionsDistinctCountCreatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  AgentSessionsDistinctCountMessagesAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_ASC',
+  AgentSessionsDistinctCountMessagesDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_DESC',
+  AgentSessionsDistinctCountOrganizationIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AgentSessionsDistinctCountOrganizationIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AgentSessionsDistinctCountProjectIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  AgentSessionsDistinctCountProjectIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  AgentSessionsDistinctCountRowIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  AgentSessionsDistinctCountRowIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  AgentSessionsDistinctCountTitleAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TITLE_ASC',
+  AgentSessionsDistinctCountTitleDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TITLE_DESC',
+  AgentSessionsDistinctCountToolCallCountAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_ASC',
+  AgentSessionsDistinctCountToolCallCountDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_DESC',
+  AgentSessionsDistinctCountTotalTokensUsedAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsDistinctCountTotalTokensUsedDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsDistinctCountUpdatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  AgentSessionsDistinctCountUpdatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  AgentSessionsDistinctCountUserIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_ASC',
+  AgentSessionsDistinctCountUserIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_DESC',
+  AgentSessionsMaxToolCallCountAsc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_ASC',
+  AgentSessionsMaxToolCallCountDesc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_DESC',
+  AgentSessionsMaxTotalTokensUsedAsc = 'AGENT_SESSIONS_MAX_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsMaxTotalTokensUsedDesc = 'AGENT_SESSIONS_MAX_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsMinToolCallCountAsc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_ASC',
+  AgentSessionsMinToolCallCountDesc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_DESC',
+  AgentSessionsMinTotalTokensUsedAsc = 'AGENT_SESSIONS_MIN_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsMinTotalTokensUsedDesc = 'AGENT_SESSIONS_MIN_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsStddevPopulationToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_ASC',
+  AgentSessionsStddevPopulationToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_DESC',
+  AgentSessionsStddevPopulationTotalTokensUsedAsc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsStddevPopulationTotalTokensUsedDesc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsStddevSampleToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsStddevSampleToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_DESC',
+  AgentSessionsStddevSampleTotalTokensUsedAsc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsStddevSampleTotalTokensUsedDesc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsSumToolCallCountAsc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_ASC',
+  AgentSessionsSumToolCallCountDesc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_DESC',
+  AgentSessionsSumTotalTokensUsedAsc = 'AGENT_SESSIONS_SUM_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsSumTotalTokensUsedDesc = 'AGENT_SESSIONS_SUM_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsVariancePopulationToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_ASC',
+  AgentSessionsVariancePopulationToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_DESC',
+  AgentSessionsVariancePopulationTotalTokensUsedAsc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsVariancePopulationTotalTokensUsedDesc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsVarianceSampleToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsVarianceSampleToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_DESC',
+  AgentSessionsVarianceSampleTotalTokensUsedAsc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsVarianceSampleTotalTokensUsedDesc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOTAL_TOKENS_USED_DESC',
   ColumnsAverageIndexAsc = 'COLUMNS_AVERAGE_INDEX_ASC',
   ColumnsAverageIndexDesc = 'COLUMNS_AVERAGE_INDEX_DESC',
   ColumnsCountAsc = 'COLUMNS_COUNT_ASC',
@@ -5113,6 +6769,30 @@ export type ProjectSumAggregates = {
   nextTaskNumber: Scalars['BigInt']['output'];
 };
 
+/** A filter to be used against many `AgentActivity` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyAgentActivityFilter = {
+  /** Aggregates across related `AgentActivity` match the filter criteria. */
+  aggregates?: InputMaybe<AgentActivityAggregatesFilter>;
+  /** Every related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AgentActivityFilter>;
+  /** No related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AgentActivityFilter>;
+  /** Some related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AgentActivityFilter>;
+};
+
+/** A filter to be used against many `AgentSession` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyAgentSessionFilter = {
+  /** Aggregates across related `AgentSession` match the filter criteria. */
+  aggregates?: InputMaybe<AgentSessionAggregatesFilter>;
+  /** Every related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AgentSessionFilter>;
+  /** No related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AgentSessionFilter>;
+  /** Some related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AgentSessionFilter>;
+};
+
 /** A filter to be used against many `Column` object types. All fields are combined with a logical ‘and.’ */
 export type ProjectToManyColumnFilter = {
   /** Aggregates across related `Column` match the filter criteria. */
@@ -5202,6 +6882,26 @@ export type ProjectVarianceSampleAggregates = {
 /** The root query type which gives access points into the data universe. */
 export type Query = Node & {
   __typename?: 'Query';
+  /** Reads and enables pagination through a set of `AgentActivity`. */
+  agentActivities?: Maybe<AgentActivityConnection>;
+  /** Get a single `AgentActivity`. */
+  agentActivity?: Maybe<AgentActivity>;
+  /** Reads a single `AgentActivity` using its globally unique `ID`. */
+  agentActivityById?: Maybe<AgentActivity>;
+  /** Get a single `AgentConfig`. */
+  agentConfig?: Maybe<AgentConfig>;
+  /** Reads a single `AgentConfig` using its globally unique `ID`. */
+  agentConfigById?: Maybe<AgentConfig>;
+  /** Get a single `AgentConfig`. */
+  agentConfigByOrganizationId?: Maybe<AgentConfig>;
+  /** Reads and enables pagination through a set of `AgentConfig`. */
+  agentConfigs?: Maybe<AgentConfigConnection>;
+  /** Get a single `AgentSession`. */
+  agentSession?: Maybe<AgentSession>;
+  /** Reads a single `AgentSession` using its globally unique `ID`. */
+  agentSessionById?: Maybe<AgentSession>;
+  /** Reads and enables pagination through a set of `AgentSession`. */
+  agentSessions?: Maybe<AgentSessionConnection>;
   /** Get a single `Assignee`. */
   assignee?: Maybe<Assignee>;
   /** Reads a single `Assignee` using its globally unique `ID`. */
@@ -5324,6 +7024,87 @@ export type Query = Node & {
   userPreferences?: Maybe<UserPreferenceConnection>;
   /** Reads and enables pagination through a set of `User`. */
   users?: Maybe<UserConnection>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentActivitiesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentActivityCondition>;
+  filter?: InputMaybe<AgentActivityFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentActivityOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentActivityArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentActivityByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentConfigArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentConfigByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentConfigByOrganizationIdArgs = {
+  organizationId: Scalars['String']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentConfigsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentConfigCondition>;
+  filter?: InputMaybe<AgentConfigFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentConfigOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentSessionArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentSessionByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentSessionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentSessionCondition>;
+  filter?: InputMaybe<AgentSessionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentSessionOrderBy>>;
 };
 
 
@@ -7019,6 +8800,147 @@ export type UuidFilter = {
   notIn?: InputMaybe<Array<Scalars['UUID']['input']>>;
 };
 
+/** All input for the `updateAgentActivityById` mutation. */
+export type UpdateAgentActivityByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentActivity` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `AgentActivity` being updated. */
+  patch: AgentActivityPatch;
+};
+
+/** All input for the `updateAgentActivity` mutation. */
+export type UpdateAgentActivityInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `AgentActivity` being updated. */
+  patch: AgentActivityPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `AgentActivity` mutation. */
+export type UpdateAgentActivityPayload = {
+  __typename?: 'UpdateAgentActivityPayload';
+  /** The `AgentActivity` that was updated by this mutation. */
+  agentActivity?: Maybe<AgentActivity>;
+  /** An edge for our `AgentActivity`. May be used by Relay 1. */
+  agentActivityEdge?: Maybe<AgentActivityEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `AgentActivity` mutation. */
+export type UpdateAgentActivityPayloadAgentActivityEdgeArgs = {
+  orderBy?: Array<AgentActivityOrderBy>;
+};
+
+/** All input for the `updateAgentConfigById` mutation. */
+export type UpdateAgentConfigByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentConfig` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `AgentConfig` being updated. */
+  patch: AgentConfigPatch;
+};
+
+/** All input for the `updateAgentConfig` mutation. */
+export type UpdateAgentConfigInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `AgentConfig` being updated. */
+  patch: AgentConfigPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `AgentConfig` mutation. */
+export type UpdateAgentConfigPayload = {
+  __typename?: 'UpdateAgentConfigPayload';
+  /** The `AgentConfig` that was updated by this mutation. */
+  agentConfig?: Maybe<AgentConfig>;
+  /** An edge for our `AgentConfig`. May be used by Relay 1. */
+  agentConfigEdge?: Maybe<AgentConfigEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `AgentConfig` mutation. */
+export type UpdateAgentConfigPayloadAgentConfigEdgeArgs = {
+  orderBy?: Array<AgentConfigOrderBy>;
+};
+
+/** All input for the `updateAgentSessionById` mutation. */
+export type UpdateAgentSessionByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentSession` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `AgentSession` being updated. */
+  patch: AgentSessionPatch;
+};
+
+/** All input for the `updateAgentSession` mutation. */
+export type UpdateAgentSessionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `AgentSession` being updated. */
+  patch: AgentSessionPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `AgentSession` mutation. */
+export type UpdateAgentSessionPayload = {
+  __typename?: 'UpdateAgentSessionPayload';
+  /** The `AgentSession` that was updated by this mutation. */
+  agentSession?: Maybe<AgentSession>;
+  /** An edge for our `AgentSession`. May be used by Relay 1. */
+  agentSessionEdge?: Maybe<AgentSessionEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `AgentSession` mutation. */
+export type UpdateAgentSessionPayloadAgentSessionEdgeArgs = {
+  orderBy?: Array<AgentSessionOrderBy>;
+};
+
 /** All input for the `updateAssigneeById` mutation. */
 export type UpdateAssigneeByIdInput = {
   /**
@@ -7729,6 +9651,10 @@ export type UpdateUserPreferencePayloadUserPreferenceEdgeArgs = {
 
 export type User = Node & {
   __typename?: 'User';
+  /** Reads and enables pagination through a set of `AgentActivity`. */
+  agentActivities: AgentActivityConnection;
+  /** Reads and enables pagination through a set of `AgentSession`. */
+  agentSessions: AgentSessionConnection;
   /** Reads and enables pagination through a set of `Assignee`. */
   assignees: AssigneeConnection;
   /** Reads and enables pagination through a set of `Post`. */
@@ -7750,6 +9676,30 @@ export type User = Node & {
   userOrganizations: UserOrganizationConnection;
   /** Reads and enables pagination through a set of `UserPreference`. */
   userPreferences: UserPreferenceConnection;
+};
+
+
+export type UserAgentActivitiesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentActivityCondition>;
+  filter?: InputMaybe<AgentActivityFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentActivityOrderBy>>;
+};
+
+
+export type UserAgentSessionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentSessionCondition>;
+  filter?: InputMaybe<AgentSessionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentSessionOrderBy>>;
 };
 
 
@@ -7902,6 +9852,14 @@ export type UserEdge = {
 
 /** A filter to be used against `User` object types. All fields are combined with a logical ‘and.’ */
 export type UserFilter = {
+  /** Filter by the object’s `agentActivities` relation. */
+  agentActivities?: InputMaybe<UserToManyAgentActivityFilter>;
+  /** Some related `agentActivities` exist. */
+  agentActivitiesExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `agentSessions` relation. */
+  agentSessions?: InputMaybe<UserToManyAgentSessionFilter>;
+  /** Some related `agentSessions` exist. */
+  agentSessionsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<UserFilter>>;
   /** Filter by the object’s `assignees` relation. */
@@ -8033,6 +9991,90 @@ export type UserInput = {
 
 /** Methods to use when ordering `User`. */
 export enum UserOrderBy {
+  AgentActivitiesCountAsc = 'AGENT_ACTIVITIES_COUNT_ASC',
+  AgentActivitiesCountDesc = 'AGENT_ACTIVITIES_COUNT_DESC',
+  AgentActivitiesDistinctCountAffectedTaskIdsAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_AFFECTED_TASK_IDS_ASC',
+  AgentActivitiesDistinctCountAffectedTaskIdsDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_AFFECTED_TASK_IDS_DESC',
+  AgentActivitiesDistinctCountApprovalStatusAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_APPROVAL_STATUS_ASC',
+  AgentActivitiesDistinctCountApprovalStatusDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_APPROVAL_STATUS_DESC',
+  AgentActivitiesDistinctCountCreatedAtAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_CREATED_AT_ASC',
+  AgentActivitiesDistinctCountCreatedAtDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_CREATED_AT_DESC',
+  AgentActivitiesDistinctCountErrorMessageAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ERROR_MESSAGE_ASC',
+  AgentActivitiesDistinctCountErrorMessageDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ERROR_MESSAGE_DESC',
+  AgentActivitiesDistinctCountOrganizationIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AgentActivitiesDistinctCountOrganizationIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AgentActivitiesDistinctCountProjectIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_PROJECT_ID_ASC',
+  AgentActivitiesDistinctCountProjectIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_PROJECT_ID_DESC',
+  AgentActivitiesDistinctCountRequiresApprovalAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_REQUIRES_APPROVAL_ASC',
+  AgentActivitiesDistinctCountRequiresApprovalDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_REQUIRES_APPROVAL_DESC',
+  AgentActivitiesDistinctCountRowIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ROW_ID_ASC',
+  AgentActivitiesDistinctCountRowIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ROW_ID_DESC',
+  AgentActivitiesDistinctCountSessionIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SESSION_ID_ASC',
+  AgentActivitiesDistinctCountSessionIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SESSION_ID_DESC',
+  AgentActivitiesDistinctCountStatusAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_STATUS_ASC',
+  AgentActivitiesDistinctCountStatusDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_STATUS_DESC',
+  AgentActivitiesDistinctCountToolInputAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_INPUT_ASC',
+  AgentActivitiesDistinctCountToolInputDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_INPUT_DESC',
+  AgentActivitiesDistinctCountToolNameAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_NAME_ASC',
+  AgentActivitiesDistinctCountToolNameDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_NAME_DESC',
+  AgentActivitiesDistinctCountToolOutputAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_OUTPUT_ASC',
+  AgentActivitiesDistinctCountToolOutputDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_OUTPUT_DESC',
+  AgentActivitiesDistinctCountUserIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_USER_ID_ASC',
+  AgentActivitiesDistinctCountUserIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_USER_ID_DESC',
+  AgentSessionsAverageToolCallCountAsc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsAverageToolCallCountDesc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_DESC',
+  AgentSessionsAverageTotalTokensUsedAsc = 'AGENT_SESSIONS_AVERAGE_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsAverageTotalTokensUsedDesc = 'AGENT_SESSIONS_AVERAGE_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsCountAsc = 'AGENT_SESSIONS_COUNT_ASC',
+  AgentSessionsCountDesc = 'AGENT_SESSIONS_COUNT_DESC',
+  AgentSessionsDistinctCountCreatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  AgentSessionsDistinctCountCreatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  AgentSessionsDistinctCountMessagesAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_ASC',
+  AgentSessionsDistinctCountMessagesDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_DESC',
+  AgentSessionsDistinctCountOrganizationIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AgentSessionsDistinctCountOrganizationIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AgentSessionsDistinctCountProjectIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  AgentSessionsDistinctCountProjectIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  AgentSessionsDistinctCountRowIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  AgentSessionsDistinctCountRowIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  AgentSessionsDistinctCountTitleAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TITLE_ASC',
+  AgentSessionsDistinctCountTitleDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TITLE_DESC',
+  AgentSessionsDistinctCountToolCallCountAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_ASC',
+  AgentSessionsDistinctCountToolCallCountDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_DESC',
+  AgentSessionsDistinctCountTotalTokensUsedAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsDistinctCountTotalTokensUsedDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsDistinctCountUpdatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  AgentSessionsDistinctCountUpdatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  AgentSessionsDistinctCountUserIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_ASC',
+  AgentSessionsDistinctCountUserIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_DESC',
+  AgentSessionsMaxToolCallCountAsc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_ASC',
+  AgentSessionsMaxToolCallCountDesc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_DESC',
+  AgentSessionsMaxTotalTokensUsedAsc = 'AGENT_SESSIONS_MAX_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsMaxTotalTokensUsedDesc = 'AGENT_SESSIONS_MAX_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsMinToolCallCountAsc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_ASC',
+  AgentSessionsMinToolCallCountDesc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_DESC',
+  AgentSessionsMinTotalTokensUsedAsc = 'AGENT_SESSIONS_MIN_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsMinTotalTokensUsedDesc = 'AGENT_SESSIONS_MIN_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsStddevPopulationToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_ASC',
+  AgentSessionsStddevPopulationToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_DESC',
+  AgentSessionsStddevPopulationTotalTokensUsedAsc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsStddevPopulationTotalTokensUsedDesc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsStddevSampleToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsStddevSampleToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_DESC',
+  AgentSessionsStddevSampleTotalTokensUsedAsc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsStddevSampleTotalTokensUsedDesc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsSumToolCallCountAsc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_ASC',
+  AgentSessionsSumToolCallCountDesc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_DESC',
+  AgentSessionsSumTotalTokensUsedAsc = 'AGENT_SESSIONS_SUM_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsSumTotalTokensUsedDesc = 'AGENT_SESSIONS_SUM_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsVariancePopulationToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_ASC',
+  AgentSessionsVariancePopulationToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_DESC',
+  AgentSessionsVariancePopulationTotalTokensUsedAsc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsVariancePopulationTotalTokensUsedDesc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsVarianceSampleToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsVarianceSampleToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_DESC',
+  AgentSessionsVarianceSampleTotalTokensUsedAsc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOTAL_TOKENS_USED_ASC',
+  AgentSessionsVarianceSampleTotalTokensUsedDesc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOTAL_TOKENS_USED_DESC',
   AssigneesCountAsc = 'ASSIGNEES_COUNT_ASC',
   AssigneesCountDesc = 'ASSIGNEES_COUNT_DESC',
   AssigneesDistinctCountCreatedAtAsc = 'ASSIGNEES_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -8770,6 +10812,30 @@ export type UserPreferencePatch = {
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** A filter to be used against many `AgentActivity` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyAgentActivityFilter = {
+  /** Aggregates across related `AgentActivity` match the filter criteria. */
+  aggregates?: InputMaybe<AgentActivityAggregatesFilter>;
+  /** Every related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AgentActivityFilter>;
+  /** No related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AgentActivityFilter>;
+  /** Some related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AgentActivityFilter>;
+};
+
+/** A filter to be used against many `AgentSession` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyAgentSessionFilter = {
+  /** Aggregates across related `AgentSession` match the filter criteria. */
+  aggregates?: InputMaybe<AgentSessionAggregatesFilter>;
+  /** Every related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AgentSessionFilter>;
+  /** No related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AgentSessionFilter>;
+  /** Some related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AgentSessionFilter>;
 };
 
 /** A filter to be used against many `Assignee` object types. All fields are combined with a logical ‘and.’ */
