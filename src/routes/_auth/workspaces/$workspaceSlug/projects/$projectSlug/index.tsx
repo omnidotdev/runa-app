@@ -35,7 +35,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SheetContent, SheetRoot } from "@/components/ui/sheet";
-import useIsMobile from "@/lib/hooks/useIsMobile";
 import {
   useSettingByOrganizationIdQuery,
   useTaskQuery,
@@ -47,6 +46,7 @@ import {
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import useIsMobile from "@/lib/hooks/useIsMobile";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
@@ -486,11 +486,7 @@ function ProjectPage() {
     [updateViewMode, userPreferences?.viewMode, projectId],
   );
 
-  useHotkeys(
-    Hotkeys.ToggleAgent,
-    () => setIsAgentOpen((prev) => !prev),
-    [],
-  );
+  useHotkeys(Hotkeys.ToggleAgent, () => setIsAgentOpen((prev) => !prev), []);
 
   return (
     <div className="flex size-full">
@@ -625,8 +621,9 @@ function ProjectPage() {
         </DragDropContext>
       </div>
 
-      {isAgentOpen && session?.accessToken && (
-        isMobile ? (
+      {isAgentOpen &&
+        session?.accessToken &&
+        (isMobile ? (
           <SheetRoot
             open={isAgentOpen}
             onOpenChange={({ open }) => setIsAgentOpen(open)}
@@ -648,8 +645,7 @@ function ProjectPage() {
             userId={session.user.rowId!}
             onClose={() => setIsAgentOpen(false)}
           />
-        )
-      )}
+        ))}
 
       <CreateTaskDialog />
       <UpdateAssigneesDialog />

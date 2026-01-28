@@ -1,4 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import {
   CheckCircleIcon,
   ChevronRightIcon,
@@ -7,8 +9,6 @@ import {
   SparklesIcon,
   XCircleIcon,
 } from "lucide-react";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { useMemo } from "react";
 
 import {
@@ -37,7 +37,10 @@ const STATUS_ICON = {
  * Collapsible section showing agent activity for a specific task.
  * Rendered in the task detail page below Comments.
  */
-export function TaskAgentActivity({ taskId, projectId }: TaskAgentActivityProps) {
+export function TaskAgentActivity({
+  taskId,
+  projectId,
+}: TaskAgentActivityProps) {
   const { data, isLoading } = useQuery(
     agentActivitiesByTaskIdOptions({ projectId, first: 50 }),
   );

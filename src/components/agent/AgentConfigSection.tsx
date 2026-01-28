@@ -1,27 +1,31 @@
-import { useCallback, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { KeyIcon, Loader2Icon, SettingsIcon, TrashIcon } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { API_BASE_URL } from "@/lib/config/env.config";
-
 import { AgentMarketplace } from "./AgentMarketplace";
 import { AgentPersonaManager } from "./AgentPersonaManager";
 import { AgentTokenUsage } from "./AgentTokenUsage";
 
 interface ByokKeyInfo {
   maskedKey: string;
-  provider: string;
 }
 
 interface AgentConfig {
+  model: string;
   requireApprovalForDestructive: boolean;
   requireApprovalForCreate: boolean;
   maxIterationsPerRequest: number;
   customInstructions: string | null;
   byokKey: ByokKeyInfo | null;
+}
+
+interface AgentConfigResponse {
+  config: AgentConfig;
+  allowedModels: string[];
 }
 
 function agentConfigQueryKey(organizationId: string) {
@@ -31,7 +35,7 @@ function agentConfigQueryKey(organizationId: string) {
 async function fetchAgentConfig(
   organizationId: string,
   accessToken: string,
-): Promise<AgentConfig> {
+): Promise<AgentConfigResponse> {
   const url = new URL(`${API_BASE_URL}/api/ai/config`);
   url.searchParams.set("organizationId", organizationId);
 
@@ -43,8 +47,7 @@ async function fetchAgentConfig(
     throw new Error("Failed to fetch agent config");
   }
 
-  const data = (await response.json()) as { config: AgentConfig };
-  return data.config;
+  return response.json() as Promise<AgentConfigResponse>;
 }
 
 async function updateAgentConfig(
@@ -72,7 +75,6 @@ async function updateAgentConfig(
 async function saveApiKey(
   organizationId: string,
   accessToken: string,
-  provider: string,
   apiKey: string,
 ): Promise<ByokKeyInfo> {
   const response = await fetch(`${API_BASE_URL}/api/ai/config/key`, {
@@ -81,7 +83,7 @@ async function saveApiKey(
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ organizationId, provider, apiKey }),
+    body: JSON.stringify({ organizationId, apiKey }),
   });
 
   if (!response.ok) {
@@ -116,10 +118,24 @@ async function removeApiKey(
   }
 }
 
-const PROVIDER_OPTIONS = [
-  { value: "anthropic", label: "Anthropic" },
-  { value: "openai", label: "OpenAI" },
-] as const;
+/**
+ * Format an OpenRouter model name for display.
+ * Converts "anthropic/claude-sonnet-4.5" to "Claude Sonnet 4.5 (Anthropic)"
+ */
+function formatModelName(model: string): string {
+  const parts = model.split("/");
+  if (parts.length !== 2) return model;
+
+  const [provider, modelName] = parts;
+  const formattedProvider =
+    provider.charAt(0).toUpperCase() + provider.slice(1);
+  const formattedModel = modelName
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+  return `${formattedModel} (${formattedProvider})`;
+}
 
 /**
  * A minimal toggle switch built with a button element.
@@ -178,11 +194,14 @@ export function AgentConfigSection() {
   const accessToken = session?.accessToken;
   const queryClient = useQueryClient();
 
-  const { data: config, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: agentConfigQueryKey(organizationId!),
     queryFn: () => fetchAgentConfig(organizationId!, accessToken!),
     enabled: !!organizationId && !!accessToken,
   });
+
+  const config = data?.config;
+  const allowedModels = data?.allowedModels ?? [];
 
   // Local state for optimistic UI
   const [localConfig, setLocalConfig] = useState<AgentConfig | null>(null);
@@ -202,7 +221,8 @@ export function AgentConfigSection() {
       setLocalConfig(saved);
       queryClient.setQueryData(
         agentConfigQueryKey(organizationId!),
-        saved,
+        (prev: AgentConfigResponse | undefined) =>
+          prev ? { ...prev, config: saved } : prev,
       );
     },
   });
@@ -213,6 +233,16 @@ export function AgentConfigSection() {
       const updated = { ...localConfig, [field]: value };
       setLocalConfig(updated);
       saveConfig({ [field]: value });
+    },
+    [localConfig, saveConfig],
+  );
+
+  const handleModelChange = useCallback(
+    (model: string) => {
+      if (!localConfig) return;
+      const updated = { ...localConfig, model };
+      setLocalConfig(updated);
+      saveConfig({ model });
     },
     [localConfig, saveConfig],
   );
@@ -228,7 +258,9 @@ export function AgentConfigSection() {
 
   const handleMaxIterationsSave = useCallback(() => {
     if (!localConfig) return;
-    saveConfig({ maxIterationsPerRequest: localConfig.maxIterationsPerRequest });
+    saveConfig({
+      maxIterationsPerRequest: localConfig.maxIterationsPerRequest,
+    });
   }, [localConfig, saveConfig]);
 
   const [customInstructionsDraft, setCustomInstructionsDraft] = useState("");
@@ -249,23 +281,22 @@ export function AgentConfigSection() {
 
   // BYOK key management state
   const [isKeyFormOpen, setIsKeyFormOpen] = useState(false);
-  const [keyProvider, setKeyProvider] = useState("anthropic");
   const [keyValue, setKeyValue] = useState("");
   const [keyError, setKeyError] = useState<string | null>(null);
 
   const { mutate: saveKey, isPending: isSavingKey } = useMutation({
     mutationFn: () => {
       if (!accessToken) throw new Error("Not authenticated");
-      return saveApiKey(organizationId!, accessToken, keyProvider, keyValue);
+      return saveApiKey(organizationId!, accessToken, keyValue);
     },
     onSuccess: (savedKey) => {
-      setLocalConfig((prev) =>
-        prev ? { ...prev, byokKey: savedKey } : prev,
-      );
+      setLocalConfig((prev) => (prev ? { ...prev, byokKey: savedKey } : prev));
       queryClient.setQueryData(
         agentConfigQueryKey(organizationId!),
-        (prev: AgentConfig | undefined) =>
-          prev ? { ...prev, byokKey: savedKey } : prev,
+        (prev: AgentConfigResponse | undefined) =>
+          prev
+            ? { ...prev, config: { ...prev.config, byokKey: savedKey } }
+            : prev,
       );
       setIsKeyFormOpen(false);
       setKeyValue("");
@@ -282,13 +313,11 @@ export function AgentConfigSection() {
       return removeApiKey(organizationId!, accessToken);
     },
     onSuccess: () => {
-      setLocalConfig((prev) =>
-        prev ? { ...prev, byokKey: null } : prev,
-      );
+      setLocalConfig((prev) => (prev ? { ...prev, byokKey: null } : prev));
       queryClient.setQueryData(
         agentConfigQueryKey(organizationId!),
-        (prev: AgentConfig | undefined) =>
-          prev ? { ...prev, byokKey: null } : prev,
+        (prev: AgentConfigResponse | undefined) =>
+          prev ? { ...prev, config: { ...prev.config, byokKey: null } } : prev,
       );
     },
   });
@@ -328,7 +357,38 @@ export function AgentConfigSection() {
         )}
       </div>
 
-      <div className="flex flex-col gap-1 rounded-lg border p-3">
+      <div className="flex flex-col gap-2 rounded-lg border p-3">
+        <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
+          Model Selection
+        </h3>
+        <p className="text-muted-foreground text-xs">
+          Choose the AI model for your agent. Powered by{" "}
+          <a
+            href="https://openrouter.ai/models"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary underline"
+          >
+            OpenRouter
+          </a>
+          .
+        </p>
+        <select
+          value={localConfig.model}
+          onChange={(e) => handleModelChange(e.target.value)}
+          disabled={isSaving}
+          className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="AI model"
+        >
+          {allowedModels.map((model) => (
+            <option key={model} value={model}>
+              {formatModelName(model)}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="mt-4 flex flex-col gap-1 rounded-lg border p-3">
         <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
           Approval Controls
         </h3>
@@ -357,7 +417,9 @@ export function AgentConfigSection() {
 
         <div className="flex items-center justify-between gap-4 p-2">
           <div className="flex flex-col gap-0.5">
-            <span className="font-medium text-sm">Max iterations per request</span>
+            <span className="font-medium text-sm">
+              Max iterations per request
+            </span>
             <span className="text-muted-foreground text-xs">
               Maximum tool call loops before the agent stops (1-20).
             </span>
@@ -413,11 +475,19 @@ export function AgentConfigSection() {
 
       <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
         <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          API Key (BYOK)
+          OpenRouter API Key (BYOK)
         </h3>
         <p className="text-muted-foreground text-xs">
-          Provide your own LLM API key. When set, the agent uses your key instead
-          of the shared platform key.
+          Provide your own OpenRouter API key. When set, the agent uses your key
+          instead of the shared platform key.{" "}
+          <a
+            href="https://openrouter.ai/keys"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary underline"
+          >
+            Get your key
+          </a>
         </p>
 
         {localConfig.byokKey && !isKeyFormOpen && (
@@ -426,9 +496,6 @@ export function AgentConfigSection() {
               <KeyIcon className="size-3.5 text-muted-foreground" />
               <span className="font-mono text-sm">
                 {localConfig.byokKey.maskedKey}
-              </span>
-              <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                {localConfig.byokKey.provider}
               </span>
             </div>
             <div className="flex items-center gap-1">
@@ -459,36 +526,18 @@ export function AgentConfigSection() {
 
         {(isKeyFormOpen || !localConfig.byokKey) && (
           <div className="flex flex-col gap-2">
-            <div className="flex gap-2">
-              <select
-                value={keyProvider}
-                onChange={(e) => setKeyProvider(e.target.value)}
-                disabled={isSavingKey}
-                className="rounded-md border border-input bg-transparent px-2 py-1.5 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
-                aria-label="LLM provider"
-              >
-                {PROVIDER_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-              <Input
-                type="password"
-                value={keyValue}
-                onChange={(e) => {
-                  setKeyValue(e.target.value);
-                  setKeyError(null);
-                }}
-                placeholder="sk-..."
-                disabled={isSavingKey}
-                className="flex-1"
-                autoComplete="off"
-              />
-            </div>
-            {keyError && (
-              <p className="text-destructive text-xs">{keyError}</p>
-            )}
+            <Input
+              type="password"
+              value={keyValue}
+              onChange={(e) => {
+                setKeyValue(e.target.value);
+                setKeyError(null);
+              }}
+              placeholder="sk-or-..."
+              disabled={isSavingKey}
+              autoComplete="off"
+            />
+            {keyError && <p className="text-destructive text-xs">{keyError}</p>}
             <div className="flex justify-end gap-2">
               {isKeyFormOpen && localConfig.byokKey && (
                 <Button

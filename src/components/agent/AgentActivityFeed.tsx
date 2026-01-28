@@ -5,7 +5,6 @@ import { useCallback, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRollbackActivity } from "@/lib/ai/hooks/useRollback";
 import agentActivitiesOptions from "@/lib/options/agentActivities.options";
-
 import { AgentActivityItem } from "./AgentActivityItem";
 
 import type { AgentActivitiesQuery } from "@/generated/graphql";

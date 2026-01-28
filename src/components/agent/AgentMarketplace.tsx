@@ -1,4 +1,3 @@
-import { useCallback, useRef, useState } from "react";
 import {
   DownloadIcon,
   Loader2Icon,
@@ -7,6 +6,7 @@ import {
   TrashIcon,
   UserIcon,
 } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,9 +27,7 @@ interface AgentMarketplaceProps {
   organizationId: string;
 }
 
-export function AgentMarketplace({
-  organizationId,
-}: AgentMarketplaceProps) {
+export function AgentMarketplace({ organizationId }: AgentMarketplaceProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
     undefined,
   );
@@ -81,14 +79,9 @@ export function AgentMarketplace({
     [unpublish, organizationId],
   );
 
-  const handleCategoryToggle = useCallback(
-    (category: MarketplaceCategory) => {
-      setSelectedCategory((prev) =>
-        prev === category ? undefined : category,
-      );
-    },
-    [],
-  );
+  const handleCategoryToggle = useCallback((category: MarketplaceCategory) => {
+    setSelectedCategory((prev) => (prev === category ? undefined : category));
+  }, []);
 
   return (
     <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
@@ -104,7 +97,7 @@ export function AgentMarketplace({
 
       {/* Search */}
       <div className="relative">
-        <SearchIcon className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+        <SearchIcon className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Search personas..."
           value={searchQuery}
@@ -121,7 +114,7 @@ export function AgentMarketplace({
             key={category}
             type="button"
             onClick={() => handleCategoryToggle(category)}
-            className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-colors ${
+            className={`rounded-full px-2.5 py-0.5 font-medium text-[11px] transition-colors ${
               selectedCategory === category
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted text-muted-foreground hover:bg-muted/80"
@@ -182,7 +175,7 @@ export function AgentMarketplace({
                       </span>
                     )}
                     <div className="mt-0.5 flex items-center gap-2">
-                      <span className="rounded bg-muted px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">
+                      <span className="rounded bg-muted px-1.5 py-0.5 font-medium text-[9px] text-muted-foreground">
                         {CATEGORY_LABELS[
                           listing.category as MarketplaceCategory
                         ] ?? listing.category}

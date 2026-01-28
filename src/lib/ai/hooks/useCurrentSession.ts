@@ -15,7 +15,7 @@ export function useCurrentSession(sessions: AgentSessionNode[]) {
   const [generation, setGeneration] = useState(0);
 
   const currentSession = currentSessionId
-    ? sessions.find((s) => s.rowId === currentSessionId) ?? null
+    ? (sessions.find((s) => s.rowId === currentSessionId) ?? null)
     : null;
 
   /** Set the active session by ID (for selection or server response). */

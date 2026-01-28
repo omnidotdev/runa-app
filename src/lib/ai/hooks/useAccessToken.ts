@@ -13,7 +13,9 @@ export function useAccessToken(): string {
   const { session } = useRouteContext({ from: "__root__" });
 
   if (!session?.accessToken) {
-    throw new Error("No access token available. User may not be authenticated.");
+    throw new Error(
+      "No access token available. User may not be authenticated.",
+    );
   }
 
   return session.accessToken;

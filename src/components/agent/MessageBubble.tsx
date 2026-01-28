@@ -1,12 +1,10 @@
 import { BotIcon, UserIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-
 import { AgentMarkdown } from "./AgentMarkdown";
 import { ToolCallBubble } from "./ToolCallBubble";
 
 import type { UIMessage } from "@tanstack/ai-client";
-
 import type { RollbackByMatchParams } from "@/lib/ai/hooks/useRollback";
 
 interface MessageBubbleProps {
@@ -51,57 +49,68 @@ export function MessageBubble({
           isUser && "items-end",
         )}
       >
-        {message.parts.map((part, idx) => {
-          if (part.type === "text") {
-            if (isUser) {
+        {/* Build set of completed tool call IDs from tool-result parts */}
+        {(() => {
+          const completedToolCallIds = new Set(
+            (message.parts ?? [])
+              .filter((p) => p.type === "tool-result")
+              .map((p) => p.toolCallId),
+          );
+
+          return (message.parts ?? []).map((part, idx) => {
+            if (part.type === "text") {
+              if (isUser) {
+                return (
+                  <div
+                    key={`text-${idx}`}
+                    className="whitespace-pre-wrap rounded-lg bg-primary px-3 py-2 text-primary-foreground text-sm"
+                  >
+                    {part.content}
+                  </div>
+                );
+              }
+
               return (
                 <div
                   key={`text-${idx}`}
-                  className="whitespace-pre-wrap rounded-lg bg-primary px-3 py-2 text-primary-foreground text-sm"
+                  className="rounded-lg bg-muted px-3 py-2"
+                >
+                  <AgentMarkdown
+                    content={part.content}
+                    isStreaming={isStreaming}
+                  />
+                </div>
+              );
+            }
+
+            if (part.type === "thinking") {
+              return (
+                <div
+                  key={`thinking-${idx}`}
+                  className="rounded-lg bg-muted/50 px-3 py-2 text-muted-foreground text-xs italic"
                 >
                   {part.content}
                 </div>
               );
             }
 
-            return (
-              <div
-                key={`text-${idx}`}
-                className="rounded-lg bg-muted px-3 py-2"
-              >
-                <AgentMarkdown
-                  content={part.content}
-                  isStreaming={isStreaming}
+            if (part.type === "tool-call") {
+              return (
+                <ToolCallBubble
+                  key={part.id}
+                  part={part}
+                  hasResult={completedToolCallIds.has(part.id)}
+                  isLoading={isLoading}
+                  onApprovalResponse={onApprovalResponse}
+                  onUndo={onUndoToolCall}
+                  undoingToolCall={undoingToolCall}
                 />
-              </div>
-            );
-          }
+              );
+            }
 
-          if (part.type === "thinking") {
-            return (
-              <div
-                key={`thinking-${idx}`}
-                className="rounded-lg bg-muted/50 px-3 py-2 text-muted-foreground text-xs italic"
-              >
-                {part.content}
-              </div>
-            );
-          }
-
-          if (part.type === "tool-call") {
-            return (
-              <ToolCallBubble
-                key={part.id}
-                part={part}
-                onApprovalResponse={onApprovalResponse}
-                onUndo={onUndoToolCall}
-                undoingToolCall={undoingToolCall}
-              />
-            );
-          }
-
-          return null;
-        })}
+            return null;
+          });
+        })()}
       </div>
     </div>
   );

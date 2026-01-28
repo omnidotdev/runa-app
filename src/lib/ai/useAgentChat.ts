@@ -1,10 +1,52 @@
-import { useEffect, useMemo, useRef } from "react";
 import { fetchServerSentEvents, useChat } from "@tanstack/ai-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useRef } from "react";
 
+import {
+  useAgentActivitiesQuery,
+  useProjectQuery,
+  useTaskQuery,
+  useTasksQuery,
+} from "@/generated/graphql";
 import { API_BASE_URL } from "@/lib/config/env.config";
-import { useAccessToken } from "./hooks/useAccessToken";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { WRITE_TOOL_NAMES } from "./constants";
+import { useAccessToken } from "./hooks/useAccessToken";
+
+import type { UIMessage } from "@tanstack/ai-client";
+
+/**
+ * Extract pending approval responses from UIMessages.
+ *
+ * TanStack AI's ModelMessage format doesn't include approval state,
+ * so we extract approvals and send them separately in the request body.
+ */
+function extractApprovals(
+  messages: UIMessage[],
+): Array<{ id: string; approved: boolean }> {
+  const approvalsMap = new Map<string, { id: string; approved: boolean }>();
+
+  for (const message of messages) {
+    if (message.role !== "assistant") continue;
+
+    for (const part of message.parts) {
+      if (
+        part.type === "tool-call" &&
+        part.state === "approval-responded" &&
+        typeof part.approval?.id === "string" &&
+        part.approval.id.length > 0 &&
+        typeof part.approval?.approved === "boolean"
+      ) {
+        approvalsMap.set(part.approval.id, {
+          id: part.approval.id,
+          approved: part.approval.approved,
+        });
+      }
+    }
+  }
+
+  return Array.from(approvalsMap.values());
+}
 
 interface UseAgentChatOptions {
   projectId: string;
@@ -59,6 +101,8 @@ export function useAgentChat({
     null,
   );
   const lastWriteCountRef = useRef(0);
+  // Store UIMessages for approval extraction (body function reads this)
+  const messagesRef = useRef<UIMessage[]>([]);
 
   // Keep refs in sync with latest prop values
   accessTokenRef.current = accessToken;
@@ -70,23 +114,25 @@ export function useAgentChat({
   // message state so stale messages from the previous session are cleared.
   // Refs for accessToken/projectId keep those values fresh without triggering
   // a reconnection on every render.
-  const connection = useMemo(
-    () => {
-      sessionIdRef.current = sessionId ?? null;
-      lastWriteCountRef.current = 0;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Intentionally recreate connection on sessionKey OR sessionId change
+  const connection = useMemo(() => {
+    sessionIdRef.current = sessionId ?? null;
+    lastWriteCountRef.current = 0;
 
-      return fetchServerSentEvents(`${API_BASE_URL}/api/ai/chat`, () => ({
+    return fetchServerSentEvents(`${API_BASE_URL}/api/ai/chat`, () => {
+      // Extract approvals from current UIMessages (before they're converted to ModelMessages)
+      const approvals = extractApprovals(messagesRef.current);
+
+      return {
         headers: {
           Authorization: `Bearer ${accessTokenRef.current}`,
         },
         body: {
           projectId: projectIdRef.current,
-          ...(sessionIdRef.current
-            ? { sessionId: sessionIdRef.current }
-            : {}),
-          ...(personaIdRef.current
-            ? { personaId: personaIdRef.current }
-            : {}),
+          ...(sessionIdRef.current ? { sessionId: sessionIdRef.current } : {}),
+          ...(personaIdRef.current ? { personaId: personaIdRef.current } : {}),
+          // Include approvals separately since ModelMessages don't preserve them
+          ...(approvals.length > 0 ? { approvals } : {}),
         },
         // Wrap fetch to capture session ID from response headers
         fetchClient: async (url, init) => {
@@ -102,13 +148,33 @@ export function useAgentChat({
           }
           return response;
         },
-      }));
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sessionKey ?? sessionId],
-  );
+      };
+    });
+  }, [sessionKey, sessionId]);
 
   const chatResult = useChat({ connection });
+
+  // Keep messagesRef in sync with current messages for approval extraction
+  // The body function reads this ref when making requests
+  messagesRef.current = chatResult.messages;
+
+  // Clear messages only when explicitly starting fresh (generation changes in sessionKey).
+  // Don't clear when server assigns a session ID to the current conversation.
+  // sessionKey format: "sessionId-generation" or "new-generation"
+  const prevGenerationRef = useRef<string | null>(null);
+  const clearMessages = chatResult.clear;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Only trigger on sessionKey change, clearMessages is stable
+  useEffect(() => {
+    // Extract generation from sessionKey (the part after the last dash)
+    const currentGeneration = sessionKey?.split("-").pop() ?? null;
+    if (
+      prevGenerationRef.current !== null &&
+      prevGenerationRef.current !== currentGeneration
+    ) {
+      clearMessages();
+    }
+    prevGenerationRef.current = currentGeneration;
+  }, [sessionKey]);
 
   // Invalidate React Query cache when new write tools complete
   useEffect(() => {
@@ -116,13 +182,30 @@ export function useAgentChat({
 
     for (const message of chatResult.messages) {
       if (message.role !== "assistant") continue;
+
+      // Collect tool-result IDs to know which tool calls have completed
+      const completedToolCallIds = new Set<string>();
       for (const part of message.parts) {
-        if (
-          part.type === "tool-call" &&
-          WRITE_TOOL_NAMES.has(part.name) &&
-          part.output !== undefined
-        ) {
-          completedWriteCount++;
+        if (part.type === "tool-result") {
+          completedToolCallIds.add(part.toolCallId);
+        }
+      }
+
+      // Count write tool calls that have a matching result
+      for (const part of message.parts) {
+        if (part.type === "tool-call" && WRITE_TOOL_NAMES.has(part.name)) {
+          // Tool is complete if: has tool-result part, has output (client tools),
+          // or was approved and stream is no longer loading
+          const hasResult = completedToolCallIds.has(part.id);
+          const hasOutput = part.output !== undefined;
+          const isApprovedAndComplete =
+            part.state === "approval-responded" &&
+            part.approval?.approved === true &&
+            !chatResult.isLoading;
+
+          if (hasResult || hasOutput || isApprovedAndComplete) {
+            completedWriteCount++;
+          }
         }
       }
     }
@@ -137,9 +220,18 @@ export function useAgentChat({
     }
 
     invalidationTimerRef.current = setTimeout(() => {
-      queryClient.invalidateQueries({ queryKey: ["Tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["Task"] });
-      queryClient.invalidateQueries({ queryKey: ["Project"] });
+      queryClient.invalidateQueries({
+        queryKey: getQueryKeyPrefix(useTasksQuery),
+      });
+      queryClient.invalidateQueries({
+        queryKey: getQueryKeyPrefix(useTaskQuery),
+      });
+      queryClient.invalidateQueries({
+        queryKey: getQueryKeyPrefix(useProjectQuery),
+      });
+      queryClient.invalidateQueries({
+        queryKey: getQueryKeyPrefix(useAgentActivitiesQuery),
+      });
       invalidationTimerRef.current = null;
     }, 500);
 
@@ -149,7 +241,7 @@ export function useAgentChat({
         invalidationTimerRef.current = null;
       }
     };
-  }, [chatResult.messages, queryClient]);
+  }, [chatResult.messages, chatResult.isLoading, queryClient]);
 
   return {
     ...chatResult,

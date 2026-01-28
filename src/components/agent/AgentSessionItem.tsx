@@ -1,6 +1,6 @@
-import { WrenchIcon } from "lucide-react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { WrenchIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -19,7 +19,9 @@ export function AgentSessionItem({
   isActive,
   onSelect,
 }: AgentSessionItemProps) {
-  const title = session.title || `Session ${dayjs(session.createdAt).format("MMM D, h:mm A")}`;
+  const title =
+    session.title ||
+    `Session ${dayjs(session.createdAt).format("MMM D, h:mm A")}`;
   const relativeTimestamp = dayjs(session.updatedAt).fromNow();
 
   return (

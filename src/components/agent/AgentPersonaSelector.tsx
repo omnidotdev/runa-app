@@ -52,7 +52,7 @@ export function AgentPersonaSelector({
       </PopoverTrigger>
       <PopoverPositioner>
         <PopoverContent className="w-56 p-1.5">
-          <p className="mb-1 px-2 font-medium text-muted-foreground text-[10px] uppercase tracking-wide">
+          <p className="mb-1 px-2 font-medium text-[10px] text-muted-foreground uppercase tracking-wide">
             Persona
           </p>
           <button

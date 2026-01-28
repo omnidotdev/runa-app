@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   AlertTriangleIcon,
   CheckCircleIcon,
@@ -12,6 +11,7 @@ import {
   WrenchIcon,
   XCircleIcon,
 } from "lucide-react";
+import { useState } from "react";
 
 import {
   DELEGATION_TOOL_NAMES,
@@ -21,7 +21,6 @@ import {
 import { formatToolName } from "@/lib/ai/utils/formatToolName";
 import { formatWriteResult } from "@/lib/ai/utils/formatWriteResult";
 import { cn } from "@/lib/utils";
-
 import { ToolApprovalActions } from "./ToolApprovalActions";
 
 import type { UIMessage } from "@tanstack/ai-client";
@@ -29,6 +28,10 @@ import type { RollbackByMatchParams } from "@/lib/ai/hooks/useRollback";
 
 interface ToolCallBubbleProps {
   part: Extract<UIMessage["parts"][number], { type: "tool-call" }>;
+  /** Whether there's a corresponding tool-result part for this tool call (server-side tools). */
+  hasResult?: boolean;
+  /** Whether the chat is currently loading/streaming. Used to detect approved tool completion. */
+  isLoading?: boolean;
   onApprovalResponse: (response: { id: string; approved: boolean }) => void;
   /** Called when the user clicks the undo button. */
   onUndo?: (toolName: string, toolInput: unknown) => void;
@@ -43,7 +46,10 @@ function parseDelegationOutput(output: unknown): {
 } | null {
   if (!output || typeof output !== "object") return null;
   const data = output as Record<string, unknown>;
-  if (typeof data.personaName === "string" && typeof data.response === "string") {
+  if (
+    typeof data.personaName === "string" &&
+    typeof data.response === "string"
+  ) {
     return { personaName: data.personaName, response: data.response };
   }
   return null;
@@ -51,6 +57,8 @@ function parseDelegationOutput(output: unknown): {
 
 export function ToolCallBubble({
   part,
+  hasResult,
+  isLoading,
   onApprovalResponse,
   onUndo,
   undoingToolCall,
@@ -64,8 +72,17 @@ export function ToolCallBubble({
   const isApprovalResponded = part.state === "approval-responded";
   const isApproved = isApprovalResponded && part.approval?.approved === true;
   const isDenied = isApprovalResponded && part.approval?.approved === false;
+  // Tool is complete if:
+  // - has output (client tools)
+  // - has result part (server tools)
+  // - state is input-complete
+  // - was approved and loading finished (server doesn't add tool-result to message due to TanStack AI bug)
+  const isApprovedAndFinished = isApproved && isLoading === false;
   const isComplete =
-    part.state === "input-complete" || part.output !== undefined;
+    part.state === "input-complete" ||
+    part.output !== undefined ||
+    hasResult === true ||
+    isApprovedAndFinished;
 
   const toolLabel = formatToolName(part.name);
 
@@ -73,14 +90,13 @@ export function ToolCallBubble({
   if (isApprovalRequested && part.approval) {
     return (
       <div
+        role="status"
         className="flex flex-col gap-2 rounded-md border border-amber-300 bg-amber-50 px-2.5 py-2 dark:border-amber-700 dark:bg-amber-950/50"
         aria-label={`${toolLabel}: approval required`}
       >
-        <div className="flex items-center gap-1.5 text-xs text-amber-700 dark:text-amber-300">
+        <div className="flex items-center gap-1.5 text-amber-700 text-xs dark:text-amber-300">
           <AlertTriangleIcon className="size-3" />
-          <span className="font-medium">
-            {toolLabel}
-          </span>
+          <span className="font-medium">{toolLabel}</span>
           <span className="text-amber-600 dark:text-amber-400">
             — Approval required
           </span>
@@ -95,11 +111,12 @@ export function ToolCallBubble({
     );
   }
 
-  // Approved, executing — green with spinner
-  if (isApproved && part.output === undefined) {
+  // Approved, executing — green with spinner (not complete yet)
+  if (isApproved && !isComplete) {
     return (
       <div
-        className="flex items-center gap-1.5 rounded-md bg-green-50 px-2.5 py-1.5 text-xs text-green-700 dark:bg-green-950/50 dark:text-green-300"
+        role="status"
+        className="flex items-center gap-1.5 rounded-md bg-green-50 px-2.5 py-1.5 text-green-700 text-xs dark:bg-green-950/50 dark:text-green-300"
         aria-label={`${toolLabel}: approved, executing`}
       >
         <CheckCircleIcon className="size-3" />
@@ -116,7 +133,8 @@ export function ToolCallBubble({
   if (isDenied) {
     return (
       <div
-        className="flex items-center gap-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs text-red-700 dark:bg-red-950/50 dark:text-red-300"
+        role="status"
+        className="flex items-center gap-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-red-700 text-xs dark:bg-red-950/50 dark:text-red-300"
         aria-label={`${toolLabel}: denied`}
       >
         <XCircleIcon className="size-3" />
@@ -134,7 +152,8 @@ export function ToolCallBubble({
 
     return (
       <div
-        className="flex flex-col gap-1 rounded-md bg-indigo-50 px-2.5 py-1.5 text-xs text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300"
+        role="status"
+        className="flex flex-col gap-1 rounded-md bg-indigo-50 px-2.5 py-1.5 text-indigo-700 text-xs dark:bg-indigo-950/50 dark:text-indigo-300"
         aria-label={`${toolLabel}: ${isComplete ? "completed" : "running"}`}
       >
         <div className="flex items-center gap-1.5">
@@ -182,6 +201,7 @@ export function ToolCallBubble({
   // Default tool call display with destructive icon variant
   return (
     <div
+      role="status"
       className={cn(
         "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs",
         isDestructive
@@ -203,7 +223,7 @@ export function ToolCallBubble({
       {!isComplete && !isApprovalResponded && (
         <Loader2Icon className="size-3 animate-spin" />
       )}
-      {(isComplete || isApproved) && part.output !== undefined && (
+      {isComplete && (
         <span
           className={
             isDestructive
@@ -213,35 +233,38 @@ export function ToolCallBubble({
                 : "text-green-600 dark:text-green-400"
           }
         >
-          {isWrite
+          {isWrite && part.output !== undefined
             ? formatWriteResult(part.name, part.output)
             : "Done"}
         </span>
       )}
-      {isComplete && isWrite && onUndo && (() => {
-        const isThisUndoing =
-          undoingToolCall !== undefined &&
-          undoingToolCall.toolName === part.name &&
-          JSON.stringify(undoingToolCall.toolInput) ===
-            JSON.stringify(part.input);
+      {isComplete &&
+        isWrite &&
+        onUndo &&
+        (() => {
+          const isThisUndoing =
+            undoingToolCall !== undefined &&
+            undoingToolCall.toolName === part.name &&
+            JSON.stringify(undoingToolCall.toolInput) ===
+              JSON.stringify(part.input);
 
-        return (
-          <button
-            type="button"
-            onClick={() => onUndo(part.name, part.input)}
-            disabled={undoingToolCall !== undefined}
-            aria-label={`Undo ${toolLabel}`}
-            className="ml-auto inline-flex items-center gap-0.5 rounded px-1 py-0.5 text-[10px] text-violet-600 transition-colors hover:bg-violet-100 disabled:opacity-50 dark:text-violet-400 dark:hover:bg-violet-950/50"
-          >
-            {isThisUndoing ? (
-              <Loader2Icon className="size-2.5 animate-spin" />
-            ) : (
-              <Undo2Icon className="size-2.5" />
-            )}
-            Undo
-          </button>
-        );
-      })()}
+          return (
+            <button
+              type="button"
+              onClick={() => onUndo(part.name, part.input)}
+              disabled={undoingToolCall !== undefined}
+              aria-label={`Undo ${toolLabel}`}
+              className="ml-auto inline-flex items-center gap-0.5 rounded px-1 py-0.5 text-[10px] text-violet-600 transition-colors hover:bg-violet-100 disabled:opacity-50 dark:text-violet-400 dark:hover:bg-violet-950/50"
+            >
+              {isThisUndoing ? (
+                <Loader2Icon className="size-2.5 animate-spin" />
+              ) : (
+                <Undo2Icon className="size-2.5" />
+              )}
+              Undo
+            </button>
+          );
+        })()}
     </div>
   );
 }

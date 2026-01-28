@@ -25,7 +25,6 @@ import { BotIcon } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 
-
 import { cn } from "@/lib/utils";
 
 /** Available mention targets. */
@@ -134,9 +133,7 @@ const MentionSuggestionPlugin = () => {
         const triggerMatch = textBeforeCursor.match(MENTION_TRIGGER_REGEX);
         if (!triggerMatch) return;
 
-        const triggerStart = textBeforeCursor.lastIndexOf(
-          triggerMatch[0],
-        );
+        const triggerStart = textBeforeCursor.lastIndexOf(triggerMatch[0]);
         const triggerEnd = cursorOffset;
 
         // Replace @partial with @value + space

@@ -39,9 +39,7 @@ export function formatWriteResult(name: string, output: unknown): string {
       return "Comment added";
     }
     case "deleteTask": {
-      const num = data.deletedTaskNumber
-        ? `T-${data.deletedTaskNumber}: `
-        : "";
+      const num = data.deletedTaskNumber ? `T-${data.deletedTaskNumber}: ` : "";
       return `Deleted ${num}${data.deletedTaskTitle ?? "task"}`;
     }
     case "batchMoveTasks": {

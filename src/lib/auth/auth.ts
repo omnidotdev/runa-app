@@ -19,6 +19,12 @@ import {
 } from "@/lib/config/env.config";
 import { pgPool } from "@/lib/db";
 
+/**
+ * Whether running in SaaS mode (Omni OAuth configured).
+ * SaaS mode is stateless - no database, no email/password.
+ */
+const isSaaSMode = !!AUTH_CLIENT_ID;
+
 const { AUTH_SECRET } = process.env;
 
 // Build genericOAuth config array based on available credentials
@@ -141,32 +147,27 @@ plugins.push(
 );
 
 /**
- * Whether running in SaaS mode (Omni OAuth configured).
- * SaaS mode is stateless - no database, no email/password.
- */
-const isSaaSMode = !!AUTH_CLIENT_ID;
-
-/**
  * Auth server client.
  */
 const auth = betterAuth({
   baseURL: BASE_URL,
   basePath: "/api/auth",
   secret: AUTH_SECRET,
-  // Trust the app's own origin for auth requests
-  trustedOrigins: BASE_URL ? [BASE_URL] : [],
   // Database for self-hosted mode only (email/password auth)
   // SaaS mode stays stateless - no database connection
   ...(pgPool && {
     database: pgPool,
   }),
   // Use prefixed tables to avoid collision with app's user table
-  // These tables are only used in self-hosted mode with email/password
-  user: {
-    modelName: "ba_user",
-  },
+  // Only apply when using database (self-hosted mode)
+  // MemoryAdapter (SaaS mode) expects default model names
+  ...(pgPool && {
+    user: { modelName: "ba_user" },
+    verification: { modelName: "ba_verification" },
+  }),
   session: {
-    modelName: "ba_session",
+    // Only prefix when using database
+    ...(pgPool && { modelName: "ba_session" }),
     // extend session expiration to 30 days
     expiresIn: 60 * 60 * 24 * 30,
     // refresh session if older than 1 day
@@ -183,12 +184,10 @@ const auth = betterAuth({
     },
   },
   account: {
-    modelName: "ba_account",
+    // Only prefix when using database
+    ...(pgPool && { modelName: "ba_account" }),
     // store OAuth tokens in a signed cookie for stateless mode
     storeAccountCookie: true,
-  },
-  verification: {
-    modelName: "ba_verification",
   },
   // Email/password enabled only in self-hosted mode with database
   emailAndPassword: {

@@ -14,7 +14,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { TabsIndicator, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import { AgentSessionList } from "./AgentSessionList";
 
 import type { AgentSessionNode } from "@/lib/ai/hooks/useAgentSessions";
@@ -82,11 +81,14 @@ export function AgentPanelHeader({
       </div>
 
       <TabsList className="mx-4 mb-2 h-8 bg-muted/50">
-        <TabsTrigger value="chat" className="gap-1.5 px-3 py-1 text-xs">
+        <TabsTrigger value="chat" className="flex-1 gap-1.5 px-3 py-1 text-xs">
           <MessageSquareIcon className="size-3" />
           Chat
         </TabsTrigger>
-        <TabsTrigger value="activity" className="gap-1.5 px-3 py-1 text-xs">
+        <TabsTrigger
+          value="activity"
+          className="flex-1 gap-1.5 px-3 py-1 text-xs"
+        >
           <ZapIcon className="size-3" />
           Activity
         </TabsTrigger>

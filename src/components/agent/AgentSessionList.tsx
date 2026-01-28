@@ -1,7 +1,6 @@
 import { Loader2Icon, PlusIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-
 import { AgentSessionItem } from "./AgentSessionItem";
 
 import type { AgentSessionNode } from "@/lib/ai/hooks/useAgentSessions";
@@ -22,7 +21,11 @@ export function AgentSessionList({
   onNewSession,
 }: AgentSessionListProps) {
   return (
-    <div className="flex flex-col gap-2" role="listbox" aria-label="Chat sessions">
+    <div
+      className="flex flex-col gap-2"
+      role="listbox"
+      aria-label="Chat sessions"
+    >
       <Button
         variant="outline"
         size="sm"
@@ -45,7 +48,7 @@ export function AgentSessionList({
         </p>
       )}
 
-      <div className="flex max-h-64 flex-col gap-0.5 overflow-y-auto">
+      <div className="custom-scrollbar flex max-h-64 flex-col gap-0.5 overflow-y-auto">
         {sessions.map((session) => (
           <AgentSessionItem
             key={session.rowId}

@@ -1,4 +1,3 @@
-import { useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import {
@@ -8,6 +7,7 @@ import {
   TrashIcon,
   UserIcon,
 } from "lucide-react";
+import { useCallback, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,23 +74,20 @@ async function updatePersona(
   accessToken: string,
   form: PersonaFormData,
 ): Promise<AgentPersona> {
-  const response = await fetch(
-    `${API_BASE_URL}/api/ai/personas/${personaId}`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        organizationId,
-        name: form.name,
-        systemPrompt: form.systemPrompt,
-        description: form.description || null,
-        icon: form.icon || null,
-      }),
+  const response = await fetch(`${API_BASE_URL}/api/ai/personas/${personaId}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({
+      organizationId,
+      name: form.name,
+      systemPrompt: form.systemPrompt,
+      description: form.description || null,
+      icon: form.icon || null,
+    }),
+  });
 
   if (!response.ok) {
     const err = (await response.json().catch(() => null)) as {
@@ -108,17 +105,14 @@ async function deletePersona(
   organizationId: string,
   accessToken: string,
 ): Promise<void> {
-  const response = await fetch(
-    `${API_BASE_URL}/api/ai/personas/${personaId}`,
-    {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ organizationId }),
+  const response = await fetch(`${API_BASE_URL}/api/ai/personas/${personaId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({ organizationId }),
+  });
 
   if (!response.ok) {
     const err = (await response.json().catch(() => null)) as {
@@ -137,8 +131,7 @@ export function AgentPersonaManager({
   const accessToken = session?.accessToken;
   const queryClient = useQueryClient();
 
-  const { data: personas = [], isLoading } =
-    useAgentPersonas(organizationId);
+  const { data: personas = [], isLoading } = useAgentPersonas(organizationId);
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -219,10 +212,7 @@ export function AgentPersonaManager({
   }, [form, savePersona]);
 
   const updateField = useCallback(
-    <K extends keyof PersonaFormData>(
-      field: K,
-      value: PersonaFormData[K],
-    ) => {
+    <K extends keyof PersonaFormData>(field: K, value: PersonaFormData[K]) => {
       setForm((prev) => ({ ...prev, [field]: value }));
       setFormError(null);
     },
@@ -268,7 +258,9 @@ export function AgentPersonaManager({
             >
               <div className="flex items-center gap-2 overflow-hidden">
                 <span className="shrink-0 text-sm">
-                  {persona.icon ?? <UserIcon className="size-3.5 text-muted-foreground" />}
+                  {persona.icon ?? (
+                    <UserIcon className="size-3.5 text-muted-foreground" />
+                  )}
                 </span>
                 <div className="flex min-w-0 flex-col">
                   <span className="truncate font-medium text-xs">
@@ -350,9 +342,7 @@ export function AgentPersonaManager({
             rows={4}
             className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
           />
-          {formError && (
-            <p className="text-destructive text-xs">{formError}</p>
-          )}
+          {formError && <p className="text-destructive text-xs">{formError}</p>}
           <div className="flex justify-end gap-2">
             <Button
               variant="ghost"

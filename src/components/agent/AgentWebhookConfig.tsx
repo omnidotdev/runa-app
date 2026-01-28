@@ -1,4 +1,3 @@
-import { useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   ClipboardCopyIcon,
@@ -8,14 +7,15 @@ import {
   TrashIcon,
   WebhookIcon,
 } from "lucide-react";
+import { useCallback, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAccessToken } from "@/lib/ai/hooks/useAccessToken";
 import {
   agentWebhooksQueryKey,
   useAgentWebhooks,
 } from "@/lib/ai/hooks/useAgentWebhooks";
-import { useAccessToken } from "@/lib/ai/hooks/useAccessToken";
 import { API_BASE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 
@@ -87,22 +87,19 @@ async function updateWebhook(
   accessToken: string,
   form: WebhookFormData,
 ): Promise<AgentWebhook> {
-  const response = await fetch(
-    `${API_BASE_URL}/api/ai/webhooks/${webhookId}`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        projectId,
-        name: form.name,
-        eventType: form.eventType,
-        instructionTemplate: form.instructionTemplate,
-      }),
+  const response = await fetch(`${API_BASE_URL}/api/ai/webhooks/${webhookId}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({
+      projectId,
+      name: form.name,
+      eventType: form.eventType,
+      instructionTemplate: form.instructionTemplate,
+    }),
+  });
 
   if (!response.ok) {
     const err = (await response.json().catch(() => null)) as {
@@ -121,17 +118,14 @@ async function toggleWebhook(
   accessToken: string,
   enabled: boolean,
 ): Promise<AgentWebhook> {
-  const response = await fetch(
-    `${API_BASE_URL}/api/ai/webhooks/${webhookId}`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ projectId, enabled }),
+  const response = await fetch(`${API_BASE_URL}/api/ai/webhooks/${webhookId}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({ projectId, enabled }),
+  });
 
   if (!response.ok) {
     throw new Error("Failed to toggle webhook");
@@ -292,10 +286,7 @@ export function AgentWebhookConfig({ projectId }: AgentWebhookConfigProps) {
   }, [form, saveWebhook]);
 
   const updateField = useCallback(
-    <K extends keyof WebhookFormData>(
-      field: K,
-      value: WebhookFormData[K],
-    ) => {
+    <K extends keyof WebhookFormData>(field: K, value: WebhookFormData[K]) => {
       setForm((prev) => ({ ...prev, [field]: value }));
       setFormError(null);
     },
@@ -505,17 +496,13 @@ export function AgentWebhookConfig({ projectId }: AgentWebhookConfigProps) {
           <textarea
             placeholder={`Instruction template — use {event} for the payload and {eventType} for the event type.\n\nExample: "A pull request was merged. Review the changes: {event}"`}
             value={form.instructionTemplate}
-            onChange={(e) =>
-              updateField("instructionTemplate", e.target.value)
-            }
+            onChange={(e) => updateField("instructionTemplate", e.target.value)}
             disabled={isSaving}
             maxLength={4000}
             rows={4}
             className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
           />
-          {formError && (
-            <p className="text-destructive text-xs">{formError}</p>
-          )}
+          {formError && <p className="text-destructive text-xs">{formError}</p>}
           <div className="flex justify-end gap-2">
             <Button
               variant="ghost"

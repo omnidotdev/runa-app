@@ -20,7 +20,10 @@ interface UseAgentSessionsOptions {
  * with the rest of the codebase. Exposes `refreshSessions` for cache
  * invalidation when the chat endpoint returns a new session ID.
  */
-export function useAgentSessions({ projectId, userId }: UseAgentSessionsOptions) {
+export function useAgentSessions({
+  projectId,
+  userId,
+}: UseAgentSessionsOptions) {
   const queryClient = useQueryClient();
   const variables = { projectId, userId, first: 50 };
   const options = agentSessionsOptions(variables);

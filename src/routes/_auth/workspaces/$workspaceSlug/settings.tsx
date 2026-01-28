@@ -1,8 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { all } from "better-all";
 
-import { NotFound } from "@/components/layout";
 import { AgentConfigSection } from "@/components/agent/AgentConfigSection";
+import { NotFound } from "@/components/layout";
 import {
   Projects,
   Team,

@@ -31,7 +31,8 @@ const STATUS_CONFIG = {
   completed: {
     icon: CheckCircleIcon,
     label: "Completed",
-    className: "bg-green-100 text-green-700 dark:bg-green-950/50 dark:text-green-300",
+    className:
+      "bg-green-100 text-green-700 dark:bg-green-950/50 dark:text-green-300",
   },
   failed: {
     icon: XCircleIcon,
@@ -41,7 +42,8 @@ const STATUS_CONFIG = {
   denied: {
     icon: XCircleIcon,
     label: "Denied",
-    className: "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300",
+    className:
+      "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300",
   },
   pending: {
     icon: ClockIcon,
@@ -51,11 +53,15 @@ const STATUS_CONFIG = {
   rolled_back: {
     icon: Undo2Icon,
     label: "Undone",
-    className: "bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300",
+    className:
+      "bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300",
   },
 } as const;
 
-function getStatusConfig(status: string, approvalStatus: string | null | undefined) {
+function getStatusConfig(
+  status: string,
+  approvalStatus: string | null | undefined,
+) {
   if (approvalStatus === "denied") return STATUS_CONFIG.denied;
   if (status === "rolled_back") return STATUS_CONFIG.rolled_back;
   if (status === "completed") return STATUS_CONFIG.completed;
@@ -70,7 +76,10 @@ export function AgentActivityItem({
   undoingActivityId,
 }: AgentActivityItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const statusConfig = getStatusConfig(activity.status, activity.approvalStatus);
+  const statusConfig = getStatusConfig(
+    activity.status,
+    activity.approvalStatus,
+  );
   const StatusIcon = statusConfig.icon;
   const relativeTimestamp = formatRelativeTime(activity.createdAt);
 
@@ -92,7 +101,7 @@ export function AgentActivityItem({
           role="status"
           aria-label={`Status: ${statusConfig.label}`}
           className={cn(
-            "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium",
+            "shrink-0 rounded-full px-1.5 py-0.5 font-medium text-[10px]",
             statusConfig.className,
           )}
         >
@@ -101,13 +110,13 @@ export function AgentActivityItem({
       </div>
 
       <div className="flex items-center justify-between gap-2">
-        <span className="text-muted-foreground text-[10px]">
+        <span className="text-[10px] text-muted-foreground">
           {activity.session?.title ?? "Session"} &middot; {relativeTimestamp}
         </span>
 
         <div className="flex items-center gap-1.5">
           {activity.requiresApproval && (
-            <span className="text-amber-600 text-[10px] dark:text-amber-400">
+            <span className="text-[10px] text-amber-600 dark:text-amber-400">
               <AlertTriangleIcon className="inline size-2.5" /> Approval
             </span>
           )}
@@ -132,7 +141,7 @@ export function AgentActivityItem({
       </div>
 
       {activity.errorMessage && (
-        <p className="mt-1 text-destructive text-[10px]">
+        <p className="mt-1 text-[10px] text-destructive">
           {activity.errorMessage}
         </p>
       )}
@@ -143,7 +152,7 @@ export function AgentActivityItem({
           onClick={() => setIsExpanded((prev) => !prev)}
           aria-expanded={isExpanded}
           aria-label={isExpanded ? "Hide tool details" : "Show tool details"}
-          className="mt-1 flex items-center gap-1 text-muted-foreground text-[10px] transition-colors hover:text-foreground"
+          className="mt-1 flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
         >
           <ChevronDownIcon
             className={cn(

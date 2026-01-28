@@ -1,4 +1,3 @@
-import { useCallback, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   CalendarClockIcon,
@@ -8,15 +7,16 @@ import {
   PlusIcon,
   TrashIcon,
 } from "lucide-react";
+import { useCallback, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAccessToken } from "@/lib/ai/hooks/useAccessToken";
+import { useAgentPersonas } from "@/lib/ai/hooks/useAgentPersonas";
 import {
   agentSchedulesQueryKey,
   useAgentSchedules,
 } from "@/lib/ai/hooks/useAgentSchedules";
-import { useAgentPersonas } from "@/lib/ai/hooks/useAgentPersonas";
-import { useAccessToken } from "@/lib/ai/hooks/useAccessToken";
 import { API_BASE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 
@@ -192,28 +192,58 @@ function describeCron(cron: string): string {
   const [minute, hour, dayOfMonth, month, dayOfWeek] = parts;
 
   // Every minute
-  if (minute === "*" && hour === "*" && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
+  if (
+    minute === "*" &&
+    hour === "*" &&
+    dayOfMonth === "*" &&
+    month === "*" &&
+    dayOfWeek === "*"
+  ) {
     return "Every minute";
   }
 
   // Every N minutes
   const minuteInterval = minute?.match(/^\*\/(\d+)$/);
-  if (minuteInterval && hour === "*" && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
+  if (
+    minuteInterval &&
+    hour === "*" &&
+    dayOfMonth === "*" &&
+    month === "*" &&
+    dayOfWeek === "*"
+  ) {
     return `Every ${minuteInterval[1]} minutes`;
   }
 
   // Every hour at :MM
-  if (minute?.match(/^\d+$/) && hour === "*" && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
+  if (
+    minute?.match(/^\d+$/) &&
+    hour === "*" &&
+    dayOfMonth === "*" &&
+    month === "*" &&
+    dayOfWeek === "*"
+  ) {
     return `Every hour at :${minute.padStart(2, "0")}`;
   }
 
   // Daily at HH:MM
-  if (minute?.match(/^\d+$/) && hour?.match(/^\d+$/) && dayOfMonth === "*" && month === "*" && dayOfWeek === "*") {
+  if (
+    minute?.match(/^\d+$/) &&
+    hour?.match(/^\d+$/) &&
+    dayOfMonth === "*" &&
+    month === "*" &&
+    dayOfWeek === "*"
+  ) {
     return `Daily at ${hour.padStart(2, "0")}:${minute.padStart(2, "0")}`;
   }
 
   // Weekdays at HH:MM
-  if (minute?.match(/^\d+$/) && hour?.match(/^\d+$/) && dayOfMonth === "*" && month === "*" && dayOfWeek === "1-5") {
+  if (
+    minute?.match(/^\d+$/) &&
+    hour?.match(/^\d+$/) &&
+    dayOfMonth === "*" &&
+    month === "*" &&
+    dayOfWeek === "1-5"
+  ) {
     return `Weekdays at ${hour.padStart(2, "0")}:${minute.padStart(2, "0")}`;
   }
 
@@ -527,7 +557,7 @@ export function AgentScheduleConfig({
             className="font-mono text-sm"
           />
           {form.cronExpression && (
-            <p className="text-muted-foreground text-[10px]">
+            <p className="text-[10px] text-muted-foreground">
               {describeCron(form.cronExpression)}
             </p>
           )}
@@ -557,9 +587,7 @@ export function AgentScheduleConfig({
                 ))}
             </select>
           )}
-          {formError && (
-            <p className="text-destructive text-xs">{formError}</p>
-          )}
+          {formError && <p className="text-destructive text-xs">{formError}</p>}
           <div className="flex justify-end gap-2">
             <Button
               variant="ghost"

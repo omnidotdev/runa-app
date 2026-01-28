@@ -26,8 +26,8 @@ import {
 } from "@/lib/lexical/html";
 import { cn } from "@/lib/utils";
 import CodeBlockPlugin from "./CodeBlockPlugin";
-import MentionSuggestionPlugin from "./MentionSuggestionPlugin";
 import theme from "./lexical-theme";
+import MentionSuggestionPlugin from "./MentionSuggestionPlugin";
 
 import type { EditorState, LexicalEditor } from "lexical";
 import type { ComponentProps, RefObject } from "react";

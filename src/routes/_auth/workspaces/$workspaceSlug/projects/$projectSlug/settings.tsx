@@ -1,4 +1,8 @@
-import { createFileRoute, notFound, useLoaderData } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  useLoaderData,
+} from "@tanstack/react-router";
 import { all } from "better-all";
 
 import { AgentScheduleConfig } from "@/components/agent/AgentScheduleConfig";

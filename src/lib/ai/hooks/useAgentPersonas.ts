@@ -1,5 +1,5 @@
-import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useRef } from "react";
 
 import { API_BASE_URL } from "@/lib/config/env.config";
 import { useAccessToken } from "./useAccessToken";

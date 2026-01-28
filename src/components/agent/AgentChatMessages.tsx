@@ -1,14 +1,9 @@
-import {
-  Loader2Icon,
-  RefreshCwIcon,
-  SparklesIcon,
-} from "lucide-react";
+import { Loader2Icon, RefreshCwIcon, SparklesIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 import { MessageBubble } from "./MessageBubble";
 
 import type { UIMessage } from "@tanstack/ai-client";
-
 import type { RollbackByMatchParams } from "@/lib/ai/hooks/useRollback";
 
 interface AgentChatMessagesProps {
@@ -33,6 +28,7 @@ export function AgentChatMessages({
 }: AgentChatMessagesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Intentionally trigger scroll on message count change
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -48,7 +44,7 @@ export function AgentChatMessages({
         behavior: "smooth",
       });
     }
-  }, [messages]);
+  }, [messages.length]);
 
   if (messages.length === 0 && !error) {
     return (
@@ -95,12 +91,14 @@ export function AgentChatMessages({
         )}
         {error && (
           <div className="flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 px-3 py-2 text-destructive text-sm">
-            <span className="flex-1">Something went wrong. Please try again.</span>
+            <span className="flex-1">
+              Something went wrong. Please try again.
+            </span>
             {onRetry && (
               <button
                 type="button"
                 onClick={onRetry}
-                className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors hover:bg-destructive/20"
+                className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 font-medium text-xs transition-colors hover:bg-destructive/20"
               >
                 <RefreshCwIcon className="size-3" />
                 Retry

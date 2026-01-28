@@ -14,7 +14,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { API_BASE_URL } from "@/lib/config/env.config";
-
 import { useAccessToken } from "./useAccessToken";
 
 interface RollbackActivityResult {
@@ -95,17 +94,14 @@ export function useRollbackByMatch() {
     mutationFn: async (
       params: RollbackByMatchParams,
     ): Promise<RollbackActivityResult> => {
-      const response = await fetch(
-        `${API_BASE_URL}/api/ai/rollback/by-match`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(params),
+      const response = await fetch(`${API_BASE_URL}/api/ai/rollback/by-match`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(params),
+      });
 
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));
