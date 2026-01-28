@@ -11,7 +11,6 @@ import type {
   DOMConversionMap,
   DOMConversionOutput,
   DOMExportOutput,
-  LexicalNode,
   NodeKey,
   SerializedLexicalNode,
   Spread,
@@ -108,10 +107,4 @@ export class MentionNode extends DecoratorNode<ReactElement> {
 
 export function $createMentionNode(mentionName: string): MentionNode {
   return $applyNodeReplacement(new MentionNode(mentionName));
-}
-
-export function $isMentionNode(
-  node: LexicalNode | null | undefined,
-): node is MentionNode {
-  return node instanceof MentionNode;
 }

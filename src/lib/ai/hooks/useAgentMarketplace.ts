@@ -42,10 +42,6 @@ export interface MarketplaceListing {
   personaIcon: string | null;
 }
 
-export interface MarketplaceListingDetail extends MarketplaceListing {
-  personaName: string | null;
-}
-
 function marketplaceQueryKey(category?: string, search?: string) {
   return ["AgentMarketplace", { category, search }] as const;
 }
@@ -82,53 +78,6 @@ export function useMarketplaceListings(category?: string, search?: string) {
   return useQuery({
     queryKey: marketplaceQueryKey(category, search),
     queryFn: () => fetchListings(tokenRef.current, category, search),
-  });
-}
-
-/**
- * Publish a persona to the marketplace.
- */
-export function usePublishToMarketplace() {
-  const accessToken = useAccessToken();
-  const tokenRef = useRef(accessToken);
-  tokenRef.current = accessToken;
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (params: {
-      organizationId: string;
-      personaId: string;
-      title: string;
-      category: string;
-      description?: string;
-    }) => {
-      const response = await fetch(`${API_BASE_URL}/api/ai/marketplace`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${tokenRef.current}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(params),
-      });
-
-      if (!response.ok) {
-        const data = (await response.json().catch(() => null)) as {
-          error?: string;
-        } | null;
-        throw new Error(data?.error ?? "Failed to publish to marketplace");
-      }
-
-      return (await response.json()) as { listing: MarketplaceListing };
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["AgentMarketplace"],
-      });
-      toast.success("Persona published to marketplace");
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to publish");
-    },
   });
 }
 

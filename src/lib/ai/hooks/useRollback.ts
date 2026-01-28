@@ -1,10 +1,9 @@
 /**
  * Rollback hooks for agent activity undo operations.
  *
- * Provides three mutation hooks:
+ * Provides two mutation hooks:
  *  - `useRollbackActivity` — undo a single activity by ID
  *  - `useRollbackByMatch` — undo by matching session + tool + input
- *  - `useRollbackSession` — undo all activities in a session
  *
  * All hooks call the REST rollback endpoint, invalidate relevant
  * React Query caches on success, and show error toasts on failure.
@@ -26,17 +25,6 @@ export interface RollbackByMatchParams {
   sessionId: string;
   toolName: string;
   toolInput: unknown;
-}
-
-interface RollbackSessionResult {
-  success: boolean;
-  sessionId: string;
-  rolledBackCount: number;
-  details: Array<{
-    activityId: string;
-    toolName: string;
-    description: string;
-  }>;
 }
 
 /**
@@ -117,47 +105,6 @@ export function useRollbackByMatch() {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to undo action");
-    },
-  });
-}
-
-/**
- * Mutation hook to rollback all activities in an agent session.
- *
- * Calls `POST /api/ai/rollback/session/:sessionId` and invalidates
- * relevant caches on success.
- */
-export function useRollbackSession() {
-  const accessToken = useAccessToken();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (sessionId: string): Promise<RollbackSessionResult> => {
-      const response = await fetch(
-        `${API_BASE_URL}/api/ai/rollback/session/${sessionId}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(
-          (body as { error?: string }).error ?? "Session rollback failed",
-        );
-      }
-
-      return response.json() as Promise<RollbackSessionResult>;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["AgentActivities"] });
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to undo session");
     },
   });
 }
