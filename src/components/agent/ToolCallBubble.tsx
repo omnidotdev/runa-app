@@ -30,6 +30,8 @@ interface ToolCallBubbleProps {
   part: Extract<UIMessage["parts"][number], { type: "tool-call" }>;
   /** Whether there's a corresponding tool-result part for this tool call (server-side tools). */
   hasResult?: boolean;
+  /** The parsed output from the corresponding tool-result part (server-side tools). */
+  resultOutput?: unknown;
   /** Whether the chat is currently loading/streaming. Used to detect approved tool completion. */
   isLoading?: boolean;
   onApprovalResponse: (response: { id: string; approved: boolean }) => void;

@@ -1,6 +1,6 @@
 import { fetchServerSentEvents, useChat } from "@tanstack/ai-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import {
   useAgentActivitiesQuery,
@@ -158,6 +158,49 @@ export function useAgentChat({
   // The body function reads this ref when making requests
   messagesRef.current = chatResult.messages;
 
+  // Workaround for TanStack AI's broken server-side tool continuation:
+  // TanStack AI's areAllToolsComplete() doesn't handle server-side tools correctly:
+  // - Server tools have state "input-complete" (not "approval-responded")
+  // - Server tools don't populate part.output (results go in tool-result parts)
+  // So areAllToolsComplete() returns false even when approval is granted.
+  // Workaround: After approval, use append() to send a continuation marker
+  // that triggers the server to execute pending tools.
+  const CONTINUATION_MARKER = "[CONTINUE_AFTER_APPROVAL]";
+
+  const wrappedAddToolApprovalResponse = useCallback(
+    async (response: { id: string; approved: boolean }) => {
+      // First, let TanStack AI update the approval state
+      await chatResult.addToolApprovalResponse(response);
+
+      // If approved, append a continuation marker to trigger the request
+      // The server will see the pending tools with approvals and execute them
+      if (response.approved) {
+        // Small delay to ensure state is updated
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        // Append a synthetic user message to trigger continuation
+        // This message will be filtered out in the UI
+        await chatResult.append({
+          role: "user",
+          content: CONTINUATION_MARKER,
+        });
+      }
+    },
+    [chatResult],
+  );
+
+  // Filter out continuation marker messages from display
+  const filteredMessages = useMemo(
+    () =>
+      chatResult.messages.filter((m) => {
+        if (m.role !== "user") return true;
+        const textPart = m.parts.find((p) => p.type === "text");
+        if (!textPart || textPart.type !== "text") return true;
+        return textPart.content !== CONTINUATION_MARKER;
+      }),
+    [chatResult.messages],
+  );
+
   // Clear messages only when explicitly starting fresh (generation changes in sessionKey).
   // Don't clear when server assigns a session ID to the current conversation.
   // sessionKey format: "sessionId-generation" or "new-generation"
@@ -178,32 +221,38 @@ export function useAgentChat({
 
   // Invalidate React Query cache when new write tools complete
   useEffect(() => {
+    // First, collect ALL tool-result IDs across ALL messages
+    // This is necessary because after the approval continuation flow,
+    // tool-results may be in a different message than the tool-calls
+    const allCompletedToolCallIds = new Set<string>();
+    for (const message of chatResult.messages) {
+      if (message.role !== "assistant") continue;
+      for (const part of message.parts) {
+        if (part.type === "tool-result") {
+          allCompletedToolCallIds.add(part.toolCallId);
+        }
+      }
+    }
+
     let completedWriteCount = 0;
 
     for (const message of chatResult.messages) {
       if (message.role !== "assistant") continue;
 
-      // Collect tool-result IDs to know which tool calls have completed
-      const completedToolCallIds = new Set<string>();
-      for (const part of message.parts) {
-        if (part.type === "tool-result") {
-          completedToolCallIds.add(part.toolCallId);
-        }
-      }
-
-      // Count write tool calls that have a matching result
+      // Count write tool calls that have ACTUALLY completed (have results)
+      // We only count tools with tool-result parts, not just approval state,
+      // because approval state is set BEFORE the continuation executes the tool
       for (const part of message.parts) {
         if (part.type === "tool-call" && WRITE_TOOL_NAMES.has(part.name)) {
-          // Tool is complete if: has tool-result part, has output (client tools),
-          // or was approved and stream is no longer loading
-          const hasResult = completedToolCallIds.has(part.id);
+          // Tool is complete if:
+          // 1. Has tool-result part (server tools) - check across ALL messages
+          // 2. Has output (client tools)
+          // Note: We DON'T count isApprovedAndComplete because that triggers
+          // BEFORE the tool actually executes (approval is set, then continuation runs)
+          const hasResult = allCompletedToolCallIds.has(part.id);
           const hasOutput = part.output !== undefined;
-          const isApprovedAndComplete =
-            part.state === "approval-responded" &&
-            part.approval?.approved === true &&
-            !chatResult.isLoading;
 
-          if (hasResult || hasOutput || isApprovedAndComplete) {
+          if (hasResult || hasOutput) {
             completedWriteCount++;
           }
         }
@@ -219,21 +268,20 @@ export function useAgentChat({
       clearTimeout(invalidationTimerRef.current);
     }
 
+    // Reduced debounce time for faster invalidation
     invalidationTimerRef.current = setTimeout(() => {
-      queryClient.invalidateQueries({
-        queryKey: getQueryKeyPrefix(useTasksQuery),
-      });
-      queryClient.invalidateQueries({
-        queryKey: getQueryKeyPrefix(useTaskQuery),
-      });
-      queryClient.invalidateQueries({
-        queryKey: getQueryKeyPrefix(useProjectQuery),
-      });
-      queryClient.invalidateQueries({
-        queryKey: getQueryKeyPrefix(useAgentActivitiesQuery),
-      });
+      const keysToInvalidate = [
+        getQueryKeyPrefix(useTasksQuery),
+        getQueryKeyPrefix(useTaskQuery),
+        getQueryKeyPrefix(useProjectQuery),
+        getQueryKeyPrefix(useAgentActivitiesQuery),
+      ];
+
+      for (const key of keysToInvalidate) {
+        queryClient.invalidateQueries({ queryKey: key });
+      }
       invalidationTimerRef.current = null;
-    }, 500);
+    }, 100);
 
     return () => {
       if (invalidationTimerRef.current) {
@@ -245,6 +293,10 @@ export function useAgentChat({
 
   return {
     ...chatResult,
+    // Use filtered messages that exclude continuation markers
+    messages: filteredMessages,
+    // Use wrapped approval response that triggers continuation
+    addToolApprovalResponse: wrappedAddToolApprovalResponse,
     sessionId: sessionIdRef.current,
   };
 }
