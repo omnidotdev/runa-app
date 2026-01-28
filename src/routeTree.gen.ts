@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as PublicPricingRouteImport } from './routes/_public/pricing'
 import { Route as PublicLoginRouteImport } from './routes/_public/login'
 import { Route as PublicDemoRouteImport } from './routes/_public/demo'
@@ -36,6 +37,11 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicRoute,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const PublicPricingRoute = PublicPricingRouteImport.update({
   id: '/pricing',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/demo': typeof PublicDemoRoute
   '/login': typeof PublicLoginRoute
   '/pricing': typeof PublicPricingRoute
+  '/api/health': typeof ApiHealthRoute
   '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/demo': typeof PublicDemoRoute
   '/login': typeof PublicLoginRoute
   '/pricing': typeof PublicPricingRoute
+  '/api/health': typeof ApiHealthRoute
   '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/_public/demo': typeof PublicDemoRoute
   '/_public/login': typeof PublicLoginRoute
   '/_public/pricing': typeof PublicPricingRoute
+  '/api/health': typeof ApiHealthRoute
   '/_public/': typeof PublicIndexRoute
   '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/demo'
     | '/login'
     | '/pricing'
+    | '/api/health'
     | '/'
     | '/profile/$userId'
     | '/api/auth/$'
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/demo'
     | '/login'
     | '/pricing'
+    | '/api/health'
     | '/'
     | '/profile/$userId'
     | '/api/auth/$'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/_public/demo'
     | '/_public/login'
     | '/_public/pricing'
+    | '/api/health'
     | '/_public/'
     | '/_auth/profile/$userId'
     | '/api/auth/$'
@@ -193,6 +205,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
+  ApiHealthRoute: typeof ApiHealthRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRoute
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_public/pricing': {
       id: '/_public/pricing'
@@ -346,6 +366,7 @@ const PublicRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
+  ApiHealthRoute: ApiHealthRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
