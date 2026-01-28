@@ -146,7 +146,7 @@ export async function createSelfHostedToken({
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setIssuer("self-hosted")
-    .setExpirationTime("1h")
+    .setExpirationTime("8h")
     .sign(key);
 }
 
