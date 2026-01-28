@@ -1886,11 +1886,12 @@ export type AgentSession = Node & {
   organizationId: Scalars['String']['output'];
   /** Reads a single `Project` that is related to this `AgentSession`. */
   project?: Maybe<Project>;
-  projectId: Scalars['UUID']['output'];
+  projectId?: Maybe<Scalars['UUID']['output']>;
   rowId: Scalars['UUID']['output'];
   title?: Maybe<Scalars['String']['output']>;
   toolCallCount: Scalars['Int']['output'];
   totalTokensUsed: Scalars['Int']['output'];
+  type: Scalars['String']['output'];
   updatedAt: Scalars['Datetime']['output'];
   /** Reads a single `User` that is related to this `AgentSession`. */
   user?: Maybe<User>;
@@ -1988,6 +1989,8 @@ export type AgentSessionCondition = {
   toolCallCount?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `totalTokensUsed` field. */
   totalTokensUsed?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `type` field. */
+  type?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `userId` field. */
@@ -2027,6 +2030,7 @@ export type AgentSessionDistinctCountAggregateFilter = {
   title?: InputMaybe<BigIntFilter>;
   toolCallCount?: InputMaybe<BigIntFilter>;
   totalTokensUsed?: InputMaybe<BigIntFilter>;
+  type?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
 };
@@ -2049,6 +2053,8 @@ export type AgentSessionDistinctCountAggregates = {
   toolCallCount?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of totalTokensUsed across the matching connection */
   totalTokensUsed?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of type across the matching connection */
+  type?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of userId across the matching connection */
@@ -2082,6 +2088,8 @@ export type AgentSessionFilter = {
   organizationId?: InputMaybe<StringFilter>;
   /** Filter by the object’s `project` relation. */
   project?: InputMaybe<ProjectFilter>;
+  /** A related `project` exists. */
+  projectExists?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `projectId` field. */
   projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
@@ -2092,6 +2100,8 @@ export type AgentSessionFilter = {
   toolCallCount?: InputMaybe<IntFilter>;
   /** Filter by the object’s `totalTokensUsed` field. */
   totalTokensUsed?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `type` field. */
+  type?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `user` relation. */
@@ -2111,6 +2121,7 @@ export enum AgentSessionGroupBy {
   Title = 'TITLE',
   ToolCallCount = 'TOOL_CALL_COUNT',
   TotalTokensUsed = 'TOTAL_TOKENS_USED',
+  Type = 'TYPE',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
@@ -2200,11 +2211,12 @@ export type AgentSessionInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   messages?: InputMaybe<Scalars['JSON']['input']>;
   organizationId: Scalars['String']['input'];
-  projectId: Scalars['UUID']['input'];
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   toolCallCount?: InputMaybe<Scalars['Int']['input']>;
   totalTokensUsed?: InputMaybe<Scalars['Int']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
 };
@@ -2286,6 +2298,8 @@ export enum AgentSessionOrderBy {
   ToolCallCountDesc = 'TOOL_CALL_COUNT_DESC',
   TotalTokensUsedAsc = 'TOTAL_TOKENS_USED_ASC',
   TotalTokensUsedDesc = 'TOTAL_TOKENS_USED_DESC',
+  TypeAsc = 'TYPE_ASC',
+  TypeDesc = 'TYPE_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   UserIdAsc = 'USER_ID_ASC',
@@ -2302,6 +2316,7 @@ export type AgentSessionPatch = {
   title?: InputMaybe<Scalars['String']['input']>;
   toolCallCount?: InputMaybe<Scalars['Int']['input']>;
   totalTokensUsed?: InputMaybe<Scalars['Int']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
 };
@@ -8348,6 +8363,8 @@ export enum ProjectOrderBy {
   AgentSessionsDistinctCountToolCallCountDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_DESC',
   AgentSessionsDistinctCountTotalTokensUsedAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_ASC',
   AgentSessionsDistinctCountTotalTokensUsedDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsDistinctCountTypeAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_ASC',
+  AgentSessionsDistinctCountTypeDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_DESC',
   AgentSessionsDistinctCountUpdatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
   AgentSessionsDistinctCountUpdatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
   AgentSessionsDistinctCountUserIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_ASC',
@@ -12431,6 +12448,8 @@ export enum UserOrderBy {
   AgentSessionsDistinctCountToolCallCountDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_DESC',
   AgentSessionsDistinctCountTotalTokensUsedAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_ASC',
   AgentSessionsDistinctCountTotalTokensUsedDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_DESC',
+  AgentSessionsDistinctCountTypeAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_ASC',
+  AgentSessionsDistinctCountTypeDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_DESC',
   AgentSessionsDistinctCountUpdatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
   AgentSessionsDistinctCountUpdatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
   AgentSessionsDistinctCountUserIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_ASC',

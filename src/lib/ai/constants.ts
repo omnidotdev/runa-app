@@ -23,3 +23,9 @@ export const DESTRUCTIVE_TOOL_NAMES = new Set([
 
 /** Tool names that delegate to another agent persona. */
 export const DELEGATION_TOOL_NAMES = new Set(["delegateToAgent"]);
+
+/** Tool names for project creation flow. */
+export const PROJECT_CREATION_TOOL_NAMES = new Set([
+  "proposeProject",
+  "createProjectFromProposal",
+]);
