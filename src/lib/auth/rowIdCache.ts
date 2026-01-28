@@ -210,31 +210,38 @@ export async function syncSelfHostedUser(
   }
 }
 
-export async function encryptRowId(
-  rowId: string,
-  identityProviderId: string,
-): Promise<string> {
+/** Cached auth data stored in encrypted cookie. */
+export interface CachedAuthData {
+  rowId: string;
+  identityProviderId: string;
+  organizations: OrganizationClaim[];
+}
+
+/**
+ * Encrypt auth data for cookie storage.
+ * Caches rowId, identityProviderId, and organizations to avoid API calls.
+ */
+export async function encryptAuthData(data: CachedAuthData): Promise<string> {
   const key = await getEncryptionKey();
 
-  return new jose.EncryptJWT({ rowId, identityProviderId })
+  return new jose.EncryptJWT({
+    rowId: data.rowId,
+    identityProviderId: data.identityProviderId,
+    organizations: data.organizations,
+  })
     .setProtectedHeader({ alg: "dir", enc: "A256GCM" })
     .setIssuedAt()
     .setExpirationTime(`${COOKIE_TTL_SECONDS}s`)
     .encrypt(key);
 }
 
-export interface CachedRowIdData {
-  rowId: string;
-  identityProviderId: string;
-}
-
 /**
- * Decrypt the cache and return both rowId and identityProviderId.
- * The identityProviderId in the cache is the IDP's sub claim (not Better Auth's user.id).
+ * Decrypt the auth cache.
+ * Returns rowId, identityProviderId, and organizations.
  */
 export async function decryptCache(
   encryptedValue: string,
-): Promise<CachedRowIdData | null> {
+): Promise<CachedAuthData | null> {
   try {
     const key = await getEncryptionKey();
     const { payload } = await jose.jwtDecrypt(encryptedValue, key);
@@ -249,6 +256,9 @@ export async function decryptCache(
     return {
       rowId: payload.rowId,
       identityProviderId: payload.identityProviderId,
+      organizations: Array.isArray(payload.organizations)
+        ? (payload.organizations as OrganizationClaim[])
+        : [],
     };
   } catch {
     return null;
