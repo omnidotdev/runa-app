@@ -6,6 +6,7 @@ import { RichTextEditor } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import { useCreatePostMutation } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
+import { useMentionPolling } from "@/lib/hooks/useMentionPolling";
 import taskOptions from "@/lib/options/task.options";
 
 import type { EditorApi } from "@/components/core";
@@ -19,6 +20,9 @@ const CreateComment = () => {
   const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
+
+  // Hook to poll for AI agent responses after @mention comments
+  const { onCommentSubmit } = useMentionPolling({ taskId });
 
   const { mutate: addComment } = useCreatePostMutation({
     meta: {
@@ -44,6 +48,9 @@ const CreateComment = () => {
             },
           },
         });
+
+        // Start polling if comment contains a mention
+        onCommentSubmit(value.comment);
       }
 
       formApi.reset();
@@ -65,7 +72,7 @@ const CreateComment = () => {
           <RichTextEditor
             editorApi={editorApi}
             onUpdate={({ getHTML }) => field.handleChange(getHTML())}
-            placeholder="Add a comment... (type @agent to mention the AI agent)"
+            placeholder="Add a comment... (type @runa to mention the AI agent)"
             enableMentions
             className="flex min-h-32 w-full rounded-xl border text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40"
             skeletonClassName="h-[128px] w-full"

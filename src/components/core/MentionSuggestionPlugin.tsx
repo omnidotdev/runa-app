@@ -11,9 +11,11 @@
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
+  $createTextNode,
   $getSelection,
   $isRangeSelection,
   $isTextNode,
+  COMMAND_PRIORITY_HIGH,
   COMMAND_PRIORITY_LOW,
   KEY_ARROW_DOWN_COMMAND,
   KEY_ARROW_UP_COMMAND,
@@ -26,9 +28,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { cn } from "@/lib/utils";
+import { $createMentionNode } from "./MentionNode";
 
 /** Available mention targets. */
 const MENTION_OPTIONS = [
+  { label: "Runa", value: "runa", description: "Trigger the AI agent" },
   { label: "Agent", value: "agent", description: "Trigger the AI agent" },
 ] as const;
 
@@ -113,7 +117,7 @@ const MentionSuggestionPlugin = () => {
     [matchText],
   );
 
-  /** Replace the @partial text with the selected mention. */
+  /** Replace the @partial text with the selected mention node. */
   const insertMention = useCallback(
     (value: string) => {
       editor.update(() => {
@@ -134,19 +138,26 @@ const MentionSuggestionPlugin = () => {
         if (!triggerMatch) return;
 
         const triggerStart = textBeforeCursor.lastIndexOf(triggerMatch[0]);
-        const triggerEnd = cursorOffset;
 
-        // Replace @partial with @value + space
+        // Split the text: keep text before trigger, remove the @partial
         const beforeTrigger = textContent.slice(0, triggerStart);
-        const afterCursor = textContent.slice(triggerEnd);
-        const newText = `${beforeTrigger}@${value} ${afterCursor}`;
+        const afterCursor = textContent.slice(cursorOffset);
 
-        anchorNode.setTextContent(newText);
+        // Update the text node to only contain text before the trigger
+        anchorNode.setTextContent(beforeTrigger);
 
-        // Move cursor after the inserted mention + space
-        const newOffset = triggerStart + value.length + 2; // @value + space
-        selection.anchor.set(anchorNode.getKey(), newOffset, "text");
-        selection.focus.set(anchorNode.getKey(), newOffset, "text");
+        // Create the mention node
+        const mentionNode = $createMentionNode(value);
+
+        // Create a text node for the space and text after cursor
+        const afterNode = $createTextNode(` ${afterCursor}`);
+
+        // Insert mention and space after the current text node
+        anchorNode.insertAfter(mentionNode);
+        mentionNode.insertAfter(afterNode);
+
+        // Move selection to after the space
+        afterNode.select(1, 1);
       });
 
       setIsOpen(false);
@@ -246,6 +257,8 @@ const MentionSuggestionPlugin = () => {
       COMMAND_PRIORITY_LOW,
     );
 
+    // Use HIGH priority for Tab to ensure mention completion takes precedence
+    // over default Tab behavior (focus next element)
     const removeTab = editor.registerCommand(
       KEY_TAB_COMMAND,
       () => {
@@ -256,7 +269,7 @@ const MentionSuggestionPlugin = () => {
         }
         return false;
       },
-      COMMAND_PRIORITY_LOW,
+      COMMAND_PRIORITY_HIGH,
     );
 
     const removeEscape = editor.registerCommand(
@@ -268,12 +281,29 @@ const MentionSuggestionPlugin = () => {
       COMMAND_PRIORITY_LOW,
     );
 
+    // DOM-level Tab key handler to prevent default focus change behavior.
+    // Only call preventDefault() - do NOT stopPropagation() so the event
+    // still reaches Lexical's command handlers to insert the mention.
+    const rootElement = editor.getRootElement();
+    const handleTabKeyDown = (e: KeyboardEvent) => {
+      // Only intercept if the event originated from within the editor
+      if (
+        e.key === "Tab" &&
+        filteredOptions.length > 0 &&
+        rootElement?.contains(e.target as Node)
+      ) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener("keydown", handleTabKeyDown, true);
+
     return () => {
       removeArrowDown();
       removeArrowUp();
       removeEnter();
       removeTab();
       removeEscape();
+      document.removeEventListener("keydown", handleTabKeyDown, true);
     };
   }, [editor, isOpen, filteredOptions, selectedIndex, insertMention]);
 

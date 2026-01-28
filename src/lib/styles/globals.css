@@ -308,6 +308,15 @@
     background-clip: content-box;
   }
 
+  /* Mention highlight for @agent and @runa in comments */
+  .mention-highlight {
+    background-color: color-mix(in srgb, var(--primary) 15%, transparent);
+    color: var(--primary);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+  }
+
   /* gradient text shimmer */
   .text-shimmer {
     background: linear-gradient(

@@ -27,6 +27,7 @@ import {
 import { cn } from "@/lib/utils";
 import CodeBlockPlugin from "./CodeBlockPlugin";
 import theme from "./lexical-theme";
+import { MentionNode } from "./MentionNode";
 import MentionSuggestionPlugin from "./MentionSuggestionPlugin";
 
 import type { EditorState, LexicalEditor } from "lexical";
@@ -175,6 +176,7 @@ const RichTextEditor = ({
       CodeHighlightNode,
       LinkNode,
       AutoLinkNode,
+      MentionNode,
     ],
   };
 

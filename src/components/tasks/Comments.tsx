@@ -1,7 +1,12 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouteContext } from "@tanstack/react-router";
 import dayjs from "dayjs";
-import { MoreHorizontalIcon, PenLineIcon, Trash2Icon } from "lucide-react";
+import {
+  BotIcon,
+  MoreHorizontalIcon,
+  PenLineIcon,
+  Trash2Icon,
+} from "lucide-react";
 import { Suspense, useEffect, useRef, useState } from "react";
 
 import { RichTextEditor } from "@/components/core";
@@ -110,17 +115,23 @@ const Comments = () => {
                   >
                     <div className="flex flex-1 flex-col gap-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <AvatarRoot size="xs" className="size-6! border">
-                          <AvatarImage
-                            src={post?.author?.avatarUrl ?? undefined}
-                            alt={post?.author?.name}
-                          />
-                          <AvatarFallback>
-                            {post?.author?.name.charAt(0)}
-                          </AvatarFallback>
-                        </AvatarRoot>
+                        {post?.author ? (
+                          <AvatarRoot size="xs" className="size-6! border">
+                            <AvatarImage
+                              src={post.author.avatarUrl ?? undefined}
+                              alt={post.author.name}
+                            />
+                            <AvatarFallback>
+                              {post.author.name.charAt(0)}
+                            </AvatarFallback>
+                          </AvatarRoot>
+                        ) : (
+                          <div className="flex size-6 items-center justify-center rounded-full border bg-muted">
+                            <BotIcon className="size-3.5 text-muted-foreground" />
+                          </div>
+                        )}
                         <span className="font-medium text-base-900 text-sm dark:text-base-100">
-                          {post?.author?.name ?? "Anonymous"}
+                          {post?.author?.name ?? "RunaBot"}
                         </span>
 
                         <span className="text-base-500 text-xs dark:text-base-400">

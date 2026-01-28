@@ -1,10 +1,30 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { KeyIcon, Loader2Icon, SettingsIcon, TrashIcon } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import {
+  ChevronDownIcon,
+  KeyIcon,
+  Loader2Icon,
+  SettingsIcon,
+  TrashIcon,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectControl,
+  SelectIndicator,
+  SelectItem,
+  SelectItemGroup,
+  SelectItemIndicator,
+  SelectItemText,
+  SelectPositioner,
+  SelectTrigger,
+  SelectValueText,
+  createListCollection,
+} from "@/components/ui/select";
 import { API_BASE_URL } from "@/lib/config/env.config";
 import { AgentMarketplace } from "./AgentMarketplace";
 import { AgentPersonaManager } from "./AgentPersonaManager";
@@ -203,6 +223,18 @@ export function AgentConfigSection() {
   const config = data?.config;
   const allowedModels = data?.allowedModels ?? [];
 
+  // Create collection for model select
+  const modelCollection = useMemo(
+    () =>
+      createListCollection({
+        items: allowedModels.map((model) => ({
+          label: formatModelName(model),
+          value: model,
+        })),
+      }),
+    [allowedModels],
+  );
+
   // Local state for optimistic UI
   const [localConfig, setLocalConfig] = useState<AgentConfig | null>(null);
 
@@ -373,19 +405,40 @@ export function AgentConfigSection() {
           </a>
           .
         </p>
-        <select
-          value={localConfig.model}
-          onChange={(e) => handleModelChange(e.target.value)}
+        <Select
+          collection={modelCollection}
+          value={[localConfig.model]}
+          onValueChange={(details) => {
+            const newModel = details.value[0];
+            if (newModel) handleModelChange(newModel);
+          }}
           disabled={isSaving}
-          className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label="AI model"
         >
-          {allowedModels.map((model) => (
-            <option key={model} value={model}>
-              {formatModelName(model)}
-            </option>
-          ))}
-        </select>
+          <SelectControl>
+            <SelectTrigger
+              aria-label="AI model"
+              className="w-full justify-between border border-input bg-transparent"
+            >
+              <SelectValueText placeholder="Select a model" />
+              <SelectIndicator>
+                <ChevronDownIcon />
+              </SelectIndicator>
+            </SelectTrigger>
+          </SelectControl>
+
+          <SelectPositioner>
+            <SelectContent className="w-(--reference-width)">
+              <SelectItemGroup>
+                {modelCollection.items.map((item) => (
+                  <SelectItem key={item.value} item={item}>
+                    <SelectItemText>{item.label}</SelectItemText>
+                    <SelectItemIndicator />
+                  </SelectItem>
+                ))}
+              </SelectItemGroup>
+            </SelectContent>
+          </SelectPositioner>
+        </Select>
       </div>
 
       <div className="mt-4 flex flex-col gap-1 rounded-lg border p-3">
