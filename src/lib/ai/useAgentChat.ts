@@ -20,10 +20,28 @@ import type { UIMessage } from "@tanstack/ai-client";
  *
  * TanStack AI's ModelMessage format doesn't include approval state,
  * so we extract approvals and send them separately in the request body.
+ *
+ * Only extracts approvals for tool-calls that haven't been executed yet
+ * (no corresponding tool-result). This prevents re-sending old approvals
+ * when making subsequent requests in the same session.
  */
 function extractApprovals(
   messages: UIMessage[],
 ): Array<{ id: string; approved: boolean }> {
+  // First, collect all tool-call IDs that have been executed (have tool-results)
+  const executedToolCallIds = new Set<string>();
+  for (const message of messages) {
+    if (message.role !== "assistant") continue;
+    for (const part of message.parts) {
+      if (part.type === "tool-result") {
+        executedToolCallIds.add(part.toolCallId);
+      }
+    }
+  }
+
+  // TanStack AI uses "approval_${toolCallId}" format for approval IDs
+  const APPROVAL_PREFIX = "approval_";
+
   const approvalsMap = new Map<string, { id: string; approved: boolean }>();
 
   for (const message of messages) {
@@ -37,6 +55,16 @@ function extractApprovals(
         part.approval.id.length > 0 &&
         typeof part.approval?.approved === "boolean"
       ) {
+        // Extract tool call ID from approval ID
+        const toolCallId = part.approval.id.startsWith(APPROVAL_PREFIX)
+          ? part.approval.id.slice(APPROVAL_PREFIX.length)
+          : part.id;
+
+        // Skip approvals for tools that have already been executed
+        if (executedToolCallIds.has(toolCallId)) {
+          continue;
+        }
+
         approvalsMap.set(part.approval.id, {
           id: part.approval.id,
           approved: part.approval.approved,
@@ -289,7 +317,7 @@ export function useAgentChat({
         invalidationTimerRef.current = null;
       }
     };
-  }, [chatResult.messages, chatResult.isLoading, queryClient]);
+  }, [chatResult.messages, queryClient]);
 
   return {
     ...chatResult,

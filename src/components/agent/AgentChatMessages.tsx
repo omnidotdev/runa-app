@@ -1,5 +1,5 @@
 import { Loader2Icon, RefreshCwIcon, SparklesIcon } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { MessageBubble } from "./MessageBubble";
 
@@ -27,6 +27,22 @@ export function AgentChatMessages({
   undoingToolCall,
 }: AgentChatMessagesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Collect all completed tool call IDs across ALL messages.
+  // Server-side tools have tool-results in different messages than tool-calls,
+  // so we need to track completion globally, not per-message.
+  const allCompletedToolCallIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const message of messages) {
+      if (message.role !== "assistant") continue;
+      for (const part of message.parts) {
+        if (part.type === "tool-result") {
+          ids.add(part.toolCallId);
+        }
+      }
+    }
+    return ids;
+  }, [messages]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: Intentionally trigger scroll on message count change
   useEffect(() => {
@@ -63,7 +79,7 @@ export function AgentChatMessages({
   return (
     <div
       ref={scrollRef}
-      className="flex-1 overflow-y-auto px-4 py-3"
+      className="custom-scrollbar flex-1 overflow-y-auto px-4 py-3"
       role="log"
       aria-live="polite"
       aria-label="Chat messages"
@@ -78,6 +94,7 @@ export function AgentChatMessages({
               messageIndex === messages.length - 1
             }
             isLoading={isLoading}
+            allCompletedToolCallIds={allCompletedToolCallIds}
             onApprovalResponse={onApprovalResponse}
             onUndoToolCall={onUndoToolCall}
             undoingToolCall={undoingToolCall}

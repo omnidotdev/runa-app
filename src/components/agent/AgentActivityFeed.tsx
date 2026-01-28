@@ -86,7 +86,7 @@ export function AgentActivityFeed({ projectId }: AgentActivityFeedProps) {
 
   return (
     <div
-      className="flex flex-1 flex-col gap-2 overflow-y-auto px-4 py-3"
+      className="custom-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto px-4 py-3"
       role="feed"
       aria-label="Agent activity log"
     >
