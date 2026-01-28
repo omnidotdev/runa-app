@@ -3,6 +3,7 @@ import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 
 import { AUTH_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
+import getSdk from "@/lib/graphql/getSdk";
 import { authMiddleware } from "@/server/middleware";
 
 const createOrganizationSchema = z.object({
@@ -99,15 +100,48 @@ export type Organization = {
 };
 
 /**
- * Get an organization by slug from Gatekeeper (IDP).
+ * Get an organization by slug.
  * Used when JWT claims are stale and don't include a newly created org.
+ *
+ * SaaS: Fetches from Gatekeeper (IDP).
+ * Self-hosted: Queries API for user's orgs and finds by slug.
  */
 export const getOrganizationBySlug = createServerFn({ method: "GET" })
   .inputValidator((data) => getOrganizationBySlugSchema.parse(data))
   .middleware([authMiddleware])
-  .handler(async ({ data }) => {
-    // Self-hosted: orgs come from JWT claims, not IDP
-    if (isSelfHosted) return null;
+  .handler(async ({ data, context }) => {
+    if (isSelfHosted) {
+      // Query API for user's organizations to handle stale JWT cache
+      try {
+        const identityProviderId = context.session?.user?.identityProviderId;
+        if (!identityProviderId) return null;
+
+        const sdk = await getSdk();
+        const { userByIdentityProviderId } = await sdk.UserByIdentityProviderId(
+          { identityProviderId },
+        );
+
+        const org = userByIdentityProviderId?.userOrganizations?.nodes?.find(
+          (o) => o.slug === data.slug,
+        );
+
+        if (!org) return null;
+
+        return {
+          id: org.organizationId,
+          name: org.name ?? data.slug,
+          slug: org.slug,
+          type: org.type as "personal" | "team",
+          createdAt: new Date().toISOString(),
+        } as Organization;
+      } catch (error) {
+        console.error(
+          "[getOrganizationBySlug] Self-hosted lookup failed:",
+          error,
+        );
+        return null;
+      }
+    }
 
     const request = getRequest();
     const cookieHeader = request.headers.get("cookie") || "";
