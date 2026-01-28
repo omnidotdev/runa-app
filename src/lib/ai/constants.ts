@@ -20,3 +20,6 @@ export const DESTRUCTIVE_TOOL_NAMES = new Set([
   "batchUpdateTasks",
   "batchDeleteTasks",
 ]);
+
+/** Tool names that delegate to another agent persona. */
+export const DELEGATION_TOOL_NAMES = new Set(["delegateToAgent"]);

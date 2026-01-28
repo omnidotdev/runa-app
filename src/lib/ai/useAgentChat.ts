@@ -3,13 +3,21 @@ import { fetchServerSentEvents, useChat } from "@tanstack/ai-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { API_BASE_URL } from "@/lib/config/env.config";
+import { useAccessToken } from "./hooks/useAccessToken";
 import { WRITE_TOOL_NAMES } from "./constants";
 
 interface UseAgentChatOptions {
   projectId: string;
-  accessToken: string;
   /** Session ID to resume. `null` starts a new session. */
   sessionId?: string | null;
+  /**
+   * Composite key that changes whenever the session should be recreated.
+   * Includes a generation counter to handle null→null transitions
+   * when the user clicks "New Session" while already on a new session.
+   */
+  sessionKey?: string;
+  /** Persona to use for this chat session. `null` uses the org default. */
+  personaId?: string | null;
   /** Called when the server returns a session ID in response headers. */
   onSessionId?: (sessionId: string) => void;
 }
@@ -17,6 +25,9 @@ interface UseAgentChatOptions {
 /**
  * Hook for AI agent chat, wrapping TanStack AI's `useChat` with
  * project-scoped auth and session management.
+ *
+ * The access token is sourced from route context via `useAccessToken()`,
+ * eliminating the need for prop drilling.
  *
  * Uses refs for dynamic values (token, projectId) to keep the connection
  * adapter stable — avoiding ChatClient recreation during a conversation.
@@ -32,14 +43,17 @@ interface UseAgentChatOptions {
  */
 export function useAgentChat({
   projectId,
-  accessToken,
   sessionId,
+  sessionKey,
+  personaId,
   onSessionId,
 }: UseAgentChatOptions) {
+  const accessToken = useAccessToken();
   const queryClient = useQueryClient();
   const sessionIdRef = useRef<string | null>(sessionId ?? null);
   const accessTokenRef = useRef(accessToken);
   const projectIdRef = useRef(projectId);
+  const personaIdRef = useRef(personaId ?? null);
   const onSessionIdRef = useRef(onSessionId);
   const invalidationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
@@ -49,6 +63,7 @@ export function useAgentChat({
   // Keep refs in sync with latest prop values
   accessTokenRef.current = accessToken;
   projectIdRef.current = projectId;
+  personaIdRef.current = personaId ?? null;
   onSessionIdRef.current = onSessionId;
 
   // Recreate connection when sessionId changes — this resets useChat's
@@ -69,21 +84,28 @@ export function useAgentChat({
           ...(sessionIdRef.current
             ? { sessionId: sessionIdRef.current }
             : {}),
+          ...(personaIdRef.current
+            ? { personaId: personaIdRef.current }
+            : {}),
         },
         // Wrap fetch to capture session ID from response headers
         fetchClient: async (url, init) => {
           const response = await fetch(url, init);
-          const sid = response.headers.get("X-Agent-Session-Id");
-          if (sid) {
-            sessionIdRef.current = sid;
-            onSessionIdRef.current?.(sid);
+          try {
+            const sid = response.headers.get("X-Agent-Session-Id");
+            if (sid && typeof sid === "string" && sid.length > 0) {
+              sessionIdRef.current = sid;
+              onSessionIdRef.current?.(sid);
+            }
+          } catch {
+            // Session ID extraction is non-critical — don't break the SSE connection
           }
           return response;
         },
       }));
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [sessionId],
+    [sessionKey ?? sessionId],
   );
 
   const chatResult = useChat({ connection });

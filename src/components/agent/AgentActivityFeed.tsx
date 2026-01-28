@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2Icon, ZapIcon } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useRollbackActivity } from "@/lib/ai/hooks/useRollback";
 import agentActivitiesOptions from "@/lib/options/agentActivities.options";
 
 import { AgentActivityItem } from "./AgentActivityItem";
@@ -22,6 +23,13 @@ export function AgentActivityFeed({ projectId }: AgentActivityFeedProps) {
   const [previousActivities, setPreviousActivities] = useState<ActivityNode[]>(
     [],
   );
+  const lastAppendedCursorRef = useRef<string | null>(null);
+
+  const {
+    mutate: rollbackActivity,
+    isPending: isRollingBack,
+    variables: rollingBackId,
+  } = useRollbackActivity();
 
   const { data, isLoading, isFetching } = useQuery(
     agentActivitiesOptions({
@@ -40,8 +48,18 @@ export function AgentActivityFeed({ projectId }: AgentActivityFeedProps) {
 
   const handleLoadMore = useCallback(() => {
     if (!pageInfo?.endCursor) return;
-    // Save current page nodes before advancing cursor
-    setPreviousActivities((prev) => [...prev, ...currentPageNodes]);
+    // Guard against double-click: skip if we already appended from this cursor
+    if (lastAppendedCursorRef.current === pageInfo.endCursor) return;
+    lastAppendedCursorRef.current = pageInfo.endCursor;
+
+    // Save current page nodes before advancing cursor, deduplicating by rowId
+    setPreviousActivities((prev) => {
+      const existingIds = new Set(prev.map((a) => a.rowId));
+      const newNodes = currentPageNodes.filter(
+        (node) => !existingIds.has(node.rowId),
+      );
+      return [...prev, ...newNodes];
+    });
     setCursor(pageInfo.endCursor);
   }, [pageInfo?.endCursor, currentPageNodes]);
 
@@ -78,7 +96,13 @@ export function AgentActivityFeed({ projectId }: AgentActivityFeedProps) {
       </p>
 
       {activities.map((activity) => (
-        <AgentActivityItem key={activity.rowId} activity={activity} />
+        <AgentActivityItem
+          key={activity.rowId}
+          activity={activity}
+          onUndo={rollbackActivity}
+          isUndoing={isRollingBack}
+          undoingActivityId={rollingBackId}
+        />
       ))}
 
       {pageInfo?.hasNextPage && (

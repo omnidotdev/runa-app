@@ -5,11 +5,14 @@ import type { AgentSessionNode } from "./useAgentSessions";
 /**
  * Hook for managing the currently active agent session.
  *
- * Tracks `currentSessionId` as local state. Provides methods to
- * select an existing session or start a new one (clearing the ID).
+ * Tracks `currentSessionId` as local state with a generation counter.
+ * The generation counter ensures that calling `startNewSession()` when
+ * already on a null session still triggers downstream effects (e.g.,
+ * `useAgentChat`'s memo recomputes to create a fresh connection).
  */
 export function useCurrentSession(sessions: AgentSessionNode[]) {
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [generation, setGeneration] = useState(0);
 
   const currentSession = currentSessionId
     ? sessions.find((s) => s.rowId === currentSessionId) ?? null
@@ -23,11 +26,16 @@ export function useCurrentSession(sessions: AgentSessionNode[]) {
   /** Clear the active session to start a new conversation. */
   const startNewSession = useCallback(() => {
     setCurrentSessionId(null);
+    setGeneration((prev) => prev + 1);
   }, []);
+
+  // Composite key for downstream memo dependencies
+  const sessionKey = `${currentSessionId ?? "new"}-${generation}`;
 
   return {
     currentSessionId,
     currentSession,
+    sessionKey,
     selectSession,
     startNewSession,
   };

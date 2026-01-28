@@ -1,6 +1,8 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useLoaderData } from "@tanstack/react-router";
 import { all } from "better-all";
 
+import { AgentScheduleConfig } from "@/components/agent/AgentScheduleConfig";
+import { AgentWebhookConfig } from "@/components/agent/AgentWebhookConfig";
 import { NotFound } from "@/components/layout";
 import {
   ProjectColumnsForm,
@@ -77,6 +79,10 @@ export const Route = createFileRoute(
 });
 
 function ProjectSettingsPage() {
+  const { projectId, organizationId } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+  });
+
   return (
     <div className="no-scrollbar relative h-full overflow-auto px-4 py-8 lg:p-12">
       <ProjectSettingsHeader />
@@ -87,6 +93,13 @@ function ProjectSettingsPage() {
         <ProjectLabelsForm />
 
         <ProjectColumnsForm />
+
+        <AgentWebhookConfig projectId={projectId} />
+
+        <AgentScheduleConfig
+          projectId={projectId}
+          organizationId={organizationId}
+        />
 
         <ProjectDataSection />
 

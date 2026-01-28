@@ -1,19 +1,27 @@
 import { useCallback, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { Loader2Icon, SettingsIcon } from "lucide-react";
+import { KeyIcon, Loader2Icon, SettingsIcon, TrashIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { API_BASE_URL } from "@/lib/config/env.config";
 
+import { AgentMarketplace } from "./AgentMarketplace";
+import { AgentPersonaManager } from "./AgentPersonaManager";
 import { AgentTokenUsage } from "./AgentTokenUsage";
+
+interface ByokKeyInfo {
+  maskedKey: string;
+  provider: string;
+}
 
 interface AgentConfig {
   requireApprovalForDestructive: boolean;
   requireApprovalForCreate: boolean;
   maxIterationsPerRequest: number;
   customInstructions: string | null;
+  byokKey: ByokKeyInfo | null;
 }
 
 function agentConfigQueryKey(organizationId: string) {
@@ -60,6 +68,58 @@ async function updateAgentConfig(
   const data = (await response.json()) as { config: AgentConfig };
   return data.config;
 }
+
+async function saveApiKey(
+  organizationId: string,
+  accessToken: string,
+  provider: string,
+  apiKey: string,
+): Promise<ByokKeyInfo> {
+  const response = await fetch(`${API_BASE_URL}/api/ai/config/key`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ organizationId, provider, apiKey }),
+  });
+
+  if (!response.ok) {
+    const err = (await response.json().catch(() => null)) as {
+      error?: string;
+    } | null;
+    throw new Error(err?.error ?? "Failed to save API key");
+  }
+
+  const data = (await response.json()) as { key: ByokKeyInfo };
+  return data.key;
+}
+
+async function removeApiKey(
+  organizationId: string,
+  accessToken: string,
+): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/ai/config/key`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ organizationId }),
+  });
+
+  if (!response.ok) {
+    const err = (await response.json().catch(() => null)) as {
+      error?: string;
+    } | null;
+    throw new Error(err?.error ?? "Failed to remove API key");
+  }
+}
+
+const PROVIDER_OPTIONS = [
+  { value: "anthropic", label: "Anthropic" },
+  { value: "openai", label: "OpenAI" },
+] as const;
 
 /**
  * A minimal toggle switch built with a button element.
@@ -134,8 +194,10 @@ export function AgentConfigSection() {
   }, [config]);
 
   const { mutate: saveConfig, isPending: isSaving } = useMutation({
-    mutationFn: (updates: Partial<AgentConfig>) =>
-      updateAgentConfig(organizationId!, accessToken!, updates),
+    mutationFn: (updates: Partial<AgentConfig>) => {
+      if (!accessToken) throw new Error("Not authenticated");
+      return updateAgentConfig(organizationId!, accessToken, updates);
+    },
     onSuccess: (saved) => {
       setLocalConfig(saved);
       queryClient.setQueryData(
@@ -184,6 +246,61 @@ export function AgentConfigSection() {
     setLocalConfig(updated);
     saveConfig({ customInstructions: value });
   }, [localConfig, customInstructionsDraft, saveConfig]);
+
+  // BYOK key management state
+  const [isKeyFormOpen, setIsKeyFormOpen] = useState(false);
+  const [keyProvider, setKeyProvider] = useState("anthropic");
+  const [keyValue, setKeyValue] = useState("");
+  const [keyError, setKeyError] = useState<string | null>(null);
+
+  const { mutate: saveKey, isPending: isSavingKey } = useMutation({
+    mutationFn: () => {
+      if (!accessToken) throw new Error("Not authenticated");
+      return saveApiKey(organizationId!, accessToken, keyProvider, keyValue);
+    },
+    onSuccess: (savedKey) => {
+      setLocalConfig((prev) =>
+        prev ? { ...prev, byokKey: savedKey } : prev,
+      );
+      queryClient.setQueryData(
+        agentConfigQueryKey(organizationId!),
+        (prev: AgentConfig | undefined) =>
+          prev ? { ...prev, byokKey: savedKey } : prev,
+      );
+      setIsKeyFormOpen(false);
+      setKeyValue("");
+      setKeyError(null);
+    },
+    onError: (err) => {
+      setKeyError(err instanceof Error ? err.message : "Failed to save key");
+    },
+  });
+
+  const { mutate: deleteKey, isPending: isDeletingKey } = useMutation({
+    mutationFn: () => {
+      if (!accessToken) throw new Error("Not authenticated");
+      return removeApiKey(organizationId!, accessToken);
+    },
+    onSuccess: () => {
+      setLocalConfig((prev) =>
+        prev ? { ...prev, byokKey: null } : prev,
+      );
+      queryClient.setQueryData(
+        agentConfigQueryKey(organizationId!),
+        (prev: AgentConfig | undefined) =>
+          prev ? { ...prev, byokKey: null } : prev,
+      );
+    },
+  });
+
+  const handleSaveKey = useCallback(() => {
+    setKeyError(null);
+    if (keyValue.length < 10) {
+      setKeyError("API key must be at least 10 characters");
+      return;
+    }
+    saveKey();
+  }, [keyValue, saveKey]);
 
   if (isLoading) {
     return (
@@ -293,6 +410,123 @@ export function AgentConfigSection() {
           </Button>
         </div>
       </div>
+
+      <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
+        <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
+          API Key (BYOK)
+        </h3>
+        <p className="text-muted-foreground text-xs">
+          Provide your own LLM API key. When set, the agent uses your key instead
+          of the shared platform key.
+        </p>
+
+        {localConfig.byokKey && !isKeyFormOpen && (
+          <div className="flex items-center justify-between gap-3 rounded-md border bg-muted/30 p-2.5">
+            <div className="flex items-center gap-2">
+              <KeyIcon className="size-3.5 text-muted-foreground" />
+              <span className="font-mono text-sm">
+                {localConfig.byokKey.maskedKey}
+              </span>
+              <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                {localConfig.byokKey.provider}
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsKeyFormOpen(true)}
+                disabled={isDeletingKey}
+              >
+                Replace
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => deleteKey()}
+                disabled={isDeletingKey}
+                aria-label="Remove API key"
+              >
+                {isDeletingKey ? (
+                  <Loader2Icon className="size-3.5 animate-spin" />
+                ) : (
+                  <TrashIcon className="size-3.5 text-destructive" />
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {(isKeyFormOpen || !localConfig.byokKey) && (
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <select
+                value={keyProvider}
+                onChange={(e) => setKeyProvider(e.target.value)}
+                disabled={isSavingKey}
+                className="rounded-md border border-input bg-transparent px-2 py-1.5 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+                aria-label="LLM provider"
+              >
+                {PROVIDER_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <Input
+                type="password"
+                value={keyValue}
+                onChange={(e) => {
+                  setKeyValue(e.target.value);
+                  setKeyError(null);
+                }}
+                placeholder="sk-..."
+                disabled={isSavingKey}
+                className="flex-1"
+                autoComplete="off"
+              />
+            </div>
+            {keyError && (
+              <p className="text-destructive text-xs">{keyError}</p>
+            )}
+            <div className="flex justify-end gap-2">
+              {isKeyFormOpen && localConfig.byokKey && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setIsKeyFormOpen(false);
+                    setKeyValue("");
+                    setKeyError(null);
+                  }}
+                  disabled={isSavingKey}
+                >
+                  Cancel
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSaveKey}
+                disabled={isSavingKey || keyValue.length < 10}
+              >
+                {isSavingKey ? (
+                  <>
+                    <Loader2Icon className="mr-1 size-3 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Key"
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <AgentPersonaManager organizationId={organizationId!} />
+
+      <AgentMarketplace organizationId={organizationId!} />
 
       <AgentTokenUsage organizationId={organizationId!} />
     </div>

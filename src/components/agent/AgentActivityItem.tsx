@@ -3,18 +3,18 @@ import {
   CheckCircleIcon,
   ChevronDownIcon,
   ClockIcon,
+  Loader2Icon,
+  Undo2Icon,
   XCircleIcon,
 } from "lucide-react";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { useState } from "react";
 
+import { WRITE_TOOL_NAMES } from "@/lib/ai/constants";
+import { formatRelativeTime } from "@/lib/ai/utils/formatRelativeTime";
 import { formatToolName } from "@/lib/ai/utils/formatToolName";
 import { cn } from "@/lib/utils";
 
 import type { AgentActivitiesQuery } from "@/generated/graphql";
-
-dayjs.extend(relativeTime);
 
 type ActivityNode = NonNullable<
   AgentActivitiesQuery["agentActivities"]
@@ -22,6 +22,9 @@ type ActivityNode = NonNullable<
 
 interface AgentActivityItemProps {
   activity: ActivityNode;
+  onUndo?: (activityId: string) => void;
+  isUndoing?: boolean;
+  undoingActivityId?: string;
 }
 
 const STATUS_CONFIG = {
@@ -45,20 +48,38 @@ const STATUS_CONFIG = {
     label: "Pending",
     className: "bg-muted text-muted-foreground",
   },
+  rolled_back: {
+    icon: Undo2Icon,
+    label: "Undone",
+    className: "bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300",
+  },
 } as const;
 
 function getStatusConfig(status: string, approvalStatus: string | null | undefined) {
   if (approvalStatus === "denied") return STATUS_CONFIG.denied;
+  if (status === "rolled_back") return STATUS_CONFIG.rolled_back;
   if (status === "completed") return STATUS_CONFIG.completed;
   if (status === "failed") return STATUS_CONFIG.failed;
   return STATUS_CONFIG.pending;
 }
 
-export function AgentActivityItem({ activity }: AgentActivityItemProps) {
+export function AgentActivityItem({
+  activity,
+  onUndo,
+  isUndoing,
+  undoingActivityId,
+}: AgentActivityItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const statusConfig = getStatusConfig(activity.status, activity.approvalStatus);
   const StatusIcon = statusConfig.icon;
-  const relativeTimestamp = dayjs(activity.createdAt).fromNow();
+  const relativeTimestamp = formatRelativeTime(activity.createdAt);
+
+  // An activity is undoable if it's a completed write tool (not already rolled back)
+  const isUndoable =
+    activity.status === "completed" &&
+    WRITE_TOOL_NAMES.has(activity.toolName) &&
+    onUndo !== undefined;
+  const isThisUndoing = isUndoing && undoingActivityId === activity.rowId;
 
   return (
     <div role="article" className="flex flex-col gap-1 rounded-md border p-2.5">
@@ -68,6 +89,8 @@ export function AgentActivityItem({ activity }: AgentActivityItemProps) {
           {formatToolName(activity.toolName)}
         </span>
         <span
+          role="status"
+          aria-label={`Status: ${statusConfig.label}`}
           className={cn(
             "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium",
             statusConfig.className,
@@ -82,11 +105,30 @@ export function AgentActivityItem({ activity }: AgentActivityItemProps) {
           {activity.session?.title ?? "Session"} &middot; {relativeTimestamp}
         </span>
 
-        {activity.requiresApproval && (
-          <span className="text-amber-600 text-[10px] dark:text-amber-400">
-            <AlertTriangleIcon className="inline size-2.5" /> Approval
-          </span>
-        )}
+        <div className="flex items-center gap-1.5">
+          {activity.requiresApproval && (
+            <span className="text-amber-600 text-[10px] dark:text-amber-400">
+              <AlertTriangleIcon className="inline size-2.5" /> Approval
+            </span>
+          )}
+
+          {isUndoable && (
+            <button
+              type="button"
+              onClick={() => onUndo(activity.rowId)}
+              disabled={isThisUndoing}
+              aria-label={`Undo ${formatToolName(activity.toolName)}`}
+              className="inline-flex items-center gap-0.5 rounded px-1 py-0.5 text-[10px] text-violet-600 transition-colors hover:bg-violet-100 disabled:opacity-50 dark:text-violet-400 dark:hover:bg-violet-950/50"
+            >
+              {isThisUndoing ? (
+                <Loader2Icon className="size-2.5 animate-spin" />
+              ) : (
+                <Undo2Icon className="size-2.5" />
+              )}
+              Undo
+            </button>
+          )}
+        </div>
       </div>
 
       {activity.errorMessage && (
@@ -99,6 +141,8 @@ export function AgentActivityItem({ activity }: AgentActivityItemProps) {
         <button
           type="button"
           onClick={() => setIsExpanded((prev) => !prev)}
+          aria-expanded={isExpanded}
+          aria-label={isExpanded ? "Hide tool details" : "Show tool details"}
           className="mt-1 flex items-center gap-1 text-muted-foreground text-[10px] transition-colors hover:text-foreground"
         >
           <ChevronDownIcon

@@ -26,6 +26,7 @@ import {
 } from "@/lib/lexical/html";
 import { cn } from "@/lib/utils";
 import CodeBlockPlugin from "./CodeBlockPlugin";
+import MentionSuggestionPlugin from "./MentionSuggestionPlugin";
 import theme from "./lexical-theme";
 
 import type { EditorState, LexicalEditor } from "lexical";
@@ -48,6 +49,8 @@ interface Props extends Omit<ComponentProps<"div">, "placeholder"> {
   editable?: boolean;
   placeholder?: string;
   skeletonClassName?: string;
+  /** Enable @agent mention autocomplete suggestions. */
+  enableMentions?: boolean;
 }
 
 // Plugin to register code highlighting
@@ -149,6 +152,7 @@ const RichTextEditor = ({
   editable = true,
   placeholder,
   skeletonClassName,
+  enableMentions = false,
   ...rest
 }: Props) => {
   const editorContainerRef = useRef<HTMLDivElement>(null);
@@ -232,6 +236,7 @@ const RichTextEditor = ({
               editorApi={editorApi}
               defaultContent={defaultContent}
             />
+            {enableMentions && <MentionSuggestionPlugin />}
           </div>
         </LexicalComposer>
       </ClientOnly>

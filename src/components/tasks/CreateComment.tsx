@@ -31,12 +31,15 @@ const CreateComment = () => {
       comment: "",
     },
     onSubmit: ({ value, formApi }) => {
+      const authorId = session?.user?.rowId;
+      if (!authorId) return;
+
       if (value.comment.trim()) {
         addComment({
           input: {
             post: {
               taskId,
-              authorId: session?.user?.rowId!,
+              authorId,
               description: value.comment,
             },
           },
@@ -62,7 +65,8 @@ const CreateComment = () => {
           <RichTextEditor
             editorApi={editorApi}
             onUpdate={({ getHTML }) => field.handleChange(getHTML())}
-            placeholder="Add a comment..."
+            placeholder="Add a comment... (type @agent to mention the AI agent)"
+            enableMentions
             className="flex min-h-32 w-full rounded-xl border text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40"
             skeletonClassName="h-[128px] w-full"
           />

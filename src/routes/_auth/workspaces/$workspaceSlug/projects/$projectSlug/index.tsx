@@ -634,8 +634,8 @@ function ProjectPage() {
             <SheetContent side="right" className="w-full p-0 sm:max-w-full">
               <AgentChatPanel
                 projectId={projectId}
+                organizationId={organizationId}
                 userId={session.user.rowId!}
-                accessToken={session.accessToken}
                 onClose={() => setIsAgentOpen(false)}
                 className="w-full border-l-0"
               />
@@ -644,8 +644,8 @@ function ProjectPage() {
         ) : (
           <AgentChatPanel
             projectId={projectId}
+            organizationId={organizationId}
             userId={session.user.rowId!}
-            accessToken={session.accessToken}
             onClose={() => setIsAgentOpen(false)}
           />
         )
