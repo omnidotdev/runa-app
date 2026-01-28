@@ -5,6 +5,7 @@ import { clearRowIdCache } from "@/server/functions/auth";
  * Sign out from the application.
  *
  * TODO: Implement federated logout to also sign out from the IDP session.
+ * Blocked: Better Auth doesn't expose `end_session_endpoint` in its OIDC provider yet.
  * @see https://linear.app/omnidev/issue/OMNI-304/resolve-federated-logout
  */
 const signOut = async () => {

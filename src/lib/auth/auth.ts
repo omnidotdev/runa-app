@@ -19,6 +19,8 @@ import {
 } from "@/lib/config/env.config";
 import { pgPool } from "@/lib/db";
 
+import type { OrganizationClaim } from "@/lib/auth/rowIdCache";
+
 /**
  * Whether running in SaaS mode (Omni OAuth configured).
  * SaaS mode is stateless - no database, no email/password.
@@ -114,11 +116,11 @@ if (oauthConfigs.length > 0) {
 
 plugins.push(
   customSession(async ({ user, session }) => {
-    // Try to get rowId and identityProviderId from cache.
-    // The identityProviderId (IDP sub) is stored in the cache and extracted
-    // from the ID token in getAuth().
+    // Try to get cached auth data (rowId, identityProviderId, organizations).
+    // This avoids API calls on every request in self-hosted mode.
     let rowId: string | null = null;
     let identityProviderId: string | null = null;
+    let organizations: OrganizationClaim[] = [];
 
     const cachedValue = getCookie(COOKIE_NAME);
     if (cachedValue) {
@@ -126,18 +128,18 @@ plugins.push(
       if (cached) {
         rowId = cached.rowId;
         identityProviderId = cached.identityProviderId;
+        organizations = cached.organizations;
       }
     }
 
-    // If cache miss, rowId and identityProviderId will be null.
-    // The getAuth() function will handle fetching from the API and
-    // populating the cache when it has access to the ID token.
+    // If cache miss, getAuth() will sync with the API and populate the cache.
 
     return {
       user: {
         ...user,
         rowId,
         identityProviderId,
+        organizations,
       },
       session,
     };
