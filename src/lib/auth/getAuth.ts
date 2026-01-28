@@ -8,7 +8,8 @@ import {
   COOKIE_NAME,
   COOKIE_TTL_SECONDS,
   OMNI_CLAIMS_ORGANIZATIONS,
-  encryptRowId,
+  createSelfHostedToken,
+  encryptAuthData,
   fetchRowIdFromApi,
   generateUuidV5,
   syncSelfHostedUser,
@@ -117,47 +118,72 @@ export async function getAuth(request: Request) {
     const customUser = session.user as typeof session.user & {
       identityProviderId?: string | null;
       rowId?: string | null;
+      organizations?: OrganizationClaim[];
     };
     let identityProviderId = customUser.identityProviderId;
     let rowId = customUser.rowId;
+    const cachedOrganizations = customUser.organizations;
 
     if (isSelfHosted) {
-      // Self-hosted: sync with API, get back JWT with org claims embedded
+      // Self-hosted: generate JWT with org claims for API authentication
       if (!identityProviderId) {
         identityProviderId = await generateUuidV5(session.user.id);
       }
 
-      try {
-        const syncResult = await syncSelfHostedUser({
-          id: session.user.id,
-          email: session.user.email,
-          name: session.user.name || session.user.email,
-          image: session.user.image,
+      // Check if we have complete cached data (avoids API call on every request)
+      const hasCachedData =
+        rowId && identityProviderId && cachedOrganizations?.length;
+
+      if (hasCachedData) {
+        // Cache hit: generate token locally without API sync
+        organizations = cachedOrganizations;
+        accessToken = await createSelfHostedToken({
+          user: {
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.name || session.user.email,
+            image: session.user.image,
+          },
+          organizations,
         });
+      } else {
+        // Cache miss: sync with API to get rowId and organizations
+        try {
+          const syncResult = await syncSelfHostedUser({
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.name || session.user.email,
+            image: session.user.image,
+          });
 
-        if (syncResult) {
-          accessToken = syncResult.accessToken;
-          if (!rowId) rowId = syncResult.rowId;
-          identityProviderId = syncResult.identityProviderId;
+          if (syncResult) {
+            accessToken = syncResult.accessToken;
+            if (!rowId) rowId = syncResult.rowId;
+            identityProviderId = syncResult.identityProviderId;
 
-          // Extract orgs from JWT - SAME as SaaS path below
-          const payload = jose.decodeJwt(accessToken);
-          organizations = extractOrganizations(payload);
+            // Extract orgs from JWT
+            const payload = jose.decodeJwt(accessToken);
+            organizations = extractOrganizations(payload);
 
-          // Cache rowId
-          if (rowId && identityProviderId) {
-            const encrypted = await encryptRowId(rowId, identityProviderId);
-            setCookie(COOKIE_NAME, encrypted, {
-              httpOnly: true,
-              secure: process.env.NODE_ENV === "production",
-              sameSite: "lax",
-              path: "/",
-              maxAge: COOKIE_TTL_SECONDS,
-            });
+            // Cache auth data (rowId, identityProviderId, organizations)
+            if (rowId && identityProviderId) {
+              const encrypted = await encryptAuthData({
+                rowId,
+                identityProviderId,
+                organizations,
+              });
+              setCookie(COOKIE_NAME, encrypted, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/",
+                maxAge: COOKIE_TTL_SECONDS,
+              });
+            }
           }
+        } catch (err) {
+          console.error("[getAuth] Self-hosted sync error:", err);
         }
-      } catch (err) {
-        console.error("[getAuth] Self-hosted sync error:", err);
       }
     } else {
       // SaaS: get tokens from HIDRA via Better Auth
@@ -204,7 +230,11 @@ export async function getAuth(request: Request) {
             (await fetchRowIdFromApi(accessToken, identityProviderId)) ?? null;
 
           if (rowId) {
-            const encrypted = await encryptRowId(rowId, identityProviderId);
+            const encrypted = await encryptAuthData({
+              rowId,
+              identityProviderId,
+              organizations,
+            });
             setCookie(COOKIE_NAME, encrypted, {
               httpOnly: true,
               secure: process.env.NODE_ENV === "production",
