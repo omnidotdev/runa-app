@@ -54,46 +54,46 @@ const Assignees = ({
     : assignedUsers;
 
   return (
-    <div {...rest}>
-      <div
-        className={cn(
-          "flex items-center",
-          showUsername ? "flex-col gap-1" : "-space-x-6",
-        )}
-      >
-        {visibleUsers.map((member) => {
-          const userColor = getUserColor(member.userId);
-          return (
-            <div key={member.userId} className="flex items-center gap-0">
-              <AvatarRoot className="size-6 rounded-full border-2 border-background font-medium text-xs">
-                <AvatarImage
-                  src={member.user.image ?? undefined}
-                  alt={member.user.name}
-                />
-                <AvatarFallback
-                  style={{
-                    backgroundColor: `${userColor}20`,
-                    color: userColor,
-                  }}
-                >
-                  {member.user.name?.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </AvatarRoot>
+    <div
+      {...rest}
+      className={cn(
+        "flex items-center",
+        showUsername ? "flex-col gap-1" : "-space-x-1",
+        rest.className,
+      )}
+    >
+      {visibleUsers.map((member) => {
+        const userColor = getUserColor(member.userId);
+        return (
+          <div key={member.userId} className="flex items-center gap-0">
+            <AvatarRoot className="size-6 rounded-full border-2 border-background font-medium text-xs">
+              <AvatarImage
+                src={member.user.image ?? undefined}
+                alt={member.user.name}
+              />
+              <AvatarFallback
+                style={{
+                  backgroundColor: `${userColor}20`,
+                  color: userColor,
+                }}
+              >
+                {member.user.name?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </AvatarRoot>
 
-              {showUsername && (
-                <p className="ml-2 hidden text-xs md:flex">
-                  {member.user.name}
-                </p>
-              )}
-            </div>
-          );
-        })}
-      </div>
+            {showUsername && (
+              <p className="ml-2 hidden text-xs md:flex">{member.user.name}</p>
+            )}
+          </div>
+        );
+      })}
 
       {extraCount > 0 && (
-        <div className="z-50 flex size-6 items-center justify-center rounded-full border-2 bg-background font-medium text-[10px]">
-          +{extraCount}
-        </div>
+        <AvatarRoot className="size-6 rounded-full border-2 border-background font-medium text-[10px]">
+          <AvatarFallback className="bg-base-100 text-base-600 dark:bg-base-800 dark:text-base-400">
+            +{extraCount}
+          </AvatarFallback>
+        </AvatarRoot>
       )}
     </div>
   );
