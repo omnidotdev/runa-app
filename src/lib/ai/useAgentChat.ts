@@ -8,15 +8,20 @@ import { WRITE_TOOL_NAMES } from "./constants";
 interface UseAgentChatOptions {
   projectId: string;
   accessToken: string;
+  /** Session ID to resume. `null` starts a new session. */
+  sessionId?: string | null;
+  /** Called when the server returns a session ID in response headers. */
+  onSessionId?: (sessionId: string) => void;
 }
 
 /**
  * Hook for AI agent chat, wrapping TanStack AI's `useChat` with
  * project-scoped auth and session management.
  *
- * Uses refs for dynamic values (token, projectId, sessionId) to keep the
- * connection adapter stable — avoiding ChatClient recreation which would
- * clear conversation state.
+ * Uses refs for dynamic values (token, projectId) to keep the connection
+ * adapter stable — avoiding ChatClient recreation during a conversation.
+ * The `sessionId` prop IS included as a memo dependency so that switching
+ * sessions recreates the connection and clears stale messages.
  *
  * Session ID is captured from the `X-Agent-Session-Id` response header
  * via a custom `fetchClient` wrapper, since `onResponse` does not receive
@@ -25,11 +30,17 @@ interface UseAgentChatOptions {
  * When write tools complete, React Query caches for board data are
  * invalidated so the UI reflects agent-made changes in real time.
  */
-export function useAgentChat({ projectId, accessToken }: UseAgentChatOptions) {
+export function useAgentChat({
+  projectId,
+  accessToken,
+  sessionId,
+  onSessionId,
+}: UseAgentChatOptions) {
   const queryClient = useQueryClient();
-  const sessionIdRef = useRef<string | null>(null);
+  const sessionIdRef = useRef<string | null>(sessionId ?? null);
   const accessTokenRef = useRef(accessToken);
   const projectIdRef = useRef(projectId);
+  const onSessionIdRef = useRef(onSessionId);
   const invalidationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
     null,
   );
@@ -38,11 +49,18 @@ export function useAgentChat({ projectId, accessToken }: UseAgentChatOptions) {
   // Keep refs in sync with latest prop values
   accessTokenRef.current = accessToken;
   projectIdRef.current = projectId;
+  onSessionIdRef.current = onSessionId;
 
-  // Connection adapter created once — options function is called fresh per request
+  // Recreate connection when sessionId changes — this resets useChat's
+  // message state so stale messages from the previous session are cleared.
+  // Refs for accessToken/projectId keep those values fresh without triggering
+  // a reconnection on every render.
   const connection = useMemo(
-    () =>
-      fetchServerSentEvents(`${API_BASE_URL}/api/ai/chat`, () => ({
+    () => {
+      sessionIdRef.current = sessionId ?? null;
+      lastWriteCountRef.current = 0;
+
+      return fetchServerSentEvents(`${API_BASE_URL}/api/ai/chat`, () => ({
         headers: {
           Authorization: `Bearer ${accessTokenRef.current}`,
         },
@@ -56,11 +74,16 @@ export function useAgentChat({ projectId, accessToken }: UseAgentChatOptions) {
         fetchClient: async (url, init) => {
           const response = await fetch(url, init);
           const sid = response.headers.get("X-Agent-Session-Id");
-          if (sid) sessionIdRef.current = sid;
+          if (sid) {
+            sessionIdRef.current = sid;
+            onSessionIdRef.current?.(sid);
+          }
           return response;
         },
-      })),
-    [],
+      }));
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sessionId],
   );
 
   const chatResult = useChat({ connection });
@@ -106,5 +129,8 @@ export function useAgentChat({ projectId, accessToken }: UseAgentChatOptions) {
     };
   }, [chatResult.messages, queryClient]);
 
-  return chatResult;
+  return {
+    ...chatResult,
+    sessionId: sessionIdRef.current,
+  };
 }

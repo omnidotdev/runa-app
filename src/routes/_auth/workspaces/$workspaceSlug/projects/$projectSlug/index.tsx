@@ -34,6 +34,8 @@ import {
 } from "@/components/tasks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SheetContent, SheetRoot } from "@/components/ui/sheet";
+import useIsMobile from "@/lib/hooks/useIsMobile";
 import {
   useSettingByOrganizationIdQuery,
   useTaskQuery,
@@ -164,6 +166,7 @@ function ProjectPage() {
   const { search, assignees, labels, priorities } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
   const [isAgentOpen, setIsAgentOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const navigate = Route.useNavigate();
 
@@ -623,11 +626,29 @@ function ProjectPage() {
       </div>
 
       {isAgentOpen && session?.accessToken && (
-        <AgentChatPanel
-          projectId={projectId}
-          accessToken={session.accessToken}
-          onClose={() => setIsAgentOpen(false)}
-        />
+        isMobile ? (
+          <SheetRoot
+            open={isAgentOpen}
+            onOpenChange={({ open }) => setIsAgentOpen(open)}
+          >
+            <SheetContent side="right" className="w-full p-0 sm:max-w-full">
+              <AgentChatPanel
+                projectId={projectId}
+                userId={session.user.rowId!}
+                accessToken={session.accessToken}
+                onClose={() => setIsAgentOpen(false)}
+                className="w-full border-l-0"
+              />
+            </SheetContent>
+          </SheetRoot>
+        ) : (
+          <AgentChatPanel
+            projectId={projectId}
+            userId={session.user.rowId!}
+            accessToken={session.accessToken}
+            onClose={() => setIsAgentOpen(false)}
+          />
+        )
       )}
 
       <CreateTaskDialog />

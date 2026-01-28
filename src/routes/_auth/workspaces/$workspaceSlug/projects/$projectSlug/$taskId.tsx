@@ -29,6 +29,7 @@ import {
   UpdateDueDateDialog,
   UpdateTaskLabelsDialog,
 } from "@/components/tasks";
+import { TaskAgentActivity } from "@/components/tasks/TaskAgentActivity";
 import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -328,6 +329,7 @@ function TaskPage() {
             }}
           />
           <Comments />
+          <TaskAgentActivity taskId={taskId} projectId={projectId} />
           <CreateComment />
         </div>
 

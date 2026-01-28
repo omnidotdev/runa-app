@@ -1,53 +1,98 @@
-import { SparklesIcon, XIcon } from "lucide-react";
+import { useCallback } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
-import { Button } from "@/components/ui/button";
+import { TabsContent, TabsRoot } from "@/components/ui/tabs";
+import { useAgentSessions } from "@/lib/ai/hooks/useAgentSessions";
+import { useCurrentSession } from "@/lib/ai/hooks/useCurrentSession";
 import { useAgentChat } from "@/lib/ai/useAgentChat";
+import { cn } from "@/lib/utils";
 
+import { AgentActivityFeed } from "./AgentActivityFeed";
 import { AgentChatInput } from "./AgentChatInput";
 import { AgentChatMessages } from "./AgentChatMessages";
+import { AgentPanelHeader } from "./AgentPanelHeader";
 
 interface AgentChatPanelProps {
   projectId: string;
+  userId: string;
   accessToken: string;
   onClose: () => void;
+  className?: string;
 }
 
 export function AgentChatPanel({
   projectId,
+  userId,
   accessToken,
   onClose,
+  className,
 }: AgentChatPanelProps) {
-  const { messages, sendMessage, isLoading, stop, error, addToolApprovalResponse } =
-    useAgentChat({
-      projectId,
-      accessToken,
-    });
+  const {
+    sessions,
+    isLoading: isSessionsLoading,
+    refreshSessions,
+  } = useAgentSessions({ projectId, userId });
+
+  const { currentSessionId, selectSession, startNewSession } =
+    useCurrentSession(sessions);
+
+  const handleSessionId = useCallback(
+    (sid: string) => {
+      selectSession(sid);
+      refreshSessions();
+    },
+    [selectSession, refreshSessions],
+  );
+
+  const {
+    messages,
+    sendMessage,
+    isLoading,
+    stop,
+    error,
+    addToolApprovalResponse,
+  } = useAgentChat({
+    projectId,
+    accessToken,
+    sessionId: currentSessionId,
+    onSessionId: handleSessionId,
+  });
+
+  useHotkeys("escape", onClose, { enableOnFormTags: ["TEXTAREA"] });
 
   return (
-    <div className="flex h-full w-[400px] shrink-0 flex-col border-l bg-background">
-      <div className="flex items-center justify-between border-b px-4 py-3">
-        <div className="flex items-center gap-2">
-          <SparklesIcon className="size-4 text-primary" />
-          <h2 className="font-semibold text-sm">Agent</h2>
-        </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onClose}
-          aria-label="Close agent panel"
-        >
-          <XIcon className="size-4" />
-        </Button>
-      </div>
+    <div
+      className={cn(
+        "flex h-full w-[400px] shrink-0 flex-col border-l bg-background",
+        className,
+      )}
+      role="complementary"
+      aria-label="AI Agent Panel"
+    >
+      <TabsRoot defaultValue="chat" className="flex flex-1 flex-col overflow-hidden">
+        <AgentPanelHeader
+          onClose={onClose}
+          sessions={sessions}
+          currentSessionId={currentSessionId}
+          isSessionsLoading={isSessionsLoading}
+          onSelectSession={selectSession}
+          onNewSession={startNewSession}
+        />
 
-      <AgentChatMessages
-        messages={messages}
-        isLoading={isLoading}
-        error={error}
-        onApprovalResponse={addToolApprovalResponse}
-      />
+        <TabsContent value="chat" className="mt-0 flex flex-1 flex-col overflow-hidden">
+          <AgentChatMessages
+            messages={messages}
+            isLoading={isLoading}
+            error={error}
+            onApprovalResponse={addToolApprovalResponse}
+          />
+          <AgentChatInput onSend={sendMessage} onStop={stop} isLoading={isLoading} />
+        </TabsContent>
 
-      <AgentChatInput onSend={sendMessage} onStop={stop} isLoading={isLoading} />
+        <TabsContent value="activity" className="mt-0 flex flex-1 flex-col overflow-hidden">
+          <AgentActivityFeed projectId={projectId} />
+        </TabsContent>
+      </TabsRoot>
     </div>
   );
 }

@@ -11132,6 +11132,40 @@ export type DeleteUserMutationVariables = Exact<{
 
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser?: { __typename?: 'DeleteUserPayload', clientMutationId?: string | null } | null };
 
+export type AgentActivitiesQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  filter?: InputMaybe<AgentActivityFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+}>;
+
+
+export type AgentActivitiesQuery = { __typename?: 'Query', agentActivities?: { __typename?: 'AgentActivityConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentActivity', rowId: string, toolName: string, toolInput: any, toolOutput?: any | null, status: string, approvalStatus?: string | null, requiresApproval: boolean, errorMessage?: string | null, affectedTaskIds: any, createdAt: Date, session?: { __typename?: 'AgentSession', rowId: string, title?: string | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+
+export type AgentActivitiesByTaskIdQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type AgentActivitiesByTaskIdQuery = { __typename?: 'Query', agentActivities?: { __typename?: 'AgentActivityConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentActivity', rowId: string, toolName: string, toolInput: any, toolOutput?: any | null, status: string, approvalStatus?: string | null, requiresApproval: boolean, errorMessage?: string | null, affectedTaskIds: any, createdAt: Date, session?: { __typename?: 'AgentSession', rowId: string, title?: string | null } | null }> } | null };
+
+export type AgentSessionTokenUsageQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type AgentSessionTokenUsageQuery = { __typename?: 'Query', agentSessions?: { __typename?: 'AgentSessionConnection', totalCount: number, aggregates?: { __typename?: 'AgentSessionAggregates', sum?: { __typename?: 'AgentSessionSumAggregates', totalTokensUsed: string, toolCallCount: string } | null } | null } | null };
+
+export type AgentSessionsQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type AgentSessionsQuery = { __typename?: 'Query', agentSessions?: { __typename?: 'AgentSessionConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentSession', rowId: string, title?: string | null, toolCallCount: number, totalTokensUsed: number, createdAt: Date, updatedAt: Date }> } | null };
+
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -12143,6 +12177,426 @@ useDeleteUserMutation.getKey = () => ['DeleteUser'];
 
 
 useDeleteUserMutation.fetcher = (variables: DeleteUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, variables, options);
+
+export const AgentActivitiesDocument = `
+    query AgentActivities($projectId: UUID!, $filter: AgentActivityFilter, $first: Int = 20, $after: Cursor) {
+  agentActivities(
+    condition: {projectId: $projectId}
+    filter: $filter
+    orderBy: [CREATED_AT_DESC]
+    first: $first
+    after: $after
+  ) {
+    nodes {
+      rowId
+      toolName
+      toolInput
+      toolOutput
+      status
+      approvalStatus
+      requiresApproval
+      errorMessage
+      affectedTaskIds
+      createdAt
+      session {
+        rowId
+        title
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}
+    `;
+
+export const useAgentActivitiesQuery = <
+      TData = AgentActivitiesQuery,
+      TError = unknown
+    >(
+      variables: AgentActivitiesQueryVariables,
+      options?: Omit<UseQueryOptions<AgentActivitiesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AgentActivitiesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AgentActivitiesQuery, TError, TData>(
+      {
+    queryKey: ['AgentActivities', variables],
+    queryFn: graphqlFetch<AgentActivitiesQuery, AgentActivitiesQueryVariables>(AgentActivitiesDocument, variables),
+    ...options
+  }
+    )};
+
+useAgentActivitiesQuery.getKey = (variables: AgentActivitiesQueryVariables) => ['AgentActivities', variables];
+
+export const useSuspenseAgentActivitiesQuery = <
+      TData = AgentActivitiesQuery,
+      TError = unknown
+    >(
+      variables: AgentActivitiesQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<AgentActivitiesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<AgentActivitiesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<AgentActivitiesQuery, TError, TData>(
+      {
+    queryKey: ['AgentActivitiesSuspense', variables],
+    queryFn: graphqlFetch<AgentActivitiesQuery, AgentActivitiesQueryVariables>(AgentActivitiesDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseAgentActivitiesQuery.getKey = (variables: AgentActivitiesQueryVariables) => ['AgentActivitiesSuspense', variables];
+
+export const useInfiniteAgentActivitiesQuery = <
+      TData = InfiniteData<AgentActivitiesQuery>,
+      TError = unknown
+    >(
+      variables: AgentActivitiesQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AgentActivitiesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AgentActivitiesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AgentActivitiesQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentActivities.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentActivitiesQuery, AgentActivitiesQueryVariables>(AgentActivitiesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAgentActivitiesQuery.getKey = (variables: AgentActivitiesQueryVariables) => ['AgentActivities.infinite', variables];
+
+export const useSuspenseInfiniteAgentActivitiesQuery = <
+      TData = InfiniteData<AgentActivitiesQuery>,
+      TError = unknown
+    >(
+      variables: AgentActivitiesQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<AgentActivitiesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<AgentActivitiesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<AgentActivitiesQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentActivities.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<AgentActivitiesQuery, AgentActivitiesQueryVariables>(AgentActivitiesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteAgentActivitiesQuery.getKey = (variables: AgentActivitiesQueryVariables) => ['AgentActivities.infiniteSuspense', variables];
+
+
+useAgentActivitiesQuery.fetcher = (variables: AgentActivitiesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<AgentActivitiesQuery, AgentActivitiesQueryVariables>(AgentActivitiesDocument, variables, options);
+
+export const AgentActivitiesByTaskIdDocument = `
+    query AgentActivitiesByTaskId($projectId: UUID!, $first: Int = 50) {
+  agentActivities(
+    condition: {projectId: $projectId}
+    orderBy: [CREATED_AT_DESC]
+    first: $first
+  ) {
+    nodes {
+      rowId
+      toolName
+      toolInput
+      toolOutput
+      status
+      approvalStatus
+      requiresApproval
+      errorMessage
+      affectedTaskIds
+      createdAt
+      session {
+        rowId
+        title
+      }
+    }
+    totalCount
+  }
+}
+    `;
+
+export const useAgentActivitiesByTaskIdQuery = <
+      TData = AgentActivitiesByTaskIdQuery,
+      TError = unknown
+    >(
+      variables: AgentActivitiesByTaskIdQueryVariables,
+      options?: Omit<UseQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AgentActivitiesByTaskIdQuery, TError, TData>(
+      {
+    queryKey: ['AgentActivitiesByTaskId', variables],
+    queryFn: graphqlFetch<AgentActivitiesByTaskIdQuery, AgentActivitiesByTaskIdQueryVariables>(AgentActivitiesByTaskIdDocument, variables),
+    ...options
+  }
+    )};
+
+useAgentActivitiesByTaskIdQuery.getKey = (variables: AgentActivitiesByTaskIdQueryVariables) => ['AgentActivitiesByTaskId', variables];
+
+export const useSuspenseAgentActivitiesByTaskIdQuery = <
+      TData = AgentActivitiesByTaskIdQuery,
+      TError = unknown
+    >(
+      variables: AgentActivitiesByTaskIdQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<AgentActivitiesByTaskIdQuery, TError, TData>(
+      {
+    queryKey: ['AgentActivitiesByTaskIdSuspense', variables],
+    queryFn: graphqlFetch<AgentActivitiesByTaskIdQuery, AgentActivitiesByTaskIdQueryVariables>(AgentActivitiesByTaskIdDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseAgentActivitiesByTaskIdQuery.getKey = (variables: AgentActivitiesByTaskIdQueryVariables) => ['AgentActivitiesByTaskIdSuspense', variables];
+
+export const useInfiniteAgentActivitiesByTaskIdQuery = <
+      TData = InfiniteData<AgentActivitiesByTaskIdQuery>,
+      TError = unknown
+    >(
+      variables: AgentActivitiesByTaskIdQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AgentActivitiesByTaskIdQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentActivitiesByTaskId.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentActivitiesByTaskIdQuery, AgentActivitiesByTaskIdQueryVariables>(AgentActivitiesByTaskIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAgentActivitiesByTaskIdQuery.getKey = (variables: AgentActivitiesByTaskIdQueryVariables) => ['AgentActivitiesByTaskId.infinite', variables];
+
+export const useSuspenseInfiniteAgentActivitiesByTaskIdQuery = <
+      TData = InfiniteData<AgentActivitiesByTaskIdQuery>,
+      TError = unknown
+    >(
+      variables: AgentActivitiesByTaskIdQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<AgentActivitiesByTaskIdQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentActivitiesByTaskId.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<AgentActivitiesByTaskIdQuery, AgentActivitiesByTaskIdQueryVariables>(AgentActivitiesByTaskIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteAgentActivitiesByTaskIdQuery.getKey = (variables: AgentActivitiesByTaskIdQueryVariables) => ['AgentActivitiesByTaskId.infiniteSuspense', variables];
+
+
+useAgentActivitiesByTaskIdQuery.fetcher = (variables: AgentActivitiesByTaskIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<AgentActivitiesByTaskIdQuery, AgentActivitiesByTaskIdQueryVariables>(AgentActivitiesByTaskIdDocument, variables, options);
+
+export const AgentSessionTokenUsageDocument = `
+    query AgentSessionTokenUsage($organizationId: String!) {
+  agentSessions(condition: {organizationId: $organizationId}) {
+    aggregates {
+      sum {
+        totalTokensUsed
+        toolCallCount
+      }
+    }
+    totalCount
+  }
+}
+    `;
+
+export const useAgentSessionTokenUsageQuery = <
+      TData = AgentSessionTokenUsageQuery,
+      TError = unknown
+    >(
+      variables: AgentSessionTokenUsageQueryVariables,
+      options?: Omit<UseQueryOptions<AgentSessionTokenUsageQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AgentSessionTokenUsageQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AgentSessionTokenUsageQuery, TError, TData>(
+      {
+    queryKey: ['AgentSessionTokenUsage', variables],
+    queryFn: graphqlFetch<AgentSessionTokenUsageQuery, AgentSessionTokenUsageQueryVariables>(AgentSessionTokenUsageDocument, variables),
+    ...options
+  }
+    )};
+
+useAgentSessionTokenUsageQuery.getKey = (variables: AgentSessionTokenUsageQueryVariables) => ['AgentSessionTokenUsage', variables];
+
+export const useSuspenseAgentSessionTokenUsageQuery = <
+      TData = AgentSessionTokenUsageQuery,
+      TError = unknown
+    >(
+      variables: AgentSessionTokenUsageQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<AgentSessionTokenUsageQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<AgentSessionTokenUsageQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<AgentSessionTokenUsageQuery, TError, TData>(
+      {
+    queryKey: ['AgentSessionTokenUsageSuspense', variables],
+    queryFn: graphqlFetch<AgentSessionTokenUsageQuery, AgentSessionTokenUsageQueryVariables>(AgentSessionTokenUsageDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseAgentSessionTokenUsageQuery.getKey = (variables: AgentSessionTokenUsageQueryVariables) => ['AgentSessionTokenUsageSuspense', variables];
+
+export const useInfiniteAgentSessionTokenUsageQuery = <
+      TData = InfiniteData<AgentSessionTokenUsageQuery>,
+      TError = unknown
+    >(
+      variables: AgentSessionTokenUsageQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AgentSessionTokenUsageQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AgentSessionTokenUsageQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AgentSessionTokenUsageQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentSessionTokenUsage.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentSessionTokenUsageQuery, AgentSessionTokenUsageQueryVariables>(AgentSessionTokenUsageDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAgentSessionTokenUsageQuery.getKey = (variables: AgentSessionTokenUsageQueryVariables) => ['AgentSessionTokenUsage.infinite', variables];
+
+export const useSuspenseInfiniteAgentSessionTokenUsageQuery = <
+      TData = InfiniteData<AgentSessionTokenUsageQuery>,
+      TError = unknown
+    >(
+      variables: AgentSessionTokenUsageQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<AgentSessionTokenUsageQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<AgentSessionTokenUsageQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<AgentSessionTokenUsageQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentSessionTokenUsage.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<AgentSessionTokenUsageQuery, AgentSessionTokenUsageQueryVariables>(AgentSessionTokenUsageDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteAgentSessionTokenUsageQuery.getKey = (variables: AgentSessionTokenUsageQueryVariables) => ['AgentSessionTokenUsage.infiniteSuspense', variables];
+
+
+useAgentSessionTokenUsageQuery.fetcher = (variables: AgentSessionTokenUsageQueryVariables, options?: RequestInit['headers']) => graphqlFetch<AgentSessionTokenUsageQuery, AgentSessionTokenUsageQueryVariables>(AgentSessionTokenUsageDocument, variables, options);
+
+export const AgentSessionsDocument = `
+    query AgentSessions($projectId: UUID!, $userId: UUID!, $first: Int = 20) {
+  agentSessions(
+    condition: {projectId: $projectId, userId: $userId}
+    orderBy: [UPDATED_AT_DESC]
+    first: $first
+  ) {
+    nodes {
+      rowId
+      title
+      toolCallCount
+      totalTokensUsed
+      createdAt
+      updatedAt
+    }
+    totalCount
+  }
+}
+    `;
+
+export const useAgentSessionsQuery = <
+      TData = AgentSessionsQuery,
+      TError = unknown
+    >(
+      variables: AgentSessionsQueryVariables,
+      options?: Omit<UseQueryOptions<AgentSessionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AgentSessionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AgentSessionsQuery, TError, TData>(
+      {
+    queryKey: ['AgentSessions', variables],
+    queryFn: graphqlFetch<AgentSessionsQuery, AgentSessionsQueryVariables>(AgentSessionsDocument, variables),
+    ...options
+  }
+    )};
+
+useAgentSessionsQuery.getKey = (variables: AgentSessionsQueryVariables) => ['AgentSessions', variables];
+
+export const useSuspenseAgentSessionsQuery = <
+      TData = AgentSessionsQuery,
+      TError = unknown
+    >(
+      variables: AgentSessionsQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<AgentSessionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<AgentSessionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<AgentSessionsQuery, TError, TData>(
+      {
+    queryKey: ['AgentSessionsSuspense', variables],
+    queryFn: graphqlFetch<AgentSessionsQuery, AgentSessionsQueryVariables>(AgentSessionsDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseAgentSessionsQuery.getKey = (variables: AgentSessionsQueryVariables) => ['AgentSessionsSuspense', variables];
+
+export const useInfiniteAgentSessionsQuery = <
+      TData = InfiniteData<AgentSessionsQuery>,
+      TError = unknown
+    >(
+      variables: AgentSessionsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AgentSessionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AgentSessionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AgentSessionsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentSessions.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentSessionsQuery, AgentSessionsQueryVariables>(AgentSessionsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAgentSessionsQuery.getKey = (variables: AgentSessionsQueryVariables) => ['AgentSessions.infinite', variables];
+
+export const useSuspenseInfiniteAgentSessionsQuery = <
+      TData = InfiniteData<AgentSessionsQuery>,
+      TError = unknown
+    >(
+      variables: AgentSessionsQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<AgentSessionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<AgentSessionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<AgentSessionsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentSessions.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<AgentSessionsQuery, AgentSessionsQueryVariables>(AgentSessionsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteAgentSessionsQuery.getKey = (variables: AgentSessionsQueryVariables) => ['AgentSessions.infiniteSuspense', variables];
+
+
+useAgentSessionsQuery.fetcher = (variables: AgentSessionsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<AgentSessionsQuery, AgentSessionsQueryVariables>(AgentSessionsDocument, variables, options);
 
 export const ColumnsDocument = `
     query Columns($projectId: UUID!) {

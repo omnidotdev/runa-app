@@ -43,7 +43,9 @@ export function AgentChatInput({
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Ask about your project..."
+          aria-label="Message to AI agent"
           rows={1}
+          autoFocus
           className="max-h-32 min-h-[36px] flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           disabled={isLoading}
         />

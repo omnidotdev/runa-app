@@ -11133,6 +11133,40 @@ export type DeleteUserMutationVariables = Exact<{
 
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser?: { __typename?: 'DeleteUserPayload', clientMutationId?: string | null } | null };
 
+export type AgentActivitiesQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  filter?: InputMaybe<AgentActivityFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+}>;
+
+
+export type AgentActivitiesQuery = { __typename?: 'Query', agentActivities?: { __typename?: 'AgentActivityConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentActivity', rowId: string, toolName: string, toolInput: any, toolOutput?: any | null, status: string, approvalStatus?: string | null, requiresApproval: boolean, errorMessage?: string | null, affectedTaskIds: any, createdAt: Date, session?: { __typename?: 'AgentSession', rowId: string, title?: string | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+
+export type AgentActivitiesByTaskIdQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type AgentActivitiesByTaskIdQuery = { __typename?: 'Query', agentActivities?: { __typename?: 'AgentActivityConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentActivity', rowId: string, toolName: string, toolInput: any, toolOutput?: any | null, status: string, approvalStatus?: string | null, requiresApproval: boolean, errorMessage?: string | null, affectedTaskIds: any, createdAt: Date, session?: { __typename?: 'AgentSession', rowId: string, title?: string | null } | null }> } | null };
+
+export type AgentSessionTokenUsageQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type AgentSessionTokenUsageQuery = { __typename?: 'Query', agentSessions?: { __typename?: 'AgentSessionConnection', totalCount: number, aggregates?: { __typename?: 'AgentSessionAggregates', sum?: { __typename?: 'AgentSessionSumAggregates', totalTokensUsed: string, toolCallCount: string } | null } | null } | null };
+
+export type AgentSessionsQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type AgentSessionsQuery = { __typename?: 'Query', agentSessions?: { __typename?: 'AgentSessionConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentSession', rowId: string, title?: string | null, toolCallCount: number, totalTokensUsed: number, createdAt: Date, updatedAt: Date }> } | null };
+
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -11593,6 +11627,98 @@ export const DeleteUserDocument = gql`
   }
 }
     `;
+export const AgentActivitiesDocument = gql`
+    query AgentActivities($projectId: UUID!, $filter: AgentActivityFilter, $first: Int = 20, $after: Cursor) {
+  agentActivities(
+    condition: {projectId: $projectId}
+    filter: $filter
+    orderBy: [CREATED_AT_DESC]
+    first: $first
+    after: $after
+  ) {
+    nodes {
+      rowId
+      toolName
+      toolInput
+      toolOutput
+      status
+      approvalStatus
+      requiresApproval
+      errorMessage
+      affectedTaskIds
+      createdAt
+      session {
+        rowId
+        title
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}
+    `;
+export const AgentActivitiesByTaskIdDocument = gql`
+    query AgentActivitiesByTaskId($projectId: UUID!, $first: Int = 50) {
+  agentActivities(
+    condition: {projectId: $projectId}
+    orderBy: [CREATED_AT_DESC]
+    first: $first
+  ) {
+    nodes {
+      rowId
+      toolName
+      toolInput
+      toolOutput
+      status
+      approvalStatus
+      requiresApproval
+      errorMessage
+      affectedTaskIds
+      createdAt
+      session {
+        rowId
+        title
+      }
+    }
+    totalCount
+  }
+}
+    `;
+export const AgentSessionTokenUsageDocument = gql`
+    query AgentSessionTokenUsage($organizationId: String!) {
+  agentSessions(condition: {organizationId: $organizationId}) {
+    aggregates {
+      sum {
+        totalTokensUsed
+        toolCallCount
+      }
+    }
+    totalCount
+  }
+}
+    `;
+export const AgentSessionsDocument = gql`
+    query AgentSessions($projectId: UUID!, $userId: UUID!, $first: Int = 20) {
+  agentSessions(
+    condition: {projectId: $projectId, userId: $userId}
+    orderBy: [UPDATED_AT_DESC]
+    first: $first
+  ) {
+    nodes {
+      rowId
+      title
+      toolCallCount
+      totalTokensUsed
+      createdAt
+      updatedAt
+    }
+    totalCount
+  }
+}
+    `;
 export const ColumnsDocument = gql`
     query Columns($projectId: UUID!) {
   columns(condition: {projectId: $projectId}, orderBy: INDEX_ASC) {
@@ -11950,6 +12076,18 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     DeleteUser(variables: DeleteUserMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<DeleteUserMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeleteUserMutation>({ document: DeleteUserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'DeleteUser', 'mutation', variables);
+    },
+    AgentActivities(variables: AgentActivitiesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<AgentActivitiesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AgentActivitiesQuery>({ document: AgentActivitiesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'AgentActivities', 'query', variables);
+    },
+    AgentActivitiesByTaskId(variables: AgentActivitiesByTaskIdQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<AgentActivitiesByTaskIdQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AgentActivitiesByTaskIdQuery>({ document: AgentActivitiesByTaskIdDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'AgentActivitiesByTaskId', 'query', variables);
+    },
+    AgentSessionTokenUsage(variables: AgentSessionTokenUsageQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<AgentSessionTokenUsageQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AgentSessionTokenUsageQuery>({ document: AgentSessionTokenUsageDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'AgentSessionTokenUsage', 'query', variables);
+    },
+    AgentSessions(variables: AgentSessionsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<AgentSessionsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AgentSessionsQuery>({ document: AgentSessionsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'AgentSessions', 'query', variables);
     },
     Columns(variables: ColumnsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ColumnsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ColumnsQuery>({ document: ColumnsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Columns', 'query', variables);

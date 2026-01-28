@@ -1,0 +1,21 @@
+query AgentSessions(
+  $projectId: UUID!
+  $userId: UUID!
+  $first: Int = 20
+) {
+  agentSessions(
+    condition: { projectId: $projectId, userId: $userId }
+    orderBy: [UPDATED_AT_DESC]
+    first: $first
+  ) {
+    nodes {
+      rowId
+      title
+      toolCallCount
+      totalTokensUsed
+      createdAt
+      updatedAt
+    }
+    totalCount
+  }
+}

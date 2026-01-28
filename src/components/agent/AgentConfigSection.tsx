@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { API_BASE_URL } from "@/lib/config/env.config";
 
+import { AgentTokenUsage } from "./AgentTokenUsage";
+
 interface AgentConfig {
   requireApprovalForDestructive: boolean;
   requireApprovalForCreate: boolean;
@@ -291,6 +293,8 @@ export function AgentConfigSection() {
           </Button>
         </div>
       </div>
+
+      <AgentTokenUsage organizationId={organizationId!} />
     </div>
   );
 }

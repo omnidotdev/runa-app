@@ -4,6 +4,7 @@ import {
   CheckCircleIcon,
   Loader2Icon,
   PencilIcon,
+  RefreshCwIcon,
   SparklesIcon,
   Trash2Icon,
   UserIcon,
@@ -13,8 +14,11 @@ import {
 import { useEffect, useRef } from "react";
 
 import { DESTRUCTIVE_TOOL_NAMES, WRITE_TOOL_NAMES } from "@/lib/ai/constants";
+import { formatToolName } from "@/lib/ai/utils/formatToolName";
+import { formatWriteResult } from "@/lib/ai/utils/formatWriteResult";
 import { cn } from "@/lib/utils";
 
+import { AgentMarkdown } from "./AgentMarkdown";
 import { ToolApprovalActions } from "./ToolApprovalActions";
 
 import type { UIMessage } from "@tanstack/ai-client";
@@ -24,81 +28,7 @@ interface AgentChatMessagesProps {
   isLoading: boolean;
   error: Error | undefined;
   onApprovalResponse: (response: { id: string; approved: boolean }) => void;
-}
-
-/** Format a camelCase tool name into a human-readable label. */
-function formatToolName(name: string): string {
-  return name.replace(/([A-Z])/g, " $1").replace(/^./, (c) => c.toUpperCase());
-}
-
-/**
- * Format a write tool result into a human-readable summary.
- * Falls back to tool name if the output format is unexpected.
- */
-function formatWriteResult(name: string, output: unknown): string {
-  if (!output || typeof output !== "object") return "Done";
-
-  const data = output as Record<string, unknown>;
-
-  switch (name) {
-    case "createTask": {
-      const task = data.task as Record<string, unknown> | undefined;
-      if (!task) return "Task created";
-      const num = task.number ? `T-${task.number}: ` : "";
-      return `Created ${num}${task.title ?? "task"}`;
-    }
-    case "updateTask": {
-      const task = data.task as Record<string, unknown> | undefined;
-      if (!task) return "Task updated";
-      const num = task.number ? `T-${task.number}: ` : "";
-      return `Updated ${num}${task.title ?? "task"}`;
-    }
-    case "moveTask": {
-      const task = data.task as Record<string, unknown> | undefined;
-      const num = task?.number ? `T-${task.number}: ` : "";
-      return `Moved ${num}${data.fromColumn ?? "?"} → ${data.toColumn ?? "?"}`;
-    }
-    case "assignTask": {
-      const action = data.action === "remove" ? "Unassigned" : "Assigned";
-      return `${action} ${data.userName ?? "user"}`;
-    }
-    case "addLabel": {
-      return `Added "${data.labelName ?? "label"}"`;
-    }
-    case "removeLabel": {
-      return `Removed "${data.labelName ?? "label"}"`;
-    }
-    case "addComment": {
-      return "Comment added";
-    }
-    case "deleteTask": {
-      const num = data.deletedTaskNumber
-        ? `T-${data.deletedTaskNumber}: `
-        : "";
-      return `Deleted ${num}${data.deletedTaskTitle ?? "task"}`;
-    }
-    case "batchMoveTasks": {
-      const count = (data.movedCount as number) ?? 0;
-      const target = data.targetColumn ?? "?";
-      const errCount = (data.errors as Array<unknown>)?.length ?? 0;
-      const suffix = errCount > 0 ? ` (${errCount} failed)` : "";
-      return `Moved ${count} task${count !== 1 ? "s" : ""} → ${target}${suffix}`;
-    }
-    case "batchUpdateTasks": {
-      const count = (data.updatedCount as number) ?? 0;
-      const errCount = (data.errors as Array<unknown>)?.length ?? 0;
-      const suffix = errCount > 0 ? ` (${errCount} failed)` : "";
-      return `Updated ${count} task${count !== 1 ? "s" : ""}${suffix}`;
-    }
-    case "batchDeleteTasks": {
-      const count = (data.deletedCount as number) ?? 0;
-      const errCount = (data.errors as Array<unknown>)?.length ?? 0;
-      const suffix = errCount > 0 ? ` (${errCount} failed)` : "";
-      return `Deleted ${count} task${count !== 1 ? "s" : ""}${suffix}`;
-    }
-    default:
-      return "Done";
-  }
+  onRetry?: () => void;
 }
 
 export function AgentChatMessages({
@@ -106,6 +36,7 @@ export function AgentChatMessages({
   isLoading,
   error,
   onApprovalResponse,
+  onRetry,
 }: AgentChatMessagesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -146,12 +77,18 @@ export function AgentChatMessages({
       className="flex-1 overflow-y-auto px-4 py-3"
       role="log"
       aria-live="polite"
+      aria-label="Chat messages"
     >
       <div className="flex flex-col gap-4">
-        {messages.map((message) => (
+        {messages.map((message, messageIndex) => (
           <MessageBubble
             key={message.id}
             message={message}
+            isLastAssistant={
+              message.role === "assistant" &&
+              messageIndex === messages.length - 1
+            }
+            isLoading={isLoading}
             onApprovalResponse={onApprovalResponse}
           />
         ))}
@@ -162,8 +99,18 @@ export function AgentChatMessages({
           </div>
         )}
         {error && (
-          <div className="rounded-lg border border-destructive/50 bg-destructive/10 px-3 py-2 text-destructive text-sm">
-            Something went wrong. Please try again.
+          <div className="flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 px-3 py-2 text-destructive text-sm">
+            <span className="flex-1">Something went wrong. Please try again.</span>
+            {onRetry && (
+              <button
+                type="button"
+                onClick={onRetry}
+                className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors hover:bg-destructive/20"
+              >
+                <RefreshCwIcon className="size-3" />
+                Retry
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -173,12 +120,17 @@ export function AgentChatMessages({
 
 function MessageBubble({
   message,
+  isLastAssistant,
+  isLoading,
   onApprovalResponse,
 }: {
   message: UIMessage;
+  isLastAssistant: boolean;
+  isLoading: boolean;
   onApprovalResponse: (response: { id: string; approved: boolean }) => void;
 }) {
   const isUser = message.role === "user";
+  const isStreaming = isLastAssistant && isLoading;
 
   return (
     <div className={cn("flex gap-2.5", isUser && "flex-row-reverse")}>
@@ -203,17 +155,26 @@ function MessageBubble({
       >
         {message.parts.map((part, idx) => {
           if (part.type === "text") {
+            if (isUser) {
+              return (
+                <div
+                  key={`text-${idx}`}
+                  className="whitespace-pre-wrap rounded-lg bg-primary px-3 py-2 text-primary-foreground text-sm"
+                >
+                  {part.content}
+                </div>
+              );
+            }
+
             return (
               <div
                 key={`text-${idx}`}
-                className={cn(
-                  "whitespace-pre-wrap rounded-lg px-3 py-2 text-sm",
-                  isUser
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted",
-                )}
+                className="rounded-lg bg-muted px-3 py-2"
               >
-                {part.content}
+                <AgentMarkdown
+                  content={part.content}
+                  isStreaming={isStreaming}
+                />
               </div>
             );
           }
@@ -262,14 +223,16 @@ function ToolCallBubble({
   const isComplete =
     part.state === "input-complete" || part.output !== undefined;
 
+  const toolLabel = formatToolName(part.name);
+
   // Approval requested — amber background with approve/deny actions
   if (isApprovalRequested && part.approval) {
     return (
-      <div className="flex flex-col gap-2 rounded-md border border-amber-300 bg-amber-50 px-2.5 py-2 dark:border-amber-700 dark:bg-amber-950/50">
+      <div className="flex flex-col gap-2 rounded-md border border-amber-300 bg-amber-50 px-2.5 py-2 dark:border-amber-700 dark:bg-amber-950/50" aria-label={`${toolLabel}: approval required`}>
         <div className="flex items-center gap-1.5 text-xs text-amber-700 dark:text-amber-300">
           <AlertTriangleIcon className="size-3" />
           <span className="font-medium">
-            {formatToolName(part.name)}
+            {toolLabel}
           </span>
           <span className="text-amber-600 dark:text-amber-400">
             — Approval required
@@ -288,9 +251,9 @@ function ToolCallBubble({
   // Approved, executing — green with spinner
   if (isApproved && part.output === undefined) {
     return (
-      <div className="flex items-center gap-1.5 rounded-md bg-green-50 px-2.5 py-1.5 text-xs text-green-700 dark:bg-green-950/50 dark:text-green-300">
+      <div className="flex items-center gap-1.5 rounded-md bg-green-50 px-2.5 py-1.5 text-xs text-green-700 dark:bg-green-950/50 dark:text-green-300" aria-label={`${toolLabel}: approved, executing`}>
         <CheckCircleIcon className="size-3" />
-        <span className="font-medium">{formatToolName(part.name)}</span>
+        <span className="font-medium">{toolLabel}</span>
         <span className="text-green-600 dark:text-green-400">
           Approved, executing...
         </span>
@@ -302,13 +265,16 @@ function ToolCallBubble({
   // Denied — red badge
   if (isDenied) {
     return (
-      <div className="flex items-center gap-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs text-red-700 dark:bg-red-950/50 dark:text-red-300">
+      <div className="flex items-center gap-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs text-red-700 dark:bg-red-950/50 dark:text-red-300" aria-label={`${toolLabel}: denied`}>
         <XCircleIcon className="size-3" />
-        <span className="font-medium">{formatToolName(part.name)}</span>
+        <span className="font-medium">{toolLabel}</span>
         <span className="text-red-600 dark:text-red-400">Denied</span>
       </div>
     );
   }
+
+  // Determine status for aria-label
+  const statusLabel = isComplete ? "completed" : "running";
 
   // Default tool call display (same as before, with destructive icon variant)
   return (
@@ -321,6 +287,7 @@ function ToolCallBubble({
             ? "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300"
             : "bg-muted/50 text-muted-foreground",
       )}
+      aria-label={`${toolLabel}: ${statusLabel}`}
     >
       {isDestructive ? (
         <Trash2Icon className="size-3" />
@@ -329,7 +296,7 @@ function ToolCallBubble({
       ) : (
         <WrenchIcon className="size-3" />
       )}
-      <span className="font-medium">{formatToolName(part.name)}</span>
+      <span className="font-medium">{toolLabel}</span>
       {!isComplete && !isApprovalResponded && (
         <Loader2Icon className="size-3 animate-spin" />
       )}
