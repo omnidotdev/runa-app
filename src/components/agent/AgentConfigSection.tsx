@@ -26,7 +26,6 @@ import {
   createListCollection,
 } from "@/components/ui/select";
 import { API_BASE_URL } from "@/lib/config/env.config";
-import { AgentMarketplace } from "./AgentMarketplace";
 import { AgentPersonaManager } from "./AgentPersonaManager";
 import { AgentTokenUsage } from "./AgentTokenUsage";
 
@@ -627,8 +626,6 @@ export function AgentConfigSection() {
       </div>
 
       <AgentPersonaManager organizationId={organizationId!} />
-
-      <AgentMarketplace organizationId={organizationId!} />
 
       <AgentTokenUsage organizationId={organizationId!} />
     </div>

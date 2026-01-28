@@ -721,436 +721,8 @@ export type AgentConfigVarianceSampleAggregates = {
   maxIterationsPerRequest?: Maybe<Scalars['BigFloat']['output']>;
 };
 
-export type AgentMarketplaceListing = Node & {
-  __typename?: 'AgentMarketplaceListing';
-  category: Scalars['String']['output'];
-  createdAt: Scalars['Datetime']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
-  installCount: Scalars['Int']['output'];
-  organizationId: Scalars['String']['output'];
-  /** Reads a single `AgentPersona` that is related to this `AgentMarketplaceListing`. */
-  persona?: Maybe<AgentPersona>;
-  personaId: Scalars['UUID']['output'];
-  publishedAt: Scalars['Datetime']['output'];
-  rowId: Scalars['UUID']['output'];
-  title: Scalars['String']['output'];
-  updatedAt: Scalars['Datetime']['output'];
-};
-
-export type AgentMarketplaceListingAggregates = {
-  __typename?: 'AgentMarketplaceListingAggregates';
-  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  average?: Maybe<AgentMarketplaceListingAverageAggregates>;
-  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  distinctCount?: Maybe<AgentMarketplaceListingDistinctCountAggregates>;
-  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  max?: Maybe<AgentMarketplaceListingMaxAggregates>;
-  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  min?: Maybe<AgentMarketplaceListingMinAggregates>;
-  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  stddevPopulation?: Maybe<AgentMarketplaceListingStddevPopulationAggregates>;
-  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  stddevSample?: Maybe<AgentMarketplaceListingStddevSampleAggregates>;
-  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  sum?: Maybe<AgentMarketplaceListingSumAggregates>;
-  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  variancePopulation?: Maybe<AgentMarketplaceListingVariancePopulationAggregates>;
-  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  varianceSample?: Maybe<AgentMarketplaceListingVarianceSampleAggregates>;
-};
-
-/** A filter to be used against aggregates of `AgentMarketplaceListing` object types. */
-export type AgentMarketplaceListingAggregatesFilter = {
-  /** Mean average aggregate over matching `AgentMarketplaceListing` objects. */
-  average?: InputMaybe<AgentMarketplaceListingAverageAggregateFilter>;
-  /** Distinct count aggregate over matching `AgentMarketplaceListing` objects. */
-  distinctCount?: InputMaybe<AgentMarketplaceListingDistinctCountAggregateFilter>;
-  /** A filter that must pass for the relevant `AgentMarketplaceListing` object to be included within the aggregate. */
-  filter?: InputMaybe<AgentMarketplaceListingFilter>;
-  /** Maximum aggregate over matching `AgentMarketplaceListing` objects. */
-  max?: InputMaybe<AgentMarketplaceListingMaxAggregateFilter>;
-  /** Minimum aggregate over matching `AgentMarketplaceListing` objects. */
-  min?: InputMaybe<AgentMarketplaceListingMinAggregateFilter>;
-  /** Population standard deviation aggregate over matching `AgentMarketplaceListing` objects. */
-  stddevPopulation?: InputMaybe<AgentMarketplaceListingStddevPopulationAggregateFilter>;
-  /** Sample standard deviation aggregate over matching `AgentMarketplaceListing` objects. */
-  stddevSample?: InputMaybe<AgentMarketplaceListingStddevSampleAggregateFilter>;
-  /** Sum aggregate over matching `AgentMarketplaceListing` objects. */
-  sum?: InputMaybe<AgentMarketplaceListingSumAggregateFilter>;
-  /** Population variance aggregate over matching `AgentMarketplaceListing` objects. */
-  variancePopulation?: InputMaybe<AgentMarketplaceListingVariancePopulationAggregateFilter>;
-  /** Sample variance aggregate over matching `AgentMarketplaceListing` objects. */
-  varianceSample?: InputMaybe<AgentMarketplaceListingVarianceSampleAggregateFilter>;
-};
-
-export type AgentMarketplaceListingAverageAggregateFilter = {
-  installCount?: InputMaybe<BigFloatFilter>;
-};
-
-export type AgentMarketplaceListingAverageAggregates = {
-  __typename?: 'AgentMarketplaceListingAverageAggregates';
-  /** Mean average of installCount across the matching connection */
-  installCount?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-/**
- * A condition to be used against `AgentMarketplaceListing` object types. All
- * fields are tested for equality and combined with a logical ‘and.’
- */
-export type AgentMarketplaceListingCondition = {
-  /** Checks for equality with the object’s `category` field. */
-  category?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `createdAt` field. */
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `description` field. */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `installCount` field. */
-  installCount?: InputMaybe<Scalars['Int']['input']>;
-  /** Checks for equality with the object’s `organizationId` field. */
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `personaId` field. */
-  personaId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `publishedAt` field. */
-  publishedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `title` field. */
-  title?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-/** A connection to a list of `AgentMarketplaceListing` values. */
-export type AgentMarketplaceListingConnection = {
-  __typename?: 'AgentMarketplaceListingConnection';
-  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  aggregates?: Maybe<AgentMarketplaceListingAggregates>;
-  /** A list of edges which contains the `AgentMarketplaceListing` and cursor to aid in pagination. */
-  edges: Array<AgentMarketplaceListingEdge>;
-  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  groupedAggregates?: Maybe<Array<AgentMarketplaceListingAggregates>>;
-  /** A list of `AgentMarketplaceListing` objects. */
-  nodes: Array<AgentMarketplaceListing>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `AgentMarketplaceListing` you could get from the connection. */
-  totalCount: Scalars['Int']['output'];
-};
-
-
-/** A connection to a list of `AgentMarketplaceListing` values. */
-export type AgentMarketplaceListingConnectionGroupedAggregatesArgs = {
-  groupBy: Array<AgentMarketplaceListingGroupBy>;
-  having?: InputMaybe<AgentMarketplaceListingHavingInput>;
-};
-
-export type AgentMarketplaceListingDistinctCountAggregateFilter = {
-  category?: InputMaybe<BigIntFilter>;
-  createdAt?: InputMaybe<BigIntFilter>;
-  description?: InputMaybe<BigIntFilter>;
-  installCount?: InputMaybe<BigIntFilter>;
-  organizationId?: InputMaybe<BigIntFilter>;
-  personaId?: InputMaybe<BigIntFilter>;
-  publishedAt?: InputMaybe<BigIntFilter>;
-  rowId?: InputMaybe<BigIntFilter>;
-  title?: InputMaybe<BigIntFilter>;
-  updatedAt?: InputMaybe<BigIntFilter>;
-};
-
-export type AgentMarketplaceListingDistinctCountAggregates = {
-  __typename?: 'AgentMarketplaceListingDistinctCountAggregates';
-  /** Distinct count of category across the matching connection */
-  category?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of createdAt across the matching connection */
-  createdAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of description across the matching connection */
-  description?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of installCount across the matching connection */
-  installCount?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of organizationId across the matching connection */
-  organizationId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of personaId across the matching connection */
-  personaId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of publishedAt across the matching connection */
-  publishedAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of rowId across the matching connection */
-  rowId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of title across the matching connection */
-  title?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of updatedAt across the matching connection */
-  updatedAt?: Maybe<Scalars['BigInt']['output']>;
-};
-
-/** A `AgentMarketplaceListing` edge in the connection. */
-export type AgentMarketplaceListingEdge = {
-  __typename?: 'AgentMarketplaceListingEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  /** The `AgentMarketplaceListing` at the end of the edge. */
-  node: AgentMarketplaceListing;
-};
-
-/** A filter to be used against `AgentMarketplaceListing` object types. All fields are combined with a logical ‘and.’ */
-export type AgentMarketplaceListingFilter = {
-  /** Checks for all expressions in this list. */
-  and?: InputMaybe<Array<AgentMarketplaceListingFilter>>;
-  /** Filter by the object’s `category` field. */
-  category?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `createdAt` field. */
-  createdAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `description` field. */
-  description?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `installCount` field. */
-  installCount?: InputMaybe<IntFilter>;
-  /** Negates the expression. */
-  not?: InputMaybe<AgentMarketplaceListingFilter>;
-  /** Checks for any expressions in this list. */
-  or?: InputMaybe<Array<AgentMarketplaceListingFilter>>;
-  /** Filter by the object’s `organizationId` field. */
-  organizationId?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `persona` relation. */
-  persona?: InputMaybe<AgentPersonaFilter>;
-  /** Filter by the object’s `personaId` field. */
-  personaId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `publishedAt` field. */
-  publishedAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `title` field. */
-  title?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<DatetimeFilter>;
-};
-
-/** Grouping methods for `AgentMarketplaceListing` for usage during aggregation. */
-export enum AgentMarketplaceListingGroupBy {
-  Category = 'CATEGORY',
-  CreatedAt = 'CREATED_AT',
-  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
-  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
-  Description = 'DESCRIPTION',
-  InstallCount = 'INSTALL_COUNT',
-  OrganizationId = 'ORGANIZATION_ID',
-  PersonaId = 'PERSONA_ID',
-  PublishedAt = 'PUBLISHED_AT',
-  PublishedAtTruncatedToDay = 'PUBLISHED_AT_TRUNCATED_TO_DAY',
-  PublishedAtTruncatedToHour = 'PUBLISHED_AT_TRUNCATED_TO_HOUR',
-  Title = 'TITLE',
-  UpdatedAt = 'UPDATED_AT',
-  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
-}
-
-export type AgentMarketplaceListingHavingAverageInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  installCount?: InputMaybe<HavingIntFilter>;
-  publishedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentMarketplaceListingHavingDistinctCountInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  installCount?: InputMaybe<HavingIntFilter>;
-  publishedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** Conditions for `AgentMarketplaceListing` aggregates. */
-export type AgentMarketplaceListingHavingInput = {
-  AND?: InputMaybe<Array<AgentMarketplaceListingHavingInput>>;
-  OR?: InputMaybe<Array<AgentMarketplaceListingHavingInput>>;
-  average?: InputMaybe<AgentMarketplaceListingHavingAverageInput>;
-  distinctCount?: InputMaybe<AgentMarketplaceListingHavingDistinctCountInput>;
-  max?: InputMaybe<AgentMarketplaceListingHavingMaxInput>;
-  min?: InputMaybe<AgentMarketplaceListingHavingMinInput>;
-  stddevPopulation?: InputMaybe<AgentMarketplaceListingHavingStddevPopulationInput>;
-  stddevSample?: InputMaybe<AgentMarketplaceListingHavingStddevSampleInput>;
-  sum?: InputMaybe<AgentMarketplaceListingHavingSumInput>;
-  variancePopulation?: InputMaybe<AgentMarketplaceListingHavingVariancePopulationInput>;
-  varianceSample?: InputMaybe<AgentMarketplaceListingHavingVarianceSampleInput>;
-};
-
-export type AgentMarketplaceListingHavingMaxInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  installCount?: InputMaybe<HavingIntFilter>;
-  publishedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentMarketplaceListingHavingMinInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  installCount?: InputMaybe<HavingIntFilter>;
-  publishedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentMarketplaceListingHavingStddevPopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  installCount?: InputMaybe<HavingIntFilter>;
-  publishedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentMarketplaceListingHavingStddevSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  installCount?: InputMaybe<HavingIntFilter>;
-  publishedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentMarketplaceListingHavingSumInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  installCount?: InputMaybe<HavingIntFilter>;
-  publishedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentMarketplaceListingHavingVariancePopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  installCount?: InputMaybe<HavingIntFilter>;
-  publishedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentMarketplaceListingHavingVarianceSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  installCount?: InputMaybe<HavingIntFilter>;
-  publishedAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** An input for mutations affecting `AgentMarketplaceListing` */
-export type AgentMarketplaceListingInput = {
-  category: Scalars['String']['input'];
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  installCount?: InputMaybe<Scalars['Int']['input']>;
-  organizationId: Scalars['String']['input'];
-  personaId: Scalars['UUID']['input'];
-  publishedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  title: Scalars['String']['input'];
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-export type AgentMarketplaceListingMaxAggregateFilter = {
-  installCount?: InputMaybe<IntFilter>;
-};
-
-export type AgentMarketplaceListingMaxAggregates = {
-  __typename?: 'AgentMarketplaceListingMaxAggregates';
-  /** Maximum of installCount across the matching connection */
-  installCount?: Maybe<Scalars['Int']['output']>;
-};
-
-export type AgentMarketplaceListingMinAggregateFilter = {
-  installCount?: InputMaybe<IntFilter>;
-};
-
-export type AgentMarketplaceListingMinAggregates = {
-  __typename?: 'AgentMarketplaceListingMinAggregates';
-  /** Minimum of installCount across the matching connection */
-  installCount?: Maybe<Scalars['Int']['output']>;
-};
-
-/** Methods to use when ordering `AgentMarketplaceListing`. */
-export enum AgentMarketplaceListingOrderBy {
-  CategoryAsc = 'CATEGORY_ASC',
-  CategoryDesc = 'CATEGORY_DESC',
-  CreatedAtAsc = 'CREATED_AT_ASC',
-  CreatedAtDesc = 'CREATED_AT_DESC',
-  DescriptionAsc = 'DESCRIPTION_ASC',
-  DescriptionDesc = 'DESCRIPTION_DESC',
-  InstallCountAsc = 'INSTALL_COUNT_ASC',
-  InstallCountDesc = 'INSTALL_COUNT_DESC',
-  Natural = 'NATURAL',
-  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
-  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
-  PersonaIdAsc = 'PERSONA_ID_ASC',
-  PersonaIdDesc = 'PERSONA_ID_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  PublishedAtAsc = 'PUBLISHED_AT_ASC',
-  PublishedAtDesc = 'PUBLISHED_AT_DESC',
-  RowIdAsc = 'ROW_ID_ASC',
-  RowIdDesc = 'ROW_ID_DESC',
-  TitleAsc = 'TITLE_ASC',
-  TitleDesc = 'TITLE_DESC',
-  UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC'
-}
-
-/** Represents an update to a `AgentMarketplaceListing`. Fields that are set will be updated. */
-export type AgentMarketplaceListingPatch = {
-  category?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  installCount?: InputMaybe<Scalars['Int']['input']>;
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-  personaId?: InputMaybe<Scalars['UUID']['input']>;
-  publishedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-export type AgentMarketplaceListingStddevPopulationAggregateFilter = {
-  installCount?: InputMaybe<BigFloatFilter>;
-};
-
-export type AgentMarketplaceListingStddevPopulationAggregates = {
-  __typename?: 'AgentMarketplaceListingStddevPopulationAggregates';
-  /** Population standard deviation of installCount across the matching connection */
-  installCount?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type AgentMarketplaceListingStddevSampleAggregateFilter = {
-  installCount?: InputMaybe<BigFloatFilter>;
-};
-
-export type AgentMarketplaceListingStddevSampleAggregates = {
-  __typename?: 'AgentMarketplaceListingStddevSampleAggregates';
-  /** Sample standard deviation of installCount across the matching connection */
-  installCount?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type AgentMarketplaceListingSumAggregateFilter = {
-  installCount?: InputMaybe<BigIntFilter>;
-};
-
-export type AgentMarketplaceListingSumAggregates = {
-  __typename?: 'AgentMarketplaceListingSumAggregates';
-  /** Sum of installCount across the matching connection */
-  installCount: Scalars['BigInt']['output'];
-};
-
-export type AgentMarketplaceListingVariancePopulationAggregateFilter = {
-  installCount?: InputMaybe<BigFloatFilter>;
-};
-
-export type AgentMarketplaceListingVariancePopulationAggregates = {
-  __typename?: 'AgentMarketplaceListingVariancePopulationAggregates';
-  /** Population variance of installCount across the matching connection */
-  installCount?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type AgentMarketplaceListingVarianceSampleAggregateFilter = {
-  installCount?: InputMaybe<BigFloatFilter>;
-};
-
-export type AgentMarketplaceListingVarianceSampleAggregates = {
-  __typename?: 'AgentMarketplaceListingVarianceSampleAggregates';
-  /** Sample variance of installCount across the matching connection */
-  installCount?: Maybe<Scalars['BigFloat']['output']>;
-};
-
 export type AgentPersona = Node & {
   __typename?: 'AgentPersona';
-  /** Reads and enables pagination through a set of `AgentMarketplaceListing`. */
-  agentMarketplaceListingsByPersonaId: AgentMarketplaceListingConnection;
   /** Reads and enables pagination through a set of `AgentSchedule`. */
   agentSchedulesByPersonaId: AgentScheduleConnection;
   createdAt: Scalars['Datetime']['output'];
@@ -1164,18 +736,6 @@ export type AgentPersona = Node & {
   rowId: Scalars['UUID']['output'];
   systemPrompt: Scalars['String']['output'];
   updatedAt: Scalars['Datetime']['output'];
-};
-
-
-export type AgentPersonaAgentMarketplaceListingsByPersonaIdArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<AgentMarketplaceListingCondition>;
-  filter?: InputMaybe<AgentMarketplaceListingFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AgentMarketplaceListingOrderBy>>;
 };
 
 
@@ -1279,10 +839,6 @@ export type AgentPersonaEdge = {
 
 /** A filter to be used against `AgentPersona` object types. All fields are combined with a logical ‘and.’ */
 export type AgentPersonaFilter = {
-  /** Filter by the object’s `agentMarketplaceListingsByPersonaId` relation. */
-  agentMarketplaceListingsByPersonaId?: InputMaybe<AgentPersonaToManyAgentMarketplaceListingFilter>;
-  /** Some related `agentMarketplaceListingsByPersonaId` exist. */
-  agentMarketplaceListingsByPersonaIdExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `agentSchedulesByPersonaId` relation. */
   agentSchedulesByPersonaId?: InputMaybe<AgentPersonaToManyAgentScheduleFilter>;
   /** Some related `agentSchedulesByPersonaId` exist. */
@@ -1404,44 +960,6 @@ export type AgentPersonaInput = {
 
 /** Methods to use when ordering `AgentPersona`. */
 export enum AgentPersonaOrderBy {
-  AgentMarketplaceListingsByPersonaIdAverageInstallCountAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_AVERAGE_INSTALL_COUNT_ASC',
-  AgentMarketplaceListingsByPersonaIdAverageInstallCountDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_AVERAGE_INSTALL_COUNT_DESC',
-  AgentMarketplaceListingsByPersonaIdCountAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_COUNT_ASC',
-  AgentMarketplaceListingsByPersonaIdCountDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_COUNT_DESC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountCategoryAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_CATEGORY_ASC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountCategoryDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_CATEGORY_DESC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountCreatedAtAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_CREATED_AT_ASC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountCreatedAtDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_CREATED_AT_DESC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountDescriptionAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_DESCRIPTION_ASC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountDescriptionDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_DESCRIPTION_DESC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountInstallCountAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_INSTALL_COUNT_ASC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountInstallCountDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_INSTALL_COUNT_DESC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountOrganizationIdAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountOrganizationIdDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountPersonaIdAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_PERSONA_ID_ASC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountPersonaIdDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_PERSONA_ID_DESC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountPublishedAtAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_PUBLISHED_AT_ASC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountPublishedAtDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_PUBLISHED_AT_DESC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountRowIdAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_ROW_ID_ASC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountRowIdDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_ROW_ID_DESC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountTitleAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_TITLE_ASC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountTitleDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_TITLE_DESC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountUpdatedAtAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_UPDATED_AT_ASC',
-  AgentMarketplaceListingsByPersonaIdDistinctCountUpdatedAtDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_DISTINCT_COUNT_UPDATED_AT_DESC',
-  AgentMarketplaceListingsByPersonaIdMaxInstallCountAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_MAX_INSTALL_COUNT_ASC',
-  AgentMarketplaceListingsByPersonaIdMaxInstallCountDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_MAX_INSTALL_COUNT_DESC',
-  AgentMarketplaceListingsByPersonaIdMinInstallCountAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_MIN_INSTALL_COUNT_ASC',
-  AgentMarketplaceListingsByPersonaIdMinInstallCountDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_MIN_INSTALL_COUNT_DESC',
-  AgentMarketplaceListingsByPersonaIdStddevPopulationInstallCountAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_STDDEV_POPULATION_INSTALL_COUNT_ASC',
-  AgentMarketplaceListingsByPersonaIdStddevPopulationInstallCountDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_STDDEV_POPULATION_INSTALL_COUNT_DESC',
-  AgentMarketplaceListingsByPersonaIdStddevSampleInstallCountAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_STDDEV_SAMPLE_INSTALL_COUNT_ASC',
-  AgentMarketplaceListingsByPersonaIdStddevSampleInstallCountDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_STDDEV_SAMPLE_INSTALL_COUNT_DESC',
-  AgentMarketplaceListingsByPersonaIdSumInstallCountAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_SUM_INSTALL_COUNT_ASC',
-  AgentMarketplaceListingsByPersonaIdSumInstallCountDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_SUM_INSTALL_COUNT_DESC',
-  AgentMarketplaceListingsByPersonaIdVariancePopulationInstallCountAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_VARIANCE_POPULATION_INSTALL_COUNT_ASC',
-  AgentMarketplaceListingsByPersonaIdVariancePopulationInstallCountDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_VARIANCE_POPULATION_INSTALL_COUNT_DESC',
-  AgentMarketplaceListingsByPersonaIdVarianceSampleInstallCountAsc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_VARIANCE_SAMPLE_INSTALL_COUNT_ASC',
-  AgentMarketplaceListingsByPersonaIdVarianceSampleInstallCountDesc = 'AGENT_MARKETPLACE_LISTINGS_BY_PERSONA_ID_VARIANCE_SAMPLE_INSTALL_COUNT_DESC',
   AgentSchedulesByPersonaIdCountAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_COUNT_ASC',
   AgentSchedulesByPersonaIdCountDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_COUNT_DESC',
   AgentSchedulesByPersonaIdDistinctCountCreatedAtAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -1502,18 +1020,6 @@ export type AgentPersonaPatch = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   systemPrompt?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-/** A filter to be used against many `AgentMarketplaceListing` object types. All fields are combined with a logical ‘and.’ */
-export type AgentPersonaToManyAgentMarketplaceListingFilter = {
-  /** Aggregates across related `AgentMarketplaceListing` match the filter criteria. */
-  aggregates?: InputMaybe<AgentMarketplaceListingAggregatesFilter>;
-  /** Every related `AgentMarketplaceListing` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: InputMaybe<AgentMarketplaceListingFilter>;
-  /** No related `AgentMarketplaceListing` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: InputMaybe<AgentMarketplaceListingFilter>;
-  /** Some related `AgentMarketplaceListing` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: InputMaybe<AgentMarketplaceListingFilter>;
 };
 
 /** A filter to be used against many `AgentSchedule` object types. All fields are combined with a logical ‘and.’ */
@@ -3567,39 +3073,6 @@ export type CreateAgentConfigPayloadAgentConfigEdgeArgs = {
   orderBy?: Array<AgentConfigOrderBy>;
 };
 
-/** All input for the create `AgentMarketplaceListing` mutation. */
-export type CreateAgentMarketplaceListingInput = {
-  /** The `AgentMarketplaceListing` to be created by this mutation. */
-  agentMarketplaceListing: AgentMarketplaceListingInput;
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** The output of our create `AgentMarketplaceListing` mutation. */
-export type CreateAgentMarketplaceListingPayload = {
-  __typename?: 'CreateAgentMarketplaceListingPayload';
-  /** The `AgentMarketplaceListing` that was created by this mutation. */
-  agentMarketplaceListing?: Maybe<AgentMarketplaceListing>;
-  /** An edge for our `AgentMarketplaceListing`. May be used by Relay 1. */
-  agentMarketplaceListingEdge?: Maybe<AgentMarketplaceListingEdge>;
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our create `AgentMarketplaceListing` mutation. */
-export type CreateAgentMarketplaceListingPayloadAgentMarketplaceListingEdgeArgs = {
-  orderBy?: Array<AgentMarketplaceListingOrderBy>;
-};
-
 /** All input for the create `AgentPersona` mutation. */
 export type CreateAgentPersonaInput = {
   /** The `AgentPersona` to be created by this mutation. */
@@ -4339,50 +3812,6 @@ export type DeleteAgentConfigPayload = {
 /** The output of our delete `AgentConfig` mutation. */
 export type DeleteAgentConfigPayloadAgentConfigEdgeArgs = {
   orderBy?: Array<AgentConfigOrderBy>;
-};
-
-/** All input for the `deleteAgentMarketplaceListingById` mutation. */
-export type DeleteAgentMarketplaceListingByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `AgentMarketplaceListing` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteAgentMarketplaceListing` mutation. */
-export type DeleteAgentMarketplaceListingInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our delete `AgentMarketplaceListing` mutation. */
-export type DeleteAgentMarketplaceListingPayload = {
-  __typename?: 'DeleteAgentMarketplaceListingPayload';
-  /** The `AgentMarketplaceListing` that was deleted by this mutation. */
-  agentMarketplaceListing?: Maybe<AgentMarketplaceListing>;
-  /** An edge for our `AgentMarketplaceListing`. May be used by Relay 1. */
-  agentMarketplaceListingEdge?: Maybe<AgentMarketplaceListingEdge>;
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedAgentMarketplaceListingId?: Maybe<Scalars['ID']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our delete `AgentMarketplaceListing` mutation. */
-export type DeleteAgentMarketplaceListingPayloadAgentMarketplaceListingEdgeArgs = {
-  orderBy?: Array<AgentMarketplaceListingOrderBy>;
 };
 
 /** All input for the `deleteAgentPersonaById` mutation. */
@@ -5857,8 +5286,6 @@ export type Mutation = {
   createAgentActivity?: Maybe<CreateAgentActivityPayload>;
   /** Creates a single `AgentConfig`. */
   createAgentConfig?: Maybe<CreateAgentConfigPayload>;
-  /** Creates a single `AgentMarketplaceListing`. */
-  createAgentMarketplaceListing?: Maybe<CreateAgentMarketplaceListingPayload>;
   /** Creates a single `AgentPersona`. */
   createAgentPersona?: Maybe<CreateAgentPersonaPayload>;
   /** Creates a single `AgentSchedule`. */
@@ -5905,10 +5332,6 @@ export type Mutation = {
   deleteAgentConfig?: Maybe<DeleteAgentConfigPayload>;
   /** Deletes a single `AgentConfig` using its globally unique id. */
   deleteAgentConfigById?: Maybe<DeleteAgentConfigPayload>;
-  /** Deletes a single `AgentMarketplaceListing` using a unique key. */
-  deleteAgentMarketplaceListing?: Maybe<DeleteAgentMarketplaceListingPayload>;
-  /** Deletes a single `AgentMarketplaceListing` using its globally unique id. */
-  deleteAgentMarketplaceListingById?: Maybe<DeleteAgentMarketplaceListingPayload>;
   /** Deletes a single `AgentPersona` using a unique key. */
   deleteAgentPersona?: Maybe<DeleteAgentPersonaPayload>;
   /** Deletes a single `AgentPersona` using its globally unique id. */
@@ -5993,10 +5416,6 @@ export type Mutation = {
   updateAgentConfig?: Maybe<UpdateAgentConfigPayload>;
   /** Updates a single `AgentConfig` using its globally unique id and a patch. */
   updateAgentConfigById?: Maybe<UpdateAgentConfigPayload>;
-  /** Updates a single `AgentMarketplaceListing` using a unique key and a patch. */
-  updateAgentMarketplaceListing?: Maybe<UpdateAgentMarketplaceListingPayload>;
-  /** Updates a single `AgentMarketplaceListing` using its globally unique id and a patch. */
-  updateAgentMarketplaceListingById?: Maybe<UpdateAgentMarketplaceListingPayload>;
   /** Updates a single `AgentPersona` using a unique key and a patch. */
   updateAgentPersona?: Maybe<UpdateAgentPersonaPayload>;
   /** Updates a single `AgentPersona` using its globally unique id and a patch. */
@@ -6085,12 +5504,6 @@ export type MutationCreateAgentActivityArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateAgentConfigArgs = {
   input: CreateAgentConfigInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateAgentMarketplaceListingArgs = {
-  input: CreateAgentMarketplaceListingInput;
 };
 
 
@@ -6229,18 +5642,6 @@ export type MutationDeleteAgentConfigArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteAgentConfigByIdArgs = {
   input: DeleteAgentConfigByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteAgentMarketplaceListingArgs = {
-  input: DeleteAgentMarketplaceListingInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteAgentMarketplaceListingByIdArgs = {
-  input: DeleteAgentMarketplaceListingByIdInput;
 };
 
 
@@ -6493,18 +5894,6 @@ export type MutationUpdateAgentConfigArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateAgentConfigByIdArgs = {
   input: UpdateAgentConfigByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateAgentMarketplaceListingArgs = {
-  input: UpdateAgentMarketplaceListingInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateAgentMarketplaceListingByIdArgs = {
-  input: UpdateAgentMarketplaceListingByIdInput;
 };
 
 
@@ -8988,12 +8377,6 @@ export type Query = Node & {
   agentConfigByOrganizationId?: Maybe<AgentConfig>;
   /** Reads and enables pagination through a set of `AgentConfig`. */
   agentConfigs?: Maybe<AgentConfigConnection>;
-  /** Get a single `AgentMarketplaceListing`. */
-  agentMarketplaceListing?: Maybe<AgentMarketplaceListing>;
-  /** Reads a single `AgentMarketplaceListing` using its globally unique `ID`. */
-  agentMarketplaceListingById?: Maybe<AgentMarketplaceListing>;
-  /** Reads and enables pagination through a set of `AgentMarketplaceListing`. */
-  agentMarketplaceListings?: Maybe<AgentMarketplaceListingConnection>;
   /** Get a single `AgentPersona`. */
   agentPersona?: Maybe<AgentPersona>;
   /** Reads a single `AgentPersona` using its globally unique `ID`. */
@@ -9196,31 +8579,6 @@ export type QueryAgentConfigsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<AgentConfigOrderBy>>;
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryAgentMarketplaceListingArgs = {
-  rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryAgentMarketplaceListingByIdArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryAgentMarketplaceListingsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<AgentMarketplaceListingCondition>;
-  filter?: InputMaybe<AgentMarketplaceListingFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AgentMarketplaceListingOrderBy>>;
 };
 
 
@@ -11108,53 +10466,6 @@ export type UpdateAgentConfigPayload = {
 /** The output of our update `AgentConfig` mutation. */
 export type UpdateAgentConfigPayloadAgentConfigEdgeArgs = {
   orderBy?: Array<AgentConfigOrderBy>;
-};
-
-/** All input for the `updateAgentMarketplaceListingById` mutation. */
-export type UpdateAgentMarketplaceListingByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `AgentMarketplaceListing` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `AgentMarketplaceListing` being updated. */
-  patch: AgentMarketplaceListingPatch;
-};
-
-/** All input for the `updateAgentMarketplaceListing` mutation. */
-export type UpdateAgentMarketplaceListingInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `AgentMarketplaceListing` being updated. */
-  patch: AgentMarketplaceListingPatch;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our update `AgentMarketplaceListing` mutation. */
-export type UpdateAgentMarketplaceListingPayload = {
-  __typename?: 'UpdateAgentMarketplaceListingPayload';
-  /** The `AgentMarketplaceListing` that was updated by this mutation. */
-  agentMarketplaceListing?: Maybe<AgentMarketplaceListing>;
-  /** An edge for our `AgentMarketplaceListing`. May be used by Relay 1. */
-  agentMarketplaceListingEdge?: Maybe<AgentMarketplaceListingEdge>;
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our update `AgentMarketplaceListing` mutation. */
-export type UpdateAgentMarketplaceListingPayloadAgentMarketplaceListingEdgeArgs = {
-  orderBy?: Array<AgentMarketplaceListingOrderBy>;
 };
 
 /** All input for the `updateAgentPersonaById` mutation. */
