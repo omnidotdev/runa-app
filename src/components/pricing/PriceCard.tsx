@@ -31,7 +31,11 @@ export const PriceCard = ({ price }: Props) => {
   const handleClick = () => {
     if (!session) {
       // Not logged in - sign in first, redirect back to pricing
-      signIn({ redirectUrl: `${BASE_URL}/pricing` });
+      if (isSelfHosted) {
+        navigate({ to: "/login" });
+      } else {
+        signIn({ redirectUrl: `${BASE_URL}/pricing`, providerId: "omni" });
+      }
       return;
     }
 

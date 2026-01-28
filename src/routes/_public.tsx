@@ -31,7 +31,8 @@ function PublicLayout() {
     if (isSelfHosted) {
       navigate({ to: "/login" });
     } else {
-      signIn({ redirectUrl: BASE_URL });
+      // SaaS mode: use Omni/Gatekeeper OAuth directly
+      signIn({ redirectUrl: BASE_URL, providerId: "omni" });
     }
   };
 
