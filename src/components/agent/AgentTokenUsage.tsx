@@ -12,7 +12,7 @@ function formatNumber(value: string | number | null | undefined): string {
 }
 
 /**
- * Displays aggregate token usage and session stats for an organization.
+ * Displays aggregate session stats for an organization.
  * Rendered as a compact header row within the unified Agent Settings card.
  *
  * Data is prefetched in the route loader, so this uses useSuspenseQuery.
@@ -24,7 +24,6 @@ export function AgentTokenUsage({ organizationId }: AgentTokenUsageProps) {
 
   const aggregates = data?.agentSessions?.aggregates;
   const totalSessions = data?.agentSessions?.totalCount ?? 0;
-  const totalTokens = aggregates?.sum?.totalTokensUsed ?? "0";
   const totalToolCalls = aggregates?.sum?.toolCallCount ?? "0";
 
   return (
@@ -38,12 +37,6 @@ export function AgentTokenUsage({ organizationId }: AgentTokenUsageProps) {
             {totalSessions.toLocaleString()}
           </span>
           <span className="text-muted-foreground text-xs">sessions</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="font-semibold text-sm tabular-nums">
-            {formatNumber(totalTokens)}
-          </span>
-          <span className="text-muted-foreground text-xs">tokens</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="font-semibold text-sm tabular-nums">

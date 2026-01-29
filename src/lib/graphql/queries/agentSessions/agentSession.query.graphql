@@ -4,7 +4,6 @@ query AgentSession($rowId: UUID!) {
     title
     messages
     toolCallCount
-    totalTokensUsed
     createdAt
     updatedAt
   }

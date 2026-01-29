@@ -2,7 +2,6 @@ query AgentSessionTokenUsage($organizationId: String!) {
   agentSessions(condition: { organizationId: $organizationId }) {
     aggregates {
       sum {
-        totalTokensUsed
         toolCallCount
       }
     }

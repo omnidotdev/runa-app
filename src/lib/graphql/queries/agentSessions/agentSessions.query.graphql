@@ -8,7 +8,6 @@ query AgentSessions($projectId: UUID!, $userId: UUID!, $first: Int = 20) {
       rowId
       title
       toolCallCount
-      totalTokensUsed
       createdAt
       updatedAt
     }

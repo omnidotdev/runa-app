@@ -1396,7 +1396,6 @@ export type AgentSession = Node & {
   rowId: Scalars['UUID']['output'];
   title?: Maybe<Scalars['String']['output']>;
   toolCallCount: Scalars['Int']['output'];
-  totalTokensUsed: Scalars['Int']['output'];
   type: Scalars['String']['output'];
   updatedAt: Scalars['Datetime']['output'];
   /** Reads a single `User` that is related to this `AgentSession`. */
@@ -1465,15 +1464,12 @@ export type AgentSessionAggregatesFilter = {
 
 export type AgentSessionAverageAggregateFilter = {
   toolCallCount?: InputMaybe<BigFloatFilter>;
-  totalTokensUsed?: InputMaybe<BigFloatFilter>;
 };
 
 export type AgentSessionAverageAggregates = {
   __typename?: 'AgentSessionAverageAggregates';
   /** Mean average of toolCallCount across the matching connection */
   toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
-  /** Mean average of totalTokensUsed across the matching connection */
-  totalTokensUsed?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /**
@@ -1493,8 +1489,6 @@ export type AgentSessionCondition = {
   title?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `toolCallCount` field. */
   toolCallCount?: InputMaybe<Scalars['Int']['input']>;
-  /** Checks for equality with the object’s `totalTokensUsed` field. */
-  totalTokensUsed?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `type` field. */
   type?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
@@ -1535,7 +1529,6 @@ export type AgentSessionDistinctCountAggregateFilter = {
   rowId?: InputMaybe<BigIntFilter>;
   title?: InputMaybe<BigIntFilter>;
   toolCallCount?: InputMaybe<BigIntFilter>;
-  totalTokensUsed?: InputMaybe<BigIntFilter>;
   type?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
   userId?: InputMaybe<BigIntFilter>;
@@ -1557,8 +1550,6 @@ export type AgentSessionDistinctCountAggregates = {
   title?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of toolCallCount across the matching connection */
   toolCallCount?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of totalTokensUsed across the matching connection */
-  totalTokensUsed?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of type across the matching connection */
   type?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
@@ -1604,8 +1595,6 @@ export type AgentSessionFilter = {
   title?: InputMaybe<StringFilter>;
   /** Filter by the object’s `toolCallCount` field. */
   toolCallCount?: InputMaybe<IntFilter>;
-  /** Filter by the object’s `totalTokensUsed` field. */
-  totalTokensUsed?: InputMaybe<IntFilter>;
   /** Filter by the object’s `type` field. */
   type?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
@@ -1626,7 +1615,6 @@ export enum AgentSessionGroupBy {
   ProjectId = 'PROJECT_ID',
   Title = 'TITLE',
   ToolCallCount = 'TOOL_CALL_COUNT',
-  TotalTokensUsed = 'TOTAL_TOKENS_USED',
   Type = 'TYPE',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -1637,14 +1625,12 @@ export enum AgentSessionGroupBy {
 export type AgentSessionHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   toolCallCount?: InputMaybe<HavingIntFilter>;
-  totalTokensUsed?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type AgentSessionHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   toolCallCount?: InputMaybe<HavingIntFilter>;
-  totalTokensUsed?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -1666,49 +1652,42 @@ export type AgentSessionHavingInput = {
 export type AgentSessionHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   toolCallCount?: InputMaybe<HavingIntFilter>;
-  totalTokensUsed?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type AgentSessionHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   toolCallCount?: InputMaybe<HavingIntFilter>;
-  totalTokensUsed?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type AgentSessionHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   toolCallCount?: InputMaybe<HavingIntFilter>;
-  totalTokensUsed?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type AgentSessionHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   toolCallCount?: InputMaybe<HavingIntFilter>;
-  totalTokensUsed?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type AgentSessionHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   toolCallCount?: InputMaybe<HavingIntFilter>;
-  totalTokensUsed?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type AgentSessionHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   toolCallCount?: InputMaybe<HavingIntFilter>;
-  totalTokensUsed?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type AgentSessionHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   toolCallCount?: InputMaybe<HavingIntFilter>;
-  totalTokensUsed?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -1721,7 +1700,6 @@ export type AgentSessionInput = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   toolCallCount?: InputMaybe<Scalars['Int']['input']>;
-  totalTokensUsed?: InputMaybe<Scalars['Int']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
@@ -1729,28 +1707,22 @@ export type AgentSessionInput = {
 
 export type AgentSessionMaxAggregateFilter = {
   toolCallCount?: InputMaybe<IntFilter>;
-  totalTokensUsed?: InputMaybe<IntFilter>;
 };
 
 export type AgentSessionMaxAggregates = {
   __typename?: 'AgentSessionMaxAggregates';
   /** Maximum of toolCallCount across the matching connection */
   toolCallCount?: Maybe<Scalars['Int']['output']>;
-  /** Maximum of totalTokensUsed across the matching connection */
-  totalTokensUsed?: Maybe<Scalars['Int']['output']>;
 };
 
 export type AgentSessionMinAggregateFilter = {
   toolCallCount?: InputMaybe<IntFilter>;
-  totalTokensUsed?: InputMaybe<IntFilter>;
 };
 
 export type AgentSessionMinAggregates = {
   __typename?: 'AgentSessionMinAggregates';
   /** Minimum of toolCallCount across the matching connection */
   toolCallCount?: Maybe<Scalars['Int']['output']>;
-  /** Minimum of totalTokensUsed across the matching connection */
-  totalTokensUsed?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Methods to use when ordering `AgentSession`. */
@@ -1802,8 +1774,6 @@ export enum AgentSessionOrderBy {
   TitleDesc = 'TITLE_DESC',
   ToolCallCountAsc = 'TOOL_CALL_COUNT_ASC',
   ToolCallCountDesc = 'TOOL_CALL_COUNT_DESC',
-  TotalTokensUsedAsc = 'TOTAL_TOKENS_USED_ASC',
-  TotalTokensUsedDesc = 'TOTAL_TOKENS_USED_DESC',
   TypeAsc = 'TYPE_ASC',
   TypeDesc = 'TYPE_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -1821,7 +1791,6 @@ export type AgentSessionPatch = {
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   toolCallCount?: InputMaybe<Scalars['Int']['input']>;
-  totalTokensUsed?: InputMaybe<Scalars['Int']['input']>;
   type?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
@@ -1829,41 +1798,32 @@ export type AgentSessionPatch = {
 
 export type AgentSessionStddevPopulationAggregateFilter = {
   toolCallCount?: InputMaybe<BigFloatFilter>;
-  totalTokensUsed?: InputMaybe<BigFloatFilter>;
 };
 
 export type AgentSessionStddevPopulationAggregates = {
   __typename?: 'AgentSessionStddevPopulationAggregates';
   /** Population standard deviation of toolCallCount across the matching connection */
   toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
-  /** Population standard deviation of totalTokensUsed across the matching connection */
-  totalTokensUsed?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type AgentSessionStddevSampleAggregateFilter = {
   toolCallCount?: InputMaybe<BigFloatFilter>;
-  totalTokensUsed?: InputMaybe<BigFloatFilter>;
 };
 
 export type AgentSessionStddevSampleAggregates = {
   __typename?: 'AgentSessionStddevSampleAggregates';
   /** Sample standard deviation of toolCallCount across the matching connection */
   toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
-  /** Sample standard deviation of totalTokensUsed across the matching connection */
-  totalTokensUsed?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type AgentSessionSumAggregateFilter = {
   toolCallCount?: InputMaybe<BigIntFilter>;
-  totalTokensUsed?: InputMaybe<BigIntFilter>;
 };
 
 export type AgentSessionSumAggregates = {
   __typename?: 'AgentSessionSumAggregates';
   /** Sum of toolCallCount across the matching connection */
   toolCallCount: Scalars['BigInt']['output'];
-  /** Sum of totalTokensUsed across the matching connection */
-  totalTokensUsed: Scalars['BigInt']['output'];
 };
 
 /** A filter to be used against many `AgentActivity` object types. All fields are combined with a logical ‘and.’ */
@@ -1880,28 +1840,22 @@ export type AgentSessionToManyAgentActivityFilter = {
 
 export type AgentSessionVariancePopulationAggregateFilter = {
   toolCallCount?: InputMaybe<BigFloatFilter>;
-  totalTokensUsed?: InputMaybe<BigFloatFilter>;
 };
 
 export type AgentSessionVariancePopulationAggregates = {
   __typename?: 'AgentSessionVariancePopulationAggregates';
   /** Population variance of toolCallCount across the matching connection */
   toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
-  /** Population variance of totalTokensUsed across the matching connection */
-  totalTokensUsed?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type AgentSessionVarianceSampleAggregateFilter = {
   toolCallCount?: InputMaybe<BigFloatFilter>;
-  totalTokensUsed?: InputMaybe<BigFloatFilter>;
 };
 
 export type AgentSessionVarianceSampleAggregates = {
   __typename?: 'AgentSessionVarianceSampleAggregates';
   /** Sample variance of toolCallCount across the matching connection */
   toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
-  /** Sample variance of totalTokensUsed across the matching connection */
-  totalTokensUsed?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type AgentWebhook = Node & {
@@ -7732,8 +7686,6 @@ export enum ProjectOrderBy {
   AgentSchedulesDistinctCountUpdatedAtDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_UPDATED_AT_DESC',
   AgentSessionsAverageToolCallCountAsc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_ASC',
   AgentSessionsAverageToolCallCountDesc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_DESC',
-  AgentSessionsAverageTotalTokensUsedAsc = 'AGENT_SESSIONS_AVERAGE_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsAverageTotalTokensUsedDesc = 'AGENT_SESSIONS_AVERAGE_TOTAL_TOKENS_USED_DESC',
   AgentSessionsCountAsc = 'AGENT_SESSIONS_COUNT_ASC',
   AgentSessionsCountDesc = 'AGENT_SESSIONS_COUNT_DESC',
   AgentSessionsDistinctCountCreatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -7750,8 +7702,6 @@ export enum ProjectOrderBy {
   AgentSessionsDistinctCountTitleDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TITLE_DESC',
   AgentSessionsDistinctCountToolCallCountAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_ASC',
   AgentSessionsDistinctCountToolCallCountDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_DESC',
-  AgentSessionsDistinctCountTotalTokensUsedAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsDistinctCountTotalTokensUsedDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_DESC',
   AgentSessionsDistinctCountTypeAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_ASC',
   AgentSessionsDistinctCountTypeDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_DESC',
   AgentSessionsDistinctCountUpdatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -7760,32 +7710,18 @@ export enum ProjectOrderBy {
   AgentSessionsDistinctCountUserIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_DESC',
   AgentSessionsMaxToolCallCountAsc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_ASC',
   AgentSessionsMaxToolCallCountDesc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_DESC',
-  AgentSessionsMaxTotalTokensUsedAsc = 'AGENT_SESSIONS_MAX_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsMaxTotalTokensUsedDesc = 'AGENT_SESSIONS_MAX_TOTAL_TOKENS_USED_DESC',
   AgentSessionsMinToolCallCountAsc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_ASC',
   AgentSessionsMinToolCallCountDesc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_DESC',
-  AgentSessionsMinTotalTokensUsedAsc = 'AGENT_SESSIONS_MIN_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsMinTotalTokensUsedDesc = 'AGENT_SESSIONS_MIN_TOTAL_TOKENS_USED_DESC',
   AgentSessionsStddevPopulationToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_ASC',
   AgentSessionsStddevPopulationToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_DESC',
-  AgentSessionsStddevPopulationTotalTokensUsedAsc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsStddevPopulationTotalTokensUsedDesc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOTAL_TOKENS_USED_DESC',
   AgentSessionsStddevSampleToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_ASC',
   AgentSessionsStddevSampleToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_DESC',
-  AgentSessionsStddevSampleTotalTokensUsedAsc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsStddevSampleTotalTokensUsedDesc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOTAL_TOKENS_USED_DESC',
   AgentSessionsSumToolCallCountAsc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_ASC',
   AgentSessionsSumToolCallCountDesc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_DESC',
-  AgentSessionsSumTotalTokensUsedAsc = 'AGENT_SESSIONS_SUM_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsSumTotalTokensUsedDesc = 'AGENT_SESSIONS_SUM_TOTAL_TOKENS_USED_DESC',
   AgentSessionsVariancePopulationToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_ASC',
   AgentSessionsVariancePopulationToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_DESC',
-  AgentSessionsVariancePopulationTotalTokensUsedAsc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsVariancePopulationTotalTokensUsedDesc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOTAL_TOKENS_USED_DESC',
   AgentSessionsVarianceSampleToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_ASC',
   AgentSessionsVarianceSampleToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_DESC',
-  AgentSessionsVarianceSampleTotalTokensUsedAsc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsVarianceSampleTotalTokensUsedDesc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOTAL_TOKENS_USED_DESC',
   AgentWebhooksCountAsc = 'AGENT_WEBHOOKS_COUNT_ASC',
   AgentWebhooksCountDesc = 'AGENT_WEBHOOKS_COUNT_DESC',
   AgentWebhooksDistinctCountCreatedAtAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -11739,8 +11675,6 @@ export enum UserOrderBy {
   AgentActivitiesDistinctCountUserIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_USER_ID_DESC',
   AgentSessionsAverageToolCallCountAsc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_ASC',
   AgentSessionsAverageToolCallCountDesc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_DESC',
-  AgentSessionsAverageTotalTokensUsedAsc = 'AGENT_SESSIONS_AVERAGE_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsAverageTotalTokensUsedDesc = 'AGENT_SESSIONS_AVERAGE_TOTAL_TOKENS_USED_DESC',
   AgentSessionsCountAsc = 'AGENT_SESSIONS_COUNT_ASC',
   AgentSessionsCountDesc = 'AGENT_SESSIONS_COUNT_DESC',
   AgentSessionsDistinctCountCreatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -11757,8 +11691,6 @@ export enum UserOrderBy {
   AgentSessionsDistinctCountTitleDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TITLE_DESC',
   AgentSessionsDistinctCountToolCallCountAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_ASC',
   AgentSessionsDistinctCountToolCallCountDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_DESC',
-  AgentSessionsDistinctCountTotalTokensUsedAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsDistinctCountTotalTokensUsedDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOTAL_TOKENS_USED_DESC',
   AgentSessionsDistinctCountTypeAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_ASC',
   AgentSessionsDistinctCountTypeDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_DESC',
   AgentSessionsDistinctCountUpdatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
@@ -11767,32 +11699,18 @@ export enum UserOrderBy {
   AgentSessionsDistinctCountUserIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_DESC',
   AgentSessionsMaxToolCallCountAsc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_ASC',
   AgentSessionsMaxToolCallCountDesc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_DESC',
-  AgentSessionsMaxTotalTokensUsedAsc = 'AGENT_SESSIONS_MAX_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsMaxTotalTokensUsedDesc = 'AGENT_SESSIONS_MAX_TOTAL_TOKENS_USED_DESC',
   AgentSessionsMinToolCallCountAsc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_ASC',
   AgentSessionsMinToolCallCountDesc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_DESC',
-  AgentSessionsMinTotalTokensUsedAsc = 'AGENT_SESSIONS_MIN_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsMinTotalTokensUsedDesc = 'AGENT_SESSIONS_MIN_TOTAL_TOKENS_USED_DESC',
   AgentSessionsStddevPopulationToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_ASC',
   AgentSessionsStddevPopulationToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_DESC',
-  AgentSessionsStddevPopulationTotalTokensUsedAsc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsStddevPopulationTotalTokensUsedDesc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOTAL_TOKENS_USED_DESC',
   AgentSessionsStddevSampleToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_ASC',
   AgentSessionsStddevSampleToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_DESC',
-  AgentSessionsStddevSampleTotalTokensUsedAsc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsStddevSampleTotalTokensUsedDesc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOTAL_TOKENS_USED_DESC',
   AgentSessionsSumToolCallCountAsc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_ASC',
   AgentSessionsSumToolCallCountDesc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_DESC',
-  AgentSessionsSumTotalTokensUsedAsc = 'AGENT_SESSIONS_SUM_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsSumTotalTokensUsedDesc = 'AGENT_SESSIONS_SUM_TOTAL_TOKENS_USED_DESC',
   AgentSessionsVariancePopulationToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_ASC',
   AgentSessionsVariancePopulationToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_DESC',
-  AgentSessionsVariancePopulationTotalTokensUsedAsc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsVariancePopulationTotalTokensUsedDesc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOTAL_TOKENS_USED_DESC',
   AgentSessionsVarianceSampleToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_ASC',
   AgentSessionsVarianceSampleToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_DESC',
-  AgentSessionsVarianceSampleTotalTokensUsedAsc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOTAL_TOKENS_USED_ASC',
-  AgentSessionsVarianceSampleTotalTokensUsedDesc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOTAL_TOKENS_USED_DESC',
   AssigneesCountAsc = 'ASSIGNEES_COUNT_ASC',
   AssigneesCountDesc = 'ASSIGNEES_COUNT_DESC',
   AssigneesDistinctCountCreatedAtAsc = 'ASSIGNEES_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -12873,14 +12791,14 @@ export type AgentSessionQueryVariables = Exact<{
 }>;
 
 
-export type AgentSessionQuery = { __typename?: 'Query', agentSession?: { __typename?: 'AgentSession', rowId: string, title?: string | null, messages: any, toolCallCount: number, totalTokensUsed: number, createdAt: Date, updatedAt: Date } | null };
+export type AgentSessionQuery = { __typename?: 'Query', agentSession?: { __typename?: 'AgentSession', rowId: string, title?: string | null, messages: any, toolCallCount: number, createdAt: Date, updatedAt: Date } | null };
 
 export type AgentSessionTokenUsageQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
 }>;
 
 
-export type AgentSessionTokenUsageQuery = { __typename?: 'Query', agentSessions?: { __typename?: 'AgentSessionConnection', totalCount: number, aggregates?: { __typename?: 'AgentSessionAggregates', sum?: { __typename?: 'AgentSessionSumAggregates', totalTokensUsed: string, toolCallCount: string } | null } | null } | null };
+export type AgentSessionTokenUsageQuery = { __typename?: 'Query', agentSessions?: { __typename?: 'AgentSessionConnection', totalCount: number, aggregates?: { __typename?: 'AgentSessionAggregates', sum?: { __typename?: 'AgentSessionSumAggregates', toolCallCount: string } | null } | null } | null };
 
 export type AgentSessionsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -12889,7 +12807,7 @@ export type AgentSessionsQueryVariables = Exact<{
 }>;
 
 
-export type AgentSessionsQuery = { __typename?: 'Query', agentSessions?: { __typename?: 'AgentSessionConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentSession', rowId: string, title?: string | null, toolCallCount: number, totalTokensUsed: number, createdAt: Date, updatedAt: Date }> } | null };
+export type AgentSessionsQuery = { __typename?: 'Query', agentSessions?: { __typename?: 'AgentSessionConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentSession', rowId: string, title?: string | null, toolCallCount: number, createdAt: Date, updatedAt: Date }> } | null };
 
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -14134,7 +14052,6 @@ export const AgentSessionDocument = `
     title
     messages
     toolCallCount
-    totalTokensUsed
     createdAt
     updatedAt
   }
@@ -14227,7 +14144,6 @@ export const AgentSessionTokenUsageDocument = `
   agentSessions(condition: {organizationId: $organizationId}) {
     aggregates {
       sum {
-        totalTokensUsed
         toolCallCount
       }
     }
@@ -14328,7 +14244,6 @@ export const AgentSessionsDocument = `
       rowId
       title
       toolCallCount
-      totalTokensUsed
       createdAt
       updatedAt
     }
