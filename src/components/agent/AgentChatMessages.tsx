@@ -1,11 +1,15 @@
-import { Loader2Icon, RefreshCwIcon, SparklesIcon } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { RefreshCwIcon } from "lucide-react";
+import { useMemo } from "react";
 
 import { getCompletedToolCallIds } from "@/lib/ai/utils";
 import { MessageBubble } from "./MessageBubble";
+import {
+  ChatMessagesContainer,
+  EmptyState,
+  StreamingIndicator,
+} from "./shared";
 
 import type { UIMessage } from "@tanstack/ai-client";
-import type { RollbackByMatchParams } from "@/lib/ai/hooks/useRollback";
 
 interface AgentChatMessagesProps {
   messages: UIMessage[];
@@ -13,10 +17,24 @@ interface AgentChatMessagesProps {
   error: Error | undefined;
   onApprovalResponse: (response: { id: string; approved: boolean }) => void;
   onRetry?: () => void;
-  onUndoToolCall?: (toolName: string, toolInput: unknown) => void;
-  /** The in-flight undo mutation variables for per-bubble loading state. */
-  undoingToolCall?: RollbackByMatchParams;
+  /** Callback when a suggestion is clicked (auto-sends the message). */
+  onSendMessage?: (message: string) => void;
 }
+
+const AGENT_SUGGESTIONS = [
+  {
+    label: "Show me high priority tasks",
+    message: "Show me high priority tasks",
+  },
+  {
+    label: "Create a task for...",
+    message: "Create a task for ",
+  },
+  {
+    label: "What's overdue?",
+    message: "What tasks are overdue?",
+  },
+];
 
 export function AgentChatMessages({
   messages,
@@ -24,11 +42,8 @@ export function AgentChatMessages({
   error,
   onApprovalResponse,
   onRetry,
-  onUndoToolCall,
-  undoingToolCall,
-}: AgentChatMessagesProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
+  onSendMessage,
+}: AgentChatMessagesProps): React.ReactElement {
   // Collect all completed tool call IDs across ALL messages.
   // Server-side tools have tool-results in different messages than tool-calls,
   // so we need to track completion globally, not per-message.
@@ -37,86 +52,56 @@ export function AgentChatMessages({
     [messages],
   );
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Intentionally trigger scroll on message count change
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    // Only auto-scroll if the user is already near the bottom
-    const isNearBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight <
-      100;
-
-    if (isNearBottom) {
-      container.scrollTo({
-        top: container.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  }, [messages.length]);
-
+  // Empty state with clickable suggestions
   if (messages.length === 0 && !error) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
-        <SparklesIcon className="size-8 text-muted-foreground/50" />
-        <div>
-          <p className="font-medium text-sm">Ask about your project</p>
-          <p className="mt-1 text-muted-foreground text-xs">
-            Query tasks, check priorities, or explore your board.
-          </p>
-        </div>
-      </div>
+      <EmptyState
+        title="Ready to help with your board"
+        description="Query tasks, check priorities, or explore your project."
+        suggestions={AGENT_SUGGESTIONS}
+        onSuggestionClick={(message) => onSendMessage?.(message)}
+      />
     );
   }
 
   return (
-    <div
-      ref={scrollRef}
-      className="custom-scrollbar flex-1 overflow-y-auto px-4 py-3"
-      role="log"
-      aria-live="polite"
-      aria-label="Chat messages"
+    <ChatMessagesContainer
+      isLoading={isLoading}
+      messageCount={messages.length}
+      ariaLabel="Chat messages"
     >
-      <div className="flex flex-col gap-4">
-        {messages.map((message, messageIndex) => (
-          <MessageBubble
-            key={message.id}
-            message={message}
-            isLastAssistant={
-              message.role === "assistant" &&
-              messageIndex === messages.length - 1
-            }
-            isLoading={isLoading}
-            allCompletedToolCallIds={allCompletedToolCallIds}
-            onApprovalResponse={onApprovalResponse}
-            onUndoToolCall={onUndoToolCall}
-            undoingToolCall={undoingToolCall}
-          />
-        ))}
-        {isLoading && (
-          <div className="flex items-center gap-2 text-muted-foreground text-xs">
-            <Loader2Icon className="size-3 animate-spin" />
-            <span>Thinking...</span>
-          </div>
-        )}
-        {error && (
-          <div className="flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 px-3 py-2 text-destructive text-sm">
-            <span className="flex-1">
-              Something went wrong. Please try again.
-            </span>
-            {onRetry && (
-              <button
-                type="button"
-                onClick={onRetry}
-                className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 font-medium text-xs transition-colors hover:bg-destructive/20"
-              >
-                <RefreshCwIcon className="size-3" />
-                Retry
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+      {messages.map((message, messageIndex) => (
+        <MessageBubble
+          key={message.id}
+          message={message}
+          isLastAssistant={
+            message.role === "assistant" && messageIndex === messages.length - 1
+          }
+          isLoading={isLoading}
+          allCompletedToolCallIds={allCompletedToolCallIds}
+          onApprovalResponse={onApprovalResponse}
+        />
+      ))}
+
+      {isLoading && <StreamingIndicator />}
+
+      {error && (
+        <div className="flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 px-3 py-2 text-destructive text-sm">
+          <span className="flex-1">
+            Something went wrong. Please try again.
+          </span>
+          {onRetry && (
+            <button
+              type="button"
+              onClick={onRetry}
+              className="inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 font-medium text-xs transition-colors hover:bg-destructive/20"
+            >
+              <RefreshCwIcon className="size-3" />
+              Retry
+            </button>
+          )}
+        </div>
+      )}
+    </ChatMessagesContainer>
   );
 }

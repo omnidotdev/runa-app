@@ -3,7 +3,6 @@ import { Loader2Icon, ZapIcon } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { useRollbackActivity } from "@/lib/ai/hooks/useRollback";
 import agentActivitiesOptions from "@/lib/options/agentActivities.options";
 import { AgentActivityItem } from "./AgentActivityItem";
 
@@ -17,18 +16,14 @@ interface AgentActivityFeedProps {
   projectId: string;
 }
 
-export function AgentActivityFeed({ projectId }: AgentActivityFeedProps) {
+export function AgentActivityFeed({
+  projectId,
+}: AgentActivityFeedProps): React.ReactElement {
   const [cursor, setCursor] = useState<string | null>(null);
   const [previousActivities, setPreviousActivities] = useState<ActivityNode[]>(
     [],
   );
   const lastAppendedCursorRef = useRef<string | null>(null);
-
-  const {
-    mutate: rollbackActivity,
-    isPending: isRollingBack,
-    variables: rollingBackId,
-  } = useRollbackActivity();
 
   const { data, isLoading, isFetching } = useQuery(
     agentActivitiesOptions({
@@ -95,13 +90,7 @@ export function AgentActivityFeed({ projectId }: AgentActivityFeedProps) {
       </p>
 
       {activities.map((activity) => (
-        <AgentActivityItem
-          key={activity.rowId}
-          activity={activity}
-          onUndo={rollbackActivity}
-          isUndoing={isRollingBack}
-          undoingActivityId={rollingBackId}
-        />
+        <AgentActivityItem key={activity.rowId} activity={activity} />
       ))}
 
       {pageInfo?.hasNextPage && (

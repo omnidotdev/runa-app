@@ -349,6 +349,50 @@
       0 0 15px color-mix(in oklch, var(--primary-500) 20%, transparent),
       inset 0 0 15px color-mix(in oklch, var(--primary-500) 5%, transparent);
   }
+
+  /* Chat bubble shapes */
+  .bubble-user {
+    border-radius: 1rem 1rem 0.25rem 1rem;
+  }
+
+  .bubble-assistant {
+    border-radius: 1rem 1rem 1rem 0.25rem;
+  }
+
+  /* Thinking dots animation - opacity only for smooth performance */
+  .thinking-dots {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .thinking-dots span {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+    background-color: currentColor;
+    animation: thinking-dot 1.4s infinite;
+  }
+
+  .thinking-dots span:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  .thinking-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .thinking-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .thinking-dots span {
+      animation: none;
+      opacity: 0.6;
+    }
+  }
 }
 
 @keyframes shimmer {
@@ -357,5 +401,36 @@
   }
   100% {
     background-position: -200% center;
+  }
+}
+
+@keyframes thinking-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Subtle pulse animation for empty state icons */
+@keyframes subtle-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-subtle-pulse {
+  animation: subtle-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-subtle-pulse {
+    animation: none;
   }
 }

@@ -65,27 +65,28 @@ export function ToolApprovalActions({
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-xs">{formatApprovalDetails(toolName, input)}</p>
+    <div className="flex flex-col gap-3">
+      <p className="text-pretty text-sm">
+        {formatApprovalDetails(toolName, input)}
+      </p>
       <div className="flex gap-2">
         <Button
-          variant="outline"
           size="sm"
-          className="h-7 gap-1 border-green-300 text-green-700 text-xs hover:bg-green-50 dark:border-green-700 dark:text-green-400 dark:hover:bg-green-950/50"
+          className="h-8 flex-1 gap-1.5"
           disabled={isResponding}
           onClick={() => handleResponse(true)}
         >
-          <CheckIcon className="size-3" />
+          <CheckIcon className="size-3.5" />
           Approve
         </Button>
         <Button
           variant="outline"
           size="sm"
-          className="h-7 gap-1 border-red-300 text-red-700 text-xs hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-950/50"
+          className="h-8 flex-1 gap-1.5"
           disabled={isResponding}
           onClick={() => handleResponse(false)}
         >
-          <XIcon className="size-3" />
+          <XIcon className="size-3.5" />
           Deny
         </Button>
       </div>

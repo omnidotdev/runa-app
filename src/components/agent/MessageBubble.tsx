@@ -1,5 +1,5 @@
 import { useRouteContext } from "@tanstack/react-router";
-import { BotIcon } from "lucide-react";
+import { SparklesIcon } from "lucide-react";
 
 import {
   AvatarFallback,
@@ -11,7 +11,6 @@ import { AgentMarkdown } from "./AgentMarkdown";
 import { ToolCallBubble } from "./ToolCallBubble";
 
 import type { UIMessage } from "@tanstack/ai-client";
-import type { RollbackByMatchParams } from "@/lib/ai/hooks/useRollback";
 
 interface MessageBubbleProps {
   message: UIMessage;
@@ -20,9 +19,6 @@ interface MessageBubbleProps {
   /** Set of tool call IDs that have completed (have tool-results) across ALL messages. */
   allCompletedToolCallIds: Set<string>;
   onApprovalResponse: (response: { id: string; approved: boolean }) => void;
-  onUndoToolCall?: (toolName: string, toolInput: unknown) => void;
-  /** The in-flight undo mutation variables for per-bubble loading state. */
-  undoingToolCall?: RollbackByMatchParams;
 }
 
 export function MessageBubble({
@@ -31,9 +27,7 @@ export function MessageBubble({
   isLoading,
   allCompletedToolCallIds,
   onApprovalResponse,
-  onUndoToolCall,
-  undoingToolCall,
-}: MessageBubbleProps) {
+}: MessageBubbleProps): React.ReactElement {
   const { session } = useRouteContext({ strict: false });
   const isUser = message.role === "user";
   const isStreaming = isLastAssistant && isLoading;
@@ -41,7 +35,7 @@ export function MessageBubble({
   return (
     <div className={cn("flex gap-2.5", isUser && "flex-row-reverse")}>
       {isUser ? (
-        <AvatarRoot className="size-6 shrink-0">
+        <AvatarRoot className="size-7 shrink-0">
           <AvatarImage
             src={session?.user.image ?? undefined}
             alt={session?.user.username}
@@ -51,16 +45,13 @@ export function MessageBubble({
           </AvatarFallback>
         </AvatarRoot>
       ) : (
-        <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted">
-          <BotIcon className="size-3.5" />
+        <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10">
+          <SparklesIcon className="size-3.5 text-primary" />
         </div>
       )}
 
       <div
-        className={cn(
-          "flex max-w-[85%] flex-col gap-1.5",
-          isUser && "items-end",
-        )}
+        className={cn("flex max-w-[85%] flex-col gap-2", isUser && "items-end")}
       >
         {(message.parts ?? []).map((part, idx) => {
           if (part.type === "text") {
@@ -68,7 +59,7 @@ export function MessageBubble({
               return (
                 <div
                   key={`text-${idx}`}
-                  className="whitespace-pre-wrap rounded-lg bg-primary px-3 py-2 text-primary-foreground text-sm"
+                  className="bubble-user whitespace-pre-wrap bg-primary px-4 py-2.5 text-primary-foreground text-sm"
                 >
                   {part.content}
                 </div>
@@ -78,7 +69,7 @@ export function MessageBubble({
             return (
               <div
                 key={`text-${idx}`}
-                className="rounded-lg bg-muted px-3 py-2"
+                className="bubble-assistant border border-border bg-card px-4 py-3"
               >
                 <AgentMarkdown
                   content={part.content}
@@ -92,7 +83,7 @@ export function MessageBubble({
             return (
               <div
                 key={`thinking-${idx}`}
-                className="rounded-lg bg-muted/50 px-3 py-2 text-muted-foreground text-xs italic"
+                className="bubble-assistant bg-muted/50 px-4 py-2.5 text-muted-foreground text-xs italic"
               >
                 {part.content}
               </div>
@@ -107,8 +98,6 @@ export function MessageBubble({
                 hasResult={allCompletedToolCallIds.has(part.id)}
                 isLoading={isLoading}
                 onApprovalResponse={onApprovalResponse}
-                onUndo={onUndoToolCall}
-                undoingToolCall={undoingToolCall}
               />
             );
           }

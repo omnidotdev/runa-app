@@ -3,13 +3,11 @@ import {
   CheckCircleIcon,
   ChevronDownIcon,
   ClockIcon,
-  Loader2Icon,
   Undo2Icon,
   XCircleIcon,
 } from "lucide-react";
 import { useState } from "react";
 
-import { WRITE_TOOL_NAMES } from "@/lib/ai/constants";
 import { formatRelativeTime } from "@/lib/ai/utils/formatRelativeTime";
 import { formatToolName } from "@/lib/ai/utils/formatToolName";
 import { cn } from "@/lib/utils";
@@ -22,9 +20,6 @@ type ActivityNode = NonNullable<
 
 interface AgentActivityItemProps {
   activity: ActivityNode;
-  onUndo?: (activityId: string) => void;
-  isUndoing?: boolean;
-  undoingActivityId?: string;
 }
 
 const STATUS_CONFIG = {
@@ -61,7 +56,7 @@ const STATUS_CONFIG = {
 function getStatusConfig(
   status: string,
   approvalStatus: string | null | undefined,
-) {
+): (typeof STATUS_CONFIG)[keyof typeof STATUS_CONFIG] {
   if (approvalStatus === "denied") return STATUS_CONFIG.denied;
   if (status === "rolled_back") return STATUS_CONFIG.rolled_back;
   if (status === "completed") return STATUS_CONFIG.completed;
@@ -71,10 +66,7 @@ function getStatusConfig(
 
 export function AgentActivityItem({
   activity,
-  onUndo,
-  isUndoing,
-  undoingActivityId,
-}: AgentActivityItemProps) {
+}: AgentActivityItemProps): React.ReactElement {
   const [isExpanded, setIsExpanded] = useState(false);
   const statusConfig = getStatusConfig(
     activity.status,
@@ -82,13 +74,6 @@ export function AgentActivityItem({
   );
   const StatusIcon = statusConfig.icon;
   const relativeTimestamp = formatRelativeTime(activity.createdAt);
-
-  // An activity is undoable if it's a completed write tool (not already rolled back)
-  const isUndoable =
-    activity.status === "completed" &&
-    WRITE_TOOL_NAMES.has(activity.toolName) &&
-    onUndo !== undefined;
-  const isThisUndoing = isUndoing && undoingActivityId === activity.rowId;
 
   return (
     <div role="article" className="flex flex-col gap-1 rounded-md border p-2.5">
@@ -119,23 +104,6 @@ export function AgentActivityItem({
             <span className="text-[10px] text-amber-600 dark:text-amber-400">
               <AlertTriangleIcon className="inline size-2.5" /> Approval
             </span>
-          )}
-
-          {isUndoable && (
-            <button
-              type="button"
-              onClick={() => onUndo(activity.rowId)}
-              disabled={isThisUndoing}
-              aria-label={`Undo ${formatToolName(activity.toolName)}`}
-              className="inline-flex items-center gap-0.5 rounded px-1 py-0.5 text-[10px] text-violet-600 transition-colors hover:bg-violet-100 disabled:opacity-50 dark:text-violet-400 dark:hover:bg-violet-950/50"
-            >
-              {isThisUndoing ? (
-                <Loader2Icon className="size-2.5 animate-spin" />
-              ) : (
-                <Undo2Icon className="size-2.5" />
-              )}
-              Undo
-            </button>
           )}
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { SparklesIcon, XIcon } from "lucide-react";
+import { RotateCcwIcon, SparklesIcon, XIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -58,7 +58,6 @@ export function ProjectCreationPanel({
 
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Focus textarea on mount
   useEffect(() => {
     const textarea = panelRef.current?.querySelector("textarea");
     if (textarea instanceof HTMLElement) {
@@ -66,12 +65,19 @@ export function ProjectCreationPanel({
     }
   }, []);
 
-  // Escape to close
   useHotkeys("escape", onClose, { enableOnFormTags: ["TEXTAREA"] });
 
   const handleStartOver = useCallback(() => {
     setSessionGeneration((prev) => prev + 1);
   }, []);
+
+  // Handle suggestion clicks - send the message directly
+  const handleSendMessage = useCallback(
+    (message: string) => {
+      sendMessage(message);
+    },
+    [sendMessage],
+  );
 
   return (
     <div
@@ -85,15 +91,13 @@ export function ProjectCreationPanel({
     >
       {/* Header */}
       <header className="flex items-center justify-between border-b px-4 py-3">
-        <div className="flex items-center gap-2">
-          <div className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary">
-            <SparklesIcon className="size-4" />
+        <div className="flex items-center gap-3">
+          <div className="flex size-8 items-center justify-center rounded-md bg-primary/10">
+            <SparklesIcon className="size-4 text-primary" />
           </div>
           <div>
-            <h2 className="font-semibold text-sm">Create Project with AI</h2>
-            <p className="text-muted-foreground text-xs">
-              Describe your project to get started
-            </p>
+            <h2 className="font-semibold text-sm">Create Project</h2>
+            <p className="text-muted-foreground text-xs">AI-assisted setup</p>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -102,8 +106,9 @@ export function ProjectCreationPanel({
               variant="ghost"
               size="sm"
               onClick={handleStartOver}
-              className="text-xs"
+              className="gap-1.5 text-xs"
             >
+              <RotateCcwIcon className="size-3" />
               Start Over
             </Button>
           )}
@@ -112,6 +117,7 @@ export function ProjectCreationPanel({
             size="icon"
             onClick={onClose}
             aria-label="Close panel"
+            className="size-8"
           >
             <XIcon className="size-4" />
           </Button>
@@ -126,6 +132,7 @@ export function ProjectCreationPanel({
           isLoading={isLoading}
           error={error}
           onApprovalResponse={addToolApprovalResponse}
+          onSendMessage={handleSendMessage}
         />
 
         {/* Input */}

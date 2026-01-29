@@ -6,7 +6,6 @@ import { TabsContent, TabsRoot } from "@/components/ui/tabs";
 import { useAccessToken } from "@/lib/ai/hooks/useAccessToken";
 import { useAgentSessions } from "@/lib/ai/hooks/useAgentSessions";
 import { useCurrentSession } from "@/lib/ai/hooks/useCurrentSession";
-import { useRollbackByMatch } from "@/lib/ai/hooks/useRollback";
 import { useAgentChat } from "@/lib/ai/useAgentChat";
 import agentPersonasOptions from "@/lib/options/agentPersonas.options";
 import agentSessionOptions from "@/lib/options/agentSession.options";
@@ -18,16 +17,9 @@ import { AgentPersonaSelector } from "./AgentPersonaSelector";
 import { ChatInput } from "./ChatInput";
 
 import type { UIMessage } from "@tanstack/ai-client";
-import type { RollbackByMatchParams } from "@/lib/ai/hooks/useRollback";
 
 /**
  * Converts server-side ModelMessage format to client-side UIMessage format.
- *
- * Server stores messages as: { role, content: string, toolCallId? }
- * Client expects UIMessage:  { id, role, parts: [{ type, content }] }
- *
- * Tool calls are stored as separate assistant/tool message pairs on the server,
- * but the client merges them into the assistant message's parts array.
  */
 function normalizeStoredMessages(rawMessages: unknown[]): UIMessage[] {
   const messages = rawMessages.filter(
@@ -50,7 +42,6 @@ function normalizeStoredMessages(rawMessages: unknown[]): UIMessage[] {
       typeof msg.toolCallId === "string" ? msg.toolCallId : undefined;
 
     if (role === "user") {
-      // Flush any pending assistant message
       if (currentAssistantId !== null) {
         result.push({
           id: currentAssistantId,
@@ -61,35 +52,27 @@ function normalizeStoredMessages(rawMessages: unknown[]): UIMessage[] {
         currentAssistantId = null;
       }
 
-      // Add user message
       result.push({
         id: `stored-user-${i}`,
         role: "user",
         parts: content ? [{ type: "text", content }] : [],
       } as UIMessage);
     } else if (role === "assistant") {
-      // Check if this is a tool call placeholder (empty content with toolCallId)
       if (toolCallId && !content) {
-        // Start or continue collecting assistant parts
         if (currentAssistantId === null) {
           currentAssistantId = `stored-assistant-${i}`;
         }
-        // The actual tool call info would need to be extracted from the next tool message
-        // For now, we'll handle this when we see the tool result
       } else if (content) {
-        // Regular assistant text response
         if (currentAssistantId === null) {
           currentAssistantId = `stored-assistant-${i}`;
         }
         currentAssistantParts.push({ type: "text", content });
       }
     } else if (role === "tool") {
-      // Tool result - add to current assistant's parts
       if (currentAssistantId === null) {
         currentAssistantId = `stored-assistant-${i}`;
       }
       if (toolCallId) {
-        // Add a simplified tool-result part
         currentAssistantParts.push({
           type: "tool-result",
           toolCallId,
@@ -99,7 +82,6 @@ function normalizeStoredMessages(rawMessages: unknown[]): UIMessage[] {
     }
   }
 
-  // Flush any remaining assistant message
   if (currentAssistantId !== null && currentAssistantParts.length > 0) {
     result.push({
       id: currentAssistantId,
@@ -125,7 +107,7 @@ export function AgentChatPanel({
   userId,
   onClose,
   className,
-}: AgentChatPanelProps) {
+}: AgentChatPanelProps): React.ReactElement {
   const accessToken = useAccessToken();
   const {
     sessions,
@@ -136,7 +118,6 @@ export function AgentChatPanel({
   const { currentSessionId, sessionKey, selectSession, startNewSession } =
     useCurrentSession(sessions);
 
-  // Persona selection — changing persona starts a new session
   const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(
     null,
   );
@@ -177,13 +158,11 @@ export function AgentChatPanel({
     onSessionId: handleSessionId,
   });
 
-  // Fetch session data when selecting a previous session
   const { data: sessionData } = useQuery({
     ...agentSessionOptions({ rowId: currentSessionId ?? "" }),
     enabled: !!currentSessionId,
   });
 
-  // Load messages from session when selecting a previous session
   const loadedSessionIdRef = useRef<string | null>(null);
   useEffect(() => {
     if (
@@ -200,39 +179,20 @@ export function AgentChatPanel({
       }
       loadedSessionIdRef.current = currentSessionId;
     } else if (!currentSessionId) {
-      // Reset when starting a new session
       loadedSessionIdRef.current = null;
     }
   }, [currentSessionId, sessionData, setMessages]);
 
-  // Undo tool calls via match-based rollback
-  const {
-    mutate: rollbackByMatch,
-    isPending: isUndoingToolCall,
-    variables: undoingToolCallVars,
-  } = useRollbackByMatch();
-
-  // Only expose variables while the mutation is in-flight so ToolCallBubble
-  // can identify which specific tool call is being undone.
-  const undoingToolCall: RollbackByMatchParams | undefined = isUndoingToolCall
-    ? undoingToolCallVars
-    : undefined;
-
-  const handleUndoToolCall = useCallback(
-    (toolName: string, toolInput: unknown) => {
-      if (!currentSessionId) return;
-      rollbackByMatch({
-        sessionId: currentSessionId,
-        toolName,
-        toolInput,
-      });
+  // Handle suggestion clicks - send the message directly
+  const handleSendMessage = useCallback(
+    (message: string) => {
+      sendMessage(message);
     },
-    [currentSessionId, rollbackByMatch],
+    [sendMessage],
   );
 
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Focus the panel on mount so keyboard users land inside
   useEffect(() => {
     const textarea = panelRef.current?.querySelector("textarea");
     if (textarea instanceof HTMLElement) {
@@ -283,8 +243,7 @@ export function AgentChatPanel({
             isLoading={isLoading}
             error={error}
             onApprovalResponse={addToolApprovalResponse}
-            onUndoToolCall={currentSessionId ? handleUndoToolCall : undefined}
-            undoingToolCall={undoingToolCall}
+            onSendMessage={handleSendMessage}
           />
           <ChatInput
             onSend={sendMessage}
