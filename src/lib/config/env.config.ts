@@ -32,26 +32,20 @@ export const SELF_HOSTED = clientEnv.SELF_HOSTED;
 
 // Auth: Omni/Gatekeeper (SaaS)
 export const AUTH_BASE_URL = env.AUTH_BASE_URL || env.VITE_AUTH_BASE_URL;
-// Client ID is safe to expose (not a secret), so use VITE_ fallback for client-side detection
-export const AUTH_CLIENT_ID = env.AUTH_CLIENT_ID || env.VITE_AUTH_CLIENT_ID;
+export const AUTH_CLIENT_ID = env.AUTH_CLIENT_ID;
 export const AUTH_CLIENT_SECRET = env.AUTH_CLIENT_SECRET;
 
 // Auth: Google OAuth
-// Client ID is safe to expose (not a secret), so use VITE_ fallback for client-side detection
-export const GOOGLE_CLIENT_ID =
-  env.GOOGLE_CLIENT_ID || env.VITE_GOOGLE_CLIENT_ID;
+export const GOOGLE_CLIENT_ID = env.GOOGLE_CLIENT_ID;
 export const GOOGLE_CLIENT_SECRET = env.GOOGLE_CLIENT_SECRET;
 
 // Auth: GitHub OAuth
-// Client ID is safe to expose (not a secret), so use VITE_ fallback for client-side detection
-export const GITHUB_CLIENT_ID =
-  env.GITHUB_CLIENT_ID || env.VITE_GITHUB_CLIENT_ID;
+export const GITHUB_CLIENT_ID = env.GITHUB_CLIENT_ID;
 export const GITHUB_CLIENT_SECRET = env.GITHUB_CLIENT_SECRET;
 
 // Auth: Generic OIDC (enterprise SSO)
-// Issuer and client ID are safe to expose (not secrets), so use VITE_ fallback
-export const OIDC_ISSUER = env.OIDC_ISSUER || env.VITE_OIDC_ISSUER;
-export const OIDC_CLIENT_ID = env.OIDC_CLIENT_ID || env.VITE_OIDC_CLIENT_ID;
+export const OIDC_ISSUER = env.OIDC_ISSUER;
+export const OIDC_CLIENT_ID = env.OIDC_CLIENT_ID;
 export const OIDC_CLIENT_SECRET = env.OIDC_CLIENT_SECRET;
 
 // Feature flags

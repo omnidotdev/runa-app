@@ -21,12 +21,6 @@ import { pgPool } from "@/lib/db";
 
 import type { OrganizationClaim } from "@/lib/auth/rowIdCache";
 
-/**
- * Whether running in SaaS mode (Omni OAuth configured).
- * SaaS mode is stateless - no database, no email/password.
- */
-const isSaaSMode = !!AUTH_CLIENT_ID;
-
 const { AUTH_SECRET } = process.env;
 
 // Build genericOAuth config array based on available credentials
@@ -149,12 +143,20 @@ plugins.push(
 );
 
 /**
+ * Whether running in SaaS mode (Omni OAuth configured).
+ * SaaS mode is stateless - no database, no email/password.
+ */
+const isSaaSMode = !!AUTH_CLIENT_ID;
+
+/**
  * Auth server client.
  */
 const auth = betterAuth({
   baseURL: BASE_URL,
   basePath: "/api/auth",
   secret: AUTH_SECRET,
+  // Trust the app's own origin for auth requests
+  trustedOrigins: BASE_URL ? [BASE_URL] : [],
   // Database for self-hosted mode only (email/password auth)
   // SaaS mode stays stateless - no database connection
   ...(pgPool && {
