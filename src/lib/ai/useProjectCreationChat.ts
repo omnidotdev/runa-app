@@ -11,58 +11,9 @@ import { API_BASE_URL } from "@/lib/config/env.config";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { PROJECT_CREATION_TOOL_NAMES } from "./constants";
 import { useAccessToken } from "./hooks/useAccessToken";
+import { extractApprovals } from "./utils";
 
 import type { UIMessage } from "@tanstack/ai-client";
-
-/**
- * Extract pending approval responses from UIMessages.
- * Same logic as useAgentChat for consistency.
- */
-function extractApprovals(
-  messages: UIMessage[],
-): Array<{ id: string; approved: boolean }> {
-  const executedToolCallIds = new Set<string>();
-  for (const message of messages) {
-    if (message.role !== "assistant") continue;
-    for (const part of message.parts) {
-      if (part.type === "tool-result") {
-        executedToolCallIds.add(part.toolCallId);
-      }
-    }
-  }
-
-  const APPROVAL_PREFIX = "approval_";
-  const approvalsMap = new Map<string, { id: string; approved: boolean }>();
-
-  for (const message of messages) {
-    if (message.role !== "assistant") continue;
-
-    for (const part of message.parts) {
-      if (
-        part.type === "tool-call" &&
-        part.state === "approval-responded" &&
-        typeof part.approval?.id === "string" &&
-        part.approval.id.length > 0 &&
-        typeof part.approval?.approved === "boolean"
-      ) {
-        const toolCallId = part.approval.id.startsWith(APPROVAL_PREFIX)
-          ? part.approval.id.slice(APPROVAL_PREFIX.length)
-          : part.id;
-
-        if (executedToolCallIds.has(toolCallId)) {
-          continue;
-        }
-
-        approvalsMap.set(part.approval.id, {
-          id: part.approval.id,
-          approved: part.approval.approved,
-        });
-      }
-    }
-  }
-
-  return Array.from(approvalsMap.values());
-}
 
 /** Project data returned after successful creation. */
 export interface CreatedProject {

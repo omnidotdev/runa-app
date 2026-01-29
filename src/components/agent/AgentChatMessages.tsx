@@ -1,6 +1,7 @@
 import { Loader2Icon, RefreshCwIcon, SparklesIcon } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 
+import { getCompletedToolCallIds } from "@/lib/ai/utils";
 import { MessageBubble } from "./MessageBubble";
 
 import type { UIMessage } from "@tanstack/ai-client";
@@ -31,18 +32,10 @@ export function AgentChatMessages({
   // Collect all completed tool call IDs across ALL messages.
   // Server-side tools have tool-results in different messages than tool-calls,
   // so we need to track completion globally, not per-message.
-  const allCompletedToolCallIds = useMemo(() => {
-    const ids = new Set<string>();
-    for (const message of messages) {
-      if (message.role !== "assistant") continue;
-      for (const part of message.parts) {
-        if (part.type === "tool-result") {
-          ids.add(part.toolCallId);
-        }
-      }
-    }
-    return ids;
-  }, [messages]);
+  const allCompletedToolCallIds = useMemo(
+    () => getCompletedToolCallIds(messages),
+    [messages],
+  );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: Intentionally trigger scroll on message count change
   useEffect(() => {

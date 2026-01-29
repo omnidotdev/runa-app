@@ -2,6 +2,7 @@ import { Loader2Icon, RefreshCwIcon, SparklesIcon } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 
 import { PROJECT_CREATION_TOOL_NAMES } from "@/lib/ai/constants";
+import { getCompletedToolCallIds } from "@/lib/ai/utils";
 import { ProjectCreationToolBubble } from "./ProjectCreationToolBubble";
 import { ProjectProposalCard } from "./ProjectProposalCard";
 
@@ -33,18 +34,10 @@ export function ProjectCreationMessages({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Track completed tool calls
-  const allCompletedToolCallIds = useMemo(() => {
-    const ids = new Set<string>();
-    for (const message of messages) {
-      if (message.role !== "assistant") continue;
-      for (const part of message.parts) {
-        if (part.type === "tool-result") {
-          ids.add(part.toolCallId);
-        }
-      }
-    }
-    return ids;
-  }, [messages]);
+  const allCompletedToolCallIds = useMemo(
+    () => getCompletedToolCallIds(messages),
+    [messages],
+  );
 
   // Auto-scroll
   // biome-ignore lint/correctness/useExhaustiveDependencies: Trigger on message count
