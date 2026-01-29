@@ -17,6 +17,8 @@ import {
   ProjectSettingsHeader,
 } from "@/components/projects";
 import { BASE_URL } from "@/lib/config/env.config";
+import agentSchedulesOptions from "@/lib/options/agentSchedules.options";
+import agentWebhooksOptions from "@/lib/options/agentWebhooks.options";
 import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
@@ -28,7 +30,7 @@ export const Route = createFileRoute(
 )({
   loader: async ({
     params: { projectSlug },
-    context: { queryClient, organizationId },
+    context: { queryClient, organizationId, session },
   }) => {
     if (!organizationId) throw notFound();
 
@@ -57,6 +59,24 @@ export const Route = createFileRoute(
         const project = await this.$.project;
         return queryClient.ensureQueryData(
           columnsOptions({ projectId: project.rowId }),
+        );
+      },
+      async agentWebhooks() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          agentWebhooksOptions({
+            projectId: project.rowId,
+            accessToken: session?.accessToken!,
+          }),
+        );
+      },
+      async agentSchedules() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          agentSchedulesOptions({
+            projectId: project.rowId,
+            accessToken: session?.accessToken!,
+          }),
         );
       },
     });

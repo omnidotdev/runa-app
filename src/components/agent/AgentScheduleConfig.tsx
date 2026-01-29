@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import {
   CalendarClockIcon,
   Loader2Icon,
@@ -280,10 +285,9 @@ export function AgentScheduleConfig({
   const accessToken = useAccessToken();
   const queryClient = useQueryClient();
 
-  const { data: schedules = [], isLoading } = useQuery({
-    ...agentSchedulesOptions({ projectId, accessToken }),
-    select: (data) => data ?? [],
-  });
+  const { data: schedules } = useSuspenseQuery(
+    agentSchedulesOptions({ projectId, accessToken }),
+  );
   const { data: personas = [] } = useQuery({
     ...agentPersonasOptions({ organizationId, accessToken }),
     select: (data) => data ?? [],
@@ -439,13 +443,6 @@ export function AgentScheduleConfig({
         )}
       </div>
 
-      {isLoading && (
-        <div className="flex items-center gap-2 py-2 text-muted-foreground text-xs">
-          <Loader2Icon className="size-3 animate-spin" />
-          Loading schedules...
-        </div>
-      )}
-
       {/* Schedule list */}
       {schedules.length > 0 && !isFormOpen && (
         <div className="flex flex-col gap-1.5">
@@ -534,7 +531,7 @@ export function AgentScheduleConfig({
         </div>
       )}
 
-      {schedules.length === 0 && !isLoading && !isFormOpen && (
+      {schedules.length === 0 && !isFormOpen && (
         <p className="py-2 text-center text-muted-foreground text-xs">
           No schedules configured yet.
         </p>

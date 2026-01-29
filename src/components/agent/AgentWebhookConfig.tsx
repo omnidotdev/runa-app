@@ -1,4 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import {
   ClipboardCopyIcon,
   Loader2Icon,
@@ -169,10 +173,9 @@ export function AgentWebhookConfig({ projectId }: AgentWebhookConfigProps) {
   const accessToken = useAccessToken();
   const queryClient = useQueryClient();
 
-  const { data: webhooks = [], isLoading } = useQuery({
-    ...agentWebhooksOptions({ projectId, accessToken }),
-    select: (data) => data ?? [],
-  });
+  const { data: webhooks } = useSuspenseQuery(
+    agentWebhooksOptions({ projectId, accessToken }),
+  );
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -328,13 +331,6 @@ export function AgentWebhookConfig({ projectId }: AgentWebhookConfigProps) {
         )}
       </div>
 
-      {isLoading && (
-        <div className="flex items-center gap-2 py-2 text-muted-foreground text-xs">
-          <Loader2Icon className="size-3 animate-spin" />
-          Loading webhooks...
-        </div>
-      )}
-
       {/* Signing secret reveal (shown once after creation) */}
       {createdSecret && (
         <div className="flex flex-col gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950/30">
@@ -467,7 +463,7 @@ export function AgentWebhookConfig({ projectId }: AgentWebhookConfigProps) {
         </div>
       )}
 
-      {webhooks.length === 0 && !isLoading && !isFormOpen && (
+      {webhooks.length === 0 && !isFormOpen && (
         <p className="py-2 text-center text-muted-foreground text-xs">
           No webhooks configured yet.
         </p>
