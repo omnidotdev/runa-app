@@ -1,3 +1,8 @@
+import {
+  getToolOrDynamicToolName,
+  isTextUIPart,
+  isToolOrDynamicToolUIPart,
+} from "ai";
 import { Loader2Icon, RefreshCwIcon } from "lucide-react";
 import { useMemo } from "react";
 
@@ -11,7 +16,7 @@ import {
   StreamingIndicator,
 } from "./shared";
 
-import type { UIMessage } from "@tanstack/ai-client";
+import type { UIMessage } from "ai";
 import type { ReactElement } from "react";
 import type { ProjectProposal } from "./ProjectProposalCard";
 
@@ -80,15 +85,17 @@ export function ProjectCreationMessages({
     >
       {messages.map((message) => {
         if (message.role === "user") {
-          const textPart = message.parts.find((p) => p.type === "text");
-          if (!textPart || textPart.type !== "text" || !textPart.content) {
-            return null;
-          }
+          // V6: Extract text from parts
+          const textContent = message.parts
+            .filter(isTextUIPart)
+            .map((part) => part.text)
+            .join("");
+          if (!textContent) return null;
 
           return (
             <div key={message.id} className="flex justify-end">
               <div className="bubble-user max-w-[85%] bg-primary px-4 py-2.5 text-primary-foreground text-sm">
-                {textPart.content}
+                {textContent}
               </div>
             </div>
           );
@@ -97,70 +104,75 @@ export function ProjectCreationMessages({
         if (message.role === "assistant") {
           const elements: ReactElement[] = [];
 
-          for (const part of message.parts) {
-            if (part.type === "text" && part.content) {
-              elements.push(
-                <div
-                  key={`${message.id}-text-${elements.length}`}
-                  className="bubble-assistant max-w-[95%] whitespace-pre-wrap border border-border bg-card px-4 py-3 text-sm"
-                >
-                  {part.content}
-                </div>,
-              );
+          // V6: Extract text from parts
+          const textContent = message.parts
+            .filter(isTextUIPart)
+            .map((part) => part.text)
+            .join("");
+          if (textContent) {
+            elements.push(
+              <div
+                key={`${message.id}-text`}
+                className="bubble-assistant max-w-[95%] whitespace-pre-wrap border border-border bg-card px-4 py-3 text-sm"
+              >
+                {textContent}
+              </div>,
+            );
+          }
+
+          // V6: Extract tool invocations from parts
+          const toolParts = message.parts.filter(isToolOrDynamicToolUIPart);
+
+          for (const part of toolParts) {
+            const toolName = getToolOrDynamicToolName(part);
+            if (!toolName || !PROJECT_CREATION_TOOL_NAMES.has(toolName)) {
+              continue;
             }
 
-            if (
-              part.type === "tool-call" &&
-              PROJECT_CREATION_TOOL_NAMES.has(part.name)
-            ) {
-              const hasResult = allCompletedToolCallIds.has(part.id);
+            const hasResult = allCompletedToolCallIds.has(part.toolCallId);
 
-              // Special rendering for proposeProject
-              if (part.name === "proposeProject" && hasResult) {
-                const proposal = part.input as ProjectProposal | undefined;
+            // Special rendering for proposeProject
+            if (toolName === "proposeProject" && hasResult) {
+              const proposal = part.input as ProjectProposal | undefined;
 
-                if (proposal?.name && proposal?.columns) {
-                  elements.push(
-                    <div key={`${message.id}-proposal-${part.id}`}>
-                      <ProjectProposalCard proposal={proposal} />
-                    </div>,
-                  );
-                } else {
-                  const output = part.output as
-                    | { summary?: string }
-                    | undefined;
-                  if (output?.summary) {
-                    elements.push(
-                      <div
-                        key={`${message.id}-proposal-summary-${part.id}`}
-                        className="bubble-assistant whitespace-pre-wrap border border-border bg-card px-4 py-3 text-sm"
-                      >
-                        {output.summary}
-                      </div>,
-                    );
-                  }
-                }
-              } else if (part.name === "createProjectFromProposal") {
+              if (proposal?.name && proposal?.columns) {
                 elements.push(
-                  <ProjectCreationToolBubble
-                    key={`${message.id}-tool-${part.id}`}
-                    part={part}
-                    hasResult={hasResult}
-                    isLoading={isLoading}
-                    onApprovalResponse={onApprovalResponse}
-                  />,
-                );
-              } else if (part.name === "proposeProject" && !hasResult) {
-                elements.push(
-                  <div
-                    key={`${message.id}-proposing-${part.id}`}
-                    className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2 text-muted-foreground text-xs"
-                  >
-                    <Loader2Icon className="size-3 animate-spin" />
-                    <span>Preparing project proposal...</span>
+                  <div key={`${message.id}-proposal-${part.toolCallId}`}>
+                    <ProjectProposalCard proposal={proposal} />
                   </div>,
                 );
+              } else if (part.state === "output-available") {
+                const output = part.output as { summary?: string } | undefined;
+                if (output?.summary) {
+                  elements.push(
+                    <div
+                      key={`${message.id}-proposal-summary-${part.toolCallId}`}
+                      className="bubble-assistant whitespace-pre-wrap border border-border bg-card px-4 py-3 text-sm"
+                    >
+                      {output.summary}
+                    </div>,
+                  );
+                }
               }
+            } else if (toolName === "createProjectFromProposal") {
+              elements.push(
+                <ProjectCreationToolBubble
+                  key={`${message.id}-tool-${part.toolCallId}`}
+                  part={part}
+                  isLoading={isLoading}
+                  onApprovalResponse={onApprovalResponse}
+                />,
+              );
+            } else if (toolName === "proposeProject" && !hasResult) {
+              elements.push(
+                <div
+                  key={`${message.id}-proposing-${part.toolCallId}`}
+                  className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2 text-muted-foreground text-xs"
+                >
+                  <Loader2Icon className="size-3 animate-spin" />
+                  <span>Preparing project proposal...</span>
+                </div>,
+              );
             }
           }
 

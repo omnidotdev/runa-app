@@ -1,3 +1,5 @@
+/** Agent chat message list component. */
+
 import { RefreshCwIcon } from "lucide-react";
 import { useMemo } from "react";
 
@@ -9,7 +11,7 @@ import {
   StreamingIndicator,
 } from "./shared";
 
-import type { UIMessage } from "@tanstack/ai-client";
+import type { UIMessage } from "ai";
 
 interface AgentChatMessagesProps {
   messages: UIMessage[];
@@ -44,9 +46,7 @@ export function AgentChatMessages({
   onRetry,
   onSendMessage,
 }: AgentChatMessagesProps): React.ReactElement {
-  // Collect all completed tool call IDs across ALL messages.
-  // Server-side tools have tool-results in different messages than tool-calls,
-  // so we need to track completion globally, not per-message.
+  // Collect all completed tool call IDs across ALL messages
   const allCompletedToolCallIds = useMemo(
     () => getCompletedToolCallIds(messages),
     [messages],

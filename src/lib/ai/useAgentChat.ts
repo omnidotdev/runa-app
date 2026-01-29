@@ -1,9 +1,23 @@
-import { fetchServerSentEvents, useChat } from "@tanstack/ai-react";
+/**
+ * Hook for AI agent chat.
+ *
+ * Wraps @ai-sdk/react's useChat with project-scoped auth and session management.
+ */
+
+import { useChat } from "@ai-sdk/react";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  DefaultChatTransport,
+  convertToModelMessages,
+  getToolOrDynamicToolName,
+  isToolOrDynamicToolUIPart,
+  lastAssistantMessageIsCompleteWithApprovalResponses,
+} from "ai";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import {
   useAgentActivitiesQuery,
+  useLabelsQuery,
   useProjectQuery,
   useTaskQuery,
   useTasksQuery,
@@ -12,9 +26,8 @@ import { API_BASE_URL } from "@/lib/config/env.config";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { WRITE_TOOL_NAMES } from "./constants";
 import { useAccessToken } from "./hooks/useAccessToken";
-import { extractApprovals } from "./utils";
 
-import type { UIMessage } from "@tanstack/ai-client";
+import type { UIMessage } from "ai";
 
 interface UseAgentChatOptions {
   projectId: string;
@@ -22,8 +35,7 @@ interface UseAgentChatOptions {
   sessionId?: string | null;
   /**
    * Composite key that changes whenever the session should be recreated.
-   * Includes a generation counter to handle null→null transitions
-   * when the user clicks "New Session" while already on a new session.
+   * Includes a generation counter to handle null→null transitions.
    */
   sessionKey?: string;
   /** Persona to use for this chat session. `null` uses the org default. */
@@ -33,23 +45,9 @@ interface UseAgentChatOptions {
 }
 
 /**
- * Hook for AI agent chat, wrapping TanStack AI's `useChat` with
- * project-scoped auth and session management.
- *
- * The access token is sourced from route context via `useAccessToken()`,
- * eliminating the need for prop drilling.
- *
  * Uses refs for dynamic values (token, projectId) to keep the connection
- * adapter stable — avoiding ChatClient recreation during a conversation.
- * The `sessionId` prop IS included as a memo dependency so that switching
- * sessions recreates the connection and clears stale messages.
- *
- * Session ID is captured from the `X-Agent-Session-Id` response header
- * via a custom `fetchClient` wrapper, since `onResponse` does not receive
- * the Response object in the current TanStack AI version.
- *
- * When write tools complete, React Query caches for board data are
- * invalidated so the UI reflects agent-made changes in real time.
+ * stable — avoiding reconnection during a conversation. The sessionId is
+ * included in the key so switching sessions recreates the hook state.
  */
 export function useAgentChat({
   projectId,
@@ -65,12 +63,7 @@ export function useAgentChat({
   const projectIdRef = useRef(projectId);
   const personaIdRef = useRef(personaId ?? null);
   const onSessionIdRef = useRef(onSessionId);
-  const invalidationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
   const lastWriteCountRef = useRef(0);
-  // Store UIMessages for approval extraction (body function reads this)
-  const messagesRef = useRef<UIMessage[]>([]);
 
   // Keep refs in sync with latest prop values
   accessTokenRef.current = accessToken;
@@ -78,193 +71,149 @@ export function useAgentChat({
   personaIdRef.current = personaId ?? null;
   onSessionIdRef.current = onSessionId;
 
-  // Recreate connection when sessionId changes — this resets useChat's
-  // message state so stale messages from the previous session are cleared.
-  // Refs for accessToken/projectId keep those values fresh without triggering
-  // a reconnection on every render.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Intentionally recreate connection on sessionKey OR sessionId change
-  const connection = useMemo(() => {
+  // Generate a unique ID for this chat instance based on session
+  const chatId = useMemo(() => {
     sessionIdRef.current = sessionId ?? null;
     lastWriteCountRef.current = 0;
-
-    return fetchServerSentEvents(`${API_BASE_URL}/api/ai/chat`, () => {
-      // Extract approvals from current UIMessages (before they're converted to ModelMessages)
-      const approvals = extractApprovals(messagesRef.current);
-
-      return {
-        headers: {
-          Authorization: `Bearer ${accessTokenRef.current}`,
-        },
-        body: {
-          projectId: projectIdRef.current,
-          ...(sessionIdRef.current ? { sessionId: sessionIdRef.current } : {}),
-          ...(personaIdRef.current ? { personaId: personaIdRef.current } : {}),
-          // Include approvals separately since ModelMessages don't preserve them
-          ...(approvals.length > 0 ? { approvals } : {}),
-        },
-        // Wrap fetch to capture session ID from response headers
-        fetchClient: async (url, init) => {
-          const response = await fetch(url, init);
-          try {
-            const sid = response.headers.get("X-Agent-Session-Id");
-            if (sid && typeof sid === "string" && sid.length > 0) {
-              sessionIdRef.current = sid;
-              onSessionIdRef.current?.(sid);
-            }
-          } catch {
-            // Session ID extraction is non-critical — don't break the SSE connection
-          }
-          return response;
-        },
-      };
-    });
+    return `agent-chat-${sessionKey ?? "new"}-${Date.now()}`;
   }, [sessionKey, sessionId]);
 
-  const chatResult = useChat({ connection });
-
-  // Keep messagesRef in sync with current messages for approval extraction
-  // The body function reads this ref when making requests
-  messagesRef.current = chatResult.messages;
-
-  // Workaround for TanStack AI's broken server-side tool continuation:
-  // TanStack AI's areAllToolsComplete() doesn't handle server-side tools correctly:
-  // - Server tools have state "input-complete" (not "approval-responded")
-  // - Server tools don't populate part.output (results go in tool-result parts)
-  // So areAllToolsComplete() returns false even when approval is granted.
-  // Workaround: After approval, use append() to send a continuation marker
-  // that triggers the server to execute pending tools.
-  const CONTINUATION_MARKER = "[CONTINUE_AFTER_APPROVAL]";
-
-  const wrappedAddToolApprovalResponse = useCallback(
-    async (response: { id: string; approved: boolean }) => {
-      // First, let TanStack AI update the approval state
-      await chatResult.addToolApprovalResponse(response);
-
-      // If approved, append a continuation marker to trigger the request
-      // The server will see the pending tools with approvals and execute them
-      if (response.approved) {
-        // Small delay to ensure state is updated
-        await new Promise((resolve) => setTimeout(resolve, 50));
-
-        // Append a synthetic user message to trigger continuation
-        // This message will be filtered out in the UI
-        await chatResult.append({
-          role: "user",
-          content: CONTINUATION_MARKER,
-        });
-      }
-    },
-    [chatResult],
-  );
-
-  // Filter out continuation marker messages from display
-  const filteredMessages = useMemo(
-    () =>
-      chatResult.messages.filter((m) => {
-        if (m.role !== "user") return true;
-        const textPart = m.parts.find((p) => p.type === "text");
-        if (!textPart || textPart.type !== "text") return true;
-        return textPart.content !== CONTINUATION_MARKER;
+  // Create transport with dynamic headers and body
+  const transport = useMemo(() => {
+    return new DefaultChatTransport({
+      api: `${API_BASE_URL}/api/ai/chat`,
+      headers: () => ({
+        Authorization: `Bearer ${accessTokenRef.current}`,
       }),
-    [chatResult.messages],
-  );
+      body: () => ({
+        projectId: projectIdRef.current,
+        ...(sessionIdRef.current ? { sessionId: sessionIdRef.current } : {}),
+        ...(personaIdRef.current ? { personaId: personaIdRef.current } : {}),
+      }),
+      prepareSendMessagesRequest: async (options) => {
+        // Convert UIMessages to ModelMessages for the backend
+        const modelMessages = await convertToModelMessages(options.messages);
 
-  // Clear messages only when explicitly starting fresh (generation changes in sessionKey).
-  // Don't clear when server assigns a session ID to the current conversation.
-  // sessionKey format: "sessionId-generation" or "new-generation"
+        return {
+          body: {
+            projectId: projectIdRef.current,
+            ...(sessionIdRef.current
+              ? { sessionId: sessionIdRef.current }
+              : {}),
+            ...(personaIdRef.current
+              ? { personaId: personaIdRef.current }
+              : {}),
+            messages: modelMessages,
+          },
+          headers: {
+            ...options.headers,
+            Authorization: `Bearer ${accessTokenRef.current}`,
+          },
+          credentials: options.credentials,
+          api: options.api,
+        };
+      },
+      fetch: async (input, init) => {
+        const response = await globalThis.fetch(input, init);
+        // Capture session ID from response headers
+        try {
+          const sid = response.headers.get("X-Agent-Session-Id");
+          if (sid && typeof sid === "string" && sid.length > 0) {
+            sessionIdRef.current = sid;
+            onSessionIdRef.current?.(sid);
+          }
+        } catch {
+          // Session ID extraction is non-critical
+        }
+        return response;
+      },
+    });
+  }, []);
+
+  const chatResult = useChat({
+    id: chatId,
+    transport,
+    // Auto-continue chat after tool approvals are responded to
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithApprovalResponses,
+  });
+
+  // Clear messages when generation changes (new session started)
   const prevGenerationRef = useRef<string | null>(null);
-  const clearMessages = chatResult.clear;
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Only trigger on sessionKey change, clearMessages is stable
+  const setMessages = chatResult.setMessages;
+
   useEffect(() => {
-    // Extract generation from sessionKey (the part after the last dash)
     const currentGeneration = sessionKey?.split("-").pop() ?? null;
     if (
       prevGenerationRef.current !== null &&
       prevGenerationRef.current !== currentGeneration
     ) {
-      clearMessages();
+      setMessages([]);
     }
     prevGenerationRef.current = currentGeneration;
-  }, [sessionKey]);
+  }, [sessionKey, setMessages]);
 
   // Invalidate React Query cache when new write tools complete
   useEffect(() => {
-    // First, collect ALL tool-result IDs across ALL messages
-    // This is necessary because after the approval continuation flow,
-    // tool-results may be in a different message than the tool-calls
-    const allCompletedToolCallIds = new Set<string>();
-    for (const message of chatResult.messages) {
-      if (message.role !== "assistant") continue;
-      for (const part of message.parts) {
-        if (part.type === "tool-result") {
-          allCompletedToolCallIds.add(part.toolCallId);
-        }
-      }
-    }
-
     let completedWriteCount = 0;
 
     for (const message of chatResult.messages) {
       if (message.role !== "assistant") continue;
 
-      // Count write tool calls that have ACTUALLY completed (have results)
-      // We only count tools with tool-result parts, not just approval state,
-      // because approval state is set BEFORE the continuation executes the tool
       for (const part of message.parts) {
-        if (part.type === "tool-call" && WRITE_TOOL_NAMES.has(part.name)) {
-          // Tool is complete if:
-          // 1. Has tool-result part (server tools) - check across ALL messages
-          // 2. Has output (client tools)
-          // Note: We DON'T count isApprovedAndComplete because that triggers
-          // BEFORE the tool actually executes (approval is set, then continuation runs)
-          const hasResult = allCompletedToolCallIds.has(part.id);
-          const hasOutput = part.output !== undefined;
-
-          if (hasResult || hasOutput) {
+        if (isToolOrDynamicToolUIPart(part)) {
+          const toolName = getToolOrDynamicToolName(part);
+          if (
+            toolName &&
+            WRITE_TOOL_NAMES.has(toolName) &&
+            part.state === "output-available"
+          ) {
             completedWriteCount++;
           }
         }
       }
     }
 
-    // Only invalidate when new write completions appear
     if (completedWriteCount <= lastWriteCountRef.current) return;
     lastWriteCountRef.current = completedWriteCount;
 
-    // Debounce to prevent rapid-fire invalidations during multi-tool sequences
-    if (invalidationTimerRef.current) {
-      clearTimeout(invalidationTimerRef.current);
+    const keysToInvalidate = [
+      getQueryKeyPrefix(useTasksQuery),
+      getQueryKeyPrefix(useTaskQuery),
+      getQueryKeyPrefix(useProjectQuery),
+      getQueryKeyPrefix(useLabelsQuery),
+      getQueryKeyPrefix(useAgentActivitiesQuery),
+    ];
+
+    for (const key of keysToInvalidate) {
+      queryClient.invalidateQueries({ queryKey: key });
     }
-
-    // Reduced debounce time for faster invalidation
-    invalidationTimerRef.current = setTimeout(() => {
-      const keysToInvalidate = [
-        getQueryKeyPrefix(useTasksQuery),
-        getQueryKeyPrefix(useTaskQuery),
-        getQueryKeyPrefix(useProjectQuery),
-        getQueryKeyPrefix(useAgentActivitiesQuery),
-      ];
-
-      for (const key of keysToInvalidate) {
-        queryClient.invalidateQueries({ queryKey: key });
-      }
-      invalidationTimerRef.current = null;
-    }, 100);
-
-    return () => {
-      if (invalidationTimerRef.current) {
-        clearTimeout(invalidationTimerRef.current);
-        invalidationTimerRef.current = null;
-      }
-    };
   }, [chatResult.messages, queryClient]);
 
+  const addToolApprovalResponse = useCallback(
+    (response: { id: string; approved: boolean }) => {
+      chatResult.addToolApprovalResponse({
+        id: response.id,
+        approved: response.approved,
+      });
+    },
+    [chatResult],
+  );
+
+  // Derive loading state from status
+  const isLoading =
+    chatResult.status === "submitted" || chatResult.status === "streaming";
+
   return {
-    ...chatResult,
-    // Use filtered messages that exclude continuation markers
-    messages: filteredMessages,
-    // Use wrapped approval response that triggers continuation
-    addToolApprovalResponse: wrappedAddToolApprovalResponse,
+    messages: chatResult.messages as UIMessage[],
+    sendMessage: chatResult.sendMessage,
+    isLoading,
+    stop: chatResult.stop,
+    error: chatResult.error,
+    setMessages: chatResult.setMessages,
+    addToolApprovalResponse,
     sessionId: sessionIdRef.current,
+    // Expose regenerate for retry functionality
+    regenerate: chatResult.regenerate,
+    status: chatResult.status,
   };
 }

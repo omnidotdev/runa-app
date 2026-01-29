@@ -8,39 +8,34 @@ import {
 
 import { Button } from "@/components/ui/button";
 
-import type { UIMessage } from "@tanstack/ai-client";
+import type { DynamicToolUIPart, ToolUIPart } from "ai";
+
+type ToolPart = ToolUIPart | DynamicToolUIPart;
 
 interface ProjectCreationToolBubbleProps {
-  part: Extract<UIMessage["parts"][number], { type: "tool-call" }>;
-  hasResult?: boolean;
+  part: ToolPart;
   isLoading?: boolean;
   onApprovalResponse: (response: { id: string; approved: boolean }) => void;
 }
 
-/**
- * Tool bubble for createProjectFromProposal tool.
- *
- * Handles approval flow and shows status during project creation.
- */
+/** Tool bubble for createProjectFromProposal tool. Handles approval flow and shows status. */
 export function ProjectCreationToolBubble({
   part,
-  hasResult,
   isLoading,
   onApprovalResponse,
 }: ProjectCreationToolBubbleProps) {
-  const isApprovalRequested = part.state === "approval-requested";
-  const isApprovalResponded = part.state === "approval-responded";
+  const state = part.state;
+  const isApprovalRequested = state === "approval-requested";
+  const isDenied = state === "output-denied";
+  const isComplete = state === "output-available";
+  const output = isComplete ? part.output : undefined;
+
+  // Check if approval was responded to but still waiting for result
+  const isApprovalResponded = state === "approval-responded";
   const isApproved = isApprovalResponded && part.approval?.approved === true;
-  const isDenied = isApprovalResponded && part.approval?.approved === false;
-  const isApprovedAndFinished = isApproved && isLoading === false;
-  const isComplete =
-    part.state === "input-complete" ||
-    part.output !== undefined ||
-    hasResult === true ||
-    isApprovedAndFinished;
 
   // Approval requested
-  if (isApprovalRequested && part.approval) {
+  if (isApprovalRequested) {
     return (
       <div className="flex flex-col gap-3 rounded-lg border border-amber-300 bg-amber-50 p-3 dark:border-amber-700 dark:bg-amber-950/50">
         <div className="flex items-center gap-2">
@@ -58,7 +53,10 @@ export function ProjectCreationToolBubble({
             size="sm"
             variant="solid"
             onClick={() =>
-              onApprovalResponse({ id: part.approval!.id, approved: true })
+              onApprovalResponse({
+                id: part.approval?.id ?? part.toolCallId,
+                approved: true,
+              })
             }
             className="bg-green-600 text-white hover:bg-green-700"
           >
@@ -69,7 +67,10 @@ export function ProjectCreationToolBubble({
             size="sm"
             variant="outline"
             onClick={() =>
-              onApprovalResponse({ id: part.approval!.id, approved: false })
+              onApprovalResponse({
+                id: part.approval?.id ?? part.toolCallId,
+                approved: false,
+              })
             }
           >
             <XCircleIcon className="mr-1 size-3" />
@@ -80,8 +81,8 @@ export function ProjectCreationToolBubble({
     );
   }
 
-  // Approved, creating
-  if (isApproved && !isComplete) {
+  // Approved, creating (waiting for result)
+  if (isApproved && isLoading) {
     return (
       <div className="flex items-center gap-2 rounded-md bg-green-50 px-3 py-2 text-green-700 text-sm dark:bg-green-950/50 dark:text-green-300">
         <Loader2Icon className="size-4 animate-spin" />
@@ -102,7 +103,7 @@ export function ProjectCreationToolBubble({
 
   // Complete - show success
   if (isComplete) {
-    const output = part.output as
+    const result = output as
       | {
           project?: { name: string; prefix: string };
           columnsCreated?: number;
@@ -119,21 +120,21 @@ export function ProjectCreationToolBubble({
             Project created successfully!
           </span>
         </div>
-        {output?.project && (
+        {result?.project && (
           <div className="flex items-center gap-2 text-green-700 text-xs dark:text-green-300">
             <LayersIcon className="size-3" />
             <span>
-              {output.project.name} ({output.project.prefix})
+              {result.project.name} ({result.project.prefix})
             </span>
           </div>
         )}
-        {(output?.columnsCreated ||
-          output?.labelsCreated ||
-          output?.tasksCreated) && (
+        {(result?.columnsCreated ||
+          result?.labelsCreated ||
+          result?.tasksCreated) && (
           <p className="text-green-600 text-xs dark:text-green-400">
-            Created {output.columnsCreated ?? 0} columns
-            {output.labelsCreated ? `, ${output.labelsCreated} labels` : ""}
-            {output.tasksCreated ? `, ${output.tasksCreated} tasks` : ""}
+            Created {result.columnsCreated ?? 0} columns
+            {result.labelsCreated ? `, ${result.labelsCreated} labels` : ""}
+            {result.tasksCreated ? `, ${result.tasksCreated} tasks` : ""}
           </p>
         )}
       </div>

@@ -1,4 +1,7 @@
+/** Message bubble component for agent chat. */
+
 import { useRouteContext } from "@tanstack/react-router";
+import { isTextUIPart, isToolOrDynamicToolUIPart } from "ai";
 import { SparklesIcon } from "lucide-react";
 
 import {
@@ -10,13 +13,13 @@ import { cn } from "@/lib/utils";
 import { AgentMarkdown } from "./AgentMarkdown";
 import { ToolCallBubble } from "./ToolCallBubble";
 
-import type { UIMessage } from "@tanstack/ai-client";
+import type { UIMessage } from "ai";
 
 interface MessageBubbleProps {
   message: UIMessage;
   isLastAssistant: boolean;
   isLoading: boolean;
-  /** Set of tool call IDs that have completed (have tool-results) across ALL messages. */
+  /** Set of tool call IDs that have completed across ALL messages. */
   allCompletedToolCallIds: Set<string>;
   onApprovalResponse: (response: { id: string; approved: boolean }) => void;
 }
@@ -31,6 +34,14 @@ export function MessageBubble({
   const { session } = useRouteContext({ strict: false });
   const isUser = message.role === "user";
   const isStreaming = isLastAssistant && isLoading;
+
+  // V6: Extract text content and tool invocations from parts
+  const textParts = message.parts.filter(isTextUIPart);
+  const toolParts = message.parts.filter(isToolOrDynamicToolUIPart);
+
+  // Combine text content
+  const textContent = textParts.map((part) => part.text).join("");
+  const hasTextContent = textContent.length > 0;
 
   return (
     <div className={cn("flex gap-2.5", isUser && "flex-row-reverse")}>
@@ -53,57 +64,28 @@ export function MessageBubble({
       <div
         className={cn("flex max-w-[85%] flex-col gap-2", isUser && "items-end")}
       >
-        {(message.parts ?? []).map((part, idx) => {
-          if (part.type === "text") {
-            if (isUser) {
-              return (
-                <div
-                  key={`text-${idx}`}
-                  className="bubble-user whitespace-pre-wrap bg-primary px-4 py-2.5 text-primary-foreground text-sm"
-                >
-                  {part.content}
-                </div>
-              );
-            }
+        {/* Render text content */}
+        {hasTextContent &&
+          (isUser ? (
+            <div className="bubble-user whitespace-pre-wrap bg-primary px-4 py-2.5 text-primary-foreground text-sm">
+              {textContent}
+            </div>
+          ) : (
+            <div className="bubble-assistant border border-border bg-card px-4 py-3">
+              <AgentMarkdown content={textContent} isStreaming={isStreaming} />
+            </div>
+          ))}
 
-            return (
-              <div
-                key={`text-${idx}`}
-                className="bubble-assistant border border-border bg-card px-4 py-3"
-              >
-                <AgentMarkdown
-                  content={part.content}
-                  isStreaming={isStreaming}
-                />
-              </div>
-            );
-          }
-
-          if (part.type === "thinking") {
-            return (
-              <div
-                key={`thinking-${idx}`}
-                className="bubble-assistant bg-muted/50 px-4 py-2.5 text-muted-foreground text-xs italic"
-              >
-                {part.content}
-              </div>
-            );
-          }
-
-          if (part.type === "tool-call") {
-            return (
-              <ToolCallBubble
-                key={part.id}
-                part={part}
-                hasResult={allCompletedToolCallIds.has(part.id)}
-                isLoading={isLoading}
-                onApprovalResponse={onApprovalResponse}
-              />
-            );
-          }
-
-          return null;
-        })}
+        {/* Render tool invocations */}
+        {toolParts.map((part) => (
+          <ToolCallBubble
+            key={part.toolCallId}
+            part={part}
+            hasResult={allCompletedToolCallIds.has(part.toolCallId)}
+            isLoading={isLoading}
+            onApprovalResponse={onApprovalResponse}
+          />
+        ))}
       </div>
     </div>
   );

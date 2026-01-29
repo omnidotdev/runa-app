@@ -47,6 +47,12 @@ interface Props extends Omit<ComponentProps<"div">, "placeholder"> {
     isEmpty: boolean;
   }) => void;
   defaultContent?: string;
+  /**
+   * When provided, syncs external content changes to the editor.
+   * Use this for reactive updates from server/agent while preserving user edits.
+   * Only updates if current content differs from syncContent.
+   */
+  syncContent?: string;
   editable?: boolean;
   placeholder?: string;
   skeletonClassName?: string;
@@ -83,20 +89,44 @@ const EditablePlugin = ({ editable }: { editable: boolean }) => {
 const EditorApiPlugin = ({
   editorApi,
   defaultContent,
+  syncContent,
 }: {
   editorApi?: RefObject<EditorApi | null>;
   defaultContent?: string;
+  syncContent?: string;
 }) => {
   const [editor] = useLexicalComposerContext();
   const hasSetInitialContent = useRef(false);
+  const lastSyncedContent = useRef<string | undefined>(undefined);
 
   // Set initial content from HTML
   useEffect(() => {
     if (defaultContent && !hasSetInitialContent.current) {
       hasSetInitialContent.current = true;
+      lastSyncedContent.current = defaultContent;
       importFromHtml(editor, defaultContent);
     }
   }, [editor, defaultContent]);
+
+  // Sync external content changes (e.g., from server/agent updates)
+  useEffect(() => {
+    if (syncContent === undefined) return;
+    if (!hasSetInitialContent.current) return; // Let defaultContent handle initial
+    if (syncContent === lastSyncedContent.current) return; // No change
+
+    // Get current editor content to compare
+    const currentContent = exportToHtml(editor);
+
+    // Only sync if the editor content matches what we last synced
+    // This prevents overwriting user edits
+    if (currentContent === lastSyncedContent.current) {
+      lastSyncedContent.current = syncContent;
+      importFromHtml(editor, syncContent);
+    } else {
+      // User has edited, just update our tracking
+      lastSyncedContent.current = syncContent;
+    }
+  }, [editor, syncContent]);
 
   // Expose API methods via ref
   useEffect(() => {
@@ -110,6 +140,7 @@ const EditorApiPlugin = ({
             root.append(paragraph);
             paragraph.select();
           });
+          lastSyncedContent.current = undefined;
         },
         focus: () => {
           editor.focus(() => {
@@ -149,6 +180,7 @@ const RichTextEditor = ({
   editorApi,
   onUpdate,
   defaultContent,
+  syncContent,
   className,
   editable = true,
   placeholder,
@@ -237,6 +269,7 @@ const RichTextEditor = ({
             <EditorApiPlugin
               editorApi={editorApi}
               defaultContent={defaultContent}
+              syncContent={syncContent}
             />
             {enableMentions && <MentionSuggestionPlugin />}
           </div>

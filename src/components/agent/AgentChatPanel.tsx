@@ -1,3 +1,5 @@
+/** Agent chat panel component. */
+
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -16,11 +18,9 @@ import { AgentPanelHeader } from "./AgentPanelHeader";
 import { AgentPersonaSelector } from "./AgentPersonaSelector";
 import { ChatInput } from "./ChatInput";
 
-import type { UIMessage } from "@tanstack/ai-client";
+import type { UIMessage } from "ai";
 
-/**
- * Converts server-side ModelMessage format to client-side UIMessage format.
- */
+/** Converts server-side stored messages to UIMessage format with parts structure. */
 function normalizeStoredMessages(rawMessages: unknown[]): UIMessage[] {
   const messages = rawMessages.filter(
     (msg): msg is Record<string, unknown> =>
@@ -30,64 +30,26 @@ function normalizeStoredMessages(rawMessages: unknown[]): UIMessage[] {
   );
 
   const result: UIMessage[] = [];
-  let currentAssistantParts: Array<{ type: string; [key: string]: unknown }> =
-    [];
-  let currentAssistantId: string | null = null;
 
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i];
     const role = msg.role as string;
     const content = typeof msg.content === "string" ? msg.content : "";
-    const toolCallId =
-      typeof msg.toolCallId === "string" ? msg.toolCallId : undefined;
 
     if (role === "user") {
-      if (currentAssistantId !== null) {
-        result.push({
-          id: currentAssistantId,
-          role: "assistant",
-          parts: currentAssistantParts,
-        } as UIMessage);
-        currentAssistantParts = [];
-        currentAssistantId = null;
-      }
-
       result.push({
         id: `stored-user-${i}`,
         role: "user",
-        parts: content ? [{ type: "text", content }] : [],
-      } as UIMessage);
-    } else if (role === "assistant") {
-      if (toolCallId && !content) {
-        if (currentAssistantId === null) {
-          currentAssistantId = `stored-assistant-${i}`;
-        }
-      } else if (content) {
-        if (currentAssistantId === null) {
-          currentAssistantId = `stored-assistant-${i}`;
-        }
-        currentAssistantParts.push({ type: "text", content });
-      }
-    } else if (role === "tool") {
-      if (currentAssistantId === null) {
-        currentAssistantId = `stored-assistant-${i}`;
-      }
-      if (toolCallId) {
-        currentAssistantParts.push({
-          type: "tool-result",
-          toolCallId,
-          result: content,
-        });
-      }
+        parts: [{ type: "text", text: content }],
+      });
+    } else if (role === "assistant" && content) {
+      result.push({
+        id: `stored-assistant-${i}`,
+        role: "assistant",
+        parts: [{ type: "text", text: content }],
+      });
     }
-  }
-
-  if (currentAssistantId !== null && currentAssistantParts.length > 0) {
-    result.push({
-      id: currentAssistantId,
-      role: "assistant",
-      parts: currentAssistantParts,
-    } as UIMessage);
+    // Tool messages are handled internally by V6 and reconstructed from response
   }
 
   return result;
@@ -136,10 +98,12 @@ export function AgentChatPanel({
 
   const handleSessionId = useCallback(
     (sid: string) => {
-      selectSession(sid);
+      // Don't call selectSession here - it would change sessionKey and clear messages.
+      // The sessionIdRef in useAgentChat already tracks the ID for subsequent requests.
+      // Just refresh the sessions list so the new session appears in the sidebar.
       refreshSessions();
     },
-    [selectSession, refreshSessions],
+    [refreshSessions],
   );
 
   const {
@@ -183,10 +147,13 @@ export function AgentChatPanel({
     }
   }, [currentSessionId, sessionData, setMessages]);
 
-  // Handle suggestion clicks - send the message directly
+  // Handle sending messages - convert string to V6 message format
   const handleSendMessage = useCallback(
     (message: string) => {
-      sendMessage(message);
+      sendMessage({
+        role: "user",
+        parts: [{ type: "text", text: message }],
+      });
     },
     [sendMessage],
   );
@@ -246,7 +213,7 @@ export function AgentChatPanel({
             onSendMessage={handleSendMessage}
           />
           <ChatInput
-            onSend={sendMessage}
+            onSend={handleSendMessage}
             onStop={stop}
             isLoading={isLoading}
             placeholder="Ask about your project..."

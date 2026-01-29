@@ -1,3 +1,6 @@
+/** Tool call bubble component for agent chat. */
+
+import { getToolOrDynamicToolName } from "ai";
 import {
   CheckCircle2Icon,
   ChevronDownIcon,
@@ -20,19 +23,18 @@ import {
   WRITE_TOOL_NAMES,
 } from "@/lib/ai/constants";
 import { formatToolName } from "@/lib/ai/utils/formatToolName";
-import { formatWriteResult } from "@/lib/ai/utils/formatWriteResult";
 import { cn } from "@/lib/utils";
 import { ToolApprovalActions } from "./ToolApprovalActions";
 
-import type { UIMessage } from "@tanstack/ai-client";
+import type { DynamicToolUIPart, ToolUIPart } from "ai";
+
+type ToolPart = ToolUIPart | DynamicToolUIPart;
 
 interface ToolCallBubbleProps {
-  part: Extract<UIMessage["parts"][number], { type: "tool-call" }>;
-  /** Whether there's a corresponding tool-result part for this tool call (server-side tools). */
+  part: ToolPart;
+  /** Whether there's a completed result for this tool call. */
   hasResult?: boolean;
-  /** The parsed output from the corresponding tool-result part (server-side tools). */
-  resultOutput?: unknown;
-  /** Whether the chat is currently loading/streaming. Used to detect approved tool completion. */
+  /** Whether the chat is currently loading/streaming. */
   isLoading?: boolean;
   onApprovalResponse: (response: { id: string; approved: boolean }) => void;
 }
@@ -61,22 +63,18 @@ export function ToolCallBubble({
 }: ToolCallBubbleProps): React.ReactElement {
   const [isDelegateExpanded, setIsDelegateExpanded] = useState(false);
 
-  const isWrite = WRITE_TOOL_NAMES.has(part.name);
-  const isDestructive = DESTRUCTIVE_TOOL_NAMES.has(part.name);
-  const isBatch = BATCH_TOOL_NAMES.has(part.name);
-  const isDelegation = DELEGATION_TOOL_NAMES.has(part.name);
-  const isApprovalRequested = part.state === "approval-requested";
-  const isApprovalResponded = part.state === "approval-responded";
-  const isApproved = isApprovalResponded && part.approval?.approved === true;
-  const isDenied = isApprovalResponded && part.approval?.approved === false;
-  const isApprovedAndFinished = isApproved && isLoading === false;
-  const isComplete =
-    part.state === "input-complete" ||
-    part.output !== undefined ||
-    hasResult === true ||
-    isApprovedAndFinished;
+  const toolName = getToolOrDynamicToolName(part) ?? "unknown";
+  const isWrite = WRITE_TOOL_NAMES.has(toolName);
+  const isDestructive = DESTRUCTIVE_TOOL_NAMES.has(toolName);
+  const isBatch = BATCH_TOOL_NAMES.has(toolName);
+  const isDelegation = DELEGATION_TOOL_NAMES.has(toolName);
 
-  const toolLabel = formatToolName(part.name);
+  const isComplete = part.state === "output-available" || hasResult === true;
+  const needsApproval = part.state === "approval-requested";
+  const isDenied = part.state === "output-denied";
+  const output = part.state === "output-available" ? part.output : undefined;
+
+  const toolLabel = formatToolName(toolName);
 
   // Get the appropriate icon based on tool type
   const ToolIcon = isDestructive
@@ -90,7 +88,7 @@ export function ToolCallBubble({
           : WrenchIcon;
 
   // Approval requested — card with approval actions
-  if (isApprovalRequested && part.approval) {
+  if (needsApproval) {
     return (
       <div
         role="status"
@@ -108,31 +106,11 @@ export function ToolCallBubble({
           </span>
         </div>
         <ToolApprovalActions
-          approvalId={part.approval.id}
-          toolName={part.name}
+          approvalId={part.approval?.id ?? part.toolCallId}
+          toolName={toolName}
           input={part.input}
           onApprovalResponse={onApprovalResponse}
         />
-      </div>
-    );
-  }
-
-  // Approved, executing — card with spinner
-  if (isApproved && !isComplete) {
-    return (
-      <div
-        role="status"
-        className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card p-3"
-        aria-label={`${toolLabel}: approved, executing`}
-      >
-        <div className="flex items-center gap-2">
-          <ToolIcon className="size-3.5 text-muted-foreground" />
-          <span className="font-medium text-sm">{toolLabel}</span>
-        </div>
-        <span className="inline-flex items-center gap-1.5 text-muted-foreground text-xs">
-          <Loader2Icon className="size-3 animate-spin" />
-          Running
-        </span>
       </div>
     );
   }
@@ -159,9 +137,7 @@ export function ToolCallBubble({
 
   // Delegation tool — distinct style with expandable response
   if (isDelegation) {
-    const delegationResult = isComplete
-      ? parseDelegationOutput(part.output)
-      : null;
+    const delegationResult = isComplete ? parseDelegationOutput(output) : null;
 
     return (
       <div
@@ -252,7 +228,7 @@ export function ToolCallBubble({
       </div>
 
       <div className="flex items-center gap-2">
-        {!isComplete && !isApprovalResponded && (
+        {!isComplete && (
           <span className="inline-flex items-center gap-1 text-muted-foreground text-xs">
             <Loader2Icon className="size-3 animate-spin" />
             Running
@@ -272,9 +248,7 @@ export function ToolCallBubble({
             )}
           >
             <CheckCircle2Icon className="size-3" />
-            {isWrite && part.output !== undefined
-              ? formatWriteResult(part.name, part.output)
-              : "Done"}
+            Done
           </span>
         )}
       </div>

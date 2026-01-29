@@ -73,6 +73,7 @@ const TaskDescription = ({ task }: Props) => {
       <CardContent className="p-0">
         <RichTextEditor
           defaultContent={task?.description}
+          syncContent={task?.description}
           editable={task.isAuthor || !isMember}
           className="border-0"
           skeletonClassName="h-[120px] rounded-t-none"

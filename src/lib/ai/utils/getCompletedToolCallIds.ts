@@ -1,16 +1,13 @@
-/**
- * Collect completed tool call IDs from messages.
- *
- * Server-side tools have tool-results in different messages than tool-calls,
- * so we need to track completion globally across all messages.
- */
+/** Collect completed tool call IDs from messages. */
 
-import type { UIMessage } from "@tanstack/ai-client";
+import { isToolOrDynamicToolUIPart } from "ai";
+
+import type { UIMessage } from "ai";
 
 /**
  * Get all completed tool call IDs across all messages.
  *
- * @param messages - Array of UI messages from the chat
+ * @param messages - Array of messages from the chat
  * @returns Set of tool call IDs that have been executed
  */
 export function getCompletedToolCallIds(messages: UIMessage[]): Set<string> {
@@ -20,7 +17,10 @@ export function getCompletedToolCallIds(messages: UIMessage[]): Set<string> {
     if (message.role !== "assistant") continue;
 
     for (const part of message.parts) {
-      if (part.type === "tool-result") {
+      if (
+        isToolOrDynamicToolUIPart(part) &&
+        part.state === "output-available"
+      ) {
         ids.add(part.toolCallId);
       }
     }

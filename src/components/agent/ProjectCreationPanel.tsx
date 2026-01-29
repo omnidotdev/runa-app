@@ -71,10 +71,13 @@ export function ProjectCreationPanel({
     setSessionGeneration((prev) => prev + 1);
   }, []);
 
-  // Handle suggestion clicks - send the message directly
+  // Handle sending messages - convert string to V6 message format
   const handleSendMessage = useCallback(
     (message: string) => {
-      sendMessage(message);
+      sendMessage({
+        role: "user",
+        parts: [{ type: "text", text: message }],
+      });
     },
     [sendMessage],
   );
@@ -137,7 +140,7 @@ export function ProjectCreationPanel({
 
         {/* Input */}
         <ChatInput
-          onSend={sendMessage}
+          onSend={handleSendMessage}
           onStop={stop}
           isLoading={isLoading}
           placeholder="Describe your project..."
