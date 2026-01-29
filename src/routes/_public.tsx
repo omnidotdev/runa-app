@@ -1,4 +1,4 @@
-import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { XIcon as CloseIcon, MenuIcon } from "lucide-react";
 import { useState } from "react";
 import { LuGithub as GithubIcon } from "react-icons/lu";
@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
-import { BASE_URL } from "@/lib/config/env.config";
+import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_public")({
@@ -25,6 +25,16 @@ export const Route = createFileRoute("/_public")({
 function PublicLayout() {
   const { session } = Route.useRouteContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSignIn = () => {
+    if (isSelfHosted) {
+      navigate({ to: "/login" });
+    } else {
+      // SaaS mode: use Omni/Gatekeeper OAuth directly
+      signIn({ redirectUrl: BASE_URL, providerId: "omni" });
+    }
+  };
 
   return (
     <div className="relative">
@@ -55,7 +65,7 @@ function PublicLayout() {
       <div className="sticky top-0 z-50">
         <div className="flex w-full items-center justify-center gap-2 border-primary-500/20 border-b bg-primary-500/20 px-4 py-2 text-sm backdrop-blur-sm sm:gap-3">
           <span className="text-base-700 dark:text-base-300">
-            <strong className="font-semibold">Runa is in open alpha</strong> —
+            <strong className="font-semibold">Runa is in early access</strong> —
             help shape it!
           </span>
 
@@ -97,7 +107,7 @@ function PublicLayout() {
                   {app.name}
                 </span>
                 <Badge className="hidden border-primary-500/20 bg-primary-500/10 text-shimmer text-xs sm:inline-flex">
-                  Alpha
+                  Early Access
                 </Badge>
               </Link>
 
@@ -136,7 +146,7 @@ function PublicLayout() {
                   </Button>
                 ) : (
                   <Button
-                    onClick={() => signIn({ redirectUrl: BASE_URL })}
+                    onClick={handleSignIn}
                     className="bg-primary-500 text-base-950 hover:bg-primary-400 dark:bg-primary-500 dark:hover:bg-primary-400"
                   >
                     Sign In
@@ -209,7 +219,7 @@ function PublicLayout() {
                   </Button>
                 ) : (
                   <Button
-                    onClick={() => signIn({ redirectUrl: BASE_URL })}
+                    onClick={handleSignIn}
                     className="w-full bg-primary-500 text-base-950 hover:bg-primary-400 dark:bg-primary-500 dark:hover:bg-primary-400"
                   >
                     Sign In

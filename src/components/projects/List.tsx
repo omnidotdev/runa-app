@@ -132,7 +132,7 @@ const List = ({
                 title: "Add Task",
                 shortcut: "C",
               }}
-              emoji={column.emoji}
+              icon={column.icon}
               onCreate={(e) => {
                 e.preventDefault();
                 setColumnId(column.rowId);

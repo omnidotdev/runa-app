@@ -45,7 +45,7 @@ const TaskColumnForm = withForm({
                 value.length ? field.setValue(value[0]) : field.clearValues()
               }
               triggerLabel={currentColumn?.label}
-              triggerEmoji={currentColumn?.column?.emoji ?? undefined}
+              triggerIcon={currentColumn?.column?.icon ?? undefined}
             />
           );
         }}

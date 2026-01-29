@@ -1,5 +1,6 @@
 fragment Label on Label {
   color
+  icon
   name
   rowId
 }

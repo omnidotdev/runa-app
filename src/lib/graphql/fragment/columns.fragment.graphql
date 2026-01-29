@@ -2,7 +2,7 @@ fragment Column on Column {
   title
   index
   rowId
-  emoji
+  icon
   tasks {
     totalCount
   }

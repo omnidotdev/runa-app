@@ -23,13 +23,13 @@ export interface DemoTask {
 export interface DemoColumn {
   rowId: string;
   title: string;
-  emoji: string;
+  icon: string;
 }
 
 export const demoColumns: DemoColumn[] = [
-  { rowId: "col-todo", title: "Todo", emoji: "📋" },
-  { rowId: "col-progress", title: "In Progress", emoji: "🚀" },
-  { rowId: "col-done", title: "Done", emoji: "✅" },
+  { rowId: "col-todo", title: "Todo", icon: "emoji:📋" },
+  { rowId: "col-progress", title: "In Progress", icon: "emoji:🚀" },
+  { rowId: "col-done", title: "Done", icon: "emoji:✅" },
 ];
 
 export const initialDemoTasks: DemoTask[] = [

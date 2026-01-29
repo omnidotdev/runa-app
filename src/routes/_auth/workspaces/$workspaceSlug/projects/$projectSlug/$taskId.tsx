@@ -252,7 +252,7 @@ function TaskPage() {
             projectId={projectId}
             defaultValue={[task?.columnId!]}
             triggerLabel={task?.column?.title}
-            triggerEmoji={task?.column?.emoji ?? undefined}
+            triggerIcon={task?.column?.icon ?? undefined}
             onValueChange={({ value }) =>
               updateTask({
                 rowId: taskId,

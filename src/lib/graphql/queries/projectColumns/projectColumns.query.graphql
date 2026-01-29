@@ -7,7 +7,7 @@ query ProjectColumns($organizationId: String!, $search: String = "") {
       title
       index
       rowId
-      emoji
+      icon
       projects(filter: { name: { includesInsensitive: $search } }) {
         totalCount
       }

@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { Tooltip } from "@/components/core";
+import { IconSelector, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import {
   ColorPickerArea,
@@ -134,6 +134,7 @@ const LabelForm = ({
     defaultValues: {
       name: label.name,
       color: label.color ?? "#e4a21b",
+      icon: label.icon ?? null,
     },
     onSubmit: ({ value, formApi }) => {
       if (label.rowId === "pending") {
@@ -143,6 +144,7 @@ const LabelForm = ({
               projectId,
               name: value.name,
               color: value.color,
+              icon: value.icon,
             },
           },
         });
@@ -150,7 +152,7 @@ const LabelForm = ({
         setLocalLabels((prev) =>
           prev.map((c) =>
             c.rowId === label.rowId
-              ? { ...c, name: value.name, color: value.color }
+              ? { ...c, name: value.name, color: value.color, icon: value.icon }
               : c,
           ),
         );
@@ -160,6 +162,7 @@ const LabelForm = ({
           patch: {
             color: value.color,
             name: value.name,
+            icon: value.icon,
           },
         });
       }
@@ -195,6 +198,16 @@ const LabelForm = ({
         hasActiveLabel && !isActive && "pointer-events-none",
       )}
     >
+      <form.Field name="icon">
+        {(field) => (
+          <IconSelector
+            value={field.state.value}
+            onChange={field.handleChange}
+            disabled={!isActive}
+          />
+        )}
+      </form.Field>
+
       <form.Field name="color">
         {(field) => (
           <ColorPickerRoot

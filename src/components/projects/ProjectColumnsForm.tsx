@@ -21,7 +21,7 @@ import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { AlignJustifyIcon, MoreHorizontalIcon, PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { DestructiveActionDialog, Tooltip } from "@/components/core";
+import { DestructiveActionDialog, LabelIcon, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import {
   MenuCheckboxItem,
@@ -278,7 +278,10 @@ const ProjectColumnsForm = () => {
                               >
                                 <MenuItemText className="ml-0 flex items-center gap-2">
                                   <div className="flex items-center gap-2">
-                                    <p>{column.emoji ?? "😀"}</p>
+                                    <LabelIcon
+                                      icon={column.icon}
+                                      className="size-4"
+                                    />
                                     <p className="font-light text-sm first-letter:uppercase">
                                       {column.title}
                                     </p>
@@ -303,7 +306,7 @@ const ProjectColumnsForm = () => {
             column={{
               rowId: "pending",
               title: "",
-              emoji: "😀",
+              icon: "emoji:😀",
               index: localColumns.length,
               tasks: { totalCount: 0 },
             }}

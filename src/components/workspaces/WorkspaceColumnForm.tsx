@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { EmojiSelector, Tooltip } from "@/components/core";
+import { IconSelector, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -113,7 +113,7 @@ const ColumnForm = ({
   const form = useForm({
     defaultValues: {
       title: column.title,
-      emoji: column.emoji as string | null,
+      icon: column.icon as string | null,
       index: column.index,
     },
     onSubmit: ({ value, formApi }) => {
@@ -124,7 +124,7 @@ const ColumnForm = ({
               organizationId: organizationId!,
               title: value.title,
               index: value.index,
-              emoji: value.emoji,
+              icon: value.icon,
             },
           },
         });
@@ -132,7 +132,7 @@ const ColumnForm = ({
         setLocalColumns((prev) =>
           prev.map((c) =>
             c.rowId === column.rowId
-              ? { ...c, title: value.title, emoji: value.emoji }
+              ? { ...c, title: value.title, icon: value.icon }
               : c,
           ),
         );
@@ -142,7 +142,7 @@ const ColumnForm = ({
           patch: {
             title: value.title,
             index: value.index,
-            emoji: value.emoji,
+            icon: value.icon,
           },
         });
       }
@@ -200,11 +200,11 @@ const ColumnForm = ({
         <GripVerticalIcon className="flex size-3 text-muted-foreground" />
       </Button>
 
-      <form.Field name="emoji">
+      <form.Field name="icon">
         {(field) => (
-          <EmojiSelector
+          <IconSelector
             value={field.state.value}
-            onChange={(emoji) => field.handleChange(emoji)}
+            onChange={(icon) => field.handleChange(icon)}
             triggerProps={{
               disabled: !isActive,
             }}

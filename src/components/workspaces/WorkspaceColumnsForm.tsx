@@ -157,7 +157,7 @@ const ProjectColumnsForm = () => {
             column={{
               rowId: "pending",
               title: "",
-              emoji: "😀",
+              icon: "emoji:😀",
               index: localColumns.length,
               projects: { totalCount: 0 },
             }}

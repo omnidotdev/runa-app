@@ -4,6 +4,7 @@ mutation CreateLabel($input: CreateLabelInput!) {
       rowId
       name
       color
+      icon
     }
   }
 }

@@ -109,4 +109,5 @@ const EmojiSelector = ({
   );
 };
 
+/** @knipignore */
 export default EmojiSelector;

@@ -4,6 +4,7 @@ fragment Task on Task {
   columnId
   columnIndex
   content
+  description
   priority
   dueDate
   taskLabels {
@@ -24,5 +25,8 @@ fragment Task on Task {
         avatarUrl
       }
     }
+  }
+  posts {
+    totalCount
   }
 }

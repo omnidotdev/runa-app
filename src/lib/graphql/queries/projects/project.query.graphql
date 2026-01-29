@@ -15,7 +15,7 @@ query Project($rowId: UUID!) {
         rowId
         index
         title
-        emoji
+        icon
         tasks {
           totalCount
         }

@@ -1,4 +1,5 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
+import { useNavigate } from "@tanstack/react-router";
 import {
   CalendarIcon,
   Grid2X2Icon,
@@ -10,7 +11,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Shortcut, Tooltip } from "@/components/core";
+import { LabelIcon, Shortcut, Tooltip } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +30,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import signIn from "@/lib/auth/signIn";
-import { BASE_URL } from "@/lib/config/env.config";
+import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import useAutoScrollOnDrag from "@/lib/hooks/useAutoScrollOnDrag";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import { cn } from "@/lib/utils";
@@ -53,6 +54,7 @@ const BOARD_HEIGHT = 420; // Fixed height to prevent layout shift
  * Demo board for users to try the app.
  */
 const DemoBoard = () => {
+  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [tasks, setTasks] = useState<DemoTask[]>(initialDemoTasks);
   const [selectedTask, setSelectedTask] = useState<DemoTask | null>(null);
@@ -289,7 +291,7 @@ const DemoBoard = () => {
                     {/* column header */}
                     <div className="mb-1 flex items-center justify-between rounded-lg py-2">
                       <div className="flex items-center gap-2">
-                        <span>{column.emoji}</span>
+                        <LabelIcon icon={column.icon} className="size-4" />
                         <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
                           {column.title}
                         </h3>
@@ -362,7 +364,7 @@ const DemoBoard = () => {
                       })
                     }
                   >
-                    <span>{column.emoji}</span>
+                    <LabelIcon icon={column.icon} className="size-4" />
                     <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
                       {column.title}
                     </h3>
@@ -518,7 +520,11 @@ const DemoBoard = () => {
 
                 <div className="mt-6">
                   <Button
-                    onClick={() => signIn({ redirectUrl: BASE_URL })}
+                    onClick={() =>
+                      isSelfHosted
+                        ? navigate({ to: "/login" })
+                        : signIn({ redirectUrl: BASE_URL, providerId: "omni" })
+                    }
                     className="w-full bg-primary-500 text-base-950 hover:bg-primary-400"
                   >
                     Sign up to edit tasks

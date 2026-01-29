@@ -45,23 +45,23 @@ import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
 const DEFAULT_COLUMNS = [
-  { title: "Backlog", index: 0, emoji: "📚" },
-  { title: "To Do", index: 1, emoji: "📝" },
-  { title: "In Progress", index: 2, emoji: "🚧" },
-  { title: "Awaiting Review", index: 3, emoji: "🔍" },
-  { title: "Done", index: 4, emoji: "✅" },
+  { title: "Backlog", index: 0, icon: "emoji:📚" },
+  { title: "To Do", index: 1, icon: "emoji:📝" },
+  { title: "In Progress", index: 2, icon: "emoji:🚧" },
+  { title: "Awaiting Review", index: 3, icon: "emoji:🔍" },
+  { title: "Done", index: 4, icon: "emoji:✅" },
 ];
 
 const DEFAULT_PROJECT_COLUMNS = [
-  { title: "Planned", index: 0, emoji: "🗓" },
-  { title: "In Progress", index: 1, emoji: "🚧" },
-  { title: "Completed", index: 2, emoji: "✅" },
+  { title: "Planned", index: 0, icon: "emoji:🗓" },
+  { title: "In Progress", index: 1, icon: "emoji:🚧" },
+  { title: "Completed", index: 2, icon: "emoji:✅" },
 ];
 
 const CreateProjectDialog = () => {
   const { session } = useRouteContext({ from: "/_auth" });
   const { organizationId } = useLoaderData({ from: "/_auth" });
-  const { workspaceSlug } = useParams({ strict: false });
+  const { workspaceSlug, projectSlug } = useParams({ strict: false });
 
   const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
@@ -112,8 +112,8 @@ const CreateProjectDialog = () => {
   useHotkeys(
     Hotkeys.CreateProject,
     () => setIsCreateProjectOpen(!isCreateProjectOpen),
-    { enabled: !!workspaceSlug },
-    [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug],
+    { enabled: !!workspaceSlug && !projectSlug },
+    [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug, projectSlug],
   );
 
   const { mutateAsync: createColumn } = useCreateColumnMutation();
@@ -146,7 +146,7 @@ const CreateProjectDialog = () => {
                     title: column.title,
                     index: column.index,
                     projectId,
-                    emoji: column.emoji,
+                    icon: column.icon,
                   },
                 },
               }),
@@ -231,7 +231,7 @@ const CreateProjectDialog = () => {
                           organizationId: organizationId!,
                           title: col.title,
                           index: col.index,
-                          emoji: col.emoji,
+                          icon: col.icon,
                         },
                       },
                     }),

@@ -3,9 +3,25 @@
  *
  * Fetches member data from the IDP instead of the local database.
  * The IDP is the single source of truth for organization membership.
+ *
+ * NOTE: These functions only work in SaaS mode (with HIDRA Gatekeeper).
+ * Self-hosted mode uses local database for org management.
  */
 
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { AUTH_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
+
+/**
+ * Guard that throws if called in self-hosted mode.
+ * IDP functions require HIDRA Gatekeeper which isn't available in self-hosted.
+ */
+function assertSaaSMode(operation: string): void {
+  if (isSelfHosted) {
+    throw new Error(
+      `${operation} requires HIDRA Gatekeeper (SaaS mode only). ` +
+        "Self-hosted mode uses local workspace management.",
+    );
+  }
+}
 
 export interface IdpMember {
   id: string;
@@ -32,6 +48,8 @@ export async function fetchOrganizationMembers(
   organizationId: string,
   accessToken: string,
 ): Promise<IdpMembersResponse> {
+  assertSaaSMode("fetchOrganizationMembers");
+
   const url = new URL("/api/organization/members", AUTH_BASE_URL);
   url.searchParams.set("orgId", organizationId);
 
@@ -67,6 +85,8 @@ export async function updateMemberRole({
   role,
   accessToken,
 }: UpdateMemberRoleParams): Promise<IdpMember> {
+  assertSaaSMode("updateMemberRole");
+
   const url = new URL("/api/organization/members", AUTH_BASE_URL);
   url.searchParams.set("orgId", organizationId);
   url.searchParams.set("memberId", memberId);
@@ -103,6 +123,8 @@ export async function removeMember({
   memberId,
   accessToken,
 }: RemoveMemberParams): Promise<void> {
+  assertSaaSMode("removeMember");
+
   const url = new URL("/api/organization/members", AUTH_BASE_URL);
   url.searchParams.set("orgId", organizationId);
   url.searchParams.set("memberId", memberId);
@@ -148,6 +170,8 @@ export async function inviteMember({
   role,
   accessToken,
 }: InviteMemberParams): Promise<IdpInvitation> {
+  assertSaaSMode("inviteMember");
+
   const url = new URL("/api/auth/organization/invite-member", AUTH_BASE_URL);
 
   const response = await fetch(url, {

@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as PublicPricingRouteImport } from './routes/_public/pricing'
+import { Route as PublicLoginRouteImport } from './routes/_public/login'
 import { Route as PublicDemoRouteImport } from './routes/_public/demo'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -36,9 +38,19 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PublicRoute,
 } as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicPricingRoute = PublicPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicLoginRoute = PublicLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => PublicRoute,
 } as any)
 const PublicDemoRoute = PublicDemoRouteImport.update({
@@ -94,7 +106,9 @@ const AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute =
 
 export interface FileRoutesByFullPath {
   '/demo': typeof PublicDemoRoute
+  '/login': typeof PublicLoginRoute
   '/pricing': typeof PublicPricingRoute
+  '/api/health': typeof ApiHealthRoute
   '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -107,7 +121,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/demo': typeof PublicDemoRoute
+  '/login': typeof PublicLoginRoute
   '/pricing': typeof PublicPricingRoute
+  '/api/health': typeof ApiHealthRoute
   '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -123,7 +139,9 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
   '/_public/demo': typeof PublicDemoRoute
+  '/_public/login': typeof PublicLoginRoute
   '/_public/pricing': typeof PublicPricingRoute
+  '/api/health': typeof ApiHealthRoute
   '/_public/': typeof PublicIndexRoute
   '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -138,7 +156,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/demo'
+    | '/login'
     | '/pricing'
+    | '/api/health'
     | '/'
     | '/profile/$userId'
     | '/api/auth/$'
@@ -151,7 +171,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/demo'
+    | '/login'
     | '/pricing'
+    | '/api/health'
     | '/'
     | '/profile/$userId'
     | '/api/auth/$'
@@ -166,7 +188,9 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_public'
     | '/_public/demo'
+    | '/_public/login'
     | '/_public/pricing'
+    | '/api/health'
     | '/_public/'
     | '/_auth/profile/$userId'
     | '/api/auth/$'
@@ -181,6 +205,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
+  ApiHealthRoute: typeof ApiHealthRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -207,11 +232,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRoute
     }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public/pricing': {
       id: '/_public/pricing'
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PublicPricingRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/_public/login': {
+      id: '/_public/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof PublicLoginRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_public/demo': {
@@ -309,12 +348,14 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface PublicRouteChildren {
   PublicDemoRoute: typeof PublicDemoRoute
+  PublicLoginRoute: typeof PublicLoginRoute
   PublicPricingRoute: typeof PublicPricingRoute
   PublicIndexRoute: typeof PublicIndexRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
   PublicDemoRoute: PublicDemoRoute,
+  PublicLoginRoute: PublicLoginRoute,
   PublicPricingRoute: PublicPricingRoute,
   PublicIndexRoute: PublicIndexRoute,
 }
@@ -325,6 +366,7 @@ const PublicRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
+  ApiHealthRoute: ApiHealthRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
