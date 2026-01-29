@@ -5,21 +5,29 @@ import { Button } from "@/components/ui/button";
 
 import type { ChangeEvent, FormEvent, KeyboardEvent } from "react";
 
-interface ProjectCreationChatInputProps {
+interface ChatInputProps {
   onSend: (message: string) => void | Promise<void>;
   onStop: () => void;
   isLoading: boolean;
+  /** Placeholder text for the input. */
+  placeholder?: string;
+  /** Accessible label for the input. */
+  ariaLabel?: string;
 }
 
 /**
- * Chat input for project creation panel.
- * Similar to AgentChatInput but with creation-specific placeholder.
+ * Unified chat input component for agent interactions.
+ *
+ * Handles auto-resizing textarea, keyboard shortcuts (Enter to send),
+ * and loading states with stop button.
  */
-export function ProjectCreationChatInput({
+export function ChatInput({
   onSend,
   onStop,
   isLoading,
-}: ProjectCreationChatInputProps) {
+  placeholder = "Type a message...",
+  ariaLabel = "Chat message",
+}: ChatInputProps) {
   const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const wasLoadingRef = useRef(false);
@@ -55,7 +63,7 @@ export function ProjectCreationChatInput({
     setInput("");
     resetTextarea();
     Promise.resolve(onSend(trimmed)).catch(() => {
-      // Error surfaced via hook's error state
+      // Error is surfaced via hook's error state
     });
   }, [input, isLoading, onSend, resetTextarea]);
 
@@ -79,10 +87,10 @@ export function ProjectCreationChatInput({
           value={input}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          placeholder="Describe your project..."
-          aria-label="Describe your project"
+          placeholder={placeholder}
+          aria-label={ariaLabel}
           rows={1}
-          // biome-ignore lint/a11y/noAutofocus: Chat input should auto-focus
+          // biome-ignore lint/a11y/noAutofocus: Chat input should auto-focus for immediate typing
           autoFocus
           className="max-h-32 min-h-[36px] w-full flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           disabled={isLoading}

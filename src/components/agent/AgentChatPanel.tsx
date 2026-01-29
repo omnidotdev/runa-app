@@ -11,10 +11,10 @@ import { useAgentChat } from "@/lib/ai/useAgentChat";
 import agentSessionOptions from "@/lib/options/agentSession.options";
 import { cn } from "@/lib/utils";
 import { AgentActivityFeed } from "./AgentActivityFeed";
-import { AgentChatInput } from "./AgentChatInput";
 import { AgentChatMessages } from "./AgentChatMessages";
 import { AgentPanelHeader } from "./AgentPanelHeader";
 import { AgentPersonaSelector } from "./AgentPersonaSelector";
+import { ChatInput } from "./ChatInput";
 
 import type { UIMessage } from "@tanstack/ai-client";
 import type { RollbackByMatchParams } from "@/lib/ai/hooks/useRollback";
@@ -281,10 +281,12 @@ export function AgentChatPanel({
             onUndoToolCall={currentSessionId ? handleUndoToolCall : undefined}
             undoingToolCall={undoingToolCall}
           />
-          <AgentChatInput
+          <ChatInput
             onSend={sendMessage}
             onStop={stop}
             isLoading={isLoading}
+            placeholder="Ask about your project..."
+            ariaLabel="Message to AI agent"
           />
         </TabsContent>
 

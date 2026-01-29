@@ -5,7 +5,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
 import { useProjectCreationChat } from "@/lib/ai/useProjectCreationChat";
 import { cn } from "@/lib/utils";
-import { ProjectCreationChatInput } from "./ProjectCreationChatInput";
+import { ChatInput } from "./ChatInput";
 import { ProjectCreationErrorBoundary } from "./ProjectCreationErrorBoundary";
 import { ProjectCreationMessages } from "./ProjectCreationMessages";
 
@@ -129,10 +129,12 @@ export function ProjectCreationPanel({
         />
 
         {/* Input */}
-        <ProjectCreationChatInput
+        <ChatInput
           onSend={sendMessage}
           onStop={stop}
           isLoading={isLoading}
+          placeholder="Describe your project..."
+          ariaLabel="Describe your project"
         />
       </ProjectCreationErrorBoundary>
     </div>

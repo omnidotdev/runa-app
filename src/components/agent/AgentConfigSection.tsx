@@ -1,4 +1,3 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import {
   ChevronDownIcon,
@@ -25,117 +24,12 @@ import {
   SelectValueText,
   createListCollection,
 } from "@/components/ui/select";
-import { API_BASE_URL } from "@/lib/config/env.config";
+import { ToggleSwitch } from "@/components/ui/toggle-switch";
+import { useAgentConfig } from "@/lib/ai/hooks/useAgentConfig";
 import { AgentPersonaManager } from "./AgentPersonaManager";
 import { AgentTokenUsage } from "./AgentTokenUsage";
 
-interface ByokKeyInfo {
-  maskedKey: string;
-}
-
-interface AgentConfig {
-  model: string;
-  requireApprovalForDestructive: boolean;
-  requireApprovalForCreate: boolean;
-  maxIterationsPerRequest: number;
-  customInstructions: string | null;
-  byokKey: ByokKeyInfo | null;
-}
-
-interface AgentConfigResponse {
-  config: AgentConfig;
-  allowedModels: string[];
-}
-
-function agentConfigQueryKey(organizationId: string) {
-  return ["AgentConfig", organizationId] as const;
-}
-
-async function fetchAgentConfig(
-  organizationId: string,
-  accessToken: string,
-): Promise<AgentConfigResponse> {
-  const url = new URL(`${API_BASE_URL}/api/ai/config`);
-  url.searchParams.set("organizationId", organizationId);
-
-  const response = await fetch(url.toString(), {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch agent config");
-  }
-
-  return response.json() as Promise<AgentConfigResponse>;
-}
-
-async function updateAgentConfig(
-  organizationId: string,
-  accessToken: string,
-  config: Partial<AgentConfig>,
-): Promise<AgentConfig> {
-  const response = await fetch(`${API_BASE_URL}/api/ai/config`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ organizationId, ...config }),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to update agent config");
-  }
-
-  const data = (await response.json()) as { config: AgentConfig };
-  return data.config;
-}
-
-async function saveApiKey(
-  organizationId: string,
-  accessToken: string,
-  apiKey: string,
-): Promise<ByokKeyInfo> {
-  const response = await fetch(`${API_BASE_URL}/api/ai/config/key`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ organizationId, apiKey }),
-  });
-
-  if (!response.ok) {
-    const err = (await response.json().catch(() => null)) as {
-      error?: string;
-    } | null;
-    throw new Error(err?.error ?? "Failed to save API key");
-  }
-
-  const data = (await response.json()) as { key: ByokKeyInfo };
-  return data.key;
-}
-
-async function removeApiKey(
-  organizationId: string,
-  accessToken: string,
-): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/api/ai/config/key`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ organizationId }),
-  });
-
-  if (!response.ok) {
-    const err = (await response.json().catch(() => null)) as {
-      error?: string;
-    } | null;
-    throw new Error(err?.error ?? "Failed to remove API key");
-  }
-}
+import type { AgentConfig } from "@/lib/ai/hooks/useAgentConfig";
 
 /**
  * Format an OpenRouter model name for display.
@@ -156,52 +50,6 @@ function formatModelName(model: string): string {
   return `${formattedModel} (${formattedProvider})`;
 }
 
-/**
- * A minimal toggle switch built with a button element.
- * Styled to look like a standard toggle/switch control.
- */
-function ToggleSwitch({
-  checked,
-  onChange,
-  disabled,
-  label,
-  description,
-}: {
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  disabled?: boolean;
-  label: string;
-  description: string;
-}) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-label={label}
-      disabled={disabled}
-      onClick={() => onChange(!checked)}
-      className="flex w-full items-start justify-between gap-4 rounded-md p-2 text-left transition-colors hover:bg-muted/50 disabled:cursor-not-allowed disabled:opacity-50"
-    >
-      <div className="flex flex-col gap-0.5">
-        <span className="font-medium text-sm">{label}</span>
-        <span className="text-muted-foreground text-xs">{description}</span>
-      </div>
-      <div
-        className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
-          checked ? "bg-primary" : "bg-muted-foreground/30"
-        } ${disabled ? "cursor-not-allowed" : ""}`}
-      >
-        <span
-          className={`pointer-events-none inline-block size-4 rounded-full bg-white shadow-sm transition-transform ${
-            checked ? "translate-x-4" : "translate-x-0"
-          }`}
-        />
-      </div>
-    </button>
-  );
-}
-
 export function AgentConfigSection() {
   const { organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
@@ -211,16 +59,21 @@ export function AgentConfigSection() {
   });
 
   const accessToken = session?.accessToken;
-  const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: agentConfigQueryKey(organizationId!),
-    queryFn: () => fetchAgentConfig(organizationId!, accessToken!),
-    enabled: !!organizationId && !!accessToken,
+  const {
+    config,
+    allowedModels,
+    isLoading,
+    isSaving,
+    updateConfig,
+    saveKey,
+    isSavingKey,
+    deleteKey,
+    isDeletingKey,
+  } = useAgentConfig({
+    organizationId: organizationId!,
+    accessToken,
   });
-
-  const config = data?.config;
-  const allowedModels = data?.allowedModels ?? [];
 
   // Create collection for model select
   const modelCollection = useMemo(
@@ -243,39 +96,22 @@ export function AgentConfigSection() {
     }
   }, [config]);
 
-  const { mutate: saveConfig, isPending: isSaving } = useMutation({
-    mutationFn: (updates: Partial<AgentConfig>) => {
-      if (!accessToken) throw new Error("Not authenticated");
-      return updateAgentConfig(organizationId!, accessToken, updates);
-    },
-    onSuccess: (saved) => {
-      setLocalConfig(saved);
-      queryClient.setQueryData(
-        agentConfigQueryKey(organizationId!),
-        (prev: AgentConfigResponse | undefined) =>
-          prev ? { ...prev, config: saved } : prev,
-      );
-    },
-  });
-
   const handleToggle = useCallback(
     (field: keyof AgentConfig, value: boolean) => {
       if (!localConfig) return;
-      const updated = { ...localConfig, [field]: value };
-      setLocalConfig(updated);
-      saveConfig({ [field]: value });
+      setLocalConfig({ ...localConfig, [field]: value });
+      updateConfig({ [field]: value });
     },
-    [localConfig, saveConfig],
+    [localConfig, updateConfig],
   );
 
   const handleModelChange = useCallback(
     (model: string) => {
       if (!localConfig) return;
-      const updated = { ...localConfig, model };
-      setLocalConfig(updated);
-      saveConfig({ model });
+      setLocalConfig({ ...localConfig, model });
+      updateConfig({ model });
     },
-    [localConfig, saveConfig],
+    [localConfig, updateConfig],
   );
 
   const handleMaxIterationsChange = useCallback(
@@ -289,10 +125,10 @@ export function AgentConfigSection() {
 
   const handleMaxIterationsSave = useCallback(() => {
     if (!localConfig) return;
-    saveConfig({
+    updateConfig({
       maxIterationsPerRequest: localConfig.maxIterationsPerRequest,
     });
-  }, [localConfig, saveConfig]);
+  }, [localConfig, updateConfig]);
 
   const [customInstructionsDraft, setCustomInstructionsDraft] = useState("");
 
@@ -305,53 +141,14 @@ export function AgentConfigSection() {
   const handleSaveInstructions = useCallback(() => {
     const value = customInstructionsDraft.trim() || null;
     if (!localConfig) return;
-    const updated = { ...localConfig, customInstructions: value };
-    setLocalConfig(updated);
-    saveConfig({ customInstructions: value });
-  }, [localConfig, customInstructionsDraft, saveConfig]);
+    setLocalConfig({ ...localConfig, customInstructions: value });
+    updateConfig({ customInstructions: value });
+  }, [localConfig, customInstructionsDraft, updateConfig]);
 
   // BYOK key management state
   const [isKeyFormOpen, setIsKeyFormOpen] = useState(false);
   const [keyValue, setKeyValue] = useState("");
   const [keyError, setKeyError] = useState<string | null>(null);
-
-  const { mutate: saveKey, isPending: isSavingKey } = useMutation({
-    mutationFn: () => {
-      if (!accessToken) throw new Error("Not authenticated");
-      return saveApiKey(organizationId!, accessToken, keyValue);
-    },
-    onSuccess: (savedKey) => {
-      setLocalConfig((prev) => (prev ? { ...prev, byokKey: savedKey } : prev));
-      queryClient.setQueryData(
-        agentConfigQueryKey(organizationId!),
-        (prev: AgentConfigResponse | undefined) =>
-          prev
-            ? { ...prev, config: { ...prev.config, byokKey: savedKey } }
-            : prev,
-      );
-      setIsKeyFormOpen(false);
-      setKeyValue("");
-      setKeyError(null);
-    },
-    onError: (err) => {
-      setKeyError(err instanceof Error ? err.message : "Failed to save key");
-    },
-  });
-
-  const { mutate: deleteKey, isPending: isDeletingKey } = useMutation({
-    mutationFn: () => {
-      if (!accessToken) throw new Error("Not authenticated");
-      return removeApiKey(organizationId!, accessToken);
-    },
-    onSuccess: () => {
-      setLocalConfig((prev) => (prev ? { ...prev, byokKey: null } : prev));
-      queryClient.setQueryData(
-        agentConfigQueryKey(organizationId!),
-        (prev: AgentConfigResponse | undefined) =>
-          prev ? { ...prev, config: { ...prev.config, byokKey: null } } : prev,
-      );
-    },
-  });
 
   const handleSaveKey = useCallback(() => {
     setKeyError(null);
@@ -359,8 +156,28 @@ export function AgentConfigSection() {
       setKeyError("API key must be at least 10 characters");
       return;
     }
-    saveKey();
+    saveKey(keyValue, {
+      onSuccess: () => {
+        setLocalConfig((prev) =>
+          prev ? { ...prev, byokKey: { maskedKey: "..." } } : prev,
+        );
+        setIsKeyFormOpen(false);
+        setKeyValue("");
+        setKeyError(null);
+      },
+      onError: (err) => {
+        setKeyError(err instanceof Error ? err.message : "Failed to save key");
+      },
+    });
   }, [keyValue, saveKey]);
+
+  const handleDeleteKey = useCallback(() => {
+    deleteKey(undefined, {
+      onSuccess: () => {
+        setLocalConfig((prev) => (prev ? { ...prev, byokKey: null } : prev));
+      },
+    });
+  }, [deleteKey]);
 
   if (isLoading) {
     return (
@@ -388,6 +205,7 @@ export function AgentConfigSection() {
         )}
       </div>
 
+      {/* Model Selection */}
       <div className="flex flex-col gap-2 rounded-lg border p-3">
         <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
           Model Selection
@@ -440,6 +258,7 @@ export function AgentConfigSection() {
         </Select>
       </div>
 
+      {/* Approval Controls */}
       <div className="mt-4 flex flex-col gap-1 rounded-lg border p-3">
         <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
           Approval Controls
@@ -462,6 +281,7 @@ export function AgentConfigSection() {
         />
       </div>
 
+      {/* Agent Behavior */}
       <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
         <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
           Agent Behavior
@@ -493,6 +313,7 @@ export function AgentConfigSection() {
         </div>
       </div>
 
+      {/* Custom Instructions */}
       <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
         <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
           Custom Instructions
@@ -525,6 +346,7 @@ export function AgentConfigSection() {
         </div>
       </div>
 
+      {/* BYOK API Key */}
       <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
         <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
           OpenRouter API Key (BYOK)
@@ -562,7 +384,7 @@ export function AgentConfigSection() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => deleteKey()}
+                onClick={handleDeleteKey}
                 disabled={isDeletingKey}
                 aria-label="Remove API key"
               >
