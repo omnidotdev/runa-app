@@ -1,11 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
   CheckCircleIcon,
   ChevronRightIcon,
   ClockIcon,
-  Loader2Icon,
   SparklesIcon,
   XCircleIcon,
 } from "lucide-react";
@@ -41,7 +40,7 @@ export function TaskAgentActivity({
   taskId,
   projectId,
 }: TaskAgentActivityProps) {
-  const { data, isLoading } = useQuery(
+  const { data } = useSuspenseQuery(
     agentActivitiesByTaskIdOptions({ projectId, first: 50 }),
   );
 
@@ -54,15 +53,6 @@ export function TaskAgentActivity({
       return ids.includes(taskId);
     });
   }, [data, taskId]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center gap-2 py-4 text-muted-foreground text-sm">
-        <Loader2Icon className="size-4 animate-spin" />
-        Loading agent activity...
-      </div>
-    );
-  }
 
   if (activities.length === 0) {
     return null;

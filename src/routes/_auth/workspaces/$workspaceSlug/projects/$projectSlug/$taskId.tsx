@@ -42,6 +42,7 @@ import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
+import agentActivitiesByTaskIdOptions from "@/lib/options/agentActivitiesByTaskId.options";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import taskOptions from "@/lib/options/task.options";
@@ -61,7 +62,7 @@ export const Route = createFileRoute(
   }) => {
     if (!organizationId) throw notFound();
 
-    const { project, task } = await all({
+    const { project } = await all({
       async project() {
         const { projectBySlugAndOrganizationId } =
           await queryClient.ensureQueryData(
@@ -76,6 +77,15 @@ export const Route = createFileRoute(
         );
         if (!task) throw notFound();
         return task;
+      },
+      async agentActivities() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          agentActivitiesByTaskIdOptions({
+            projectId: project.rowId,
+            first: 50,
+          }),
+        );
       },
     });
 
