@@ -7,7 +7,7 @@ import {
   TrashIcon,
   UserIcon,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -121,6 +121,75 @@ async function deletePersona(
     throw new Error(err?.error ?? "Failed to delete persona");
   }
 }
+
+// ─────────────────────────────────────────────
+// Memoized List Item
+// ─────────────────────────────────────────────
+
+interface PersonaListItemProps {
+  persona: AgentPersona;
+  onEdit: (persona: AgentPersona) => void;
+  onDelete: (personaId: string) => void;
+  isDeleting: boolean;
+}
+
+const PersonaListItem = memo(function PersonaListItem({
+  persona,
+  onEdit,
+  onDelete,
+  isDeleting,
+}: PersonaListItemProps) {
+  const handleEdit = useCallback(() => onEdit(persona), [onEdit, persona]);
+  const handleDelete = useCallback(
+    () => onDelete(persona.id),
+    [onDelete, persona.id],
+  );
+
+  return (
+    <div className="flex items-center justify-between gap-2 rounded-md border bg-muted/30 p-2">
+      <div className="flex items-center gap-2 overflow-hidden">
+        <span className="shrink-0 text-sm">
+          {persona.icon ?? (
+            <UserIcon className="size-3.5 text-muted-foreground" />
+          )}
+        </span>
+        <div className="flex min-w-0 flex-col">
+          <span className="truncate font-medium text-xs">{persona.name}</span>
+          {persona.description && (
+            <span className="truncate text-[10px] text-muted-foreground">
+              {persona.description}
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="flex shrink-0 items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-6"
+          onClick={handleEdit}
+          aria-label={`Edit ${persona.name}`}
+        >
+          <PencilIcon className="size-3" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-6"
+          onClick={handleDelete}
+          disabled={isDeleting}
+          aria-label={`Delete ${persona.name}`}
+        >
+          {isDeleting ? (
+            <Loader2Icon className="size-3 animate-spin" />
+          ) : (
+            <TrashIcon className="size-3 text-destructive" />
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+});
 
 export function AgentPersonaManager({
   organizationId,
@@ -252,53 +321,13 @@ export function AgentPersonaManager({
       {personas.length > 0 && !isFormOpen && (
         <div className="flex flex-col gap-1.5">
           {personas.map((persona) => (
-            <div
+            <PersonaListItem
               key={persona.id}
-              className="flex items-center justify-between gap-2 rounded-md border bg-muted/30 p-2"
-            >
-              <div className="flex items-center gap-2 overflow-hidden">
-                <span className="shrink-0 text-sm">
-                  {persona.icon ?? (
-                    <UserIcon className="size-3.5 text-muted-foreground" />
-                  )}
-                </span>
-                <div className="flex min-w-0 flex-col">
-                  <span className="truncate font-medium text-xs">
-                    {persona.name}
-                  </span>
-                  {persona.description && (
-                    <span className="truncate text-[10px] text-muted-foreground">
-                      {persona.description}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="flex shrink-0 items-center gap-1">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-6"
-                  onClick={() => openEdit(persona)}
-                  aria-label={`Edit ${persona.name}`}
-                >
-                  <PencilIcon className="size-3" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-6"
-                  onClick={() => removePersona(persona.id)}
-                  disabled={isDeleting}
-                  aria-label={`Delete ${persona.name}`}
-                >
-                  {isDeleting ? (
-                    <Loader2Icon className="size-3 animate-spin" />
-                  ) : (
-                    <TrashIcon className="size-3 text-destructive" />
-                  )}
-                </Button>
-              </div>
-            </div>
+              persona={persona}
+              onEdit={openEdit}
+              onDelete={removePersona}
+              isDeleting={isDeleting}
+            />
           ))}
         </div>
       )}
