@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   CalendarClockIcon,
   Loader2Icon,
@@ -12,15 +12,14 @@ import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAccessToken } from "@/lib/ai/hooks/useAccessToken";
-import { useAgentPersonas } from "@/lib/ai/hooks/useAgentPersonas";
-import {
-  agentSchedulesQueryKey,
-  useAgentSchedules,
-} from "@/lib/ai/hooks/useAgentSchedules";
 import { API_BASE_URL } from "@/lib/config/env.config";
+import agentPersonasOptions from "@/lib/options/agentPersonas.options";
+import agentSchedulesOptions, {
+  agentSchedulesQueryKey,
+} from "@/lib/options/agentSchedules.options";
 import { cn } from "@/lib/utils";
 
-import type { AgentSchedule } from "@/lib/ai/hooks/useAgentSchedules";
+import type { AgentSchedule } from "@/lib/options/agentSchedules.options";
 
 // ─────────────────────────────────────────────
 // API Functions
@@ -281,8 +280,14 @@ export function AgentScheduleConfig({
   const accessToken = useAccessToken();
   const queryClient = useQueryClient();
 
-  const { data: schedules = [], isLoading } = useAgentSchedules(projectId);
-  const { data: personas = [] } = useAgentPersonas(organizationId);
+  const { data: schedules = [], isLoading } = useQuery({
+    ...agentSchedulesOptions({ projectId, accessToken }),
+    select: (data) => data ?? [],
+  });
+  const { data: personas = [] } = useQuery({
+    ...agentPersonasOptions({ organizationId, accessToken }),
+    select: (data) => data ?? [],
+  });
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);

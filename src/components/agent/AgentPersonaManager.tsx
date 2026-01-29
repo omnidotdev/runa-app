@@ -1,4 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import {
   Loader2Icon,
@@ -11,13 +15,16 @@ import { memo, useCallback, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  agentPersonasQueryKey,
-  useAgentPersonas,
-} from "@/lib/ai/hooks/useAgentPersonas";
 import { API_BASE_URL } from "@/lib/config/env.config";
+import agentPersonasOptions, {
+  agentPersonasQueryKey,
+} from "@/lib/options/agentPersonas.options";
 
-import type { AgentPersona } from "@/lib/ai/hooks/useAgentPersonas";
+import type { AgentPersona } from "@/lib/options/agentPersonas.options";
+
+// ─────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────
 
 interface AgentPersonaManagerProps {
   organizationId: string;
@@ -36,6 +43,10 @@ const EMPTY_FORM: PersonaFormData = {
   systemPrompt: "",
   icon: "",
 };
+
+// ─────────────────────────────────────────────
+// Mutation API Functions
+// ─────────────────────────────────────────────
 
 async function createPersona(
   organizationId: string,
@@ -191,16 +202,23 @@ const PersonaListItem = memo(function PersonaListItem({
   );
 });
 
+// ─────────────────────────────────────────────
+// Component
+// ─────────────────────────────────────────────
+
 export function AgentPersonaManager({
   organizationId,
 }: AgentPersonaManagerProps) {
   const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
-  const accessToken = session?.accessToken;
+  const accessToken = session?.accessToken!;
   const queryClient = useQueryClient();
 
-  const { data: personas = [], isLoading } = useAgentPersonas(organizationId);
+  // Suspense query - data is prefetched in route loader
+  const { data: personas } = useSuspenseQuery(
+    agentPersonasOptions({ organizationId, accessToken }),
+  );
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -241,7 +259,6 @@ export function AgentPersonaManager({
 
   const { mutate: savePersona, isPending: isSaving } = useMutation({
     mutationFn: () => {
-      if (!accessToken) throw new Error("Not authenticated");
       return editingId
         ? updatePersona(editingId, organizationId, accessToken, form)
         : createPersona(organizationId, accessToken, form);
@@ -258,10 +275,8 @@ export function AgentPersonaManager({
   });
 
   const { mutate: removePersona, isPending: isDeleting } = useMutation({
-    mutationFn: (personaId: string) => {
-      if (!accessToken) throw new Error("Not authenticated");
-      return deletePersona(personaId, organizationId, accessToken);
-    },
+    mutationFn: (personaId: string) =>
+      deletePersona(personaId, organizationId, accessToken),
     onSuccess: () => {
       invalidatePersonas();
     },
@@ -309,13 +324,6 @@ export function AgentPersonaManager({
       <p className="text-muted-foreground text-xs">
         Create specialized agent personas with custom system prompts.
       </p>
-
-      {isLoading && (
-        <div className="flex items-center gap-2 py-2 text-muted-foreground text-xs">
-          <Loader2Icon className="size-3 animate-spin" />
-          Loading personas...
-        </div>
-      )}
 
       {/* Persona list */}
       {personas.length > 0 && !isFormOpen && (

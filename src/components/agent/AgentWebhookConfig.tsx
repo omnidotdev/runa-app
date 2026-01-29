@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ClipboardCopyIcon,
   Loader2Icon,
@@ -12,14 +12,13 @@ import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAccessToken } from "@/lib/ai/hooks/useAccessToken";
-import {
-  agentWebhooksQueryKey,
-  useAgentWebhooks,
-} from "@/lib/ai/hooks/useAgentWebhooks";
 import { API_BASE_URL } from "@/lib/config/env.config";
+import agentWebhooksOptions, {
+  agentWebhooksQueryKey,
+} from "@/lib/options/agentWebhooks.options";
 import { cn } from "@/lib/utils";
 
-import type { AgentWebhook } from "@/lib/ai/hooks/useAgentWebhooks";
+import type { AgentWebhook } from "@/lib/options/agentWebhooks.options";
 
 // ─────────────────────────────────────────────
 // Constants
@@ -170,7 +169,10 @@ export function AgentWebhookConfig({ projectId }: AgentWebhookConfigProps) {
   const accessToken = useAccessToken();
   const queryClient = useQueryClient();
 
-  const { data: webhooks = [], isLoading } = useAgentWebhooks(projectId);
+  const { data: webhooks = [], isLoading } = useQuery({
+    ...agentWebhooksOptions({ projectId, accessToken }),
+    select: (data) => data ?? [],
+  });
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -246,7 +248,11 @@ export function AgentWebhookConfig({ projectId }: AgentWebhookConfigProps) {
     },
   });
 
-  const { mutate: removeWebhook, isPending: isDeleting } = useMutation({
+  const {
+    mutate: removeWebhook,
+    isPending: isDeleting,
+    variables: deletingId,
+  } = useMutation({
     mutationFn: (webhookId: string) => {
       if (!accessToken) throw new Error("Not authenticated");
       return deleteWebhook(webhookId, projectId, accessToken);
@@ -446,10 +452,10 @@ export function AgentWebhookConfig({ projectId }: AgentWebhookConfigProps) {
                   size="icon"
                   className="size-6"
                   onClick={() => removeWebhook(webhook.id)}
-                  disabled={isDeleting}
+                  disabled={isDeleting && deletingId === webhook.id}
                   aria-label={`Delete ${webhook.name}`}
                 >
-                  {isDeleting ? (
+                  {isDeleting && deletingId === webhook.id ? (
                     <Loader2Icon className="size-3 animate-spin" />
                   ) : (
                     <TrashIcon className="size-3 text-destructive" />

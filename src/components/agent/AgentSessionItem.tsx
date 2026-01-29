@@ -4,7 +4,7 @@ import { WrenchIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import type { AgentSessionNode } from "@/lib/ai/hooks/useAgentSessions";
+import type { AgentSessionNode } from "@/lib/options/agentSessions.options";
 
 dayjs.extend(relativeTime);
 

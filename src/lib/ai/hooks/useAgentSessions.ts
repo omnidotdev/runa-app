@@ -3,10 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import agentSessionsOptions from "@/lib/options/agentSessions.options";
 
 import type { AgentSessionsQuery } from "@/generated/graphql";
-
-type AgentSessionNode = NonNullable<
-  AgentSessionsQuery["agentSessions"]
->["nodes"][number];
+import type { AgentSessionNode } from "@/lib/options/agentSessions.options";
 
 interface UseAgentSessionsOptions {
   projectId: string;
@@ -80,5 +77,3 @@ export function useAgentSessions({
     upsertSession,
   };
 }
-
-export type { AgentSessionNode };

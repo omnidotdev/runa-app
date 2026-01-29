@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { BarChart3Icon, Loader2Icon } from "lucide-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { BarChart3Icon } from "lucide-react";
 
 import agentSessionTokenUsageOptions from "@/lib/options/agentSessionTokenUsage.options";
 
@@ -15,20 +15,13 @@ function formatNumber(value: string | number | null | undefined): string {
 /**
  * Displays aggregate token usage and session stats for an organization.
  * Rendered within the Agent Config settings section.
+ *
+ * Data is prefetched in the route loader, so this uses useSuspenseQuery.
  */
 export function AgentTokenUsage({ organizationId }: AgentTokenUsageProps) {
-  const { data, isLoading } = useQuery(
+  const { data } = useSuspenseQuery(
     agentSessionTokenUsageOptions({ organizationId }),
   );
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center gap-2 py-3 text-muted-foreground text-sm">
-        <Loader2Icon className="size-4 animate-spin" />
-        Loading usage...
-      </div>
-    );
-  }
 
   const aggregates = data?.agentSessions?.aggregates;
   const totalSessions = data?.agentSessions?.totalCount ?? 0;

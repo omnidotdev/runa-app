@@ -16,7 +16,7 @@ import {
 import { TabsIndicator, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AgentSessionList } from "./AgentSessionList";
 
-import type { AgentSessionNode } from "@/lib/ai/hooks/useAgentSessions";
+import type { AgentSessionNode } from "@/lib/options/agentSessions.options";
 
 interface AgentPanelHeaderProps {
   onClose: () => void;

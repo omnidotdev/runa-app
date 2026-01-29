@@ -3,11 +3,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { TabsContent, TabsRoot } from "@/components/ui/tabs";
-import { useAgentPersonas } from "@/lib/ai/hooks/useAgentPersonas";
+import { useAccessToken } from "@/lib/ai/hooks/useAccessToken";
 import { useAgentSessions } from "@/lib/ai/hooks/useAgentSessions";
 import { useCurrentSession } from "@/lib/ai/hooks/useCurrentSession";
 import { useRollbackByMatch } from "@/lib/ai/hooks/useRollback";
 import { useAgentChat } from "@/lib/ai/useAgentChat";
+import agentPersonasOptions from "@/lib/options/agentPersonas.options";
 import agentSessionOptions from "@/lib/options/agentSession.options";
 import { cn } from "@/lib/utils";
 import { AgentActivityFeed } from "./AgentActivityFeed";
@@ -125,6 +126,7 @@ export function AgentChatPanel({
   onClose,
   className,
 }: AgentChatPanelProps) {
+  const accessToken = useAccessToken();
   const {
     sessions,
     isLoading: isSessionsLoading,
@@ -138,7 +140,10 @@ export function AgentChatPanel({
   const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(
     null,
   );
-  const { data: personas = [] } = useAgentPersonas(organizationId);
+  const { data: personas = [] } = useQuery({
+    ...agentPersonasOptions({ organizationId, accessToken }),
+    select: (data) => data ?? [],
+  });
 
   const handlePersonaChange = useCallback(
     (personaId: string | null) => {

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import type { AgentSessionNode } from "./useAgentSessions";
+import type { AgentSessionNode } from "@/lib/options/agentSessions.options";
 
 /**
  * Hook for managing the currently active agent session.

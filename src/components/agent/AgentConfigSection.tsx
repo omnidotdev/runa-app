@@ -1,3 +1,8 @@
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import {
   ChevronDownIcon,
@@ -25,11 +30,94 @@ import {
   createListCollection,
 } from "@/components/ui/select";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
-import { useAgentConfig } from "@/lib/ai/hooks/useAgentConfig";
+import { API_BASE_URL } from "@/lib/config/env.config";
+import agentConfigOptions, {
+  agentConfigQueryKey,
+} from "@/lib/options/agentConfig.options";
 import { AgentPersonaManager } from "./AgentPersonaManager";
 import { AgentTokenUsage } from "./AgentTokenUsage";
 
-import type { AgentConfig } from "@/lib/ai/hooks/useAgentConfig";
+import type {
+  AgentConfig,
+  AgentConfigResponse,
+  ByokKeyInfo,
+} from "@/lib/options/agentConfig.options";
+
+// ─────────────────────────────────────────────
+// Mutation API Functions
+// ─────────────────────────────────────────────
+
+async function updateAgentConfig(
+  organizationId: string,
+  accessToken: string,
+  config: Partial<AgentConfig>,
+): Promise<AgentConfig> {
+  const response = await fetch(`${API_BASE_URL}/api/ai/config`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ organizationId, ...config }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update agent config");
+  }
+
+  const data = (await response.json()) as { config: AgentConfig };
+  return data.config;
+}
+
+async function saveApiKey(
+  organizationId: string,
+  accessToken: string,
+  apiKey: string,
+): Promise<ByokKeyInfo> {
+  const response = await fetch(`${API_BASE_URL}/api/ai/config/key`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ organizationId, apiKey }),
+  });
+
+  if (!response.ok) {
+    const err = (await response.json().catch(() => null)) as {
+      error?: string;
+    } | null;
+    throw new Error(err?.error ?? "Failed to save API key");
+  }
+
+  const data = (await response.json()) as { key: ByokKeyInfo };
+  return data.key;
+}
+
+async function removeApiKey(
+  organizationId: string,
+  accessToken: string,
+): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/ai/config/key`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ organizationId }),
+  });
+
+  if (!response.ok) {
+    const err = (await response.json().catch(() => null)) as {
+      error?: string;
+    } | null;
+    throw new Error(err?.error ?? "Failed to remove API key");
+  }
+}
+
+// ─────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────
 
 /**
  * Format an OpenRouter model name for display.
@@ -50,6 +138,10 @@ function formatModelName(model: string): string {
   return `${formattedModel} (${formattedProvider})`;
 }
 
+// ─────────────────────────────────────────────
+// Component
+// ─────────────────────────────────────────────
+
 export function AgentConfigSection() {
   const { organizationId } = useLoaderData({
     from: "/_auth/workspaces/$workspaceSlug/settings",
@@ -58,22 +150,16 @@ export function AgentConfigSection() {
     from: "/_auth/workspaces/$workspaceSlug/settings",
   });
 
-  const accessToken = session?.accessToken;
+  const accessToken = session?.accessToken!;
+  const queryClient = useQueryClient();
 
-  const {
-    config,
-    allowedModels,
-    isLoading,
-    isSaving,
-    updateConfig,
-    saveKey,
-    isSavingKey,
-    deleteKey,
-    isDeletingKey,
-  } = useAgentConfig({
-    organizationId: organizationId!,
-    accessToken,
-  });
+  // Suspense query - data is prefetched in route loader, no loading state needed
+  const { data } = useSuspenseQuery(
+    agentConfigOptions({ organizationId: organizationId!, accessToken }),
+  );
+
+  const config = data.config;
+  const allowedModels = data.allowedModels;
 
   // Create collection for model select
   const modelCollection = useMemo(
@@ -88,62 +174,90 @@ export function AgentConfigSection() {
   );
 
   // Local state for optimistic UI
-  const [localConfig, setLocalConfig] = useState<AgentConfig | null>(null);
+  const [localConfig, setLocalConfig] = useState<AgentConfig>(config);
 
   useEffect(() => {
-    if (config) {
-      setLocalConfig(config);
-    }
+    setLocalConfig(config);
   }, [config]);
+
+  // Mutations
+  const { mutate: saveConfig, isPending: isSaving } = useMutation({
+    mutationFn: (updates: Partial<AgentConfig>) =>
+      updateAgentConfig(organizationId!, accessToken, updates),
+    onSuccess: (saved) => {
+      queryClient.setQueryData(
+        agentConfigQueryKey(organizationId!),
+        (prev: AgentConfigResponse | undefined) =>
+          prev ? { ...prev, config: saved } : prev,
+      );
+    },
+  });
+
+  const { mutate: saveKey, isPending: isSavingKey } = useMutation({
+    mutationFn: (apiKey: string) =>
+      saveApiKey(organizationId!, accessToken, apiKey),
+    onSuccess: (savedKey) => {
+      queryClient.setQueryData(
+        agentConfigQueryKey(organizationId!),
+        (prev: AgentConfigResponse | undefined) =>
+          prev
+            ? { ...prev, config: { ...prev.config, byokKey: savedKey } }
+            : prev,
+      );
+    },
+  });
+
+  const { mutate: deleteKey, isPending: isDeletingKey } = useMutation({
+    mutationFn: () => removeApiKey(organizationId!, accessToken),
+    onSuccess: () => {
+      queryClient.setQueryData(
+        agentConfigQueryKey(organizationId!),
+        (prev: AgentConfigResponse | undefined) =>
+          prev ? { ...prev, config: { ...prev.config, byokKey: null } } : prev,
+      );
+    },
+  });
 
   const handleToggle = useCallback(
     (field: keyof AgentConfig, value: boolean) => {
-      if (!localConfig) return;
-      setLocalConfig({ ...localConfig, [field]: value });
-      updateConfig({ [field]: value });
+      setLocalConfig((prev) => ({ ...prev, [field]: value }));
+      saveConfig({ [field]: value });
     },
-    [localConfig, updateConfig],
+    [saveConfig],
   );
 
   const handleModelChange = useCallback(
     (model: string) => {
-      if (!localConfig) return;
-      setLocalConfig({ ...localConfig, model });
-      updateConfig({ model });
+      setLocalConfig((prev) => ({ ...prev, model }));
+      saveConfig({ model });
     },
-    [localConfig, updateConfig],
+    [saveConfig],
   );
 
-  const handleMaxIterationsChange = useCallback(
-    (value: number) => {
-      if (!localConfig) return;
-      const clamped = Math.max(1, Math.min(20, value));
-      setLocalConfig({ ...localConfig, maxIterationsPerRequest: clamped });
-    },
-    [localConfig],
-  );
+  const handleMaxIterationsChange = useCallback((value: number) => {
+    const clamped = Math.max(1, Math.min(20, value));
+    setLocalConfig((prev) => ({ ...prev, maxIterationsPerRequest: clamped }));
+  }, []);
 
   const handleMaxIterationsSave = useCallback(() => {
-    if (!localConfig) return;
-    updateConfig({
+    saveConfig({
       maxIterationsPerRequest: localConfig.maxIterationsPerRequest,
     });
-  }, [localConfig, updateConfig]);
+  }, [localConfig.maxIterationsPerRequest, saveConfig]);
 
-  const [customInstructionsDraft, setCustomInstructionsDraft] = useState("");
+  const [customInstructionsDraft, setCustomInstructionsDraft] = useState(
+    config.customInstructions ?? "",
+  );
 
   useEffect(() => {
-    if (config?.customInstructions !== undefined) {
-      setCustomInstructionsDraft(config.customInstructions ?? "");
-    }
-  }, [config?.customInstructions]);
+    setCustomInstructionsDraft(config.customInstructions ?? "");
+  }, [config.customInstructions]);
 
   const handleSaveInstructions = useCallback(() => {
     const value = customInstructionsDraft.trim() || null;
-    if (!localConfig) return;
-    setLocalConfig({ ...localConfig, customInstructions: value });
-    updateConfig({ customInstructions: value });
-  }, [localConfig, customInstructionsDraft, updateConfig]);
+    setLocalConfig((prev) => ({ ...prev, customInstructions: value }));
+    saveConfig({ customInstructions: value });
+  }, [customInstructionsDraft, saveConfig]);
 
   // BYOK key management state
   const [isKeyFormOpen, setIsKeyFormOpen] = useState(false);
@@ -158,9 +272,7 @@ export function AgentConfigSection() {
     }
     saveKey(keyValue, {
       onSuccess: () => {
-        setLocalConfig((prev) =>
-          prev ? { ...prev, byokKey: { maskedKey: "..." } } : prev,
-        );
+        setLocalConfig((prev) => ({ ...prev, byokKey: { maskedKey: "..." } }));
         setIsKeyFormOpen(false);
         setKeyValue("");
         setKeyError(null);
@@ -174,26 +286,10 @@ export function AgentConfigSection() {
   const handleDeleteKey = useCallback(() => {
     deleteKey(undefined, {
       onSuccess: () => {
-        setLocalConfig((prev) => (prev ? { ...prev, byokKey: null } : prev));
+        setLocalConfig((prev) => ({ ...prev, byokKey: null }));
       },
     });
   }, [deleteKey]);
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col">
-        <div className="mb-1 flex h-10 items-center">
-          <h2 className="font-semibold text-lg">Agent Settings</h2>
-        </div>
-        <div className="flex items-center gap-2 py-4 text-muted-foreground text-sm">
-          <Loader2Icon className="size-4 animate-spin" />
-          Loading agent settings...
-        </div>
-      </div>
-    );
-  }
-
-  if (!localConfig) return null;
 
   return (
     <div className="flex flex-col">

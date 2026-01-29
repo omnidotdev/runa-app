@@ -3,7 +3,7 @@ import { Loader2Icon, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AgentSessionItem } from "./AgentSessionItem";
 
-import type { AgentSessionNode } from "@/lib/ai/hooks/useAgentSessions";
+import type { AgentSessionNode } from "@/lib/options/agentSessions.options";
 
 interface AgentSessionListProps {
   sessions: AgentSessionNode[];

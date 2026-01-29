@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-import type { AgentPersona } from "@/lib/ai/hooks/useAgentPersonas";
+import type { AgentPersona } from "@/lib/options/agentPersonas.options";
 
 interface AgentPersonaSelectorProps {
   personas: AgentPersona[];
