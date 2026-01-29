@@ -161,14 +161,12 @@ const auth = betterAuth({
     database: pgPool,
   }),
   // Use prefixed tables to avoid collision with app's user table
-  // Only apply when using database (self-hosted mode)
-  // MemoryAdapter (SaaS mode) expects default model names
-  ...(pgPool && {
-    user: { modelName: "ba_user" },
-    verification: { modelName: "ba_verification" },
-  }),
+  // Only apply custom model names when database is configured (self-hosted mode)
+  // SaaS mode uses MemoryAdapter which requires default model names
+  user: {
+    ...(pgPool && { modelName: "ba_user" }),
+  },
   session: {
-    // Only prefix when using database
     ...(pgPool && { modelName: "ba_session" }),
     // extend session expiration to 30 days
     expiresIn: 60 * 60 * 24 * 30,
@@ -186,10 +184,12 @@ const auth = betterAuth({
     },
   },
   account: {
-    // Only prefix when using database
     ...(pgPool && { modelName: "ba_account" }),
     // store OAuth tokens in a signed cookie for stateless mode
     storeAccountCookie: true,
+  },
+  verification: {
+    ...(pgPool && { modelName: "ba_verification" }),
   },
   // Email/password enabled only in self-hosted mode with database
   emailAndPassword: {
