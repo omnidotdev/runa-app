@@ -6,16 +6,33 @@ import {
 } from "@tanstack/react-query";
 import {
   CalendarClockIcon,
+  ChevronDownIcon,
   Loader2Icon,
   PencilIcon,
   PlayIcon,
   PlusIcon,
   TrashIcon,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectControl,
+  SelectIndicator,
+  SelectItem,
+  SelectItemGroup,
+  SelectItemIndicator,
+  SelectItemText,
+  SelectLabel,
+  SelectPositioner,
+  SelectTrigger,
+  SelectValueText,
+  createListCollection,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useAccessToken } from "@/lib/ai/hooks/useAccessToken";
 import { API_BASE_URL } from "@/lib/config/env.config";
 import agentPersonasOptions from "@/lib/options/agentPersonas.options";
@@ -293,6 +310,16 @@ export function AgentScheduleConfig({
     select: (data) => data ?? [],
   });
 
+  const personaCollection = useMemo(() => {
+    const enabledPersonas = personas.filter((p) => p.enabled);
+    return createListCollection({
+      items: [
+        { label: "Default persona", value: "" },
+        ...enabledPersonas.map((p) => ({ label: p.name, value: p.id })),
+      ],
+    });
+  }, [personas]);
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<ScheduleFormData>(EMPTY_FORM);
@@ -539,58 +566,131 @@ export function AgentScheduleConfig({
 
       {/* Create/Edit form */}
       {isFormOpen && (
-        <div className="flex flex-col gap-2 rounded-md border p-2.5">
-          <p className="font-medium text-xs">
-            {editingId ? "Edit Schedule" : "New Schedule"}
-          </p>
-          <Input
-            placeholder="Schedule name"
-            value={form.name}
-            onChange={(e) => updateField("name", e.target.value)}
-            disabled={isSaving}
-            maxLength={100}
-            className="text-sm"
-          />
-          <Input
-            placeholder="Cron expression (e.g. 0 9 * * 1-5 = weekdays at 9am)"
-            value={form.cronExpression}
-            onChange={(e) => updateField("cronExpression", e.target.value)}
-            disabled={isSaving}
-            className="font-mono text-sm"
-          />
-          {form.cronExpression && (
-            <p className="text-[10px] text-muted-foreground">
-              {describeCron(form.cronExpression)}
+        <div className="rounded-lg border">
+          <div className="border-b bg-muted/30 px-4 py-3">
+            <h4 className="font-medium text-sm">
+              {editingId ? "Edit Schedule" : "New Schedule"}
+            </h4>
+            <p className="text-muted-foreground text-xs">
+              Configure a schedule to run agent sessions automatically.
             </p>
-          )}
-          <textarea
-            placeholder="Instruction for the agent (what should it do on each scheduled run?)"
-            value={form.instruction}
-            onChange={(e) => updateField("instruction", e.target.value)}
-            disabled={isSaving}
-            maxLength={4000}
-            rows={3}
-            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
-          />
-          {personas.length > 0 && (
-            <select
-              value={form.personaId}
-              onChange={(e) => updateField("personaId", e.target.value)}
-              disabled={isSaving}
-              className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <option value="">Default persona</option>
-              {personas
-                .filter((p) => p.enabled)
-                .map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-            </select>
-          )}
-          {formError && <p className="text-destructive text-xs">{formError}</p>}
-          <div className="flex justify-end gap-2">
+          </div>
+
+          <div className="flex flex-col gap-4 p-4">
+            {/* Name Field */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="schedule-name"
+                className="font-medium text-muted-foreground text-xs"
+              >
+                Name
+              </label>
+              <Input
+                id="schedule-name"
+                placeholder="e.g., Daily Standup Summary"
+                value={form.name}
+                onChange={(e) => updateField("name", e.target.value)}
+                disabled={isSaving}
+                maxLength={100}
+                className="text-sm"
+              />
+            </div>
+
+            {/* Cron Expression Field */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="schedule-cron"
+                className="font-medium text-muted-foreground text-xs"
+              >
+                Cron Expression
+              </label>
+              <Input
+                id="schedule-cron"
+                placeholder="e.g., 0 9 * * 1-5"
+                value={form.cronExpression}
+                onChange={(e) => updateField("cronExpression", e.target.value)}
+                disabled={isSaving}
+                className="font-mono text-sm"
+              />
+              {form.cronExpression ? (
+                <p className="text-muted-foreground text-xs">
+                  {describeCron(form.cronExpression)}
+                </p>
+              ) : (
+                <p className="text-muted-foreground text-xs">
+                  Example:{" "}
+                  <code className="rounded bg-muted px-1">0 9 * * 1-5</code> =
+                  Weekdays at 9:00 AM
+                </p>
+              )}
+            </div>
+
+            {/* Instruction Field */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="schedule-instruction"
+                className="font-medium text-muted-foreground text-xs"
+              >
+                Instruction
+              </label>
+              <Textarea
+                id="schedule-instruction"
+                placeholder="e.g., Review all open tasks and create a daily summary..."
+                value={form.instruction}
+                onChange={(e) => updateField("instruction", e.target.value)}
+                disabled={isSaving}
+                maxLength={4000}
+                rows={3}
+                className="text-sm"
+              />
+            </div>
+
+            {/* Persona Field */}
+            {personas.length > 0 && (
+              <div className="flex flex-col gap-1.5">
+                <Select
+                  collection={personaCollection}
+                  value={[form.personaId]}
+                  onValueChange={(details) => {
+                    const newPersonaId = details.value[0];
+                    updateField("personaId", newPersonaId ?? "");
+                  }}
+                  disabled={isSaving}
+                >
+                  <SelectLabel>Persona</SelectLabel>
+                  <SelectControl>
+                    <SelectTrigger className="w-full justify-between border border-input bg-transparent">
+                      <SelectValueText placeholder="Default persona" />
+                      <SelectIndicator>
+                        <ChevronDownIcon />
+                      </SelectIndicator>
+                    </SelectTrigger>
+                  </SelectControl>
+
+                  <SelectPositioner>
+                    <SelectContent className="w-(--reference-width)">
+                      <SelectItemGroup>
+                        {personaCollection.items.map((item) => (
+                          <SelectItem key={item.value} item={item}>
+                            <SelectItemText>{item.label}</SelectItemText>
+                            <SelectItemIndicator />
+                          </SelectItem>
+                        ))}
+                      </SelectItemGroup>
+                    </SelectContent>
+                  </SelectPositioner>
+                </Select>
+              </div>
+            )}
+
+            {/* Error Display */}
+            {formError && (
+              <p className="text-destructive text-xs">{formError}</p>
+            )}
+          </div>
+
+          {/* Form Actions */}
+          <div className="flex items-center justify-end gap-2 border-t bg-muted/30 px-4 py-3">
             <Button
               variant="ghost"
               size="sm"

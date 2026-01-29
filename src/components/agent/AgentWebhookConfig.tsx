@@ -4,6 +4,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import {
+  ChevronDownIcon,
   ClipboardCopyIcon,
   Loader2Icon,
   PencilIcon,
@@ -11,10 +12,26 @@ import {
   TrashIcon,
   WebhookIcon,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectControl,
+  SelectIndicator,
+  SelectItem,
+  SelectItemGroup,
+  SelectItemIndicator,
+  SelectItemText,
+  SelectLabel,
+  SelectPositioner,
+  SelectTrigger,
+  SelectValueText,
+  createListCollection,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useAccessToken } from "@/lib/ai/hooks/useAccessToken";
 import { API_BASE_URL } from "@/lib/config/env.config";
 import agentWebhooksOptions, {
@@ -187,6 +204,17 @@ export function AgentWebhookConfig({ projectId }: AgentWebhookConfigProps) {
     webhookId: string;
     secret: string;
   } | null>(null);
+
+  const eventTypeCollection = useMemo(
+    () =>
+      createListCollection({
+        items: EVENT_TYPES.map((evt) => ({
+          label: evt.label,
+          value: evt.value,
+        })),
+      }),
+    [],
+  );
 
   const resetForm = useCallback(() => {
     setForm(EMPTY_FORM);
@@ -471,41 +499,109 @@ export function AgentWebhookConfig({ projectId }: AgentWebhookConfigProps) {
 
       {/* Create/Edit form */}
       {isFormOpen && (
-        <div className="flex flex-col gap-2 rounded-md border p-2.5">
-          <p className="font-medium text-xs">
-            {editingId ? "Edit Webhook" : "New Webhook"}
-          </p>
-          <Input
-            placeholder="Webhook name"
-            value={form.name}
-            onChange={(e) => updateField("name", e.target.value)}
-            disabled={isSaving}
-            maxLength={100}
-            className="text-sm"
-          />
-          <select
-            value={form.eventType}
-            onChange={(e) => updateField("eventType", e.target.value)}
-            disabled={isSaving}
-            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {EVENT_TYPES.map((evt) => (
-              <option key={evt.value} value={evt.value}>
-                {evt.label}
-              </option>
-            ))}
-          </select>
-          <textarea
-            placeholder={`Instruction template — use {event} for the payload and {eventType} for the event type.\n\nExample: "A pull request was merged. Review the changes: {event}"`}
-            value={form.instructionTemplate}
-            onChange={(e) => updateField("instructionTemplate", e.target.value)}
-            disabled={isSaving}
-            maxLength={4000}
-            rows={4}
-            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
-          />
-          {formError && <p className="text-destructive text-xs">{formError}</p>}
-          <div className="flex justify-end gap-2">
+        <div className="rounded-lg border">
+          <div className="border-b bg-muted/30 px-4 py-3">
+            <h4 className="font-medium text-sm">
+              {editingId ? "Edit Webhook" : "New Webhook"}
+            </h4>
+            <p className="text-muted-foreground text-xs">
+              Configure a webhook to trigger agent sessions from external
+              events.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-4 p-4">
+            {/* Name Field */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="webhook-name"
+                className="font-medium text-muted-foreground text-xs"
+              >
+                Name
+              </label>
+              <Input
+                id="webhook-name"
+                placeholder="e.g., PR Review Trigger"
+                value={form.name}
+                onChange={(e) => updateField("name", e.target.value)}
+                disabled={isSaving}
+                maxLength={100}
+                className="text-sm"
+              />
+            </div>
+
+            {/* Event Type Field */}
+            <div className="flex flex-col gap-1.5">
+              <Select
+                collection={eventTypeCollection}
+                value={[form.eventType]}
+                onValueChange={(details) => {
+                  const newEventType = details.value[0];
+                  if (newEventType) updateField("eventType", newEventType);
+                }}
+                disabled={isSaving}
+              >
+                <SelectLabel>Event Type</SelectLabel>
+                <SelectControl>
+                  <SelectTrigger className="w-full justify-between border border-input bg-transparent">
+                    <SelectValueText placeholder="Select event type" />
+                    <SelectIndicator>
+                      <ChevronDownIcon />
+                    </SelectIndicator>
+                  </SelectTrigger>
+                </SelectControl>
+
+                <SelectPositioner>
+                  <SelectContent className="w-(--reference-width)">
+                    <SelectItemGroup>
+                      {eventTypeCollection.items.map((item) => (
+                        <SelectItem key={item.value} item={item}>
+                          <SelectItemText>{item.label}</SelectItemText>
+                          <SelectItemIndicator />
+                        </SelectItem>
+                      ))}
+                    </SelectItemGroup>
+                  </SelectContent>
+                </SelectPositioner>
+              </Select>
+            </div>
+
+            {/* Instruction Template Field */}
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="webhook-instruction"
+                className="font-medium text-muted-foreground text-xs"
+              >
+                Instruction Template
+              </label>
+              <Textarea
+                id="webhook-instruction"
+                placeholder="e.g., A pull request was merged. Review the changes: {event}"
+                value={form.instructionTemplate}
+                onChange={(e) =>
+                  updateField("instructionTemplate", e.target.value)
+                }
+                disabled={isSaving}
+                maxLength={4000}
+                rows={4}
+                className="text-sm"
+              />
+              <p className="text-muted-foreground text-xs">
+                Use <code className="rounded bg-muted px-1">{"{event}"}</code>{" "}
+                for the payload and{" "}
+                <code className="rounded bg-muted px-1">{"{eventType}"}</code>{" "}
+                for the event type.
+              </p>
+            </div>
+
+            {/* Error Display */}
+            {formError && (
+              <p className="text-destructive text-xs">{formError}</p>
+            )}
+          </div>
+
+          {/* Form Actions */}
+          <div className="flex items-center justify-end gap-2 border-t bg-muted/30 px-4 py-3">
             <Button
               variant="ghost"
               size="sm"
