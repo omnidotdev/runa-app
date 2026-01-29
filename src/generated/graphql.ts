@@ -722,8 +722,6 @@ export type AgentConfigVarianceSampleAggregates = {
 
 export type AgentPersona = Node & {
   __typename?: 'AgentPersona';
-  /** Reads and enables pagination through a set of `AgentSchedule`. */
-  agentSchedulesByPersonaId: AgentScheduleConnection;
   createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   enabled: Scalars['Boolean']['output'];
@@ -735,18 +733,6 @@ export type AgentPersona = Node & {
   rowId: Scalars['UUID']['output'];
   systemPrompt: Scalars['String']['output'];
   updatedAt: Scalars['Datetime']['output'];
-};
-
-
-export type AgentPersonaAgentSchedulesByPersonaIdArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<AgentScheduleCondition>;
-  filter?: InputMaybe<AgentScheduleFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AgentScheduleOrderBy>>;
 };
 
 export type AgentPersonaAggregates = {
@@ -838,10 +824,6 @@ export type AgentPersonaEdge = {
 
 /** A filter to be used against `AgentPersona` object types. All fields are combined with a logical ‘and.’ */
 export type AgentPersonaFilter = {
-  /** Filter by the object’s `agentSchedulesByPersonaId` relation. */
-  agentSchedulesByPersonaId?: InputMaybe<AgentPersonaToManyAgentScheduleFilter>;
-  /** Some related `agentSchedulesByPersonaId` exist. */
-  agentSchedulesByPersonaIdExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<AgentPersonaFilter>>;
   /** Filter by the object’s `createdAt` field. */
@@ -959,32 +941,6 @@ export type AgentPersonaInput = {
 
 /** Methods to use when ordering `AgentPersona`. */
 export enum AgentPersonaOrderBy {
-  AgentSchedulesByPersonaIdCountAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_COUNT_ASC',
-  AgentSchedulesByPersonaIdCountDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_COUNT_DESC',
-  AgentSchedulesByPersonaIdDistinctCountCreatedAtAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_CREATED_AT_ASC',
-  AgentSchedulesByPersonaIdDistinctCountCreatedAtDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_CREATED_AT_DESC',
-  AgentSchedulesByPersonaIdDistinctCountCronExpressionAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_CRON_EXPRESSION_ASC',
-  AgentSchedulesByPersonaIdDistinctCountCronExpressionDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_CRON_EXPRESSION_DESC',
-  AgentSchedulesByPersonaIdDistinctCountEnabledAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_ENABLED_ASC',
-  AgentSchedulesByPersonaIdDistinctCountEnabledDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_ENABLED_DESC',
-  AgentSchedulesByPersonaIdDistinctCountInstructionAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_INSTRUCTION_ASC',
-  AgentSchedulesByPersonaIdDistinctCountInstructionDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_INSTRUCTION_DESC',
-  AgentSchedulesByPersonaIdDistinctCountLastRunAtAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_LAST_RUN_AT_ASC',
-  AgentSchedulesByPersonaIdDistinctCountLastRunAtDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_LAST_RUN_AT_DESC',
-  AgentSchedulesByPersonaIdDistinctCountNameAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_NAME_ASC',
-  AgentSchedulesByPersonaIdDistinctCountNameDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_NAME_DESC',
-  AgentSchedulesByPersonaIdDistinctCountNextRunAtAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_NEXT_RUN_AT_ASC',
-  AgentSchedulesByPersonaIdDistinctCountNextRunAtDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_NEXT_RUN_AT_DESC',
-  AgentSchedulesByPersonaIdDistinctCountOrganizationIdAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
-  AgentSchedulesByPersonaIdDistinctCountOrganizationIdDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
-  AgentSchedulesByPersonaIdDistinctCountPersonaIdAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_PERSONA_ID_ASC',
-  AgentSchedulesByPersonaIdDistinctCountPersonaIdDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_PERSONA_ID_DESC',
-  AgentSchedulesByPersonaIdDistinctCountProjectIdAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_PROJECT_ID_ASC',
-  AgentSchedulesByPersonaIdDistinctCountProjectIdDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_PROJECT_ID_DESC',
-  AgentSchedulesByPersonaIdDistinctCountRowIdAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_ROW_ID_ASC',
-  AgentSchedulesByPersonaIdDistinctCountRowIdDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_ROW_ID_DESC',
-  AgentSchedulesByPersonaIdDistinctCountUpdatedAtAsc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_UPDATED_AT_ASC',
-  AgentSchedulesByPersonaIdDistinctCountUpdatedAtDesc = 'AGENT_SCHEDULES_BY_PERSONA_ID_DISTINCT_COUNT_UPDATED_AT_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
@@ -1018,366 +974,6 @@ export type AgentPersonaPatch = {
   organizationId?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   systemPrompt?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-/** A filter to be used against many `AgentSchedule` object types. All fields are combined with a logical ‘and.’ */
-export type AgentPersonaToManyAgentScheduleFilter = {
-  /** Aggregates across related `AgentSchedule` match the filter criteria. */
-  aggregates?: InputMaybe<AgentScheduleAggregatesFilter>;
-  /** Every related `AgentSchedule` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: InputMaybe<AgentScheduleFilter>;
-  /** No related `AgentSchedule` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: InputMaybe<AgentScheduleFilter>;
-  /** Some related `AgentSchedule` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: InputMaybe<AgentScheduleFilter>;
-};
-
-export type AgentSchedule = Node & {
-  __typename?: 'AgentSchedule';
-  createdAt: Scalars['Datetime']['output'];
-  cronExpression: Scalars['String']['output'];
-  enabled: Scalars['Boolean']['output'];
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
-  instruction: Scalars['String']['output'];
-  lastRunAt?: Maybe<Scalars['Datetime']['output']>;
-  name: Scalars['String']['output'];
-  nextRunAt?: Maybe<Scalars['Datetime']['output']>;
-  organizationId: Scalars['String']['output'];
-  /** Reads a single `AgentPersona` that is related to this `AgentSchedule`. */
-  persona?: Maybe<AgentPersona>;
-  personaId?: Maybe<Scalars['UUID']['output']>;
-  /** Reads a single `Project` that is related to this `AgentSchedule`. */
-  project?: Maybe<Project>;
-  projectId: Scalars['UUID']['output'];
-  rowId: Scalars['UUID']['output'];
-  updatedAt: Scalars['Datetime']['output'];
-};
-
-export type AgentScheduleAggregates = {
-  __typename?: 'AgentScheduleAggregates';
-  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  distinctCount?: Maybe<AgentScheduleDistinctCountAggregates>;
-  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-};
-
-/** A filter to be used against aggregates of `AgentSchedule` object types. */
-export type AgentScheduleAggregatesFilter = {
-  /** Distinct count aggregate over matching `AgentSchedule` objects. */
-  distinctCount?: InputMaybe<AgentScheduleDistinctCountAggregateFilter>;
-  /** A filter that must pass for the relevant `AgentSchedule` object to be included within the aggregate. */
-  filter?: InputMaybe<AgentScheduleFilter>;
-};
-
-/**
- * A condition to be used against `AgentSchedule` object types. All fields are
- * tested for equality and combined with a logical ‘and.’
- */
-export type AgentScheduleCondition = {
-  /** Checks for equality with the object’s `createdAt` field. */
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `cronExpression` field. */
-  cronExpression?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `enabled` field. */
-  enabled?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Checks for equality with the object’s `instruction` field. */
-  instruction?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `lastRunAt` field. */
-  lastRunAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `name` field. */
-  name?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `nextRunAt` field. */
-  nextRunAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `organizationId` field. */
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `personaId` field. */
-  personaId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `projectId` field. */
-  projectId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-/** A connection to a list of `AgentSchedule` values. */
-export type AgentScheduleConnection = {
-  __typename?: 'AgentScheduleConnection';
-  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  aggregates?: Maybe<AgentScheduleAggregates>;
-  /** A list of edges which contains the `AgentSchedule` and cursor to aid in pagination. */
-  edges: Array<AgentScheduleEdge>;
-  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  groupedAggregates?: Maybe<Array<AgentScheduleAggregates>>;
-  /** A list of `AgentSchedule` objects. */
-  nodes: Array<AgentSchedule>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `AgentSchedule` you could get from the connection. */
-  totalCount: Scalars['Int']['output'];
-};
-
-
-/** A connection to a list of `AgentSchedule` values. */
-export type AgentScheduleConnectionGroupedAggregatesArgs = {
-  groupBy: Array<AgentScheduleGroupBy>;
-  having?: InputMaybe<AgentScheduleHavingInput>;
-};
-
-export type AgentScheduleDistinctCountAggregateFilter = {
-  createdAt?: InputMaybe<BigIntFilter>;
-  cronExpression?: InputMaybe<BigIntFilter>;
-  enabled?: InputMaybe<BigIntFilter>;
-  instruction?: InputMaybe<BigIntFilter>;
-  lastRunAt?: InputMaybe<BigIntFilter>;
-  name?: InputMaybe<BigIntFilter>;
-  nextRunAt?: InputMaybe<BigIntFilter>;
-  organizationId?: InputMaybe<BigIntFilter>;
-  personaId?: InputMaybe<BigIntFilter>;
-  projectId?: InputMaybe<BigIntFilter>;
-  rowId?: InputMaybe<BigIntFilter>;
-  updatedAt?: InputMaybe<BigIntFilter>;
-};
-
-export type AgentScheduleDistinctCountAggregates = {
-  __typename?: 'AgentScheduleDistinctCountAggregates';
-  /** Distinct count of createdAt across the matching connection */
-  createdAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of cronExpression across the matching connection */
-  cronExpression?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of enabled across the matching connection */
-  enabled?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of instruction across the matching connection */
-  instruction?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of lastRunAt across the matching connection */
-  lastRunAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of name across the matching connection */
-  name?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of nextRunAt across the matching connection */
-  nextRunAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of organizationId across the matching connection */
-  organizationId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of personaId across the matching connection */
-  personaId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of projectId across the matching connection */
-  projectId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of rowId across the matching connection */
-  rowId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of updatedAt across the matching connection */
-  updatedAt?: Maybe<Scalars['BigInt']['output']>;
-};
-
-/** A `AgentSchedule` edge in the connection. */
-export type AgentScheduleEdge = {
-  __typename?: 'AgentScheduleEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  /** The `AgentSchedule` at the end of the edge. */
-  node: AgentSchedule;
-};
-
-/** A filter to be used against `AgentSchedule` object types. All fields are combined with a logical ‘and.’ */
-export type AgentScheduleFilter = {
-  /** Checks for all expressions in this list. */
-  and?: InputMaybe<Array<AgentScheduleFilter>>;
-  /** Filter by the object’s `createdAt` field. */
-  createdAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `cronExpression` field. */
-  cronExpression?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `enabled` field. */
-  enabled?: InputMaybe<BooleanFilter>;
-  /** Filter by the object’s `instruction` field. */
-  instruction?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `lastRunAt` field. */
-  lastRunAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `name` field. */
-  name?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `nextRunAt` field. */
-  nextRunAt?: InputMaybe<DatetimeFilter>;
-  /** Negates the expression. */
-  not?: InputMaybe<AgentScheduleFilter>;
-  /** Checks for any expressions in this list. */
-  or?: InputMaybe<Array<AgentScheduleFilter>>;
-  /** Filter by the object’s `organizationId` field. */
-  organizationId?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `persona` relation. */
-  persona?: InputMaybe<AgentPersonaFilter>;
-  /** A related `persona` exists. */
-  personaExists?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Filter by the object’s `personaId` field. */
-  personaId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `project` relation. */
-  project?: InputMaybe<ProjectFilter>;
-  /** Filter by the object’s `projectId` field. */
-  projectId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<DatetimeFilter>;
-};
-
-/** Grouping methods for `AgentSchedule` for usage during aggregation. */
-export enum AgentScheduleGroupBy {
-  CreatedAt = 'CREATED_AT',
-  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
-  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
-  CronExpression = 'CRON_EXPRESSION',
-  Enabled = 'ENABLED',
-  Instruction = 'INSTRUCTION',
-  LastRunAt = 'LAST_RUN_AT',
-  LastRunAtTruncatedToDay = 'LAST_RUN_AT_TRUNCATED_TO_DAY',
-  LastRunAtTruncatedToHour = 'LAST_RUN_AT_TRUNCATED_TO_HOUR',
-  Name = 'NAME',
-  NextRunAt = 'NEXT_RUN_AT',
-  NextRunAtTruncatedToDay = 'NEXT_RUN_AT_TRUNCATED_TO_DAY',
-  NextRunAtTruncatedToHour = 'NEXT_RUN_AT_TRUNCATED_TO_HOUR',
-  OrganizationId = 'ORGANIZATION_ID',
-  PersonaId = 'PERSONA_ID',
-  ProjectId = 'PROJECT_ID',
-  UpdatedAt = 'UPDATED_AT',
-  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
-}
-
-export type AgentScheduleHavingAverageInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastRunAt?: InputMaybe<HavingDatetimeFilter>;
-  nextRunAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentScheduleHavingDistinctCountInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastRunAt?: InputMaybe<HavingDatetimeFilter>;
-  nextRunAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** Conditions for `AgentSchedule` aggregates. */
-export type AgentScheduleHavingInput = {
-  AND?: InputMaybe<Array<AgentScheduleHavingInput>>;
-  OR?: InputMaybe<Array<AgentScheduleHavingInput>>;
-  average?: InputMaybe<AgentScheduleHavingAverageInput>;
-  distinctCount?: InputMaybe<AgentScheduleHavingDistinctCountInput>;
-  max?: InputMaybe<AgentScheduleHavingMaxInput>;
-  min?: InputMaybe<AgentScheduleHavingMinInput>;
-  stddevPopulation?: InputMaybe<AgentScheduleHavingStddevPopulationInput>;
-  stddevSample?: InputMaybe<AgentScheduleHavingStddevSampleInput>;
-  sum?: InputMaybe<AgentScheduleHavingSumInput>;
-  variancePopulation?: InputMaybe<AgentScheduleHavingVariancePopulationInput>;
-  varianceSample?: InputMaybe<AgentScheduleHavingVarianceSampleInput>;
-};
-
-export type AgentScheduleHavingMaxInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastRunAt?: InputMaybe<HavingDatetimeFilter>;
-  nextRunAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentScheduleHavingMinInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastRunAt?: InputMaybe<HavingDatetimeFilter>;
-  nextRunAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentScheduleHavingStddevPopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastRunAt?: InputMaybe<HavingDatetimeFilter>;
-  nextRunAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentScheduleHavingStddevSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastRunAt?: InputMaybe<HavingDatetimeFilter>;
-  nextRunAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentScheduleHavingSumInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastRunAt?: InputMaybe<HavingDatetimeFilter>;
-  nextRunAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentScheduleHavingVariancePopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastRunAt?: InputMaybe<HavingDatetimeFilter>;
-  nextRunAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentScheduleHavingVarianceSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastRunAt?: InputMaybe<HavingDatetimeFilter>;
-  nextRunAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** An input for mutations affecting `AgentSchedule` */
-export type AgentScheduleInput = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  cronExpression: Scalars['String']['input'];
-  enabled?: InputMaybe<Scalars['Boolean']['input']>;
-  instruction: Scalars['String']['input'];
-  lastRunAt?: InputMaybe<Scalars['Datetime']['input']>;
-  name: Scalars['String']['input'];
-  nextRunAt?: InputMaybe<Scalars['Datetime']['input']>;
-  organizationId: Scalars['String']['input'];
-  personaId?: InputMaybe<Scalars['UUID']['input']>;
-  projectId: Scalars['UUID']['input'];
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-/** Methods to use when ordering `AgentSchedule`. */
-export enum AgentScheduleOrderBy {
-  CreatedAtAsc = 'CREATED_AT_ASC',
-  CreatedAtDesc = 'CREATED_AT_DESC',
-  CronExpressionAsc = 'CRON_EXPRESSION_ASC',
-  CronExpressionDesc = 'CRON_EXPRESSION_DESC',
-  EnabledAsc = 'ENABLED_ASC',
-  EnabledDesc = 'ENABLED_DESC',
-  InstructionAsc = 'INSTRUCTION_ASC',
-  InstructionDesc = 'INSTRUCTION_DESC',
-  LastRunAtAsc = 'LAST_RUN_AT_ASC',
-  LastRunAtDesc = 'LAST_RUN_AT_DESC',
-  NameAsc = 'NAME_ASC',
-  NameDesc = 'NAME_DESC',
-  Natural = 'NATURAL',
-  NextRunAtAsc = 'NEXT_RUN_AT_ASC',
-  NextRunAtDesc = 'NEXT_RUN_AT_DESC',
-  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
-  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
-  PersonaIdAsc = 'PERSONA_ID_ASC',
-  PersonaIdDesc = 'PERSONA_ID_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  ProjectIdAsc = 'PROJECT_ID_ASC',
-  ProjectIdDesc = 'PROJECT_ID_DESC',
-  RowIdAsc = 'ROW_ID_ASC',
-  RowIdDesc = 'ROW_ID_DESC',
-  UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC'
-}
-
-/** Represents an update to a `AgentSchedule`. Fields that are set will be updated. */
-export type AgentSchedulePatch = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  cronExpression?: InputMaybe<Scalars['String']['input']>;
-  enabled?: InputMaybe<Scalars['Boolean']['input']>;
-  instruction?: InputMaybe<Scalars['String']['input']>;
-  lastRunAt?: InputMaybe<Scalars['Datetime']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  nextRunAt?: InputMaybe<Scalars['Datetime']['input']>;
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-  personaId?: InputMaybe<Scalars['UUID']['input']>;
-  projectId?: InputMaybe<Scalars['UUID']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
@@ -1856,324 +1452,6 @@ export type AgentSessionVarianceSampleAggregates = {
   __typename?: 'AgentSessionVarianceSampleAggregates';
   /** Sample variance of toolCallCount across the matching connection */
   toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type AgentWebhook = Node & {
-  __typename?: 'AgentWebhook';
-  createdAt: Scalars['Datetime']['output'];
-  enabled: Scalars['Boolean']['output'];
-  eventType: Scalars['String']['output'];
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
-  instructionTemplate: Scalars['String']['output'];
-  lastTriggeredAt?: Maybe<Scalars['Datetime']['output']>;
-  name: Scalars['String']['output'];
-  organizationId: Scalars['String']['output'];
-  /** Reads a single `Project` that is related to this `AgentWebhook`. */
-  project?: Maybe<Project>;
-  projectId: Scalars['UUID']['output'];
-  rowId: Scalars['UUID']['output'];
-  signingSecret: Scalars['String']['output'];
-  updatedAt: Scalars['Datetime']['output'];
-};
-
-export type AgentWebhookAggregates = {
-  __typename?: 'AgentWebhookAggregates';
-  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  distinctCount?: Maybe<AgentWebhookDistinctCountAggregates>;
-  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-};
-
-/** A filter to be used against aggregates of `AgentWebhook` object types. */
-export type AgentWebhookAggregatesFilter = {
-  /** Distinct count aggregate over matching `AgentWebhook` objects. */
-  distinctCount?: InputMaybe<AgentWebhookDistinctCountAggregateFilter>;
-  /** A filter that must pass for the relevant `AgentWebhook` object to be included within the aggregate. */
-  filter?: InputMaybe<AgentWebhookFilter>;
-};
-
-/**
- * A condition to be used against `AgentWebhook` object types. All fields are
- * tested for equality and combined with a logical ‘and.’
- */
-export type AgentWebhookCondition = {
-  /** Checks for equality with the object’s `createdAt` field. */
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `enabled` field. */
-  enabled?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Checks for equality with the object’s `eventType` field. */
-  eventType?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `instructionTemplate` field. */
-  instructionTemplate?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `lastTriggeredAt` field. */
-  lastTriggeredAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `name` field. */
-  name?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `organizationId` field. */
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `projectId` field. */
-  projectId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `signingSecret` field. */
-  signingSecret?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-/** A connection to a list of `AgentWebhook` values. */
-export type AgentWebhookConnection = {
-  __typename?: 'AgentWebhookConnection';
-  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  aggregates?: Maybe<AgentWebhookAggregates>;
-  /** A list of edges which contains the `AgentWebhook` and cursor to aid in pagination. */
-  edges: Array<AgentWebhookEdge>;
-  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  groupedAggregates?: Maybe<Array<AgentWebhookAggregates>>;
-  /** A list of `AgentWebhook` objects. */
-  nodes: Array<AgentWebhook>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `AgentWebhook` you could get from the connection. */
-  totalCount: Scalars['Int']['output'];
-};
-
-
-/** A connection to a list of `AgentWebhook` values. */
-export type AgentWebhookConnectionGroupedAggregatesArgs = {
-  groupBy: Array<AgentWebhookGroupBy>;
-  having?: InputMaybe<AgentWebhookHavingInput>;
-};
-
-export type AgentWebhookDistinctCountAggregateFilter = {
-  createdAt?: InputMaybe<BigIntFilter>;
-  enabled?: InputMaybe<BigIntFilter>;
-  eventType?: InputMaybe<BigIntFilter>;
-  instructionTemplate?: InputMaybe<BigIntFilter>;
-  lastTriggeredAt?: InputMaybe<BigIntFilter>;
-  name?: InputMaybe<BigIntFilter>;
-  organizationId?: InputMaybe<BigIntFilter>;
-  projectId?: InputMaybe<BigIntFilter>;
-  rowId?: InputMaybe<BigIntFilter>;
-  signingSecret?: InputMaybe<BigIntFilter>;
-  updatedAt?: InputMaybe<BigIntFilter>;
-};
-
-export type AgentWebhookDistinctCountAggregates = {
-  __typename?: 'AgentWebhookDistinctCountAggregates';
-  /** Distinct count of createdAt across the matching connection */
-  createdAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of enabled across the matching connection */
-  enabled?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of eventType across the matching connection */
-  eventType?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of instructionTemplate across the matching connection */
-  instructionTemplate?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of lastTriggeredAt across the matching connection */
-  lastTriggeredAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of name across the matching connection */
-  name?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of organizationId across the matching connection */
-  organizationId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of projectId across the matching connection */
-  projectId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of rowId across the matching connection */
-  rowId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of signingSecret across the matching connection */
-  signingSecret?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of updatedAt across the matching connection */
-  updatedAt?: Maybe<Scalars['BigInt']['output']>;
-};
-
-/** A `AgentWebhook` edge in the connection. */
-export type AgentWebhookEdge = {
-  __typename?: 'AgentWebhookEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  /** The `AgentWebhook` at the end of the edge. */
-  node: AgentWebhook;
-};
-
-/** A filter to be used against `AgentWebhook` object types. All fields are combined with a logical ‘and.’ */
-export type AgentWebhookFilter = {
-  /** Checks for all expressions in this list. */
-  and?: InputMaybe<Array<AgentWebhookFilter>>;
-  /** Filter by the object’s `createdAt` field. */
-  createdAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `enabled` field. */
-  enabled?: InputMaybe<BooleanFilter>;
-  /** Filter by the object’s `eventType` field. */
-  eventType?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `instructionTemplate` field. */
-  instructionTemplate?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `lastTriggeredAt` field. */
-  lastTriggeredAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `name` field. */
-  name?: InputMaybe<StringFilter>;
-  /** Negates the expression. */
-  not?: InputMaybe<AgentWebhookFilter>;
-  /** Checks for any expressions in this list. */
-  or?: InputMaybe<Array<AgentWebhookFilter>>;
-  /** Filter by the object’s `organizationId` field. */
-  organizationId?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `project` relation. */
-  project?: InputMaybe<ProjectFilter>;
-  /** Filter by the object’s `projectId` field. */
-  projectId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `signingSecret` field. */
-  signingSecret?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<DatetimeFilter>;
-};
-
-/** Grouping methods for `AgentWebhook` for usage during aggregation. */
-export enum AgentWebhookGroupBy {
-  CreatedAt = 'CREATED_AT',
-  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
-  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
-  Enabled = 'ENABLED',
-  EventType = 'EVENT_TYPE',
-  InstructionTemplate = 'INSTRUCTION_TEMPLATE',
-  LastTriggeredAt = 'LAST_TRIGGERED_AT',
-  LastTriggeredAtTruncatedToDay = 'LAST_TRIGGERED_AT_TRUNCATED_TO_DAY',
-  LastTriggeredAtTruncatedToHour = 'LAST_TRIGGERED_AT_TRUNCATED_TO_HOUR',
-  Name = 'NAME',
-  OrganizationId = 'ORGANIZATION_ID',
-  ProjectId = 'PROJECT_ID',
-  SigningSecret = 'SIGNING_SECRET',
-  UpdatedAt = 'UPDATED_AT',
-  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
-}
-
-export type AgentWebhookHavingAverageInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastTriggeredAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentWebhookHavingDistinctCountInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastTriggeredAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** Conditions for `AgentWebhook` aggregates. */
-export type AgentWebhookHavingInput = {
-  AND?: InputMaybe<Array<AgentWebhookHavingInput>>;
-  OR?: InputMaybe<Array<AgentWebhookHavingInput>>;
-  average?: InputMaybe<AgentWebhookHavingAverageInput>;
-  distinctCount?: InputMaybe<AgentWebhookHavingDistinctCountInput>;
-  max?: InputMaybe<AgentWebhookHavingMaxInput>;
-  min?: InputMaybe<AgentWebhookHavingMinInput>;
-  stddevPopulation?: InputMaybe<AgentWebhookHavingStddevPopulationInput>;
-  stddevSample?: InputMaybe<AgentWebhookHavingStddevSampleInput>;
-  sum?: InputMaybe<AgentWebhookHavingSumInput>;
-  variancePopulation?: InputMaybe<AgentWebhookHavingVariancePopulationInput>;
-  varianceSample?: InputMaybe<AgentWebhookHavingVarianceSampleInput>;
-};
-
-export type AgentWebhookHavingMaxInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastTriggeredAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentWebhookHavingMinInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastTriggeredAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentWebhookHavingStddevPopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastTriggeredAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentWebhookHavingStddevSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastTriggeredAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentWebhookHavingSumInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastTriggeredAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentWebhookHavingVariancePopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastTriggeredAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type AgentWebhookHavingVarianceSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  lastTriggeredAt?: InputMaybe<HavingDatetimeFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** An input for mutations affecting `AgentWebhook` */
-export type AgentWebhookInput = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  enabled?: InputMaybe<Scalars['Boolean']['input']>;
-  eventType: Scalars['String']['input'];
-  instructionTemplate: Scalars['String']['input'];
-  lastTriggeredAt?: InputMaybe<Scalars['Datetime']['input']>;
-  name: Scalars['String']['input'];
-  organizationId: Scalars['String']['input'];
-  projectId: Scalars['UUID']['input'];
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  signingSecret: Scalars['String']['input'];
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-/** Methods to use when ordering `AgentWebhook`. */
-export enum AgentWebhookOrderBy {
-  CreatedAtAsc = 'CREATED_AT_ASC',
-  CreatedAtDesc = 'CREATED_AT_DESC',
-  EnabledAsc = 'ENABLED_ASC',
-  EnabledDesc = 'ENABLED_DESC',
-  EventTypeAsc = 'EVENT_TYPE_ASC',
-  EventTypeDesc = 'EVENT_TYPE_DESC',
-  InstructionTemplateAsc = 'INSTRUCTION_TEMPLATE_ASC',
-  InstructionTemplateDesc = 'INSTRUCTION_TEMPLATE_DESC',
-  LastTriggeredAtAsc = 'LAST_TRIGGERED_AT_ASC',
-  LastTriggeredAtDesc = 'LAST_TRIGGERED_AT_DESC',
-  NameAsc = 'NAME_ASC',
-  NameDesc = 'NAME_DESC',
-  Natural = 'NATURAL',
-  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
-  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  ProjectIdAsc = 'PROJECT_ID_ASC',
-  ProjectIdDesc = 'PROJECT_ID_DESC',
-  RowIdAsc = 'ROW_ID_ASC',
-  RowIdDesc = 'ROW_ID_DESC',
-  SigningSecretAsc = 'SIGNING_SECRET_ASC',
-  SigningSecretDesc = 'SIGNING_SECRET_DESC',
-  UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC'
-}
-
-/** Represents an update to a `AgentWebhook`. Fields that are set will be updated. */
-export type AgentWebhookPatch = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  enabled?: InputMaybe<Scalars['Boolean']['input']>;
-  eventType?: InputMaybe<Scalars['String']['input']>;
-  instructionTemplate?: InputMaybe<Scalars['String']['input']>;
-  lastTriggeredAt?: InputMaybe<Scalars['Datetime']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  organizationId?: InputMaybe<Scalars['String']['input']>;
-  projectId?: InputMaybe<Scalars['UUID']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  signingSecret?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
 export type Assignee = Node & {
@@ -3059,39 +2337,6 @@ export type CreateAgentPersonaPayloadAgentPersonaEdgeArgs = {
   orderBy?: Array<AgentPersonaOrderBy>;
 };
 
-/** All input for the create `AgentSchedule` mutation. */
-export type CreateAgentScheduleInput = {
-  /** The `AgentSchedule` to be created by this mutation. */
-  agentSchedule: AgentScheduleInput;
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** The output of our create `AgentSchedule` mutation. */
-export type CreateAgentSchedulePayload = {
-  __typename?: 'CreateAgentSchedulePayload';
-  /** The `AgentSchedule` that was created by this mutation. */
-  agentSchedule?: Maybe<AgentSchedule>;
-  /** An edge for our `AgentSchedule`. May be used by Relay 1. */
-  agentScheduleEdge?: Maybe<AgentScheduleEdge>;
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our create `AgentSchedule` mutation. */
-export type CreateAgentSchedulePayloadAgentScheduleEdgeArgs = {
-  orderBy?: Array<AgentScheduleOrderBy>;
-};
-
 /** All input for the create `AgentSession` mutation. */
 export type CreateAgentSessionInput = {
   /** The `AgentSession` to be created by this mutation. */
@@ -3123,39 +2368,6 @@ export type CreateAgentSessionPayload = {
 /** The output of our create `AgentSession` mutation. */
 export type CreateAgentSessionPayloadAgentSessionEdgeArgs = {
   orderBy?: Array<AgentSessionOrderBy>;
-};
-
-/** All input for the create `AgentWebhook` mutation. */
-export type CreateAgentWebhookInput = {
-  /** The `AgentWebhook` to be created by this mutation. */
-  agentWebhook: AgentWebhookInput;
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** The output of our create `AgentWebhook` mutation. */
-export type CreateAgentWebhookPayload = {
-  __typename?: 'CreateAgentWebhookPayload';
-  /** The `AgentWebhook` that was created by this mutation. */
-  agentWebhook?: Maybe<AgentWebhook>;
-  /** An edge for our `AgentWebhook`. May be used by Relay 1. */
-  agentWebhookEdge?: Maybe<AgentWebhookEdge>;
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our create `AgentWebhook` mutation. */
-export type CreateAgentWebhookPayloadAgentWebhookEdgeArgs = {
-  orderBy?: Array<AgentWebhookOrderBy>;
 };
 
 /** All input for the create `Assignee` mutation. */
@@ -3811,50 +3023,6 @@ export type DeleteAgentPersonaPayloadAgentPersonaEdgeArgs = {
   orderBy?: Array<AgentPersonaOrderBy>;
 };
 
-/** All input for the `deleteAgentScheduleById` mutation. */
-export type DeleteAgentScheduleByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `AgentSchedule` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteAgentSchedule` mutation. */
-export type DeleteAgentScheduleInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our delete `AgentSchedule` mutation. */
-export type DeleteAgentSchedulePayload = {
-  __typename?: 'DeleteAgentSchedulePayload';
-  /** The `AgentSchedule` that was deleted by this mutation. */
-  agentSchedule?: Maybe<AgentSchedule>;
-  /** An edge for our `AgentSchedule`. May be used by Relay 1. */
-  agentScheduleEdge?: Maybe<AgentScheduleEdge>;
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedAgentScheduleId?: Maybe<Scalars['ID']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our delete `AgentSchedule` mutation. */
-export type DeleteAgentSchedulePayloadAgentScheduleEdgeArgs = {
-  orderBy?: Array<AgentScheduleOrderBy>;
-};
-
 /** All input for the `deleteAgentSessionById` mutation. */
 export type DeleteAgentSessionByIdInput = {
   /**
@@ -3897,50 +3065,6 @@ export type DeleteAgentSessionPayload = {
 /** The output of our delete `AgentSession` mutation. */
 export type DeleteAgentSessionPayloadAgentSessionEdgeArgs = {
   orderBy?: Array<AgentSessionOrderBy>;
-};
-
-/** All input for the `deleteAgentWebhookById` mutation. */
-export type DeleteAgentWebhookByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `AgentWebhook` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteAgentWebhook` mutation. */
-export type DeleteAgentWebhookInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our delete `AgentWebhook` mutation. */
-export type DeleteAgentWebhookPayload = {
-  __typename?: 'DeleteAgentWebhookPayload';
-  /** The `AgentWebhook` that was deleted by this mutation. */
-  agentWebhook?: Maybe<AgentWebhook>;
-  /** An edge for our `AgentWebhook`. May be used by Relay 1. */
-  agentWebhookEdge?: Maybe<AgentWebhookEdge>;
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedAgentWebhookId?: Maybe<Scalars['ID']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our delete `AgentWebhook` mutation. */
-export type DeleteAgentWebhookPayloadAgentWebhookEdgeArgs = {
-  orderBy?: Array<AgentWebhookOrderBy>;
 };
 
 /** All input for the `deleteAssigneeById` mutation. */
@@ -5241,12 +4365,8 @@ export type Mutation = {
   createAgentConfig?: Maybe<CreateAgentConfigPayload>;
   /** Creates a single `AgentPersona`. */
   createAgentPersona?: Maybe<CreateAgentPersonaPayload>;
-  /** Creates a single `AgentSchedule`. */
-  createAgentSchedule?: Maybe<CreateAgentSchedulePayload>;
   /** Creates a single `AgentSession`. */
   createAgentSession?: Maybe<CreateAgentSessionPayload>;
-  /** Creates a single `AgentWebhook`. */
-  createAgentWebhook?: Maybe<CreateAgentWebhookPayload>;
   /** Creates a single `Assignee`. */
   createAssignee?: Maybe<CreateAssigneePayload>;
   /** Creates a single `Column`. */
@@ -5289,18 +4409,10 @@ export type Mutation = {
   deleteAgentPersona?: Maybe<DeleteAgentPersonaPayload>;
   /** Deletes a single `AgentPersona` using its globally unique id. */
   deleteAgentPersonaById?: Maybe<DeleteAgentPersonaPayload>;
-  /** Deletes a single `AgentSchedule` using a unique key. */
-  deleteAgentSchedule?: Maybe<DeleteAgentSchedulePayload>;
-  /** Deletes a single `AgentSchedule` using its globally unique id. */
-  deleteAgentScheduleById?: Maybe<DeleteAgentSchedulePayload>;
   /** Deletes a single `AgentSession` using a unique key. */
   deleteAgentSession?: Maybe<DeleteAgentSessionPayload>;
   /** Deletes a single `AgentSession` using its globally unique id. */
   deleteAgentSessionById?: Maybe<DeleteAgentSessionPayload>;
-  /** Deletes a single `AgentWebhook` using a unique key. */
-  deleteAgentWebhook?: Maybe<DeleteAgentWebhookPayload>;
-  /** Deletes a single `AgentWebhook` using its globally unique id. */
-  deleteAgentWebhookById?: Maybe<DeleteAgentWebhookPayload>;
   /** Deletes a single `Assignee` using a unique key. */
   deleteAssignee?: Maybe<DeleteAssigneePayload>;
   /** Deletes a single `Assignee` using its globally unique id. */
@@ -5373,18 +4485,10 @@ export type Mutation = {
   updateAgentPersona?: Maybe<UpdateAgentPersonaPayload>;
   /** Updates a single `AgentPersona` using its globally unique id and a patch. */
   updateAgentPersonaById?: Maybe<UpdateAgentPersonaPayload>;
-  /** Updates a single `AgentSchedule` using a unique key and a patch. */
-  updateAgentSchedule?: Maybe<UpdateAgentSchedulePayload>;
-  /** Updates a single `AgentSchedule` using its globally unique id and a patch. */
-  updateAgentScheduleById?: Maybe<UpdateAgentSchedulePayload>;
   /** Updates a single `AgentSession` using a unique key and a patch. */
   updateAgentSession?: Maybe<UpdateAgentSessionPayload>;
   /** Updates a single `AgentSession` using its globally unique id and a patch. */
   updateAgentSessionById?: Maybe<UpdateAgentSessionPayload>;
-  /** Updates a single `AgentWebhook` using a unique key and a patch. */
-  updateAgentWebhook?: Maybe<UpdateAgentWebhookPayload>;
-  /** Updates a single `AgentWebhook` using its globally unique id and a patch. */
-  updateAgentWebhookById?: Maybe<UpdateAgentWebhookPayload>;
   /** Updates a single `Assignee` using a unique key and a patch. */
   updateAssignee?: Maybe<UpdateAssigneePayload>;
   /** Updates a single `Assignee` using its globally unique id and a patch. */
@@ -5467,20 +4571,8 @@ export type MutationCreateAgentPersonaArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateAgentScheduleArgs = {
-  input: CreateAgentScheduleInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateAgentSessionArgs = {
   input: CreateAgentSessionInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateAgentWebhookArgs = {
-  input: CreateAgentWebhookInput;
 };
 
 
@@ -5611,18 +4703,6 @@ export type MutationDeleteAgentPersonaByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteAgentScheduleArgs = {
-  input: DeleteAgentScheduleInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteAgentScheduleByIdArgs = {
-  input: DeleteAgentScheduleByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteAgentSessionArgs = {
   input: DeleteAgentSessionInput;
 };
@@ -5631,18 +4711,6 @@ export type MutationDeleteAgentSessionArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteAgentSessionByIdArgs = {
   input: DeleteAgentSessionByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteAgentWebhookArgs = {
-  input: DeleteAgentWebhookInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteAgentWebhookByIdArgs = {
-  input: DeleteAgentWebhookByIdInput;
 };
 
 
@@ -5863,18 +4931,6 @@ export type MutationUpdateAgentPersonaByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateAgentScheduleArgs = {
-  input: UpdateAgentScheduleInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateAgentScheduleByIdArgs = {
-  input: UpdateAgentScheduleByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateAgentSessionArgs = {
   input: UpdateAgentSessionInput;
 };
@@ -5883,18 +4939,6 @@ export type MutationUpdateAgentSessionArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateAgentSessionByIdArgs = {
   input: UpdateAgentSessionByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateAgentWebhookArgs = {
-  input: UpdateAgentWebhookInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateAgentWebhookByIdArgs = {
-  input: UpdateAgentWebhookByIdInput;
 };
 
 
@@ -6442,12 +5486,8 @@ export type Project = Node & {
   __typename?: 'Project';
   /** Reads and enables pagination through a set of `AgentActivity`. */
   agentActivities: AgentActivityConnection;
-  /** Reads and enables pagination through a set of `AgentSchedule`. */
-  agentSchedules: AgentScheduleConnection;
   /** Reads and enables pagination through a set of `AgentSession`. */
   agentSessions: AgentSessionConnection;
-  /** Reads and enables pagination through a set of `AgentWebhook`. */
-  agentWebhooks: AgentWebhookConnection;
   columnIndex: Scalars['Int']['output'];
   /** Reads and enables pagination through a set of `Column`. */
   columns: ColumnConnection;
@@ -6489,18 +5529,6 @@ export type ProjectAgentActivitiesArgs = {
 };
 
 
-export type ProjectAgentSchedulesArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<AgentScheduleCondition>;
-  filter?: InputMaybe<AgentScheduleFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AgentScheduleOrderBy>>;
-};
-
-
 export type ProjectAgentSessionsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -6510,18 +5538,6 @@ export type ProjectAgentSessionsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<AgentSessionOrderBy>>;
-};
-
-
-export type ProjectAgentWebhooksArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<AgentWebhookCondition>;
-  filter?: InputMaybe<AgentWebhookFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AgentWebhookOrderBy>>;
 };
 
 
@@ -7148,18 +6164,10 @@ export type ProjectFilter = {
   agentActivities?: InputMaybe<ProjectToManyAgentActivityFilter>;
   /** Some related `agentActivities` exist. */
   agentActivitiesExist?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Filter by the object’s `agentSchedules` relation. */
-  agentSchedules?: InputMaybe<ProjectToManyAgentScheduleFilter>;
-  /** Some related `agentSchedules` exist. */
-  agentSchedulesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `agentSessions` relation. */
   agentSessions?: InputMaybe<ProjectToManyAgentSessionFilter>;
   /** Some related `agentSessions` exist. */
   agentSessionsExist?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Filter by the object’s `agentWebhooks` relation. */
-  agentWebhooks?: InputMaybe<ProjectToManyAgentWebhookFilter>;
-  /** Some related `agentWebhooks` exist. */
-  agentWebhooksExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<ProjectFilter>>;
   /** Filter by the object’s `columnIndex` field. */
@@ -7658,32 +6666,6 @@ export enum ProjectOrderBy {
   AgentActivitiesDistinctCountToolOutputDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_OUTPUT_DESC',
   AgentActivitiesDistinctCountUserIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_USER_ID_ASC',
   AgentActivitiesDistinctCountUserIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_USER_ID_DESC',
-  AgentSchedulesCountAsc = 'AGENT_SCHEDULES_COUNT_ASC',
-  AgentSchedulesCountDesc = 'AGENT_SCHEDULES_COUNT_DESC',
-  AgentSchedulesDistinctCountCreatedAtAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_CREATED_AT_ASC',
-  AgentSchedulesDistinctCountCreatedAtDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_CREATED_AT_DESC',
-  AgentSchedulesDistinctCountCronExpressionAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_CRON_EXPRESSION_ASC',
-  AgentSchedulesDistinctCountCronExpressionDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_CRON_EXPRESSION_DESC',
-  AgentSchedulesDistinctCountEnabledAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_ENABLED_ASC',
-  AgentSchedulesDistinctCountEnabledDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_ENABLED_DESC',
-  AgentSchedulesDistinctCountInstructionAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_INSTRUCTION_ASC',
-  AgentSchedulesDistinctCountInstructionDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_INSTRUCTION_DESC',
-  AgentSchedulesDistinctCountLastRunAtAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_LAST_RUN_AT_ASC',
-  AgentSchedulesDistinctCountLastRunAtDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_LAST_RUN_AT_DESC',
-  AgentSchedulesDistinctCountNameAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_NAME_ASC',
-  AgentSchedulesDistinctCountNameDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_NAME_DESC',
-  AgentSchedulesDistinctCountNextRunAtAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_NEXT_RUN_AT_ASC',
-  AgentSchedulesDistinctCountNextRunAtDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_NEXT_RUN_AT_DESC',
-  AgentSchedulesDistinctCountOrganizationIdAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
-  AgentSchedulesDistinctCountOrganizationIdDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
-  AgentSchedulesDistinctCountPersonaIdAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_PERSONA_ID_ASC',
-  AgentSchedulesDistinctCountPersonaIdDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_PERSONA_ID_DESC',
-  AgentSchedulesDistinctCountProjectIdAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_PROJECT_ID_ASC',
-  AgentSchedulesDistinctCountProjectIdDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_PROJECT_ID_DESC',
-  AgentSchedulesDistinctCountRowIdAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_ROW_ID_ASC',
-  AgentSchedulesDistinctCountRowIdDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_ROW_ID_DESC',
-  AgentSchedulesDistinctCountUpdatedAtAsc = 'AGENT_SCHEDULES_DISTINCT_COUNT_UPDATED_AT_ASC',
-  AgentSchedulesDistinctCountUpdatedAtDesc = 'AGENT_SCHEDULES_DISTINCT_COUNT_UPDATED_AT_DESC',
   AgentSessionsAverageToolCallCountAsc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_ASC',
   AgentSessionsAverageToolCallCountDesc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_DESC',
   AgentSessionsCountAsc = 'AGENT_SESSIONS_COUNT_ASC',
@@ -7722,30 +6704,6 @@ export enum ProjectOrderBy {
   AgentSessionsVariancePopulationToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_DESC',
   AgentSessionsVarianceSampleToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_ASC',
   AgentSessionsVarianceSampleToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_DESC',
-  AgentWebhooksCountAsc = 'AGENT_WEBHOOKS_COUNT_ASC',
-  AgentWebhooksCountDesc = 'AGENT_WEBHOOKS_COUNT_DESC',
-  AgentWebhooksDistinctCountCreatedAtAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_CREATED_AT_ASC',
-  AgentWebhooksDistinctCountCreatedAtDesc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_CREATED_AT_DESC',
-  AgentWebhooksDistinctCountEnabledAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_ENABLED_ASC',
-  AgentWebhooksDistinctCountEnabledDesc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_ENABLED_DESC',
-  AgentWebhooksDistinctCountEventTypeAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_EVENT_TYPE_ASC',
-  AgentWebhooksDistinctCountEventTypeDesc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_EVENT_TYPE_DESC',
-  AgentWebhooksDistinctCountInstructionTemplateAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_INSTRUCTION_TEMPLATE_ASC',
-  AgentWebhooksDistinctCountInstructionTemplateDesc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_INSTRUCTION_TEMPLATE_DESC',
-  AgentWebhooksDistinctCountLastTriggeredAtAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_LAST_TRIGGERED_AT_ASC',
-  AgentWebhooksDistinctCountLastTriggeredAtDesc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_LAST_TRIGGERED_AT_DESC',
-  AgentWebhooksDistinctCountNameAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_NAME_ASC',
-  AgentWebhooksDistinctCountNameDesc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_NAME_DESC',
-  AgentWebhooksDistinctCountOrganizationIdAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
-  AgentWebhooksDistinctCountOrganizationIdDesc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
-  AgentWebhooksDistinctCountProjectIdAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_PROJECT_ID_ASC',
-  AgentWebhooksDistinctCountProjectIdDesc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_PROJECT_ID_DESC',
-  AgentWebhooksDistinctCountRowIdAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_ROW_ID_ASC',
-  AgentWebhooksDistinctCountRowIdDesc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_ROW_ID_DESC',
-  AgentWebhooksDistinctCountSigningSecretAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_SIGNING_SECRET_ASC',
-  AgentWebhooksDistinctCountSigningSecretDesc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_SIGNING_SECRET_DESC',
-  AgentWebhooksDistinctCountUpdatedAtAsc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_UPDATED_AT_ASC',
-  AgentWebhooksDistinctCountUpdatedAtDesc = 'AGENT_WEBHOOKS_DISTINCT_COUNT_UPDATED_AT_DESC',
   ColumnsAverageIndexAsc = 'COLUMNS_AVERAGE_INDEX_ASC',
   ColumnsAverageIndexDesc = 'COLUMNS_AVERAGE_INDEX_DESC',
   ColumnsCountAsc = 'COLUMNS_COUNT_ASC',
@@ -8173,18 +7131,6 @@ export type ProjectToManyAgentActivityFilter = {
   some?: InputMaybe<AgentActivityFilter>;
 };
 
-/** A filter to be used against many `AgentSchedule` object types. All fields are combined with a logical ‘and.’ */
-export type ProjectToManyAgentScheduleFilter = {
-  /** Aggregates across related `AgentSchedule` match the filter criteria. */
-  aggregates?: InputMaybe<AgentScheduleAggregatesFilter>;
-  /** Every related `AgentSchedule` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: InputMaybe<AgentScheduleFilter>;
-  /** No related `AgentSchedule` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: InputMaybe<AgentScheduleFilter>;
-  /** Some related `AgentSchedule` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: InputMaybe<AgentScheduleFilter>;
-};
-
 /** A filter to be used against many `AgentSession` object types. All fields are combined with a logical ‘and.’ */
 export type ProjectToManyAgentSessionFilter = {
   /** Aggregates across related `AgentSession` match the filter criteria. */
@@ -8195,18 +7141,6 @@ export type ProjectToManyAgentSessionFilter = {
   none?: InputMaybe<AgentSessionFilter>;
   /** Some related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<AgentSessionFilter>;
-};
-
-/** A filter to be used against many `AgentWebhook` object types. All fields are combined with a logical ‘and.’ */
-export type ProjectToManyAgentWebhookFilter = {
-  /** Aggregates across related `AgentWebhook` match the filter criteria. */
-  aggregates?: InputMaybe<AgentWebhookAggregatesFilter>;
-  /** Every related `AgentWebhook` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: InputMaybe<AgentWebhookFilter>;
-  /** No related `AgentWebhook` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: InputMaybe<AgentWebhookFilter>;
-  /** Some related `AgentWebhook` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: InputMaybe<AgentWebhookFilter>;
 };
 
 /** A filter to be used against many `Column` object types. All fields are combined with a logical ‘and.’ */
@@ -8318,24 +7252,12 @@ export type Query = Node & {
   agentPersonaById?: Maybe<AgentPersona>;
   /** Reads and enables pagination through a set of `AgentPersona`. */
   agentPersonas?: Maybe<AgentPersonaConnection>;
-  /** Get a single `AgentSchedule`. */
-  agentSchedule?: Maybe<AgentSchedule>;
-  /** Reads a single `AgentSchedule` using its globally unique `ID`. */
-  agentScheduleById?: Maybe<AgentSchedule>;
-  /** Reads and enables pagination through a set of `AgentSchedule`. */
-  agentSchedules?: Maybe<AgentScheduleConnection>;
   /** Get a single `AgentSession`. */
   agentSession?: Maybe<AgentSession>;
   /** Reads a single `AgentSession` using its globally unique `ID`. */
   agentSessionById?: Maybe<AgentSession>;
   /** Reads and enables pagination through a set of `AgentSession`. */
   agentSessions?: Maybe<AgentSessionConnection>;
-  /** Get a single `AgentWebhook`. */
-  agentWebhook?: Maybe<AgentWebhook>;
-  /** Reads a single `AgentWebhook` using its globally unique `ID`. */
-  agentWebhookById?: Maybe<AgentWebhook>;
-  /** Reads and enables pagination through a set of `AgentWebhook`. */
-  agentWebhooks?: Maybe<AgentWebhookConnection>;
   /** Get a single `Assignee`. */
   assignee?: Maybe<Assignee>;
   /** Reads a single `Assignee` using its globally unique `ID`. */
@@ -8543,31 +7465,6 @@ export type QueryAgentPersonasArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryAgentScheduleArgs = {
-  rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryAgentScheduleByIdArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryAgentSchedulesArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<AgentScheduleCondition>;
-  filter?: InputMaybe<AgentScheduleFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AgentScheduleOrderBy>>;
-};
-
-
-/** The root query type which gives access points into the data universe. */
 export type QueryAgentSessionArgs = {
   rowId: Scalars['UUID']['input'];
 };
@@ -8589,31 +7486,6 @@ export type QueryAgentSessionsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<AgentSessionOrderBy>>;
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryAgentWebhookArgs = {
-  rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryAgentWebhookByIdArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryAgentWebhooksArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<AgentWebhookCondition>;
-  filter?: InputMaybe<AgentWebhookFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AgentWebhookOrderBy>>;
 };
 
 
@@ -10450,53 +9322,6 @@ export type UpdateAgentPersonaPayloadAgentPersonaEdgeArgs = {
   orderBy?: Array<AgentPersonaOrderBy>;
 };
 
-/** All input for the `updateAgentScheduleById` mutation. */
-export type UpdateAgentScheduleByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `AgentSchedule` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `AgentSchedule` being updated. */
-  patch: AgentSchedulePatch;
-};
-
-/** All input for the `updateAgentSchedule` mutation. */
-export type UpdateAgentScheduleInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `AgentSchedule` being updated. */
-  patch: AgentSchedulePatch;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our update `AgentSchedule` mutation. */
-export type UpdateAgentSchedulePayload = {
-  __typename?: 'UpdateAgentSchedulePayload';
-  /** The `AgentSchedule` that was updated by this mutation. */
-  agentSchedule?: Maybe<AgentSchedule>;
-  /** An edge for our `AgentSchedule`. May be used by Relay 1. */
-  agentScheduleEdge?: Maybe<AgentScheduleEdge>;
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our update `AgentSchedule` mutation. */
-export type UpdateAgentSchedulePayloadAgentScheduleEdgeArgs = {
-  orderBy?: Array<AgentScheduleOrderBy>;
-};
-
 /** All input for the `updateAgentSessionById` mutation. */
 export type UpdateAgentSessionByIdInput = {
   /**
@@ -10542,53 +9367,6 @@ export type UpdateAgentSessionPayload = {
 /** The output of our update `AgentSession` mutation. */
 export type UpdateAgentSessionPayloadAgentSessionEdgeArgs = {
   orderBy?: Array<AgentSessionOrderBy>;
-};
-
-/** All input for the `updateAgentWebhookById` mutation. */
-export type UpdateAgentWebhookByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `AgentWebhook` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `AgentWebhook` being updated. */
-  patch: AgentWebhookPatch;
-};
-
-/** All input for the `updateAgentWebhook` mutation. */
-export type UpdateAgentWebhookInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `AgentWebhook` being updated. */
-  patch: AgentWebhookPatch;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our update `AgentWebhook` mutation. */
-export type UpdateAgentWebhookPayload = {
-  __typename?: 'UpdateAgentWebhookPayload';
-  /** The `AgentWebhook` that was updated by this mutation. */
-  agentWebhook?: Maybe<AgentWebhook>;
-  /** An edge for our `AgentWebhook`. May be used by Relay 1. */
-  agentWebhookEdge?: Maybe<AgentWebhookEdge>;
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our update `AgentWebhook` mutation. */
-export type UpdateAgentWebhookPayloadAgentWebhookEdgeArgs = {
-  orderBy?: Array<AgentWebhookOrderBy>;
 };
 
 /** All input for the `updateAssigneeById` mutation. */

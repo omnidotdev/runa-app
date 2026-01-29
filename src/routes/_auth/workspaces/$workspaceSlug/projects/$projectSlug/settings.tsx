@@ -1,12 +1,6 @@
-import {
-  createFileRoute,
-  notFound,
-  useLoaderData,
-} from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { all } from "better-all";
 
-import { AgentScheduleConfig } from "@/components/agent/AgentScheduleConfig";
-import { AgentWebhookConfig } from "@/components/agent/AgentWebhookConfig";
 import { NotFound } from "@/components/layout";
 import {
   ProjectColumnsForm,
@@ -17,8 +11,6 @@ import {
   ProjectSettingsHeader,
 } from "@/components/projects";
 import { BASE_URL } from "@/lib/config/env.config";
-import agentSchedulesOptions from "@/lib/options/agentSchedules.options";
-import agentWebhooksOptions from "@/lib/options/agentWebhooks.options";
 import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
@@ -30,7 +22,7 @@ export const Route = createFileRoute(
 )({
   loader: async ({
     params: { projectSlug },
-    context: { queryClient, organizationId, session },
+    context: { queryClient, organizationId },
   }) => {
     if (!organizationId) throw notFound();
 
@@ -61,24 +53,6 @@ export const Route = createFileRoute(
           columnsOptions({ projectId: project.rowId }),
         );
       },
-      async agentWebhooks() {
-        const project = await this.$.project;
-        return queryClient.ensureQueryData(
-          agentWebhooksOptions({
-            projectId: project.rowId,
-            accessToken: session?.accessToken!,
-          }),
-        );
-      },
-      async agentSchedules() {
-        const project = await this.$.project;
-        return queryClient.ensureQueryData(
-          agentSchedulesOptions({
-            projectId: project.rowId,
-            accessToken: session?.accessToken!,
-          }),
-        );
-      },
     });
 
     return {
@@ -103,10 +77,6 @@ export const Route = createFileRoute(
 });
 
 function ProjectSettingsPage() {
-  const { projectId, organizationId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-  });
-
   return (
     <div className="no-scrollbar relative h-full overflow-auto px-4 py-8 lg:p-12">
       <ProjectSettingsHeader />
@@ -117,13 +87,6 @@ function ProjectSettingsPage() {
         <ProjectLabelsForm />
 
         <ProjectColumnsForm />
-
-        <AgentWebhookConfig projectId={projectId} />
-
-        <AgentScheduleConfig
-          projectId={projectId}
-          organizationId={organizationId}
-        />
 
         <ProjectDataSection />
 
