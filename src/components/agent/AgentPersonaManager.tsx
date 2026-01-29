@@ -142,6 +142,7 @@ interface PersonaListItemProps {
   onEdit: (persona: AgentPersona) => void;
   onDelete: (personaId: string) => void;
   isDeleting: boolean;
+  deletingId: string | undefined;
 }
 
 const PersonaListItem = memo(function PersonaListItem({
@@ -149,6 +150,7 @@ const PersonaListItem = memo(function PersonaListItem({
   onEdit,
   onDelete,
   isDeleting,
+  deletingId,
 }: PersonaListItemProps) {
   const handleEdit = useCallback(() => onEdit(persona), [onEdit, persona]);
   const handleDelete = useCallback(
@@ -156,8 +158,10 @@ const PersonaListItem = memo(function PersonaListItem({
     [onDelete, persona.id],
   );
 
+  const isDeletingThis = isDeleting && deletingId === persona.id;
+
   return (
-    <div className="flex items-center justify-between gap-2 rounded-md border bg-muted/30 p-2">
+    <div className="flex items-center justify-between gap-2 rounded-md bg-muted/50 px-3 py-2">
       <div className="flex items-center gap-2 overflow-hidden">
         <span className="shrink-0 text-sm">
           {persona.icon ?? (
@@ -188,10 +192,10 @@ const PersonaListItem = memo(function PersonaListItem({
           size="icon"
           className="size-6"
           onClick={handleDelete}
-          disabled={isDeleting}
+          disabled={isDeletingThis}
           aria-label={`Delete ${persona.name}`}
         >
-          {isDeleting ? (
+          {isDeletingThis ? (
             <Loader2Icon className="size-3 animate-spin" />
           ) : (
             <TrashIcon className="size-3 text-destructive" />
@@ -274,7 +278,11 @@ export function AgentPersonaManager({
     },
   });
 
-  const { mutate: removePersona, isPending: isDeleting } = useMutation({
+  const {
+    mutate: removePersona,
+    isPending: isDeleting,
+    variables: deletingId,
+  } = useMutation({
     mutationFn: (personaId: string) =>
       deletePersona(personaId, organizationId, accessToken),
     onSuccess: () => {
@@ -304,25 +312,23 @@ export function AgentPersonaManager({
   );
 
   return (
-    <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
+    <div className="flex flex-col gap-2 border-t p-4">
       <div className="flex items-center justify-between">
-        <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          Personas
-        </h3>
+        <h3 className="font-medium text-sm">Personas</h3>
         {!isFormOpen && (
           <Button
             variant="ghost"
             size="sm"
             onClick={openCreate}
-            className="h-6 gap-1 px-2 text-xs"
+            className="h-7 gap-1 px-2 text-xs"
           >
             <PlusIcon className="size-3" />
             New
           </Button>
         )}
       </div>
-      <p className="text-muted-foreground text-xs">
-        Create specialized agent personas with custom system prompts.
+      <p className="text-pretty text-muted-foreground text-xs">
+        Custom system prompts for specialized agent behavior.
       </p>
 
       {/* Persona list */}
@@ -335,6 +341,7 @@ export function AgentPersonaManager({
               onEdit={openEdit}
               onDelete={removePersona}
               isDeleting={isDeleting}
+              deletingId={deletingId}
             />
           ))}
         </div>
@@ -342,26 +349,28 @@ export function AgentPersonaManager({
 
       {/* Create/Edit form */}
       {isFormOpen && (
-        <div className="flex flex-col gap-2 rounded-md border p-2.5">
+        <div className="flex flex-col gap-2 rounded-md bg-muted/30 p-3">
           <p className="font-medium text-xs">
             {editingId ? "Edit Persona" : "New Persona"}
           </p>
-          <Input
-            placeholder="Name"
-            value={form.name}
-            onChange={(e) => updateField("name", e.target.value)}
-            disabled={isSaving}
-            maxLength={100}
-            className="text-sm"
-          />
-          <Input
-            placeholder="Description (optional)"
-            value={form.description}
-            onChange={(e) => updateField("description", e.target.value)}
-            disabled={isSaving}
-            maxLength={500}
-            className="text-sm"
-          />
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Input
+              placeholder="Name"
+              value={form.name}
+              onChange={(e) => updateField("name", e.target.value)}
+              disabled={isSaving}
+              maxLength={100}
+              className="text-sm"
+            />
+            <Input
+              placeholder="Description (optional)"
+              value={form.description}
+              onChange={(e) => updateField("description", e.target.value)}
+              disabled={isSaving}
+              maxLength={500}
+              className="text-sm"
+            />
+          </div>
           <Input
             placeholder="Icon emoji (optional)"
             value={form.icon}
@@ -376,8 +385,8 @@ export function AgentPersonaManager({
             onChange={(e) => updateField("systemPrompt", e.target.value)}
             disabled={isSaving}
             maxLength={4000}
-            rows={4}
-            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+            rows={3}
+            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
           />
           {formError && <p className="text-destructive text-xs">{formError}</p>}
           <div className="flex justify-end gap-2">

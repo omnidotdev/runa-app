@@ -293,259 +293,246 @@ export function AgentConfigSection() {
 
   return (
     <div className="flex flex-col">
-      <div className="mb-1 flex h-10 items-center gap-2">
+      {/* Section Header */}
+      <div className="mb-3 flex items-center gap-2">
         <SettingsIcon className="size-4 text-muted-foreground" />
-        <h2 className="font-semibold text-lg">Agent Settings</h2>
+        <h2 className="text-balance font-semibold text-lg">Agent Settings</h2>
         {isSaving && (
           <Loader2Icon className="size-3.5 animate-spin text-muted-foreground" />
         )}
       </div>
 
-      {/* Model Selection */}
-      <div className="flex flex-col gap-2 rounded-lg border p-3">
-        <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          Model Selection
-        </h3>
-        <p className="text-muted-foreground text-xs">
-          Choose the AI model for your agent. Powered by{" "}
-          <a
-            href="https://openrouter.ai/models"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary underline"
-          >
-            OpenRouter
-          </a>
-          .
-        </p>
-        <Select
-          collection={modelCollection}
-          value={[localConfig.model]}
-          onValueChange={(details) => {
-            const newModel = details.value[0];
-            if (newModel) handleModelChange(newModel);
-          }}
-          disabled={isSaving}
-        >
-          <SelectControl>
-            <SelectTrigger
-              aria-label="AI model"
-              className="w-full justify-between border border-input bg-transparent"
+      {/* Unified Card Container */}
+      <div className="rounded-lg border">
+        {/* Usage Stats - Compact Header Row */}
+        <AgentTokenUsage organizationId={organizationId!} />
+
+        {/* Model & Iterations Row */}
+        <div className="flex flex-col gap-1.5 border-t p-4">
+          <span className="font-medium text-sm">Model</span>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
+            {/* Model Selection */}
+            <Select
+              collection={modelCollection}
+              value={[localConfig.model]}
+              onValueChange={(details) => {
+                const newModel = details.value[0];
+                if (newModel) handleModelChange(newModel);
+              }}
+              disabled={isSaving}
+              className="flex-1"
             >
-              <SelectValueText placeholder="Select a model" />
-              <SelectIndicator>
-                <ChevronDownIcon />
-              </SelectIndicator>
-            </SelectTrigger>
-          </SelectControl>
+              <SelectControl>
+                <SelectTrigger
+                  aria-label="AI model"
+                  className="w-full justify-between border border-input bg-transparent"
+                >
+                  <SelectValueText placeholder="Select a model" />
+                  <SelectIndicator>
+                    <ChevronDownIcon />
+                  </SelectIndicator>
+                </SelectTrigger>
+              </SelectControl>
 
-          <SelectPositioner>
-            <SelectContent className="w-(--reference-width)">
-              <SelectItemGroup>
-                {modelCollection.items.map((item) => (
-                  <SelectItem key={item.value} item={item}>
-                    <SelectItemText>{item.label}</SelectItemText>
-                    <SelectItemIndicator />
-                  </SelectItem>
-                ))}
-              </SelectItemGroup>
-            </SelectContent>
-          </SelectPositioner>
-        </Select>
-      </div>
+              <SelectPositioner>
+                <SelectContent className="w-(--reference-width)">
+                  <SelectItemGroup>
+                    {modelCollection.items.map((item) => (
+                      <SelectItem key={item.value} item={item}>
+                        <SelectItemText>{item.label}</SelectItemText>
+                        <SelectItemIndicator />
+                      </SelectItem>
+                    ))}
+                  </SelectItemGroup>
+                </SelectContent>
+              </SelectPositioner>
+            </Select>
 
-      {/* Approval Controls */}
-      <div className="mt-4 flex flex-col gap-1 rounded-lg border p-3">
-        <h3 className="mb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          Approval Controls
-        </h3>
-
-        <ToggleSwitch
-          checked={localConfig.requireApprovalForDestructive}
-          onChange={(v) => handleToggle("requireApprovalForDestructive", v)}
-          disabled={isSaving}
-          label="Require approval for destructive actions"
-          description="Delete, batch move, batch update, and batch delete will pause for user approval."
-        />
-
-        <ToggleSwitch
-          checked={localConfig.requireApprovalForCreate}
-          onChange={(v) => handleToggle("requireApprovalForCreate", v)}
-          disabled={isSaving}
-          label="Require approval for task creation"
-          description="Creating new tasks will pause for user approval."
-        />
-      </div>
-
-      {/* Agent Behavior */}
-      <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
-        <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          Agent Behavior
-        </h3>
-
-        <div className="flex items-center justify-between gap-4 p-2">
-          <div className="flex flex-col gap-0.5">
-            <span className="font-medium text-sm">
-              Max iterations per request
-            </span>
-            <span className="text-muted-foreground text-xs">
-              Maximum tool call loops before the agent stops (1-20).
-            </span>
+            {/* Max Iterations - Inline with select */}
+            <div className="flex shrink-0 items-center gap-2">
+              <span className="whitespace-nowrap text-muted-foreground text-sm">
+                Max iterations
+              </span>
+              <Input
+                type="number"
+                min={1}
+                max={20}
+                value={localConfig.maxIterationsPerRequest}
+                onChange={(e) =>
+                  handleMaxIterationsChange(
+                    Number.parseInt(e.target.value, 10) || 10,
+                  )
+                }
+                onBlur={handleMaxIterationsSave}
+                disabled={isSaving}
+                aria-label="Max iterations"
+                className="w-16 text-center"
+              />
+            </div>
           </div>
-          <Input
-            type="number"
-            min={1}
-            max={20}
-            value={localConfig.maxIterationsPerRequest}
-            onChange={(e) =>
-              handleMaxIterationsChange(
-                Number.parseInt(e.target.value, 10) || 10,
-              )
-            }
-            onBlur={handleMaxIterationsSave}
+          <p className="text-pretty text-muted-foreground text-xs">
+            Powered by{" "}
+            <a
+              href="https://openrouter.ai/models"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline"
+            >
+              OpenRouter
+            </a>
+          </p>
+        </div>
+
+        {/* Approval Controls */}
+        <div className="flex flex-col gap-1 border-t p-4">
+          <h3 className="mb-1 font-medium text-sm">Approval Controls</h3>
+          <ToggleSwitch
+            checked={localConfig.requireApprovalForDestructive}
+            onChange={(v) => handleToggle("requireApprovalForDestructive", v)}
             disabled={isSaving}
-            className="w-20"
+            label="Destructive actions"
+            description="Delete, batch move, and batch operations require approval"
+          />
+          <ToggleSwitch
+            checked={localConfig.requireApprovalForCreate}
+            onChange={(v) => handleToggle("requireApprovalForCreate", v)}
+            disabled={isSaving}
+            label="Task creation"
+            description="New tasks require approval before creation"
           />
         </div>
-      </div>
 
-      {/* Custom Instructions */}
-      <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
-        <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          Custom Instructions
-        </h3>
-        <p className="text-muted-foreground text-xs">
-          Additional instructions appended to the agent&apos;s system prompt.
-        </p>
-        <textarea
-          value={customInstructionsDraft}
-          onChange={(e) => setCustomInstructionsDraft(e.target.value)}
-          disabled={isSaving}
-          placeholder="e.g., Always use high priority for security-related tasks..."
-          maxLength={2000}
-          rows={3}
-          className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
-        />
-        <div className="flex justify-end">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleSaveInstructions}
-            disabled={
-              isSaving ||
-              (customInstructionsDraft.trim() || null) ===
-                (localConfig.customInstructions ?? null)
-            }
-          >
-            Save Instructions
-          </Button>
-        </div>
-      </div>
-
-      {/* BYOK API Key */}
-      <div className="mt-4 flex flex-col gap-2 rounded-lg border p-3">
-        <h3 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          OpenRouter API Key (BYOK)
-        </h3>
-        <p className="text-muted-foreground text-xs">
-          Provide your own OpenRouter API key. When set, the agent uses your key
-          instead of the shared platform key.{" "}
-          <a
-            href="https://openrouter.ai/keys"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary underline"
-          >
-            Get your key
-          </a>
-        </p>
-
-        {localConfig.byokKey && !isKeyFormOpen && (
-          <div className="flex items-center justify-between gap-3 rounded-md border bg-muted/30 p-2.5">
-            <div className="flex items-center gap-2">
-              <KeyIcon className="size-3.5 text-muted-foreground" />
-              <span className="font-mono text-sm">
-                {localConfig.byokKey.maskedKey}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setIsKeyFormOpen(true)}
-                disabled={isDeletingKey}
-              >
-                Replace
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleDeleteKey}
-                disabled={isDeletingKey}
-                aria-label="Remove API key"
-              >
-                {isDeletingKey ? (
-                  <Loader2Icon className="size-3.5 animate-spin" />
-                ) : (
-                  <TrashIcon className="size-3.5 text-destructive" />
-                )}
-              </Button>
-            </div>
+        {/* Custom Instructions */}
+        <div className="flex flex-col gap-2 border-t p-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-medium text-sm">Custom Instructions</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleSaveInstructions}
+              disabled={
+                isSaving ||
+                (customInstructionsDraft.trim() || null) ===
+                  (localConfig.customInstructions ?? null)
+              }
+              className="h-7 px-2 text-xs"
+            >
+              Save
+            </Button>
           </div>
-        )}
+          <textarea
+            value={customInstructionsDraft}
+            onChange={(e) => setCustomInstructionsDraft(e.target.value)}
+            disabled={isSaving}
+            placeholder="e.g., Always use high priority for security-related tasks..."
+            maxLength={2000}
+            rows={2}
+            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+          />
+        </div>
 
-        {(isKeyFormOpen || !localConfig.byokKey) && (
-          <div className="flex flex-col gap-2">
-            <Input
-              type="password"
-              value={keyValue}
-              onChange={(e) => {
-                setKeyValue(e.target.value);
-                setKeyError(null);
-              }}
-              placeholder="sk-or-..."
-              disabled={isSavingKey}
-              autoComplete="off"
-            />
-            {keyError && <p className="text-destructive text-xs">{keyError}</p>}
-            <div className="flex justify-end gap-2">
-              {isKeyFormOpen && localConfig.byokKey && (
+        {/* BYOK API Key */}
+        <div className="flex flex-col gap-2 border-t p-4">
+          <h3 className="font-medium text-sm">OpenRouter API Key</h3>
+          <p className="text-pretty text-muted-foreground text-xs">
+            Use your own key instead of the shared platform key.{" "}
+            <a
+              href="https://openrouter.ai/keys"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline"
+            >
+              Get a key
+            </a>
+          </p>
+
+          {localConfig.byokKey && !isKeyFormOpen ? (
+            <div className="flex items-center justify-between gap-3 rounded-md bg-muted/50 px-3 py-2">
+              <div className="flex items-center gap-2">
+                <KeyIcon className="size-3.5 text-muted-foreground" />
+                <span className="font-mono text-sm">
+                  {localConfig.byokKey.maskedKey}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => {
-                    setIsKeyFormOpen(false);
-                    setKeyValue("");
+                  onClick={() => setIsKeyFormOpen(true)}
+                  disabled={isDeletingKey}
+                  className="h-7 px-2 text-xs"
+                >
+                  Replace
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleDeleteKey}
+                  disabled={isDeletingKey}
+                  aria-label="Remove API key"
+                  className="size-7"
+                >
+                  {isDeletingKey ? (
+                    <Loader2Icon className="size-3.5 animate-spin" />
+                  ) : (
+                    <TrashIcon className="size-3.5 text-destructive" />
+                  )}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <Input
+                  type="password"
+                  value={keyValue}
+                  onChange={(e) => {
+                    setKeyValue(e.target.value);
                     setKeyError(null);
                   }}
+                  placeholder="sk-or-..."
                   disabled={isSavingKey}
+                  autoComplete="off"
+                  className="flex-1"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSaveKey}
+                  disabled={isSavingKey || keyValue.length < 10}
+                  className="shrink-0"
                 >
-                  Cancel
+                  {isSavingKey ? (
+                    <Loader2Icon className="size-3.5 animate-spin" />
+                  ) : (
+                    "Save"
+                  )}
                 </Button>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSaveKey}
-                disabled={isSavingKey || keyValue.length < 10}
-              >
-                {isSavingKey ? (
-                  <>
-                    <Loader2Icon className="mr-1 size-3 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  "Save Key"
+                {isKeyFormOpen && localConfig.byokKey && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setIsKeyFormOpen(false);
+                      setKeyValue("");
+                      setKeyError(null);
+                    }}
+                    disabled={isSavingKey}
+                  >
+                    Cancel
+                  </Button>
                 )}
-              </Button>
+              </div>
+              {keyError && (
+                <p className="text-destructive text-xs">{keyError}</p>
+              )}
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* Personas */}
+        <AgentPersonaManager organizationId={organizationId!} />
       </div>
-
-      <AgentPersonaManager organizationId={organizationId!} />
-
-      <AgentTokenUsage organizationId={organizationId!} />
     </div>
   );
 }
