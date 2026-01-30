@@ -6,7 +6,7 @@
  */
 
 import { useChat } from "@ai-sdk/react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import {
   DefaultChatTransport,
   convertToModelMessages,
@@ -22,8 +22,10 @@ import {
   useProjectsSidebarQuery,
 } from "@/generated/graphql";
 import { API_BASE_URL } from "@/lib/config/env.config";
+import toolRegistryOptions, {
+  isProjectCreationTool,
+} from "@/lib/options/toolRegistry.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
-import { PROJECT_CREATION_TOOL_NAMES } from "./constants";
 import { useAccessToken } from "./hooks/useAccessToken";
 
 import type { UIMessage } from "ai";
@@ -73,6 +75,9 @@ export function useProjectCreationChat({
   const onSessionIdRef = useRef(onSessionId);
   const onProjectCreatedRef = useRef(onProjectCreated);
   const lastCreationCountRef = useRef(0);
+
+  // Fetch tool registry (cached with staleTime: Infinity)
+  const { data: registry } = useSuspenseQuery(toolRegistryOptions());
 
   // Keep refs in sync with latest prop values
   accessTokenRef.current = accessToken;
@@ -178,7 +183,7 @@ export function useProjectCreationChat({
           const toolName = getToolOrDynamicToolName(part);
           if (
             toolName &&
-            PROJECT_CREATION_TOOL_NAMES.has(toolName) &&
+            isProjectCreationTool(toolName, registry) &&
             toolName === "createProjectFromProposal" &&
             part.state === "output-available"
           ) {
@@ -220,7 +225,7 @@ export function useProjectCreationChat({
         pendingProject.boardUrl,
       );
     }
-  }, [chatResult.messages, queryClient]);
+  }, [chatResult.messages, queryClient, registry]);
 
   // Store edited proposals keyed by proposalId
   const editedProposalsRef = useRef<Map<string, ProjectProposal>>(new Map());

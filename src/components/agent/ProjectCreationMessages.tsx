@@ -1,3 +1,4 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   getToolOrDynamicToolName,
   isTextUIPart,
@@ -6,8 +7,10 @@ import {
 import { Loader2Icon, RefreshCwIcon } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
-import { PROJECT_CREATION_TOOL_NAMES } from "@/lib/ai/constants";
 import { getCompletedToolCallIds } from "@/lib/ai/utils";
+import toolRegistryOptions, {
+  isProjectCreationTool,
+} from "@/lib/options/toolRegistry.options";
 import { ProjectCreationToolBubble } from "./ProjectCreationToolBubble";
 import { ProjectProposalCard } from "./ProjectProposalCard";
 import {
@@ -63,6 +66,9 @@ export function ProjectCreationMessages({
   onRetry,
   onSendMessage,
 }: ProjectCreationMessagesProps) {
+  // Fetch tool registry (cached with staleTime: Infinity)
+  const { data: registry } = useSuspenseQuery(toolRegistryOptions());
+
   // Track completed tool calls
   const allCompletedToolCallIds = useMemo(
     () => getCompletedToolCallIds(messages),
@@ -192,7 +198,7 @@ export function ProjectCreationMessages({
 
           for (const part of toolParts) {
             const toolName = getToolOrDynamicToolName(part);
-            if (!toolName || !PROJECT_CREATION_TOOL_NAMES.has(toolName)) {
+            if (!toolName || !isProjectCreationTool(toolName, registry)) {
               continue;
             }
 

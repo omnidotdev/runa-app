@@ -1,7 +1,13 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useParams } from "@tanstack/react-router";
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
 import { RichTextEditor } from "@/components/core";
@@ -42,10 +48,11 @@ const TaskDescription = ({ task }: Props) => {
   const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
-  // Collapsible state
+  // Collapsible state - start with isEditorReady=false to prevent CLS
   const contentRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  const [isEditorReady, setIsEditorReady] = useState(false);
 
   // Check if content overflows the collapsed height
   const checkOverflow = useCallback(() => {
@@ -55,24 +62,32 @@ const TaskDescription = ({ task }: Props) => {
     }
   }, []);
 
-  // Monitor content changes with ResizeObserver
+  // Handle editor ready - measure once content is loaded
+  const handleEditorReady = useCallback(() => {
+    checkOverflow();
+    setIsEditorReady(true);
+  }, [checkOverflow]);
+
+  // Monitor content changes with ResizeObserver (only after editor is ready)
   useEffect(() => {
+    if (!isEditorReady) return;
+
     const element = contentRef.current;
     if (!element) return;
-
-    checkOverflow();
 
     const observer = new ResizeObserver(checkOverflow);
     observer.observe(element);
 
     return () => observer.disconnect();
-  }, [checkOverflow]);
+  }, [isEditorReady, checkOverflow]);
 
-  // Re-check on description change
-  // biome-ignore lint: re-run on description length change
-  useEffect(() => {
-    checkOverflow();
-  }, [task?.description, checkOverflow]);
+  // Re-check on description change (only after editor is ready)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-run when description changes
+  useLayoutEffect(() => {
+    if (isEditorReady) {
+      checkOverflow();
+    }
+  }, [task?.description, isEditorReady, checkOverflow]);
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     onMutate: async (variables) => {
@@ -101,7 +116,10 @@ const TaskDescription = ({ task }: Props) => {
 
   const handleTaskUpdate = useDebounceCallback(updateTask, 300);
 
+  // Show collapse gradient when overflowing and not expanded
   const showCollapse = isOverflowing && !isExpanded;
+  // Constrain height before editor is ready OR when collapsed and overflowing
+  const shouldConstrain = !isEditorReady || (!isExpanded && isOverflowing);
 
   return (
     <CardRoot className="p-0 shadow-none">
@@ -109,7 +127,7 @@ const TaskDescription = ({ task }: Props) => {
         <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
           Description
         </h3>
-        {isOverflowing && (
+        {isEditorReady && isOverflowing && (
           <Button
             variant="ghost"
             size="sm"
@@ -135,7 +153,7 @@ const TaskDescription = ({ task }: Props) => {
           ref={contentRef}
           className={cn(
             "overflow-hidden transition-[max-height] duration-300 ease-in-out",
-            !isExpanded && isOverflowing && "max-h-[200px]",
+            shouldConstrain && "max-h-[200px]",
           )}
           style={
             isExpanded
@@ -149,14 +167,14 @@ const TaskDescription = ({ task }: Props) => {
             editable={task.isAuthor || !isMember}
             className="border-0"
             skeletonClassName="h-[120px] rounded-t-none"
+            onReady={handleEditorReady}
             onUpdate={({ getHTML, isEmpty }) => {
-              !isEmpty &&
-                handleTaskUpdate({
-                  rowId: task?.rowId,
-                  patch: {
-                    description: getHTML(),
-                  },
-                });
+              handleTaskUpdate({
+                rowId: task?.rowId,
+                patch: {
+                  description: isEmpty ? "" : getHTML(),
+                },
+              });
             }}
           />
         </div>

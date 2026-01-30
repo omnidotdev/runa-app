@@ -46,6 +46,11 @@ interface Props extends Omit<ComponentProps<"div">, "placeholder"> {
     getText: () => string;
     isEmpty: boolean;
   }) => void;
+  /**
+   * Called once after the editor is initialized and any initial content is loaded.
+   * Use this to know when the editor is ready for measurements or interactions.
+   */
+  onReady?: () => void;
   defaultContent?: string;
   /**
    * When provided, syncs external content changes to the editor.
@@ -90,14 +95,17 @@ const EditorApiPlugin = ({
   editorApi,
   defaultContent,
   syncContent,
+  onReady,
 }: {
   editorApi?: RefObject<EditorApi | null>;
   defaultContent?: string;
   syncContent?: string;
+  onReady?: () => void;
 }) => {
   const [editor] = useLexicalComposerContext();
   const hasSetInitialContent = useRef(false);
   const lastSyncedContent = useRef<string | undefined>(undefined);
+  const hasCalledOnReady = useRef(false);
 
   // Set initial content from HTML
   useEffect(() => {
@@ -106,7 +114,16 @@ const EditorApiPlugin = ({
       lastSyncedContent.current = defaultContent;
       importFromHtml(editor, defaultContent);
     }
-  }, [editor, defaultContent]);
+
+    // Call onReady after initial setup (with or without content)
+    if (!hasCalledOnReady.current) {
+      hasCalledOnReady.current = true;
+      // Use requestAnimationFrame to ensure DOM has updated after import
+      requestAnimationFrame(() => {
+        onReady?.();
+      });
+    }
+  }, [editor, defaultContent, onReady]);
 
   // Sync external content changes (e.g., from server/agent updates)
   useEffect(() => {
@@ -179,6 +196,7 @@ const PlaceholderPlugin = ({
 const RichTextEditor = ({
   editorApi,
   onUpdate,
+  onReady,
   defaultContent,
   syncContent,
   className,
@@ -270,6 +288,7 @@ const RichTextEditor = ({
               editorApi={editorApi}
               defaultContent={defaultContent}
               syncContent={syncContent}
+              onReady={onReady}
             />
             {enableMentions && <MentionSuggestionPlugin />}
           </div>

@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { ClientOnly, useParams, useRouteContext } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
@@ -128,9 +128,11 @@ function CommentItem({
             >
               {post.author?.name ?? "Runa"}
             </span>
-            <span className="text-[11px] text-muted-foreground">
-              {dayjs(post.createdAt).fromNow()}
-            </span>
+            <ClientOnly>
+              <span className="text-[11px] text-muted-foreground">
+                {dayjs(post.createdAt).fromNow()}
+              </span>
+            </ClientOnly>
           </div>
 
           {/* Reply & Menu buttons - top right */}

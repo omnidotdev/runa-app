@@ -5,7 +5,7 @@
  */
 
 import { useChat } from "@ai-sdk/react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import {
   DefaultChatTransport,
   convertToModelMessages,
@@ -23,8 +23,10 @@ import {
   useTasksQuery,
 } from "@/generated/graphql";
 import { API_BASE_URL } from "@/lib/config/env.config";
+import toolRegistryOptions, {
+  isWriteTool,
+} from "@/lib/options/toolRegistry.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
-import { WRITE_TOOL_NAMES } from "./constants";
 import { useAccessToken } from "./hooks/useAccessToken";
 
 import type { UIMessage } from "ai";
@@ -74,6 +76,9 @@ export function useAgentChat({
   const onSessionIdRef = useRef(onSessionId);
   const onFinishRef = useRef(onFinish);
   const lastWriteCountRef = useRef(0);
+
+  // Fetch tool registry (cached with staleTime: Infinity)
+  const { data: registry } = useSuspenseQuery(toolRegistryOptions());
 
   // Rate limit state
   const [rateLimitState, setRateLimitState] = useState<RateLimitState | null>(
@@ -223,7 +228,7 @@ export function useAgentChat({
           const toolName = getToolOrDynamicToolName(part);
 
           // Count direct write tool completions
-          if (toolName && WRITE_TOOL_NAMES.has(toolName)) {
+          if (toolName && isWriteTool(toolName, registry)) {
             completedWriteCount++;
           }
 
@@ -233,7 +238,7 @@ export function useAgentChat({
             const output = part.output as { executedTools?: string[] };
             if (Array.isArray(output.executedTools)) {
               for (const executedTool of output.executedTools) {
-                if (WRITE_TOOL_NAMES.has(executedTool)) {
+                if (isWriteTool(executedTool, registry)) {
                   completedWriteCount++;
                 }
               }
@@ -257,7 +262,7 @@ export function useAgentChat({
     for (const key of keysToInvalidate) {
       queryClient.invalidateQueries({ queryKey: key });
     }
-  }, [chatResult.messages, queryClient]);
+  }, [chatResult.messages, queryClient, registry]);
 
   const addToolApprovalResponse = useCallback(
     (response: { id: string; approved: boolean }) => {

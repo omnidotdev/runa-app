@@ -1,5 +1,6 @@
 /** Tool call bubble component for agent chat. */
 
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { getToolOrDynamicToolName } from "ai";
 import {
   CheckCircle2Icon,
@@ -7,7 +8,6 @@ import {
   ChevronRightIcon,
   CircleDotIcon,
   ColumnsIcon,
-  LayersIcon,
   Loader2Icon,
   PencilIcon,
   Trash2Icon,
@@ -17,14 +17,13 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import {
-  BATCH_TOOL_NAMES,
-  COLUMN_TOOL_NAMES,
-  DELEGATION_TOOL_NAMES,
-  DESTRUCTIVE_TOOL_NAMES,
-  WRITE_TOOL_NAMES,
-} from "@/lib/ai/constants";
 import { formatToolName } from "@/lib/ai/utils/formatToolName";
+import toolRegistryOptions, {
+  isColumnTool,
+  isDelegationTool,
+  isDestructiveTool,
+  isWriteTool,
+} from "@/lib/options/toolRegistry.options";
 import { cn } from "@/lib/utils";
 import { ToolApprovalActions } from "./ToolApprovalActions";
 
@@ -60,17 +59,18 @@ function parseDelegationOutput(output: unknown): {
 export function ToolCallBubble({
   part,
   hasResult,
-  isLoading,
   onApprovalResponse,
 }: ToolCallBubbleProps): React.ReactElement {
   const [isDelegateExpanded, setIsDelegateExpanded] = useState(false);
 
+  // Fetch tool registry (cached with staleTime: Infinity)
+  const { data: registry } = useSuspenseQuery(toolRegistryOptions());
+
   const toolName = getToolOrDynamicToolName(part) ?? "unknown";
-  const isWrite = WRITE_TOOL_NAMES.has(toolName);
-  const isDestructive = DESTRUCTIVE_TOOL_NAMES.has(toolName);
-  const isBatch = BATCH_TOOL_NAMES.has(toolName);
-  const isDelegation = DELEGATION_TOOL_NAMES.has(toolName);
-  const isColumn = COLUMN_TOOL_NAMES.has(toolName);
+  const isWrite = isWriteTool(toolName, registry);
+  const isDestructive = isDestructiveTool(toolName, registry);
+  const isDelegation = isDelegationTool(toolName, registry);
+  const isColumn = isColumnTool(toolName, registry);
 
   const isComplete = part.state === "output-available" || hasResult === true;
   const needsApproval = part.state === "approval-requested";
@@ -82,15 +82,13 @@ export function ToolCallBubble({
   // Get the appropriate icon based on tool type
   const ToolIcon = isDestructive
     ? Trash2Icon
-    : isBatch
-      ? LayersIcon
-      : isColumn
-        ? ColumnsIcon
-        : isWrite
-          ? PencilIcon
-          : isDelegation
-            ? UsersIcon
-            : WrenchIcon;
+    : isColumn
+      ? ColumnsIcon
+      : isWrite
+        ? PencilIcon
+        : isDelegation
+          ? UsersIcon
+          : WrenchIcon;
 
   // Approval requested — card with approval actions
   if (needsApproval) {
@@ -208,11 +206,9 @@ export function ToolCallBubble({
         "flex items-center justify-between gap-2 rounded-lg border p-3",
         isDestructive
           ? "border-destructive/20 bg-destructive/5"
-          : isBatch
-            ? "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/50"
-            : isWrite
-              ? "border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/50"
-              : "border-border bg-muted/30",
+          : isWrite
+            ? "border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/50"
+            : "border-border bg-muted/30",
       )}
       aria-label={`${toolLabel}: ${statusLabel}`}
     >
@@ -222,11 +218,9 @@ export function ToolCallBubble({
             "size-3.5",
             isDestructive
               ? "text-destructive"
-              : isBatch
-                ? "text-amber-600 dark:text-amber-400"
-                : isWrite
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-muted-foreground",
+              : isWrite
+                ? "text-blue-600 dark:text-blue-400"
+                : "text-muted-foreground",
           )}
         />
         <span className="font-medium text-sm">{toolLabel}</span>
@@ -245,11 +239,9 @@ export function ToolCallBubble({
               "inline-flex items-center gap-1 text-xs",
               isDestructive
                 ? "text-destructive"
-                : isBatch
-                  ? "text-amber-600 dark:text-amber-400"
-                  : isWrite
-                    ? "text-blue-600 dark:text-blue-400"
-                    : "text-primary",
+                : isWrite
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-primary",
             )}
           >
             <CheckCircle2Icon className="size-3" />

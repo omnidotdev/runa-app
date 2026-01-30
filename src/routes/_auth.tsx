@@ -8,6 +8,7 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/workspaces";
 import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
+import toolRegistryOptions from "@/lib/options/toolRegistry.options";
 import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
 import { getOrganizationBySlug } from "@/server/functions/organizations";
@@ -74,6 +75,10 @@ export const Route = createFileRoute("/_auth")({
             userId: session?.user?.rowId,
           }),
         );
+      },
+      // Prefetch tool registry for agent features (static, cached forever)
+      async toolRegistry() {
+        return await queryClient.ensureQueryData(toolRegistryOptions());
       },
     });
 
