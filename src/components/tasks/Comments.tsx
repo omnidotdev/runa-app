@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
   BotIcon,
+  ChevronDownIcon,
   MessageCircleReplyIcon,
   MoreHorizontalIcon,
   PenLineIcon,
@@ -56,6 +57,12 @@ import UpdateCommentForm from "./UpdateCommentForm";
 import type { TaskQuery } from "@/generated/graphql";
 
 dayjs.extend(relativeTime);
+
+// Collapse thresholds
+const MAX_VISIBLE_REPLIES = 2;
+const MAX_VISIBLE_THREADS = 5;
+const THREADS_AT_START = 2;
+const THREADS_AT_END = 2;
 
 type PostNode = NonNullable<TaskQuery["task"]>["posts"]["nodes"][number];
 
@@ -223,6 +230,12 @@ const Comments = () => {
   const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
   const [replyingToId, setReplyingToId] = useState<string | null>(null);
 
+  // Collapse state
+  const [expandedReplies, setExpandedReplies] = useState<Set<string>>(
+    new Set(),
+  );
+  const [showAllThreads, setShowAllThreads] = useState(false);
+
   const { data: task } = useSuspenseQuery({
     ...taskOptions({ rowId: taskId }),
     select: (data) => data?.task,
@@ -291,12 +304,65 @@ const Comments = () => {
     [],
   );
   const handleCloseReply = useCallback(() => setReplyingToId(null), []);
+
+  const toggleExpandReplies = useCallback((threadId: string) => {
+    setExpandedReplies((prev) => {
+      const next = new Set(prev);
+      if (next.has(threadId)) {
+        next.delete(threadId);
+      } else {
+        next.add(threadId);
+      }
+      return next;
+    });
+  }, []);
+
   const handleDeleteClick = useCallback(
     (postId: string) => {
       setCommentToDelete(postId);
       setIsDeleteDialogOpen(true);
     },
     [setIsDeleteDialogOpen],
+  );
+
+  // Compute visible threads (GitHub-style collapse)
+  const { visibleThreads, hiddenCount, showingCollapsed } = useMemo(() => {
+    if (showAllThreads || threads.length <= MAX_VISIBLE_THREADS) {
+      return {
+        visibleThreads: threads,
+        hiddenCount: 0,
+        showingCollapsed: false,
+      };
+    }
+
+    const startThreads = threads.slice(0, THREADS_AT_START);
+    const endThreads = threads.slice(-THREADS_AT_END);
+    const hidden = threads.length - THREADS_AT_START - THREADS_AT_END;
+
+    return {
+      visibleThreads: [...startThreads, ...endThreads],
+      hiddenCount: hidden,
+      showingCollapsed: true,
+    };
+  }, [threads, showAllThreads]);
+
+  // Helper to get visible replies for a thread
+  const getVisibleReplies = useCallback(
+    (thread: CommentThread) => {
+      const { replies } = thread;
+      const isExpanded = expandedReplies.has(thread.parent.rowId!);
+
+      if (isExpanded || replies.length <= MAX_VISIBLE_REPLIES) {
+        return { visible: replies, hiddenCount: 0 };
+      }
+
+      // Show last N replies
+      const visible = replies.slice(-MAX_VISIBLE_REPLIES);
+      const hidden = replies.length - MAX_VISIBLE_REPLIES;
+
+      return { visible, hiddenCount: hidden };
+    },
+    [expandedReplies],
   );
 
   return (
@@ -323,49 +389,92 @@ const Comments = () => {
         <CardContent className="p-0">
           {threads.length > 0 ? (
             <div className="flex flex-col gap-4 p-3">
-              {threads.map((thread) => (
-                <div key={thread.parent.rowId} className="space-y-3">
-                  <CommentItem
-                    post={thread.parent}
-                    isUsersPost={
-                      thread.parent.authorId === session?.user?.rowId
-                    }
-                    activePostId={activePostId}
-                    onSetActivePost={setActivePostId}
-                    onReply={
-                      session?.user?.rowId
-                        ? () => handleReply(thread.parent.rowId!)
-                        : undefined
-                    }
-                    onDelete={handleDeleteClick}
-                  />
+              {visibleThreads.map((thread, index) => (
+                <div key={thread.parent.rowId}>
+                  {/* GitHub-style "+N more comments" divider */}
+                  {showingCollapsed && index === THREADS_AT_START && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAllThreads(true)}
+                      className="mb-4 flex w-full items-center gap-2 text-muted-foreground text-xs hover:text-foreground"
+                    >
+                      <div className="h-px flex-1 bg-border" />
+                      <span className="flex items-center gap-1 px-2">
+                        <ChevronDownIcon className="size-3" />
+                        {hiddenCount} more comment{hiddenCount > 1 ? "s" : ""}
+                      </span>
+                      <div className="h-px flex-1 bg-border" />
+                    </button>
+                  )}
 
-                  {/* Replies */}
-                  {thread.replies.map((reply) => (
+                  <div className="space-y-3">
                     <CommentItem
-                      key={reply.rowId}
-                      post={reply}
-                      isReply
-                      isUsersPost={reply.authorId === session?.user?.rowId}
+                      post={thread.parent}
+                      isUsersPost={
+                        thread.parent.authorId === session?.user?.rowId
+                      }
                       activePostId={activePostId}
                       onSetActivePost={setActivePostId}
+                      onReply={
+                        session?.user?.rowId
+                          ? () => handleReply(thread.parent.rowId!)
+                          : undefined
+                      }
                       onDelete={handleDeleteClick}
                     />
-                  ))}
 
-                  {/* Reply form */}
-                  {replyingToId === thread.parent.rowId &&
-                    session?.user?.rowId && (
-                      <div className="ml-9 border-primary/30 border-l-2 pl-3">
-                        <ReplyForm
-                          taskId={taskId}
-                          parentId={thread.parent.rowId!}
-                          authorId={session.user.rowId}
-                          onClose={handleCloseReply}
-                          onMentionSubmit={onCommentSubmit}
-                        />
-                      </div>
-                    )}
+                    {/* "+N earlier replies" button */}
+                    {(() => {
+                      const { visible, hiddenCount: hiddenReplies } =
+                        getVisibleReplies(thread);
+                      return (
+                        <>
+                          {hiddenReplies > 0 && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                toggleExpandReplies(thread.parent.rowId!)
+                              }
+                              className="ml-9 flex items-center gap-1.5 border-muted border-l-2 pl-3 text-muted-foreground text-xs hover:text-foreground"
+                            >
+                              <ChevronDownIcon className="size-3" />
+                              {hiddenReplies} earlier repl
+                              {hiddenReplies > 1 ? "ies" : "y"}
+                            </button>
+                          )}
+
+                          {/* Visible replies */}
+                          {visible.map((reply) => (
+                            <CommentItem
+                              key={reply.rowId}
+                              post={reply}
+                              isReply
+                              isUsersPost={
+                                reply.authorId === session?.user?.rowId
+                              }
+                              activePostId={activePostId}
+                              onSetActivePost={setActivePostId}
+                              onDelete={handleDeleteClick}
+                            />
+                          ))}
+                        </>
+                      );
+                    })()}
+
+                    {/* Reply form */}
+                    {replyingToId === thread.parent.rowId &&
+                      session?.user?.rowId && (
+                        <div className="ml-9 border-primary/30 border-l-2 pl-3">
+                          <ReplyForm
+                            taskId={taskId}
+                            parentId={thread.parent.rowId!}
+                            authorId={session.user.rowId}
+                            onClose={handleCloseReply}
+                            onMentionSubmit={onCommentSubmit}
+                          />
+                        </div>
+                      )}
+                  </div>
                 </div>
               ))}
               <div ref={endRef} />
