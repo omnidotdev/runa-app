@@ -131,6 +131,7 @@ export const Route = createFileRoute(
       name: project.name,
       projectId: project.rowId,
       organizationId,
+      projectPrefix: project.prefix ?? null,
     };
   },
   validateSearch: zodValidator(projectSearchParamsSchema),

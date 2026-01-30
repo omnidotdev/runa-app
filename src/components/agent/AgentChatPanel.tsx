@@ -19,12 +19,89 @@ import { AgentPersonaSelector } from "./AgentPersonaSelector";
 import { ChatInput } from "./ChatInput";
 import { RateLimitError } from "./RateLimitError";
 
-import type { UIMessage } from "ai";
+import type { DynamicToolUIPart, UIMessage } from "ai";
 
-/** Converts server-side stored messages to UIMessage format with parts structure. */
+/** Content part types from ModelMessage format (Vercel AI SDK). */
+interface TextContentPart {
+  type: "text";
+  text: string;
+}
+
+interface ToolCallContentPart {
+  type: "tool-call";
+  toolCallId: string;
+  toolName: string;
+  args: unknown;
+}
+
+interface ToolResultContentPart {
+  type: "tool-result";
+  toolCallId: string;
+  result: unknown;
+}
+
+type ContentPart =
+  | TextContentPart
+  | ToolCallContentPart
+  | ToolResultContentPart;
+
+/** Raw message type from database storage (ModelMessage format). */
+interface RawStoredMessage {
+  role: string;
+  content: string | ContentPart[];
+}
+
+/**
+ * Find a matching tool result in subsequent messages.
+ *
+ * Tool results are stored as separate "tool" role messages in ModelMessage format.
+ * This function searches forward from the current message index to find the
+ * matching tool-result content part.
+ */
+function findToolResult(
+  messages: RawStoredMessage[],
+  startIndex: number,
+  toolCallId: string,
+): ToolResultContentPart | null {
+  for (let i = startIndex + 1; i < messages.length; i++) {
+    const msg = messages[i];
+    if (msg.role !== "tool") continue;
+
+    const content = msg.content;
+    if (!Array.isArray(content)) continue;
+
+    for (const part of content) {
+      if (
+        typeof part === "object" &&
+        part !== null &&
+        part.type === "tool-result" &&
+        part.toolCallId === toolCallId
+      ) {
+        return part as ToolResultContentPart;
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Converts server-side stored messages (ModelMessage format) to UIMessage format.
+ *
+ * The Vercel AI SDK stores messages in ModelMessage format:
+ * - User: { role: "user", content: "text" | [{type: "text", text: "..."}] }
+ * - Assistant: { role: "assistant", content: [{type: "text", text: "..."}, {type: "tool-call", ...}] }
+ * - Tool: { role: "tool", content: [{type: "tool-result", toolCallId, result}] }
+ *
+ * The UI expects UIMessage format:
+ * - { id, role, parts: [{type: "text", text}, {type: "tool-invocation", toolCallId, toolName, args, state, output}] }
+ *
+ * This function converts between the two formats, merging tool results into
+ * their corresponding tool invocation parts.
+ */
 function normalizeStoredMessages(rawMessages: unknown[]): UIMessage[] {
+  // Filter to valid message objects
   const messages = rawMessages.filter(
-    (msg): msg is Record<string, unknown> =>
+    (msg): msg is RawStoredMessage =>
       typeof msg === "object" &&
       msg !== null &&
       typeof (msg as Record<string, unknown>).role === "string",
@@ -34,23 +111,75 @@ function normalizeStoredMessages(rawMessages: unknown[]): UIMessage[] {
 
   for (let i = 0; i < messages.length; i++) {
     const msg = messages[i];
-    const role = msg.role as string;
-    const content = typeof msg.content === "string" ? msg.content : "";
+    const role = msg.role;
 
-    if (role === "user") {
+    // Skip tool messages - their results are merged into assistant messages
+    if (role === "tool") continue;
+
+    // Only process user and assistant messages
+    if (role !== "user" && role !== "assistant") continue;
+
+    const content = msg.content;
+    const parts: UIMessage["parts"] = [];
+
+    if (typeof content === "string") {
+      // Simple text content
+      if (content) {
+        parts.push({ type: "text", text: content });
+      }
+    } else if (Array.isArray(content)) {
+      // Content parts array (ModelMessage format)
+      for (const part of content) {
+        if (typeof part !== "object" || part === null) continue;
+
+        if (
+          part.type === "text" &&
+          typeof part.text === "string" &&
+          part.text
+        ) {
+          parts.push({ type: "text", text: part.text });
+        } else if (
+          part.type === "tool-call" &&
+          typeof part.toolCallId === "string" &&
+          typeof part.toolName === "string"
+        ) {
+          // Find matching tool result in subsequent messages
+          const toolResult = findToolResult(messages, i, part.toolCallId);
+
+          // For historical messages, use DynamicToolUIPart which supports any toolName
+          // If we have a result use "output-available", otherwise "input-available"
+          if (toolResult) {
+            const toolPart: DynamicToolUIPart = {
+              type: "dynamic-tool",
+              toolCallId: part.toolCallId,
+              toolName: part.toolName,
+              input: part.args ?? {},
+              state: "output-available",
+              output: toolResult.result,
+            };
+            parts.push(toolPart);
+          } else {
+            const toolPart: DynamicToolUIPart = {
+              type: "dynamic-tool",
+              toolCallId: part.toolCallId,
+              toolName: part.toolName,
+              input: part.args ?? {},
+              state: "input-available",
+            };
+            parts.push(toolPart);
+          }
+        }
+      }
+    }
+
+    // Only add messages that have content
+    if (parts.length > 0) {
       result.push({
-        id: `stored-user-${i}`,
-        role: "user",
-        parts: [{ type: "text", text: content }],
-      });
-    } else if (role === "assistant" && content) {
-      result.push({
-        id: `stored-assistant-${i}`,
-        role: "assistant",
-        parts: [{ type: "text", text: content }],
+        id: `stored-${role}-${i}`,
+        role: role as "user" | "assistant",
+        parts,
       });
     }
-    // Tool messages are handled internally by V6 and reconstructed from response
   }
 
   return result;
@@ -117,13 +246,18 @@ export function AgentChatPanel({
     setMessages,
     rateLimitState,
     clearRateLimit,
+    sessionId: activeSessionId,
   } = useAgentChat({
     projectId,
     sessionId: currentSessionId,
     sessionKey,
     personaId: selectedPersonaId,
     onSessionId: handleSessionId,
+    onFinish: refreshSessions,
   });
+
+  // Use the active session ID (from chat) for display, falling back to selected session
+  const displaySessionId = activeSessionId ?? currentSessionId;
 
   // Store the last message for retry after rate limit
   const lastMessageRef = useRef<string | null>(null);
@@ -201,7 +335,7 @@ export function AgentChatPanel({
         <AgentPanelHeader
           onClose={onClose}
           sessions={sessions}
-          currentSessionId={currentSessionId}
+          currentSessionId={displaySessionId}
           isSessionsLoading={isSessionsLoading}
           onSelectSession={selectSession}
           onNewSession={startNewSession}

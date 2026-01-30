@@ -48,6 +48,8 @@ interface UseAgentChatOptions {
   personaId?: string | null;
   /** Called when the server returns a session ID in response headers. */
   onSessionId?: (sessionId: string) => void;
+  /** Called when the chat stream finishes. */
+  onFinish?: () => void;
 }
 
 /**
@@ -61,6 +63,7 @@ export function useAgentChat({
   sessionKey,
   personaId,
   onSessionId,
+  onFinish,
 }: UseAgentChatOptions) {
   const accessToken = useAccessToken();
   const queryClient = useQueryClient();
@@ -69,6 +72,7 @@ export function useAgentChat({
   const projectIdRef = useRef(projectId);
   const personaIdRef = useRef(personaId ?? null);
   const onSessionIdRef = useRef(onSessionId);
+  const onFinishRef = useRef(onFinish);
   const lastWriteCountRef = useRef(0);
 
   // Rate limit state
@@ -83,6 +87,7 @@ export function useAgentChat({
   projectIdRef.current = projectId;
   personaIdRef.current = personaId ?? null;
   onSessionIdRef.current = onSessionId;
+  onFinishRef.current = onFinish;
 
   // Generate a unique ID for this chat instance based on session
   const chatId = useMemo(() => {
@@ -184,6 +189,7 @@ export function useAgentChat({
     transport,
     // Auto-continue chat after tool approvals are responded to
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithApprovalResponses,
+    onFinish: () => onFinishRef.current?.(),
   });
 
   // Clear messages when generation changes (new session started)

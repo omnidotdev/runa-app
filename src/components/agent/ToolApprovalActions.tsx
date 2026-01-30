@@ -1,3 +1,4 @@
+import { useLoaderData } from "@tanstack/react-router";
 import { CheckIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -13,14 +14,20 @@ interface ToolApprovalActionsProps {
 /**
  * Format the approval request into a human-readable summary of what will happen.
  */
-function formatApprovalDetails(toolName: string, input: unknown): string {
+function formatApprovalDetails(
+  toolName: string,
+  input: unknown,
+  projectPrefix = "T",
+): string {
   if (!input || typeof input !== "object") return "Execute this operation?";
 
   const data = input as Record<string, unknown>;
 
   switch (toolName) {
     case "deleteTask": {
-      const ref = data.taskNumber ? `T-${data.taskNumber}` : data.taskId;
+      const ref = data.taskNumber
+        ? `${projectPrefix}-${data.taskNumber}`
+        : data.taskId;
       return `Delete task ${ref ?? ""}?`;
     }
     case "batchMoveTasks": {
@@ -57,6 +64,11 @@ export function ToolApprovalActions({
   input,
   onApprovalResponse,
 }: ToolApprovalActionsProps) {
+  // Get project prefix from route loader data
+  const { projectPrefix } = useLoaderData({
+    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+  });
+
   const [isResponding, setIsResponding] = useState(false);
 
   const handleResponse = (approved: boolean) => {
@@ -67,7 +79,7 @@ export function ToolApprovalActions({
   return (
     <div className="flex flex-col gap-3">
       <p className="text-pretty text-sm">
-        {formatApprovalDetails(toolName, input)}
+        {formatApprovalDetails(toolName, input, projectPrefix ?? undefined)}
       </p>
       <div className="flex gap-2">
         <Button

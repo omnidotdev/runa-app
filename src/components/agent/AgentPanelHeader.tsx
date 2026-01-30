@@ -28,7 +28,6 @@ export function AgentPanelHeader({
 }: AgentPanelHeaderProps) {
   // Find current session to get title
   const currentSession = sessions.find((s) => s.rowId === currentSessionId);
-  const isNewSession = !currentSessionId;
 
   return (
     <div className="flex flex-col">
@@ -77,10 +76,7 @@ export function AgentPanelHeader({
       </div>
 
       {/* Session context bar */}
-      <SessionContextBar
-        sessionTitle={currentSession?.title ?? undefined}
-        isNewSession={isNewSession}
-      >
+      <SessionContextBar sessionTitle={currentSession?.title ?? undefined}>
         <AgentSessionList
           sessions={sessions}
           currentSessionId={currentSessionId}

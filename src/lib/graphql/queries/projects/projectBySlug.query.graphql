@@ -2,5 +2,6 @@ query ProjectBySlug($slug: String!, $organizationId: String!) {
   projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
     rowId
     name
+    prefix
   }
 }

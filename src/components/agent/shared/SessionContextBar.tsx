@@ -13,7 +13,6 @@ import type { ReactNode } from "react";
 
 interface SessionContextBarProps {
   sessionTitle?: string;
-  isNewSession: boolean;
   children: ReactNode;
   className?: string;
 }
@@ -21,18 +20,15 @@ interface SessionContextBarProps {
 /**
  * Inline session context bar with history button.
  *
- * Shows the current session title (or "New conversation" for new sessions)
+ * Shows the current session title (or "Conversation" as fallback)
  * with a history button that opens a popover with session list.
  */
 export function SessionContextBar({
   sessionTitle,
-  isNewSession,
   children,
   className,
 }: SessionContextBarProps) {
-  const displayTitle = isNewSession
-    ? "New conversation"
-    : sessionTitle || "Conversation";
+  const displayTitle = sessionTitle || "Conversation";
 
   return (
     <div

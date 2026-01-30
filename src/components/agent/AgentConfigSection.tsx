@@ -391,7 +391,7 @@ export function AgentConfigSection() {
             onChange={(v) => handleToggle("requireApprovalForDestructive", v)}
             disabled={isSaving}
             label="Destructive actions"
-            description="Delete, batch move, and batch operations require approval"
+            description="Delete operations (tasks, columns, batch delete) require approval"
           />
           <ToggleSwitch
             checked={localConfig.requireApprovalForCreate}
