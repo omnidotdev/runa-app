@@ -37,21 +37,6 @@ interface ProjectCreationMessagesProps {
   onSendMessage?: (message: string) => void;
 }
 
-const PROJECT_SUGGESTIONS = [
-  {
-    label: "A software development project",
-    message: "A software development project",
-  },
-  {
-    label: "Marketing campaign tracker",
-    message: "Marketing campaign tracker",
-  },
-  {
-    label: "Personal task board",
-    message: "Personal task board",
-  },
-];
-
 /**
  * Message list for project creation chat.
  *
@@ -116,14 +101,12 @@ export function ProjectCreationMessages({
     [onApprovalResponse, editedProposals],
   );
 
-  // Empty state with clickable suggestions
+  // Empty state
   if (messages.length === 0 && !error) {
     return (
       <EmptyState
         title="What would you like to build?"
-        description="Describe your project and I'll help you set it up with the right structure, columns, and labels."
-        suggestions={PROJECT_SUGGESTIONS}
-        onSuggestionClick={(message) => onSendMessage?.(message)}
+        description="Describe your project and I'll help you set it up with the right structure."
       />
     );
   }

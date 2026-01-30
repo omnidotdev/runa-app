@@ -77,13 +77,8 @@ export function ProjectCreationPanel({
 
   const handleTemplateSelect = useCallback(
     (template: ProjectTemplate) => {
-      const message = `Create a ${template.name} project with these columns: ${template.columns.map((c) => c.title).join(", ")}${
-        template.labels?.length
-          ? `. Include these labels: ${template.labels.map((l) => l.name).join(", ")}`
-          : ""
-      }`;
+      const message = `I'd like to create a ${template.name} project`;
       setShowTemplates(false);
-      // Auto-send the message
       sendMessage({
         role: "user",
         parts: [{ type: "text", text: message }],

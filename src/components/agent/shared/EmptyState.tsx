@@ -10,8 +10,8 @@ interface Suggestion {
 interface EmptyStateProps {
   title: string;
   description: string;
-  suggestions: Suggestion[];
-  onSuggestionClick: (message: string) => void;
+  suggestions?: Suggestion[];
+  onSuggestionClick?: (message: string) => void;
   className?: string;
 }
 
@@ -46,21 +46,23 @@ export function EmptyState({
         </p>
       </div>
 
-      <div className="mt-2 flex w-full max-w-[320px] flex-col gap-2">
-        {suggestions.map((suggestion) => (
-          <button
-            key={suggestion.label}
-            type="button"
-            onClick={() => onSuggestionClick(suggestion.message)}
-            className="group relative w-full rounded-lg border border-border bg-card px-4 py-2.5 text-left text-sm transition-all hover:border-primary/50 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-          >
-            <span className="text-foreground">{suggestion.label}</span>
-            <span className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-              &rarr;
-            </span>
-          </button>
-        ))}
-      </div>
+      {suggestions?.length && onSuggestionClick && (
+        <div className="mt-2 flex w-full max-w-[320px] flex-col gap-2">
+          {suggestions.map((suggestion) => (
+            <button
+              key={suggestion.label}
+              type="button"
+              onClick={() => onSuggestionClick(suggestion.message)}
+              className="group relative w-full rounded-lg border border-border bg-card px-4 py-2.5 text-left text-sm transition-all hover:border-primary/50 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+            >
+              <span className="text-foreground">{suggestion.label}</span>
+              <span className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                &rarr;
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
