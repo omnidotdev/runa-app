@@ -15,6 +15,7 @@ export const WRITE_TOOL_NAMES = new Set([
   "updateColumn",
   "deleteColumn",
   "reorderColumns",
+  "reorderTasks",
 ]);
 
 /** Tool names that perform destructive delete operations (red styling). */

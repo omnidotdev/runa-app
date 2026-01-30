@@ -202,6 +202,7 @@ export function useAgentChat({
   }, [sessionKey, setMessages]);
 
   // Invalidate React Query cache when new write tools complete
+  // This includes both direct write tools AND write tools executed by delegates
   useEffect(() => {
     let completedWriteCount = 0;
 
@@ -209,14 +210,28 @@ export function useAgentChat({
       if (message.role !== "assistant") continue;
 
       for (const part of message.parts) {
-        if (isToolOrDynamicToolUIPart(part)) {
+        if (
+          isToolOrDynamicToolUIPart(part) &&
+          part.state === "output-available"
+        ) {
           const toolName = getToolOrDynamicToolName(part);
-          if (
-            toolName &&
-            WRITE_TOOL_NAMES.has(toolName) &&
-            part.state === "output-available"
-          ) {
+
+          // Count direct write tool completions
+          if (toolName && WRITE_TOOL_NAMES.has(toolName)) {
             completedWriteCount++;
+          }
+
+          // Also check delegateToAgent results for executed write tools
+          // Subagent tool calls don't stream to frontend, so we detect them here
+          if (toolName === "delegateToAgent" && part.output) {
+            const output = part.output as { executedTools?: string[] };
+            if (Array.isArray(output.executedTools)) {
+              for (const executedTool of output.executedTools) {
+                if (WRITE_TOOL_NAMES.has(executedTool)) {
+                  completedWriteCount++;
+                }
+              }
+            }
           }
         }
       }
