@@ -434,3 +434,12 @@
     animation: none;
   }
 }
+
+/* Comment prose - minimal styling */
+.comment-prose p {
+  margin: 0;
+}
+
+.comment-prose p + p {
+  margin-top: 0.25em;
+}

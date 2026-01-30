@@ -21,6 +21,7 @@ query AgentActivities(
       requiresApproval
       errorMessage
       affectedTaskIds
+      snapshotBefore
       createdAt
       session {
         rowId

@@ -5186,18 +5186,35 @@ export type Post = Node & {
   /** Reads a single `User` that is related to this `Post`. */
   author?: Maybe<User>;
   authorId?: Maybe<Scalars['UUID']['output']>;
+  /** Reads and enables pagination through a set of `Post`. */
+  childPosts: PostConnection;
   createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Emoji`. */
   emojis: EmojiConnection;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+  /** Reads a single `Post` that is related to this `Post`. */
+  parent?: Maybe<Post>;
+  parentId?: Maybe<Scalars['UUID']['output']>;
   rowId: Scalars['UUID']['output'];
   /** Reads a single `Task` that is related to this `Post`. */
   task?: Maybe<Task>;
   taskId: Scalars['UUID']['output'];
   title?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['Datetime']['output'];
+};
+
+
+export type PostChildPostsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostCondition>;
+  filter?: InputMaybe<PostFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostOrderBy>>;
 };
 
 
@@ -5235,6 +5252,8 @@ export type PostCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `description` field. */
   description?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `parentId` field. */
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `taskId` field. */
@@ -5273,6 +5292,7 @@ export type PostDistinctCountAggregateFilter = {
   authorId?: InputMaybe<BigIntFilter>;
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
+  parentId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   taskId?: InputMaybe<BigIntFilter>;
   title?: InputMaybe<BigIntFilter>;
@@ -5287,6 +5307,8 @@ export type PostDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of description across the matching connection */
   description?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of parentId across the matching connection */
+  parentId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of taskId across the matching connection */
@@ -5316,6 +5338,10 @@ export type PostFilter = {
   authorExists?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `authorId` field. */
   authorId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `childPosts` relation. */
+  childPosts?: InputMaybe<PostToManyPostFilter>;
+  /** Some related `childPosts` exist. */
+  childPostsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `description` field. */
@@ -5328,6 +5354,12 @@ export type PostFilter = {
   not?: InputMaybe<PostFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<PostFilter>>;
+  /** Filter by the object’s `parent` relation. */
+  parent?: InputMaybe<PostFilter>;
+  /** A related `parent` exists. */
+  parentExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `parentId` field. */
+  parentId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `task` relation. */
@@ -5347,6 +5379,7 @@ export enum PostGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
+  ParentId = 'PARENT_ID',
   TaskId = 'TASK_ID',
   Title = 'TITLE',
   UpdatedAt = 'UPDATED_AT',
@@ -5419,6 +5452,7 @@ export type PostInput = {
   authorId?: InputMaybe<Scalars['UUID']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   taskId: Scalars['UUID']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
@@ -5429,6 +5463,24 @@ export type PostInput = {
 export enum PostOrderBy {
   AuthorIdAsc = 'AUTHOR_ID_ASC',
   AuthorIdDesc = 'AUTHOR_ID_DESC',
+  ChildPostsCountAsc = 'CHILD_POSTS_COUNT_ASC',
+  ChildPostsCountDesc = 'CHILD_POSTS_COUNT_DESC',
+  ChildPostsDistinctCountAuthorIdAsc = 'CHILD_POSTS_DISTINCT_COUNT_AUTHOR_ID_ASC',
+  ChildPostsDistinctCountAuthorIdDesc = 'CHILD_POSTS_DISTINCT_COUNT_AUTHOR_ID_DESC',
+  ChildPostsDistinctCountCreatedAtAsc = 'CHILD_POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ChildPostsDistinctCountCreatedAtDesc = 'CHILD_POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ChildPostsDistinctCountDescriptionAsc = 'CHILD_POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
+  ChildPostsDistinctCountDescriptionDesc = 'CHILD_POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  ChildPostsDistinctCountParentIdAsc = 'CHILD_POSTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  ChildPostsDistinctCountParentIdDesc = 'CHILD_POSTS_DISTINCT_COUNT_PARENT_ID_DESC',
+  ChildPostsDistinctCountRowIdAsc = 'CHILD_POSTS_DISTINCT_COUNT_ROW_ID_ASC',
+  ChildPostsDistinctCountRowIdDesc = 'CHILD_POSTS_DISTINCT_COUNT_ROW_ID_DESC',
+  ChildPostsDistinctCountTaskIdAsc = 'CHILD_POSTS_DISTINCT_COUNT_TASK_ID_ASC',
+  ChildPostsDistinctCountTaskIdDesc = 'CHILD_POSTS_DISTINCT_COUNT_TASK_ID_DESC',
+  ChildPostsDistinctCountTitleAsc = 'CHILD_POSTS_DISTINCT_COUNT_TITLE_ASC',
+  ChildPostsDistinctCountTitleDesc = 'CHILD_POSTS_DISTINCT_COUNT_TITLE_DESC',
+  ChildPostsDistinctCountUpdatedAtAsc = 'CHILD_POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  ChildPostsDistinctCountUpdatedAtDesc = 'CHILD_POSTS_DISTINCT_COUNT_UPDATED_AT_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
@@ -5448,6 +5500,8 @@ export enum PostOrderBy {
   EmojisDistinctCountUserIdAsc = 'EMOJIS_DISTINCT_COUNT_USER_ID_ASC',
   EmojisDistinctCountUserIdDesc = 'EMOJIS_DISTINCT_COUNT_USER_ID_DESC',
   Natural = 'NATURAL',
+  ParentIdAsc = 'PARENT_ID_ASC',
+  ParentIdDesc = 'PARENT_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RowIdAsc = 'ROW_ID_ASC',
@@ -5465,6 +5519,7 @@ export type PostPatch = {
   authorId?: InputMaybe<Scalars['UUID']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   taskId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
@@ -5481,6 +5536,18 @@ export type PostToManyEmojiFilter = {
   none?: InputMaybe<EmojiFilter>;
   /** Some related `Emoji` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<EmojiFilter>;
+};
+
+/** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyPostFilter = {
+  /** Aggregates across related `Post` match the filter criteria. */
+  aggregates?: InputMaybe<PostAggregatesFilter>;
+  /** Every related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostFilter>;
+  /** No related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostFilter>;
+  /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostFilter>;
 };
 
 export type Project = Node & {
@@ -9009,6 +9076,8 @@ export enum TaskOrderBy {
   PostsDistinctCountCreatedAtDesc = 'POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
   PostsDistinctCountDescriptionAsc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   PostsDistinctCountDescriptionDesc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsDistinctCountParentIdAsc = 'POSTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  PostsDistinctCountParentIdDesc = 'POSTS_DISTINCT_COUNT_PARENT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
   PostsDistinctCountTaskIdAsc = 'POSTS_DISTINCT_COUNT_TASK_ID_ASC',
@@ -10510,6 +10579,8 @@ export enum UserOrderBy {
   AuthoredPostsDistinctCountCreatedAtDesc = 'AUTHORED_POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
   AuthoredPostsDistinctCountDescriptionAsc = 'AUTHORED_POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   AuthoredPostsDistinctCountDescriptionDesc = 'AUTHORED_POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  AuthoredPostsDistinctCountParentIdAsc = 'AUTHORED_POSTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  AuthoredPostsDistinctCountParentIdDesc = 'AUTHORED_POSTS_DISTINCT_COUNT_PARENT_ID_DESC',
   AuthoredPostsDistinctCountRowIdAsc = 'AUTHORED_POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   AuthoredPostsDistinctCountRowIdDesc = 'AUTHORED_POSTS_DISTINCT_COUNT_ROW_ID_DESC',
   AuthoredPostsDistinctCountTaskIdAsc = 'AUTHORED_POSTS_DISTINCT_COUNT_TASK_ID_ASC',
@@ -11555,7 +11626,7 @@ export type AgentActivitiesQueryVariables = Exact<{
 }>;
 
 
-export type AgentActivitiesQuery = { __typename?: 'Query', agentActivities?: { __typename?: 'AgentActivityConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentActivity', rowId: string, toolName: string, toolInput: any, toolOutput?: any | null, status: string, approvalStatus?: string | null, requiresApproval: boolean, errorMessage?: string | null, affectedTaskIds: any, createdAt: Date, session?: { __typename?: 'AgentSession', rowId: string, title?: string | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+export type AgentActivitiesQuery = { __typename?: 'Query', agentActivities?: { __typename?: 'AgentActivityConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentActivity', rowId: string, toolName: string, toolInput: any, toolOutput?: any | null, status: string, approvalStatus?: string | null, requiresApproval: boolean, errorMessage?: string | null, affectedTaskIds: any, snapshotBefore?: any | null, createdAt: Date, session?: { __typename?: 'AgentSession', rowId: string, title?: string | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
 
 export type AgentActivitiesByTaskIdQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -11670,7 +11741,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, icon?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, parentId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, icon?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -12067,6 +12138,7 @@ export const AgentActivitiesDocument = gql`
       requiresApproval
       errorMessage
       affectedTaskIds
+      snapshotBefore
       createdAt
       session {
         rowId
@@ -12334,6 +12406,7 @@ export const TaskDocument = gql`
         description
         createdAt
         authorId
+        parentId
         author {
           name
           avatarUrl

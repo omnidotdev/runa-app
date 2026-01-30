@@ -16,6 +16,8 @@ interface ChatInputProps {
   ariaLabel?: string;
   /** Initial value to populate the input with. */
   initialValue?: string;
+  /** Whether the input is disabled (e.g., during rate limiting). */
+  disabled?: boolean;
 }
 
 /**
@@ -31,6 +33,7 @@ export function ChatInput({
   placeholder = "Type a message...",
   ariaLabel = "Chat message",
   initialValue,
+  disabled = false,
 }: ChatInputProps) {
   const [input, setInput] = useState(initialValue ?? "");
   const [isFocused, setIsFocused] = useState(false);
@@ -77,13 +80,13 @@ export function ChatInput({
 
   const submitMessage = useCallback(() => {
     const trimmed = input.trim();
-    if (!trimmed || isLoading) return;
+    if (!trimmed || isLoading || disabled) return;
     setInput("");
     resetTextarea();
     Promise.resolve(onSend(trimmed)).catch(() => {
       // Error is surfaced via hook's error state
     });
-  }, [input, isLoading, onSend, resetTextarea]);
+  }, [input, isLoading, disabled, onSend, resetTextarea]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -125,8 +128,8 @@ export function ChatInput({
           rows={1}
           // biome-ignore lint/a11y/noAutofocus: Chat input should auto-focus for immediate typing
           autoFocus
-          className="max-h-32 min-h-[24px] w-full flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-          disabled={isLoading}
+          className="max-h-32 min-h-[24px] w-full flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={isLoading || disabled}
         />
         {isLoading ? (
           <Button
@@ -144,11 +147,11 @@ export function ChatInput({
             type="submit"
             variant="ghost"
             size="icon"
-            disabled={!input.trim()}
+            disabled={!input.trim() || disabled}
             aria-label="Send message"
             className={cn(
               "size-8 shrink-0 transition-colors",
-              input.trim() && "text-primary hover:bg-primary/10",
+              input.trim() && !disabled && "text-primary hover:bg-primary/10",
             )}
           >
             <SendIcon className="size-4" />

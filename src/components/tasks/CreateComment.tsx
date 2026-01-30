@@ -6,12 +6,16 @@ import { RichTextEditor } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import { useCreatePostMutation } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
-import { useMentionPolling } from "@/lib/hooks/useMentionPolling";
 import taskOptions from "@/lib/options/task.options";
 
 import type { EditorApi } from "@/components/core";
 
-const CreateComment = () => {
+interface CreateCommentProps {
+  /** Called when a comment containing @mention is submitted (for polling). */
+  onMentionSubmit: (html: string) => void;
+}
+
+const CreateComment = ({ onMentionSubmit }: CreateCommentProps) => {
   const editorApi = useRef<EditorApi | null>(null);
   const { taskId } = useParams({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
@@ -20,9 +24,6 @@ const CreateComment = () => {
   const { session } = useRouteContext({
     from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
-
-  // Hook to poll for AI agent responses after @mention comments
-  const { onCommentSubmit } = useMentionPolling({ taskId });
 
   const { mutate: addComment } = useCreatePostMutation({
     meta: {
@@ -50,7 +51,7 @@ const CreateComment = () => {
         });
 
         // Start polling if comment contains a mention
-        onCommentSubmit(value.comment);
+        onMentionSubmit(value.comment);
       }
 
       formApi.reset();
@@ -65,7 +66,7 @@ const CreateComment = () => {
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="relative mb-8 flex w-full flex-col gap-2 px-1"
+      className="relative flex w-full flex-col gap-2 pb-8"
     >
       <form.Field name="comment">
         {(field) => (
@@ -80,7 +81,7 @@ const CreateComment = () => {
         )}
       </form.Field>
 
-      <div className="absolute right-2 bottom-0 mt-4 flex justify-end gap-2 p-2">
+      <div className="-mt-14 flex justify-end gap-2 p-2">
         <form.Subscribe
           selector={(state) => [
             state.canSubmit,

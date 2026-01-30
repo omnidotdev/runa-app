@@ -27,6 +27,7 @@ import { PROJECT_CREATION_TOOL_NAMES } from "./constants";
 import { useAccessToken } from "./hooks/useAccessToken";
 
 import type { UIMessage } from "ai";
+import type { ProjectProposal } from "@/components/agent/ProjectProposalCard";
 
 /** Project data returned after successful creation. */
 export interface CreatedProject {
@@ -221,8 +222,64 @@ export function useProjectCreationChat({
     }
   }, [chatResult.messages, queryClient]);
 
+  // Store edited proposals keyed by proposalId
+  const editedProposalsRef = useRef<Map<string, ProjectProposal>>(new Map());
+
+  const setEditedProposal = useCallback(
+    (proposalId: string, proposal: ProjectProposal) => {
+      editedProposalsRef.current.set(proposalId, proposal);
+    },
+    [],
+  );
+
+  const getEditedProposal = useCallback((proposalId: string) => {
+    return editedProposalsRef.current.get(proposalId);
+  }, []);
+
+  const clearEditedProposal = useCallback((proposalId: string) => {
+    editedProposalsRef.current.delete(proposalId);
+  }, []);
+
   const addToolApprovalResponse = useCallback(
-    (response: { id: string; approved: boolean }) => {
+    (response: {
+      id: string;
+      approved: boolean;
+      overrideProposal?: ProjectProposal;
+    }) => {
+      // If approved and there's an override proposal, we need to modify the tool input
+      // The approach: modify the message containing the createProjectFromProposal tool call
+      // to include the overrideProposal in its input
+      if (response.approved && response.overrideProposal) {
+        const currentMessages = chatResult.messages;
+        const updatedMessages = currentMessages.map((message) => {
+          if (message.role !== "assistant") return message;
+
+          const updatedParts = message.parts.map((part) => {
+            if (!isToolOrDynamicToolUIPart(part)) return part;
+
+            const toolName = getToolOrDynamicToolName(part);
+            if (toolName !== "createProjectFromProposal") return part;
+
+            // Check if this is the tool we're approving
+            const approvalId = part.approval?.id ?? part.toolCallId;
+            if (approvalId !== response.id) return part;
+
+            // Add overrideProposal to the input
+            return {
+              ...part,
+              input: {
+                ...(part.input as object),
+                overrideProposal: response.overrideProposal,
+              },
+            };
+          });
+
+          return { ...message, parts: updatedParts };
+        });
+
+        chatResult.setMessages(updatedMessages as UIMessage[]);
+      }
+
       chatResult.addToolApprovalResponse({
         id: response.id,
         approved: response.approved,
@@ -243,6 +300,9 @@ export function useProjectCreationChat({
     error: chatResult.error,
     setMessages: chatResult.setMessages,
     addToolApprovalResponse,
+    setEditedProposal,
+    getEditedProposal,
+    clearEditedProposal,
     sessionId: sessionIdRef.current,
     // Expose regenerate for retry functionality
     regenerate: chatResult.regenerate,

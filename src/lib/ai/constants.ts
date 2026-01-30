@@ -11,12 +11,17 @@ export const WRITE_TOOL_NAMES = new Set([
   "batchMoveTasks",
   "batchUpdateTasks",
   "batchDeleteTasks",
+  "createColumn",
+  "updateColumn",
+  "deleteColumn",
+  "reorderColumns",
 ]);
 
 /** Tool names that perform destructive delete operations (red styling). */
 export const DESTRUCTIVE_TOOL_NAMES = new Set([
   "deleteTask",
   "batchDeleteTasks",
+  "deleteColumn",
 ]);
 
 /** Tool names that perform batch operations on multiple items (amber styling). */
@@ -29,4 +34,12 @@ export const DELEGATION_TOOL_NAMES = new Set(["delegateToAgent"]);
 export const PROJECT_CREATION_TOOL_NAMES = new Set([
   "proposeProject",
   "createProjectFromProposal",
+]);
+
+/** Tool names for column/board structure operations. */
+export const COLUMN_TOOL_NAMES = new Set([
+  "createColumn",
+  "updateColumn",
+  "deleteColumn",
+  "reorderColumns",
 ]);

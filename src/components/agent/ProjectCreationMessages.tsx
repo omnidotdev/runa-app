@@ -4,7 +4,7 @@ import {
   isToolOrDynamicToolUIPart,
 } from "ai";
 import { Loader2Icon, RefreshCwIcon } from "lucide-react";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { PROJECT_CREATION_TOOL_NAMES } from "@/lib/ai/constants";
 import { getCompletedToolCallIds } from "@/lib/ai/utils";
@@ -24,7 +24,11 @@ interface ProjectCreationMessagesProps {
   messages: UIMessage[];
   isLoading: boolean;
   error: Error | undefined;
-  onApprovalResponse: (response: { id: string; approved: boolean }) => void;
+  onApprovalResponse: (response: {
+    id: string;
+    approved: boolean;
+    overrideProposal?: ProjectProposal;
+  }) => void;
   onRetry?: () => void;
   /** Callback when a suggestion is clicked (auto-sends the message). */
   onSendMessage?: (message: string) => void;
@@ -65,6 +69,47 @@ export function ProjectCreationMessages({
     [messages],
   );
 
+  // Track edited proposals by proposalId
+  const [editedProposals, setEditedProposals] = useState<
+    Map<string, ProjectProposal>
+  >(new Map());
+
+  // Handle proposal changes from editable cards
+  const handleProposalChange = useCallback(
+    (proposalId: string, proposal: ProjectProposal) => {
+      setEditedProposals((prev) => {
+        const next = new Map(prev);
+        next.set(proposalId, proposal);
+        return next;
+      });
+    },
+    [],
+  );
+
+  // Get proposal for a given toolCallId (edited version if available)
+  const getProposal = useCallback(
+    (originalProposal: ProjectProposal, proposalId: string) => {
+      return editedProposals.get(proposalId) ?? originalProposal;
+    },
+    [editedProposals],
+  );
+
+  // Handle approval with edited proposal
+  const handleApprovalResponse = useCallback(
+    (response: { id: string; approved: boolean }, proposalId?: string) => {
+      const editedProposal = proposalId
+        ? editedProposals.get(proposalId)
+        : undefined;
+
+      onApprovalResponse({
+        id: response.id,
+        approved: response.approved,
+        overrideProposal: response.approved ? editedProposal : undefined,
+      });
+    },
+    [onApprovalResponse, editedProposals],
+  );
+
   // Empty state with clickable suggestions
   if (messages.length === 0 && !error) {
     return (
@@ -75,6 +120,28 @@ export function ProjectCreationMessages({
         onSuggestionClick={(message) => onSendMessage?.(message)}
       />
     );
+  }
+
+  // Find the active proposal (from the most recent proposeProject tool call)
+  let activeProposalId: string | undefined;
+
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const message = messages[i];
+    if (message.role !== "assistant") continue;
+
+    for (const part of message.parts) {
+      if (!isToolOrDynamicToolUIPart(part)) continue;
+
+      const toolName = getToolOrDynamicToolName(part);
+      if (toolName === "proposeProject" && part.state === "output-available") {
+        const output = part.output as { proposalId?: string } | undefined;
+        if (output?.proposalId) {
+          activeProposalId = output.proposalId;
+          break;
+        }
+      }
+    }
+    if (activeProposalId) break;
   }
 
   return (
@@ -133,12 +200,41 @@ export function ProjectCreationMessages({
 
             // Special rendering for proposeProject
             if (toolName === "proposeProject" && hasResult) {
-              const proposal = part.input as ProjectProposal | undefined;
+              const originalProposal = part.input as
+                | ProjectProposal
+                | undefined;
+              const output = part.output as { proposalId?: string } | undefined;
 
-              if (proposal?.name && proposal?.columns) {
+              if (originalProposal?.name && originalProposal?.columns) {
+                const proposalId = output?.proposalId ?? part.toolCallId;
+                const displayProposal = getProposal(
+                  originalProposal,
+                  proposalId,
+                );
+
+                // Only show editable card if there's a pending createProjectFromProposal
+                // and this is the active proposal
+                const isPendingApproval = messages.some((m) =>
+                  m.parts.some(
+                    (p) =>
+                      isToolOrDynamicToolUIPart(p) &&
+                      getToolOrDynamicToolName(p) ===
+                        "createProjectFromProposal" &&
+                      p.state === "approval-requested",
+                  ),
+                );
+
                 elements.push(
                   <div key={`${message.id}-proposal-${part.toolCallId}`}>
-                    <ProjectProposalCard proposal={proposal} />
+                    <ProjectProposalCard
+                      proposal={displayProposal}
+                      editable={
+                        isPendingApproval && proposalId === activeProposalId
+                      }
+                      onProposalChange={(updatedProposal) =>
+                        handleProposalChange(proposalId, updatedProposal)
+                      }
+                    />
                   </div>,
                 );
               } else if (part.state === "output-available") {
@@ -160,7 +256,9 @@ export function ProjectCreationMessages({
                   key={`${message.id}-tool-${part.toolCallId}`}
                   part={part}
                   isLoading={isLoading}
-                  onApprovalResponse={onApprovalResponse}
+                  onApprovalResponse={(response) =>
+                    handleApprovalResponse(response, activeProposalId)
+                  }
                 />,
               );
             } else if (toolName === "proposeProject" && !hasResult) {

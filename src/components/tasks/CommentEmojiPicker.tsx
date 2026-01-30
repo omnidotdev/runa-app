@@ -51,22 +51,19 @@ const CommentEmojiPicker = ({ postId }: Props) => {
   return (
     <PopoverRoot
       lazyMount
-      positioning={{
-        strategy: "fixed",
-        placement: "top",
-      }}
+      positioning={{ strategy: "fixed", placement: "top" }}
       open={isOpen}
       onOpenChange={({ open }) => setIsOpen(open)}
       modal
     >
       <PopoverTrigger asChild>
         <Button
-          size="icon"
           variant="ghost"
-          className="size-7 text-base-400"
-          aria-label="Select Emoji"
+          size="sm"
+          className="h-6 w-6 rounded-full text-muted-foreground hover:text-foreground"
+          aria-label="Add reaction"
         >
-          <SmilePlusIcon className="size-4" />
+          <SmilePlusIcon className="size-3.5" />
         </Button>
       </PopoverTrigger>
       <PopoverPositioner>
@@ -94,7 +91,6 @@ const CommentEmojiPicker = ({ postId }: Props) => {
                   },
                 });
               }
-
               setIsOpen(false);
             }}
           />

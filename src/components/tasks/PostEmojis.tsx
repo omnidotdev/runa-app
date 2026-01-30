@@ -27,76 +27,67 @@ const PostEmojis = ({ postId }: Props) => {
     ...postEmojisOptions({ postId, userId: session?.user?.rowId! }),
     select: (data) => {
       const userEmojis = data.users?.nodes?.[0]?.emojis?.nodes ?? [];
-
       const groupedEmojis =
         data.emojis?.groupedAggregates?.map((group) => {
           const emoji = group.keys?.[0];
           const count = Number(group.distinctCount?.rowId || 0);
           const userEmoji = userEmojis.find((e) => e.emoji === emoji);
-
-          return {
-            emoji,
-            count,
-            userEmoji,
-          };
+          return { emoji, count, userEmoji };
         }) ?? [];
-
       return { groupedEmojis };
     },
   });
 
-  const { mutate: deleteEmoji, isPending: isDeleteEmojiPending } =
-      useDeletePostEmojiMutation({
-        meta: {
-          invalidates: [
-            getQueryKeyPrefix(usePostEmojisQuery),
-            getQueryKeyPrefix(useUserEmojisQuery),
-          ],
-        },
-      }),
-    { mutate: createPostEmoji, isPending: isCreatePostEmojiPending } =
-      useCreatePostEmojiMutation({
-        meta: {
-          invalidates: [
-            getQueryKeyPrefix(usePostEmojisQuery),
-            getQueryKeyPrefix(useUserEmojisQuery),
-          ],
-        },
-      });
+  const { mutate: deleteEmoji, isPending: isDeletePending } =
+    useDeletePostEmojiMutation({
+      meta: {
+        invalidates: [
+          getQueryKeyPrefix(usePostEmojisQuery),
+          getQueryKeyPrefix(useUserEmojisQuery),
+        ],
+      },
+    });
+
+  const { mutate: createPostEmoji, isPending: isCreatePending } =
+    useCreatePostEmojiMutation({
+      meta: {
+        invalidates: [
+          getQueryKeyPrefix(usePostEmojisQuery),
+          getQueryKeyPrefix(useUserEmojisQuery),
+        ],
+      },
+    });
+
+  const isPending = isDeletePending || isCreatePending;
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-1">
       <CommentEmojiPicker postId={postId} />
-
       {postEmojis.groupedEmojis.map(({ emoji, count, userEmoji }) => (
         <Button
           key={emoji}
           variant="ghost"
-          size="icon"
-          disabled={isCreatePostEmojiPending || isDeleteEmojiPending}
+          size="sm"
+          disabled={isPending}
           onClick={() => {
             if (userEmoji) {
               deleteEmoji({ rowId: userEmoji.rowId });
             } else {
               createPostEmoji({
                 input: {
-                  emoji: {
-                    userId: session?.user?.rowId!,
-                    postId,
-                    emoji,
-                  },
+                  emoji: { userId: session?.user?.rowId!, postId, emoji },
                 },
               });
             }
           }}
           className={cn(
-            "inset-ring-1 inset-ring-border h-6 w-6 gap-2 rounded-full transition-transform active:scale-[0.95] disabled:opacity-100",
-            userEmoji &&
-              "inset-ring-primary-200 bg-primary-50 dark:inset-ring-primary-900 dark:bg-primary-950/80",
+            "h-6 gap-1 rounded-full px-1.5 text-[11px]",
+            userEmoji
+              ? "bg-primary/10 text-primary hover:bg-primary/20"
+              : "text-muted-foreground hover:bg-muted",
           )}
         >
           <span>{emoji}</span>
-
           {count > 1 && (
             <span className="tabular-nums">
               <Format.Number

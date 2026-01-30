@@ -6,6 +6,7 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
   CircleDotIcon,
+  ColumnsIcon,
   LayersIcon,
   Loader2Icon,
   PencilIcon,
@@ -18,6 +19,7 @@ import { useState } from "react";
 
 import {
   BATCH_TOOL_NAMES,
+  COLUMN_TOOL_NAMES,
   DELEGATION_TOOL_NAMES,
   DESTRUCTIVE_TOOL_NAMES,
   WRITE_TOOL_NAMES,
@@ -68,6 +70,7 @@ export function ToolCallBubble({
   const isDestructive = DESTRUCTIVE_TOOL_NAMES.has(toolName);
   const isBatch = BATCH_TOOL_NAMES.has(toolName);
   const isDelegation = DELEGATION_TOOL_NAMES.has(toolName);
+  const isColumn = COLUMN_TOOL_NAMES.has(toolName);
 
   const isComplete = part.state === "output-available" || hasResult === true;
   const needsApproval = part.state === "approval-requested";
@@ -81,11 +84,13 @@ export function ToolCallBubble({
     ? Trash2Icon
     : isBatch
       ? LayersIcon
-      : isWrite
-        ? PencilIcon
-        : isDelegation
-          ? UsersIcon
-          : WrenchIcon;
+      : isColumn
+        ? ColumnsIcon
+        : isWrite
+          ? PencilIcon
+          : isDelegation
+            ? UsersIcon
+            : WrenchIcon;
 
   // Approval requested — card with approval actions
   if (needsApproval) {

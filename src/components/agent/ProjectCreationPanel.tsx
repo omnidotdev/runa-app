@@ -8,8 +8,10 @@ import { cn } from "@/lib/utils";
 import { ChatInput } from "./ChatInput";
 import { ProjectCreationErrorBoundary } from "./ProjectCreationErrorBoundary";
 import { ProjectCreationMessages } from "./ProjectCreationMessages";
+import { TemplateSelector } from "./TemplateSelector";
 
 import type { CreatedProject } from "@/lib/ai/useProjectCreationChat";
+import type { ProjectTemplate } from "./TemplateSelector";
 
 interface ProjectCreationPanelProps {
   organizationId: string;
@@ -33,6 +35,7 @@ export function ProjectCreationPanel({
   className,
 }: ProjectCreationPanelProps) {
   const [sessionGeneration, setSessionGeneration] = useState(0);
+  const [showTemplates, setShowTemplates] = useState(true);
   const sessionKey = `new-${sessionGeneration}`;
 
   const handleProjectCreated = useCallback(
@@ -69,6 +72,28 @@ export function ProjectCreationPanel({
 
   const handleStartOver = useCallback(() => {
     setSessionGeneration((prev) => prev + 1);
+    setShowTemplates(true);
+  }, []);
+
+  const handleTemplateSelect = useCallback(
+    (template: ProjectTemplate) => {
+      const message = `Create a ${template.name} project with these columns: ${template.columns.map((c) => c.title).join(", ")}${
+        template.labels?.length
+          ? `. Include these labels: ${template.labels.map((l) => l.name).join(", ")}`
+          : ""
+      }`;
+      setShowTemplates(false);
+      // Auto-send the message
+      sendMessage({
+        role: "user",
+        parts: [{ type: "text", text: message }],
+      });
+    },
+    [sendMessage],
+  );
+
+  const handleSkipTemplates = useCallback(() => {
+    setShowTemplates(false);
   }, []);
 
   // Handle sending messages - convert string to V6 message format
@@ -86,7 +111,7 @@ export function ProjectCreationPanel({
     <div
       ref={panelRef}
       className={cn(
-        "flex h-full w-[420px] shrink-0 flex-col border-l bg-background",
+        "flex h-full w-[400px] shrink-0 flex-col border-l bg-background lg:w-[460px] xl:w-[520px] 2xl:w-[580px]",
         className,
       )}
       role="complementary"
@@ -129,23 +154,34 @@ export function ProjectCreationPanel({
 
       {/* Content wrapped in error boundary */}
       <ProjectCreationErrorBoundary onReset={handleStartOver}>
-        {/* Messages */}
-        <ProjectCreationMessages
-          messages={messages}
-          isLoading={isLoading}
-          error={error}
-          onApprovalResponse={addToolApprovalResponse}
-          onSendMessage={handleSendMessage}
-        />
+        {showTemplates && messages.length === 0 ? (
+          /* Template selection before chat starts */
+          <TemplateSelector
+            onSelect={handleTemplateSelect}
+            onSkip={handleSkipTemplates}
+            className="flex-1"
+          />
+        ) : (
+          <>
+            {/* Messages */}
+            <ProjectCreationMessages
+              messages={messages}
+              isLoading={isLoading}
+              error={error}
+              onApprovalResponse={addToolApprovalResponse}
+              onSendMessage={handleSendMessage}
+            />
 
-        {/* Input */}
-        <ChatInput
-          onSend={handleSendMessage}
-          onStop={stop}
-          isLoading={isLoading}
-          placeholder="Describe your project..."
-          ariaLabel="Describe your project"
-        />
+            {/* Input */}
+            <ChatInput
+              onSend={handleSendMessage}
+              onStop={stop}
+              isLoading={isLoading}
+              placeholder="Describe your project..."
+              ariaLabel="Describe your project"
+            />
+          </>
+        )}
       </ProjectCreationErrorBoundary>
     </div>
   );

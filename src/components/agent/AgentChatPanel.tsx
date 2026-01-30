@@ -17,6 +17,7 @@ import { AgentChatMessages } from "./AgentChatMessages";
 import { AgentPanelHeader } from "./AgentPanelHeader";
 import { AgentPersonaSelector } from "./AgentPersonaSelector";
 import { ChatInput } from "./ChatInput";
+import { RateLimitError } from "./RateLimitError";
 
 import type { UIMessage } from "ai";
 
@@ -114,6 +115,8 @@ export function AgentChatPanel({
     error,
     addToolApprovalResponse,
     setMessages,
+    rateLimitState,
+    clearRateLimit,
   } = useAgentChat({
     projectId,
     sessionId: currentSessionId,
@@ -121,6 +124,9 @@ export function AgentChatPanel({
     personaId: selectedPersonaId,
     onSessionId: handleSessionId,
   });
+
+  // Store the last message for retry after rate limit
+  const lastMessageRef = useRef<string | null>(null);
 
   const { data: sessionData } = useQuery({
     ...agentSessionOptions({ rowId: currentSessionId ?? "" }),
@@ -150,6 +156,7 @@ export function AgentChatPanel({
   // Handle sending messages - convert string to V6 message format
   const handleSendMessage = useCallback(
     (message: string) => {
+      lastMessageRef.current = message;
       sendMessage({
         role: "user",
         parts: [{ type: "text", text: message }],
@@ -157,6 +164,14 @@ export function AgentChatPanel({
     },
     [sendMessage],
   );
+
+  // Handle rate limit retry
+  const handleRateLimitRetry = useCallback(() => {
+    clearRateLimit();
+    if (lastMessageRef.current) {
+      handleSendMessage(lastMessageRef.current);
+    }
+  }, [clearRateLimit, handleSendMessage]);
 
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -212,10 +227,21 @@ export function AgentChatPanel({
             onApprovalResponse={addToolApprovalResponse}
             onSendMessage={handleSendMessage}
           />
+          {rateLimitState?.isLimited && (
+            <div className="border-t px-3 py-2">
+              <RateLimitError
+                retryAfterSeconds={rateLimitState.retryAfterSeconds}
+                limitType={rateLimitState.limitType}
+                onRetry={handleRateLimitRetry}
+                onDismiss={clearRateLimit}
+              />
+            </div>
+          )}
           <ChatInput
             onSend={handleSendMessage}
             onStop={stop}
             isLoading={isLoading}
+            disabled={rateLimitState?.isLimited}
             placeholder="Ask about your project..."
             ariaLabel="Message to AI agent"
           />

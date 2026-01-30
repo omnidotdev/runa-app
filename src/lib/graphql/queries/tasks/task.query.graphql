@@ -28,6 +28,7 @@ query Task($rowId: UUID!) {
         description
         createdAt
         authorId
+        parentId
         author {
           name
           avatarUrl

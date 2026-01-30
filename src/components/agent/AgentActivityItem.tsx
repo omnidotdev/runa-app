@@ -3,11 +3,14 @@ import {
   CheckCircleIcon,
   ChevronDownIcon,
   ClockIcon,
+  Loader2Icon,
   Undo2Icon,
   XCircleIcon,
 } from "lucide-react";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { useUndoActivity } from "@/lib/ai/hooks/useUndoActivity";
 import { formatRelativeTime } from "@/lib/ai/utils/formatRelativeTime";
 import { formatToolName } from "@/lib/ai/utils/formatToolName";
 import { cn } from "@/lib/utils";
@@ -75,6 +78,18 @@ export function AgentActivityItem({
   const StatusIcon = statusConfig.icon;
   const relativeTimestamp = formatRelativeTime(activity.createdAt);
 
+  // Undo functionality
+  const { canUndo, remainingSeconds, undo, isUndoing, undoError, undoSuccess } =
+    useUndoActivity({
+      activityId: activity.rowId,
+      activityCreatedAt:
+        activity.createdAt instanceof Date
+          ? activity.createdAt.toISOString()
+          : String(activity.createdAt),
+      activityStatus: activity.status,
+      hasSnapshot: !!activity.snapshotBefore,
+    });
+
   return (
     <div role="article" className="flex flex-col gap-1 rounded-md border p-2.5">
       <div className="flex items-center gap-2">
@@ -104,6 +119,38 @@ export function AgentActivityItem({
             <span className="text-[10px] text-amber-600 dark:text-amber-400">
               <AlertTriangleIcon className="inline size-2.5" /> Approval
             </span>
+          )}
+          {undoSuccess && (
+            <span className="flex items-center gap-1 text-[10px] text-green-600 dark:text-green-400">
+              <CheckCircleIcon className="size-2.5" />
+              Undone
+            </span>
+          )}
+          {undoError && (
+            <span className="text-[10px] text-destructive">
+              {undoError.message}
+            </span>
+          )}
+          {canUndo && !undoSuccess && !undoError && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => undo()}
+              disabled={isUndoing}
+              className="h-5 gap-1 px-1.5 text-[10px] text-violet-600 hover:bg-violet-100 hover:text-violet-700 dark:text-violet-400 dark:hover:bg-violet-950 dark:hover:text-violet-300"
+              title={
+                remainingSeconds
+                  ? `Undo available for ${remainingSeconds}s`
+                  : "Undo"
+              }
+            >
+              {isUndoing ? (
+                <Loader2Icon className="size-2.5 animate-spin" />
+              ) : (
+                <Undo2Icon className="size-2.5" />
+              )}
+              Undo
+            </Button>
           )}
         </div>
       </div>

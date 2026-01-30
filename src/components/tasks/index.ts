@@ -1,6 +1,5 @@
 export { default as CommentEmojiPicker } from "./CommentEmojiPicker";
 export { default as Comments } from "./Comments";
-export { default as CreateComment } from "./CreateComment";
 export { default as CreateTaskAssignees } from "./CreateTaskAssignees";
 export { default as CreateTaskDatePicker } from "./CreateTaskDatePicker";
 export { default as CreateTaskDialog } from "./CreateTaskDialog";

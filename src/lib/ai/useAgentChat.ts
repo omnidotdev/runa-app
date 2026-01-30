@@ -13,7 +13,7 @@ import {
   isToolOrDynamicToolUIPart,
   lastAssistantMessageIsCompleteWithApprovalResponses,
 } from "ai";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   useAgentActivitiesQuery,
@@ -28,6 +28,12 @@ import { WRITE_TOOL_NAMES } from "./constants";
 import { useAccessToken } from "./hooks/useAccessToken";
 
 import type { UIMessage } from "ai";
+
+export interface RateLimitState {
+  isLimited: boolean;
+  retryAfterSeconds: number;
+  limitType: "user" | "organization";
+}
 
 interface UseAgentChatOptions {
   projectId: string;
@@ -64,6 +70,13 @@ export function useAgentChat({
   const personaIdRef = useRef(personaId ?? null);
   const onSessionIdRef = useRef(onSessionId);
   const lastWriteCountRef = useRef(0);
+
+  // Rate limit state
+  const [rateLimitState, setRateLimitState] = useState<RateLimitState | null>(
+    null,
+  );
+  const rateLimitStateRef = useRef(rateLimitState);
+  rateLimitStateRef.current = rateLimitState;
 
   // Keep refs in sync with latest prop values
   accessTokenRef.current = accessToken;
@@ -115,6 +128,42 @@ export function useAgentChat({
       },
       fetch: async (input, init) => {
         const response = await globalThis.fetch(input, init);
+
+        // Handle rate limit (429) responses
+        if (response.status === 429) {
+          const retryAfter = response.headers.get("Retry-After");
+          const retrySeconds = retryAfter ? parseInt(retryAfter, 10) : 60;
+
+          // Try to parse response body for limit type
+          let limitType: "user" | "organization" = "user";
+          try {
+            const body = await response.clone().json();
+            if (
+              body?.error &&
+              typeof body.error === "string" &&
+              body.error.toLowerCase().includes("organization")
+            ) {
+              limitType = "organization";
+            }
+          } catch {
+            // Ignore parse errors
+          }
+
+          setRateLimitState({
+            isLimited: true,
+            retryAfterSeconds: retrySeconds,
+            limitType,
+          });
+
+          // Return the response as-is — the SDK will handle the error
+          return response;
+        }
+
+        // Clear rate limit state on successful response
+        if (rateLimitStateRef.current?.isLimited) {
+          setRateLimitState(null);
+        }
+
         // Capture session ID from response headers
         try {
           const sid = response.headers.get("X-Agent-Session-Id");
@@ -199,6 +248,10 @@ export function useAgentChat({
     [chatResult],
   );
 
+  const clearRateLimit = useCallback(() => {
+    setRateLimitState(null);
+  }, []);
+
   // Derive loading state from status
   const isLoading =
     chatResult.status === "submitted" || chatResult.status === "streaming";
@@ -215,5 +268,8 @@ export function useAgentChat({
     // Expose regenerate for retry functionality
     regenerate: chatResult.regenerate,
     status: chatResult.status,
+    // Rate limit state
+    rateLimitState,
+    clearRateLimit,
   };
 }

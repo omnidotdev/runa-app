@@ -22,7 +22,6 @@ import {
 import { NotFound } from "@/components/layout";
 import {
   Comments,
-  CreateComment,
   TaskDescription,
   TaskSidebar,
   UpdateAssigneesDialog,
@@ -339,9 +338,8 @@ function TaskPage() {
               description: task?.description,
             }}
           />
-          <Comments />
           <TaskAgentActivity taskId={taskId} projectId={projectId} />
-          <CreateComment />
+          <Comments />
         </div>
 
         {/* Sidebar (Sticky, hidden on mobile) */}
