@@ -17,12 +17,10 @@ export function StreamingIndicator({ className }: StreamingIndicatorProps) {
       role="status"
       aria-label="Agent is thinking"
     >
-      <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10">
-        <div className="thinking-dots text-primary">
-          <span />
-          <span />
-          <span />
-        </div>
+      <div className="thinking-dots text-primary">
+        <span />
+        <span />
+        <span />
       </div>
       <span className="sr-only">Thinking...</span>
     </div>

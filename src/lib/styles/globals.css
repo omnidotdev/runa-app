@@ -350,15 +350,6 @@
       inset 0 0 15px color-mix(in oklch, var(--primary-500) 5%, transparent);
   }
 
-  /* Chat bubble shapes */
-  .bubble-user {
-    border-radius: 1rem 1rem 0.25rem 1rem;
-  }
-
-  .bubble-assistant {
-    border-radius: 1rem 1rem 1rem 0.25rem;
-  }
-
   /* Thinking dots animation - opacity only for smooth performance */
   .thinking-dots {
     display: flex;

@@ -11,6 +11,7 @@ import { getCompletedToolCallIds } from "@/lib/ai/utils";
 import toolRegistryOptions, {
   isProjectCreationTool,
 } from "@/lib/options/toolRegistry.options";
+import { MessageBubble } from "./MessageBubble";
 import { ProjectCreationToolBubble } from "./ProjectCreationToolBubble";
 import { ProjectProposalCard } from "./ProjectProposalCard";
 import {
@@ -139,21 +140,25 @@ export function ProjectCreationMessages({
       messageCount={messages.length}
       ariaLabel="Project creation chat"
     >
-      {messages.map((message) => {
+      {messages.map((message, messageIndex) => {
         if (message.role === "user") {
-          // V6: Extract text from parts
-          const textContent = message.parts
-            .filter(isTextUIPart)
-            .map((part) => part.text)
-            .join("");
-          if (!textContent) return null;
-
           return (
-            <div key={message.id} className="flex justify-end">
-              <div className="bubble-user max-w-[85%] bg-primary px-4 py-2.5 text-primary-foreground text-sm">
-                {textContent}
-              </div>
-            </div>
+            <MessageBubble
+              key={message.id}
+              message={message}
+              isLastAssistant={false}
+              isLoading={isLoading}
+              allCompletedToolCallIds={allCompletedToolCallIds}
+              onApprovalResponse={(response: {
+                id: string;
+                approved: boolean;
+              }) =>
+                onApprovalResponse({
+                  id: response.id,
+                  approved: response.approved,
+                })
+              }
+            />
           );
         }
 
@@ -169,7 +174,7 @@ export function ProjectCreationMessages({
             elements.push(
               <div
                 key={`${message.id}-text`}
-                className="bubble-assistant max-w-[95%] whitespace-pre-wrap border border-border bg-card px-4 py-3 text-sm"
+                className="max-w-[92%] whitespace-pre-wrap rounded-2xl border border-border bg-card px-4 py-3 text-sm"
               >
                 {textContent}
               </div>,
@@ -232,7 +237,7 @@ export function ProjectCreationMessages({
                   elements.push(
                     <div
                       key={`${message.id}-proposal-summary-${part.toolCallId}`}
-                      className="bubble-assistant whitespace-pre-wrap border border-border bg-card px-4 py-3 text-sm"
+                      className="whitespace-pre-wrap rounded-2xl border border-border bg-card px-4 py-3 text-sm"
                     >
                       {output.summary}
                     </div>,
