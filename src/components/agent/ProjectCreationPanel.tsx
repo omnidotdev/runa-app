@@ -45,6 +45,9 @@ export function ProjectCreationPanel({
     [onProjectCreated],
   );
 
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<ProjectTemplate | null>(null);
+
   const {
     messages,
     sendMessage,
@@ -57,6 +60,7 @@ export function ProjectCreationPanel({
     organizationName,
     sessionKey,
     onProjectCreated: handleProjectCreated,
+    template: selectedTemplate,
   });
 
   const panelRef = useRef<HTMLDivElement>(null);
@@ -72,12 +76,14 @@ export function ProjectCreationPanel({
 
   const handleStartOver = useCallback(() => {
     setSessionGeneration((prev) => prev + 1);
+    setSelectedTemplate(null);
     setShowTemplates(true);
   }, []);
 
   const handleTemplateSelect = useCallback(
     (template: ProjectTemplate) => {
       const message = `I'd like to create a ${template.name} project`;
+      setSelectedTemplate(template);
       setShowTemplates(false);
       sendMessage({
         role: "user",

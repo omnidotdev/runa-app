@@ -985,6 +985,7 @@ export type AgentSession = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   messages: Scalars['JSON']['output'];
+  metadata: Scalars['JSON']['output'];
   organizationId: Scalars['String']['output'];
   /** Reads a single `Project` that is related to this `AgentSession`. */
   project?: Maybe<Project>;
@@ -1120,6 +1121,7 @@ export type AgentSessionConnectionGroupedAggregatesArgs = {
 export type AgentSessionDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   messages?: InputMaybe<BigIntFilter>;
+  metadata?: InputMaybe<BigIntFilter>;
   organizationId?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
@@ -1136,6 +1138,8 @@ export type AgentSessionDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of messages across the matching connection */
   messages?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of metadata across the matching connection */
+  metadata?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of organizationId across the matching connection */
   organizationId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
@@ -1207,6 +1211,7 @@ export enum AgentSessionGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Messages = 'MESSAGES',
+  Metadata = 'METADATA',
   OrganizationId = 'ORGANIZATION_ID',
   ProjectId = 'PROJECT_ID',
   Title = 'TITLE',
@@ -1291,6 +1296,7 @@ export type AgentSessionHavingVarianceSampleInput = {
 export type AgentSessionInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   messages?: InputMaybe<Scalars['JSON']['input']>;
+  metadata?: InputMaybe<Scalars['JSON']['input']>;
   organizationId: Scalars['String']['input'];
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -1382,6 +1388,7 @@ export enum AgentSessionOrderBy {
 export type AgentSessionPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   messages?: InputMaybe<Scalars['JSON']['input']>;
+  metadata?: InputMaybe<Scalars['JSON']['input']>;
   organizationId?: InputMaybe<Scalars['String']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
@@ -6741,6 +6748,8 @@ export enum ProjectOrderBy {
   AgentSessionsDistinctCountCreatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_DESC',
   AgentSessionsDistinctCountMessagesAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_ASC',
   AgentSessionsDistinctCountMessagesDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_DESC',
+  AgentSessionsDistinctCountMetadataAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_METADATA_ASC',
+  AgentSessionsDistinctCountMetadataDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_METADATA_DESC',
   AgentSessionsDistinctCountOrganizationIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
   AgentSessionsDistinctCountOrganizationIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
   AgentSessionsDistinctCountProjectIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_PROJECT_ID_ASC',
@@ -10528,6 +10537,8 @@ export enum UserOrderBy {
   AgentSessionsDistinctCountCreatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_DESC',
   AgentSessionsDistinctCountMessagesAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_ASC',
   AgentSessionsDistinctCountMessagesDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_DESC',
+  AgentSessionsDistinctCountMetadataAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_METADATA_ASC',
+  AgentSessionsDistinctCountMetadataDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_METADATA_DESC',
   AgentSessionsDistinctCountOrganizationIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
   AgentSessionsDistinctCountOrganizationIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
   AgentSessionsDistinctCountProjectIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_PROJECT_ID_ASC',

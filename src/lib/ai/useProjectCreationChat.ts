@@ -30,6 +30,7 @@ import { useAccessToken } from "./hooks/useAccessToken";
 
 import type { UIMessage } from "ai";
 import type { ProjectProposal } from "@/components/agent/ProjectProposalCard";
+import type { ProjectTemplate } from "@/components/agent/TemplateSelector";
 
 /** Project data returned after successful creation. */
 export interface CreatedProject {
@@ -50,6 +51,8 @@ interface UseProjectCreationChatOptions {
   onSessionId?: (sessionId: string) => void;
   /** Called when a project is successfully created. */
   onProjectCreated?: (project: CreatedProject, boardUrl: string) => void;
+  /** Optional template selected by the user to guide project structure. */
+  template?: ProjectTemplate | null;
 }
 
 /**
@@ -65,6 +68,7 @@ export function useProjectCreationChat({
   sessionKey,
   onSessionId,
   onProjectCreated,
+  template,
 }: UseProjectCreationChatOptions) {
   const accessToken = useAccessToken();
   const queryClient = useQueryClient();
@@ -72,6 +76,7 @@ export function useProjectCreationChat({
   const accessTokenRef = useRef(accessToken);
   const organizationIdRef = useRef(organizationId);
   const organizationNameRef = useRef(organizationName);
+  const templateRef = useRef(template ?? null);
   const onSessionIdRef = useRef(onSessionId);
   const onProjectCreatedRef = useRef(onProjectCreated);
   const lastCreationCountRef = useRef(0);
@@ -83,6 +88,7 @@ export function useProjectCreationChat({
   accessTokenRef.current = accessToken;
   organizationIdRef.current = organizationId;
   organizationNameRef.current = organizationName;
+  templateRef.current = template ?? null;
   onSessionIdRef.current = onSessionId;
   onProjectCreatedRef.current = onProjectCreated;
 
@@ -106,6 +112,7 @@ export function useProjectCreationChat({
           ? { organizationName: organizationNameRef.current }
           : {}),
         ...(sessionIdRef.current ? { sessionId: sessionIdRef.current } : {}),
+        ...(templateRef.current ? { template: templateRef.current } : {}),
       }),
       prepareSendMessagesRequest: async (options) => {
         // Convert UIMessages to ModelMessages for the backend
@@ -120,6 +127,7 @@ export function useProjectCreationChat({
             ...(sessionIdRef.current
               ? { sessionId: sessionIdRef.current }
               : {}),
+            ...(templateRef.current ? { template: templateRef.current } : {}),
             messages: modelMessages,
           },
           headers: {
