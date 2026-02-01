@@ -86,6 +86,34 @@ export interface CheckoutParams {
 }
 
 /**
+ * Checkout with workspace parameters.
+ * Either workspaceId (upgrade existing) or createWorkspace (new) must be provided.
+ */
+export interface CheckoutWithWorkspaceParams {
+  appId: string;
+  priceId: string;
+  successUrl: string;
+  cancelUrl: string;
+  accessToken: string;
+  /** Upgrade existing workspace */
+  workspaceId?: string;
+  /** Create new workspace */
+  createWorkspace?: {
+    name: string;
+    slug?: string;
+  };
+}
+
+/**
+ * Checkout with workspace response.
+ */
+export interface CheckoutWithWorkspaceResponse {
+  checkoutUrl: string;
+  workspaceSlug: string;
+  organizationId: string;
+}
+
+/**
  * Billing provider interface.
  */
 export interface BillingProvider {
@@ -117,8 +145,17 @@ export interface BillingProvider {
 
   /**
    * Create a checkout session for a new subscription.
+   * @deprecated Use createCheckoutWithWorkspace for new implementations
    */
   createCheckoutSession(params: CheckoutParams): Promise<string>;
+
+  /**
+   * Create a checkout session with workspace creation/selection.
+   * Routes through Aether for orchestration.
+   */
+  createCheckoutWithWorkspace(
+    params: CheckoutWithWorkspaceParams,
+  ): Promise<CheckoutWithWorkspaceResponse>;
 
   /**
    * Get subscription details for an entity.

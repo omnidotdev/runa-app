@@ -20,6 +20,24 @@ const createSubscriptionSchema = z.object({
   successUrl: z.string().url(),
 });
 
+const checkoutWithWorkspaceSchema = z
+  .object({
+    priceId: z.string().startsWith("price_"),
+    successUrl: z.string().url(),
+    cancelUrl: z.string().url(),
+    // Either workspaceId or createWorkspace must be provided
+    workspaceId: z.string().uuid().optional(),
+    createWorkspace: z
+      .object({
+        name: z.string().min(1).max(100),
+        slug: z.string().min(1).max(100).optional(),
+      })
+      .optional(),
+  })
+  .refine((data) => data.workspaceId || data.createWorkspace, {
+    message: "Either workspaceId or createWorkspace is required",
+  });
+
 /**
  * Validate access token or throw.
  */
@@ -108,4 +126,23 @@ export const renewSubscription = createServerFn({ method: "POST" })
       data.organizationId,
       requireAccessToken(context.session.accessToken),
     );
+  });
+
+/**
+ * Create a checkout session with workspace creation/selection.
+ * Routes through Aether for orchestration.
+ */
+export const createCheckoutWithWorkspace = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator((data) => checkoutWithWorkspaceSchema.parse(data))
+  .handler(async ({ data, context }) => {
+    return billing.createCheckoutWithWorkspace({
+      appId: app.name.toLowerCase(),
+      priceId: data.priceId,
+      successUrl: data.successUrl,
+      cancelUrl: data.cancelUrl,
+      accessToken: requireAccessToken(context.session.accessToken),
+      workspaceId: data.workspaceId,
+      createWorkspace: data.createWorkspace,
+    });
   });
