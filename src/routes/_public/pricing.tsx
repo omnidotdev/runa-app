@@ -1,5 +1,6 @@
 import { useTabs } from "@ark-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
 
 import { PriceCard } from "@/components/pricing";
 import {
@@ -49,7 +50,12 @@ const faqItems = [
   },
 ];
 
+const searchSchema = z.object({
+  tier: z.enum(["free", "basic", "team"]).optional(),
+});
+
 export const Route = createFileRoute("/_public/pricing")({
+  validateSearch: searchSchema,
   head: () => ({
     meta: [
       ...createMetaTags({
