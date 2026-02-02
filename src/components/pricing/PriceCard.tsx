@@ -36,13 +36,14 @@ import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
 import { createCheckoutWithWorkspace } from "@/server/functions/subscriptions";
 
-import type { Price } from "@/lib/providers/billing";
+import type { Price, Subscription } from "@/lib/providers/billing";
 
 interface Props {
   price: Price;
+  orgSubscriptions?: Record<string, Subscription | null>;
 }
 
-export const PriceCard = ({ price }: Props) => {
+export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
   const { session } = useRouteContext({ strict: false });
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as { tier?: string };
@@ -55,6 +56,31 @@ export const PriceCard = ({ price }: Props) => {
   const tier = price.metadata?.tier as string;
   const isTeamTier = tier === "team";
   const isFreeTier = tier === "free";
+  const isBasicTier = tier === "basic";
+
+  // Helper to get tier from subscription
+  const getOrgTier = (orgId: string): string | null => {
+    const subscription = orgSubscriptions[orgId];
+    if (!subscription) return "free";
+    // Product name is like "Runa Basic" or "Runa Team"
+    const productName = subscription.product?.name?.toLowerCase() ?? "";
+    if (productName.includes("team")) return "team";
+    if (productName.includes("basic")) return "basic";
+    return "free";
+  };
+
+  // Filter organizations that can upgrade to this tier
+  const upgradeableOrgs =
+    session?.organizations?.filter((org) => {
+      const orgTier = getOrgTier(org.id);
+      // Free tier card: no upgrades shown (use "Get Started" flow)
+      if (isFreeTier) return false;
+      // Basic tier card: only show free orgs
+      if (isBasicTier) return orgTier === "free";
+      // Team tier card: show free and basic orgs
+      if (isTeamTier) return orgTier === "free" || orgTier === "basic";
+      return false;
+    }) ?? [];
 
   // Check if this card's tier matches the URL param (for post-sign-in auto-open)
   const shouldAutoOpen = search.tier === tier && !!session;
@@ -142,12 +168,12 @@ export const PriceCard = ({ price }: Props) => {
     // Has orgs - dropdown handles the rest (menu opens automatically)
   };
 
-  // Determine if we should show the dropdown (authenticated, has orgs, paid tier, SaaS)
+  // Show dropdown if authenticated, has upgradeable orgs or can create new, paid tier, SaaS
   const showDropdown =
     !!session &&
-    !!session.organizations?.length &&
     !isFreeTier &&
-    !isSelfHosted;
+    !isSelfHosted &&
+    !!session.organizations?.length;
 
   const buttonContent = isFreeTier
     ? "Get Started"
@@ -232,33 +258,37 @@ export const PriceCard = ({ price }: Props) => {
                   {isCheckoutLoading ? "Loading..." : buttonContent}
                 </Button>
               </MenuTrigger>
-              <MenuPositioner>
-                <MenuContent className="w-72">
-                  <MenuItemGroup>
-                    <MenuItemGroupLabel className="text-muted-foreground">
-                      Upgrade existing workspace
-                    </MenuItemGroupLabel>
+              <MenuPositioner className="!w-[var(--reference-width)]">
+                <MenuContent className="w-full">
+                  {upgradeableOrgs.length > 0 && (
+                    <>
+                      <MenuItemGroup>
+                        <MenuItemGroupLabel className="text-muted-foreground">
+                          Upgrade existing workspace
+                        </MenuItemGroupLabel>
 
-                    {session.organizations?.map((org) => (
-                      <MenuItem
-                        key={org.id}
-                        value={org.id}
-                        className="cursor-pointer"
-                      >
-                        <MenuItemText className="flex w-full items-center gap-2">
-                          <BuildingIcon
-                            size={16}
-                            className="text-muted-foreground"
-                          />
-                          <span className="flex-1 truncate font-medium text-sm">
-                            {org.name}
-                          </span>
-                        </MenuItemText>
-                      </MenuItem>
-                    ))}
-                  </MenuItemGroup>
+                        {upgradeableOrgs.map((org) => (
+                          <MenuItem
+                            key={org.id}
+                            value={org.id}
+                            className="cursor-pointer"
+                          >
+                            <MenuItemText className="flex w-full items-center gap-2">
+                              <BuildingIcon
+                                size={16}
+                                className="text-muted-foreground"
+                              />
+                              <span className="flex-1 truncate font-medium text-sm">
+                                {org.name}
+                              </span>
+                            </MenuItemText>
+                          </MenuItem>
+                        ))}
+                      </MenuItemGroup>
 
-                  <MenuSeparator />
+                      <MenuSeparator />
+                    </>
+                  )}
 
                   <MenuItemGroup>
                     <MenuItemGroupLabel className="text-muted-foreground">
