@@ -167,8 +167,23 @@ class AetherBillingProvider implements BillingProvider {
     });
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(error.error || "Failed to create checkout session");
+      const errorText = await response.text();
+      console.error(
+        `[billing] Checkout failed: ${response.status} ${response.statusText}`,
+        errorText,
+      );
+
+      let errorMessage = "Failed to create checkout session";
+      try {
+        const errorJson = JSON.parse(errorText);
+        if (errorJson.error) {
+          errorMessage = errorJson.error;
+        }
+      } catch {
+        // Response wasn't JSON
+      }
+
+      throw new Error(errorMessage);
     }
 
     return response.json();
