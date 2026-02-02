@@ -68,7 +68,7 @@ export const PriceCard = ({ price }: Props) => {
       return createCheckoutWithWorkspace({
         data: {
           priceId: price.id,
-          successUrl: `${BASE_URL}/workspaces/{slug}/settings`,
+          successUrl: `${BASE_URL}/workspaces/__SLUG__/settings`,
           cancelUrl: `${BASE_URL}/pricing`,
           ...params,
         },
