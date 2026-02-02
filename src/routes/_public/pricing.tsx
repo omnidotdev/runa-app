@@ -19,8 +19,9 @@ import {
 import { BASE_URL } from "@/lib/config/env.config";
 import pricesOptions from "@/lib/options/prices.options";
 import createMetaTags from "@/lib/util/createMetaTags";
+import { getSubscription } from "@/server/functions/subscriptions";
 
-import type { Price } from "@/lib/providers/billing";
+import type { Price, Subscription } from "@/lib/providers/billing";
 
 export const FREE_PRICE: Price = {
   id: "free",
@@ -65,16 +66,37 @@ export const Route = createFileRoute("/_public/pricing")({
       }),
     ],
   }),
-  loader: async ({ context: { queryClient } }) => {
+  loader: async ({ context: { queryClient, session } }) => {
     const prices = await queryClient.ensureQueryData(pricesOptions());
 
-    return { prices };
+    // Fetch subscriptions for all user organizations to determine current tiers
+    const orgSubscriptions: Record<string, Subscription | null> = {};
+
+    if (session?.organizations) {
+      const subscriptionPromises = session.organizations.map(async (org) => {
+        try {
+          const subscription = await getSubscription({
+            data: { organizationId: org.id },
+          });
+          return { orgId: org.id, subscription };
+        } catch {
+          return { orgId: org.id, subscription: null };
+        }
+      });
+
+      const results = await Promise.all(subscriptionPromises);
+      for (const { orgId, subscription } of results) {
+        orgSubscriptions[orgId] = subscription;
+      }
+    }
+
+    return { prices, orgSubscriptions };
   },
   component: PricingPage,
 });
 
 function PricingPage() {
-  const { prices } = Route.useLoaderData();
+  const { prices, orgSubscriptions } = Route.useLoaderData();
   const { session: _session } = Route.useRouteContext();
 
   const tabs = useTabs({ defaultValue: "month" });
@@ -117,10 +139,17 @@ function PricingPage() {
                 value={tab}
                 className="flex flex-wrap gap-4"
               >
-                <PriceCard price={FREE_PRICE} />
+                <PriceCard
+                  price={FREE_PRICE}
+                  orgSubscriptions={orgSubscriptions}
+                />
 
                 {filteredPrices.map((price) => (
-                  <PriceCard key={price.id} price={price} />
+                  <PriceCard
+                    key={price.id}
+                    price={price}
+                    orgSubscriptions={orgSubscriptions}
+                  />
                 ))}
               </TabsContent>
             ))}
