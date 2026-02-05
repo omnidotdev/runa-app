@@ -68,7 +68,7 @@ interface Props {
   setLocalLabels: Dispatch<SetStateAction<LabelFragment[]>>;
 }
 
-const LabelForm = ({
+const ProjectLabelForm = ({
   label,
   isActive,
   onSetActive,
@@ -134,7 +134,7 @@ const LabelForm = ({
     defaultValues: {
       name: label.name,
       color: label.color ?? "#e4a21b",
-      icon: label.icon ?? null,
+      icon: label.icon ?? "lucide:smile-plus",
     },
     onSubmit: ({ value, formApi }) => {
       if (label.rowId === "pending") {
@@ -221,11 +221,18 @@ const LabelForm = ({
             }}
             disabled={!isActive}
           >
-            <ColorPickerControl className="relative flex items-center disabled:cursor-default">
+            <ColorPickerControl
+              className={cn(
+                "relative flex items-center bg-white disabled:cursor-default",
+                isActive ? "" : "pointer-events-none",
+              )}
+            >
               <ColorPickerTrigger
                 className={cn(
-                  "relative flex size-9 items-center justify-center rounded-md border border-transparent transition-all hover:border-primary hover:bg-accent focus-visible:rounded-md focus-visible:border-2 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-offset-0 focus-visible:ring-offset-background disabled:cursor-default disabled:border-none data-[state=open]:border-primary data-[state=open]:ring-0",
-                  isActive ? "border border-primary" : "pointer-events-none",
+                  "relative flex size-9 items-center justify-center rounded-md border transition-all hover:border-primary hover:bg-accent focus-visible:border-2 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:border-none data-[state=open]:border-primary",
+                  isActive
+                    ? "border-primary bg-background"
+                    : "border-transparent bg-background",
                 )}
               >
                 <div className="size-5 overflow-hidden rounded">
@@ -392,4 +399,4 @@ const LabelForm = ({
   );
 };
 
-export default LabelForm;
+export default ProjectLabelForm;

@@ -190,7 +190,7 @@ const ColumnForm = ({
   const form = useForm({
     defaultValues: {
       title: column.title,
-      icon: column.icon as string | null,
+      icon: column.icon ?? "lucide:smile-plus",
       index: column.index,
     },
     onSubmit: ({ value, formApi }) => {
@@ -279,10 +279,8 @@ const ColumnForm = ({
         {(field) => (
           <IconSelector
             value={field.state.value}
-            onChange={(icon) => field.handleChange(icon)}
-            triggerProps={{
-              disabled: !isActive,
-            }}
+            onChange={field.handleChange}
+            disabled={!isActive}
           />
         )}
       </form.Field>

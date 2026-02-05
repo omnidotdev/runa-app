@@ -9,7 +9,7 @@ import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import labelsOptions from "@/lib/options/labels.options";
 import { Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
-import LabelForm from "./ProjectLabelForm";
+import ProjectLabelForm from "./ProjectLabelForm";
 
 import type { LabelFragment as Label } from "@/generated/graphql";
 
@@ -75,7 +75,7 @@ const ProjectLabelsForm = () => {
       </div>
 
       {isCreatingLabel && (
-        <LabelForm
+        <ProjectLabelForm
           label={{
             rowId: "pending",
             name: "",
@@ -91,7 +91,7 @@ const ProjectLabelsForm = () => {
       {hasLabels ? (
         <div className="flex flex-col divide-y border-y">
           {localLabels.map((label) => (
-            <LabelForm
+            <ProjectLabelForm
               key={label.rowId}
               label={label}
               isActive={activeLabelId === label.rowId}
