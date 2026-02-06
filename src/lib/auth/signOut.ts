@@ -1,23 +1,16 @@
-import authClient from "@/lib/auth/authClient";
-import { clearRowIdCache } from "@/server/functions/auth";
+import { signOutLocal } from "@/server/functions/auth";
 
 /**
- * Sign out from the application.
+ * Sign out from the application with federated logout
  *
- * TODO: Implement federated logout to also sign out from the IDP session.
- * Blocked: Better Auth doesn't expose `end_session_endpoint` in its OIDC provider yet.
- * @see https://linear.app/omnidev/issue/OMNI-304/resolve-federated-logout
+ * Clears local session then redirects to IDP end_session_endpoint
+ * to also clear the identity provider session
  */
 const signOut = async () => {
-  await authClient.signOut({
-    fetchOptions: {
-      onSuccess: async () => {
-        // Clear the rowId cache cookie
-        await clearRowIdCache();
-        window.location.href = "/";
-      },
-    },
-  });
+  const { idpLogoutUrl } = await signOutLocal();
+
+  // Redirect to IDP for federated logout, or fallback to login
+  window.location.href = idpLogoutUrl ?? "/login";
 };
 
 export default signOut;
