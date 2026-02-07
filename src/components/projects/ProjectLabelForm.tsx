@@ -193,7 +193,7 @@ const LabelForm = ({
         form.handleSubmit();
       }}
       className={cn(
-        "group flex h-10 w-full items-center px-2",
+        "group flex h-10 w-full items-center gap-2 px-2",
         isActive || label.rowId === "pending" ? "bg-accent" : "hover:bg-accent",
         hasActiveLabel && !isActive && "pointer-events-none",
       )}
@@ -221,10 +221,17 @@ const LabelForm = ({
             }}
             disabled={!isActive}
           >
-            <ColorPickerControl className="flex items-center disabled:cursor-default">
-              <ColorPickerTrigger className="size-4 rounded-full outline-none transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-default">
-                <ColorPickerTransparencyGrid />
-                <ColorPickerValueSwatch />
+            <ColorPickerControl className="relative flex items-center disabled:cursor-default">
+              <ColorPickerTrigger
+                className={cn(
+                  "relative flex size-9 items-center justify-center rounded-md border border-transparent transition-all hover:border-primary hover:bg-accent focus-visible:rounded-md focus-visible:border-2 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-offset-0 focus-visible:ring-offset-background disabled:cursor-default disabled:border-none data-[state=open]:border-primary data-[state=open]:ring-0",
+                  isActive ? "border border-primary" : "pointer-events-none",
+                )}
+              >
+                <div className="size-5 overflow-hidden rounded">
+                  <ColorPickerTransparencyGrid />
+                  <ColorPickerValueSwatch />
+                </div>
               </ColorPickerTrigger>
             </ColorPickerControl>
 
@@ -277,12 +284,15 @@ const LabelForm = ({
       <form.Field name="name">
         {(field) => (
           <Input
-            ref={inputRef}
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
             disabled={!isActive}
             placeholder="Enter a label name..."
-            className="ml-3 rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+            className={cn(
+              "rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
+              isActive &&
+                "border border-primary bg-background focus-visible:ring-0",
+            )}
             id="label-name-input"
             autoComplete="off"
           />
@@ -342,7 +352,7 @@ const LabelForm = ({
           ]}
         >
           {([canSubmit, isSubmitting, isDefaultValue]) => (
-            <div className="ml-2 flex items-center justify-center">
+            <div className="ml-2 flex items-center justify-center gap-1">
               <Tooltip
                 tooltip="Cancel"
                 trigger={
@@ -354,9 +364,9 @@ const LabelForm = ({
                       form.reset();
                     }}
                     disabled={isSubmitting}
-                    className="focus-visible:ring-offset-0"
+                    className="size-7 hover:text-destructive focus-visible:ring-offset-0"
                   >
-                    <XIcon />
+                    <XIcon className="size-4" />
                   </Button>
                 }
               />
@@ -368,9 +378,9 @@ const LabelForm = ({
                     variant="ghost"
                     size="icon"
                     disabled={!canSubmit || isSubmitting || isDefaultValue}
-                    className="focus-visible:ring-offset-0"
+                    className="size-7 hover:text-green-500 focus-visible:ring-offset-0"
                   >
-                    <CheckIcon />
+                    <CheckIcon className="size-4" />
                   </Button>
                 }
               />

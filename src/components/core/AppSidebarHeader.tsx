@@ -1,4 +1,5 @@
 import {
+  Link,
   useLoaderData,
   useLocation,
   useNavigate,
@@ -47,21 +48,22 @@ const AppSidebarHeader = () => {
 
   return (
     <SidebarHeader>
-      <div className="mb-4 flex justify-between">
-        <div className="flex gap-2">
-          <button
-            type="button"
+      <div className="mb-4 flex items-center gap-2 overflow-auto">
+        <div className="flex items-center gap-2">
+          <SidebarMenuButton
             onClick={toggleSidebar}
-            className="ml-2 cursor-pointer"
+            className="cursor-pointer border border-transparent focus-visible:border focus-visible:border-primary focus-visible:ring-0! focus-visible:ring-offset-0"
+            aria-label="Toggle sidebar"
           >
-            🌙
-          </button>
+            <span>🌙</span>
+          </SidebarMenuButton>
+
           <span className="font-semibold group-data-[collapsible=icon]:hidden">
             {app.name}
           </span>
         </div>
 
-        <Badge className="border-primary-500/20 bg-primary-500/10 text-primary-500 text-xs group-data-[collapsible=icon]:hidden">
+        <Badge className="ml-auto border-primary-500/20 bg-primary-500/10 text-primary-500 text-xs group-data-[collapsible=icon]:hidden">
           Early Access
         </Badge>
       </div>
@@ -79,14 +81,15 @@ const AppSidebarHeader = () => {
           </MenuTrigger>
 
           <MenuPositioner className="w-(--reference-width)!">
-            <MenuContent className="no-scrollbar flex max-h-80 w-full flex-col gap-1 overflow-auto rounded-lg focus:outline-none">
-              {organizations?.map((org) => {
+            <MenuContent className="no-scrollbar flex max-h-80 w-full flex-col gap-0 overflow-auto rounded-lg focus:outline-none">
+              {organizations?.map((org, index) => {
                 const orgSlug = org?.slug ?? org.id;
                 const isWorkspaceSelected = orgSlug === pathname.split("/")[2];
 
                 return (
                   <MenuItem
-                    key={org?.id}
+                    key={`${org?.id}-${index}`}
+                    value={`${org?.name}-${index}`}
                     onClick={() => {
                       closeMobileSidebar();
                       setLastWorkspaceCookie({ data: orgSlug });
@@ -95,11 +98,7 @@ const AppSidebarHeader = () => {
                         params: { workspaceSlug: orgSlug },
                       });
                     }}
-                    className={cn(
-                      "cursor-pointer justify-between gap-1 px-2 py-1",
-                      isWorkspaceSelected && "bg-sidebar-accent",
-                    )}
-                    value={org.name}
+                    className={cn(isWorkspaceSelected && "bg-sidebar-accent")}
                   >
                     {org.name}
 
@@ -110,17 +109,17 @@ const AppSidebarHeader = () => {
 
               <MenuSeparator />
 
-              <MenuItem
-                onClick={() => {
-                  closeMobileSidebar();
-                  navigate({ to: "/workspaces" });
-                }}
-                className="cursor-pointer gap-2 px-2 py-1"
-                value="view-all-workspaces"
-              >
-                <LayoutGridIcon className="size-4" />
-                All Workspaces
-              </MenuItem>
+              <Link to="/workspaces" preload="intent" className="w-full">
+                <MenuItem
+                  value="view-all-workspaces"
+                  onClick={() => {
+                    closeMobileSidebar();
+                  }}
+                >
+                  <LayoutGridIcon className="size-4" />
+                  All Workspaces
+                </MenuItem>
+              </Link>
 
               {/* TODO: Implement in-app workspace creation for self-hosted */}
               {!isSelfHosted && AUTH_BASE_URL && (

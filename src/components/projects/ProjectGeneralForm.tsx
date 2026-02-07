@@ -147,48 +147,108 @@ export default function ProjectGeneralForm() {
     form.reset();
   };
 
+  const canEdit = !isMember;
+  const showEditButton = canEdit && !isEditing;
+  const showEditActions = canEdit && isEditing;
+
   return (
     <div className="flex flex-col">
-      <div className="mb-1 flex h-10 items-center justify-between">
-        <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
-          General
-        </h2>
-
-        {!isMember && !isEditing && (
-          <Tooltip
-            positioning={{ placement: "left" }}
-            tooltip="Edit project details"
-            trigger={
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Edit project details"
-                className="mr-2 size-7"
-                onClick={() => setIsEditing(true)}
-              >
-                <PenLineIcon />
-              </Button>
-            }
-          />
-        )}
-      </div>
-
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           form.handleSubmit();
         }}
-        className="flex flex-col divide-y border-y"
+        className="flex flex-col divide-y"
       >
+        <div className="flex h-10 items-center justify-between pb-1">
+          <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+            General
+          </h2>
+
+          {showEditButton && (
+            <Tooltip
+              positioning={{ placement: "left" }}
+              tooltip="Edit project details"
+              trigger={
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Edit project details"
+                  className="mr-2 size-7"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <PenLineIcon className="size-4" />
+                </Button>
+              }
+            />
+          )}
+
+          {showEditActions && (
+            <div className="flex items-center justify-between px-2 py-2">
+              <div>
+                {parseError && (
+                  <p className="text-red-500 text-sm">{parseError}</p>
+                )}
+              </div>
+
+              <form.Subscribe
+                selector={(state) => [
+                  state.canSubmit,
+                  state.isSubmitting,
+                  state.isDefaultValue,
+                ]}
+              >
+                {([canSubmit, isSubmitting, isDefaultValue]) => (
+                  <div className="ml-2 flex items-center gap-1">
+                    <Tooltip
+                      tooltip="Cancel"
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={handleCancel}
+                          disabled={isSubmitting}
+                          className="size-7 hover:text-destructive focus-visible:ring-destructive focus-visible:ring-offset-0"
+                          aria-label="Cancel"
+                        >
+                          <XIcon className="size-4" />
+                        </Button>
+                      }
+                    />
+
+                    <Tooltip
+                      tooltip="Save"
+                      trigger={
+                        <Button
+                          type="submit"
+                          variant="ghost"
+                          size="icon"
+                          disabled={
+                            !canSubmit || isSubmitting || isDefaultValue
+                          }
+                          className="size-7 hover:text-green-500 focus-visible:ring-green-500 focus-visible:ring-offset-0"
+                          aria-label="Save"
+                        >
+                          <CheckIcon className="size-4" />
+                        </Button>
+                      }
+                    />
+                  </div>
+                )}
+              </form.Subscribe>
+            </div>
+          )}
+        </div>
+
         <div
           className={cn(
             "group flex h-10 w-full items-center",
             isEditing && "bg-accent",
           )}
         >
-          <div className="flex w-24 shrink-0 items-center pl-2 lg:pl-0">
-            <span className="text-base-500 text-sm">Name</span>
+          <div className="flex w-24 shrink-0 items-center pl-2">
+            <span className="text-base-500 text-xs">Name</span>
           </div>
 
           <div className="flex flex-1 items-center gap-2">
@@ -197,12 +257,15 @@ export default function ProjectGeneralForm() {
             <form.Field name="name">
               {(field) => (
                 <Input
-                  ref={inputRef}
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   disabled={!isEditing}
                   placeholder="Project name"
-                  className="rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+                  className={cn(
+                    "rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
+                    isEditing &&
+                      "border border-primary bg-background focus-visible:ring-0",
+                  )}
                   autoComplete="off"
                 />
               )}
@@ -216,8 +279,8 @@ export default function ProjectGeneralForm() {
             isEditing && "bg-accent",
           )}
         >
-          <div className="flex w-24 shrink-0 items-center pl-2 lg:pl-0">
-            <span className="text-base-500 text-sm">Prefix</span>
+          <div className="flex w-24 shrink-0 items-center pl-2">
+            <span className="text-base-500 text-xs">Prefix</span>
           </div>
 
           <form.Field name="prefix">
@@ -229,7 +292,11 @@ export default function ProjectGeneralForm() {
                 }
                 disabled={!isEditing}
                 placeholder="PROJ"
-                className="rounded border-0 font-mono shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+                className={cn(
+                  "rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
+                  isEditing &&
+                    "border border-primary bg-background focus-visible:ring-0",
+                )}
                 autoComplete="off"
               />
             )}
@@ -242,8 +309,8 @@ export default function ProjectGeneralForm() {
             isEditing && "bg-accent",
           )}
         >
-          <div className="flex w-24 shrink-0 items-center pl-2 lg:pl-0">
-            <span className="text-base-500 text-sm">Description</span>
+          <div className="flex w-24 shrink-0 items-center pl-2">
+            <span className="text-base-500 text-xs">Description</span>
           </div>
 
           <form.Field name="description">
@@ -253,64 +320,16 @@ export default function ProjectGeneralForm() {
                 onChange={(e) => field.handleChange(e.target.value)}
                 disabled={!isEditing}
                 placeholder="Add a short description..."
-                className="rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+                className={cn(
+                  "rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
+                  isEditing &&
+                    "border border-primary bg-background focus-visible:ring-0",
+                )}
                 autoComplete="off"
               />
             )}
           </form.Field>
         </div>
-
-        {isEditing && (
-          <div className="flex items-center justify-between bg-accent px-2 py-2">
-            <div>
-              {parseError && (
-                <p className="text-red-500 text-sm">{parseError}</p>
-              )}
-            </div>
-
-            <form.Subscribe
-              selector={(state) => [
-                state.canSubmit,
-                state.isSubmitting,
-                state.isDefaultValue,
-              ]}
-            >
-              {([canSubmit, isSubmitting, isDefaultValue]) => (
-                <div className="flex items-center gap-1">
-                  <Tooltip
-                    tooltip="Cancel"
-                    trigger={
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleCancel}
-                        disabled={isSubmitting}
-                      >
-                        <XIcon className="mr-1 size-4" />
-                        Cancel
-                      </Button>
-                    }
-                  />
-                  <Tooltip
-                    tooltip="Save changes"
-                    trigger={
-                      <Button
-                        type="submit"
-                        variant="solid"
-                        size="sm"
-                        disabled={!canSubmit || isSubmitting || isDefaultValue}
-                      >
-                        <CheckIcon className="mr-1 size-4" />
-                        Save
-                      </Button>
-                    }
-                  />
-                </div>
-              )}
-            </form.Subscribe>
-          </div>
-        )}
       </form>
     </div>
   );

@@ -1,17 +1,13 @@
+import { DialogTrigger } from "@ark-ui/react";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import { SmilePlusIcon, XIcon } from "lucide-react";
+import { SmilePlusIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  PopoverContent,
-  PopoverPositioner,
-  PopoverRoot,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
+import { DialogContent, DialogPositioner, DialogRoot } from "../ui/dialog";
 
 import type { ComponentProps } from "react";
 
@@ -33,49 +29,66 @@ const EmojiSelector = ({
   const isDisabled = triggerProps?.disabled;
 
   return (
-    <PopoverRoot
+    <DialogRoot
       lazyMount
       open={isOpen}
-      onOpenChange={(e) => setIsOpen(e.open)}
+      onOpenChange={({ open }) => setIsOpen(open)}
     >
-      <PopoverTrigger asChild>
+      <DialogTrigger asChild>
         <Button
-          variant="ghost"
+          variant="unstyled"
+          size="icon"
           className={cn(
-            "size-7 border border-transparent p-0 text-md transition-colors",
-            !isDisabled &&
-              "hover:border-border hover:bg-accent hover:text-base-600 dark:hover:text-base-300",
-            isDisabled &&
-              "cursor-default hover:border-transparent hover:bg-transparent",
+            "border-0 text-md transition-colors duration-200 focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0",
+            isDisabled
+              ? "cursor-default opacity-100!"
+              : "border border-primary bg-background",
           )}
           {...triggerProps}
         >
           {value ? (
-            <span>{value}</span>
+            <span className="text-xl">{value}</span>
           ) : (
-            <SmilePlusIcon className="size-4 text-base-400" />
+            <SmilePlusIcon className="size-5 text-muted-foreground" />
           )}
         </Button>
-      </PopoverTrigger>
-      <PopoverPositioner>
-        <PopoverContent className="h-full w-full rounded-xl border-0 p-0">
-          <div className="flex flex-col">
-            {allowClear && value && (
-              <button
-                type="button"
-                onClick={() => {
-                  onChange(null);
-                  setIsOpen(false);
-                }}
-                className="flex items-center gap-2 border-b px-3 py-2 text-base-500 text-sm transition-colors hover:bg-accent hover:text-base-700 dark:hover:text-base-300"
-              >
-                <XIcon className="size-4" />
-                Remove emoji
-              </button>
-            )}
+      </DialogTrigger>
+
+      <DialogPositioner>
+        <DialogContent className="no-scrollbar w-fit rounded-xl p-0">
+          <div className="flex flex-col gap-0">
+            <div className="flex items-center justify-center">
+              {allowClear && value && (
+                <div className="w-full">
+                  <div className="flex w-full items-center justify-between gap-3 rounded-lg p-1 px-3">
+                    <div className="text-3xl" aria-hidden="true">
+                      {value}
+                    </div>
+
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        onChange(null);
+                        setIsOpen(false);
+                      }}
+                      className="flex items-center gap-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      aria-label="Remove selected emoji"
+                    >
+                      <Trash2Icon className="size-4" />
+                      <span className="font-medium text-sm">Remove</span>
+                    </Button>
+                  </div>
+
+                  <hr />
+                </div>
+              )}
+            </div>
+
             <Picker
+              noResultsEmoji={value}
               navPosition="none"
               previewPosition="none"
+              previewEmoji="none"
               skinTonePosition="none"
               emojiButtonRadius="6px"
               autoFocus={true}
@@ -90,9 +103,9 @@ const EmojiSelector = ({
               }}
             />
           </div>
-        </PopoverContent>
-      </PopoverPositioner>
-    </PopoverRoot>
+        </DialogContent>
+      </DialogPositioner>
+    </DialogRoot>
   );
 };
 

@@ -252,7 +252,7 @@ const ColumnForm = ({
         form.handleSubmit();
       }}
       className={cn(
-        "group flex h-10 w-full items-center px-2",
+        "group flex h-10 w-full items-center gap-2 px-2",
         isActive || column.rowId === "pending"
           ? "bg-accent"
           : "hover:bg-accent",
@@ -260,18 +260,20 @@ const ColumnForm = ({
         isDragging && "border-y",
       )}
     >
-      <div
+      <Button
         {...attributes}
         {...listeners}
+        variant="unstyled"
+        size="icon"
         aria-describedby={`DndDescribedBy-${column.rowId}`}
         className={cn(
-          "mr-1 h-9 cursor-move items-center justify-center rounded-sm outline-hidden transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          "w-6 cursor-move items-center justify-center rounded-md outline-hidden transition-[color,box-shadow] focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0",
           canDrag ? "flex" : "invisible",
           isMember && "hidden",
         )}
       >
         <GripVerticalIcon className="flex size-3 text-muted-foreground" />
-      </div>
+      </Button>
 
       <form.Field name="icon">
         {(field) => (
@@ -288,12 +290,15 @@ const ColumnForm = ({
       <form.Field name="title">
         {(field) => (
           <Input
-            ref={inputRef}
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
             disabled={!isActive}
             placeholder="Enter a column name..."
-            className="rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+            className={cn(
+              "rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
+              isActive &&
+                "border border-primary bg-background focus-visible:ring-0",
+            )}
             id="column-name-input"
             autoComplete="off"
           />
@@ -313,6 +318,7 @@ const ColumnForm = ({
               size="icon"
               className="size-7 text-base-400 opacity-0 group-hover:opacity-100"
               tabIndex={isHovering ? 0 : -1}
+              aria-label="More column options"
             >
               <MoreHorizontalIcon />
             </Button>
@@ -365,7 +371,7 @@ const ColumnForm = ({
           ]}
         >
           {([canSubmit, isSubmitting, isDefaultValue]) => (
-            <div className="ml-2 flex items-center justify-center">
+            <div className="ml-2 flex items-center justify-center gap-1">
               <Tooltip
                 tooltip="Cancel"
                 trigger={
@@ -377,9 +383,10 @@ const ColumnForm = ({
                       form.reset();
                     }}
                     disabled={isSubmitting}
-                    className="focus-visible:ring-offset-0"
+                    className="size-7 hover:text-destructive focus-visible:ring-destructive focus-visible:ring-offset-0"
+                    aria-label="Cancel"
                   >
-                    <XIcon />
+                    <XIcon className="size-4" />
                   </Button>
                 }
               />
@@ -392,9 +399,10 @@ const ColumnForm = ({
                     variant="ghost"
                     size="icon"
                     disabled={!canSubmit || isSubmitting || isDefaultValue}
-                    className="focus-visible:ring-offset-0"
+                    className="size-7 hover:text-green-500 focus-visible:ring-green-500 focus-visible:ring-offset-0"
+                    aria-label="Save"
                   >
-                    <CheckIcon />
+                    <CheckIcon className="size-4" />
                   </Button>
                 }
               />

@@ -578,7 +578,7 @@ const SidebarMenuButton = ({
         // Hover styles
         "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         // Focus styles
-        "outline-hidden focus-visible:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring! focus-visible:ring-offset-2! focus-visible:ring-offset-background",
+        "outline-hidden focus-visible:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring! focus-visible:ring-offset-2! focus-visible:ring-offset-background!",
         // Active styles
         "active:text-sidebar-accent-foreground",
         // Disabled and aria-disabled styles
@@ -661,7 +661,7 @@ const SidebarMenuBadge = ({ className, ...rest }: ComponentProps<"div">) => {
       data-slot="sidebar-menu-badge"
       data-sidebar="menu-badge"
       className={cn(
-        "pointer-events-none absolute right-1 flex h-5 min-w-5 select-none items-center justify-center rounded-md px-1 font-medium text-sidebar-foreground text-xs tabular-nums",
+        "pointer-events-none flex select-none items-center justify-center rounded-md border px-1 font-medium text-sidebar-foreground text-sm tabular-nums",
         "peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground",
         "peer-data-[size=sm]/menu-button:top-1",
         "peer-data-[size=default]/menu-button:top-1.5",

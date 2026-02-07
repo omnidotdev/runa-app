@@ -75,7 +75,10 @@ const ColumnSelector = ({
           <SelectControl>
             <SelectTrigger asChild>
               <Button variant="outline" className="w-fit">
-                <LabelIcon icon={triggerIcon} className="size-4" />
+                <LabelIcon
+                  icon={triggerIcon ?? "lucide:smile-plus"}
+                  className="size-4"
+                />
 
                 <p className="hidden text-sm md:flex">{triggerLabel}</p>
               </Button>
