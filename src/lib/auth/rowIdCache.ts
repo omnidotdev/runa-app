@@ -4,20 +4,25 @@ import * as jose from "jose";
 import { getSdk } from "@/generated/graphql.sdk";
 import { API_INTERNAL_GRAPHQL_URL } from "@/lib/config/env.config";
 
+export type { OrganizationClaim } from "@omnidotdev/providers";
+
+import type { OrganizationClaim } from "@omnidotdev/providers";
+
 export const COOKIE_NAME = "runa_rowid_cache";
 export const COOKIE_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
 /**
- * Derive a key from `AUTH_SECRET` using HKDF.
+ * Derive a key from a secret string using HKDF-SHA256.
  */
-async function deriveKey(salt: string, info: string): Promise<Uint8Array> {
-  const { AUTH_SECRET } = process.env;
-  if (!AUTH_SECRET) throw new Error("AUTH_SECRET not configured");
-
+async function deriveKeyFromSecret(
+  secret: string,
+  salt: string,
+  info: string,
+): Promise<Uint8Array> {
   const encoder = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
-    encoder.encode(AUTH_SECRET),
+    encoder.encode(secret),
     "HKDF",
     false,
     ["deriveBits"],
@@ -37,6 +42,16 @@ async function deriveKey(salt: string, info: string): Promise<Uint8Array> {
   );
 }
 
+/**
+ * Derive a key from `AUTH_SECRET` using HKDF.
+ */
+async function deriveKey(salt: string, info: string): Promise<Uint8Array> {
+  const { AUTH_SECRET } = process.env;
+  if (!AUTH_SECRET) throw new Error("AUTH_SECRET not configured");
+
+  return deriveKeyFromSecret(AUTH_SECRET, salt, info);
+}
+
 async function getEncryptionKey(): Promise<Uint8Array> {
   return deriveKey("runa-rowid-cache", "encryption-key");
 }
@@ -54,16 +69,6 @@ interface SelfHostedUserInfo {
   email: string;
   name: string;
   image?: string | null;
-}
-
-/** Organization claim structure - matches HIDRA Gatekeeper format. */
-export interface OrganizationClaim {
-  id: string;
-  name: string;
-  slug: string;
-  type: "personal" | "team";
-  roles: string[];
-  teams: Array<{ id: string; name: string }>;
 }
 
 /** Result of syncing a self-hosted user. */
@@ -236,8 +241,30 @@ export async function encryptAuthData(data: CachedAuthData): Promise<string> {
 }
 
 /**
+ * Parse a decrypted JWE payload into CachedAuthData.
+ */
+function parseCachePayload(
+  payload: jose.JWTDecryptResult["payload"],
+): CachedAuthData | null {
+  if (
+    typeof payload.rowId !== "string" ||
+    typeof payload.identityProviderId !== "string"
+  ) {
+    return null;
+  }
+
+  return {
+    rowId: payload.rowId,
+    identityProviderId: payload.identityProviderId,
+    organizations: Array.isArray(payload.organizations)
+      ? (payload.organizations as OrganizationClaim[])
+      : [],
+  };
+}
+
+/**
  * Decrypt the auth cache.
- * Returns rowId, identityProviderId, and organizations.
+ * Tries current AUTH_SECRET first, falls back to AUTH_SECRET_PREVIOUS for rotation.
  */
 export async function decryptCache(
   encryptedValue: string,
@@ -246,22 +273,24 @@ export async function decryptCache(
     const key = await getEncryptionKey();
     const { payload } = await jose.jwtDecrypt(encryptedValue, key);
 
-    if (
-      typeof payload.rowId !== "string" ||
-      typeof payload.identityProviderId !== "string"
-    ) {
+    return parseCachePayload(payload);
+  } catch {
+    // Try previous key for rotation support
+    const { AUTH_SECRET_PREVIOUS } = process.env;
+    if (!AUTH_SECRET_PREVIOUS) return null;
+
+    try {
+      const previousKey = await deriveKeyFromSecret(
+        AUTH_SECRET_PREVIOUS,
+        "runa-rowid-cache",
+        "encryption-key",
+      );
+      const { payload } = await jose.jwtDecrypt(encryptedValue, previousKey);
+
+      return parseCachePayload(payload);
+    } catch {
       return null;
     }
-
-    return {
-      rowId: payload.rowId,
-      identityProviderId: payload.identityProviderId,
-      organizations: Array.isArray(payload.organizations)
-        ? (payload.organizations as OrganizationClaim[])
-        : [],
-    };
-  } catch {
-    return null;
   }
 }
 
