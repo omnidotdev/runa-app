@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
-import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
+import { BASE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 
 import type { ReactNode } from "react";
@@ -144,9 +144,7 @@ function HomePage() {
                 hoverScale={1.02}
                 glareIntensity={0.25}
                 onClick={() =>
-                  isSelfHosted
-                    ? undefined
-                    : signIn({ redirectUrl: BASE_URL, providerId: "omni" })
+                  signIn({ redirectUrl: BASE_URL, providerId: "omni" })
                 }
                 className="rounded-xl border-0 bg-transparent p-0 shadow-none"
               >
@@ -438,9 +436,7 @@ function HomePage() {
                 hoverScale={1.03}
                 glareIntensity={0.3}
                 onClick={() =>
-                  isSelfHosted
-                    ? undefined
-                    : signIn({ redirectUrl: BASE_URL, providerId: "omni" })
+                  signIn({ redirectUrl: BASE_URL, providerId: "omni" })
                 }
                 className="rounded-xl border-0 bg-transparent p-0 shadow-none"
               >

@@ -1,8 +1,0 @@
-mutation UpdateInvitation($input: UpdateInvitationInput!) {
-  updateInvitation(input: $input) {
-    invitation {
-      rowId
-      status
-    }
-  }
-}

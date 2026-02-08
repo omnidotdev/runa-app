@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { AUTH_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { Role } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
@@ -33,20 +33,14 @@ const WorkspacesTable = ({ organizations }: Props) => {
     return (
       <div className="flex flex-col gap-2">
         <p>
-          {isSelfHosted ? (
-            "Setting up your workspace..."
-          ) : (
-            <>
-              No current workspaces.{" "}
-              <a
-                href={`${AUTH_BASE_URL}/profile`}
-                className="p-0 text-md text-primary-600 underline"
-              >
-                Create a workspace
-              </a>{" "}
-              to get started.
-            </>
-          )}
+          No current workspaces.{" "}
+          <a
+            href={`${AUTH_BASE_URL}/profile`}
+            className="p-0 text-md text-primary-600 underline"
+          >
+            Create a workspace
+          </a>{" "}
+          to get started.
         </p>
       </div>
     );
@@ -92,27 +86,25 @@ const WorkspacesTable = ({ organizations }: Props) => {
                   >
                     Settings
                   </Link>
-                  {/* Manage/Leave via IDP - not available in self-hosted (personal workspace only) */}
-                  {!isSelfHosted &&
-                    (userRole === Role.Owner ? (
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
-                      >
-                        <a href={`${AUTH_BASE_URL}/profile`}>Manage</a>
-                      </Button>
-                    ) : (
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
-                      >
-                        <a href={`${AUTH_BASE_URL}/profile`}>Leave</a>
-                      </Button>
-                    ))}
+                  {userRole === Role.Owner ? (
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
+                    >
+                      <a href={`${AUTH_BASE_URL}/profile`}>Manage</a>
+                    </Button>
+                  ) : (
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
+                    >
+                      <a href={`${AUTH_BASE_URL}/profile`}>Leave</a>
+                    </Button>
+                  )}
                 </div>
               </TableCell>
             </TableRow>

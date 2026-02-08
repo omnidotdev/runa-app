@@ -1,14 +1,9 @@
 /**
  * IDP (Identity Provider) client for organization member management.
- *
- * SaaS: Fetches member data from the IDP (source of truth).
- * Self-hosted: Uses local GraphQL API for org management.
+ * Fetches member data from Gatekeeper (source of truth).
  */
 
-import { AUTH_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
-import getSdk from "@/lib/graphql/getSdk";
-
-import type { MemberRole } from "@/generated/graphql";
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 
 export interface IdpMember {
   id: string;
@@ -29,39 +24,12 @@ export interface IdpMembersResponse {
 }
 
 /**
- * Fetch organization members.
- *
- * SaaS: Fetches from IDP (Gatekeeper).
- * Self-hosted: Fetches from local GraphQL API.
+ * Fetch organization members from Gatekeeper.
  */
 export async function fetchOrganizationMembers(
   organizationId: string,
   accessToken: string,
 ): Promise<IdpMembersResponse> {
-  if (isSelfHosted) {
-    const sdk = await getSdk();
-    const { userOrganizations } = await sdk.OrganizationMembers({
-      organizationId,
-    });
-
-    const members: IdpMember[] =
-      userOrganizations?.nodes?.map((node) => ({
-        id: node.rowId,
-        userId: node.user?.identityProviderId ?? "",
-        organizationId: node.organizationId,
-        role: node.role.toLowerCase() as "owner" | "admin" | "member",
-        createdAt: String(node.createdAt),
-        user: {
-          id: node.user?.identityProviderId ?? "",
-          name: node.user?.name ?? "",
-          email: node.user?.email ?? "",
-          image: node.user?.avatarUrl ?? null,
-        },
-      })) ?? [];
-
-    return { data: members };
-  }
-
   const url = new URL("/api/organization/members", AUTH_BASE_URL);
   url.searchParams.set("orgId", organizationId);
 
@@ -89,10 +57,7 @@ export interface UpdateMemberRoleParams {
 }
 
 /**
- * Update a member's role in the organization.
- *
- * SaaS: Updates via IDP (Gatekeeper).
- * Self-hosted: Updates via local GraphQL API.
+ * Update a member's role in the organization via Gatekeeper.
  */
 export async function updateMemberRole({
   organizationId,
@@ -100,30 +65,6 @@ export async function updateMemberRole({
   role,
   accessToken,
 }: UpdateMemberRoleParams): Promise<IdpMember> {
-  if (isSelfHosted) {
-    const sdk = await getSdk();
-    const { updateUserOrganization } = await sdk.UpdateUserOrganization({
-      input: {
-        rowId: memberId,
-        patch: {
-          role: role as MemberRole,
-        },
-      },
-    });
-
-    const org = updateUserOrganization?.userOrganization;
-    if (!org) throw new Error("Failed to update member role");
-
-    return {
-      id: org.rowId,
-      userId: "",
-      organizationId: org.organizationId,
-      role: org.role.toLowerCase() as "owner" | "admin" | "member",
-      createdAt: new Date().toISOString(),
-      user: { id: "", name: "", email: "", image: null },
-    };
-  }
-
   const url = new URL("/api/organization/members", AUTH_BASE_URL);
   url.searchParams.set("orgId", organizationId);
   url.searchParams.set("memberId", memberId);
@@ -153,22 +94,13 @@ export interface RemoveMemberParams {
 }
 
 /**
- * Remove a member from the organization.
- *
- * SaaS: Removes via IDP (Gatekeeper).
- * Self-hosted: Removes via local GraphQL API.
+ * Remove a member from the organization via Gatekeeper.
  */
 export async function removeMember({
   organizationId,
   memberId,
   accessToken,
 }: RemoveMemberParams): Promise<void> {
-  if (isSelfHosted) {
-    const sdk = await getSdk();
-    await sdk.DeleteUserOrganization({ rowId: memberId });
-    return;
-  }
-
   const url = new URL("/api/organization/members", AUTH_BASE_URL);
   url.searchParams.set("orgId", organizationId);
   url.searchParams.set("memberId", memberId);
@@ -206,10 +138,7 @@ export interface IdpInvitation {
 }
 
 /**
- * Invite a member to the organization.
- *
- * SaaS: Invites via IDP (Gatekeeper).
- * Self-hosted: Creates invitation via local API (Phase 6b).
+ * Invite a member to the organization via Gatekeeper.
  */
 export async function inviteMember({
   organizationId,
@@ -217,12 +146,6 @@ export async function inviteMember({
   role,
   accessToken,
 }: InviteMemberParams): Promise<IdpInvitation> {
-  if (isSelfHosted) {
-    // Self-hosted invite flow handled by invitation server functions (Phase 6b)
-    const { createInvite } = await import("@/server/functions/invitations");
-    return createInvite({ data: { organizationId, email, role } });
-  }
-
   const url = new URL("/api/auth/organization/invite-member", AUTH_BASE_URL);
 
   const response = await fetch(url, {

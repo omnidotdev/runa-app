@@ -1,4 +1,4 @@
-import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { XIcon as CloseIcon, MenuIcon } from "lucide-react";
 import { useState } from "react";
 import { LuGithub as GithubIcon } from "react-icons/lu";
@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
-import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
+import { BASE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_public")({
@@ -25,15 +25,9 @@ export const Route = createFileRoute("/_public")({
 function PublicLayout() {
   const { session } = Route.useRouteContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   const handleSignIn = () => {
-    if (isSelfHosted) {
-      navigate({ to: "/login" });
-    } else {
-      // SaaS mode: use Omni/Gatekeeper OAuth directly
-      signIn({ redirectUrl: BASE_URL, providerId: "omni" });
-    }
+    signIn({ redirectUrl: BASE_URL, providerId: "omni" });
   };
 
   return (

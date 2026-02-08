@@ -24,11 +24,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import app from "@/lib/config/app.config";
-import {
-  AUTH_BASE_URL,
-  CONSOLE_URL,
-  isSelfHosted,
-} from "@/lib/config/env.config";
+import { AUTH_BASE_URL, CONSOLE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
@@ -126,8 +122,7 @@ const AppSidebarHeader = () => {
                 All Workspaces
               </MenuItem>
 
-              {/* TODO: Implement in-app workspace creation for self-hosted */}
-              {!isSelfHosted && AUTH_BASE_URL && (
+              {AUTH_BASE_URL && (
                 <MenuItem
                   asChild
                   className="cursor-pointer gap-2 px-2 py-1"
@@ -143,8 +138,6 @@ const AppSidebarHeader = () => {
           </MenuPositioner>
         </MenuRoot>
       ) : (
-        // TODO: Implement in-app workspace creation for self-hosted
-        !isSelfHosted &&
         AUTH_BASE_URL && (
           <SidebarMenuButton
             asChild
