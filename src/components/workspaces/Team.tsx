@@ -66,8 +66,7 @@ const Team = () => {
     ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
-  // Fetch members from Gatekeeper (SaaS only - IDP is source of truth)
-  // Self-hosted: skip IDP call, user is sole owner of personal workspace
+  // Fetch members from Gatekeeper (IDP is source of truth)
   const { data: membersData } = useQuery({
     ...organizationMembersOptions({
       organizationId: organizationId!,

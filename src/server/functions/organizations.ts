@@ -1,11 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequest, setCookie } from "@tanstack/react-start/server";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 
-import { MemberRole, OrganizationType } from "@/generated/graphql";
-import { COOKIE_NAME, generateUuidV5 } from "@/lib/auth/rowIdCache";
-import { AUTH_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
-import getSdk from "@/lib/graphql/getSdk";
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { authMiddleware } from "@/server/middleware";
 
 const createOrganizationSchema = z.object({
@@ -29,54 +26,17 @@ function generateSlug(name: string): string {
 }
 
 /**
- * Create a new organization.
- *
- * SaaS: Creates via Gatekeeper (IDP).
- * Self-hosted: Creates via local GraphQL API with deterministic org ID.
+ * Create a new organization via Gatekeeper.
  * @knipignore
  */
 export const createOrganization = createServerFn({ method: "POST" })
   .inputValidator((data) => createOrganizationSchema.parse(data))
   .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data }) => {
     const slug = data.slug || generateSlug(data.name);
-
-    if (isSelfHosted) {
-      const userId = context.session?.user?.rowId;
-      if (!userId) throw new Error("Unauthorized");
-
-      // Generate deterministic org ID for team workspaces
-      const organizationId = await generateUuidV5(`org:team:${slug}`);
-
-      const sdk = await getSdk();
-      await sdk.CreateUserOrganization({
-        input: {
-          userOrganization: {
-            userId,
-            organizationId,
-            slug,
-            name: data.name,
-            type: OrganizationType.Team,
-            role: MemberRole.Owner,
-          },
-        },
-      });
-
-      // Clear row ID cache so JWT refreshes with new org claims
-      setCookie(COOKIE_NAME, "", { maxAge: 0, path: "/" });
-
-      return {
-        id: organizationId,
-        name: data.name,
-        slug,
-        type: "team" as const,
-        createdAt: new Date().toISOString(),
-      };
-    }
     const request = getRequest();
 
     // Forward cookies to Gatekeeper for session-based auth
-    // (The OAuth access token is for RP-to-API calls, not IDP calls)
     const cookieHeader = request.headers.get("cookie") || "";
 
     const response = await fetch(`${AUTH_BASE_URL}/organization/create`, {
@@ -131,47 +91,11 @@ export type Organization = {
 /**
  * Get an organization by slug.
  * Used when JWT claims are stale and don't include a newly created org.
- *
- * SaaS: Fetches from Gatekeeper (IDP).
- * Self-hosted: Queries API for user's orgs and finds by slug.
  */
 export const getOrganizationBySlug = createServerFn({ method: "GET" })
   .inputValidator((data) => getOrganizationBySlugSchema.parse(data))
   .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
-    if (isSelfHosted) {
-      // Query API for user's organizations to handle stale JWT cache
-      try {
-        const identityProviderId = context.session?.user?.identityProviderId;
-        if (!identityProviderId) return null;
-
-        const sdk = await getSdk();
-        const { userByIdentityProviderId } = await sdk.UserByIdentityProviderId(
-          { identityProviderId },
-        );
-
-        const org = userByIdentityProviderId?.userOrganizations?.nodes?.find(
-          (o) => o.slug === data.slug,
-        );
-
-        if (!org) return null;
-
-        return {
-          id: org.organizationId,
-          name: org.name ?? data.slug,
-          slug: org.slug,
-          type: org.type as "personal" | "team",
-          createdAt: new Date().toISOString(),
-        } as Organization;
-      } catch (error) {
-        console.error(
-          "[getOrganizationBySlug] Self-hosted lookup failed:",
-          error,
-        );
-        return null;
-      }
-    }
-
+  .handler(async ({ data }) => {
     const request = getRequest();
     const cookieHeader = request.headers.get("cookie") || "";
 

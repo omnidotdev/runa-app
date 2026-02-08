@@ -1,5 +1,4 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { useNavigate } from "@tanstack/react-router";
 import {
   CalendarIcon,
   Grid2X2Icon,
@@ -30,7 +29,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import signIn from "@/lib/auth/signIn";
-import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
+import { BASE_URL } from "@/lib/config/env.config";
 import useAutoScrollOnDrag from "@/lib/hooks/useAutoScrollOnDrag";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import { cn } from "@/lib/utils";
@@ -54,7 +53,6 @@ const BOARD_HEIGHT = 420; // Fixed height to prevent layout shift
  * Demo board for users to try the app.
  */
 const DemoBoard = () => {
-  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [tasks, setTasks] = useState<DemoTask[]>(initialDemoTasks);
   const [selectedTask, setSelectedTask] = useState<DemoTask | null>(null);
@@ -521,9 +519,7 @@ const DemoBoard = () => {
                 <div className="mt-6">
                   <Button
                     onClick={() =>
-                      isSelfHosted
-                        ? navigate({ to: "/login" })
-                        : signIn({ redirectUrl: BASE_URL, providerId: "omni" })
+                      signIn({ redirectUrl: BASE_URL, providerId: "omni" })
                     }
                     className="w-full bg-primary-500 text-base-950 hover:bg-primary-400"
                   >

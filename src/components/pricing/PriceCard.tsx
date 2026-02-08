@@ -30,12 +30,13 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import signIn from "@/lib/auth/signIn";
-import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
+import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
 import { createCheckoutWithWorkspace } from "@/server/functions/subscriptions";
 
+import type { OrganizationClaim } from "@/lib/auth/getAuth";
 import type { Price, Subscription } from "@/lib/providers/billing";
 
 interface Props {
@@ -71,7 +72,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
 
   // Filter organizations that can upgrade to this tier
   const upgradeableOrgs =
-    session?.organizations?.filter((org) => {
+    session?.organizations?.filter((org: OrganizationClaim) => {
       const orgTier = getOrgTier(org.id);
       // Free tier card: no upgrades shown (use "Get Started" flow)
       if (isFreeTier) return false;
@@ -126,22 +127,16 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
 
   const handleClick = () => {
     if (!session) {
-      // Not logged in - sign in first, redirect back to pricing with tier
-      if (isSelfHosted) {
-        navigate({ to: "/login" });
-      } else {
-        signIn({
-          redirectUrl: `${BASE_URL}/pricing?tier=${tier}`,
-          providerId: "omni",
-        });
-      }
+      signIn({
+        redirectUrl: `${BASE_URL}/pricing?tier=${tier}`,
+        providerId: "omni",
+      });
       return;
     }
 
     // Free tier - just go to workspaces
     if (isFreeTier) {
       if (!session.organizations?.length) {
-        // No orgs - go to workspaces (will auto-provision for self-hosted)
         navigate({ to: "/workspaces" });
       } else {
         const firstOrg = session.organizations[0];
@@ -150,12 +145,6 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
           params: { workspaceSlug: firstOrg.slug },
         });
       }
-      return;
-    }
-
-    // Self-hosted mode - no billing, just go to workspaces
-    if (isSelfHosted) {
-      navigate({ to: "/workspaces" });
       return;
     }
 
@@ -168,12 +157,9 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
     // Has orgs - dropdown handles the rest (menu opens automatically)
   };
 
-  // Show dropdown if authenticated, has upgradeable orgs or can create new, paid tier, SaaS
+  // Show dropdown if authenticated, has orgs, paid tier
   const showDropdown =
-    !!session &&
-    !isFreeTier &&
-    !isSelfHosted &&
-    !!session.organizations?.length;
+    !!session && !isFreeTier && !!session.organizations?.length;
 
   const buttonContent = isFreeTier
     ? "Get Started"
@@ -267,7 +253,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
                           Upgrade existing workspace
                         </MenuItemGroupLabel>
 
-                        {upgradeableOrgs.map((org) => (
+                        {upgradeableOrgs.map((org: OrganizationClaim) => (
                           <MenuItem
                             key={org.id}
                             value={org.id}

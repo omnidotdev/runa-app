@@ -2,10 +2,11 @@ import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
 import { useRateLimiter } from "@tanstack/react-pacer/rate-limiter";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { ClipboardCopyIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import ms from "ms";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,16 +31,16 @@ import {
   TagsInputLabel,
   TagsInputRoot,
 } from "@/components/ui/tags-input";
-import { isSelfHosted } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import { useInviteMember } from "@/lib/hooks/useOrganizationMembers";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import { Tier, getTierFromSubscription } from "@/lib/types/tier";
 import { useOrganization } from "@/providers/OrganizationProvider";
-import { inviteSchema } from "@/server/functions/emails";
 
 import type { RefObject } from "react";
+
+const emailSchema = z.email();
 
 const MAX_NUMBER_OF_INVITES = 10;
 
@@ -68,7 +69,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
-  // Fetch current members to check limits (SaaS only)
+  // Fetch current members to check limits
   const { data: membersData } = useQuery({
     ...organizationMembersOptions({
       organizationId: organizationId!,
@@ -94,7 +95,6 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
   const _canInviteMore = memberCount < maxMembers;
 
   const [numberOfToasts, setNumberOfToasts] = useState(0);
-  const [inviteLink, setInviteLink] = useState<string | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
 
   const rateLimiter = useRateLimiter(setNumberOfToasts, {
@@ -107,20 +107,13 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
   const queuer = useAsyncQueuer(
     async (recipientEmail: string) => {
       try {
-        const result = await inviteMemberMutation({
+        await inviteMemberMutation({
           organizationId: organizationId!,
           email: recipientEmail,
           role: "member",
           accessToken: session?.accessToken!,
         });
-        // Show invite link for self-hosted mode
-        const inviteResult = result as unknown as { inviteLink?: string };
-        if (isSelfHosted && inviteResult.inviteLink) {
-          setInviteLink(inviteResult.inviteLink);
-          toast.success("Invite link created");
-        } else {
-          toast.success("Invitation sent");
-        }
+        toast.success("Invitation sent");
       } catch (error) {
         toast.error(
           error instanceof Error ? error.message : "Failed to send invitation",
@@ -156,7 +149,6 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
       onOpenChange={({ open }) => {
         setIsInviteTeamMemberOpen(open);
         form.reset();
-        if (!open) setInviteLink(null);
       }}
       initialFocusEl={() => emailRef.current}
       finalFocusEl={triggerRef ? () => triggerRef.current : undefined}
@@ -214,7 +206,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
                     }
 
                     return emails.every((email) =>
-                      inviteSchema.shape.recipientEmail.safeParse(email),
+                      emailSchema.safeParse(email),
                     );
                   }}
                   value={field.state.value}
@@ -291,35 +283,6 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
               </form.Subscribe>
             </div>
           </form>
-
-          {inviteLink && (
-            <div className="mt-4 rounded-md border bg-muted/50 p-3">
-              <p className="mb-2 font-medium text-sm">Invite Link</p>
-              <div className="flex items-center gap-2">
-                <input
-                  readOnly
-                  value={inviteLink}
-                  className="flex-1 rounded-md border bg-background px-2 py-1 text-xs"
-                  onFocus={(e) => e.target.select()}
-                />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="size-8"
-                  onClick={() => {
-                    navigator.clipboard.writeText(inviteLink);
-                    toast.success("Link copied");
-                  }}
-                  aria-label="Copy invite link"
-                >
-                  <ClipboardCopyIcon className="size-4" />
-                </Button>
-              </div>
-              <p className="mt-1 text-muted-foreground text-xs">
-                Share this link with the person you want to invite
-              </p>
-            </div>
-          )}
         </DialogContent>
       </DialogPositioner>
     </DialogRoot>
