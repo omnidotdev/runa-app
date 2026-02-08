@@ -1,0 +1,5 @@
+mutation DeleteUserOrganization($rowId: UUID!) {
+  deleteUserOrganization(input: { rowId: $rowId }) {
+    clientMutationId
+  }
+}

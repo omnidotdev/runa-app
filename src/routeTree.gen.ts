@@ -12,12 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as ApiVersionRouteImport } from './routes/api/version'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as PublicPricingRouteImport } from './routes/_public/pricing'
 import { Route as PublicLoginRouteImport } from './routes/_public/login'
 import { Route as PublicDemoRouteImport } from './routes/_public/demo'
 import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspaces/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as PublicInviteTokenRouteImport } from './routes/_public/invite.$token'
 import { Route as AuthProfileUserIdRouteImport } from './routes/_auth/profile/$userId'
 import { Route as AuthWorkspacesWorkspaceSlugSettingsRouteImport } from './routes/_auth/workspaces/$workspaceSlug/settings'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/index'
@@ -37,6 +39,11 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicRoute,
+} as any)
+const ApiVersionRoute = ApiVersionRouteImport.update({
+  id: '/api/version',
+  path: '/api/version',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
   id: '/api/health',
@@ -67,6 +74,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PublicInviteTokenRoute = PublicInviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
+  getParentRoute: () => PublicRoute,
 } as any)
 const AuthProfileUserIdRoute = AuthProfileUserIdRouteImport.update({
   id: '/profile/$userId',
@@ -109,8 +121,10 @@ export interface FileRoutesByFullPath {
   '/login': typeof PublicLoginRoute
   '/pricing': typeof PublicPricingRoute
   '/api/health': typeof ApiHealthRoute
+  '/api/version': typeof ApiVersionRoute
   '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
+  '/invite/$token': typeof PublicInviteTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
@@ -124,8 +138,10 @@ export interface FileRoutesByTo {
   '/login': typeof PublicLoginRoute
   '/pricing': typeof PublicPricingRoute
   '/api/health': typeof ApiHealthRoute
+  '/api/version': typeof ApiVersionRoute
   '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AuthProfileUserIdRoute
+  '/invite/$token': typeof PublicInviteTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
@@ -142,8 +158,10 @@ export interface FileRoutesById {
   '/_public/login': typeof PublicLoginRoute
   '/_public/pricing': typeof PublicPricingRoute
   '/api/health': typeof ApiHealthRoute
+  '/api/version': typeof ApiVersionRoute
   '/_public/': typeof PublicIndexRoute
   '/_auth/profile/$userId': typeof AuthProfileUserIdRoute
+  '/_public/invite/$token': typeof PublicInviteTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
   '/_auth/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
@@ -159,8 +177,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/pricing'
     | '/api/health'
+    | '/api/version'
     | '/'
     | '/profile/$userId'
+    | '/invite/$token'
     | '/api/auth/$'
     | '/workspaces'
     | '/workspaces/$workspaceSlug/settings'
@@ -174,8 +194,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/pricing'
     | '/api/health'
+    | '/api/version'
     | '/'
     | '/profile/$userId'
+    | '/invite/$token'
     | '/api/auth/$'
     | '/workspaces'
     | '/workspaces/$workspaceSlug/settings'
@@ -191,8 +213,10 @@ export interface FileRouteTypes {
     | '/_public/login'
     | '/_public/pricing'
     | '/api/health'
+    | '/api/version'
     | '/_public/'
     | '/_auth/profile/$userId'
+    | '/_public/invite/$token'
     | '/api/auth/$'
     | '/_auth/workspaces/'
     | '/_auth/workspaces/$workspaceSlug/settings'
@@ -206,6 +230,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
   ApiHealthRoute: typeof ApiHealthRoute
+  ApiVersionRoute: typeof ApiVersionRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -231,6 +256,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRoute
+    }
+    '/api/version': {
+      id: '/api/version'
+      path: '/api/version'
+      fullPath: '/api/version'
+      preLoaderRoute: typeof ApiVersionRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/health': {
       id: '/api/health'
@@ -273,6 +305,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_public/invite/$token': {
+      id: '/_public/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof PublicInviteTokenRouteImport
+      parentRoute: typeof PublicRoute
     }
     '/_auth/profile/$userId': {
       id: '/_auth/profile/$userId'
@@ -351,6 +390,7 @@ interface PublicRouteChildren {
   PublicLoginRoute: typeof PublicLoginRoute
   PublicPricingRoute: typeof PublicPricingRoute
   PublicIndexRoute: typeof PublicIndexRoute
+  PublicInviteTokenRoute: typeof PublicInviteTokenRoute
 }
 
 const PublicRouteChildren: PublicRouteChildren = {
@@ -358,6 +398,7 @@ const PublicRouteChildren: PublicRouteChildren = {
   PublicLoginRoute: PublicLoginRoute,
   PublicPricingRoute: PublicPricingRoute,
   PublicIndexRoute: PublicIndexRoute,
+  PublicInviteTokenRoute: PublicInviteTokenRoute,
 }
 
 const PublicRouteWithChildren =
@@ -367,6 +408,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
   ApiHealthRoute: ApiHealthRoute,
+  ApiVersionRoute: ApiVersionRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

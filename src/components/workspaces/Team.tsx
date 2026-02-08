@@ -25,7 +25,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { isSelfHosted } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import {
   canModifyMember,
@@ -74,30 +73,10 @@ const Team = () => {
       organizationId: organizationId!,
       accessToken: session?.accessToken!,
     }),
-    enabled: !isSelfHosted && !!organizationId && !!session?.accessToken,
+    enabled: !!organizationId && !!session?.accessToken,
   });
 
-  // Self-hosted: show current user as owner (personal workspace)
-  // SaaS: use members from IDP
-  const members = isSelfHosted
-    ? session
-      ? [
-          {
-            id: "self",
-            userId: session.user.identityProviderId ?? "",
-            organizationId: organizationId ?? "",
-            role: "owner" as const,
-            createdAt: new Date().toISOString(),
-            user: {
-              id: session.user.identityProviderId ?? "",
-              name: session.user.name,
-              email: session.user.email,
-              image: session.user.image ?? null,
-            },
-          },
-        ]
-      : []
-    : (membersData?.data ?? []);
+  const members = membersData?.data ?? [];
 
   // Find current user's role from Gatekeeper members
   const currentUserMember = members.find(
@@ -147,33 +126,30 @@ const Team = () => {
             Team Members
           </h2>
 
-          {/* TODO(self-hosted): Implement team workspace support with local invite flow */}
-          {!isSelfHosted && (
-            <Tooltip
-              positioning={{ placement: "left" }}
-              tooltip={
-                _maxNumberOfMembersReached
-                  ? "Upgrade to invite more members"
-                  : "Invite Member"
-              }
-              trigger={
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Invite team member"
-                  className={cn(
-                    "mr-2 hidden size-7 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:hover:bg-transparent dark:disabled:hover:bg-transparent",
-                    canInvite && "inline-flex",
-                  )}
-                  onClick={() => setIsInviteTeamMemberOpen(true)}
-                  disabled={_maxNumberOfMembersReached}
-                  ref={inviteRef}
-                >
-                  <PlusIcon />
-                </Button>
-              }
-            />
-          )}
+          <Tooltip
+            positioning={{ placement: "left" }}
+            tooltip={
+              _maxNumberOfMembersReached
+                ? "Upgrade to invite more members"
+                : "Invite Member"
+            }
+            trigger={
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Invite team member"
+                className={cn(
+                  "mr-2 hidden size-7 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:hover:bg-transparent dark:disabled:hover:bg-transparent",
+                  canInvite && "inline-flex",
+                )}
+                onClick={() => setIsInviteTeamMemberOpen(true)}
+                disabled={_maxNumberOfMembersReached}
+                ref={inviteRef}
+              >
+                <PlusIcon />
+              </Button>
+            }
+          />
         </div>
 
         {members.length ? (
@@ -333,26 +309,21 @@ const Team = () => {
         )}
       </div>
 
-      {/* Member management dialogs - SaaS only (uses IDP) */}
-      {!isSelfHosted && (
-        <>
-          <DestructiveActionDialog
-            title="Danger Zone"
-            description={`This will remove ${selectedMember?.name} from ${orgName} organization. This action cannot be undone.`}
-            onConfirm={() =>
-              removeMember({
-                organizationId: organizationId!,
-                memberId: selectedMember?.id!,
-                accessToken: session?.accessToken!,
-              })
-            }
-            dialogType={DialogType.DeleteTeamMember}
-            confirmation={selectedMember?.name}
-          />
+      <DestructiveActionDialog
+        title="Danger Zone"
+        description={`This will remove ${selectedMember?.name} from ${orgName} organization. This action cannot be undone.`}
+        onConfirm={() =>
+          removeMember({
+            organizationId: organizationId!,
+            memberId: selectedMember?.id!,
+            accessToken: session?.accessToken!,
+          })
+        }
+        dialogType={DialogType.DeleteTeamMember}
+        confirmation={selectedMember?.name}
+      />
 
-          <InviteMemberDialog triggerRef={inviteRef} />
-        </>
-      )}
+      <InviteMemberDialog triggerRef={inviteRef} />
     </>
   );
 };
