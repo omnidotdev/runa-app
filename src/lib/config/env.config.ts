@@ -26,6 +26,7 @@ export const API_INTERNAL_URL =
     : clientEnv.API_BASE_URL;
 export const BILLING_BASE_URL =
   env.BILLING_BASE_URL || env.VITE_BILLING_BASE_URL;
+export const CONSOLE_URL = env.CONSOLE_URL || env.VITE_CONSOLE_URL;
 
 // Self-hosted flag
 export const SELF_HOSTED = clientEnv.SELF_HOSTED;
