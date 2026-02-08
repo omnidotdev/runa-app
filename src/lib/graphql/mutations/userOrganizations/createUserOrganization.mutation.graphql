@@ -1,0 +1,12 @@
+mutation CreateUserOrganization($input: CreateUserOrganizationInput!) {
+  createUserOrganization(input: $input) {
+    userOrganization {
+      rowId
+      organizationId
+      slug
+      name
+      type
+      role
+    }
+  }
+}

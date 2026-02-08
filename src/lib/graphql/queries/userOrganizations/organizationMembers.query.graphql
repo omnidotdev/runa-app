@@ -1,0 +1,19 @@
+query OrganizationMembers($organizationId: String!) {
+  userOrganizations(condition: { organizationId: $organizationId }) {
+    nodes {
+      rowId
+      organizationId
+      slug
+      name
+      role
+      createdAt
+      user {
+        rowId
+        name
+        email
+        avatarUrl
+        identityProviderId
+      }
+    }
+  }
+}

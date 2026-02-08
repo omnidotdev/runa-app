@@ -1,0 +1,14 @@
+query InvitationByToken($token: String!) {
+  invitations(condition: { token: $token }, first: 1) {
+    nodes {
+      rowId
+      organizationId
+      email
+      role
+      token
+      status
+      expiresAt
+      inviterUserId
+    }
+  }
+}

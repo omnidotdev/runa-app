@@ -1,7 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
+import { getRequest, setCookie } from "@tanstack/react-start/server";
 import { z } from "zod";
 
+import { MemberRole, OrganizationType } from "@/generated/graphql";
+import { COOKIE_NAME, generateUuidV5 } from "@/lib/auth/rowIdCache";
 import { AUTH_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import getSdk from "@/lib/graphql/getSdk";
 import { authMiddleware } from "@/server/middleware";
@@ -27,23 +29,50 @@ function generateSlug(name: string): string {
 }
 
 /**
- * Create a new organization in Gatekeeper (IDP).
- * This allows RPs to create organizations on behalf of users.
+ * Create a new organization.
+ *
+ * SaaS: Creates via Gatekeeper (IDP).
+ * Self-hosted: Creates via local GraphQL API with deterministic org ID.
  * @knipignore
  */
 export const createOrganization = createServerFn({ method: "POST" })
   .inputValidator((data) => createOrganizationSchema.parse(data))
   .middleware([authMiddleware])
-  .handler(async ({ data }) => {
-    // Self-hosted: team workspaces not yet supported
-    // TODO(self-hosted): Implement local team workspace creation
-    if (isSelfHosted) {
-      throw new Error(
-        "Team workspace creation is not available in self-hosted mode.",
-      );
-    }
-
+  .handler(async ({ data, context }) => {
     const slug = data.slug || generateSlug(data.name);
+
+    if (isSelfHosted) {
+      const userId = context.session?.user?.rowId;
+      if (!userId) throw new Error("Unauthorized");
+
+      // Generate deterministic org ID for team workspaces
+      const organizationId = await generateUuidV5(`org:team:${slug}`);
+
+      const sdk = await getSdk();
+      await sdk.CreateUserOrganization({
+        input: {
+          userOrganization: {
+            userId,
+            organizationId,
+            slug,
+            name: data.name,
+            type: OrganizationType.Team,
+            role: MemberRole.Owner,
+          },
+        },
+      });
+
+      // Clear row ID cache so JWT refreshes with new org claims
+      setCookie(COOKIE_NAME, "", { maxAge: 0, path: "/" });
+
+      return {
+        id: organizationId,
+        name: data.name,
+        slug,
+        type: "team" as const,
+        createdAt: new Date().toISOString(),
+      };
+    }
     const request = getRequest();
 
     // Forward cookies to Gatekeeper for session-based auth

@@ -905,6 +905,39 @@ export type CreateEmojiPayloadEmojiEdgeArgs = {
   orderBy?: Array<EmojiOrderBy>;
 };
 
+/** All input for the create `Invitation` mutation. */
+export type CreateInvitationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `Invitation` to be created by this mutation. */
+  invitation: InvitationInput;
+};
+
+/** The output of our create `Invitation` mutation. */
+export type CreateInvitationPayload = {
+  __typename?: 'CreateInvitationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Invitation` that was created by this mutation. */
+  invitation?: Maybe<Invitation>;
+  /** An edge for our `Invitation`. May be used by Relay 1. */
+  invitationEdge?: Maybe<InvitationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `Invitation` mutation. */
+export type CreateInvitationPayloadInvitationEdgeArgs = {
+  orderBy?: Array<InvitationOrderBy>;
+};
+
 /** All input for the create `Label` mutation. */
 export type CreateLabelInput = {
   /**
@@ -1458,6 +1491,50 @@ export type DeleteEmojiPayload = {
 /** The output of our delete `Emoji` mutation. */
 export type DeleteEmojiPayloadEmojiEdgeArgs = {
   orderBy?: Array<EmojiOrderBy>;
+};
+
+/** All input for the `deleteInvitationById` mutation. */
+export type DeleteInvitationByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Invitation` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteInvitation` mutation. */
+export type DeleteInvitationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `Invitation` mutation. */
+export type DeleteInvitationPayload = {
+  __typename?: 'DeleteInvitationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedInvitationId?: Maybe<Scalars['ID']['output']>;
+  /** The `Invitation` that was deleted by this mutation. */
+  invitation?: Maybe<Invitation>;
+  /** An edge for our `Invitation`. May be used by Relay 1. */
+  invitationEdge?: Maybe<InvitationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Invitation` mutation. */
+export type DeleteInvitationPayloadInvitationEdgeArgs = {
+  orderBy?: Array<InvitationOrderBy>;
 };
 
 /** All input for the `deleteLabelById` mutation. */
@@ -2277,6 +2354,315 @@ export type IntFilter = {
   notIn?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
+export type Invitation = Node & {
+  __typename?: 'Invitation';
+  createdAt: Scalars['Datetime']['output'];
+  email?: Maybe<Scalars['String']['output']>;
+  expiresAt: Scalars['Datetime']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  /** Reads a single `User` that is related to this `Invitation`. */
+  inviterUser?: Maybe<User>;
+  inviterUserId: Scalars['UUID']['output'];
+  organizationId: Scalars['String']['output'];
+  role: MemberRole;
+  rowId: Scalars['UUID']['output'];
+  status: InvitationStatus;
+  token: Scalars['String']['output'];
+};
+
+export type InvitationAggregates = {
+  __typename?: 'InvitationAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<InvitationDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Invitation` object types. */
+export type InvitationAggregatesFilter = {
+  /** Distinct count aggregate over matching `Invitation` objects. */
+  distinctCount?: InputMaybe<InvitationDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Invitation` object to be included within the aggregate. */
+  filter?: InputMaybe<InvitationFilter>;
+};
+
+/**
+ * A condition to be used against `Invitation` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type InvitationCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `email` field. */
+  email?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `expiresAt` field. */
+  expiresAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `inviterUserId` field. */
+  inviterUserId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `role` field. */
+  role?: InputMaybe<MemberRole>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: InputMaybe<InvitationStatus>;
+  /** Checks for equality with the object’s `token` field. */
+  token?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** A connection to a list of `Invitation` values. */
+export type InvitationConnection = {
+  __typename?: 'InvitationConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<InvitationAggregates>;
+  /** A list of edges which contains the `Invitation` and cursor to aid in pagination. */
+  edges: Array<InvitationEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<InvitationAggregates>>;
+  /** A list of `Invitation` objects. */
+  nodes: Array<Invitation>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Invitation` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Invitation` values. */
+export type InvitationConnectionGroupedAggregatesArgs = {
+  groupBy: Array<InvitationGroupBy>;
+  having?: InputMaybe<InvitationHavingInput>;
+};
+
+export type InvitationDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  email?: InputMaybe<BigIntFilter>;
+  expiresAt?: InputMaybe<BigIntFilter>;
+  inviterUserId?: InputMaybe<BigIntFilter>;
+  organizationId?: InputMaybe<BigIntFilter>;
+  role?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  status?: InputMaybe<BigIntFilter>;
+  token?: InputMaybe<BigIntFilter>;
+};
+
+export type InvitationDistinctCountAggregates = {
+  __typename?: 'InvitationDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of email across the matching connection */
+  email?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of expiresAt across the matching connection */
+  expiresAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of inviterUserId across the matching connection */
+  inviterUserId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of role across the matching connection */
+  role?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of status across the matching connection */
+  status?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of token across the matching connection */
+  token?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Invitation` edge in the connection. */
+export type InvitationEdge = {
+  __typename?: 'InvitationEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Invitation` at the end of the edge. */
+  node: Invitation;
+};
+
+/** A filter to be used against `Invitation` object types. All fields are combined with a logical ‘and.’ */
+export type InvitationFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<InvitationFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `email` field. */
+  email?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `expiresAt` field. */
+  expiresAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `inviterUser` relation. */
+  inviterUser?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `inviterUserId` field. */
+  inviterUserId?: InputMaybe<UuidFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<InvitationFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<InvitationFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `role` field. */
+  role?: InputMaybe<MemberRoleFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `status` field. */
+  status?: InputMaybe<InvitationStatusFilter>;
+  /** Filter by the object’s `token` field. */
+  token?: InputMaybe<StringFilter>;
+};
+
+/** Grouping methods for `Invitation` for usage during aggregation. */
+export enum InvitationGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Email = 'EMAIL',
+  ExpiresAt = 'EXPIRES_AT',
+  ExpiresAtTruncatedToDay = 'EXPIRES_AT_TRUNCATED_TO_DAY',
+  ExpiresAtTruncatedToHour = 'EXPIRES_AT_TRUNCATED_TO_HOUR',
+  InviterUserId = 'INVITER_USER_ID',
+  OrganizationId = 'ORGANIZATION_ID',
+  Role = 'ROLE',
+  Status = 'STATUS'
+}
+
+export type InvitationHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  expiresAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  expiresAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Invitation` aggregates. */
+export type InvitationHavingInput = {
+  AND?: InputMaybe<Array<InvitationHavingInput>>;
+  OR?: InputMaybe<Array<InvitationHavingInput>>;
+  average?: InputMaybe<InvitationHavingAverageInput>;
+  distinctCount?: InputMaybe<InvitationHavingDistinctCountInput>;
+  max?: InputMaybe<InvitationHavingMaxInput>;
+  min?: InputMaybe<InvitationHavingMinInput>;
+  stddevPopulation?: InputMaybe<InvitationHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<InvitationHavingStddevSampleInput>;
+  sum?: InputMaybe<InvitationHavingSumInput>;
+  variancePopulation?: InputMaybe<InvitationHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<InvitationHavingVarianceSampleInput>;
+};
+
+export type InvitationHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  expiresAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  expiresAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  expiresAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  expiresAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  expiresAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  expiresAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type InvitationHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  expiresAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `Invitation` */
+export type InvitationInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  expiresAt: Scalars['Datetime']['input'];
+  inviterUserId: Scalars['UUID']['input'];
+  organizationId: Scalars['String']['input'];
+  role?: InputMaybe<MemberRole>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  status?: InputMaybe<InvitationStatus>;
+  token: Scalars['String']['input'];
+};
+
+/** Methods to use when ordering `Invitation`. */
+export enum InvitationOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  EmailAsc = 'EMAIL_ASC',
+  EmailDesc = 'EMAIL_DESC',
+  ExpiresAtAsc = 'EXPIRES_AT_ASC',
+  ExpiresAtDesc = 'EXPIRES_AT_DESC',
+  InviterUserIdAsc = 'INVITER_USER_ID_ASC',
+  InviterUserIdDesc = 'INVITER_USER_ID_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  TokenAsc = 'TOKEN_ASC',
+  TokenDesc = 'TOKEN_DESC'
+}
+
+/** Represents an update to a `Invitation`. Fields that are set will be updated. */
+export type InvitationPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  expiresAt?: InputMaybe<Scalars['Datetime']['input']>;
+  inviterUserId?: InputMaybe<Scalars['UUID']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  role?: InputMaybe<MemberRole>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  status?: InputMaybe<InvitationStatus>;
+  token?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum InvitationStatus {
+  Accepted = 'accepted',
+  Expired = 'expired',
+  Pending = 'pending',
+  Revoked = 'revoked'
+}
+
+/** A filter to be used against InvitationStatus fields. All fields are combined with a logical ‘and.’ */
+export type InvitationStatusFilter = {
+  /** Not equal to the specified value, treating null like an ordinary value. */
+  distinctFrom?: InputMaybe<InvitationStatus>;
+  /** Equal to the specified value. */
+  equalTo?: InputMaybe<InvitationStatus>;
+  /** Greater than the specified value. */
+  greaterThan?: InputMaybe<InvitationStatus>;
+  /** Greater than or equal to the specified value. */
+  greaterThanOrEqualTo?: InputMaybe<InvitationStatus>;
+  /** Included in the specified list. */
+  in?: InputMaybe<Array<InvitationStatus>>;
+  /** Is null (if `true` is specified) or is not null (if `false` is specified). */
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Less than the specified value. */
+  lessThan?: InputMaybe<InvitationStatus>;
+  /** Less than or equal to the specified value. */
+  lessThanOrEqualTo?: InputMaybe<InvitationStatus>;
+  /** Equal to the specified value, treating null like an ordinary value. */
+  notDistinctFrom?: InputMaybe<InvitationStatus>;
+  /** Not equal to the specified value. */
+  notEqualTo?: InputMaybe<InvitationStatus>;
+  /** Not included in the specified list. */
+  notIn?: InputMaybe<Array<InvitationStatus>>;
+};
+
 export type Label = Node & {
   __typename?: 'Label';
   color: Scalars['String']['output'];
@@ -2625,6 +3011,8 @@ export type Mutation = {
   createColumn?: Maybe<CreateColumnPayload>;
   /** Creates a single `Emoji`. */
   createEmoji?: Maybe<CreateEmojiPayload>;
+  /** Creates a single `Invitation`. */
+  createInvitation?: Maybe<CreateInvitationPayload>;
   /** Creates a single `Label`. */
   createLabel?: Maybe<CreateLabelPayload>;
   /** Creates a single `Post`. */
@@ -2661,6 +3049,10 @@ export type Mutation = {
   deleteEmoji?: Maybe<DeleteEmojiPayload>;
   /** Deletes a single `Emoji` using its globally unique id. */
   deleteEmojiById?: Maybe<DeleteEmojiPayload>;
+  /** Deletes a single `Invitation` using a unique key. */
+  deleteInvitation?: Maybe<DeleteInvitationPayload>;
+  /** Deletes a single `Invitation` using its globally unique id. */
+  deleteInvitationById?: Maybe<DeleteInvitationPayload>;
   /** Deletes a single `Label` using a unique key. */
   deleteLabel?: Maybe<DeleteLabelPayload>;
   /** Deletes a single `Label` using its globally unique id. */
@@ -2721,6 +3113,10 @@ export type Mutation = {
   updateEmoji?: Maybe<UpdateEmojiPayload>;
   /** Updates a single `Emoji` using its globally unique id and a patch. */
   updateEmojiById?: Maybe<UpdateEmojiPayload>;
+  /** Updates a single `Invitation` using a unique key and a patch. */
+  updateInvitation?: Maybe<UpdateInvitationPayload>;
+  /** Updates a single `Invitation` using its globally unique id and a patch. */
+  updateInvitationById?: Maybe<UpdateInvitationPayload>;
   /** Updates a single `Label` using a unique key and a patch. */
   updateLabel?: Maybe<UpdateLabelPayload>;
   /** Updates a single `Label` using its globally unique id and a patch. */
@@ -2787,6 +3183,12 @@ export type MutationCreateColumnArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateEmojiArgs = {
   input: CreateEmojiInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateInvitationArgs = {
+  input: CreateInvitationInput;
 };
 
 
@@ -2895,6 +3297,18 @@ export type MutationDeleteEmojiArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteEmojiByIdArgs = {
   input: DeleteEmojiByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteInvitationArgs = {
+  input: DeleteInvitationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteInvitationByIdArgs = {
+  input: DeleteInvitationByIdInput;
 };
 
 
@@ -3075,6 +3489,18 @@ export type MutationUpdateEmojiArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateEmojiByIdArgs = {
   input: UpdateEmojiByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateInvitationArgs = {
+  input: UpdateInvitationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateInvitationByIdArgs = {
+  input: UpdateInvitationByIdInput;
 };
 
 
@@ -5224,6 +5650,14 @@ export type Query = Node & {
   emojis?: Maybe<EmojiConnection>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
+  /** Get a single `Invitation`. */
+  invitation?: Maybe<Invitation>;
+  /** Reads a single `Invitation` using its globally unique `ID`. */
+  invitationById?: Maybe<Invitation>;
+  /** Get a single `Invitation`. */
+  invitationByToken?: Maybe<Invitation>;
+  /** Reads and enables pagination through a set of `Invitation`. */
+  invitations?: Maybe<InvitationConnection>;
   /** Get a single `Label`. */
   label?: Maybe<Label>;
   /** Reads a single `Label` using its globally unique `ID`. */
@@ -5407,6 +5841,37 @@ export type QueryEmojisArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<EmojiOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryInvitationArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryInvitationByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryInvitationByTokenArgs = {
+  token: Scalars['String']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryInvitationsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<InvitationCondition>;
+  filter?: InputMaybe<InvitationFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<InvitationOrderBy>>;
 };
 
 
@@ -7161,6 +7626,53 @@ export type UpdateEmojiPayloadEmojiEdgeArgs = {
   orderBy?: Array<EmojiOrderBy>;
 };
 
+/** All input for the `updateInvitationById` mutation. */
+export type UpdateInvitationByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Invitation` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `Invitation` being updated. */
+  patch: InvitationPatch;
+};
+
+/** All input for the `updateInvitation` mutation. */
+export type UpdateInvitationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Invitation` being updated. */
+  patch: InvitationPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `Invitation` mutation. */
+export type UpdateInvitationPayload = {
+  __typename?: 'UpdateInvitationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `Invitation` that was updated by this mutation. */
+  invitation?: Maybe<Invitation>;
+  /** An edge for our `Invitation`. May be used by Relay 1. */
+  invitationEdge?: Maybe<InvitationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `Invitation` mutation. */
+export type UpdateInvitationPayloadInvitationEdgeArgs = {
+  orderBy?: Array<InvitationOrderBy>;
+};
+
 /** All input for the `updateLabelById` mutation. */
 export type UpdateLabelByIdInput = {
   /**
@@ -7743,6 +8255,8 @@ export type User = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   identityProviderId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `Invitation`. */
+  invitationsByInviterUserId: InvitationConnection;
   name: Scalars['String']['output'];
   rowId: Scalars['UUID']['output'];
   updatedAt: Scalars['Datetime']['output'];
@@ -7798,6 +8312,18 @@ export type UserEmojisArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<EmojiOrderBy>>;
+};
+
+
+export type UserInvitationsByInviterUserIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<InvitationCondition>;
+  filter?: InputMaybe<InvitationFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<InvitationOrderBy>>;
 };
 
 
@@ -7928,6 +8454,10 @@ export type UserFilter = {
   emojisExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `identityProviderId` field. */
   identityProviderId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `invitationsByInviterUserId` relation. */
+  invitationsByInviterUserId?: InputMaybe<UserToManyInvitationFilter>;
+  /** Some related `invitationsByInviterUserId` exist. */
+  invitationsByInviterUserIdExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `name` field. */
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
@@ -8141,6 +8671,26 @@ export enum UserOrderBy {
   EmojisDistinctCountUserIdDesc = 'EMOJIS_DISTINCT_COUNT_USER_ID_DESC',
   IdentityProviderIdAsc = 'IDENTITY_PROVIDER_ID_ASC',
   IdentityProviderIdDesc = 'IDENTITY_PROVIDER_ID_DESC',
+  InvitationsByInviterUserIdCountAsc = 'INVITATIONS_BY_INVITER_USER_ID_COUNT_ASC',
+  InvitationsByInviterUserIdCountDesc = 'INVITATIONS_BY_INVITER_USER_ID_COUNT_DESC',
+  InvitationsByInviterUserIdDistinctCountCreatedAtAsc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  InvitationsByInviterUserIdDistinctCountCreatedAtDesc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  InvitationsByInviterUserIdDistinctCountEmailAsc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_EMAIL_ASC',
+  InvitationsByInviterUserIdDistinctCountEmailDesc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_EMAIL_DESC',
+  InvitationsByInviterUserIdDistinctCountExpiresAtAsc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_EXPIRES_AT_ASC',
+  InvitationsByInviterUserIdDistinctCountExpiresAtDesc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_EXPIRES_AT_DESC',
+  InvitationsByInviterUserIdDistinctCountInviterUserIdAsc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_INVITER_USER_ID_ASC',
+  InvitationsByInviterUserIdDistinctCountInviterUserIdDesc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_INVITER_USER_ID_DESC',
+  InvitationsByInviterUserIdDistinctCountOrganizationIdAsc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  InvitationsByInviterUserIdDistinctCountOrganizationIdDesc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  InvitationsByInviterUserIdDistinctCountRoleAsc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_ROLE_ASC',
+  InvitationsByInviterUserIdDistinctCountRoleDesc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_ROLE_DESC',
+  InvitationsByInviterUserIdDistinctCountRowIdAsc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  InvitationsByInviterUserIdDistinctCountRowIdDesc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  InvitationsByInviterUserIdDistinctCountStatusAsc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_STATUS_ASC',
+  InvitationsByInviterUserIdDistinctCountStatusDesc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_STATUS_DESC',
+  InvitationsByInviterUserIdDistinctCountTokenAsc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_TOKEN_ASC',
+  InvitationsByInviterUserIdDistinctCountTokenDesc = 'INVITATIONS_BY_INVITER_USER_ID_DISTINCT_COUNT_TOKEN_DESC',
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
@@ -8796,6 +9346,18 @@ export type UserToManyEmojiFilter = {
   some?: InputMaybe<EmojiFilter>;
 };
 
+/** A filter to be used against many `Invitation` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyInvitationFilter = {
+  /** Aggregates across related `Invitation` match the filter criteria. */
+  aggregates?: InputMaybe<InvitationAggregatesFilter>;
+  /** Every related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<InvitationFilter>;
+  /** No related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<InvitationFilter>;
+  /** Some related `Invitation` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<InvitationFilter>;
+};
+
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
 export type UserToManyPostFilter = {
   /** Aggregates across related `Post` match the filter criteria. */
@@ -8911,6 +9473,20 @@ export type UpdatePostEmojiMutationVariables = Exact<{
 
 
 export type UpdatePostEmojiMutation = { __typename?: 'Mutation', updateEmoji?: { __typename?: 'UpdateEmojiPayload', emoji?: { __typename?: 'Emoji', rowId: string } | null } | null };
+
+export type CreateInvitationMutationVariables = Exact<{
+  input: CreateInvitationInput;
+}>;
+
+
+export type CreateInvitationMutation = { __typename?: 'Mutation', createInvitation?: { __typename?: 'CreateInvitationPayload', invitation?: { __typename?: 'Invitation', rowId: string, organizationId: string, email?: string | null, role: MemberRole, token: string, status: InvitationStatus, expiresAt: Date } | null } | null };
+
+export type UpdateInvitationMutationVariables = Exact<{
+  input: UpdateInvitationInput;
+}>;
+
+
+export type UpdateInvitationMutation = { __typename?: 'Mutation', updateInvitation?: { __typename?: 'UpdateInvitationPayload', invitation?: { __typename?: 'Invitation', rowId: string, status: InvitationStatus } | null } | null };
 
 export type CreateLabelMutationVariables = Exact<{
   input: CreateLabelInput;
@@ -9044,6 +9620,27 @@ export type UpdateTaskMutationVariables = Exact<{
 
 export type UpdateTaskMutation = { __typename?: 'Mutation', updateTask?: { __typename?: 'UpdateTaskPayload', task?: { __typename?: 'Task', rowId: string } | null } | null };
 
+export type CreateUserOrganizationMutationVariables = Exact<{
+  input: CreateUserOrganizationInput;
+}>;
+
+
+export type CreateUserOrganizationMutation = { __typename?: 'Mutation', createUserOrganization?: { __typename?: 'CreateUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', rowId: string, organizationId: string, slug: string, name?: string | null, type: OrganizationType, role: MemberRole } | null } | null };
+
+export type DeleteUserOrganizationMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteUserOrganizationMutation = { __typename?: 'Mutation', deleteUserOrganization?: { __typename?: 'DeleteUserOrganizationPayload', clientMutationId?: string | null } | null };
+
+export type UpdateUserOrganizationMutationVariables = Exact<{
+  input: UpdateUserOrganizationInput;
+}>;
+
+
+export type UpdateUserOrganizationMutation = { __typename?: 'Mutation', updateUserOrganization?: { __typename?: 'UpdateUserOrganizationPayload', userOrganization?: { __typename?: 'UserOrganization', rowId: string, organizationId: string, slug: string, name?: string | null, type: OrganizationType, role: MemberRole } | null } | null };
+
 export type CreateUserPreferenceMutationVariables = Exact<{
   input: CreateUserPreferenceInput;
 }>;
@@ -9088,6 +9685,13 @@ export type UserEmojisQueryVariables = Exact<{
 
 
 export type UserEmojisQuery = { __typename?: 'Query', emojis?: { __typename?: 'EmojiConnection', nodes: Array<{ __typename?: 'Emoji', emoji?: string | null }> } | null };
+
+export type InvitationByTokenQueryVariables = Exact<{
+  token: Scalars['String']['input'];
+}>;
+
+
+export type InvitationByTokenQuery = { __typename?: 'Query', invitations?: { __typename?: 'InvitationConnection', nodes: Array<{ __typename?: 'Invitation', rowId: string, organizationId: string, email?: string | null, role: MemberRole, token: string, status: InvitationStatus, expiresAt: Date, inviterUserId: string }> } | null };
 
 export type LabelsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -9160,6 +9764,13 @@ export type TasksQueryVariables = Exact<{
 
 
 export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: number, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number } }> } | null };
+
+export type OrganizationMembersQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type OrganizationMembersQuery = { __typename?: 'Query', userOrganizations?: { __typename?: 'UserOrganizationConnection', nodes: Array<{ __typename?: 'UserOrganization', rowId: string, organizationId: string, slug: string, name?: string | null, role: MemberRole, createdAt: Date, user?: { __typename?: 'User', rowId: string, name: string, email: string, avatarUrl?: string | null, identityProviderId: string } | null }> } | null };
 
 export type UserPreferencesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -9488,6 +10099,69 @@ useUpdatePostEmojiMutation.getKey = () => ['UpdatePostEmoji'];
 
 
 useUpdatePostEmojiMutation.fetcher = (variables: UpdatePostEmojiMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdatePostEmojiMutation, UpdatePostEmojiMutationVariables>(UpdatePostEmojiDocument, variables, options);
+
+export const CreateInvitationDocument = `
+    mutation CreateInvitation($input: CreateInvitationInput!) {
+  createInvitation(input: $input) {
+    invitation {
+      rowId
+      organizationId
+      email
+      role
+      token
+      status
+      expiresAt
+    }
+  }
+}
+    `;
+
+export const useCreateInvitationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateInvitationMutation, TError, CreateInvitationMutationVariables, TContext>) => {
+    
+    return useMutation<CreateInvitationMutation, TError, CreateInvitationMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateInvitation'],
+    mutationFn: (variables?: CreateInvitationMutationVariables) => graphqlFetch<CreateInvitationMutation, CreateInvitationMutationVariables>(CreateInvitationDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateInvitationMutation.getKey = () => ['CreateInvitation'];
+
+
+useCreateInvitationMutation.fetcher = (variables: CreateInvitationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateInvitationMutation, CreateInvitationMutationVariables>(CreateInvitationDocument, variables, options);
+
+export const UpdateInvitationDocument = `
+    mutation UpdateInvitation($input: UpdateInvitationInput!) {
+  updateInvitation(input: $input) {
+    invitation {
+      rowId
+      status
+    }
+  }
+}
+    `;
+
+export const useUpdateInvitationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateInvitationMutation, TError, UpdateInvitationMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateInvitationMutation, TError, UpdateInvitationMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateInvitation'],
+    mutationFn: (variables?: UpdateInvitationMutationVariables) => graphqlFetch<UpdateInvitationMutation, UpdateInvitationMutationVariables>(UpdateInvitationDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateInvitationMutation.getKey = () => ['UpdateInvitation'];
+
+
+useUpdateInvitationMutation.fetcher = (variables: UpdateInvitationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateInvitationMutation, UpdateInvitationMutationVariables>(UpdateInvitationDocument, variables, options);
 
 export const CreateLabelDocument = `
     mutation CreateLabel($input: CreateLabelInput!) {
@@ -9996,6 +10670,98 @@ useUpdateTaskMutation.getKey = () => ['UpdateTask'];
 
 useUpdateTaskMutation.fetcher = (variables: UpdateTaskMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateTaskMutation, UpdateTaskMutationVariables>(UpdateTaskDocument, variables, options);
 
+export const CreateUserOrganizationDocument = `
+    mutation CreateUserOrganization($input: CreateUserOrganizationInput!) {
+  createUserOrganization(input: $input) {
+    userOrganization {
+      rowId
+      organizationId
+      slug
+      name
+      type
+      role
+    }
+  }
+}
+    `;
+
+export const useCreateUserOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateUserOrganizationMutation, TError, CreateUserOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<CreateUserOrganizationMutation, TError, CreateUserOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateUserOrganization'],
+    mutationFn: (variables?: CreateUserOrganizationMutationVariables) => graphqlFetch<CreateUserOrganizationMutation, CreateUserOrganizationMutationVariables>(CreateUserOrganizationDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateUserOrganizationMutation.getKey = () => ['CreateUserOrganization'];
+
+
+useCreateUserOrganizationMutation.fetcher = (variables: CreateUserOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserOrganizationMutation, CreateUserOrganizationMutationVariables>(CreateUserOrganizationDocument, variables, options);
+
+export const DeleteUserOrganizationDocument = `
+    mutation DeleteUserOrganization($rowId: UUID!) {
+  deleteUserOrganization(input: {rowId: $rowId}) {
+    clientMutationId
+  }
+}
+    `;
+
+export const useDeleteUserOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteUserOrganizationMutation, TError, DeleteUserOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteUserOrganizationMutation, TError, DeleteUserOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteUserOrganization'],
+    mutationFn: (variables?: DeleteUserOrganizationMutationVariables) => graphqlFetch<DeleteUserOrganizationMutation, DeleteUserOrganizationMutationVariables>(DeleteUserOrganizationDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteUserOrganizationMutation.getKey = () => ['DeleteUserOrganization'];
+
+
+useDeleteUserOrganizationMutation.fetcher = (variables: DeleteUserOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUserOrganizationMutation, DeleteUserOrganizationMutationVariables>(DeleteUserOrganizationDocument, variables, options);
+
+export const UpdateUserOrganizationDocument = `
+    mutation UpdateUserOrganization($input: UpdateUserOrganizationInput!) {
+  updateUserOrganization(input: $input) {
+    userOrganization {
+      rowId
+      organizationId
+      slug
+      name
+      type
+      role
+    }
+  }
+}
+    `;
+
+export const useUpdateUserOrganizationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateUserOrganizationMutation, TError, UpdateUserOrganizationMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateUserOrganizationMutation, TError, UpdateUserOrganizationMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateUserOrganization'],
+    mutationFn: (variables?: UpdateUserOrganizationMutationVariables) => graphqlFetch<UpdateUserOrganizationMutation, UpdateUserOrganizationMutationVariables>(UpdateUserOrganizationDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateUserOrganizationMutation.getKey = () => ['UpdateUserOrganization'];
+
+
+useUpdateUserOrganizationMutation.fetcher = (variables: UpdateUserOrganizationMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateUserOrganizationMutation, UpdateUserOrganizationMutationVariables>(UpdateUserOrganizationDocument, variables, options);
+
 export const CreateUserPreferenceDocument = `
     mutation CreateUserPreference($input: CreateUserPreferenceInput!) {
   createUserPreference(input: $input) {
@@ -10365,6 +11131,104 @@ useSuspenseInfiniteUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables
 
 
 useUserEmojisQuery.fetcher = (variables: UserEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, variables, options);
+
+export const InvitationByTokenDocument = `
+    query InvitationByToken($token: String!) {
+  invitations(condition: {token: $token}, first: 1) {
+    nodes {
+      rowId
+      organizationId
+      email
+      role
+      token
+      status
+      expiresAt
+      inviterUserId
+    }
+  }
+}
+    `;
+
+export const useInvitationByTokenQuery = <
+      TData = InvitationByTokenQuery,
+      TError = unknown
+    >(
+      variables: InvitationByTokenQueryVariables,
+      options?: Omit<UseQueryOptions<InvitationByTokenQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<InvitationByTokenQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<InvitationByTokenQuery, TError, TData>(
+      {
+    queryKey: ['InvitationByToken', variables],
+    queryFn: graphqlFetch<InvitationByTokenQuery, InvitationByTokenQueryVariables>(InvitationByTokenDocument, variables),
+    ...options
+  }
+    )};
+
+useInvitationByTokenQuery.getKey = (variables: InvitationByTokenQueryVariables) => ['InvitationByToken', variables];
+
+export const useSuspenseInvitationByTokenQuery = <
+      TData = InvitationByTokenQuery,
+      TError = unknown
+    >(
+      variables: InvitationByTokenQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<InvitationByTokenQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<InvitationByTokenQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<InvitationByTokenQuery, TError, TData>(
+      {
+    queryKey: ['InvitationByTokenSuspense', variables],
+    queryFn: graphqlFetch<InvitationByTokenQuery, InvitationByTokenQueryVariables>(InvitationByTokenDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseInvitationByTokenQuery.getKey = (variables: InvitationByTokenQueryVariables) => ['InvitationByTokenSuspense', variables];
+
+export const useInfiniteInvitationByTokenQuery = <
+      TData = InfiniteData<InvitationByTokenQuery>,
+      TError = unknown
+    >(
+      variables: InvitationByTokenQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<InvitationByTokenQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<InvitationByTokenQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<InvitationByTokenQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['InvitationByToken.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<InvitationByTokenQuery, InvitationByTokenQueryVariables>(InvitationByTokenDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteInvitationByTokenQuery.getKey = (variables: InvitationByTokenQueryVariables) => ['InvitationByToken.infinite', variables];
+
+export const useSuspenseInfiniteInvitationByTokenQuery = <
+      TData = InfiniteData<InvitationByTokenQuery>,
+      TError = unknown
+    >(
+      variables: InvitationByTokenQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<InvitationByTokenQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<InvitationByTokenQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<InvitationByTokenQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['InvitationByToken.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<InvitationByTokenQuery, InvitationByTokenQueryVariables>(InvitationByTokenDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteInvitationByTokenQuery.getKey = (variables: InvitationByTokenQueryVariables) => ['InvitationByToken.infiniteSuspense', variables];
+
+
+useInvitationByTokenQuery.fetcher = (variables: InvitationByTokenQueryVariables, options?: RequestInit['headers']) => graphqlFetch<InvitationByTokenQuery, InvitationByTokenQueryVariables>(InvitationByTokenDocument, variables, options);
 
 export const LabelsDocument = `
     query Labels($projectId: UUID!) {
@@ -11289,6 +12153,109 @@ useSuspenseInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tas
 
 
 useTasksQuery.fetcher = (variables: TasksQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables, options);
+
+export const OrganizationMembersDocument = `
+    query OrganizationMembers($organizationId: String!) {
+  userOrganizations(condition: {organizationId: $organizationId}) {
+    nodes {
+      rowId
+      organizationId
+      slug
+      name
+      role
+      createdAt
+      user {
+        rowId
+        name
+        email
+        avatarUrl
+        identityProviderId
+      }
+    }
+  }
+}
+    `;
+
+export const useOrganizationMembersQuery = <
+      TData = OrganizationMembersQuery,
+      TError = unknown
+    >(
+      variables: OrganizationMembersQueryVariables,
+      options?: Omit<UseQueryOptions<OrganizationMembersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<OrganizationMembersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<OrganizationMembersQuery, TError, TData>(
+      {
+    queryKey: ['OrganizationMembers', variables],
+    queryFn: graphqlFetch<OrganizationMembersQuery, OrganizationMembersQueryVariables>(OrganizationMembersDocument, variables),
+    ...options
+  }
+    )};
+
+useOrganizationMembersQuery.getKey = (variables: OrganizationMembersQueryVariables) => ['OrganizationMembers', variables];
+
+export const useSuspenseOrganizationMembersQuery = <
+      TData = OrganizationMembersQuery,
+      TError = unknown
+    >(
+      variables: OrganizationMembersQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<OrganizationMembersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<OrganizationMembersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<OrganizationMembersQuery, TError, TData>(
+      {
+    queryKey: ['OrganizationMembersSuspense', variables],
+    queryFn: graphqlFetch<OrganizationMembersQuery, OrganizationMembersQueryVariables>(OrganizationMembersDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseOrganizationMembersQuery.getKey = (variables: OrganizationMembersQueryVariables) => ['OrganizationMembersSuspense', variables];
+
+export const useInfiniteOrganizationMembersQuery = <
+      TData = InfiniteData<OrganizationMembersQuery>,
+      TError = unknown
+    >(
+      variables: OrganizationMembersQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<OrganizationMembersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<OrganizationMembersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<OrganizationMembersQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['OrganizationMembers.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<OrganizationMembersQuery, OrganizationMembersQueryVariables>(OrganizationMembersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteOrganizationMembersQuery.getKey = (variables: OrganizationMembersQueryVariables) => ['OrganizationMembers.infinite', variables];
+
+export const useSuspenseInfiniteOrganizationMembersQuery = <
+      TData = InfiniteData<OrganizationMembersQuery>,
+      TError = unknown
+    >(
+      variables: OrganizationMembersQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<OrganizationMembersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<OrganizationMembersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<OrganizationMembersQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['OrganizationMembers.infiniteSuspense', variables],
+      queryFn: (metaData) => graphqlFetch<OrganizationMembersQuery, OrganizationMembersQueryVariables>(OrganizationMembersDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteOrganizationMembersQuery.getKey = (variables: OrganizationMembersQueryVariables) => ['OrganizationMembers.infiniteSuspense', variables];
+
+
+useOrganizationMembersQuery.fetcher = (variables: OrganizationMembersQueryVariables, options?: RequestInit['headers']) => graphqlFetch<OrganizationMembersQuery, OrganizationMembersQueryVariables>(OrganizationMembersDocument, variables, options);
 
 export const UserPreferencesDocument = `
     query UserPreferences($userId: UUID!, $projectId: UUID!) {
