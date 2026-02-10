@@ -28,6 +28,7 @@ if (AUTH_CLIENT_ID && AUTH_CLIENT_SECRET && AUTH_BASE_URL) {
     scopes: ["openid", "profile", "email", "offline_access", "organization"],
     accessType: "offline",
     pkce: true,
+    prompt: "login",
     mapProfileToUser: (profile) => ({
       name: profile.name,
       email: profile.email,
