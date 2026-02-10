@@ -45,7 +45,7 @@ export const signOutAndRedirect = createServerFn({ method: "POST" }).handler(
  * Build the IDP end_session URL for federated logout
  */
 export function getIdpLogoutUrl(): string | null {
-  if (!AUTH_BASE_URL || !AUTH_CLIENT_ID) return null;
+  if (!AUTH_BASE_URL || !AUTH_CLIENT_ID || !BASE_URL) return null;
 
   const endSessionUrl = new URL(`${AUTH_BASE_URL}/oauth2/endsession`);
   endSessionUrl.searchParams.set("client_id", AUTH_CLIENT_ID);
