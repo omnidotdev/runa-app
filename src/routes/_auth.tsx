@@ -1,3 +1,4 @@
+import { createEventsProvider } from "@omnidotdev/providers";
 import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 import { all } from "better-all";
 import { useMemo } from "react";
@@ -8,9 +9,12 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/workspaces";
 import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
+import { EventsProvider } from "@/providers/EventsProvider";
 import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
 import { getOrganizationBySlug } from "@/server/functions/organizations";
+
+const eventsProvider = createEventsProvider({});
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { session } }) => {
@@ -109,18 +113,20 @@ function AuthenticatedLayout() {
   }, [session?.organizations, fetchedOrg]);
 
   return (
-    <OrganizationProvider organizations={organizations}>
-      <SidebarProvider>
-        <div className="flex h-dvh w-full">
-          <AppSidebar variant="inset" />
+    <EventsProvider provider={eventsProvider}>
+      <OrganizationProvider organizations={organizations}>
+        <SidebarProvider>
+          <div className="flex h-dvh w-full">
+            <AppSidebar variant="inset" />
 
-          <SidebarInset className="flex-1 overflow-hidden">
-            <Outlet />
-          </SidebarInset>
-        </div>
+            <SidebarInset className="flex-1 overflow-hidden">
+              <Outlet />
+            </SidebarInset>
+          </div>
 
-        <CreateProjectDialog />
-      </SidebarProvider>
-    </OrganizationProvider>
+          <CreateProjectDialog />
+        </SidebarProvider>
+      </OrganizationProvider>
+    </EventsProvider>
   );
 }
