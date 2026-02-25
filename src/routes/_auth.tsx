@@ -1,4 +1,3 @@
-import { createEventsProvider } from "@omnidotdev/providers";
 import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 import { all } from "better-all";
 import { useMemo } from "react";
@@ -14,7 +13,15 @@ import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
 import { getOrganizationBySlug } from "@/server/functions/organizations";
 
-const eventsProvider = createEventsProvider({});
+// Noop provider for client-side (main @omnidotdev/providers entry requires Node.js)
+const eventsProvider = {
+  async emit() {
+    return {
+      eventId: crypto.randomUUID(),
+      timestamp: new Date().toISOString(),
+    };
+  },
+};
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { session } }) => {
