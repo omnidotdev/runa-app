@@ -101,27 +101,26 @@ const inviteOrganizationMemberSchema = z.object({
 export const inviteOrganizationMember = createServerFn({ method: "POST" })
   .inputValidator((data) => inviteOrganizationMemberSchema.parse(data))
   .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
-    const accessToken = context.session.accessToken;
+  .handler(async ({ data }) => {
+    const request = getRequest();
+    const cookieHeader = request.headers.get("cookie") || "";
 
-    if (!accessToken) {
-      throw new Error("No access token available");
-    }
-
-    const url = new URL("/api/auth/organization/invite-member", AUTH_BASE_URL);
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `${AUTH_BASE_URL}/organization/invite-member`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieHeader,
+          Origin: AUTH_BASE_URL!,
+        },
+        body: JSON.stringify({
+          organizationId: data.organizationId,
+          email: data.email,
+          role: data.role,
+        }),
       },
-      body: JSON.stringify({
-        organizationId: data.organizationId,
-        email: data.email,
-        role: data.role,
-      }),
-    });
+    );
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
