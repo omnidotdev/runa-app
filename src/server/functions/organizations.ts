@@ -101,20 +101,19 @@ const inviteOrganizationMemberSchema = z.object({
 export const inviteOrganizationMember = createServerFn({ method: "POST" })
   .inputValidator((data) => inviteOrganizationMemberSchema.parse(data))
   .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
-    const accessToken = context.session.accessToken;
+  .handler(async ({ data }) => {
+    const request = getRequest();
 
-    if (!accessToken) {
-      throw new Error("No access token available");
-    }
+    // Forward cookies to Gatekeeper for session-based auth
+    const cookieHeader = request.headers.get("cookie") || "";
 
     const response = await fetch(
       `${AUTH_BASE_URL}/organization/invite-member`,
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
+          Cookie: cookieHeader,
           Origin: AUTH_BASE_URL!,
         },
         body: JSON.stringify({
