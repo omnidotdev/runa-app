@@ -115,6 +115,7 @@ export const inviteOrganizationMember = createServerFn({ method: "POST" })
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
+          Origin: AUTH_BASE_URL!,
         },
         body: JSON.stringify({
           organizationId: data.organizationId,
