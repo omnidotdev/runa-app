@@ -111,7 +111,6 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
           organizationId: organizationId!,
           email: recipientEmail,
           role: "member",
-          accessToken: session?.accessToken!,
         });
         toast.success("Invitation sent");
       } catch (error) {

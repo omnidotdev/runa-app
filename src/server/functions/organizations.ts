@@ -88,6 +88,52 @@ export type Organization = {
   createdAt: string;
 };
 
+const inviteOrganizationMemberSchema = z.object({
+  organizationId: z.string(),
+  email: z.string().email(),
+  role: z.enum(["admin", "member"]),
+});
+
+/**
+ * Invite a member to an organization via Gatekeeper.
+ * Runs server-side to avoid CORS issues with the IDP's Better Auth endpoint.
+ */
+export const inviteOrganizationMember = createServerFn({ method: "POST" })
+  .inputValidator((data) => inviteOrganizationMemberSchema.parse(data))
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) => {
+    const accessToken = context.session.accessToken;
+
+    if (!accessToken) {
+      throw new Error("No access token available");
+    }
+
+    const url = new URL("/api/auth/organization/invite-member", AUTH_BASE_URL);
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        organizationId: data.organizationId,
+        email: data.email,
+        role: data.role,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(
+        error.message ||
+          `Failed to invite member: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    return response.json();
+  });
+
 /**
  * Get an organization by slug.
  * Used when JWT claims are stale and don't include a newly created org.

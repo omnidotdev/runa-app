@@ -4,13 +4,10 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { inviteMember, removeMember, updateMemberRole } from "@/lib/idp";
+import { removeMember, updateMemberRole } from "@/lib/idp";
+import { inviteOrganizationMember } from "@/server/functions/organizations";
 
-import type {
-  InviteMemberParams,
-  RemoveMemberParams,
-  UpdateMemberRoleParams,
-} from "@/lib/idp";
+import type { RemoveMemberParams, UpdateMemberRoleParams } from "@/lib/idp";
 
 /**
  * Hook to update a member's role via IDP.
@@ -47,13 +44,18 @@ export function useRemoveMember() {
 }
 
 /**
- * Hook to invite a member via IDP.
+ * Hook to invite a member via server function.
+ * Uses a server function to avoid CORS issues with the IDP's Better Auth endpoint.
  */
 export function useInviteMember() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: InviteMemberParams) => inviteMember(params),
+    mutationFn: (params: {
+      organizationId: string;
+      email: string;
+      role: "admin" | "member";
+    }) => inviteOrganizationMember({ data: params }),
     onSuccess: (_data, variables) => {
       // Invalidate the organization members query to refresh the list
       queryClient.invalidateQueries({
