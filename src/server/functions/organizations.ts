@@ -1,5 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
@@ -32,19 +31,21 @@ function generateSlug(name: string): string {
 export const createOrganization = createServerFn({ method: "POST" })
   .inputValidator((data) => createOrganizationSchema.parse(data))
   .middleware([authMiddleware])
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const slug = data.slug || generateSlug(data.name);
-    const request = getRequest();
+    const accessToken = context.session.accessToken;
 
-    // Forward cookies to Gatekeeper for session-based auth
-    const cookieHeader = request.headers.get("cookie") || "";
+    if (!accessToken) {
+      throw new Error("No access token available");
+    }
 
+    // Use Bearer auth — Gatekeeper's oidcAccessTokenPlugin resolves
+    // opaque access tokens to authenticated sessions
     const response = await fetch(`${AUTH_BASE_URL}/organization/create`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
-        Cookie: cookieHeader,
-        // Use Gatekeeper's own origin for server-to-server calls
         Origin: AUTH_BASE_URL!,
       },
       body: JSON.stringify({
@@ -153,16 +154,21 @@ export const inviteOrganizationMember = createServerFn({ method: "POST" })
 export const getOrganizationBySlug = createServerFn({ method: "GET" })
   .inputValidator((data) => getOrganizationBySlugSchema.parse(data))
   .middleware([authMiddleware])
-  .handler(async ({ data }) => {
-    const request = getRequest();
-    const cookieHeader = request.headers.get("cookie") || "";
+  .handler(async ({ data, context }) => {
+    const accessToken = context.session.accessToken;
 
+    if (!accessToken) {
+      return null;
+    }
+
+    // Use Bearer auth — Gatekeeper's oidcAccessTokenPlugin resolves
+    // opaque access tokens to authenticated sessions
     const response = await fetch(
       `${AUTH_BASE_URL}/organization/get-full-organization?query=${encodeURIComponent(JSON.stringify({ slug: data.slug }))}`,
       {
         method: "GET",
         headers: {
-          Cookie: cookieHeader,
+          Authorization: `Bearer ${accessToken}`,
           Origin: AUTH_BASE_URL!,
         },
       },
