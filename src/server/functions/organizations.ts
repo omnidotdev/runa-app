@@ -60,6 +60,13 @@ export const createOrganization = createServerFn({ method: "POST" })
         `[createOrganization] Failed: ${response.status} ${response.statusText}`,
         errorText,
       );
+
+      if (response.status === 401) {
+        throw new Error(
+          "Session expired — please sign out and sign back in to re-authenticate",
+        );
+      }
+
       let errorMessage = "Failed to create organization";
       try {
         const error = JSON.parse(errorText);
@@ -109,6 +116,11 @@ export const inviteOrganizationMember = createServerFn({ method: "POST" })
       throw new Error("No access token available");
     }
 
+    // biome-ignore lint/suspicious/noConsole: diagnostic logging for token resolution
+    console.debug(
+      `[inviteOrganizationMember] Token: length=${accessToken.length}, hasDots=${accessToken.includes(".")}`,
+    );
+
     // Use Bearer auth — Gatekeeper's oidcAccessTokenPlugin resolves
     // opaque access tokens to authenticated sessions
     const response = await fetch(
@@ -134,6 +146,13 @@ export const inviteOrganizationMember = createServerFn({ method: "POST" })
         `[inviteOrganizationMember] Failed: ${response.status} ${response.statusText}`,
         errorText,
       );
+
+      if (response.status === 401) {
+        throw new Error(
+          "Session expired — please sign out and sign back in to re-authenticate",
+        );
+      }
+
       let errorMessage = "Failed to invite member";
       try {
         const error = JSON.parse(errorText);
