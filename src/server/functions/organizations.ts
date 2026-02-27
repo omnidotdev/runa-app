@@ -63,7 +63,7 @@ export const createOrganization = createServerFn({ method: "POST" })
 
       if (response.status === 401) {
         throw new Error(
-          "Session expired — please sign out and sign back in to re-authenticate",
+          "Session expired. Please sign out and sign back in to re-authenticate.",
         );
       }
 
@@ -149,7 +149,7 @@ export const inviteOrganizationMember = createServerFn({ method: "POST" })
 
       if (response.status === 401) {
         throw new Error(
-          "Session expired — please sign out and sign back in to re-authenticate",
+          "Session expired. Please sign out and sign back in to re-authenticate.",
         );
       }
 
