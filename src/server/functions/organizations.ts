@@ -101,19 +101,22 @@ const inviteOrganizationMemberSchema = z.object({
 export const inviteOrganizationMember = createServerFn({ method: "POST" })
   .inputValidator((data) => inviteOrganizationMemberSchema.parse(data))
   .middleware([authMiddleware])
-  .handler(async ({ data }) => {
-    const request = getRequest();
+  .handler(async ({ data, context }) => {
+    const accessToken = context.session.accessToken;
 
-    // Forward cookies to Gatekeeper for session-based auth
-    const cookieHeader = request.headers.get("cookie") || "";
+    if (!accessToken) {
+      throw new Error("No access token available");
+    }
 
+    // Use Bearer auth — Gatekeeper's oidcAccessTokenPlugin resolves
+    // opaque access tokens to authenticated sessions
     const response = await fetch(
       `${AUTH_BASE_URL}/organization/invite-member`,
       {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
-          Cookie: cookieHeader,
           Origin: AUTH_BASE_URL!,
         },
         body: JSON.stringify({
@@ -125,11 +128,19 @@ export const inviteOrganizationMember = createServerFn({ method: "POST" })
     );
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(
-        error.message ||
-          `Failed to invite member: ${response.status} ${response.statusText}`,
+      const errorText = await response.text();
+      console.error(
+        `[inviteOrganizationMember] Failed: ${response.status} ${response.statusText}`,
+        errorText,
       );
+      let errorMessage = "Failed to invite member";
+      try {
+        const error = JSON.parse(errorText);
+        errorMessage = error.message || error.error || errorMessage;
+      } catch {
+        errorMessage = errorText || errorMessage;
+      }
+      throw new Error(errorMessage);
     }
 
     return response.json();
