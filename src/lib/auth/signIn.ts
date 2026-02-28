@@ -11,10 +11,14 @@ interface Params {
  * Sign in with OAuth2 provider.
  */
 const signIn = async ({ redirectUrl, providerId }: Params) => {
-  await authClient.signIn.oauth2({
+  const res = await authClient.signIn.oauth2({
     providerId,
     callbackURL: redirectUrl,
   });
+
+  if (res?.error) {
+    throw new Error(res.error.message || "OAuth sign-in failed");
+  }
 };
 
 export default signIn;

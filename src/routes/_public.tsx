@@ -26,8 +26,12 @@ function PublicLayout() {
   const { session } = Route.useRouteContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleSignIn = () => {
-    signIn({ redirectUrl: BASE_URL, providerId: "omni" });
+  const handleSignIn = async () => {
+    try {
+      await signIn({ redirectUrl: BASE_URL, providerId: "omni" });
+    } catch (error) {
+      console.error("[handleSignIn] OAuth sign-in failed:", error);
+    }
   };
 
   return (
