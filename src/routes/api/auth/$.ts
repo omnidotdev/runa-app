@@ -9,18 +9,33 @@ import auth from "@/lib/auth/auth";
 const loggingMiddleware = createMiddleware().server(
   async ({ request, next }) => {
     const startTime = Date.now();
+    const url = new URL(request.url);
 
-    const timestamp = new Date().toISOString();
+    // Log all auth requests for diagnostics
+    // biome-ignore lint/suspicious/noConsole: diagnostic logging for auth flow
+    console.debug(
+      `[auth] ${request.method} ${url.pathname}${url.search ? `?${url.searchParams.toString().slice(0, 100)}` : ""}`,
+    );
 
     try {
       const response = await next();
+
+      const duration = Date.now() - startTime;
+
+      // Log response status for OAuth callback and sign-in endpoints
+      if (response instanceof Response) {
+        // biome-ignore lint/suspicious/noConsole: diagnostic logging for auth flow
+        console.debug(
+          `[auth] ${request.method} ${url.pathname} → ${response.status} (${duration}ms)${response.headers.get("location") ? ` → ${response.headers.get("location")?.slice(0, 100)}` : ""}`,
+        );
+      }
 
       return response;
     } catch (error) {
       const duration = Date.now() - startTime;
 
       console.error(
-        `[${timestamp}] ${request.method} ${request.url} - Error (${duration}ms):`,
+        `[auth] ${request.method} ${url.pathname} - Error (${duration}ms):`,
         error,
       );
 
