@@ -3,8 +3,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest, setCookie } from "@tanstack/react-start/server";
 
 import auth from "@/lib/auth/auth";
+import { authCache } from "@/lib/auth/authCache";
 import { getAuth } from "@/lib/auth/getAuth";
-import { COOKIE_NAME } from "@/lib/auth/rowIdCache";
 import {
   AUTH_BASE_URL,
   AUTH_CLIENT_ID,
@@ -20,7 +20,7 @@ export const fetchSession = createServerFn().handler(async () => {
 });
 
 const clearRowIdCacheCookie = () => {
-  setCookie(COOKIE_NAME, "", { maxAge: 0, path: "/" });
+  setCookie(authCache.cookieName, "", { maxAge: 0, path: "/" });
 };
 
 /** @knipignore */
