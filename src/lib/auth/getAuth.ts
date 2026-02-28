@@ -1,102 +1,37 @@
+import { extractOrgClaims } from "@omnidotdev/providers";
 import { setCookie } from "@tanstack/react-start/server";
-import { all } from "better-all";
-import * as jose from "jose";
-import ms from "ms";
+import { GraphQLClient } from "graphql-request";
 
+import { getSdk } from "@/generated/graphql.sdk";
 import auth from "@/lib/auth/auth";
-import {
-  COOKIE_NAME,
-  COOKIE_TTL_SECONDS,
-  OMNI_CLAIMS_ORGANIZATIONS,
-  encryptAuthData,
-  fetchRowIdFromApi,
-} from "@/lib/auth/rowIdCache";
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { authCache, oidc } from "@/lib/auth/authCache";
+import { API_INTERNAL_GRAPHQL_URL } from "@/lib/config/env.config";
 
-import type { OrganizationClaim } from "@/lib/auth/rowIdCache";
+import type { OrganizationClaim } from "@omnidotdev/providers";
+
+export type { OrganizationClaim } from "@omnidotdev/providers";
 
 /**
- * OIDC Discovery document structure.
+ * Fetch rowId from GraphQL API by identity provider ID.
  */
-interface OIDCDiscovery {
-  issuer: string;
-  jwks_uri: string;
-}
+async function fetchRowIdFromApi(
+  accessToken: string,
+  identityProviderId: string,
+): Promise<string | null> {
+  try {
+    const graphqlClient = new GraphQLClient(API_INTERNAL_GRAPHQL_URL!, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const sdk = getSdk(graphqlClient);
+    const { userByIdentityProviderId } = await sdk.UserByIdentityProviderId({
+      identityProviderId,
+    });
 
-// Cache OIDC discovery and JWKS separately
-let oidcDiscoveryCache: OIDCDiscovery | null = null;
-let oidcDiscoveryCacheExpiry = 0;
-let jwksCache: jose.JWTVerifyGetKey | null = null;
-let jwksCacheExpiry = 0;
-
-const OIDC_DISCOVERY_CACHE_TTL = ms("24h");
-const JWKS_CACHE_TTL = ms("1h");
-
-/**
- * Fetch OIDC discovery document.
- */
-async function getOidcDiscovery(): Promise<OIDCDiscovery> {
-  const now = Date.now();
-
-  if (oidcDiscoveryCache && now < oidcDiscoveryCacheExpiry)
-    return oidcDiscoveryCache;
-
-  const discoveryUrl = new URL(
-    "/.well-known/openid-configuration",
-    AUTH_BASE_URL,
-  );
-  const response = await fetch(discoveryUrl, {
-    signal: AbortSignal.timeout(15000), // 15 second timeout
-  });
-
-  if (!response.ok)
-    throw new Error(
-      `OIDC discovery failed: ${response.status} ${response.statusText}`,
-    );
-
-  const discovery = (await response.json()) as OIDCDiscovery;
-
-  if (!discovery.issuer || !discovery.jwks_uri)
-    throw new Error("Invalid OIDC discovery document");
-
-  oidcDiscoveryCache = discovery;
-  oidcDiscoveryCacheExpiry = now + OIDC_DISCOVERY_CACHE_TTL;
-
-  return discovery;
-}
-
-/**
- * Get JWKS using OIDC discovery.
- */
-async function getJwks(): Promise<jose.JWTVerifyGetKey> {
-  const now = Date.now();
-
-  if (jwksCache && now < jwksCacheExpiry) {
-    return jwksCache;
+    return userByIdentityProviderId?.rowId ?? null;
+  } catch (error) {
+    console.error("[getAuth] Failed to fetch rowId:", error);
+    return null;
   }
-
-  const discovery = await getOidcDiscovery();
-  jwksCache = jose.createRemoteJWKSet(new URL(discovery.jwks_uri), {
-    timeoutDuration: 15000, // 15 seconds - longer timeout for cross-service calls
-    cooldownDuration: 30000, // wait 30s before retrying after failure
-  });
-  jwksCacheExpiry = now + JWKS_CACHE_TTL;
-
-  return jwksCache;
-}
-
-// Re-export from rowIdCache for backward compatibility
-export type { OrganizationClaim } from "@/lib/auth/rowIdCache";
-
-/**
- * Extract organization claims from a JWT payload.
- */
-function extractOrganizations(payload: jose.JWTPayload): OrganizationClaim[] {
-  const orgClaims = payload[OMNI_CLAIMS_ORGANIZATIONS];
-  if (Array.isArray(orgClaims)) {
-    return orgClaims as OrganizationClaim[];
-  }
-  return [];
 }
 
 export async function getAuth(request: Request) {
@@ -109,6 +44,7 @@ export async function getAuth(request: Request) {
 
     let accessToken: string | undefined;
     let organizations: OrganizationClaim[] = [];
+
     // Cast to access custom session properties added by customSession plugin
     const customUser = session.user as typeof session.user & {
       identityProviderId?: string | null;
@@ -117,6 +53,15 @@ export async function getAuth(request: Request) {
     };
     let identityProviderId = customUser.identityProviderId;
     let rowId = customUser.rowId;
+    const cachedOrganizations = customUser.organizations;
+
+    // Check if we have complete cached data (avoids API call on every request)
+    const hasCachedData =
+      rowId && identityProviderId && cachedOrganizations?.length;
+
+    if (hasCachedData) {
+      organizations = cachedOrganizations;
+    }
 
     // Get tokens from Gatekeeper via Better Auth
     try {
@@ -130,48 +75,39 @@ export async function getAuth(request: Request) {
         console.warn("[getAuth] getAccessToken returned no accessToken");
       }
 
-      // Extract claims from ID token (verified via JWKS)
+      // Extract claims from ID token (verified via OIDC discovery + JWKS)
       if (tokenResult?.idToken) {
         try {
-          const { discovery, jwks } = await all({
-            async discovery() {
-              return getOidcDiscovery();
-            },
-            async jwks() {
-              return getJwks();
-            },
-          });
-          const { payload } = await jose.jwtVerify(tokenResult.idToken, jwks, {
-            issuer: discovery.issuer,
-          });
+          const payload = await oidc.verifyIdToken(tokenResult.idToken);
 
           if (!identityProviderId) {
             identityProviderId = payload.sub ?? null;
           }
 
-          organizations = extractOrganizations(payload);
+          if (!hasCachedData) {
+            organizations = extractOrgClaims(payload);
+          }
         } catch (jwtError) {
           console.error("[getAuth] JWT verification failed:", jwtError);
         }
       }
 
-      // Handle rowId cache miss
+      // Handle rowId cache miss — fetch from API and cache
       if (!rowId && accessToken && identityProviderId) {
-        rowId =
-          (await fetchRowIdFromApi(accessToken, identityProviderId)) ?? null;
+        rowId = await fetchRowIdFromApi(accessToken, identityProviderId);
 
         if (rowId) {
-          const encrypted = await encryptAuthData({
+          const encrypted = await authCache.encrypt({
             rowId,
             identityProviderId,
             organizations,
           });
-          setCookie(COOKIE_NAME, encrypted, {
+          setCookie(authCache.cookieName, encrypted, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             path: "/",
-            maxAge: COOKIE_TTL_SECONDS,
+            maxAge: authCache.cookieTtlSeconds,
           });
         }
       }
