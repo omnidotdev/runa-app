@@ -126,6 +126,10 @@ export async function getAuth(request: Request) {
       });
       accessToken = tokenResult?.accessToken;
 
+      if (!accessToken) {
+        console.warn("[getAuth] getAccessToken returned no accessToken");
+      }
+
       // Extract claims from ID token (verified via JWKS)
       if (tokenResult?.idToken) {
         try {
