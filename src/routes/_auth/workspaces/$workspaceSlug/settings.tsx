@@ -9,7 +9,7 @@ import {
   WorkspaceColumnsForm,
   WorkspaceSettingsHeader,
 } from "@/components/workspaces";
-import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
+import { BASE_URL } from "@/lib/config/env.config";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import pricesOptions from "@/lib/options/prices.options";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
@@ -55,8 +55,6 @@ export const Route = createFileRoute(
         );
       },
       async members() {
-        // Self-hosted: skip IDP query (personal workspace only)
-        if (isSelfHosted) return { data: [] };
         return queryClient.ensureQueryData(
           organizationMembersOptions({
             organizationId: organizationId!,

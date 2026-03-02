@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-router";
 import {
   BookOpenIcon,
+  ExternalLinkIcon,
   LogOutIcon,
   MessageSquareIcon,
   MoonIcon,
@@ -46,6 +47,7 @@ import {
 } from "@/components/ui/sidebar";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
+import { CONSOLE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { getSidebarCookies } from "@/providers/SidebarProvider";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -293,6 +295,19 @@ const AppSidebarFooter = () => {
 
                 <MenuPositioner>
                   <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
+                    {CONSOLE_URL && (
+                      <MenuItem asChild value="manage-account">
+                        <a
+                          href={CONSOLE_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <ExternalLinkIcon />
+                          <span>Manage account</span>
+                        </a>
+                      </MenuItem>
+                    )}
+
                     <MenuItem
                       value="signout"
                       variant="destructive"

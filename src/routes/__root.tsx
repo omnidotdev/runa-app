@@ -14,7 +14,7 @@ import { DefaultCatchBoundary } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
 import getClientEnv from "@/lib/config/clientEnv";
-import { fetchMaintenanceMode } from "@/lib/flags";
+import { fetchMaintenanceMode } from "@/lib/providers";
 import appCss from "@/lib/styles/globals.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import ThemeProvider from "@/providers/ThemeProvider";
@@ -51,7 +51,7 @@ const fetchSessionAndMaintenanceMode = createServerFn({
 
   // Pass user context to Unleash for @omni.dev admin bypass
   const context = session?.user?.email
-    ? { userId: session.user.id, email: session.user.email }
+    ? { userId: session.user.id, properties: { email: session.user.email } }
     : undefined;
   const { isMaintenanceMode } = await fetchMaintenanceMode({ data: context });
 

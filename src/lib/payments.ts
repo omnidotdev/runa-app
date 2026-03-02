@@ -1,13 +1,9 @@
 import Stripe from "stripe";
 
-import { isSelfHosted } from "@/lib/config/env.config";
-
 let _payments: Stripe | null = null;
 
 /**
  * Get payments client.
- *
- * Lazily initialized to avoid errors in self-hosted mode where Stripe is not configured.
  */
 const getPayments = (): Stripe => {
   if (_payments) return _payments;
@@ -15,10 +11,6 @@ const getPayments = (): Stripe => {
   const apiKey = process.env.STRIPE_API_KEY;
 
   if (!apiKey) {
-    if (isSelfHosted) {
-      throw new Error("Stripe is not available in self-hosted mode");
-    }
-
     throw new Error("STRIPE_API_KEY environment variable is required");
   }
 

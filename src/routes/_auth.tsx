@@ -8,9 +8,20 @@ import { SidebarInset } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/workspaces";
 import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
+import { EventsProvider } from "@/providers/EventsProvider";
 import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
 import { getOrganizationBySlug } from "@/server/functions/organizations";
+
+// Noop provider for client-side (main @omnidotdev/providers entry requires Node.js)
+const eventsProvider = {
+  async emit() {
+    return {
+      eventId: crypto.randomUUID(),
+      timestamp: new Date().toISOString(),
+    };
+  },
+};
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ params, context: { session } }) => {
@@ -109,18 +120,20 @@ function AuthenticatedLayout() {
   }, [session?.organizations, fetchedOrg]);
 
   return (
-    <OrganizationProvider organizations={organizations}>
-      <SidebarProvider>
-        <div className="flex h-dvh w-full">
-          <AppSidebar variant="inset" />
+    <EventsProvider provider={eventsProvider}>
+      <OrganizationProvider organizations={organizations}>
+        <SidebarProvider>
+          <div className="flex h-dvh w-full">
+            <AppSidebar variant="inset" />
 
-          <SidebarInset className="flex-1 overflow-hidden">
-            <Outlet />
-          </SidebarInset>
-        </div>
+            <SidebarInset className="flex-1 overflow-hidden">
+              <Outlet />
+            </SidebarInset>
+          </div>
 
-        <CreateProjectDialog />
-      </SidebarProvider>
-    </OrganizationProvider>
+          <CreateProjectDialog />
+        </SidebarProvider>
+      </OrganizationProvider>
+    </EventsProvider>
   );
 }
