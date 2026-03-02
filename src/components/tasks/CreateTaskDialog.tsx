@@ -262,21 +262,19 @@ const CreateTaskDialog = () => {
 
             <form.Field name="title">
               {(field) => (
-                <div className="flex items-center gap-2 py-1">
-                  <Input
-                    ref={titleRef}
-                    id="task-title"
-                    className="border-base-300 border-dashed shadow-none transition-none placeholder:text-base-400 hover:border-base-400 focus-visible:ring-0 dark:border-base-600 dark:bg-transparent dark:hover:border-base-500"
-                    placeholder="Task title..."
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                </div>
+                <Input
+                  ref={titleRef}
+                  id="task-title"
+                  className="border-none bg-transparent shadow-none transition-none focus-visible:outline focus-visible:outline-dashed focus-visible:outline-primary focus-visible:ring-0"
+                  placeholder="Task title..."
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
               )}
             </form.Field>
 
             <RichTextEditor
-              className="min-h-40 text-xs placeholder:text-xs md:text-sm"
+              className="-mt-2 min-h-40 text-sm placeholder:text-xs md:text-sm"
               placeholder="Task description..."
               onUpdate={({ getHTML }) =>
                 form.setFieldValue("description", getHTML())
