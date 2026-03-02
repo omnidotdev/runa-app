@@ -219,7 +219,7 @@ const Sidebar = ({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="w-1/2 bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+          className="w-5/6 bg-sidebar p-0 text-sidebar-foreground sm:w-1/2 [&>button]:hidden"
           side={side}
         >
           <div className="sr-only">
