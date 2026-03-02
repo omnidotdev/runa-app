@@ -13,7 +13,7 @@ const app = {
   },
   links: {
     docs: "https://docs.omni.dev/runa",
-    github: "https://github.com/omnidotdev/runa",
+    github: "https://github.com/omnidotdev/runa-stack",
     feedback: "https://backfeed.omni.dev/workspaces/omni/projects/runa",
   },
 };
