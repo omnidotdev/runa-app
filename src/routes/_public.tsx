@@ -201,7 +201,7 @@ function PublicLayout() {
                 href={app.links.docs}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-md px-3 py-2 font-medium text-base-600 text-sm hover:bg-base-100 hover:text-foreground dark:text-base-400 dark:hover:bg-base-800 dark:hover:text-foreground"
+                className="block rounded-md px-4 py-2 font-medium text-base-600 text-sm hover:bg-base-100 hover:text-foreground dark:text-base-400 dark:hover:bg-base-800 dark:hover:text-foreground"
               >
                 Docs
               </a>
