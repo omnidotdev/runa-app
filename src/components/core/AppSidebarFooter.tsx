@@ -114,9 +114,7 @@ const AppSidebarFooter = () => {
                 </SidebarMenuButton>
               </CollapsibleTrigger>
             }
-          >
-            test
-          </Tooltip>
+          />
 
           <CollapsibleContent className="-mx-2 p-0">
             <SidebarMenu className="my-1 px-2">
