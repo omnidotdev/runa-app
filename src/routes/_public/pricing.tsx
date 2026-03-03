@@ -137,7 +137,7 @@ function PricingPage() {
               <TabsContent
                 key={tab}
                 value={tab}
-                className="flex flex-wrap gap-4"
+                className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
               >
                 <PriceCard
                   price={FREE_PRICE}
