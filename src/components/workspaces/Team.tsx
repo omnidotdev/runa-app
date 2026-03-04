@@ -6,8 +6,10 @@ import {
   MoreHorizontalIcon,
   PlusIcon,
   Trash2Icon,
+  XIcon,
 } from "lucide-react";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 import { match } from "ts-pattern";
 
 import { DestructiveActionDialog, Tooltip } from "@/components/core";
@@ -18,6 +20,15 @@ import {
 } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   MenuContent,
   MenuItem,
@@ -32,9 +43,11 @@ import {
   useCanManageTeam,
 } from "@/lib/hooks/useCanManageTeam";
 import {
+  useCancelInvitation,
   useRemoveMember,
   useUpdateMemberRole,
 } from "@/lib/hooks/useOrganizationMembers";
+import organizationInvitationsOptions from "@/lib/options/organizationInvitations.options";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import { Tier, getTierFromSubscription } from "@/lib/types/tier";
 import { cn } from "@/lib/utils";
@@ -67,37 +80,16 @@ const Team = () => {
     ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
-  // Fetch members from Gatekeeper (SaaS only - IDP is source of truth)
-  // Self-hosted: skip IDP call, user is sole owner of personal workspace
+  // Fetch members from Gatekeeper (IDP is source of truth)
   const { data: membersData } = useQuery({
     ...organizationMembersOptions({
       organizationId: organizationId!,
       accessToken: session?.accessToken!,
     }),
-    enabled: !isSelfHosted && !!organizationId && !!session?.accessToken,
+    enabled: !!organizationId && !!session?.accessToken,
   });
 
-  // Self-hosted: show current user as owner (personal workspace)
-  // SaaS: use members from IDP
-  const members = isSelfHosted
-    ? session
-      ? [
-          {
-            id: "self",
-            userId: session.user.identityProviderId ?? "",
-            organizationId: organizationId ?? "",
-            role: "owner" as const,
-            createdAt: new Date().toISOString(),
-            user: {
-              id: session.user.identityProviderId ?? "",
-              name: session.user.name,
-              email: session.user.email,
-              image: session.user.image ?? null,
-            },
-          },
-        ]
-      : []
-    : (membersData?.data ?? []);
+  const members = membersData?.data ?? [];
 
   // Find current user's role from Gatekeeper members
   const currentUserMember = members.find(
@@ -107,15 +99,33 @@ const Team = () => {
   const { canInvite, canChangeRoles, canRemoveMembers } =
     useCanManageTeam(currentUserRole);
 
+  // Fetch pending invitations (visible to admins+)
+  const { data: pendingInvitations = [] } = useQuery({
+    ...organizationInvitationsOptions({
+      organizationId: organizationId!,
+    }),
+    enabled: !!organizationId && canInvite,
+  });
+
+  const [selectedInvitation, setSelectedInvitation] = useState<{
+    id: string;
+    email: string;
+  }>();
+
   const { mutate: removeMember } = useRemoveMember();
   const { mutate: updateMemberRole } = useUpdateMemberRole();
+  const { mutate: cancelInvitation } = useCancelInvitation();
 
   const { setIsOpen: setIsDeleteTeamMemberOpen } = useDialogStore({
       type: DialogType.DeleteTeamMember,
     }),
     { setIsOpen: setIsInviteTeamMemberOpen } = useDialogStore({
       type: DialogType.InviteTeamMember,
-    });
+    }),
+    { isOpen: isCancelInvitationOpen, setIsOpen: setIsCancelInvitationOpen } =
+      useDialogStore({
+        type: DialogType.CancelInvitation,
+      });
 
   // Derive tier from subscription
   const tier = getTierFromSubscription(
@@ -124,20 +134,26 @@ const Team = () => {
     subscription?.priceId,
   );
 
-  const _maxNumberOfMembersReached = match(tier)
-    .with(Tier.Team, Tier.Enterprise, () => false)
-    .with(Tier.Basic, () => members.length >= 10)
-    .otherwise(() => members.length >= 3);
+  const _maxNumberOfMembersReached = isSelfHosted
+    ? false
+    : match(tier)
+        .with(Tier.Team, Tier.Enterprise, () => false)
+        .with(Tier.Basic, () => members.length >= 10)
+        .otherwise(() => members.length >= 3);
 
-  const maxNumberofAdminsReached = match(tier)
-    .with(Tier.Team, Tier.Enterprise, () => false)
-    .with(
-      Tier.Basic,
-      () => members.filter((member) => member.role !== "member").length >= 3,
-    )
-    .otherwise(
-      () => members.filter((member) => member.role !== "member").length >= 1,
-    );
+  const maxNumberofAdminsReached = isSelfHosted
+    ? false
+    : match(tier)
+        .with(Tier.Team, Tier.Enterprise, () => false)
+        .with(
+          Tier.Basic,
+          () =>
+            members.filter((member) => member.role !== "member").length >= 3,
+        )
+        .otherwise(
+          () =>
+            members.filter((member) => member.role !== "member").length >= 1,
+        );
 
   return (
     <>
@@ -147,33 +163,30 @@ const Team = () => {
             Team Members
           </h2>
 
-          {/* TODO(self-hosted): Implement team workspace support with local invite flow */}
-          {!isSelfHosted && (
-            <Tooltip
-              positioning={{ placement: "left" }}
-              tooltip={
-                _maxNumberOfMembersReached
-                  ? "Upgrade to invite more members"
-                  : "Invite Member"
-              }
-              trigger={
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label="Invite team member"
-                  className={cn(
-                    "mr-2 hidden size-7 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:hover:bg-transparent dark:disabled:hover:bg-transparent",
-                    canInvite && "inline-flex",
-                  )}
-                  onClick={() => setIsInviteTeamMemberOpen(true)}
-                  disabled={_maxNumberOfMembersReached}
-                  ref={inviteRef}
-                >
-                  <PlusIcon />
-                </Button>
-              }
-            />
-          )}
+          <Tooltip
+            positioning={{ placement: "left" }}
+            tooltip={
+              _maxNumberOfMembersReached
+                ? "Upgrade to invite more members"
+                : "Invite Member"
+            }
+            trigger={
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Invite team member"
+                className={cn(
+                  "mr-2 hidden size-7 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:hover:bg-transparent dark:disabled:hover:bg-transparent",
+                  canInvite && "inline-flex",
+                )}
+                onClick={() => setIsInviteTeamMemberOpen(true)}
+                disabled={_maxNumberOfMembersReached}
+                ref={inviteRef}
+              >
+                <PlusIcon />
+              </Button>
+            }
+          />
         </div>
 
         {members.length ? (
@@ -333,26 +346,150 @@ const Team = () => {
         )}
       </div>
 
-      {/* Member management dialogs - SaaS only (uses IDP) */}
-      {!isSelfHosted && (
-        <>
-          <DestructiveActionDialog
-            title="Danger Zone"
-            description={`This will remove ${selectedMember?.name} from ${orgName} organization. This action cannot be undone.`}
-            onConfirm={() =>
-              removeMember({
-                organizationId: organizationId!,
-                memberId: selectedMember?.id!,
-                accessToken: session?.accessToken!,
-              })
-            }
-            dialogType={DialogType.DeleteTeamMember}
-            confirmation={selectedMember?.name}
-          />
+      {canInvite && (
+        <div className="mt-8 flex flex-col">
+          <div className="mb-1 flex h-10 items-center">
+            <h2 className="ml-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+              Pending Invitations
+            </h2>
+          </div>
 
-          <InviteMemberDialog triggerRef={inviteRef} />
-        </>
+          {pendingInvitations.length ? (
+            <div className="flex flex-col divide-y border-y">
+              {pendingInvitations.map((invitation) => (
+                <div
+                  key={invitation.id}
+                  className="group flex h-10 w-full items-center px-2 hover:bg-accent lg:px-0"
+                >
+                  <div className="flex w-full items-center">
+                    <div className="flex size-10 items-center justify-center">
+                      <AvatarRoot
+                        size="xs"
+                        className="size-6 rounded-full border bg-background font-medium text-sm uppercase shadow"
+                      >
+                        <AvatarFallback>
+                          {invitation.email.charAt(0)}
+                        </AvatarFallback>
+                      </AvatarRoot>
+                    </div>
+
+                    <span className="px-3 text-xs md:text-sm">
+                      {invitation.email}
+                    </span>
+
+                    <Badge variant="outline">
+                      <p className="first-letter:uppercase">
+                        {invitation.role ?? "member"}
+                      </p>
+                    </Badge>
+
+                    <div className="mr-2 ml-auto flex gap-1">
+                      <Tooltip
+                        positioning={{ placement: "left" }}
+                        tooltip="Revoke invitation"
+                        trigger={
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7 text-base-400 hover:text-destructive"
+                            aria-label={`Revoke invitation for ${invitation.email}`}
+                            onClick={() => {
+                              setSelectedInvitation({
+                                id: invitation.id,
+                                email: invitation.email,
+                              });
+                              setIsCancelInvitationOpen(true);
+                            }}
+                          >
+                            <XIcon className="size-4" />
+                          </Button>
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
+              No pending invitations
+            </div>
+          )}
+        </div>
       )}
+
+      <DestructiveActionDialog
+        title="Danger Zone"
+        description={`This will remove ${selectedMember?.name} from ${orgName} organization. This action cannot be undone.`}
+        onConfirm={() =>
+          removeMember({
+            organizationId: organizationId!,
+            memberId: selectedMember?.id!,
+            accessToken: session?.accessToken!,
+          })
+        }
+        dialogType={DialogType.DeleteTeamMember}
+        confirmation={selectedMember?.name}
+      />
+
+      <DialogRoot
+        open={isCancelInvitationOpen}
+        onOpenChange={(details) => setIsCancelInvitationOpen(details.open)}
+      >
+        <DialogBackdrop />
+        <DialogPositioner>
+          <DialogContent>
+            <DialogCloseTrigger />
+            <DialogTitle>Revoke Invitation</DialogTitle>
+            <DialogDescription>
+              This will revoke the invitation sent to{" "}
+              <span className="font-medium">{selectedInvitation?.email}</span>.
+              You can always send a new invitation later.
+            </DialogDescription>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <DialogCloseTrigger asChild>
+                <Button variant="outline" size="sm">
+                  Cancel
+                </Button>
+              </DialogCloseTrigger>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => {
+                  if (!selectedInvitation) return;
+
+                  cancelInvitation(
+                    {
+                      invitationId: selectedInvitation.id,
+                      organizationId: organizationId!,
+                    },
+                    {
+                      onSuccess: () => {
+                        toast.success(
+                          `Invitation to ${selectedInvitation.email} revoked`,
+                        );
+                        setIsCancelInvitationOpen(false);
+                      },
+                      onError: (error) => {
+                        toast.error(
+                          error instanceof Error
+                            ? error.message
+                            : "Failed to revoke invitation",
+                        );
+                      },
+                    },
+                  );
+                }}
+              >
+                Revoke
+              </Button>
+            </div>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogRoot>
+
+      <InviteMemberDialog triggerRef={inviteRef} />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { XIcon as CloseIcon, MenuIcon } from "lucide-react";
 import { useState } from "react";
 import { LuGithub as GithubIcon } from "react-icons/lu";
@@ -25,14 +25,12 @@ export const Route = createFileRoute("/_public")({
 function PublicLayout() {
   const { session } = Route.useRouteContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
-  const handleSignIn = () => {
-    if (isSelfHosted) {
-      navigate({ to: "/login" });
-    } else {
-      // SaaS mode: use Omni/Gatekeeper OAuth directly
-      signIn({ redirectUrl: BASE_URL, providerId: "omni" });
+  const handleSignIn = async () => {
+    try {
+      await signIn({ redirectUrl: BASE_URL, providerId: "omni" });
+    } catch (error) {
+      console.error("[handleSignIn] OAuth sign-in failed:", error);
     }
   };
 
@@ -121,13 +119,15 @@ function PublicLayout() {
                   Demo
                 </Link>
 
-                <Link
-                  to="/pricing"
-                  variant="ghost"
-                  className="text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
-                >
-                  Pricing
-                </Link>
+                {!isSelfHosted && (
+                  <Link
+                    to="/pricing"
+                    variant="ghost"
+                    className="text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
+                  >
+                    Pricing
+                  </Link>
+                )}
 
                 <a
                   href={app.links.docs}
@@ -190,14 +190,16 @@ function PublicLayout() {
                 Demo
               </Link>
 
-              <Link
-                to="/pricing"
-                variant="ghost"
-                className="block w-full justify-start text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Pricing
-              </Link>
+              {!isSelfHosted && (
+                <Link
+                  to="/pricing"
+                  variant="ghost"
+                  className="block w-full justify-start text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+              )}
 
               <a
                 href={app.links.docs}

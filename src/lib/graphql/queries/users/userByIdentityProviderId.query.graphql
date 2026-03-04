@@ -1,14 +1,5 @@
 query UserByIdentityProviderId($identityProviderId: UUID!) {
   userByIdentityProviderId(identityProviderId: $identityProviderId) {
     rowId
-    userOrganizations {
-      nodes {
-        organizationId
-        slug
-        name
-        type
-        role
-      }
-    }
   }
 }

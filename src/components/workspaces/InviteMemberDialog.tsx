@@ -6,6 +6,7 @@ import { PlusIcon } from "lucide-react";
 import ms from "ms";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -37,9 +38,10 @@ import { useInviteMember } from "@/lib/hooks/useOrganizationMembers";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import { Tier, getTierFromSubscription } from "@/lib/types/tier";
 import { useOrganization } from "@/providers/OrganizationProvider";
-import { inviteSchema } from "@/server/functions/emails";
 
 import type { RefObject } from "react";
+
+const emailSchema = z.email();
 
 const MAX_NUMBER_OF_INVITES = 10;
 
@@ -68,13 +70,13 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     ? orgContext?.getOrganizationById(organizationId)?.name
     : undefined;
 
-  // Fetch current members to check limits (SaaS only)
+  // Fetch current members to check limits
   const { data: membersData } = useQuery({
     ...organizationMembersOptions({
       organizationId: organizationId!,
       accessToken: session?.accessToken!,
     }),
-    enabled: !isSelfHosted && !!organizationId && !!session?.accessToken,
+    enabled: !!organizationId && !!session?.accessToken,
   });
 
   const memberCount = membersData?.data?.length ?? 0;
@@ -85,8 +87,9 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     prices,
     subscription?.priceId,
   );
-  const maxMembers =
-    tier === Tier.Team || tier === Tier.Enterprise
+  const maxMembers = isSelfHosted
+    ? Infinity
+    : tier === Tier.Team || tier === Tier.Enterprise
       ? Infinity
       : tier === Tier.Basic
         ? 10
@@ -110,7 +113,6 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
           organizationId: organizationId!,
           email: recipientEmail,
           role: "member",
-          accessToken: session?.accessToken!,
         });
         toast.success("Invitation sent");
       } catch (error) {
@@ -205,7 +207,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
                     }
 
                     return emails.every((email) =>
-                      inviteSchema.shape.recipientEmail.safeParse(email),
+                      emailSchema.safeParse(email),
                     );
                   }}
                   value={field.state.value}

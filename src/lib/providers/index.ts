@@ -1,8 +1,20 @@
+import { createFlagProvider } from "@omnidotdev/providers";
 import { createServerFn } from "@tanstack/react-start";
 
-import { isEnabled } from "./client";
+import { FLAGS_API_HOST, FLAGS_CLIENT_KEY } from "@/lib/config/env.config";
 
-import type { FlagContext } from "./client";
+import type { FlagContext } from "@omnidotdev/providers";
+
+export const flags = createFlagProvider(
+  FLAGS_API_HOST
+    ? {
+        provider: "unleash",
+        url: FLAGS_API_HOST,
+        apiKey: FLAGS_CLIENT_KEY!,
+        appName: "runa",
+      }
+    : {},
+);
 
 export const FLAGS = {
   MAINTENANCE: "runa-app-maintenance-mode",
@@ -18,10 +30,6 @@ export const FLAGS = {
 export const fetchMaintenanceMode = createServerFn({ method: "GET" })
   .inputValidator((data: FlagContext | undefined) => data)
   .handler(async ({ data: context }) => {
-    const isMaintenanceMode = await isEnabled(
-      FLAGS.MAINTENANCE,
-      false,
-      context,
-    );
+    const isMaintenanceMode = await flags.isEnabled(FLAGS.MAINTENANCE, context);
     return { isMaintenanceMode };
   });

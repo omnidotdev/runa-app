@@ -10,17 +10,13 @@ const loggingMiddleware = createMiddleware().server(
   async ({ request, next }) => {
     const startTime = Date.now();
 
-    const timestamp = new Date().toISOString();
-
     try {
-      const response = await next();
-
-      return response;
+      return await next();
     } catch (error) {
       const duration = Date.now() - startTime;
 
       console.error(
-        `[${timestamp}] ${request.method} ${request.url} - Error (${duration}ms):`,
+        `[auth] ${request.method} ${request.url} - Error (${duration}ms):`,
         error,
       );
 

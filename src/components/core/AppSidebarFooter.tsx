@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-router";
 import {
   BookOpenIcon,
+  ExternalLinkIcon,
   LogOutIcon,
   MessageSquareIcon,
   MoonIcon,
@@ -38,6 +39,7 @@ import {
 } from "@/components/ui/sidebar";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
+import { CONSOLE_URL, isSelfHosted } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { useTheme } from "@/providers/ThemeProvider";
 import Shortcut from "./Shortcut";
@@ -90,22 +92,24 @@ const AppSidebarFooter = () => {
           }
         />
 
-        <Tooltip
-          positioning={{ placement: "right" }}
-          tooltip="Pricing"
-          disabled={isMobile || open}
-          trigger={
-            <SidebarMenuButton
-              onClick={() => {
-                closeMobileSidebar();
-                navigate({ to: "/pricing" });
-              }}
-            >
-              <TagIcon />
-              <span className="flex w-full items-center">Pricing</span>
-            </SidebarMenuButton>
-          }
-        />
+        {!isSelfHosted && (
+          <Tooltip
+            positioning={{ placement: "right" }}
+            tooltip="Pricing"
+            disabled={isMobile || open}
+            trigger={
+              <SidebarMenuButton
+                onClick={() => {
+                  closeMobileSidebar();
+                  navigate({ to: "/pricing" });
+                }}
+              >
+                <TagIcon />
+                <span className="flex w-full items-center">Pricing</span>
+              </SidebarMenuButton>
+            }
+          />
+        )}
 
         <Tooltip
           positioning={{ placement: "right" }}
@@ -224,6 +228,19 @@ const AppSidebarFooter = () => {
 
                 <MenuPositioner>
                   <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
+                    {CONSOLE_URL && (
+                      <MenuItem asChild value="manage-account">
+                        <a
+                          href={CONSOLE_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <ExternalLinkIcon />
+                          <span>Manage account</span>
+                        </a>
+                      </MenuItem>
+                    )}
+
                     <MenuItem
                       value="signout"
                       variant="destructive"

@@ -1,27 +1,9 @@
 /**
  * IDP (Identity Provider) client for organization member management.
- *
- * Fetches member data from the IDP instead of the local database.
- * The IDP is the single source of truth for organization membership.
- *
- * NOTE: These functions only work in SaaS mode (with HIDRA Gatekeeper).
- * Self-hosted mode uses local database for org management.
+ * Fetches member data from Gatekeeper (source of truth).
  */
 
-import { AUTH_BASE_URL, isSelfHosted } from "@/lib/config/env.config";
-
-/**
- * Guard that throws if called in self-hosted mode.
- * IDP functions require HIDRA Gatekeeper which isn't available in self-hosted.
- */
-function assertSaaSMode(operation: string): void {
-  if (isSelfHosted) {
-    throw new Error(
-      `${operation} requires HIDRA Gatekeeper (SaaS mode only). ` +
-        "Self-hosted mode uses local workspace management.",
-    );
-  }
-}
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 
 export interface IdpMember {
   id: string;
@@ -42,14 +24,12 @@ export interface IdpMembersResponse {
 }
 
 /**
- * Fetch organization members from IDP.
+ * Fetch organization members from Gatekeeper.
  */
 export async function fetchOrganizationMembers(
   organizationId: string,
   accessToken: string,
 ): Promise<IdpMembersResponse> {
-  assertSaaSMode("fetchOrganizationMembers");
-
   const url = new URL("/api/organization/members", AUTH_BASE_URL);
   url.searchParams.set("orgId", organizationId);
 
@@ -69,6 +49,17 @@ export async function fetchOrganizationMembers(
   return response.json();
 }
 
+export interface IdpInvitation {
+  id: string;
+  email: string;
+  role: string | null;
+  status: "pending" | "accepted" | "rejected" | "cancelled";
+  expiresAt: string;
+  inviterId: string;
+  organizationId: string;
+  createdAt: string;
+}
+
 export interface UpdateMemberRoleParams {
   organizationId: string;
   memberId: string;
@@ -77,7 +68,7 @@ export interface UpdateMemberRoleParams {
 }
 
 /**
- * Update a member's role in the organization via IDP.
+ * Update a member's role in the organization via Gatekeeper.
  */
 export async function updateMemberRole({
   organizationId,
@@ -85,8 +76,6 @@ export async function updateMemberRole({
   role,
   accessToken,
 }: UpdateMemberRoleParams): Promise<IdpMember> {
-  assertSaaSMode("updateMemberRole");
-
   const url = new URL("/api/organization/members", AUTH_BASE_URL);
   url.searchParams.set("orgId", organizationId);
   url.searchParams.set("memberId", memberId);
@@ -116,15 +105,13 @@ export interface RemoveMemberParams {
 }
 
 /**
- * Remove a member from the organization via IDP.
+ * Remove a member from the organization via Gatekeeper.
  */
 export async function removeMember({
   organizationId,
   memberId,
   accessToken,
 }: RemoveMemberParams): Promise<void> {
-  assertSaaSMode("removeMember");
-
   const url = new URL("/api/organization/members", AUTH_BASE_URL);
   url.searchParams.set("orgId", organizationId);
   url.searchParams.set("memberId", memberId);
@@ -142,58 +129,4 @@ export async function removeMember({
       `Failed to remove member: ${response.status} ${response.statusText}`,
     );
   }
-}
-
-export interface InviteMemberParams {
-  organizationId: string;
-  email: string;
-  role: "admin" | "member";
-  accessToken: string;
-}
-
-export interface IdpInvitation {
-  id: string;
-  organizationId: string;
-  email: string;
-  role: string;
-  status: "pending" | "accepted" | "rejected" | "canceled";
-  expiresAt: string;
-  inviterId: string;
-}
-
-/**
- * Invite a member to the organization via IDP.
- */
-export async function inviteMember({
-  organizationId,
-  email,
-  role,
-  accessToken,
-}: InviteMemberParams): Promise<IdpInvitation> {
-  assertSaaSMode("inviteMember");
-
-  const url = new URL("/api/auth/organization/invite-member", AUTH_BASE_URL);
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      organizationId,
-      email,
-      role,
-    }),
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(
-      error.message ||
-        `Failed to invite member: ${response.status} ${response.statusText}`,
-    );
-  }
-
-  return response.json();
 }

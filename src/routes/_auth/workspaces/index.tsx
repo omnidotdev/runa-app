@@ -7,7 +7,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@/components/ui/avatar";
-import { AUTH_BASE_URL, BASE_URL, isSelfHosted } from "@/lib/config/env.config";
+import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import {
@@ -21,7 +21,6 @@ export const Route = createFileRoute("/_auth/workspaces/")({
     if (!organizations.length) return;
 
     // Only auto-redirect if user has multiple workspaces
-    // With a single workspace, let them see the page (useful for self-hosted)
     if (organizations.length === 1) return;
 
     const lastSlug = await getLastWorkspaceCookie();
@@ -106,29 +105,26 @@ function WorkspacesOverviewPage() {
             </div>
           )}
 
-          {/* SaaS: show info about external org management */}
-          {!isSelfHosted && (
-            <div className="flex flex-col items-center gap-4 rounded-lg border border-base-300 border-dashed bg-base-50 p-8 text-center dark:border-base-700 dark:bg-base-900">
-              <InfoIcon className="size-6 text-base-500" />
-              <div className="space-y-2">
-                <p className="text-base-700 text-sm dark:text-base-300">
-                  Workspaces are currently managed via Omni Organizations.
-                </p>
-                <p className="text-base-500 text-xs">
-                  This experience will be improved soon.
-                </p>
-              </div>
-              {AUTH_BASE_URL && (
-                <a
-                  href={AUTH_BASE_URL}
-                  className="inline-flex items-center gap-2 text-primary text-sm hover:underline"
-                >
-                  Manage Organizations
-                  <ExternalLinkIcon className="size-3" />
-                </a>
-              )}
+          <div className="flex flex-col items-center gap-4 rounded-lg border border-base-300 border-dashed bg-base-50 p-8 text-center dark:border-base-700 dark:bg-base-900">
+            <InfoIcon className="size-6 text-base-500" />
+            <div className="space-y-2">
+              <p className="text-base-700 text-sm dark:text-base-300">
+                Workspaces are currently managed via Omni Organizations.
+              </p>
+              <p className="text-base-500 text-xs">
+                This experience will be improved soon.
+              </p>
             </div>
-          )}
+            {AUTH_BASE_URL && (
+              <a
+                href={AUTH_BASE_URL}
+                className="inline-flex items-center gap-2 text-primary text-sm hover:underline"
+              >
+                Manage Organizations
+                <ExternalLinkIcon className="size-3" />
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>
