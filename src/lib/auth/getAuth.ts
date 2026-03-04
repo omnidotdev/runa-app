@@ -78,17 +78,29 @@ export async function getAuth(request: Request) {
         accessToken &&
         (!expiresAt || new Date(expiresAt).getTime() - Date.now() < 5_000);
 
+      console.warn("[getAuth] Token state:", {
+        hasToken: !!accessToken,
+        tokenPreview: accessToken?.slice(0, 12),
+        expiresAt,
+        needsRefresh,
+      });
+
       if (needsRefresh) {
         try {
           const refreshed = await auth.api.refreshToken({
             body: { providerId: "omni" },
             headers: request.headers,
           });
+          console.warn("[getAuth] Refresh result:", {
+            hasToken: !!refreshed?.accessToken,
+            tokenPreview: refreshed?.accessToken?.slice(0, 12),
+            expiresAt: refreshed?.accessTokenExpiresAt,
+          });
           if (refreshed?.accessToken) {
             accessToken = refreshed.accessToken;
           }
         } catch (refreshErr) {
-          console.warn("[getAuth] Token refresh failed:", refreshErr);
+          console.error("[getAuth] Token refresh failed:", refreshErr);
         }
       }
 
