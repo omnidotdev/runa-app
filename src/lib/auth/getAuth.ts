@@ -71,6 +71,27 @@ export async function getAuth(request: Request) {
       });
       accessToken = tokenResult?.accessToken;
 
+      // Force refresh if accessTokenExpiresAt is missing (stale account data
+      // from before Gatekeeper returned expires_in) or token is already expired
+      const expiresAt = tokenResult?.accessTokenExpiresAt;
+      const needsRefresh =
+        accessToken &&
+        (!expiresAt || new Date(expiresAt).getTime() - Date.now() < 5_000);
+
+      if (needsRefresh) {
+        try {
+          const refreshed = await auth.api.refreshToken({
+            body: { providerId: "omni" },
+            headers: request.headers,
+          });
+          if (refreshed?.accessToken) {
+            accessToken = refreshed.accessToken;
+          }
+        } catch (refreshErr) {
+          console.warn("[getAuth] Token refresh failed:", refreshErr);
+        }
+      }
+
       if (!accessToken) {
         console.warn("[getAuth] getAccessToken returned no accessToken");
       }
