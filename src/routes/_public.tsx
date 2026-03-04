@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
-import { BASE_URL } from "@/lib/config/env.config";
+import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_public")({
@@ -119,13 +119,15 @@ function PublicLayout() {
                   Demo
                 </Link>
 
-                <Link
-                  to="/pricing"
-                  variant="ghost"
-                  className="text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
-                >
-                  Pricing
-                </Link>
+                {!isSelfHosted && (
+                  <Link
+                    to="/pricing"
+                    variant="ghost"
+                    className="text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
+                  >
+                    Pricing
+                  </Link>
+                )}
 
                 <a
                   href={app.links.docs}
@@ -188,14 +190,16 @@ function PublicLayout() {
                 Demo
               </Link>
 
-              <Link
-                to="/pricing"
-                variant="ghost"
-                className="block w-full justify-start text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Pricing
-              </Link>
+              {!isSelfHosted && (
+                <Link
+                  to="/pricing"
+                  variant="ghost"
+                  className="block w-full justify-start text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+              )}
 
               <a
                 href={app.links.docs}

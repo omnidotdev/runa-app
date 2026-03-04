@@ -36,6 +36,7 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
+import { isSelfHosted } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import {
   canModifyMember,
@@ -133,20 +134,26 @@ const Team = () => {
     subscription?.priceId,
   );
 
-  const _maxNumberOfMembersReached = match(tier)
-    .with(Tier.Team, Tier.Enterprise, () => false)
-    .with(Tier.Basic, () => members.length >= 10)
-    .otherwise(() => members.length >= 3);
+  const _maxNumberOfMembersReached = isSelfHosted
+    ? false
+    : match(tier)
+        .with(Tier.Team, Tier.Enterprise, () => false)
+        .with(Tier.Basic, () => members.length >= 10)
+        .otherwise(() => members.length >= 3);
 
-  const maxNumberofAdminsReached = match(tier)
-    .with(Tier.Team, Tier.Enterprise, () => false)
-    .with(
-      Tier.Basic,
-      () => members.filter((member) => member.role !== "member").length >= 3,
-    )
-    .otherwise(
-      () => members.filter((member) => member.role !== "member").length >= 1,
-    );
+  const maxNumberofAdminsReached = isSelfHosted
+    ? false
+    : match(tier)
+        .with(Tier.Team, Tier.Enterprise, () => false)
+        .with(
+          Tier.Basic,
+          () =>
+            members.filter((member) => member.role !== "member").length >= 3,
+        )
+        .otherwise(
+          () =>
+            members.filter((member) => member.role !== "member").length >= 1,
+        );
 
   return (
     <>
