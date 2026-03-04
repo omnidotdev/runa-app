@@ -17,7 +17,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { BASE_URL } from "@/lib/config/env.config";
+import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import { isOwner } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
@@ -80,6 +80,8 @@ export default function WorkspaceBenefits() {
       router.invalidate();
     },
   });
+
+  if (isSelfHosted) return null;
 
   return (
     <div

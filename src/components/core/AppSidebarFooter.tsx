@@ -39,7 +39,7 @@ import {
 } from "@/components/ui/sidebar";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
-import { CONSOLE_URL } from "@/lib/config/env.config";
+import { CONSOLE_URL, isSelfHosted } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { useTheme } from "@/providers/ThemeProvider";
 import Shortcut from "./Shortcut";
@@ -92,22 +92,24 @@ const AppSidebarFooter = () => {
           }
         />
 
-        <Tooltip
-          positioning={{ placement: "right" }}
-          tooltip="Pricing"
-          disabled={isMobile || open}
-          trigger={
-            <SidebarMenuButton
-              onClick={() => {
-                closeMobileSidebar();
-                navigate({ to: "/pricing" });
-              }}
-            >
-              <TagIcon />
-              <span className="flex w-full items-center">Pricing</span>
-            </SidebarMenuButton>
-          }
-        />
+        {!isSelfHosted && (
+          <Tooltip
+            positioning={{ placement: "right" }}
+            tooltip="Pricing"
+            disabled={isMobile || open}
+            trigger={
+              <SidebarMenuButton
+                onClick={() => {
+                  closeMobileSidebar();
+                  navigate({ to: "/pricing" });
+                }}
+              >
+                <TagIcon />
+                <span className="flex w-full items-center">Pricing</span>
+              </SidebarMenuButton>
+            }
+          />
+        )}
 
         <Tooltip
           positioning={{ placement: "right" }}

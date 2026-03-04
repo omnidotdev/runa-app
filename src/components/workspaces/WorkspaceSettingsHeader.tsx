@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { isSelfHosted } from "@/lib/config/env.config";
 import { getTierFromSubscription } from "@/lib/types/tier";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { useOrganization } from "@/providers/OrganizationProvider";
@@ -49,9 +50,11 @@ export default function WorkspaceSettingsHeader() {
         <div className="flex flex-col gap-2">
           <h1 className="font-semibold text-2xl">{orgName ?? "Workspace"}</h1>
         </div>
-        <Badge className="bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
-          {capitalizeFirstLetter(tier)}
-        </Badge>
+        {!isSelfHosted && (
+          <Badge className="bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">
+            {capitalizeFirstLetter(tier)}
+          </Badge>
+        )}
       </div>
     </div>
   );
