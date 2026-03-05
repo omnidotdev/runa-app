@@ -554,7 +554,7 @@ function AuthenticatedProjectPage() {
                   params={{ workspaceSlug, projectSlug }}
                   search={{ preview: "public" }}
                   target="_blank"
-                  className="no-underline"
+                  className="h-auto p-0 no-underline hover:bg-transparent hover:no-underline dark:hover:bg-transparent"
                 >
                   <Badge variant="secondary" className="gap-1">
                     <GlobeIcon className="size-3" />
