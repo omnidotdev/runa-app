@@ -490,10 +490,17 @@ function ProjectPage() {
             <div className="flex items-center gap-2">
               <h1 className="font-semibold text-2xl">{project?.name}</h1>
               {project?.isPublic && (
-                <Badge variant="secondary" className="gap-1">
-                  <GlobeIcon className="size-3" />
-                  Public
-                </Badge>
+                <Link
+                  to="/b/$workspaceSlug/$projectSlug"
+                  params={{ workspaceSlug, projectSlug }}
+                  target="_blank"
+                  className="no-underline"
+                >
+                  <Badge variant="secondary" className="gap-1">
+                    <GlobeIcon className="size-3" />
+                    Public
+                  </Badge>
+                </Link>
               )}
             </div>
 
