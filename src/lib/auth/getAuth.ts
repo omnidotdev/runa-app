@@ -124,6 +124,30 @@ export async function getAuth(request: Request) {
       }
     } catch (err) {
       console.error("[getAuth] Token fetch error:", err);
+
+      // If the refresh token is permanently invalid, sign out to clear
+      // stale session state and force re-authentication
+      const isInvalidGrant =
+        err instanceof Error &&
+        (err.message.includes("invalid_grant") ||
+          err.message.includes("invalid refresh token") ||
+          ("cause" in err &&
+            typeof err.cause === "object" &&
+            err.cause !== null &&
+            "error" in err.cause &&
+            (err.cause as { error: string }).error === "invalid_grant"));
+
+      if (isInvalidGrant) {
+        console.warn("[getAuth] Invalid refresh token, clearing session");
+        try {
+          await auth.api.signOut({ headers: request.headers });
+        } catch {
+          // Sign-out may fail if session is already corrupt
+        }
+        // Clear the auth cache cookie so stale rowId doesn't persist
+        setCookie(authCache.cookieName, "", { maxAge: 0, path: "/" });
+        return null;
+      }
     }
 
     return {
