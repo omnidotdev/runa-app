@@ -21,7 +21,7 @@ const PublicBoardItem = ({ task, displayId }: Props) => {
   // });
 
   return (
-    <div className="mb-2 h-35 shrink-0 overflow-hidden rounded-lg border bg-background p-3 dark:border-border">
+    <div className="mb-2 h-35 shrink-0 overflow-hidden rounded-lg border bg-background p-3 outline-hidden dark:border-border">
       {/* TODO: re-enable click-through to task detail
       onClick={() =>
         navigate({
@@ -58,7 +58,7 @@ const PublicBoardItem = ({ task, displayId }: Props) => {
             <div className="line-clamp-2 py-2 text-foreground text-xs">
               <RichTextEditor
                 defaultContent={task.content}
-                className="min-h-0! w-fit border-0 p-0 text-xs dark:bg-background [&_.ProseMirror]:line-clamp-2 [&_.ProseMirror]:overflow-hidden"
+                className="min-h-0! w-fit border-0 bg-transparent p-0 text-xs dark:bg-transparent [&_.ProseMirror]:line-clamp-2 [&_.ProseMirror]:overflow-hidden"
                 skeletonClassName="h-4 w-40"
                 editable={false}
               />
