@@ -1,6 +1,7 @@
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
+  Link as RouterLink,
   createFileRoute,
   notFound,
   stripSearchParams,
@@ -490,7 +491,7 @@ function ProjectPage() {
             <div className="flex items-center gap-2">
               <h1 className="font-semibold text-2xl">{project?.name}</h1>
               {project?.isPublic && (
-                <Link
+                <RouterLink
                   to="/board/$workspaceSlug/$projectSlug"
                   params={{ workspaceSlug, projectSlug }}
                   target="_blank"
@@ -500,7 +501,7 @@ function ProjectPage() {
                     <GlobeIcon className="size-3" />
                     Public
                   </Badge>
-                </Link>
+                </RouterLink>
               )}
             </div>
 
