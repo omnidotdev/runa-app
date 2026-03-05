@@ -13,3 +13,5 @@ export { default as ProjectLabelForm } from "./ProjectLabelForm";
 export { default as ProjectLabelsForm } from "./ProjectLabelsForm";
 export { default as ProjectPageSkeleton } from "./ProjectPageSkeleton";
 export { default as ProjectSettingsHeader } from "./ProjectSettingsHeader";
+export { default as PublicBoard } from "./PublicBoard";
+export { default as PublicBoardItem } from "./PublicBoardItem";

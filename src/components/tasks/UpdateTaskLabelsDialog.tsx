@@ -81,7 +81,7 @@ const UpdateTaskLabelsDialog = () => {
       ...taskFormDefaults,
       labels: defaultLabels,
     },
-    onSubmit: async ({ value, formApi }) => {
+    onSubmit: async ({ value }) => {
       const allTaskLabels = value.labels.filter((l) => l.checked);
       const pendingLabels = value.labels.filter((l) => l.rowId === "pending");
       const existingTaskLabels = allTaskLabels.filter(
