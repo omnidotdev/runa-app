@@ -5,7 +5,6 @@ import {
   boardLayoutStyles,
 } from "@/lib/board/styles";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
-import { cn } from "@/lib/utils";
 import PublicBoardItem from "./PublicBoardItem";
 
 import type { ProjectQuery, TasksQuery } from "@/generated/graphql";
@@ -27,7 +26,7 @@ const PublicBoard = ({ project, tasks }: Props) => {
   return (
     <div
       ref={scrollContainerRef}
-      className={cn(boardContainerStyles.base, boardContainerStyles.background)}
+      className={`${boardContainerStyles.base} ${boardContainerStyles.background}`}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
@@ -44,21 +43,18 @@ const PublicBoard = ({ project, tasks }: Props) => {
               />
 
               <div className="flex h-full overflow-hidden">
-                <div
-                  className={cn(
-                    boardColumnStyles.droppable,
-                    boardColumnStyles.itemsContainer,
-                  )}
-                >
-                  {tasks
-                    .filter((task) => task.columnId === column.rowId)
-                    .map((task) => (
-                      <PublicBoardItem
-                        key={task.rowId}
-                        task={task}
-                        displayId={`${project.prefix ?? "PROJ"}-${task.number}`}
-                      />
-                    ))}
+                <div className={boardColumnStyles.droppable}>
+                  <div className={boardColumnStyles.itemsContainer}>
+                    {tasks
+                      .filter((task) => task.columnId === column.rowId)
+                      .map((task) => (
+                        <PublicBoardItem
+                          key={task.rowId}
+                          task={task}
+                          displayId={`${project.prefix ?? "PROJ"}-${task.number}`}
+                        />
+                      ))}
+                  </div>
                 </div>
               </div>
             </div>
