@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { AlignLeftIcon, CalendarIcon, MessageCircleIcon } from "lucide-react";
 
-import { Assignees, Label, RichTextEditor } from "@/components/core";
+import { Label, RichTextEditor } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
 import { Badge } from "@/components/ui/badge";
 
@@ -38,15 +38,6 @@ const PublicBoardItem = ({ task, displayId }: Props) => (
             />
           </div>
         </div>
-
-        {task.assignees.nodes.length > 0 && (
-          <Assignees
-            assignees={task.assignees.nodes.map(
-              (assignee) => assignee.user?.identityProviderId!,
-            )}
-            className="flex w-fit items-center"
-          />
-        )}
       </div>
 
       <div className="mt-auto flex items-end justify-between gap-2">
