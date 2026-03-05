@@ -193,6 +193,7 @@ export const Route = createFileRoute(
             title: loaderData.name,
             description: `View and manage tasks for ${loaderData.name}.`,
             url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}`,
+            image: `${BASE_URL}/api/og/project/${params.workspaceSlug}/${params.projectSlug}`,
           }),
         ]
       : undefined,
