@@ -33,11 +33,11 @@ interface Props {
 
 const ColumnMenu = ({ columnId, taskIds }: Props) => {
   const { projectId, organizationId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { setIsOpen } = useDialogStore({

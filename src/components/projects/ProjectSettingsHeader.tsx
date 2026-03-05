@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const routeApi = getRouteApi(
-  "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
 );
 
 export default function ProjectSettingsHeader() {

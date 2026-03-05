@@ -24,8 +24,8 @@ const Assignees = ({
   maxVisible = 3,
   ...rest
 }: Props) => {
-  const { organizationId } = useLoaderData({ from: "/_auth" });
-  const { session } = useRouteContext({ from: "/_auth" });
+  const { organizationId } = useLoaderData({ from: "/_app" });
+  const { session } = useRouteContext({ from: "/_app" });
 
   // Fetch organization members from IDP
   const { data: membersData } = useQuery({

@@ -52,7 +52,7 @@ import { cn } from "@/lib/utils";
 import type { TaskQuery } from "@/generated/graphql";
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
 )({
   loader: async ({
     params: { taskId, projectSlug },

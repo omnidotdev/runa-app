@@ -42,11 +42,11 @@ import type { ComponentProps } from "react";
 
 const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
   const { projectId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
   const [isUpdatingColorPreferences, setIsUpdatingColorPreferences] =

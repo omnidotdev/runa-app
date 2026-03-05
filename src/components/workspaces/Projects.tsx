@@ -39,15 +39,15 @@ import { useOrganization } from "@/providers/OrganizationProvider";
 
 const Projects = () => {
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
 
   const { organizationId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
 
   const [selectedProject, setSelectedProject] = useState<{

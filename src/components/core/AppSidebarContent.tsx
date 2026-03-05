@@ -73,8 +73,8 @@ interface Props {
 // TODO break up this behemoth
 
 const AppSidebarContent = ({ setSelectedProject }: Props) => {
-  const { organizationId } = useLoaderData({ from: "/_auth" });
-  const { session } = useRouteContext({ from: "/_auth" });
+  const { organizationId } = useLoaderData({ from: "/_app" });
+  const { session } = useRouteContext({ from: "/_app" });
   const queryClient = useQueryClient();
   const { workspaceSlug } = useParams({ strict: false });
   const { pathname } = useLocation();

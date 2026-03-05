@@ -7,7 +7,7 @@ import { Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
 const routeApi = getRouteApi(
-  "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
 );
 
 export default function ProjectDangerZone() {
