@@ -178,7 +178,7 @@ function AppLayout() {
   if (!isAuthenticated || isPublicPreview) {
     // Minimal header for unauthenticated or public preview access
     return (
-      <div className="flex min-h-dvh flex-col bg-background">
+      <div className="flex h-dvh flex-col bg-background">
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
           <div className="flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
             <Link
@@ -205,7 +205,7 @@ function AppLayout() {
           </div>
         </header>
 
-        <main className="flex-1">
+        <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <Outlet />
         </main>
       </div>
