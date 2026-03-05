@@ -9,7 +9,6 @@ query Projects($organizationId: String!, $search: String = "", $userId: UUID) {
       userPreferences(condition: { userId: $userId }, first: 1) {
         nodes {
           rowId
-          color
           viewMode
         }
       }
