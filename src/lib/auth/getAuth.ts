@@ -82,6 +82,10 @@ export async function getAuth(request: Request) {
       });
       accessToken = tokenResult?.accessToken;
 
+      if (!accessToken) {
+        console.warn("[getAuth] No access token after refresh attempt");
+      }
+
       // Extract claims from ID token (verified via OIDC discovery + JWKS)
       if (tokenResult?.idToken) {
         try {

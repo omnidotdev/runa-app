@@ -52,9 +52,7 @@ export default function ProjectGeneralForm() {
     select: (data) => data?.project,
   });
 
-  const queryClient = routeApi.useRouteContext({
-    select: (ctx) => ctx.queryClient,
-  });
+  const [isPublic, setIsPublic] = useState(project?.isPublic ?? false);
 
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
@@ -62,23 +60,6 @@ export default function ProjectGeneralForm() {
         getQueryKeyPrefix(useProjectQuery),
         getQueryKeyPrefix(useProjectsQuery),
       ],
-    },
-    onMutate: (variables) => {
-      if (variables.patch.isPublic !== undefined) {
-        queryClient.setQueryData(
-          projectOptions({ rowId: projectId }).queryKey,
-          (old) => {
-            if (!old?.project) return old;
-            return {
-              ...old,
-              project: {
-                ...old.project,
-                isPublic: variables.patch.isPublic!,
-              },
-            };
-          },
-        );
-      }
     },
     onSuccess: (_data, variables) => {
       if (variables.patch.slug && variables.patch.slug !== projectSlug) {
@@ -358,24 +339,25 @@ export default function ProjectGeneralForm() {
 
             <div className="flex items-center gap-2 pr-2">
               <span className="text-base-500 text-xs">
-                {project?.isPublic
+                {isPublic
                   ? "Anyone with the link can view"
                   : "Only workspace members can access"}
               </span>
               <Switch
-                checked={project?.isPublic ?? false}
-                onCheckedChange={(checked) =>
+                checked={isPublic}
+                onCheckedChange={(checked) => {
+                  setIsPublic(checked);
                   updateProject({
                     rowId: projectId,
                     patch: { isPublic: checked },
-                  })
-                }
+                  });
+                }}
                 disabled={isMember}
               />
             </div>
           </div>
 
-          {project?.isPublic && (
+          {isPublic && (
             <div className="flex h-10 w-full items-center justify-between">
               <div className="flex items-center gap-3 pl-2 lg:pl-0">
                 <span className="text-base-500 text-sm">Share link</span>

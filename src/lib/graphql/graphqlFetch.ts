@@ -1,5 +1,5 @@
 import { parse } from "graphql";
-import { gql } from "graphql-request";
+import { ClientError, gql } from "graphql-request";
 
 import { getGraphQLClient } from "@/lib/graphql/graphqlClientFactory";
 import { fetchSession } from "@/server/functions/auth";
@@ -34,12 +34,25 @@ export const graphqlFetch =
     const client = getGraphQLClient();
     const document: TypedDocumentNode<TData, Variables> = parse(gql`${query}`);
 
-    return client.request({
-      document,
-      variables: variables as Variables,
-      requestHeaders: {
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        ...restOptions,
-      },
-    });
+    try {
+      return await client.request({
+        document,
+        variables: variables as Variables,
+        requestHeaders: {
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+          ...restOptions,
+        },
+      });
+    } catch (error) {
+      // Redirect to re-auth on 401 (expired/invalid token)
+      if (
+        error instanceof ClientError &&
+        error.response.status === 401 &&
+        typeof window !== "undefined"
+      ) {
+        window.location.href = "/";
+      }
+
+      throw error;
+    }
   };
