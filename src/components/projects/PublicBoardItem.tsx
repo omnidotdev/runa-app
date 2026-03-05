@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "@tanstack/react-router";
+// import { useNavigate, useParams } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { AlignLeftIcon, CalendarIcon, MessageCircleIcon } from "lucide-react";
 
@@ -14,14 +14,15 @@ interface Props {
 }
 
 const PublicBoardItem = ({ task, displayId }: Props) => {
-  const navigate = useNavigate();
-  const { workspaceSlug, projectSlug } = useParams({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
-  });
+  // TODO: enable card click-through to read-only task detail
+  // const navigate = useNavigate();
+  // const { workspaceSlug, projectSlug } = useParams({
+  //   from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
+  // });
 
   return (
-    <div
-      className="mb-2 h-35 shrink-0 cursor-pointer overflow-hidden rounded-lg border bg-background p-3 transition-colors hover:bg-accent/50 dark:border-border"
+    <div className="mb-2 h-35 shrink-0 overflow-hidden rounded-lg border bg-background p-3 dark:border-border">
+      {/* TODO: re-enable click-through to task detail
       onClick={() =>
         navigate({
           to: "/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
@@ -38,7 +39,7 @@ const PublicBoardItem = ({ task, displayId }: Props) => {
       }}
       role="button"
       tabIndex={0}
-    >
+      */}
       <div className="flex h-full flex-col overflow-hidden">
         <div className="flex items-start gap-2">
           <div className="mt-0.5 min-w-0 flex-1">
