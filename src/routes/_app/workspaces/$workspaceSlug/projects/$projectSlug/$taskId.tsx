@@ -56,7 +56,7 @@ export const Route = createFileRoute(
 )({
   loader: async ({
     params: { taskId, projectSlug },
-    context: { queryClient, organizationId },
+    context: { queryClient, organizationId, session },
   }) => {
     if (!organizationId) throw notFound();
 
@@ -67,6 +67,12 @@ export const Route = createFileRoute(
             projectBySlugOptions({ slug: projectSlug, organizationId }),
           );
         if (!projectBySlugAndOrganizationId) throw notFound();
+
+        // Unauth users can only access public projects
+        if (!session?.user?.rowId && !projectBySlugAndOrganizationId.isPublic) {
+          throw notFound();
+        }
+
         return projectBySlugAndOrganizationId;
       },
       async task() {
@@ -82,6 +88,7 @@ export const Route = createFileRoute(
       organizationId,
       projectId: project.rowId,
       projectName: project.name,
+      isPublicAccess: !session?.user?.rowId || undefined,
     };
   },
   head: ({ loaderData, params }) => ({
@@ -98,6 +105,74 @@ export const Route = createFileRoute(
 });
 
 function TaskPage() {
+  const loaderData = Route.useLoaderData();
+  const isPublicAccess =
+    "isPublicAccess" in loaderData && loaderData.isPublicAccess;
+  const { session } = Route.useRouteContext();
+
+  if (isPublicAccess || !session?.user?.rowId) {
+    return <PublicTaskView />;
+  }
+
+  return <AuthenticatedTaskPage />;
+}
+
+function PublicTaskView() {
+  const { projectId } = Route.useLoaderData();
+  const { workspaceSlug, projectSlug, taskId } = Route.useParams();
+
+  const { data: task } = useSuspenseQuery({
+    ...taskOptions({ rowId: taskId }),
+    select: (data) => data?.task,
+  });
+
+  const { data: project } = useSuspenseQuery({
+    ...projectOptions({ rowId: projectId }),
+    select: (data) => data?.project,
+  });
+
+  return (
+    <div className="custom-scrollbar flex flex-col overflow-y-auto px-6 py-12">
+      <div className="mb-4 flex items-center gap-3">
+        <Link
+          to="/workspaces/$workspaceSlug/projects/$projectSlug"
+          params={{ workspaceSlug, projectSlug }}
+          variant="ghost"
+          size="icon"
+          className="ml-1"
+          aria-label="Go back"
+        >
+          <ArrowLeftIcon className="size-4" />
+        </Link>
+
+        <div className="flex flex-col gap-2">
+          <RichTextEditor
+            defaultContent={task?.content}
+            className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
+            skeletonClassName="h-8 min-w-40"
+            editable={false}
+          />
+
+          <div className="flex items-center gap-2 font-mono text-base-500 text-sm dark:text-base-400">
+            {`${project?.prefix ? project.prefix : "PROJ"}-${task?.number}`}
+          </div>
+        </div>
+      </div>
+
+      {task?.description && (
+        <div className="prose dark:prose-invert max-w-none">
+          <RichTextEditor
+            defaultContent={task.description}
+            className="min-h-0 border-0 bg-transparent p-0 dark:bg-transparent"
+            editable={false}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AuthenticatedTaskPage() {
   const navigate = Route.useNavigate();
   const { projectId, organizationId } = Route.useLoaderData();
   const { session } = Route.useRouteContext();

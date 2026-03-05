@@ -68,7 +68,7 @@ const projectSearchParamsSchema = z.object({
   assignees: z.array(z.guid()).default([]),
   labels: z.array(z.guid()).default([]),
   priorities: z.array(z.enum(["low", "medium", "high"])).default([]),
-  preview: z.enum(["public"]).optional(),
+  mode: z.enum(["public"]).optional(),
 });
 
 export const Route = createFileRoute(
@@ -181,7 +181,7 @@ export const Route = createFileRoute(
         assignees: [],
         labels: [],
         priorities: [],
-        preview: undefined,
+        mode: undefined,
       }),
     ],
   },
@@ -203,12 +203,12 @@ export const Route = createFileRoute(
 function ProjectPage() {
   const loaderData = Route.useLoaderData();
   const { session } = Route.useRouteContext();
-  const { preview } = Route.useSearch();
+  const { mode } = Route.useSearch();
   const isPublicAccess =
     "isPublicAccess" in loaderData && loaderData.isPublicAccess;
 
   // Show public view for unauth users or when previewing public board
-  if (isPublicAccess || !session?.user?.rowId || preview === "public") {
+  if (isPublicAccess || !session?.user?.rowId || mode === "public") {
     return <PublicProjectView projectId={loaderData.projectId} />;
   }
 
@@ -552,9 +552,10 @@ function AuthenticatedProjectPage() {
                 <Link
                   to="/workspaces/$workspaceSlug/projects/$projectSlug"
                   params={{ workspaceSlug, projectSlug }}
-                  search={{ preview: "public" }}
+                  search={{ mode: "public" }}
                   target="_blank"
                   variant="unstyled"
+                  className="h-auto rounded-none p-0 font-normal"
                 >
                   <Badge variant="secondary" className="gap-1">
                     <GlobeIcon className="size-3" />

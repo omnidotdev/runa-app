@@ -147,8 +147,8 @@ function AppLayout() {
   const { fetchedOrg } = Route.useLoaderData();
 
   const isAuthenticated = !!session?.user?.rowId;
-  const search = useSearch({ strict: false }) as { preview?: string };
-  const isPublicPreview = search.preview === "public";
+  const search = useSearch({ strict: false }) as { mode?: string };
+  const isPublicPreview = search.mode === "public";
 
   // Merge JWT organizations with any dynamically fetched org (for stale JWT cases)
   const organizations = useMemo(() => {
@@ -180,7 +180,7 @@ function AppLayout() {
     return (
       <div className="flex min-h-dvh flex-col bg-background">
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
-          <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
             <Link
               to="/"
               variant="ghost"
