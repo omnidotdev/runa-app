@@ -5,6 +5,7 @@ import {
   boardLayoutStyles,
 } from "@/lib/board/styles";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
+import { useTheme } from "@/providers/ThemeProvider";
 import PublicBoardItem from "./PublicBoardItem";
 
 import type { ProjectQuery, TasksQuery } from "@/generated/graphql";
@@ -23,10 +24,19 @@ const PublicBoard = ({ project, tasks }: Props) => {
     handleMouseLeave,
   } = useInertialScroll();
 
+  const { theme } = useTheme();
+
   return (
     <div
       ref={scrollContainerRef}
       className={`${boardContainerStyles.base} ${boardContainerStyles.background}`}
+      style={{
+        backgroundColor: project?.color
+          ? theme === "dark"
+            ? `${project?.color}12`
+            : `${project?.color}0D`
+          : undefined,
+      }}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
