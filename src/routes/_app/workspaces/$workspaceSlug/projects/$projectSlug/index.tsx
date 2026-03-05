@@ -26,6 +26,7 @@ import { NotFound } from "@/components/layout";
 import {
   Board,
   List,
+  ProjectLinks,
   ProjectPageSkeleton,
   PublicBoard,
 } from "@/components/projects";
@@ -563,6 +564,7 @@ function AuthenticatedProjectPage() {
                   </Badge>
                 </Link>
               )}
+              <ProjectLinks links={project?.projectLinks?.nodes ?? []} />
             </div>
 
             {project?.description && (
@@ -700,7 +702,10 @@ function PublicProjectView({ projectId }: { projectId: string }) {
     <div className="flex size-full flex-col">
       <div className="border-b px-6 py-4">
         <div className="flex items-center justify-between">
-          <h1 className="font-semibold text-2xl">{project.name}</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="font-semibold text-2xl">{project.name}</h1>
+            <ProjectLinks links={project?.projectLinks?.nodes ?? []} />
+          </div>
         </div>
 
         {project.description && (
