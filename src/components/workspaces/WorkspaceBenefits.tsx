@@ -29,7 +29,7 @@ import {
   renewSubscription,
 } from "@/server/functions/subscriptions";
 
-const routeApi = getRouteApi("/_auth/workspaces/$workspaceSlug/settings");
+const routeApi = getRouteApi("/_app/workspaces/$workspaceSlug/settings");
 
 export default function WorkspaceBenefits() {
   const { organizationId, subscription, prices } = routeApi.useLoaderData();

@@ -18,7 +18,7 @@ import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
 )({
   loader: async ({
     params: { projectSlug },

@@ -8,7 +8,7 @@ import { getTierFromSubscription } from "@/lib/types/tier";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
-const routeApi = getRouteApi("/_auth/workspaces/$workspaceSlug/settings");
+const routeApi = getRouteApi("/_app/workspaces/$workspaceSlug/settings");
 
 export default function WorkspaceSettingsHeader() {
   const { organizationId, subscription, prices } = routeApi.useLoaderData();

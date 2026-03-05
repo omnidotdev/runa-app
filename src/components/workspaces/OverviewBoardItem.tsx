@@ -14,7 +14,7 @@ interface Props {
 
 const BoardItem = ({ project }: Props) => {
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/projects/",
+    from: "/_app/workspaces/$workspaceSlug/projects/",
   });
 
   const navigate = useNavigate();

@@ -44,8 +44,8 @@ const UpdateAssignees = withForm({
   defaultValues: taskFormDefaults,
   props: {} as AdditionalProps,
   render: ({ form, comboboxInputProps }) => {
-    const { organizationId } = useLoaderData({ from: "/_auth" });
-    const { session } = useRouteContext({ from: "/_auth" });
+    const { organizationId } = useLoaderData({ from: "/_app" });
+    const { session } = useRouteContext({ from: "/_app" });
 
     const { contains } = useFilter({ sensitivity: "base" });
 

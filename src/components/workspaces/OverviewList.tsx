@@ -28,11 +28,11 @@ interface Props {
 
 const List = ({ projects }: Props) => {
   const { organizationId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/",
+    from: "/_app/workspaces/$workspaceSlug/projects/",
   });
 
   const { search } = useSearch({
-    from: "/_auth/workspaces/$workspaceSlug/projects/",
+    from: "/_app/workspaces/$workspaceSlug/projects/",
   });
 
   // Get role from IDP organization claims

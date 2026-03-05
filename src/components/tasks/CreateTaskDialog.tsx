@@ -40,11 +40,11 @@ import TaskColumnForm from "./TaskColumnForm";
 
 const CreateTaskDialog = () => {
   const { projectId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { session, queryClient } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const titleRef = useRef<HTMLInputElement>(null);

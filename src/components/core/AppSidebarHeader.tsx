@@ -31,7 +31,7 @@ import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 import { Badge } from "../ui/badge";
 
 const AppSidebarHeader = () => {
-  const { organizationId } = useLoaderData({ from: "/_auth" });
+  const { organizationId } = useLoaderData({ from: "/_app" });
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { toggleSidebar, closeMobileSidebar } = useSidebar();

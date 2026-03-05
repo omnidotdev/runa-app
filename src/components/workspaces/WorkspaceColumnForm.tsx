@@ -58,7 +58,7 @@ const ColumnForm = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { organizationId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
 
   // Get role from IDP organization claims

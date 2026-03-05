@@ -60,11 +60,11 @@ const Team = () => {
   const inviteRef = useRef<HTMLButtonElement>(null);
 
   const { organizationId, subscription, prices } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
 
   const [selectedMember, setSelectedMember] = useState<{

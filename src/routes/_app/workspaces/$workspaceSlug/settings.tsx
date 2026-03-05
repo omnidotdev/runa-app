@@ -19,7 +19,7 @@ import subscriptionOptions from "@/lib/options/subscription.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/settings",
+  "/_app/workspaces/$workspaceSlug/settings",
 )({
   loader: async ({ context: { session, queryClient, organizationId } }) => {
     if (!organizationId) throw notFound();

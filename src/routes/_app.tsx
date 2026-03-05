@@ -2,16 +2,23 @@ import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
 import { all } from "better-all";
 import { useMemo } from "react";
 
-import { AppSidebar } from "@/components/core";
+import { AppSidebar, Link, ThemeToggle } from "@/components/core";
 import { NotFound } from "@/components/layout";
+import { Button } from "@/components/ui/button";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/workspaces";
+import signIn from "@/lib/auth/signIn";
+import app from "@/lib/config/app.config";
+import { BASE_URL } from "@/lib/config/env.config";
 import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import { EventsProvider } from "@/providers/EventsProvider";
 import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
-import { getOrganizationBySlug } from "@/server/functions/organizations";
+import {
+  fetchOrganizationBySlug,
+  getOrganizationBySlug,
+} from "@/server/functions/organizations";
 
 // Noop provider for client-side (main @omnidotdev/providers entry requires Node.js)
 const eventsProvider = {
@@ -23,18 +30,34 @@ const eventsProvider = {
   },
 };
 
-export const Route = createFileRoute("/_auth")({
+export const Route = createFileRoute("/_app")({
   beforeLoad: async ({ params, context: { session } }) => {
-    // if session exists but `rowId` is missing, the user may exist in the identity provider but not in the database (stale cookie or incomplete signup), so signed out to clear the stale session
-    if (!session?.user?.rowId) {
-      const { signOutAndRedirect } = await import("@/server/functions/auth");
-      await signOutAndRedirect();
-    }
-
     const { workspaceSlug, projectSlug } = params as {
       workspaceSlug?: string;
       projectSlug?: string;
     };
+
+    // If no session, allow through for potential public project access
+    if (!session?.user?.rowId) {
+      if (workspaceSlug && projectSlug) {
+        // Might be a public project — resolve org without auth
+        const fetchedOrg = await fetchOrganizationBySlug({
+          data: { slug: workspaceSlug },
+        });
+
+        if (!fetchedOrg) throw notFound();
+
+        return {
+          organizationId: fetchedOrg.id,
+          projectSlug,
+          isPublicAccess: true,
+        };
+      }
+
+      // No workspace/project params — redirect to sign in
+      const { signOutAndRedirect } = await import("@/server/functions/auth");
+      await signOutAndRedirect();
+    }
 
     if (!workspaceSlug) {
       return { organizationId: undefined, projectSlug: undefined };
@@ -60,8 +83,24 @@ export const Route = createFileRoute("/_auth")({
     return { organizationId: fetchedOrg.id, projectSlug, fetchedOrg };
   },
   loader: async ({
-    context: { queryClient, organizationId, fetchedOrg, session },
+    context: {
+      queryClient,
+      organizationId,
+      fetchedOrg,
+      session,
+      isPublicAccess,
+    },
   }) => {
+    // Public access — skip sidebar/settings data
+    if (isPublicAccess) {
+      return {
+        organizationId,
+        settingByOrganizationId: undefined,
+        fetchedOrg: undefined,
+        isPublicAccess: true,
+      };
+    }
+
     if (!organizationId) {
       return {
         organizationId: undefined,
@@ -95,12 +134,14 @@ export const Route = createFileRoute("/_auth")({
     };
   },
   notFoundComponent: () => <NotFound>Workspace Not Found</NotFound>,
-  component: AuthenticatedLayout,
+  component: AppLayout,
 });
 
-function AuthenticatedLayout() {
+function AppLayout() {
   const { session } = Route.useRouteContext();
   const { fetchedOrg } = Route.useLoaderData();
+
+  const isAuthenticated = !!session?.user?.rowId;
 
   // Merge JWT organizations with any dynamically fetched org (for stale JWT cases)
   const organizations = useMemo(() => {
@@ -118,6 +159,51 @@ function AuthenticatedLayout() {
 
     return orgs;
   }, [session?.organizations, fetchedOrg]);
+
+  const handleSignIn = async () => {
+    try {
+      await signIn({ redirectUrl: BASE_URL, providerId: "omni" });
+    } catch (error) {
+      console.error("[handleSignIn] OAuth sign-in failed:", error);
+    }
+  };
+
+  if (!isAuthenticated) {
+    // Minimal header for unauthenticated public access
+    return (
+      <div className="flex min-h-dvh flex-col bg-background">
+        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
+          <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <Link
+              to="/"
+              variant="ghost"
+              className="gap-2 hover:bg-transparent dark:hover:bg-transparent"
+            >
+              <span className="text-xl">🌙</span>
+              <span className="font-bold text-lg tracking-tight">
+                {app.name}
+              </span>
+            </Link>
+
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button
+                size="sm"
+                onClick={handleSignIn}
+                className="bg-primary-500 text-base-950 hover:bg-primary-400 dark:bg-primary-500 dark:hover:bg-primary-400"
+              >
+                Sign In
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1">
+          <Outlet />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <EventsProvider provider={eventsProvider}>

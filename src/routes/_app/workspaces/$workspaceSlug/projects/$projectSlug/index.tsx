@@ -1,7 +1,6 @@
 import { DragDropContext } from "@hello-pangea/dnd";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
-  Link as RouterLink,
   createFileRoute,
   notFound,
   stripSearchParams,
@@ -17,14 +16,19 @@ import {
   SearchIcon,
   Settings2,
 } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { Suspense, useCallback, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
 import { Link, Tooltip } from "@/components/core";
 import { NotFound } from "@/components/layout";
-import { Board, List, ProjectPageSkeleton } from "@/components/projects";
+import {
+  Board,
+  List,
+  ProjectPageSkeleton,
+  PublicBoard,
+} from "@/components/projects";
 import {
   CreateTaskDialog,
   Filter,
@@ -67,7 +71,7 @@ const projectSearchParamsSchema = z.object({
 });
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
 )({
   pendingComponent: ProjectPageSkeleton,
   pendingMinMs: 500,
@@ -83,6 +87,42 @@ export const Route = createFileRoute(
     context: { session, queryClient, organizationId },
   }) => {
     if (!organizationId) throw notFound();
+
+    // Unauthenticated public access
+    if (!session?.user?.rowId) {
+      const { project } = await all({
+        async project() {
+          const { projectBySlugAndOrganizationId } =
+            await queryClient.ensureQueryData(
+              projectBySlugOptions({ slug: projectSlug, organizationId }),
+            );
+
+          if (!projectBySlugAndOrganizationId) throw notFound();
+          if (!projectBySlugAndOrganizationId.isPublic) throw notFound();
+
+          return projectBySlugAndOrganizationId;
+        },
+        async projectData() {
+          const project = await this.$.project;
+          return queryClient.ensureQueryData(
+            projectOptions({ rowId: project.rowId }),
+          );
+        },
+        async tasks() {
+          const project = await this.$.project;
+          return queryClient.ensureQueryData(
+            tasksOptions({ projectId: project.rowId }),
+          );
+        },
+      });
+
+      return {
+        name: project.name,
+        projectId: project.rowId,
+        organizationId,
+        isPublicAccess: true,
+      };
+    }
 
     const { project } = await all({
       async project() {
@@ -161,7 +201,10 @@ export const Route = createFileRoute(
 function ProjectPage() {
   const { session } = Route.useRouteContext();
   const { projectSlug, workspaceSlug } = Route.useParams();
-  const { projectId, organizationId } = Route.useLoaderData();
+  const loaderData = Route.useLoaderData();
+  const { projectId, organizationId } = loaderData;
+  const isPublicAccess =
+    "isPublicAccess" in loaderData && loaderData.isPublicAccess;
   const { search, assignees, labels, priorities } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
 
@@ -483,6 +526,10 @@ function ProjectPage() {
     [updateViewMode, userPreferences?.viewMode, projectId],
   );
 
+  if (isPublicAccess) {
+    return <PublicProjectView projectId={projectId} />;
+  }
+
   return (
     <div className="flex size-full">
       <div className="flex size-full flex-col">
@@ -491,17 +538,10 @@ function ProjectPage() {
             <div className="flex items-center gap-2">
               <h1 className="font-semibold text-2xl">{project?.name}</h1>
               {project?.isPublic && (
-                <RouterLink
-                  to="/board/$workspaceSlug/$projectSlug"
-                  params={{ workspaceSlug, projectSlug }}
-                  target="_blank"
-                  className="no-underline"
-                >
-                  <Badge variant="secondary" className="gap-1">
-                    <GlobeIcon className="size-3" />
-                    Public
-                  </Badge>
-                </RouterLink>
+                <Badge variant="secondary" className="gap-1">
+                  <GlobeIcon className="size-3" />
+                  Public
+                </Badge>
               )}
             </div>
 
@@ -619,6 +659,40 @@ function ProjectPage() {
       <UpdateAssigneesDialog />
       <UpdateDueDateDialog />
       <UpdateTaskLabelsDialog />
+    </div>
+  );
+}
+
+function PublicProjectView({ projectId }: { projectId: string }) {
+  const { data: project } = useSuspenseQuery({
+    ...projectOptions({ rowId: projectId }),
+    select: (data) => data?.project,
+  });
+
+  const { data: tasks } = useSuspenseQuery({
+    ...tasksOptions({ projectId }),
+    select: (data) => data?.tasks?.nodes ?? [],
+  });
+
+  if (!project) return null;
+
+  return (
+    <div className="flex size-full flex-col">
+      <div className="border-b px-6 py-4">
+        <div className="flex items-center justify-between">
+          <h1 className="font-semibold text-2xl">{project.name}</h1>
+        </div>
+
+        {project.description && (
+          <p className="mt-1 text-base-600 text-sm dark:text-base-400">
+            {project.description}
+          </p>
+        )}
+      </div>
+
+      <Suspense>
+        <PublicBoard project={project} tasks={tasks} />
+      </Suspense>
     </div>
   );
 }

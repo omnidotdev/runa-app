@@ -22,11 +22,11 @@ interface Props {
 
 const TaskDescription = ({ task }: Props) => {
   const { taskId } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
   const { organizationId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
   const queryClient = useQueryClient();
