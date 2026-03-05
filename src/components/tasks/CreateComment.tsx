@@ -18,11 +18,11 @@ interface CreateCommentProps {
 const CreateComment = ({ onMentionSubmit }: CreateCommentProps) => {
   const editorApi = useRef<EditorApi | null>(null);
   const { taskId } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
   const { mutate: addComment } = useCreatePostMutation({

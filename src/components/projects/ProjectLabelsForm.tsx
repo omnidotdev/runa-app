@@ -18,7 +18,7 @@ const ProjectLabelsForm = () => {
   const [activeLabelId, setActiveLabelId] = useState<string | null>(null);
 
   const { projectId, organizationId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
   const role = useCurrentUserRole(organizationId);

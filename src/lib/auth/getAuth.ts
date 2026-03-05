@@ -1,4 +1,7 @@
-import { extractOrgClaims } from "@omnidotdev/providers";
+import {
+  ensureFreshAccessToken,
+  extractOrgClaims,
+} from "@omnidotdev/providers";
 import { setCookie } from "@tanstack/react-start/server";
 import { GraphQLClient } from "graphql-request";
 
@@ -65,47 +68,22 @@ export async function getAuth(request: Request) {
 
     // Get tokens from Gatekeeper via Better Auth
     try {
-      const tokenResult = await auth.api.getAccessToken({
-        body: { providerId: "omni" },
-        headers: request.headers,
+      const tokenResult = await ensureFreshAccessToken({
+        getAccessToken: () =>
+          auth.api.getAccessToken({
+            body: { providerId: "omni" },
+            headers: request.headers,
+          }),
+        refreshToken: () =>
+          auth.api.refreshToken({
+            body: { providerId: "omni" },
+            headers: request.headers,
+          }),
       });
       accessToken = tokenResult?.accessToken;
 
-      // Force refresh if accessTokenExpiresAt is missing (stale account data
-      // from before Gatekeeper returned expires_in) or token is already expired
-      const expiresAt = tokenResult?.accessTokenExpiresAt;
-      const needsRefresh =
-        accessToken &&
-        (!expiresAt || new Date(expiresAt).getTime() - Date.now() < 5_000);
-
-      console.warn("[getAuth] Token state:", {
-        hasToken: !!accessToken,
-        tokenPreview: accessToken?.slice(0, 12),
-        expiresAt,
-        needsRefresh,
-      });
-
-      if (needsRefresh) {
-        try {
-          const refreshed = await auth.api.refreshToken({
-            body: { providerId: "omni" },
-            headers: request.headers,
-          });
-          console.warn("[getAuth] Refresh result:", {
-            hasToken: !!refreshed?.accessToken,
-            tokenPreview: refreshed?.accessToken?.slice(0, 12),
-            expiresAt: refreshed?.accessTokenExpiresAt,
-          });
-          if (refreshed?.accessToken) {
-            accessToken = refreshed.accessToken;
-          }
-        } catch (refreshErr) {
-          console.error("[getAuth] Token refresh failed:", refreshErr);
-        }
-      }
-
       if (!accessToken) {
-        console.warn("[getAuth] getAccessToken returned no accessToken");
+        console.warn("[getAuth] No access token after refresh attempt");
       }
 
       // Extract claims from ID token (verified via OIDC discovery + JWKS)

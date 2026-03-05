@@ -44,15 +44,15 @@ import { cn } from "@/lib/utils";
 
 const Filter = () => {
   const { organizationId, projectId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { assignees, labels, priorities } = useSearch({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const navigate = useNavigate({

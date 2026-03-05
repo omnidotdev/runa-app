@@ -5,6 +5,7 @@ query Project($rowId: UUID!) {
     slug
     description
     prefix
+    isPublic
     projectColumnId
     nextTaskNumber
     tasks {

@@ -182,7 +182,7 @@ export function ToolApprovalActions({
 
   // Get project prefix from route loader data
   const { projectPrefix } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const [isResponding, setIsResponding] = useState(false);

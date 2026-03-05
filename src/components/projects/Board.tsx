@@ -57,11 +57,11 @@ const Board = ({ tasks }: Props) => {
   useAutoScrollOnDrag({ isDragging, scrollContainerRef });
 
   const { projectId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { setColumnId } = useTaskStore();

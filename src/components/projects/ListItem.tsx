@@ -22,7 +22,7 @@ interface Props {
 const ListItem = ({ task, index, displayId }: Props) => {
   const navigate = useNavigate();
   const { workspaceSlug, projectSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const [isHovered, setIsHovered] = useState(false);

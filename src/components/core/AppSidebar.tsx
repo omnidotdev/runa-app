@@ -21,7 +21,7 @@ import DestructiveActionDialog from "./DestructiveActionDialog";
 import type { ComponentProps } from "react";
 
 const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
-  const { organizationId } = useLoaderData({ from: "/_auth" });
+  const { organizationId } = useLoaderData({ from: "/_app" });
   const { workspaceSlug } = useParams({ strict: false });
   const navigate = useNavigate();
   const orgContext = useOrganization();

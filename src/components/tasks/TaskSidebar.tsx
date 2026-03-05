@@ -20,7 +20,7 @@ import type { LabelFragment } from "@/generated/graphql";
 
 const TaskSidebar = () => {
   const { taskId } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
   const { data: task } = useQuery({

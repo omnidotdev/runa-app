@@ -67,11 +67,11 @@ const ColumnForm = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { projectId, organizationId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
   // Get role from IDP organization claims

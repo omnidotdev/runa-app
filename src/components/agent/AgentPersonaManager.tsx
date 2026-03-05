@@ -214,7 +214,7 @@ export function AgentPersonaManager({
   organizationId,
 }: AgentPersonaManagerProps) {
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
   const accessToken = session?.accessToken!;
   const queryClient = useQueryClient();

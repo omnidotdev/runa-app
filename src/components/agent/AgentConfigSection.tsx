@@ -144,10 +144,10 @@ function formatModelName(model: string): string {
 
 export function AgentConfigSection() {
   const { organizationId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
 
   const accessToken = session?.accessToken!;

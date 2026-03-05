@@ -51,14 +51,14 @@ const Board = ({ projects }: Props) => {
   // Auto-scroll during card drag
   useAutoScrollOnDrag({ isDragging, scrollContainerRef });
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/projects/",
+    from: "/_app/workspaces/$workspaceSlug/projects/",
   });
 
   const { organizationId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/",
+    from: "/_app/workspaces/$workspaceSlug/projects/",
   });
   const { search } = useSearch({
-    from: "/_auth/workspaces/$workspaceSlug/projects/",
+    from: "/_app/workspaces/$workspaceSlug/projects/",
   });
 
   // Get role from IDP organization claims

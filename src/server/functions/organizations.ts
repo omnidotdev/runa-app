@@ -316,3 +316,27 @@ export const getOrganizationBySlug = createServerFn({ method: "GET" })
     const organization = await response.json();
     return organization as Organization | null;
   });
+
+/**
+ * Fetch an organization by slug without authentication.
+ * Used for public board access when no JWT is available.
+ */
+export const fetchOrganizationBySlug = createServerFn()
+  .inputValidator((data) => getOrganizationBySlugSchema.parse(data))
+  .handler(async ({ data }): Promise<Organization | null> => {
+    try {
+      const response = await fetch(
+        `${AUTH_BASE_URL}/api/organization/by-slug/${encodeURIComponent(data.slug)}`,
+      );
+
+      if (!response.ok) {
+        if (response.status === 404) return null;
+        throw new Error(`Failed to fetch organization: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error("Error fetching organization by slug:", error);
+      return null;
+    }
+  });

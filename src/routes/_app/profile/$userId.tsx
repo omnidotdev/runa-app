@@ -18,7 +18,7 @@ import { BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
-export const Route = createFileRoute("/_auth/profile/$userId")({
+export const Route = createFileRoute("/_app/profile/$userId")({
   head: (context) => ({
     meta: [
       ...createMetaTags({

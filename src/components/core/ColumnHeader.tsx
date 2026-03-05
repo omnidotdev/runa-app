@@ -9,11 +9,11 @@ import type { ButtonProps } from "@/components/ui/button";
 interface Props extends ButtonProps {
   title: string;
   count: number;
-  tooltip: {
+  tooltip?: {
     title: string;
     shortcut?: string;
   };
-  onCreate: () => void;
+  onCreate?: () => void;
   icon?: string | null;
 }
 
@@ -44,23 +44,25 @@ const ColumnHeader = ({
     <div className="flex items-center gap-2">
       {children}
 
-      <Tooltip
-        positioning={{ placement: "top", gutter: 16 }}
-        tooltip={tooltip.title}
-        shortcut={tooltip.shortcut}
-        trigger={
-          <Button
-            variant="ghost"
-            className="size-7"
-            onClick={() => !disabled && onCreate()}
-            aria-label={`Create ${title}`}
-            disabled={disabled}
-            {...rest}
-          >
-            <PlusIcon className="size-4" />
-          </Button>
-        }
-      />
+      {tooltip && onCreate && (
+        <Tooltip
+          positioning={{ placement: "top", gutter: 16 }}
+          tooltip={tooltip.title}
+          shortcut={tooltip.shortcut}
+          trigger={
+            <Button
+              variant="ghost"
+              className="size-7"
+              onClick={() => !disabled && onCreate()}
+              aria-label={`Create ${title}`}
+              disabled={disabled}
+              {...rest}
+            >
+              <PlusIcon className="size-4" />
+            </Button>
+          }
+        />
+      )}
     </div>
   </div>
 );
