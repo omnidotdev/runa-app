@@ -8861,7 +8861,7 @@ export type LabelFragment = { __typename?: 'Label', color: string, icon?: string
 
 export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: string, index: number, rowId: string, icon?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } };
 
 export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: number, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number } };
 
@@ -9142,7 +9142,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, color?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, color?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -9159,7 +9159,7 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string }> }, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string }> }, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } }> } | null };
 
 export type ProjectsSidebarQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -9255,6 +9255,14 @@ export const ProjectFragmentDoc = `
   }
   completedTasks: tasks(filter: {column: {title: {equalTo: "Done"}}}) {
     totalCount
+  }
+  projectLinks(orderBy: ORDER_ASC) {
+    nodes {
+      rowId
+      url
+      title
+      order
+    }
   }
 }
     `;
@@ -10703,6 +10711,14 @@ export const ProjectDocument = `
         tasks {
           totalCount
         }
+      }
+    }
+    projectLinks(orderBy: ORDER_ASC) {
+      nodes {
+        rowId
+        url
+        title
+        order
       }
     }
   }
