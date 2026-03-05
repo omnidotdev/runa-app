@@ -1,9 +1,14 @@
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { all } from "better-all";
 import dayjs from "dayjs";
 import {
   ArrowLeftIcon,
+  BotIcon,
   CalendarIcon,
   MoreHorizontalIcon,
   Trash2Icon,
@@ -28,7 +33,9 @@ import {
   UpdateDueDateDialog,
   UpdateTaskLabelsDialog,
 } from "@/components/tasks";
+import { AssignToAgentDialog } from "@/components/tasks/AssignToAgentDialog";
 import { TaskAgentActivity } from "@/components/tasks/TaskAgentActivity";
+import { TaskExecutionStatus } from "@/components/tasks/TaskExecutionStatus";
 import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -42,6 +49,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import agentActivitiesByTaskIdOptions from "@/lib/options/agentActivitiesByTaskId.options";
+import githubInstallationOptions from "@/lib/options/githubInstallation.options";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import taskOptions from "@/lib/options/task.options";
@@ -271,6 +279,19 @@ function AuthenticatedTaskPage() {
     type: DialogType.DeleteTask,
   });
 
+  const { setIsOpen: setIsAssignToAgentDialogOpen } = useDialogStore({
+    type: DialogType.AssignToAgent,
+  });
+
+  // Check if GitHub App is installed for the org
+  const { data: installationData } = useQuery(
+    githubInstallationOptions({
+      organizationId: organizationId!,
+      accessToken: session?.accessToken!,
+    }),
+  );
+  const isGitHubAppInstalled = installationData?.installed ?? false;
+
   useEffect(() => {
     if (matches && isTaskSidebarOpen) {
       setIsTaskSidebarOpen(false);
@@ -383,6 +404,23 @@ function AuthenticatedTaskPage() {
             }
           />
 
+          {isGitHubAppInstalled && (
+            <Tooltip
+              positioning={{ placement: "top" }}
+              tooltip="Assign to Agent"
+              trigger={
+                <Button
+                  onClick={() => setIsAssignToAgentDialogOpen(true)}
+                  variant="outline"
+                  className={cn(!isAuthor && isMember && "hidden")}
+                >
+                  <BotIcon className="size-4" />
+                  <span className="text-sm">Assign to Agent</span>
+                </Button>
+              }
+            />
+          )}
+
           {/* TODO: Better position this for actual mobile */}
           <div className="lg:hidden">
             <SheetRoot
@@ -413,6 +451,7 @@ function AuthenticatedTaskPage() {
               description: task?.description,
             }}
           />
+          <TaskExecutionStatus taskId={taskId} projectId={projectId} />
           <TaskAgentActivity taskId={taskId} projectId={projectId} />
           <Comments />
         </div>
@@ -426,6 +465,9 @@ function AuthenticatedTaskPage() {
       <UpdateAssigneesDialog />
       <UpdateDueDateDialog />
       <UpdateTaskLabelsDialog />
+      {isGitHubAppInstalled && (
+        <AssignToAgentDialog taskId={taskId} projectId={projectId} />
+      )}
       <DestructiveActionDialog
         title="Delete Task"
         description="This will permanently delete this task.
