@@ -3,5 +3,7 @@ query ProjectBySlug($slug: String!, $organizationId: String!) {
     rowId
     name
     isPublic
+    color
+    description
   }
 }

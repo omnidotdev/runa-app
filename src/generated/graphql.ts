@@ -9150,7 +9150,7 @@ export type ProjectBySlugQueryVariables = Exact<{
 }>;
 
 
-export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name: string, isPublic: boolean } | null };
+export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name: string, isPublic: boolean, color?: string | null, description?: string | null } | null };
 
 export type ProjectsQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -10812,6 +10812,8 @@ export const ProjectBySlugDocument = `
     rowId
     name
     isPublic
+    color
+    description
   }
 }
     `;
