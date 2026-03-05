@@ -52,12 +52,33 @@ export default function ProjectGeneralForm() {
     select: (data) => data?.project,
   });
 
+  const queryClient = routeApi.useRouteContext({
+    select: (ctx) => ctx.queryClient,
+  });
+
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
       invalidates: [
         getQueryKeyPrefix(useProjectQuery),
         getQueryKeyPrefix(useProjectsQuery),
       ],
+    },
+    onMutate: (variables) => {
+      if (variables.patch.isPublic !== undefined) {
+        queryClient.setQueryData(
+          projectOptions({ rowId: projectId }).queryKey,
+          (old) => {
+            if (!old?.project) return old;
+            return {
+              ...old,
+              project: {
+                ...old.project,
+                isPublic: variables.patch.isPublic!,
+              },
+            };
+          },
+        );
+      }
     },
     onSuccess: (_data, variables) => {
       if (variables.patch.slug && variables.patch.slug !== projectSlug) {
