@@ -68,6 +68,7 @@ const projectSearchParamsSchema = z.object({
   assignees: z.array(z.guid()).default([]),
   labels: z.array(z.guid()).default([]),
   priorities: z.array(z.enum(["low", "medium", "high"])).default([]),
+  preview: z.enum(["public"]).optional(),
 });
 
 export const Route = createFileRoute(
@@ -180,6 +181,7 @@ export const Route = createFileRoute(
         assignees: [],
         labels: [],
         priorities: [],
+        preview: undefined,
       }),
     ],
   },
@@ -200,10 +202,13 @@ export const Route = createFileRoute(
 
 function ProjectPage() {
   const loaderData = Route.useLoaderData();
+  const { session } = Route.useRouteContext();
+  const { preview } = Route.useSearch();
   const isPublicAccess =
     "isPublicAccess" in loaderData && loaderData.isPublicAccess;
 
-  if (isPublicAccess) {
+  // Show public view for unauth users or when previewing public board
+  if (isPublicAccess || !session?.user?.rowId || preview === "public") {
     return <PublicProjectView projectId={loaderData.projectId} />;
   }
 
@@ -547,6 +552,7 @@ function AuthenticatedProjectPage() {
                 <Link
                   to="/workspaces/$workspaceSlug/projects/$projectSlug"
                   params={{ workspaceSlug, projectSlug }}
+                  search={{ preview: "public" }}
                   target="_blank"
                   className="no-underline"
                 >
