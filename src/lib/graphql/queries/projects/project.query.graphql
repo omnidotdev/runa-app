@@ -8,6 +8,7 @@ query Project($rowId: UUID!) {
     isPublic
     projectColumnId
     nextTaskNumber
+    color
     tasks {
       totalCount
     }

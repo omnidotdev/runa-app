@@ -159,9 +159,7 @@ const Projects = () => {
                       <div
                         className="flex size-6 items-center justify-center rounded-full border bg-primary font-medium text-background text-sm uppercase shadow"
                         style={{
-                          backgroundColor:
-                            project?.userPreferences.nodes?.[0]?.color ??
-                            undefined,
+                          backgroundColor: project?.color ?? undefined,
                         }}
                       >
                         {project?.name[0]}
