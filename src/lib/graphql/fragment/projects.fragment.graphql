@@ -4,6 +4,7 @@ fragment Project on Project {
   slug
   description
   prefix
+  isPublic
   projectColumnId
   columnIndex
   allTasks: tasks {

@@ -8,6 +8,7 @@ import {
 import { zodValidator } from "@tanstack/zod-adapter";
 import { all } from "better-all";
 import {
+  GlobeIcon,
   Grid2X2Icon,
   ListIcon,
   Maximize2Icon,
@@ -30,6 +31,7 @@ import {
   UpdateDueDateDialog,
   UpdateTaskLabelsDialog,
 } from "@/components/tasks";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -485,7 +487,15 @@ function ProjectPage() {
       <div className="flex size-full flex-col">
         <div className="border-b px-6 py-4">
           <div className="flex flex-col gap-2">
-            <h1 className="font-semibold text-2xl">{project?.name}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="font-semibold text-2xl">{project?.name}</h1>
+              {project?.isPublic && (
+                <Badge variant="secondary" className="gap-1">
+                  <GlobeIcon className="size-3" />
+                  Public
+                </Badge>
+              )}
+            </div>
 
             {project?.description && (
               <p className="text-base-600 text-sm dark:text-base-400">

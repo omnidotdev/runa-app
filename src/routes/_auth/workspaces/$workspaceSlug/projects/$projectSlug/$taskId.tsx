@@ -60,7 +60,7 @@ export const Route = createFileRoute(
   }) => {
     if (!organizationId) throw notFound();
 
-    const { project, task } = await all({
+    const { project } = await all({
       async project() {
         const { projectBySlugAndOrganizationId } =
           await queryClient.ensureQueryData(

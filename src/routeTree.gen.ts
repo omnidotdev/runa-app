@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SharedRouteImport } from './routes/_shared'
 import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
@@ -24,7 +25,12 @@ import { Route as AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport } from './
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/index'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
+import { Route as SharedBWorkspaceSlugProjectSlugIndexRouteImport } from './routes/_shared/b/$workspaceSlug/$projectSlug/index'
 
+const SharedRoute = SharedRouteImport.update({
+  id: '/_shared',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
@@ -103,6 +109,12 @@ const AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute =
     path: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId',
     getParentRoute: () => AuthRoute,
   } as any)
+const SharedBWorkspaceSlugProjectSlugIndexRoute =
+  SharedBWorkspaceSlugProjectSlugIndexRouteImport.update({
+    id: '/b/$workspaceSlug/$projectSlug/',
+    path: '/b/$workspaceSlug/$projectSlug/',
+    getParentRoute: () => SharedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/demo': typeof PublicDemoRoute
@@ -118,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
+  '/b/$workspaceSlug/$projectSlug': typeof SharedBWorkspaceSlugProjectSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/demo': typeof PublicDemoRoute
@@ -133,11 +146,13 @@ export interface FileRoutesByTo {
   '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
+  '/b/$workspaceSlug/$projectSlug': typeof SharedBWorkspaceSlugProjectSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
+  '/_shared': typeof SharedRouteWithChildren
   '/_public/demo': typeof PublicDemoRoute
   '/_public/pricing': typeof PublicPricingRoute
   '/api/health': typeof ApiHealthRoute
@@ -151,6 +166,7 @@ export interface FileRoutesById {
   '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
   '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
   '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
+  '/_shared/b/$workspaceSlug/$projectSlug/': typeof SharedBWorkspaceSlugProjectSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -168,6 +184,7 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
+    | '/b/$workspaceSlug/$projectSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/demo'
@@ -183,10 +200,12 @@ export interface FileRouteTypes {
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
+    | '/b/$workspaceSlug/$projectSlug'
   id:
     | '__root__'
     | '/_auth'
     | '/_public'
+    | '/_shared'
     | '/_public/demo'
     | '/_public/pricing'
     | '/api/health'
@@ -200,11 +219,13 @@ export interface FileRouteTypes {
     | '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
     | '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings'
     | '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/'
+    | '/_shared/b/$workspaceSlug/$projectSlug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   PublicRoute: typeof PublicRouteWithChildren
+  SharedRoute: typeof SharedRouteWithChildren
   ApiHealthRoute: typeof ApiHealthRoute
   ApiVersionRoute: typeof ApiVersionRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -217,6 +238,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof PublicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_shared': {
+      id: '/_shared'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof SharedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -317,6 +345,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_shared/b/$workspaceSlug/$projectSlug/': {
+      id: '/_shared/b/$workspaceSlug/$projectSlug/'
+      path: '/b/$workspaceSlug/$projectSlug'
+      fullPath: '/b/$workspaceSlug/$projectSlug'
+      preLoaderRoute: typeof SharedBWorkspaceSlugProjectSlugIndexRouteImport
+      parentRoute: typeof SharedRoute
+    }
   }
 }
 
@@ -362,9 +397,21 @@ const PublicRouteChildren: PublicRouteChildren = {
 const PublicRouteWithChildren =
   PublicRoute._addFileChildren(PublicRouteChildren)
 
+interface SharedRouteChildren {
+  SharedBWorkspaceSlugProjectSlugIndexRoute: typeof SharedBWorkspaceSlugProjectSlugIndexRoute
+}
+
+const SharedRouteChildren: SharedRouteChildren = {
+  SharedBWorkspaceSlugProjectSlugIndexRoute: SharedBWorkspaceSlugProjectSlugIndexRoute,
+}
+
+const SharedRouteWithChildren =
+  SharedRoute._addFileChildren(SharedRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   PublicRoute: PublicRouteWithChildren,
+  SharedRoute: SharedRouteWithChildren,
   ApiHealthRoute: ApiHealthRoute,
   ApiVersionRoute: ApiVersionRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

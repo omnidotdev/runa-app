@@ -34,11 +34,13 @@ const ProjectPageSkeleton = () => (
         <div className="h-full min-w-fit p-4">
           <div className="flex h-full gap-3">
             {/* Render 4 column skeletons */}
-            {Array.from({ length: 4 }).map((_, columnIndex) => (
-              <div
-                key={columnIndex}
-                className="flex h-full w-85 flex-col gap-2"
-              >
+            {[
+              { id: "a", cards: 3 },
+              { id: "b", cards: 2 },
+              { id: "c", cards: 4 },
+              { id: "d", cards: 1 },
+            ].map((col) => (
+              <div key={col.id} className="flex h-full w-85 flex-col gap-2">
                 {/* Column header - matches mb-1 py-2 layout */}
                 <div className="mb-1 flex items-center justify-between py-2">
                   <div className="flex items-center gap-2">
@@ -61,10 +63,9 @@ const ProjectPageSkeleton = () => (
                 <div className="flex flex-1 flex-col overflow-hidden">
                   <div className="flex flex-col gap-2">
                     {/* Vary card count per column for visual interest */}
-                    {Array.from({
-                      length: [3, 2, 4, 1][columnIndex] ?? 2,
-                    }).map((_, cardIndex) => (
-                      <CardSkeleton key={cardIndex} />
+                    {Array.from({ length: col.cards }).map((_, j) => (
+                      // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
+                      <CardSkeleton key={j} />
                     ))}
                   </div>
                 </div>
