@@ -21,11 +21,11 @@ import { Route as AuthWorkspacesIndexRouteImport } from './routes/_auth/workspac
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthProfileUserIdRouteImport } from './routes/_auth/profile/$userId'
 import { Route as AuthWorkspacesWorkspaceSlugSettingsRouteImport } from './routes/_auth/workspaces/$workspaceSlug/settings'
+import { Route as SharedBoardWorkspaceSlugProjectSlugIndexRouteImport } from './routes/_shared/board/$workspaceSlug/$projectSlug/index'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/index'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/index'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings'
 import { Route as AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport } from './routes/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
-import { Route as SharedWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport } from './routes/_shared/workspaces/$workspaceSlug/projects/$projectSlug/index'
 
 const SharedRoute = SharedRouteImport.update({
   id: '/_shared',
@@ -85,6 +85,12 @@ const AuthWorkspacesWorkspaceSlugSettingsRoute =
     path: '/workspaces/$workspaceSlug/settings',
     getParentRoute: () => AuthRoute,
   } as any)
+const SharedBoardWorkspaceSlugProjectSlugIndexRoute =
+  SharedBoardWorkspaceSlugProjectSlugIndexRouteImport.update({
+    id: '/board/$workspaceSlug/$projectSlug/',
+    path: '/board/$workspaceSlug/$projectSlug/',
+    getParentRoute: () => SharedRoute,
+  } as any)
 const AuthWorkspacesWorkspaceSlugProjectsIndexRoute =
   AuthWorkspacesWorkspaceSlugProjectsIndexRouteImport.update({
     id: '/workspaces/$workspaceSlug/projects/',
@@ -109,12 +115,6 @@ const AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute =
     path: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId',
     getParentRoute: () => AuthRoute,
   } as any)
-const SharedWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute =
-  SharedWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport.update({
-    id: '/workspaces/$workspaceSlug/projects/$projectSlug/',
-    path: '/workspaces/$workspaceSlug/projects/$projectSlug/',
-    getParentRoute: () => SharedRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/demo': typeof PublicDemoRoute
@@ -127,10 +127,10 @@ export interface FileRoutesByFullPath {
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
+  '/board/$workspaceSlug/$projectSlug': typeof SharedBoardWorkspaceSlugProjectSlugIndexRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug': typeof SharedWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/demo': typeof PublicDemoRoute
@@ -143,10 +143,10 @@ export interface FileRoutesByTo {
   '/workspaces': typeof AuthWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
+  '/board/$workspaceSlug/$projectSlug': typeof SharedBoardWorkspaceSlugProjectSlugIndexRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug': typeof SharedWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -163,10 +163,10 @@ export interface FileRoutesById {
   '/_auth/workspaces/': typeof AuthWorkspacesIndexRoute
   '/_auth/workspaces/$workspaceSlug/settings': typeof AuthWorkspacesWorkspaceSlugSettingsRoute
   '/_auth/workspaces/$workspaceSlug/projects/': typeof AuthWorkspacesWorkspaceSlugProjectsIndexRoute
+  '/_shared/board/$workspaceSlug/$projectSlug/': typeof SharedBoardWorkspaceSlugProjectSlugIndexRoute
   '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
   '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
   '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/': typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
-  '/_shared/workspaces/$workspaceSlug/projects/$projectSlug/': typeof SharedWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -181,9 +181,9 @@ export interface FileRouteTypes {
     | '/workspaces'
     | '/workspaces/$workspaceSlug/settings'
     | '/workspaces/$workspaceSlug/projects'
+    | '/board/$workspaceSlug/$projectSlug'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
-    | '/workspaces/$workspaceSlug/projects/$projectSlug'
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -197,9 +197,9 @@ export interface FileRouteTypes {
     | '/workspaces'
     | '/workspaces/$workspaceSlug/settings'
     | '/workspaces/$workspaceSlug/projects'
+    | '/board/$workspaceSlug/$projectSlug'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
-    | '/workspaces/$workspaceSlug/projects/$projectSlug'
     | '/workspaces/$workspaceSlug/projects/$projectSlug'
   id:
     | '__root__'
@@ -216,10 +216,10 @@ export interface FileRouteTypes {
     | '/_auth/workspaces/'
     | '/_auth/workspaces/$workspaceSlug/settings'
     | '/_auth/workspaces/$workspaceSlug/projects/'
+    | '/_shared/board/$workspaceSlug/$projectSlug/'
     | '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
     | '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings'
     | '/_auth/workspaces/$workspaceSlug/projects/$projectSlug/'
-    | '/_shared/workspaces/$workspaceSlug/projects/$projectSlug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -233,18 +233,18 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_public': {
-      id: '/_public'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof PublicRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_shared': {
       id: '/_shared'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof SharedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -317,6 +317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugSettingsRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_shared/board/$workspaceSlug/$projectSlug/': {
+      id: '/_shared/board/$workspaceSlug/$projectSlug/'
+      path: '/board/$workspaceSlug/$projectSlug'
+      fullPath: '/board/$workspaceSlug/$projectSlug'
+      preLoaderRoute: typeof SharedBoardWorkspaceSlugProjectSlugIndexRouteImport
+      parentRoute: typeof SharedRoute
+    }
     '/_auth/workspaces/$workspaceSlug/projects/': {
       id: '/_auth/workspaces/$workspaceSlug/projects/'
       path: '/workspaces/$workspaceSlug/projects'
@@ -344,13 +351,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
       preLoaderRoute: typeof AuthWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport
       parentRoute: typeof AuthRoute
-    }
-    '/_shared/workspaces/$workspaceSlug/projects/$projectSlug/': {
-      id: '/_shared/workspaces/$workspaceSlug/projects/$projectSlug/'
-      path: '/workspaces/$workspaceSlug/projects/$projectSlug'
-      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug'
-      preLoaderRoute: typeof SharedWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport
-      parentRoute: typeof SharedRoute
     }
   }
 }
@@ -398,11 +398,12 @@ const PublicRouteWithChildren =
   PublicRoute._addFileChildren(PublicRouteChildren)
 
 interface SharedRouteChildren {
-  SharedWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute: typeof SharedWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
+  SharedBoardWorkspaceSlugProjectSlugIndexRoute: typeof SharedBoardWorkspaceSlugProjectSlugIndexRoute
 }
 
 const SharedRouteChildren: SharedRouteChildren = {
-  SharedWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute: SharedWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute,
+  SharedBoardWorkspaceSlugProjectSlugIndexRoute:
+    SharedBoardWorkspaceSlugProjectSlugIndexRoute,
 }
 
 const SharedRouteWithChildren =

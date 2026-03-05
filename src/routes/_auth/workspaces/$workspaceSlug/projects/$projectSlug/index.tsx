@@ -491,7 +491,7 @@ function ProjectPage() {
               <h1 className="font-semibold text-2xl">{project?.name}</h1>
               {project?.isPublic && (
                 <Link
-                  to="/workspaces/$workspaceSlug/projects/$projectSlug"
+                  to="/board/$workspaceSlug/$projectSlug"
                   params={{ workspaceSlug, projectSlug }}
                   target="_blank"
                   className="no-underline"
