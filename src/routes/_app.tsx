@@ -1,4 +1,9 @@
-import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
+import {
+  Outlet,
+  createFileRoute,
+  notFound,
+  useSearch,
+} from "@tanstack/react-router";
 import { all } from "better-all";
 import { useMemo } from "react";
 
@@ -142,6 +147,8 @@ function AppLayout() {
   const { fetchedOrg } = Route.useLoaderData();
 
   const isAuthenticated = !!session?.user?.rowId;
+  const search = useSearch({ strict: false }) as { preview?: string };
+  const isPublicPreview = search.preview === "public";
 
   // Merge JWT organizations with any dynamically fetched org (for stale JWT cases)
   const organizations = useMemo(() => {
@@ -168,8 +175,8 @@ function AppLayout() {
     }
   };
 
-  if (!isAuthenticated) {
-    // Minimal header for unauthenticated public access
+  if (!isAuthenticated || isPublicPreview) {
+    // Minimal header for unauthenticated or public preview access
     return (
       <div className="flex min-h-dvh flex-col bg-background">
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
