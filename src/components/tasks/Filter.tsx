@@ -56,7 +56,7 @@ const Filter = () => {
   });
 
   const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
+    from: "/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
