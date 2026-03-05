@@ -199,12 +199,22 @@ export const Route = createFileRoute(
 });
 
 function ProjectPage() {
+  const loaderData = Route.useLoaderData();
+  const isPublicAccess =
+    "isPublicAccess" in loaderData && loaderData.isPublicAccess;
+
+  if (isPublicAccess) {
+    return <PublicProjectView projectId={loaderData.projectId} />;
+  }
+
+  return <AuthenticatedProjectPage />;
+}
+
+function AuthenticatedProjectPage() {
   const { session } = Route.useRouteContext();
   const { projectSlug, workspaceSlug } = Route.useParams();
   const loaderData = Route.useLoaderData();
   const { projectId, organizationId } = loaderData;
-  const isPublicAccess =
-    "isPublicAccess" in loaderData && loaderData.isPublicAccess;
   const { search, assignees, labels, priorities } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
 
@@ -526,10 +536,6 @@ function ProjectPage() {
     [updateViewMode, userPreferences?.viewMode, projectId],
   );
 
-  if (isPublicAccess) {
-    return <PublicProjectView projectId={projectId} />;
-  }
-
   return (
     <div className="flex size-full">
       <div className="flex size-full flex-col">
@@ -538,10 +544,17 @@ function ProjectPage() {
             <div className="flex items-center gap-2">
               <h1 className="font-semibold text-2xl">{project?.name}</h1>
               {project?.isPublic && (
-                <Badge variant="secondary" className="gap-1">
-                  <GlobeIcon className="size-3" />
-                  Public
-                </Badge>
+                <Link
+                  to="/workspaces/$workspaceSlug/projects/$projectSlug"
+                  params={{ workspaceSlug, projectSlug }}
+                  target="_blank"
+                  className="no-underline"
+                >
+                  <Badge variant="secondary" className="gap-1">
+                    <GlobeIcon className="size-3" />
+                    Public
+                  </Badge>
+                </Link>
               )}
             </div>
 
