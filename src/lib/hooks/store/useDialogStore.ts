@@ -20,6 +20,7 @@ export enum DialogType {
   DeleteComment = "delete_comment",
   CreateTask = "create_task",
   CancelInvitation = "cancel_invitation",
+  AssignToAgent = "assign_to_agent",
 }
 
 interface DialogState {

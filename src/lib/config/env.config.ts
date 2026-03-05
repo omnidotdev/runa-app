@@ -41,3 +41,7 @@ export const isDevEnv = import.meta.env.DEV;
 /** @knipignore */
 export const isProdEnv = import.meta.env.PROD;
 export const isSelfHosted = SELF_HOSTED === "true";
+
+// GitHub App install URL (set per deployment after registering a GitHub App)
+export const GITHUB_APP_INSTALL_URL =
+  env.GITHUB_APP_INSTALL_URL || env.VITE_GITHUB_APP_INSTALL_URL;

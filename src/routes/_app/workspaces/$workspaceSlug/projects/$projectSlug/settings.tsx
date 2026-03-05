@@ -11,6 +11,7 @@ import {
   ProjectLinksForm,
   ProjectSettingsHeader,
 } from "@/components/projects";
+import { GitHubIntegrationSection } from "@/components/settings/GitHubIntegrationSection";
 import { BASE_URL } from "@/lib/config/env.config";
 import columnsOptions from "@/lib/options/columns.options";
 import labelsOptions from "@/lib/options/labels.options";
@@ -90,6 +91,8 @@ function ProjectSettingsPage() {
         <ProjectLabelsForm />
 
         <ProjectColumnsForm />
+
+        <GitHubIntegrationSection />
 
         <ProjectDataSection />
 

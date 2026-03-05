@@ -3,6 +3,7 @@ import { all } from "better-all";
 
 import { AgentConfigSection } from "@/components/agent/AgentConfigSection";
 import { NotFound } from "@/components/layout";
+import { GitHubAppInstallSection } from "@/components/settings/GitHubAppInstallSection";
 import {
   Projects,
   Team,
@@ -125,6 +126,8 @@ function SettingsPage() {
         <WorkspaceColumnsForm />
 
         <AgentConfigSection />
+
+        <GitHubAppInstallSection />
 
         <WorkspaceBenefits />
       </div>

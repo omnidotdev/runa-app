@@ -19,7 +19,1498 @@ export type Scalars = {
   BigInt: { input: string; output: string; }
   Cursor: { input: string; output: string; }
   Datetime: { input: Date; output: Date; }
+  JSON: { input: any; output: any; }
   UUID: { input: string; output: string; }
+};
+
+export type AgentActivity = Node & {
+  __typename?: 'AgentActivity';
+  affectedTaskIds: Scalars['JSON']['output'];
+  approvalStatus?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['Datetime']['output'];
+  errorMessage?: Maybe<Scalars['String']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  organizationId: Scalars['String']['output'];
+  /** Reads a single `Project` that is related to this `AgentActivity`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  requiresApproval: Scalars['Boolean']['output'];
+  rowId: Scalars['UUID']['output'];
+  /** Reads a single `AgentSession` that is related to this `AgentActivity`. */
+  session?: Maybe<AgentSession>;
+  sessionId: Scalars['UUID']['output'];
+  snapshotBefore?: Maybe<Scalars['JSON']['output']>;
+  status: Scalars['String']['output'];
+  toolInput: Scalars['JSON']['output'];
+  toolName: Scalars['String']['output'];
+  toolOutput?: Maybe<Scalars['JSON']['output']>;
+  /** Reads a single `User` that is related to this `AgentActivity`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+};
+
+export type AgentActivityAggregates = {
+  __typename?: 'AgentActivityAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<AgentActivityDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `AgentActivity` object types. */
+export type AgentActivityAggregatesFilter = {
+  /** Distinct count aggregate over matching `AgentActivity` objects. */
+  distinctCount?: InputMaybe<AgentActivityDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `AgentActivity` object to be included within the aggregate. */
+  filter?: InputMaybe<AgentActivityFilter>;
+};
+
+/**
+ * A condition to be used against `AgentActivity` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type AgentActivityCondition = {
+  /** Checks for equality with the object’s `approvalStatus` field. */
+  approvalStatus?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `errorMessage` field. */
+  errorMessage?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `requiresApproval` field. */
+  requiresApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `sessionId` field. */
+  sessionId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `toolName` field. */
+  toolName?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `AgentActivity` values. */
+export type AgentActivityConnection = {
+  __typename?: 'AgentActivityConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<AgentActivityAggregates>;
+  /** A list of edges which contains the `AgentActivity` and cursor to aid in pagination. */
+  edges: Array<AgentActivityEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<AgentActivityAggregates>>;
+  /** A list of `AgentActivity` objects. */
+  nodes: Array<AgentActivity>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `AgentActivity` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `AgentActivity` values. */
+export type AgentActivityConnectionGroupedAggregatesArgs = {
+  groupBy: Array<AgentActivityGroupBy>;
+  having?: InputMaybe<AgentActivityHavingInput>;
+};
+
+export type AgentActivityDistinctCountAggregateFilter = {
+  affectedTaskIds?: InputMaybe<BigIntFilter>;
+  approvalStatus?: InputMaybe<BigIntFilter>;
+  createdAt?: InputMaybe<BigIntFilter>;
+  errorMessage?: InputMaybe<BigIntFilter>;
+  organizationId?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  requiresApproval?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  sessionId?: InputMaybe<BigIntFilter>;
+  snapshotBefore?: InputMaybe<BigIntFilter>;
+  status?: InputMaybe<BigIntFilter>;
+  toolInput?: InputMaybe<BigIntFilter>;
+  toolName?: InputMaybe<BigIntFilter>;
+  toolOutput?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type AgentActivityDistinctCountAggregates = {
+  __typename?: 'AgentActivityDistinctCountAggregates';
+  /** Distinct count of affectedTaskIds across the matching connection */
+  affectedTaskIds?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of approvalStatus across the matching connection */
+  approvalStatus?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of errorMessage across the matching connection */
+  errorMessage?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of requiresApproval across the matching connection */
+  requiresApproval?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of sessionId across the matching connection */
+  sessionId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of snapshotBefore across the matching connection */
+  snapshotBefore?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of status across the matching connection */
+  status?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of toolInput across the matching connection */
+  toolInput?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of toolName across the matching connection */
+  toolName?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of toolOutput across the matching connection */
+  toolOutput?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `AgentActivity` edge in the connection. */
+export type AgentActivityEdge = {
+  __typename?: 'AgentActivityEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `AgentActivity` at the end of the edge. */
+  node: AgentActivity;
+};
+
+/** A filter to be used against `AgentActivity` object types. All fields are combined with a logical ‘and.’ */
+export type AgentActivityFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AgentActivityFilter>>;
+  /** Filter by the object’s `approvalStatus` field. */
+  approvalStatus?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `errorMessage` field. */
+  errorMessage?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AgentActivityFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AgentActivityFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `requiresApproval` field. */
+  requiresApproval?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `session` relation. */
+  session?: InputMaybe<AgentSessionFilter>;
+  /** Filter by the object’s `sessionId` field. */
+  sessionId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `status` field. */
+  status?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `toolName` field. */
+  toolName?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `AgentActivity` for usage during aggregation. */
+export enum AgentActivityGroupBy {
+  AffectedTaskIds = 'AFFECTED_TASK_IDS',
+  ApprovalStatus = 'APPROVAL_STATUS',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  ErrorMessage = 'ERROR_MESSAGE',
+  OrganizationId = 'ORGANIZATION_ID',
+  ProjectId = 'PROJECT_ID',
+  RequiresApproval = 'REQUIRES_APPROVAL',
+  SessionId = 'SESSION_ID',
+  SnapshotBefore = 'SNAPSHOT_BEFORE',
+  Status = 'STATUS',
+  ToolInput = 'TOOL_INPUT',
+  ToolName = 'TOOL_NAME',
+  ToolOutput = 'TOOL_OUTPUT',
+  UserId = 'USER_ID'
+}
+
+export type AgentActivityHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `AgentActivity` aggregates. */
+export type AgentActivityHavingInput = {
+  AND?: InputMaybe<Array<AgentActivityHavingInput>>;
+  OR?: InputMaybe<Array<AgentActivityHavingInput>>;
+  average?: InputMaybe<AgentActivityHavingAverageInput>;
+  distinctCount?: InputMaybe<AgentActivityHavingDistinctCountInput>;
+  max?: InputMaybe<AgentActivityHavingMaxInput>;
+  min?: InputMaybe<AgentActivityHavingMinInput>;
+  stddevPopulation?: InputMaybe<AgentActivityHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<AgentActivityHavingStddevSampleInput>;
+  sum?: InputMaybe<AgentActivityHavingSumInput>;
+  variancePopulation?: InputMaybe<AgentActivityHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<AgentActivityHavingVarianceSampleInput>;
+};
+
+export type AgentActivityHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentActivityHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `AgentActivity` */
+export type AgentActivityInput = {
+  affectedTaskIds?: InputMaybe<Scalars['JSON']['input']>;
+  approvalStatus?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  errorMessage?: InputMaybe<Scalars['String']['input']>;
+  organizationId: Scalars['String']['input'];
+  projectId: Scalars['UUID']['input'];
+  requiresApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sessionId: Scalars['UUID']['input'];
+  snapshotBefore?: InputMaybe<Scalars['JSON']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  toolInput: Scalars['JSON']['input'];
+  toolName: Scalars['String']['input'];
+  toolOutput?: InputMaybe<Scalars['JSON']['input']>;
+  userId: Scalars['UUID']['input'];
+};
+
+/** Methods to use when ordering `AgentActivity`. */
+export enum AgentActivityOrderBy {
+  ApprovalStatusAsc = 'APPROVAL_STATUS_ASC',
+  ApprovalStatusDesc = 'APPROVAL_STATUS_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  ErrorMessageAsc = 'ERROR_MESSAGE_ASC',
+  ErrorMessageDesc = 'ERROR_MESSAGE_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RequiresApprovalAsc = 'REQUIRES_APPROVAL_ASC',
+  RequiresApprovalDesc = 'REQUIRES_APPROVAL_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  SessionIdAsc = 'SESSION_ID_ASC',
+  SessionIdDesc = 'SESSION_ID_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  ToolNameAsc = 'TOOL_NAME_ASC',
+  ToolNameDesc = 'TOOL_NAME_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `AgentActivity`. Fields that are set will be updated. */
+export type AgentActivityPatch = {
+  affectedTaskIds?: InputMaybe<Scalars['JSON']['input']>;
+  approvalStatus?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  errorMessage?: InputMaybe<Scalars['String']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  requiresApproval?: InputMaybe<Scalars['Boolean']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sessionId?: InputMaybe<Scalars['UUID']['input']>;
+  snapshotBefore?: InputMaybe<Scalars['JSON']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  toolInput?: InputMaybe<Scalars['JSON']['input']>;
+  toolName?: InputMaybe<Scalars['String']['input']>;
+  toolOutput?: InputMaybe<Scalars['JSON']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type AgentConfig = Node & {
+  __typename?: 'AgentConfig';
+  createdAt: Scalars['Datetime']['output'];
+  customInstructions?: Maybe<Scalars['String']['output']>;
+  defaultPersonaId?: Maybe<Scalars['UUID']['output']>;
+  enabled: Scalars['Boolean']['output'];
+  encryptedApiKey?: Maybe<Scalars['String']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  maxIterationsPerRequest: Scalars['Int']['output'];
+  model: Scalars['String']['output'];
+  organizationId: Scalars['String']['output'];
+  requireApprovalForCreate: Scalars['Boolean']['output'];
+  requireApprovalForDestructive: Scalars['Boolean']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+export type AgentConfigAggregates = {
+  __typename?: 'AgentConfigAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<AgentConfigAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<AgentConfigDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<AgentConfigMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<AgentConfigMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<AgentConfigStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<AgentConfigStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<AgentConfigSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<AgentConfigVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<AgentConfigVarianceSampleAggregates>;
+};
+
+export type AgentConfigAverageAggregates = {
+  __typename?: 'AgentConfigAverageAggregates';
+  /** Mean average of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+/**
+ * A condition to be used against `AgentConfig` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type AgentConfigCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `customInstructions` field. */
+  customInstructions?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `defaultPersonaId` field. */
+  defaultPersonaId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `enabled` field. */
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `encryptedApiKey` field. */
+  encryptedApiKey?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `maxIterationsPerRequest` field. */
+  maxIterationsPerRequest?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `model` field. */
+  model?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `requireApprovalForCreate` field. */
+  requireApprovalForCreate?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `requireApprovalForDestructive` field. */
+  requireApprovalForDestructive?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `AgentConfig` values. */
+export type AgentConfigConnection = {
+  __typename?: 'AgentConfigConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<AgentConfigAggregates>;
+  /** A list of edges which contains the `AgentConfig` and cursor to aid in pagination. */
+  edges: Array<AgentConfigEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<AgentConfigAggregates>>;
+  /** A list of `AgentConfig` objects. */
+  nodes: Array<AgentConfig>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `AgentConfig` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `AgentConfig` values. */
+export type AgentConfigConnectionGroupedAggregatesArgs = {
+  groupBy: Array<AgentConfigGroupBy>;
+  having?: InputMaybe<AgentConfigHavingInput>;
+};
+
+export type AgentConfigDistinctCountAggregates = {
+  __typename?: 'AgentConfigDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of customInstructions across the matching connection */
+  customInstructions?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of defaultPersonaId across the matching connection */
+  defaultPersonaId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of enabled across the matching connection */
+  enabled?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of encryptedApiKey across the matching connection */
+  encryptedApiKey?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of model across the matching connection */
+  model?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of requireApprovalForCreate across the matching connection */
+  requireApprovalForCreate?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of requireApprovalForDestructive across the matching connection */
+  requireApprovalForDestructive?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `AgentConfig` edge in the connection. */
+export type AgentConfigEdge = {
+  __typename?: 'AgentConfigEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `AgentConfig` at the end of the edge. */
+  node: AgentConfig;
+};
+
+/** A filter to be used against `AgentConfig` object types. All fields are combined with a logical ‘and.’ */
+export type AgentConfigFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AgentConfigFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `customInstructions` field. */
+  customInstructions?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `defaultPersonaId` field. */
+  defaultPersonaId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `enabled` field. */
+  enabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `encryptedApiKey` field. */
+  encryptedApiKey?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `maxIterationsPerRequest` field. */
+  maxIterationsPerRequest?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `model` field. */
+  model?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AgentConfigFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AgentConfigFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `requireApprovalForCreate` field. */
+  requireApprovalForCreate?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `requireApprovalForDestructive` field. */
+  requireApprovalForDestructive?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `AgentConfig` for usage during aggregation. */
+export enum AgentConfigGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  CustomInstructions = 'CUSTOM_INSTRUCTIONS',
+  DefaultPersonaId = 'DEFAULT_PERSONA_ID',
+  Enabled = 'ENABLED',
+  EncryptedApiKey = 'ENCRYPTED_API_KEY',
+  MaxIterationsPerRequest = 'MAX_ITERATIONS_PER_REQUEST',
+  Model = 'MODEL',
+  RequireApprovalForCreate = 'REQUIRE_APPROVAL_FOR_CREATE',
+  RequireApprovalForDestructive = 'REQUIRE_APPROVAL_FOR_DESTRUCTIVE',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type AgentConfigHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `AgentConfig` aggregates. */
+export type AgentConfigHavingInput = {
+  AND?: InputMaybe<Array<AgentConfigHavingInput>>;
+  OR?: InputMaybe<Array<AgentConfigHavingInput>>;
+  average?: InputMaybe<AgentConfigHavingAverageInput>;
+  distinctCount?: InputMaybe<AgentConfigHavingDistinctCountInput>;
+  max?: InputMaybe<AgentConfigHavingMaxInput>;
+  min?: InputMaybe<AgentConfigHavingMinInput>;
+  stddevPopulation?: InputMaybe<AgentConfigHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<AgentConfigHavingStddevSampleInput>;
+  sum?: InputMaybe<AgentConfigHavingSumInput>;
+  variancePopulation?: InputMaybe<AgentConfigHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<AgentConfigHavingVarianceSampleInput>;
+};
+
+export type AgentConfigHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentConfigHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  maxIterationsPerRequest?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `AgentConfig` */
+export type AgentConfigInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  customInstructions?: InputMaybe<Scalars['String']['input']>;
+  defaultPersonaId?: InputMaybe<Scalars['UUID']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  encryptedApiKey?: InputMaybe<Scalars['String']['input']>;
+  maxIterationsPerRequest?: InputMaybe<Scalars['Int']['input']>;
+  model?: InputMaybe<Scalars['String']['input']>;
+  organizationId: Scalars['String']['input'];
+  requireApprovalForCreate?: InputMaybe<Scalars['Boolean']['input']>;
+  requireApprovalForDestructive?: InputMaybe<Scalars['Boolean']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type AgentConfigMaxAggregates = {
+  __typename?: 'AgentConfigMaxAggregates';
+  /** Maximum of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['Int']['output']>;
+};
+
+export type AgentConfigMinAggregates = {
+  __typename?: 'AgentConfigMinAggregates';
+  /** Minimum of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Methods to use when ordering `AgentConfig`. */
+export enum AgentConfigOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  CustomInstructionsAsc = 'CUSTOM_INSTRUCTIONS_ASC',
+  CustomInstructionsDesc = 'CUSTOM_INSTRUCTIONS_DESC',
+  DefaultPersonaIdAsc = 'DEFAULT_PERSONA_ID_ASC',
+  DefaultPersonaIdDesc = 'DEFAULT_PERSONA_ID_DESC',
+  EnabledAsc = 'ENABLED_ASC',
+  EnabledDesc = 'ENABLED_DESC',
+  EncryptedApiKeyAsc = 'ENCRYPTED_API_KEY_ASC',
+  EncryptedApiKeyDesc = 'ENCRYPTED_API_KEY_DESC',
+  MaxIterationsPerRequestAsc = 'MAX_ITERATIONS_PER_REQUEST_ASC',
+  MaxIterationsPerRequestDesc = 'MAX_ITERATIONS_PER_REQUEST_DESC',
+  ModelAsc = 'MODEL_ASC',
+  ModelDesc = 'MODEL_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RequireApprovalForCreateAsc = 'REQUIRE_APPROVAL_FOR_CREATE_ASC',
+  RequireApprovalForCreateDesc = 'REQUIRE_APPROVAL_FOR_CREATE_DESC',
+  RequireApprovalForDestructiveAsc = 'REQUIRE_APPROVAL_FOR_DESTRUCTIVE_ASC',
+  RequireApprovalForDestructiveDesc = 'REQUIRE_APPROVAL_FOR_DESTRUCTIVE_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `AgentConfig`. Fields that are set will be updated. */
+export type AgentConfigPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  customInstructions?: InputMaybe<Scalars['String']['input']>;
+  defaultPersonaId?: InputMaybe<Scalars['UUID']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  encryptedApiKey?: InputMaybe<Scalars['String']['input']>;
+  maxIterationsPerRequest?: InputMaybe<Scalars['Int']['input']>;
+  model?: InputMaybe<Scalars['String']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  requireApprovalForCreate?: InputMaybe<Scalars['Boolean']['input']>;
+  requireApprovalForDestructive?: InputMaybe<Scalars['Boolean']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type AgentConfigStddevPopulationAggregates = {
+  __typename?: 'AgentConfigStddevPopulationAggregates';
+  /** Population standard deviation of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentConfigStddevSampleAggregates = {
+  __typename?: 'AgentConfigStddevSampleAggregates';
+  /** Sample standard deviation of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentConfigSumAggregates = {
+  __typename?: 'AgentConfigSumAggregates';
+  /** Sum of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest: Scalars['BigInt']['output'];
+};
+
+export type AgentConfigVariancePopulationAggregates = {
+  __typename?: 'AgentConfigVariancePopulationAggregates';
+  /** Population variance of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentConfigVarianceSampleAggregates = {
+  __typename?: 'AgentConfigVarianceSampleAggregates';
+  /** Sample variance of maxIterationsPerRequest across the matching connection */
+  maxIterationsPerRequest?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentPersona = Node & {
+  __typename?: 'AgentPersona';
+  createdAt: Scalars['Datetime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  enabled: Scalars['Boolean']['output'];
+  icon?: Maybe<Scalars['String']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  organizationId: Scalars['String']['output'];
+  rowId: Scalars['UUID']['output'];
+  systemPrompt: Scalars['String']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+export type AgentPersonaAggregates = {
+  __typename?: 'AgentPersonaAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<AgentPersonaDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/**
+ * A condition to be used against `AgentPersona` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type AgentPersonaCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `description` field. */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `enabled` field. */
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `icon` field. */
+  icon?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `name` field. */
+  name?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `systemPrompt` field. */
+  systemPrompt?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `AgentPersona` values. */
+export type AgentPersonaConnection = {
+  __typename?: 'AgentPersonaConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<AgentPersonaAggregates>;
+  /** A list of edges which contains the `AgentPersona` and cursor to aid in pagination. */
+  edges: Array<AgentPersonaEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<AgentPersonaAggregates>>;
+  /** A list of `AgentPersona` objects. */
+  nodes: Array<AgentPersona>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `AgentPersona` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `AgentPersona` values. */
+export type AgentPersonaConnectionGroupedAggregatesArgs = {
+  groupBy: Array<AgentPersonaGroupBy>;
+  having?: InputMaybe<AgentPersonaHavingInput>;
+};
+
+export type AgentPersonaDistinctCountAggregates = {
+  __typename?: 'AgentPersonaDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of description across the matching connection */
+  description?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of enabled across the matching connection */
+  enabled?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of icon across the matching connection */
+  icon?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of name across the matching connection */
+  name?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of systemPrompt across the matching connection */
+  systemPrompt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `AgentPersona` edge in the connection. */
+export type AgentPersonaEdge = {
+  __typename?: 'AgentPersonaEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `AgentPersona` at the end of the edge. */
+  node: AgentPersona;
+};
+
+/** A filter to be used against `AgentPersona` object types. All fields are combined with a logical ‘and.’ */
+export type AgentPersonaFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AgentPersonaFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `description` field. */
+  description?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `enabled` field. */
+  enabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `icon` field. */
+  icon?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `name` field. */
+  name?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AgentPersonaFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AgentPersonaFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `systemPrompt` field. */
+  systemPrompt?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `AgentPersona` for usage during aggregation. */
+export enum AgentPersonaGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Description = 'DESCRIPTION',
+  Enabled = 'ENABLED',
+  Icon = 'ICON',
+  Name = 'NAME',
+  OrganizationId = 'ORGANIZATION_ID',
+  SystemPrompt = 'SYSTEM_PROMPT',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type AgentPersonaHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentPersonaHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `AgentPersona` aggregates. */
+export type AgentPersonaHavingInput = {
+  AND?: InputMaybe<Array<AgentPersonaHavingInput>>;
+  OR?: InputMaybe<Array<AgentPersonaHavingInput>>;
+  average?: InputMaybe<AgentPersonaHavingAverageInput>;
+  distinctCount?: InputMaybe<AgentPersonaHavingDistinctCountInput>;
+  max?: InputMaybe<AgentPersonaHavingMaxInput>;
+  min?: InputMaybe<AgentPersonaHavingMinInput>;
+  stddevPopulation?: InputMaybe<AgentPersonaHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<AgentPersonaHavingStddevSampleInput>;
+  sum?: InputMaybe<AgentPersonaHavingSumInput>;
+  variancePopulation?: InputMaybe<AgentPersonaHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<AgentPersonaHavingVarianceSampleInput>;
+};
+
+export type AgentPersonaHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentPersonaHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentPersonaHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentPersonaHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentPersonaHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentPersonaHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentPersonaHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `AgentPersona` */
+export type AgentPersonaInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  organizationId: Scalars['String']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  systemPrompt: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** Methods to use when ordering `AgentPersona`. */
+export enum AgentPersonaOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  DescriptionAsc = 'DESCRIPTION_ASC',
+  DescriptionDesc = 'DESCRIPTION_DESC',
+  EnabledAsc = 'ENABLED_ASC',
+  EnabledDesc = 'ENABLED_DESC',
+  IconAsc = 'ICON_ASC',
+  IconDesc = 'ICON_DESC',
+  NameAsc = 'NAME_ASC',
+  NameDesc = 'NAME_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  SystemPromptAsc = 'SYSTEM_PROMPT_ASC',
+  SystemPromptDesc = 'SYSTEM_PROMPT_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `AgentPersona`. Fields that are set will be updated. */
+export type AgentPersonaPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  systemPrompt?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type AgentSession = Node & {
+  __typename?: 'AgentSession';
+  /** Reads and enables pagination through a set of `AgentActivity`. */
+  agentActivitiesBySessionId: AgentActivityConnection;
+  createdAt: Scalars['Datetime']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  messages: Scalars['JSON']['output'];
+  metadata: Scalars['JSON']['output'];
+  organizationId: Scalars['String']['output'];
+  /** Reads a single `Project` that is related to this `AgentSession`. */
+  project?: Maybe<Project>;
+  projectId?: Maybe<Scalars['UUID']['output']>;
+  rowId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `TaskExecution`. */
+  taskExecutionsBySessionId: TaskExecutionConnection;
+  title?: Maybe<Scalars['String']['output']>;
+  toolCallCount: Scalars['Int']['output'];
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+  /** Reads a single `User` that is related to this `AgentSession`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+};
+
+
+export type AgentSessionAgentActivitiesBySessionIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentActivityCondition>;
+  filter?: InputMaybe<AgentActivityFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentActivityOrderBy>>;
+};
+
+
+export type AgentSessionTaskExecutionsBySessionIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskExecutionCondition>;
+  filter?: InputMaybe<TaskExecutionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskExecutionOrderBy>>;
+};
+
+export type AgentSessionAggregates = {
+  __typename?: 'AgentSessionAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<AgentSessionAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<AgentSessionDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<AgentSessionMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<AgentSessionMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<AgentSessionStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<AgentSessionStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<AgentSessionSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<AgentSessionVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<AgentSessionVarianceSampleAggregates>;
+};
+
+/** A filter to be used against aggregates of `AgentSession` object types. */
+export type AgentSessionAggregatesFilter = {
+  /** Mean average aggregate over matching `AgentSession` objects. */
+  average?: InputMaybe<AgentSessionAverageAggregateFilter>;
+  /** Distinct count aggregate over matching `AgentSession` objects. */
+  distinctCount?: InputMaybe<AgentSessionDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `AgentSession` object to be included within the aggregate. */
+  filter?: InputMaybe<AgentSessionFilter>;
+  /** Maximum aggregate over matching `AgentSession` objects. */
+  max?: InputMaybe<AgentSessionMaxAggregateFilter>;
+  /** Minimum aggregate over matching `AgentSession` objects. */
+  min?: InputMaybe<AgentSessionMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `AgentSession` objects. */
+  stddevPopulation?: InputMaybe<AgentSessionStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `AgentSession` objects. */
+  stddevSample?: InputMaybe<AgentSessionStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `AgentSession` objects. */
+  sum?: InputMaybe<AgentSessionSumAggregateFilter>;
+  /** Population variance aggregate over matching `AgentSession` objects. */
+  variancePopulation?: InputMaybe<AgentSessionVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `AgentSession` objects. */
+  varianceSample?: InputMaybe<AgentSessionVarianceSampleAggregateFilter>;
+};
+
+export type AgentSessionAverageAggregateFilter = {
+  toolCallCount?: InputMaybe<BigFloatFilter>;
+};
+
+export type AgentSessionAverageAggregates = {
+  __typename?: 'AgentSessionAverageAggregates';
+  /** Mean average of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+/**
+ * A condition to be used against `AgentSession` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type AgentSessionCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `title` field. */
+  title?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `toolCallCount` field. */
+  toolCallCount?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `type` field. */
+  type?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `AgentSession` values. */
+export type AgentSessionConnection = {
+  __typename?: 'AgentSessionConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<AgentSessionAggregates>;
+  /** A list of edges which contains the `AgentSession` and cursor to aid in pagination. */
+  edges: Array<AgentSessionEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<AgentSessionAggregates>>;
+  /** A list of `AgentSession` objects. */
+  nodes: Array<AgentSession>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `AgentSession` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `AgentSession` values. */
+export type AgentSessionConnectionGroupedAggregatesArgs = {
+  groupBy: Array<AgentSessionGroupBy>;
+  having?: InputMaybe<AgentSessionHavingInput>;
+};
+
+export type AgentSessionDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  messages?: InputMaybe<BigIntFilter>;
+  metadata?: InputMaybe<BigIntFilter>;
+  organizationId?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  title?: InputMaybe<BigIntFilter>;
+  toolCallCount?: InputMaybe<BigIntFilter>;
+  type?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type AgentSessionDistinctCountAggregates = {
+  __typename?: 'AgentSessionDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of messages across the matching connection */
+  messages?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of metadata across the matching connection */
+  metadata?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of title across the matching connection */
+  title?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of type across the matching connection */
+  type?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `AgentSession` edge in the connection. */
+export type AgentSessionEdge = {
+  __typename?: 'AgentSessionEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `AgentSession` at the end of the edge. */
+  node: AgentSession;
+};
+
+/** A filter to be used against `AgentSession` object types. All fields are combined with a logical ‘and.’ */
+export type AgentSessionFilter = {
+  /** Filter by the object’s `agentActivitiesBySessionId` relation. */
+  agentActivitiesBySessionId?: InputMaybe<AgentSessionToManyAgentActivityFilter>;
+  /** Some related `agentActivitiesBySessionId` exist. */
+  agentActivitiesBySessionIdExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AgentSessionFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AgentSessionFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AgentSessionFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** A related `project` exists. */
+  projectExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `taskExecutionsBySessionId` relation. */
+  taskExecutionsBySessionId?: InputMaybe<AgentSessionToManyTaskExecutionFilter>;
+  /** Some related `taskExecutionsBySessionId` exist. */
+  taskExecutionsBySessionIdExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `title` field. */
+  title?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `toolCallCount` field. */
+  toolCallCount?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `type` field. */
+  type?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `AgentSession` for usage during aggregation. */
+export enum AgentSessionGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Messages = 'MESSAGES',
+  Metadata = 'METADATA',
+  OrganizationId = 'ORGANIZATION_ID',
+  ProjectId = 'PROJECT_ID',
+  Title = 'TITLE',
+  ToolCallCount = 'TOOL_CALL_COUNT',
+  Type = 'TYPE',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type AgentSessionHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `AgentSession` aggregates. */
+export type AgentSessionHavingInput = {
+  AND?: InputMaybe<Array<AgentSessionHavingInput>>;
+  OR?: InputMaybe<Array<AgentSessionHavingInput>>;
+  average?: InputMaybe<AgentSessionHavingAverageInput>;
+  distinctCount?: InputMaybe<AgentSessionHavingDistinctCountInput>;
+  max?: InputMaybe<AgentSessionHavingMaxInput>;
+  min?: InputMaybe<AgentSessionHavingMinInput>;
+  stddevPopulation?: InputMaybe<AgentSessionHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<AgentSessionHavingStddevSampleInput>;
+  sum?: InputMaybe<AgentSessionHavingSumInput>;
+  variancePopulation?: InputMaybe<AgentSessionHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<AgentSessionHavingVarianceSampleInput>;
+};
+
+export type AgentSessionHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type AgentSessionHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  toolCallCount?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `AgentSession` */
+export type AgentSessionInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  messages?: InputMaybe<Scalars['JSON']['input']>;
+  metadata?: InputMaybe<Scalars['JSON']['input']>;
+  organizationId: Scalars['String']['input'];
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  toolCallCount?: InputMaybe<Scalars['Int']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId: Scalars['UUID']['input'];
+};
+
+export type AgentSessionMaxAggregateFilter = {
+  toolCallCount?: InputMaybe<IntFilter>;
+};
+
+export type AgentSessionMaxAggregates = {
+  __typename?: 'AgentSessionMaxAggregates';
+  /** Maximum of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['Int']['output']>;
+};
+
+export type AgentSessionMinAggregateFilter = {
+  toolCallCount?: InputMaybe<IntFilter>;
+};
+
+export type AgentSessionMinAggregates = {
+  __typename?: 'AgentSessionMinAggregates';
+  /** Minimum of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Methods to use when ordering `AgentSession`. */
+export enum AgentSessionOrderBy {
+  AgentActivitiesBySessionIdCountAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_COUNT_ASC',
+  AgentActivitiesBySessionIdCountDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_COUNT_DESC',
+  AgentActivitiesBySessionIdDistinctCountAffectedTaskIdsAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_AFFECTED_TASK_IDS_ASC',
+  AgentActivitiesBySessionIdDistinctCountAffectedTaskIdsDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_AFFECTED_TASK_IDS_DESC',
+  AgentActivitiesBySessionIdDistinctCountApprovalStatusAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_APPROVAL_STATUS_ASC',
+  AgentActivitiesBySessionIdDistinctCountApprovalStatusDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_APPROVAL_STATUS_DESC',
+  AgentActivitiesBySessionIdDistinctCountCreatedAtAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  AgentActivitiesBySessionIdDistinctCountCreatedAtDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  AgentActivitiesBySessionIdDistinctCountErrorMessageAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ERROR_MESSAGE_ASC',
+  AgentActivitiesBySessionIdDistinctCountErrorMessageDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ERROR_MESSAGE_DESC',
+  AgentActivitiesBySessionIdDistinctCountOrganizationIdAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AgentActivitiesBySessionIdDistinctCountOrganizationIdDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AgentActivitiesBySessionIdDistinctCountProjectIdAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_PROJECT_ID_ASC',
+  AgentActivitiesBySessionIdDistinctCountProjectIdDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_PROJECT_ID_DESC',
+  AgentActivitiesBySessionIdDistinctCountRequiresApprovalAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_REQUIRES_APPROVAL_ASC',
+  AgentActivitiesBySessionIdDistinctCountRequiresApprovalDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_REQUIRES_APPROVAL_DESC',
+  AgentActivitiesBySessionIdDistinctCountRowIdAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  AgentActivitiesBySessionIdDistinctCountRowIdDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  AgentActivitiesBySessionIdDistinctCountSessionIdAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_SESSION_ID_ASC',
+  AgentActivitiesBySessionIdDistinctCountSessionIdDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_SESSION_ID_DESC',
+  AgentActivitiesBySessionIdDistinctCountSnapshotBeforeAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_SNAPSHOT_BEFORE_ASC',
+  AgentActivitiesBySessionIdDistinctCountSnapshotBeforeDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_SNAPSHOT_BEFORE_DESC',
+  AgentActivitiesBySessionIdDistinctCountStatusAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_STATUS_ASC',
+  AgentActivitiesBySessionIdDistinctCountStatusDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_STATUS_DESC',
+  AgentActivitiesBySessionIdDistinctCountToolInputAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_INPUT_ASC',
+  AgentActivitiesBySessionIdDistinctCountToolInputDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_INPUT_DESC',
+  AgentActivitiesBySessionIdDistinctCountToolNameAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_NAME_ASC',
+  AgentActivitiesBySessionIdDistinctCountToolNameDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_NAME_DESC',
+  AgentActivitiesBySessionIdDistinctCountToolOutputAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_OUTPUT_ASC',
+  AgentActivitiesBySessionIdDistinctCountToolOutputDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_TOOL_OUTPUT_DESC',
+  AgentActivitiesBySessionIdDistinctCountUserIdAsc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_USER_ID_ASC',
+  AgentActivitiesBySessionIdDistinctCountUserIdDesc = 'AGENT_ACTIVITIES_BY_SESSION_ID_DISTINCT_COUNT_USER_ID_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  TaskExecutionsBySessionIdCountAsc = 'TASK_EXECUTIONS_BY_SESSION_ID_COUNT_ASC',
+  TaskExecutionsBySessionIdCountDesc = 'TASK_EXECUTIONS_BY_SESSION_ID_COUNT_DESC',
+  TaskExecutionsBySessionIdDistinctCountCreatedAtAsc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  TaskExecutionsBySessionIdDistinctCountCreatedAtDesc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  TaskExecutionsBySessionIdDistinctCountMetadataAsc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_METADATA_ASC',
+  TaskExecutionsBySessionIdDistinctCountMetadataDesc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_METADATA_DESC',
+  TaskExecutionsBySessionIdDistinctCountOrganizationIdAsc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  TaskExecutionsBySessionIdDistinctCountOrganizationIdDesc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  TaskExecutionsBySessionIdDistinctCountProjectIdAsc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_PROJECT_ID_ASC',
+  TaskExecutionsBySessionIdDistinctCountProjectIdDesc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_PROJECT_ID_DESC',
+  TaskExecutionsBySessionIdDistinctCountRowIdAsc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  TaskExecutionsBySessionIdDistinctCountRowIdDesc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  TaskExecutionsBySessionIdDistinctCountSessionIdAsc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_SESSION_ID_ASC',
+  TaskExecutionsBySessionIdDistinctCountSessionIdDesc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_SESSION_ID_DESC',
+  TaskExecutionsBySessionIdDistinctCountStatusAsc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_STATUS_ASC',
+  TaskExecutionsBySessionIdDistinctCountStatusDesc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_STATUS_DESC',
+  TaskExecutionsBySessionIdDistinctCountTaskIdAsc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_TASK_ID_ASC',
+  TaskExecutionsBySessionIdDistinctCountTaskIdDesc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_TASK_ID_DESC',
+  TaskExecutionsBySessionIdDistinctCountTriggeredByAsc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_TRIGGERED_BY_ASC',
+  TaskExecutionsBySessionIdDistinctCountTriggeredByDesc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_TRIGGERED_BY_DESC',
+  TaskExecutionsBySessionIdDistinctCountUpdatedAtAsc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_UPDATED_AT_ASC',
+  TaskExecutionsBySessionIdDistinctCountUpdatedAtDesc = 'TASK_EXECUTIONS_BY_SESSION_ID_DISTINCT_COUNT_UPDATED_AT_DESC',
+  TitleAsc = 'TITLE_ASC',
+  TitleDesc = 'TITLE_DESC',
+  ToolCallCountAsc = 'TOOL_CALL_COUNT_ASC',
+  ToolCallCountDesc = 'TOOL_CALL_COUNT_DESC',
+  TypeAsc = 'TYPE_ASC',
+  TypeDesc = 'TYPE_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `AgentSession`. Fields that are set will be updated. */
+export type AgentSessionPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  messages?: InputMaybe<Scalars['JSON']['input']>;
+  metadata?: InputMaybe<Scalars['JSON']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  toolCallCount?: InputMaybe<Scalars['Int']['input']>;
+  type?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type AgentSessionStddevPopulationAggregateFilter = {
+  toolCallCount?: InputMaybe<BigFloatFilter>;
+};
+
+export type AgentSessionStddevPopulationAggregates = {
+  __typename?: 'AgentSessionStddevPopulationAggregates';
+  /** Population standard deviation of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentSessionStddevSampleAggregateFilter = {
+  toolCallCount?: InputMaybe<BigFloatFilter>;
+};
+
+export type AgentSessionStddevSampleAggregates = {
+  __typename?: 'AgentSessionStddevSampleAggregates';
+  /** Sample standard deviation of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentSessionSumAggregateFilter = {
+  toolCallCount?: InputMaybe<BigIntFilter>;
+};
+
+export type AgentSessionSumAggregates = {
+  __typename?: 'AgentSessionSumAggregates';
+  /** Sum of toolCallCount across the matching connection */
+  toolCallCount: Scalars['BigInt']['output'];
+};
+
+/** A filter to be used against many `AgentActivity` object types. All fields are combined with a logical ‘and.’ */
+export type AgentSessionToManyAgentActivityFilter = {
+  /** Aggregates across related `AgentActivity` match the filter criteria. */
+  aggregates?: InputMaybe<AgentActivityAggregatesFilter>;
+  /** Every related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AgentActivityFilter>;
+  /** No related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AgentActivityFilter>;
+  /** Some related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AgentActivityFilter>;
+};
+
+/** A filter to be used against many `TaskExecution` object types. All fields are combined with a logical ‘and.’ */
+export type AgentSessionToManyTaskExecutionFilter = {
+  /** Aggregates across related `TaskExecution` match the filter criteria. */
+  aggregates?: InputMaybe<TaskExecutionAggregatesFilter>;
+  /** Every related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<TaskExecutionFilter>;
+  /** No related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<TaskExecutionFilter>;
+  /** Some related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<TaskExecutionFilter>;
+};
+
+export type AgentSessionVariancePopulationAggregateFilter = {
+  toolCallCount?: InputMaybe<BigFloatFilter>;
+};
+
+export type AgentSessionVariancePopulationAggregates = {
+  __typename?: 'AgentSessionVariancePopulationAggregates';
+  /** Population variance of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AgentSessionVarianceSampleAggregateFilter = {
+  toolCallCount?: InputMaybe<BigFloatFilter>;
+};
+
+export type AgentSessionVarianceSampleAggregates = {
+  __typename?: 'AgentSessionVarianceSampleAggregates';
+  /** Sample variance of toolCallCount across the matching connection */
+  toolCallCount?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type Assignee = Node & {
@@ -806,6 +2297,138 @@ export type ColumnVarianceSampleAggregates = {
   index?: Maybe<Scalars['BigFloat']['output']>;
 };
 
+/** All input for the create `AgentActivity` mutation. */
+export type CreateAgentActivityInput = {
+  /** The `AgentActivity` to be created by this mutation. */
+  agentActivity: AgentActivityInput;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The output of our create `AgentActivity` mutation. */
+export type CreateAgentActivityPayload = {
+  __typename?: 'CreateAgentActivityPayload';
+  /** The `AgentActivity` that was created by this mutation. */
+  agentActivity?: Maybe<AgentActivity>;
+  /** An edge for our `AgentActivity`. May be used by Relay 1. */
+  agentActivityEdge?: Maybe<AgentActivityEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `AgentActivity` mutation. */
+export type CreateAgentActivityPayloadAgentActivityEdgeArgs = {
+  orderBy?: Array<AgentActivityOrderBy>;
+};
+
+/** All input for the create `AgentConfig` mutation. */
+export type CreateAgentConfigInput = {
+  /** The `AgentConfig` to be created by this mutation. */
+  agentConfig: AgentConfigInput;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The output of our create `AgentConfig` mutation. */
+export type CreateAgentConfigPayload = {
+  __typename?: 'CreateAgentConfigPayload';
+  /** The `AgentConfig` that was created by this mutation. */
+  agentConfig?: Maybe<AgentConfig>;
+  /** An edge for our `AgentConfig`. May be used by Relay 1. */
+  agentConfigEdge?: Maybe<AgentConfigEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `AgentConfig` mutation. */
+export type CreateAgentConfigPayloadAgentConfigEdgeArgs = {
+  orderBy?: Array<AgentConfigOrderBy>;
+};
+
+/** All input for the create `AgentPersona` mutation. */
+export type CreateAgentPersonaInput = {
+  /** The `AgentPersona` to be created by this mutation. */
+  agentPersona: AgentPersonaInput;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The output of our create `AgentPersona` mutation. */
+export type CreateAgentPersonaPayload = {
+  __typename?: 'CreateAgentPersonaPayload';
+  /** The `AgentPersona` that was created by this mutation. */
+  agentPersona?: Maybe<AgentPersona>;
+  /** An edge for our `AgentPersona`. May be used by Relay 1. */
+  agentPersonaEdge?: Maybe<AgentPersonaEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `AgentPersona` mutation. */
+export type CreateAgentPersonaPayloadAgentPersonaEdgeArgs = {
+  orderBy?: Array<AgentPersonaOrderBy>;
+};
+
+/** All input for the create `AgentSession` mutation. */
+export type CreateAgentSessionInput = {
+  /** The `AgentSession` to be created by this mutation. */
+  agentSession: AgentSessionInput;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The output of our create `AgentSession` mutation. */
+export type CreateAgentSessionPayload = {
+  __typename?: 'CreateAgentSessionPayload';
+  /** The `AgentSession` that was created by this mutation. */
+  agentSession?: Maybe<AgentSession>;
+  /** An edge for our `AgentSession`. May be used by Relay 1. */
+  agentSessionEdge?: Maybe<AgentSessionEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `AgentSession` mutation. */
+export type CreateAgentSessionPayloadAgentSessionEdgeArgs = {
+  orderBy?: Array<AgentSessionOrderBy>;
+};
+
 /** All input for the create `Assignee` mutation. */
 export type CreateAssigneeInput = {
   /** The `Assignee` to be created by this mutation. */
@@ -903,6 +2526,72 @@ export type CreateEmojiPayload = {
 /** The output of our create `Emoji` mutation. */
 export type CreateEmojiPayloadEmojiEdgeArgs = {
   orderBy?: Array<EmojiOrderBy>;
+};
+
+/** All input for the create `GithubInstallation` mutation. */
+export type CreateGithubInstallationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `GithubInstallation` to be created by this mutation. */
+  githubInstallation: GithubInstallationInput;
+};
+
+/** The output of our create `GithubInstallation` mutation. */
+export type CreateGithubInstallationPayload = {
+  __typename?: 'CreateGithubInstallationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `GithubInstallation` that was created by this mutation. */
+  githubInstallation?: Maybe<GithubInstallation>;
+  /** An edge for our `GithubInstallation`. May be used by Relay 1. */
+  githubInstallationEdge?: Maybe<GithubInstallationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `GithubInstallation` mutation. */
+export type CreateGithubInstallationPayloadGithubInstallationEdgeArgs = {
+  orderBy?: Array<GithubInstallationOrderBy>;
+};
+
+/** All input for the create `GithubRepository` mutation. */
+export type CreateGithubRepositoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `GithubRepository` to be created by this mutation. */
+  githubRepository: GithubRepositoryInput;
+};
+
+/** The output of our create `GithubRepository` mutation. */
+export type CreateGithubRepositoryPayload = {
+  __typename?: 'CreateGithubRepositoryPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `GithubRepository` that was created by this mutation. */
+  githubRepository?: Maybe<GithubRepository>;
+  /** An edge for our `GithubRepository`. May be used by Relay 1. */
+  githubRepositoryEdge?: Maybe<GithubRepositoryEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `GithubRepository` mutation. */
+export type CreateGithubRepositoryPayloadGithubRepositoryEdgeArgs = {
+  orderBy?: Array<GithubRepositoryOrderBy>;
 };
 
 /** All input for the create `Label` mutation. */
@@ -1048,39 +2737,6 @@ export type CreateProjectLabelPayloadProjectLabelEdgeArgs = {
   orderBy?: Array<ProjectLabelOrderBy>;
 };
 
-/** All input for the create `ProjectLink` mutation. */
-export type CreateProjectLinkInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The `ProjectLink` to be created by this mutation. */
-  projectLink: ProjectLinkInput;
-};
-
-/** The output of our create `ProjectLink` mutation. */
-export type CreateProjectLinkPayload = {
-  __typename?: 'CreateProjectLinkPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** The `ProjectLink` that was created by this mutation. */
-  projectLink?: Maybe<ProjectLink>;
-  /** An edge for our `ProjectLink`. May be used by Relay 1. */
-  projectLinkEdge?: Maybe<ProjectLinkEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our create `ProjectLink` mutation. */
-export type CreateProjectLinkPayloadProjectLinkEdgeArgs = {
-  orderBy?: Array<ProjectLinkOrderBy>;
-};
-
 /** The output of our create `Project` mutation. */
 export type CreateProjectPayload = {
   __typename?: 'CreateProjectPayload';
@@ -1167,6 +2823,39 @@ export type CreateSettingPayload = {
 /** The output of our create `Setting` mutation. */
 export type CreateSettingPayloadSettingEdgeArgs = {
   orderBy?: Array<SettingOrderBy>;
+};
+
+/** All input for the create `TaskExecution` mutation. */
+export type CreateTaskExecutionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `TaskExecution` to be created by this mutation. */
+  taskExecution: TaskExecutionInput;
+};
+
+/** The output of our create `TaskExecution` mutation. */
+export type CreateTaskExecutionPayload = {
+  __typename?: 'CreateTaskExecutionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `TaskExecution` that was created by this mutation. */
+  taskExecution?: Maybe<TaskExecution>;
+  /** An edge for our `TaskExecution`. May be used by Relay 1. */
+  taskExecutionEdge?: Maybe<TaskExecutionEdge>;
+};
+
+
+/** The output of our create `TaskExecution` mutation. */
+export type CreateTaskExecutionPayloadTaskExecutionEdgeArgs = {
+  orderBy?: Array<TaskExecutionOrderBy>;
 };
 
 /** All input for the create `Task` mutation. */
@@ -1327,6 +3016,182 @@ export type DatetimeFilter = {
   notIn?: InputMaybe<Array<Scalars['Datetime']['input']>>;
 };
 
+/** All input for the `deleteAgentActivityById` mutation. */
+export type DeleteAgentActivityByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentActivity` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteAgentActivity` mutation. */
+export type DeleteAgentActivityInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `AgentActivity` mutation. */
+export type DeleteAgentActivityPayload = {
+  __typename?: 'DeleteAgentActivityPayload';
+  /** The `AgentActivity` that was deleted by this mutation. */
+  agentActivity?: Maybe<AgentActivity>;
+  /** An edge for our `AgentActivity`. May be used by Relay 1. */
+  agentActivityEdge?: Maybe<AgentActivityEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedAgentActivityId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `AgentActivity` mutation. */
+export type DeleteAgentActivityPayloadAgentActivityEdgeArgs = {
+  orderBy?: Array<AgentActivityOrderBy>;
+};
+
+/** All input for the `deleteAgentConfigById` mutation. */
+export type DeleteAgentConfigByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentConfig` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteAgentConfig` mutation. */
+export type DeleteAgentConfigInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `AgentConfig` mutation. */
+export type DeleteAgentConfigPayload = {
+  __typename?: 'DeleteAgentConfigPayload';
+  /** The `AgentConfig` that was deleted by this mutation. */
+  agentConfig?: Maybe<AgentConfig>;
+  /** An edge for our `AgentConfig`. May be used by Relay 1. */
+  agentConfigEdge?: Maybe<AgentConfigEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedAgentConfigId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `AgentConfig` mutation. */
+export type DeleteAgentConfigPayloadAgentConfigEdgeArgs = {
+  orderBy?: Array<AgentConfigOrderBy>;
+};
+
+/** All input for the `deleteAgentPersonaById` mutation. */
+export type DeleteAgentPersonaByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentPersona` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteAgentPersona` mutation. */
+export type DeleteAgentPersonaInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `AgentPersona` mutation. */
+export type DeleteAgentPersonaPayload = {
+  __typename?: 'DeleteAgentPersonaPayload';
+  /** The `AgentPersona` that was deleted by this mutation. */
+  agentPersona?: Maybe<AgentPersona>;
+  /** An edge for our `AgentPersona`. May be used by Relay 1. */
+  agentPersonaEdge?: Maybe<AgentPersonaEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedAgentPersonaId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `AgentPersona` mutation. */
+export type DeleteAgentPersonaPayloadAgentPersonaEdgeArgs = {
+  orderBy?: Array<AgentPersonaOrderBy>;
+};
+
+/** All input for the `deleteAgentSessionById` mutation. */
+export type DeleteAgentSessionByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentSession` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteAgentSession` mutation. */
+export type DeleteAgentSessionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `AgentSession` mutation. */
+export type DeleteAgentSessionPayload = {
+  __typename?: 'DeleteAgentSessionPayload';
+  /** The `AgentSession` that was deleted by this mutation. */
+  agentSession?: Maybe<AgentSession>;
+  /** An edge for our `AgentSession`. May be used by Relay 1. */
+  agentSessionEdge?: Maybe<AgentSessionEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedAgentSessionId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `AgentSession` mutation. */
+export type DeleteAgentSessionPayloadAgentSessionEdgeArgs = {
+  orderBy?: Array<AgentSessionOrderBy>;
+};
+
 /** All input for the `deleteAssigneeById` mutation. */
 export type DeleteAssigneeByIdInput = {
   /**
@@ -1458,6 +3323,94 @@ export type DeleteEmojiPayload = {
 /** The output of our delete `Emoji` mutation. */
 export type DeleteEmojiPayloadEmojiEdgeArgs = {
   orderBy?: Array<EmojiOrderBy>;
+};
+
+/** All input for the `deleteGithubInstallationById` mutation. */
+export type DeleteGithubInstallationByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `GithubInstallation` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteGithubInstallation` mutation. */
+export type DeleteGithubInstallationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `GithubInstallation` mutation. */
+export type DeleteGithubInstallationPayload = {
+  __typename?: 'DeleteGithubInstallationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedGithubInstallationId?: Maybe<Scalars['ID']['output']>;
+  /** The `GithubInstallation` that was deleted by this mutation. */
+  githubInstallation?: Maybe<GithubInstallation>;
+  /** An edge for our `GithubInstallation`. May be used by Relay 1. */
+  githubInstallationEdge?: Maybe<GithubInstallationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `GithubInstallation` mutation. */
+export type DeleteGithubInstallationPayloadGithubInstallationEdgeArgs = {
+  orderBy?: Array<GithubInstallationOrderBy>;
+};
+
+/** All input for the `deleteGithubRepositoryById` mutation. */
+export type DeleteGithubRepositoryByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `GithubRepository` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteGithubRepository` mutation. */
+export type DeleteGithubRepositoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `GithubRepository` mutation. */
+export type DeleteGithubRepositoryPayload = {
+  __typename?: 'DeleteGithubRepositoryPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedGithubRepositoryId?: Maybe<Scalars['ID']['output']>;
+  /** The `GithubRepository` that was deleted by this mutation. */
+  githubRepository?: Maybe<GithubRepository>;
+  /** An edge for our `GithubRepository`. May be used by Relay 1. */
+  githubRepositoryEdge?: Maybe<GithubRepositoryEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `GithubRepository` mutation. */
+export type DeleteGithubRepositoryPayloadGithubRepositoryEdgeArgs = {
+  orderBy?: Array<GithubRepositoryOrderBy>;
 };
 
 /** All input for the `deleteLabelById` mutation. */
@@ -1657,50 +3610,6 @@ export type DeleteProjectLabelPayloadProjectLabelEdgeArgs = {
   orderBy?: Array<ProjectLabelOrderBy>;
 };
 
-/** All input for the `deleteProjectLinkById` mutation. */
-export type DeleteProjectLinkByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `ProjectLink` to be deleted. */
-  id: Scalars['ID']['input'];
-};
-
-/** All input for the `deleteProjectLink` mutation. */
-export type DeleteProjectLinkInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our delete `ProjectLink` mutation. */
-export type DeleteProjectLinkPayload = {
-  __typename?: 'DeleteProjectLinkPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  deletedProjectLinkId?: Maybe<Scalars['ID']['output']>;
-  /** The `ProjectLink` that was deleted by this mutation. */
-  projectLink?: Maybe<ProjectLink>;
-  /** An edge for our `ProjectLink`. May be used by Relay 1. */
-  projectLinkEdge?: Maybe<ProjectLinkEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our delete `ProjectLink` mutation. */
-export type DeleteProjectLinkPayloadProjectLinkEdgeArgs = {
-  orderBy?: Array<ProjectLinkOrderBy>;
-};
-
 /** The output of our delete `Project` mutation. */
 export type DeleteProjectPayload = {
   __typename?: 'DeleteProjectPayload';
@@ -1822,6 +3731,50 @@ export type DeleteTaskByIdInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** The globally unique `ID` which will identify a single `Task` to be deleted. */
   id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteTaskExecutionById` mutation. */
+export type DeleteTaskExecutionByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `TaskExecution` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteTaskExecution` mutation. */
+export type DeleteTaskExecutionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `TaskExecution` mutation. */
+export type DeleteTaskExecutionPayload = {
+  __typename?: 'DeleteTaskExecutionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedTaskExecutionId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `TaskExecution` that was deleted by this mutation. */
+  taskExecution?: Maybe<TaskExecution>;
+  /** An edge for our `TaskExecution`. May be used by Relay 1. */
+  taskExecutionEdge?: Maybe<TaskExecutionEdge>;
+};
+
+
+/** The output of our delete `TaskExecution` mutation. */
+export type DeleteTaskExecutionPayloadTaskExecutionEdgeArgs = {
+  orderBy?: Array<TaskExecutionOrderBy>;
 };
 
 /** All input for the `deleteTask` mutation. */
@@ -2233,6 +4186,751 @@ export type EmojiPatch = {
   userId?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type GithubInstallation = Node & {
+  __typename?: 'GithubInstallation';
+  createdAt: Scalars['Datetime']['output'];
+  enabled: Scalars['Boolean']['output'];
+  githubOrgId: Scalars['Int']['output'];
+  githubOrgLogin: Scalars['String']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  installationId: Scalars['Int']['output'];
+  organizationId: Scalars['String']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+export type GithubInstallationAggregates = {
+  __typename?: 'GithubInstallationAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<GithubInstallationAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<GithubInstallationDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<GithubInstallationMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<GithubInstallationMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<GithubInstallationStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<GithubInstallationStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<GithubInstallationSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<GithubInstallationVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<GithubInstallationVarianceSampleAggregates>;
+};
+
+export type GithubInstallationAverageAggregates = {
+  __typename?: 'GithubInstallationAverageAggregates';
+  /** Mean average of githubOrgId across the matching connection */
+  githubOrgId?: Maybe<Scalars['BigFloat']['output']>;
+  /** Mean average of installationId across the matching connection */
+  installationId?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+/**
+ * A condition to be used against `GithubInstallation` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type GithubInstallationCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `enabled` field. */
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `githubOrgId` field. */
+  githubOrgId?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `githubOrgLogin` field. */
+  githubOrgLogin?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `installationId` field. */
+  installationId?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `GithubInstallation` values. */
+export type GithubInstallationConnection = {
+  __typename?: 'GithubInstallationConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<GithubInstallationAggregates>;
+  /** A list of edges which contains the `GithubInstallation` and cursor to aid in pagination. */
+  edges: Array<GithubInstallationEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<GithubInstallationAggregates>>;
+  /** A list of `GithubInstallation` objects. */
+  nodes: Array<GithubInstallation>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `GithubInstallation` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `GithubInstallation` values. */
+export type GithubInstallationConnectionGroupedAggregatesArgs = {
+  groupBy: Array<GithubInstallationGroupBy>;
+  having?: InputMaybe<GithubInstallationHavingInput>;
+};
+
+export type GithubInstallationDistinctCountAggregates = {
+  __typename?: 'GithubInstallationDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of enabled across the matching connection */
+  enabled?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of githubOrgId across the matching connection */
+  githubOrgId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of githubOrgLogin across the matching connection */
+  githubOrgLogin?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of installationId across the matching connection */
+  installationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `GithubInstallation` edge in the connection. */
+export type GithubInstallationEdge = {
+  __typename?: 'GithubInstallationEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `GithubInstallation` at the end of the edge. */
+  node: GithubInstallation;
+};
+
+/** A filter to be used against `GithubInstallation` object types. All fields are combined with a logical ‘and.’ */
+export type GithubInstallationFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<GithubInstallationFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `enabled` field. */
+  enabled?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `githubOrgId` field. */
+  githubOrgId?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `githubOrgLogin` field. */
+  githubOrgLogin?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `installationId` field. */
+  installationId?: InputMaybe<IntFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<GithubInstallationFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<GithubInstallationFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `GithubInstallation` for usage during aggregation. */
+export enum GithubInstallationGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Enabled = 'ENABLED',
+  GithubOrgId = 'GITHUB_ORG_ID',
+  GithubOrgLogin = 'GITHUB_ORG_LOGIN',
+  InstallationId = 'INSTALLATION_ID',
+  OrganizationId = 'ORGANIZATION_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type GithubInstallationHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  githubOrgId?: InputMaybe<HavingIntFilter>;
+  installationId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubInstallationHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  githubOrgId?: InputMaybe<HavingIntFilter>;
+  installationId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `GithubInstallation` aggregates. */
+export type GithubInstallationHavingInput = {
+  AND?: InputMaybe<Array<GithubInstallationHavingInput>>;
+  OR?: InputMaybe<Array<GithubInstallationHavingInput>>;
+  average?: InputMaybe<GithubInstallationHavingAverageInput>;
+  distinctCount?: InputMaybe<GithubInstallationHavingDistinctCountInput>;
+  max?: InputMaybe<GithubInstallationHavingMaxInput>;
+  min?: InputMaybe<GithubInstallationHavingMinInput>;
+  stddevPopulation?: InputMaybe<GithubInstallationHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<GithubInstallationHavingStddevSampleInput>;
+  sum?: InputMaybe<GithubInstallationHavingSumInput>;
+  variancePopulation?: InputMaybe<GithubInstallationHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<GithubInstallationHavingVarianceSampleInput>;
+};
+
+export type GithubInstallationHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  githubOrgId?: InputMaybe<HavingIntFilter>;
+  installationId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubInstallationHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  githubOrgId?: InputMaybe<HavingIntFilter>;
+  installationId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubInstallationHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  githubOrgId?: InputMaybe<HavingIntFilter>;
+  installationId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubInstallationHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  githubOrgId?: InputMaybe<HavingIntFilter>;
+  installationId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubInstallationHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  githubOrgId?: InputMaybe<HavingIntFilter>;
+  installationId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubInstallationHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  githubOrgId?: InputMaybe<HavingIntFilter>;
+  installationId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubInstallationHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  githubOrgId?: InputMaybe<HavingIntFilter>;
+  installationId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `GithubInstallation` */
+export type GithubInstallationInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  githubOrgId: Scalars['Int']['input'];
+  githubOrgLogin: Scalars['String']['input'];
+  installationId: Scalars['Int']['input'];
+  organizationId: Scalars['String']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type GithubInstallationMaxAggregates = {
+  __typename?: 'GithubInstallationMaxAggregates';
+  /** Maximum of githubOrgId across the matching connection */
+  githubOrgId?: Maybe<Scalars['Int']['output']>;
+  /** Maximum of installationId across the matching connection */
+  installationId?: Maybe<Scalars['Int']['output']>;
+};
+
+export type GithubInstallationMinAggregates = {
+  __typename?: 'GithubInstallationMinAggregates';
+  /** Minimum of githubOrgId across the matching connection */
+  githubOrgId?: Maybe<Scalars['Int']['output']>;
+  /** Minimum of installationId across the matching connection */
+  installationId?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Methods to use when ordering `GithubInstallation`. */
+export enum GithubInstallationOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  EnabledAsc = 'ENABLED_ASC',
+  EnabledDesc = 'ENABLED_DESC',
+  GithubOrgIdAsc = 'GITHUB_ORG_ID_ASC',
+  GithubOrgIdDesc = 'GITHUB_ORG_ID_DESC',
+  GithubOrgLoginAsc = 'GITHUB_ORG_LOGIN_ASC',
+  GithubOrgLoginDesc = 'GITHUB_ORG_LOGIN_DESC',
+  InstallationIdAsc = 'INSTALLATION_ID_ASC',
+  InstallationIdDesc = 'INSTALLATION_ID_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `GithubInstallation`. Fields that are set will be updated. */
+export type GithubInstallationPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  githubOrgId?: InputMaybe<Scalars['Int']['input']>;
+  githubOrgLogin?: InputMaybe<Scalars['String']['input']>;
+  installationId?: InputMaybe<Scalars['Int']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type GithubInstallationStddevPopulationAggregates = {
+  __typename?: 'GithubInstallationStddevPopulationAggregates';
+  /** Population standard deviation of githubOrgId across the matching connection */
+  githubOrgId?: Maybe<Scalars['BigFloat']['output']>;
+  /** Population standard deviation of installationId across the matching connection */
+  installationId?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type GithubInstallationStddevSampleAggregates = {
+  __typename?: 'GithubInstallationStddevSampleAggregates';
+  /** Sample standard deviation of githubOrgId across the matching connection */
+  githubOrgId?: Maybe<Scalars['BigFloat']['output']>;
+  /** Sample standard deviation of installationId across the matching connection */
+  installationId?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type GithubInstallationSumAggregates = {
+  __typename?: 'GithubInstallationSumAggregates';
+  /** Sum of githubOrgId across the matching connection */
+  githubOrgId: Scalars['BigInt']['output'];
+  /** Sum of installationId across the matching connection */
+  installationId: Scalars['BigInt']['output'];
+};
+
+export type GithubInstallationVariancePopulationAggregates = {
+  __typename?: 'GithubInstallationVariancePopulationAggregates';
+  /** Population variance of githubOrgId across the matching connection */
+  githubOrgId?: Maybe<Scalars['BigFloat']['output']>;
+  /** Population variance of installationId across the matching connection */
+  installationId?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type GithubInstallationVarianceSampleAggregates = {
+  __typename?: 'GithubInstallationVarianceSampleAggregates';
+  /** Sample variance of githubOrgId across the matching connection */
+  githubOrgId?: Maybe<Scalars['BigFloat']['output']>;
+  /** Sample variance of installationId across the matching connection */
+  installationId?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type GithubRepository = Node & {
+  __typename?: 'GithubRepository';
+  createdAt: Scalars['Datetime']['output'];
+  defaultBranch: Scalars['String']['output'];
+  enabled: Scalars['Boolean']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  organizationId: Scalars['String']['output'];
+  /** Reads a single `Project` that is related to this `GithubRepository`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  repoFullName: Scalars['String']['output'];
+  repoId: Scalars['Int']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+export type GithubRepositoryAggregates = {
+  __typename?: 'GithubRepositoryAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<GithubRepositoryAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<GithubRepositoryDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<GithubRepositoryMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<GithubRepositoryMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<GithubRepositoryStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<GithubRepositoryStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<GithubRepositorySumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<GithubRepositoryVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<GithubRepositoryVarianceSampleAggregates>;
+};
+
+/** A filter to be used against aggregates of `GithubRepository` object types. */
+export type GithubRepositoryAggregatesFilter = {
+  /** Mean average aggregate over matching `GithubRepository` objects. */
+  average?: InputMaybe<GithubRepositoryAverageAggregateFilter>;
+  /** Distinct count aggregate over matching `GithubRepository` objects. */
+  distinctCount?: InputMaybe<GithubRepositoryDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `GithubRepository` object to be included within the aggregate. */
+  filter?: InputMaybe<GithubRepositoryFilter>;
+  /** Maximum aggregate over matching `GithubRepository` objects. */
+  max?: InputMaybe<GithubRepositoryMaxAggregateFilter>;
+  /** Minimum aggregate over matching `GithubRepository` objects. */
+  min?: InputMaybe<GithubRepositoryMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `GithubRepository` objects. */
+  stddevPopulation?: InputMaybe<GithubRepositoryStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `GithubRepository` objects. */
+  stddevSample?: InputMaybe<GithubRepositoryStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `GithubRepository` objects. */
+  sum?: InputMaybe<GithubRepositorySumAggregateFilter>;
+  /** Population variance aggregate over matching `GithubRepository` objects. */
+  variancePopulation?: InputMaybe<GithubRepositoryVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `GithubRepository` objects. */
+  varianceSample?: InputMaybe<GithubRepositoryVarianceSampleAggregateFilter>;
+};
+
+export type GithubRepositoryAverageAggregateFilter = {
+  repoId?: InputMaybe<BigFloatFilter>;
+};
+
+export type GithubRepositoryAverageAggregates = {
+  __typename?: 'GithubRepositoryAverageAggregates';
+  /** Mean average of repoId across the matching connection */
+  repoId?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+/**
+ * A condition to be used against `GithubRepository` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type GithubRepositoryCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `defaultBranch` field. */
+  defaultBranch?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `enabled` field. */
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `repoFullName` field. */
+  repoFullName?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `repoId` field. */
+  repoId?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `GithubRepository` values. */
+export type GithubRepositoryConnection = {
+  __typename?: 'GithubRepositoryConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<GithubRepositoryAggregates>;
+  /** A list of edges which contains the `GithubRepository` and cursor to aid in pagination. */
+  edges: Array<GithubRepositoryEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<GithubRepositoryAggregates>>;
+  /** A list of `GithubRepository` objects. */
+  nodes: Array<GithubRepository>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `GithubRepository` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `GithubRepository` values. */
+export type GithubRepositoryConnectionGroupedAggregatesArgs = {
+  groupBy: Array<GithubRepositoryGroupBy>;
+  having?: InputMaybe<GithubRepositoryHavingInput>;
+};
+
+export type GithubRepositoryDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  defaultBranch?: InputMaybe<BigIntFilter>;
+  enabled?: InputMaybe<BigIntFilter>;
+  organizationId?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  repoFullName?: InputMaybe<BigIntFilter>;
+  repoId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type GithubRepositoryDistinctCountAggregates = {
+  __typename?: 'GithubRepositoryDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of defaultBranch across the matching connection */
+  defaultBranch?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of enabled across the matching connection */
+  enabled?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of repoFullName across the matching connection */
+  repoFullName?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of repoId across the matching connection */
+  repoId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `GithubRepository` edge in the connection. */
+export type GithubRepositoryEdge = {
+  __typename?: 'GithubRepositoryEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `GithubRepository` at the end of the edge. */
+  node: GithubRepository;
+};
+
+/** A filter to be used against `GithubRepository` object types. All fields are combined with a logical ‘and.’ */
+export type GithubRepositoryFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<GithubRepositoryFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `defaultBranch` field. */
+  defaultBranch?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `enabled` field. */
+  enabled?: InputMaybe<BooleanFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<GithubRepositoryFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<GithubRepositoryFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `repoFullName` field. */
+  repoFullName?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `repoId` field. */
+  repoId?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `GithubRepository` for usage during aggregation. */
+export enum GithubRepositoryGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  DefaultBranch = 'DEFAULT_BRANCH',
+  Enabled = 'ENABLED',
+  OrganizationId = 'ORGANIZATION_ID',
+  ProjectId = 'PROJECT_ID',
+  RepoFullName = 'REPO_FULL_NAME',
+  RepoId = 'REPO_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type GithubRepositoryHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  repoId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubRepositoryHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  repoId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `GithubRepository` aggregates. */
+export type GithubRepositoryHavingInput = {
+  AND?: InputMaybe<Array<GithubRepositoryHavingInput>>;
+  OR?: InputMaybe<Array<GithubRepositoryHavingInput>>;
+  average?: InputMaybe<GithubRepositoryHavingAverageInput>;
+  distinctCount?: InputMaybe<GithubRepositoryHavingDistinctCountInput>;
+  max?: InputMaybe<GithubRepositoryHavingMaxInput>;
+  min?: InputMaybe<GithubRepositoryHavingMinInput>;
+  stddevPopulation?: InputMaybe<GithubRepositoryHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<GithubRepositoryHavingStddevSampleInput>;
+  sum?: InputMaybe<GithubRepositoryHavingSumInput>;
+  variancePopulation?: InputMaybe<GithubRepositoryHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<GithubRepositoryHavingVarianceSampleInput>;
+};
+
+export type GithubRepositoryHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  repoId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubRepositoryHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  repoId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubRepositoryHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  repoId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubRepositoryHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  repoId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubRepositoryHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  repoId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubRepositoryHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  repoId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type GithubRepositoryHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  repoId?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `GithubRepository` */
+export type GithubRepositoryInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  defaultBranch?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  organizationId: Scalars['String']['input'];
+  projectId: Scalars['UUID']['input'];
+  repoFullName: Scalars['String']['input'];
+  repoId: Scalars['Int']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type GithubRepositoryMaxAggregateFilter = {
+  repoId?: InputMaybe<IntFilter>;
+};
+
+export type GithubRepositoryMaxAggregates = {
+  __typename?: 'GithubRepositoryMaxAggregates';
+  /** Maximum of repoId across the matching connection */
+  repoId?: Maybe<Scalars['Int']['output']>;
+};
+
+export type GithubRepositoryMinAggregateFilter = {
+  repoId?: InputMaybe<IntFilter>;
+};
+
+export type GithubRepositoryMinAggregates = {
+  __typename?: 'GithubRepositoryMinAggregates';
+  /** Minimum of repoId across the matching connection */
+  repoId?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Methods to use when ordering `GithubRepository`. */
+export enum GithubRepositoryOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  DefaultBranchAsc = 'DEFAULT_BRANCH_ASC',
+  DefaultBranchDesc = 'DEFAULT_BRANCH_DESC',
+  EnabledAsc = 'ENABLED_ASC',
+  EnabledDesc = 'ENABLED_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RepoFullNameAsc = 'REPO_FULL_NAME_ASC',
+  RepoFullNameDesc = 'REPO_FULL_NAME_DESC',
+  RepoIdAsc = 'REPO_ID_ASC',
+  RepoIdDesc = 'REPO_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `GithubRepository`. Fields that are set will be updated. */
+export type GithubRepositoryPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  defaultBranch?: InputMaybe<Scalars['String']['input']>;
+  enabled?: InputMaybe<Scalars['Boolean']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  repoFullName?: InputMaybe<Scalars['String']['input']>;
+  repoId?: InputMaybe<Scalars['Int']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type GithubRepositoryStddevPopulationAggregateFilter = {
+  repoId?: InputMaybe<BigFloatFilter>;
+};
+
+export type GithubRepositoryStddevPopulationAggregates = {
+  __typename?: 'GithubRepositoryStddevPopulationAggregates';
+  /** Population standard deviation of repoId across the matching connection */
+  repoId?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type GithubRepositoryStddevSampleAggregateFilter = {
+  repoId?: InputMaybe<BigFloatFilter>;
+};
+
+export type GithubRepositoryStddevSampleAggregates = {
+  __typename?: 'GithubRepositoryStddevSampleAggregates';
+  /** Sample standard deviation of repoId across the matching connection */
+  repoId?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type GithubRepositorySumAggregateFilter = {
+  repoId?: InputMaybe<BigIntFilter>;
+};
+
+export type GithubRepositorySumAggregates = {
+  __typename?: 'GithubRepositorySumAggregates';
+  /** Sum of repoId across the matching connection */
+  repoId: Scalars['BigInt']['output'];
+};
+
+export type GithubRepositoryVariancePopulationAggregateFilter = {
+  repoId?: InputMaybe<BigFloatFilter>;
+};
+
+export type GithubRepositoryVariancePopulationAggregates = {
+  __typename?: 'GithubRepositoryVariancePopulationAggregates';
+  /** Population variance of repoId across the matching connection */
+  repoId?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type GithubRepositoryVarianceSampleAggregateFilter = {
+  repoId?: InputMaybe<BigFloatFilter>;
+};
+
+export type GithubRepositoryVarianceSampleAggregates = {
+  __typename?: 'GithubRepositoryVarianceSampleAggregates';
+  /** Sample variance of repoId across the matching connection */
+  repoId?: Maybe<Scalars['BigFloat']['output']>;
+};
+
 export type HavingDatetimeFilter = {
   equalTo?: InputMaybe<Scalars['Datetime']['input']>;
   greaterThan?: InputMaybe<Scalars['Datetime']['input']>;
@@ -2587,12 +5285,24 @@ export type LabelToManyTaskLabelFilter = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Creates a single `AgentActivity`. */
+  createAgentActivity?: Maybe<CreateAgentActivityPayload>;
+  /** Creates a single `AgentConfig`. */
+  createAgentConfig?: Maybe<CreateAgentConfigPayload>;
+  /** Creates a single `AgentPersona`. */
+  createAgentPersona?: Maybe<CreateAgentPersonaPayload>;
+  /** Creates a single `AgentSession`. */
+  createAgentSession?: Maybe<CreateAgentSessionPayload>;
   /** Creates a single `Assignee`. */
   createAssignee?: Maybe<CreateAssigneePayload>;
   /** Creates a single `Column`. */
   createColumn?: Maybe<CreateColumnPayload>;
   /** Creates a single `Emoji`. */
   createEmoji?: Maybe<CreateEmojiPayload>;
+  /** Creates a single `GithubInstallation`. */
+  createGithubInstallation?: Maybe<CreateGithubInstallationPayload>;
+  /** Creates a single `GithubRepository`. */
+  createGithubRepository?: Maybe<CreateGithubRepositoryPayload>;
   /** Creates a single `Label`. */
   createLabel?: Maybe<CreateLabelPayload>;
   /** Creates a single `Post`. */
@@ -2603,20 +5313,36 @@ export type Mutation = {
   createProjectColumn?: Maybe<CreateProjectColumnPayload>;
   /** Creates a single `ProjectLabel`. */
   createProjectLabel?: Maybe<CreateProjectLabelPayload>;
-  /** Creates a single `ProjectLink`. */
-  createProjectLink?: Maybe<CreateProjectLinkPayload>;
   /** Creates a single `ProjectProjectLabel`. */
   createProjectProjectLabel?: Maybe<CreateProjectProjectLabelPayload>;
   /** Creates a single `Setting`. */
   createSetting?: Maybe<CreateSettingPayload>;
   /** Creates a single `Task`. */
   createTask?: Maybe<CreateTaskPayload>;
+  /** Creates a single `TaskExecution`. */
+  createTaskExecution?: Maybe<CreateTaskExecutionPayload>;
   /** Creates a single `TaskLabel`. */
   createTaskLabel?: Maybe<CreateTaskLabelPayload>;
   /** Creates a single `User`. */
   createUser?: Maybe<CreateUserPayload>;
   /** Creates a single `UserPreference`. */
   createUserPreference?: Maybe<CreateUserPreferencePayload>;
+  /** Deletes a single `AgentActivity` using a unique key. */
+  deleteAgentActivity?: Maybe<DeleteAgentActivityPayload>;
+  /** Deletes a single `AgentActivity` using its globally unique id. */
+  deleteAgentActivityById?: Maybe<DeleteAgentActivityPayload>;
+  /** Deletes a single `AgentConfig` using a unique key. */
+  deleteAgentConfig?: Maybe<DeleteAgentConfigPayload>;
+  /** Deletes a single `AgentConfig` using its globally unique id. */
+  deleteAgentConfigById?: Maybe<DeleteAgentConfigPayload>;
+  /** Deletes a single `AgentPersona` using a unique key. */
+  deleteAgentPersona?: Maybe<DeleteAgentPersonaPayload>;
+  /** Deletes a single `AgentPersona` using its globally unique id. */
+  deleteAgentPersonaById?: Maybe<DeleteAgentPersonaPayload>;
+  /** Deletes a single `AgentSession` using a unique key. */
+  deleteAgentSession?: Maybe<DeleteAgentSessionPayload>;
+  /** Deletes a single `AgentSession` using its globally unique id. */
+  deleteAgentSessionById?: Maybe<DeleteAgentSessionPayload>;
   /** Deletes a single `Assignee` using a unique key. */
   deleteAssignee?: Maybe<DeleteAssigneePayload>;
   /** Deletes a single `Assignee` using its globally unique id. */
@@ -2629,6 +5355,14 @@ export type Mutation = {
   deleteEmoji?: Maybe<DeleteEmojiPayload>;
   /** Deletes a single `Emoji` using its globally unique id. */
   deleteEmojiById?: Maybe<DeleteEmojiPayload>;
+  /** Deletes a single `GithubInstallation` using a unique key. */
+  deleteGithubInstallation?: Maybe<DeleteGithubInstallationPayload>;
+  /** Deletes a single `GithubInstallation` using its globally unique id. */
+  deleteGithubInstallationById?: Maybe<DeleteGithubInstallationPayload>;
+  /** Deletes a single `GithubRepository` using a unique key. */
+  deleteGithubRepository?: Maybe<DeleteGithubRepositoryPayload>;
+  /** Deletes a single `GithubRepository` using its globally unique id. */
+  deleteGithubRepositoryById?: Maybe<DeleteGithubRepositoryPayload>;
   /** Deletes a single `Label` using a unique key. */
   deleteLabel?: Maybe<DeleteLabelPayload>;
   /** Deletes a single `Label` using its globally unique id. */
@@ -2649,10 +5383,6 @@ export type Mutation = {
   deleteProjectLabel?: Maybe<DeleteProjectLabelPayload>;
   /** Deletes a single `ProjectLabel` using its globally unique id. */
   deleteProjectLabelById?: Maybe<DeleteProjectLabelPayload>;
-  /** Deletes a single `ProjectLink` using a unique key. */
-  deleteProjectLink?: Maybe<DeleteProjectLinkPayload>;
-  /** Deletes a single `ProjectLink` using its globally unique id. */
-  deleteProjectLinkById?: Maybe<DeleteProjectLinkPayload>;
   /** Deletes a single `ProjectProjectLabel` using a unique key. */
   deleteProjectProjectLabel?: Maybe<DeleteProjectProjectLabelPayload>;
   /** Deletes a single `ProjectProjectLabel` using its globally unique id. */
@@ -2665,6 +5395,10 @@ export type Mutation = {
   deleteTask?: Maybe<DeleteTaskPayload>;
   /** Deletes a single `Task` using its globally unique id. */
   deleteTaskById?: Maybe<DeleteTaskPayload>;
+  /** Deletes a single `TaskExecution` using a unique key. */
+  deleteTaskExecution?: Maybe<DeleteTaskExecutionPayload>;
+  /** Deletes a single `TaskExecution` using its globally unique id. */
+  deleteTaskExecutionById?: Maybe<DeleteTaskExecutionPayload>;
   /** Deletes a single `TaskLabel` using a unique key. */
   deleteTaskLabel?: Maybe<DeleteTaskLabelPayload>;
   /** Deletes a single `TaskLabel` using its globally unique id. */
@@ -2677,6 +5411,22 @@ export type Mutation = {
   deleteUserPreference?: Maybe<DeleteUserPreferencePayload>;
   /** Deletes a single `UserPreference` using its globally unique id. */
   deleteUserPreferenceById?: Maybe<DeleteUserPreferencePayload>;
+  /** Updates a single `AgentActivity` using a unique key and a patch. */
+  updateAgentActivity?: Maybe<UpdateAgentActivityPayload>;
+  /** Updates a single `AgentActivity` using its globally unique id and a patch. */
+  updateAgentActivityById?: Maybe<UpdateAgentActivityPayload>;
+  /** Updates a single `AgentConfig` using a unique key and a patch. */
+  updateAgentConfig?: Maybe<UpdateAgentConfigPayload>;
+  /** Updates a single `AgentConfig` using its globally unique id and a patch. */
+  updateAgentConfigById?: Maybe<UpdateAgentConfigPayload>;
+  /** Updates a single `AgentPersona` using a unique key and a patch. */
+  updateAgentPersona?: Maybe<UpdateAgentPersonaPayload>;
+  /** Updates a single `AgentPersona` using its globally unique id and a patch. */
+  updateAgentPersonaById?: Maybe<UpdateAgentPersonaPayload>;
+  /** Updates a single `AgentSession` using a unique key and a patch. */
+  updateAgentSession?: Maybe<UpdateAgentSessionPayload>;
+  /** Updates a single `AgentSession` using its globally unique id and a patch. */
+  updateAgentSessionById?: Maybe<UpdateAgentSessionPayload>;
   /** Updates a single `Assignee` using a unique key and a patch. */
   updateAssignee?: Maybe<UpdateAssigneePayload>;
   /** Updates a single `Assignee` using its globally unique id and a patch. */
@@ -2689,6 +5439,14 @@ export type Mutation = {
   updateEmoji?: Maybe<UpdateEmojiPayload>;
   /** Updates a single `Emoji` using its globally unique id and a patch. */
   updateEmojiById?: Maybe<UpdateEmojiPayload>;
+  /** Updates a single `GithubInstallation` using a unique key and a patch. */
+  updateGithubInstallation?: Maybe<UpdateGithubInstallationPayload>;
+  /** Updates a single `GithubInstallation` using its globally unique id and a patch. */
+  updateGithubInstallationById?: Maybe<UpdateGithubInstallationPayload>;
+  /** Updates a single `GithubRepository` using a unique key and a patch. */
+  updateGithubRepository?: Maybe<UpdateGithubRepositoryPayload>;
+  /** Updates a single `GithubRepository` using its globally unique id and a patch. */
+  updateGithubRepositoryById?: Maybe<UpdateGithubRepositoryPayload>;
   /** Updates a single `Label` using a unique key and a patch. */
   updateLabel?: Maybe<UpdateLabelPayload>;
   /** Updates a single `Label` using its globally unique id and a patch. */
@@ -2709,10 +5467,6 @@ export type Mutation = {
   updateProjectLabel?: Maybe<UpdateProjectLabelPayload>;
   /** Updates a single `ProjectLabel` using its globally unique id and a patch. */
   updateProjectLabelById?: Maybe<UpdateProjectLabelPayload>;
-  /** Updates a single `ProjectLink` using a unique key and a patch. */
-  updateProjectLink?: Maybe<UpdateProjectLinkPayload>;
-  /** Updates a single `ProjectLink` using its globally unique id and a patch. */
-  updateProjectLinkById?: Maybe<UpdateProjectLinkPayload>;
   /** Updates a single `ProjectProjectLabel` using a unique key and a patch. */
   updateProjectProjectLabel?: Maybe<UpdateProjectProjectLabelPayload>;
   /** Updates a single `ProjectProjectLabel` using its globally unique id and a patch. */
@@ -2725,6 +5479,10 @@ export type Mutation = {
   updateTask?: Maybe<UpdateTaskPayload>;
   /** Updates a single `Task` using its globally unique id and a patch. */
   updateTaskById?: Maybe<UpdateTaskPayload>;
+  /** Updates a single `TaskExecution` using a unique key and a patch. */
+  updateTaskExecution?: Maybe<UpdateTaskExecutionPayload>;
+  /** Updates a single `TaskExecution` using its globally unique id and a patch. */
+  updateTaskExecutionById?: Maybe<UpdateTaskExecutionPayload>;
   /** Updates a single `TaskLabel` using a unique key and a patch. */
   updateTaskLabel?: Maybe<UpdateTaskLabelPayload>;
   /** Updates a single `TaskLabel` using its globally unique id and a patch. */
@@ -2737,6 +5495,30 @@ export type Mutation = {
   updateUserPreference?: Maybe<UpdateUserPreferencePayload>;
   /** Updates a single `UserPreference` using its globally unique id and a patch. */
   updateUserPreferenceById?: Maybe<UpdateUserPreferencePayload>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateAgentActivityArgs = {
+  input: CreateAgentActivityInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateAgentConfigArgs = {
+  input: CreateAgentConfigInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateAgentPersonaArgs = {
+  input: CreateAgentPersonaInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateAgentSessionArgs = {
+  input: CreateAgentSessionInput;
 };
 
 
@@ -2755,6 +5537,18 @@ export type MutationCreateColumnArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateEmojiArgs = {
   input: CreateEmojiInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateGithubInstallationArgs = {
+  input: CreateGithubInstallationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateGithubRepositoryArgs = {
+  input: CreateGithubRepositoryInput;
 };
 
 
@@ -2789,12 +5583,6 @@ export type MutationCreateProjectLabelArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationCreateProjectLinkArgs = {
-  input: CreateProjectLinkInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateProjectProjectLabelArgs = {
   input: CreateProjectProjectLabelInput;
 };
@@ -2813,6 +5601,12 @@ export type MutationCreateTaskArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateTaskExecutionArgs = {
+  input: CreateTaskExecutionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateTaskLabelArgs = {
   input: CreateTaskLabelInput;
 };
@@ -2827,6 +5621,54 @@ export type MutationCreateUserArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateUserPreferenceArgs = {
   input: CreateUserPreferenceInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentActivityArgs = {
+  input: DeleteAgentActivityInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentActivityByIdArgs = {
+  input: DeleteAgentActivityByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentConfigArgs = {
+  input: DeleteAgentConfigInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentConfigByIdArgs = {
+  input: DeleteAgentConfigByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentPersonaArgs = {
+  input: DeleteAgentPersonaInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentPersonaByIdArgs = {
+  input: DeleteAgentPersonaByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentSessionArgs = {
+  input: DeleteAgentSessionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteAgentSessionByIdArgs = {
+  input: DeleteAgentSessionByIdInput;
 };
 
 
@@ -2863,6 +5705,30 @@ export type MutationDeleteEmojiArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteEmojiByIdArgs = {
   input: DeleteEmojiByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteGithubInstallationArgs = {
+  input: DeleteGithubInstallationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteGithubInstallationByIdArgs = {
+  input: DeleteGithubInstallationByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteGithubRepositoryArgs = {
+  input: DeleteGithubRepositoryInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteGithubRepositoryByIdArgs = {
+  input: DeleteGithubRepositoryByIdInput;
 };
 
 
@@ -2927,18 +5793,6 @@ export type MutationDeleteProjectLabelByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteProjectLinkArgs = {
-  input: DeleteProjectLinkInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationDeleteProjectLinkByIdArgs = {
-  input: DeleteProjectLinkByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteProjectProjectLabelArgs = {
   input: DeleteProjectProjectLabelInput;
 };
@@ -2971,6 +5825,18 @@ export type MutationDeleteTaskArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTaskByIdArgs = {
   input: DeleteTaskByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTaskExecutionArgs = {
+  input: DeleteTaskExecutionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTaskExecutionByIdArgs = {
+  input: DeleteTaskExecutionByIdInput;
 };
 
 
@@ -3011,6 +5877,54 @@ export type MutationDeleteUserPreferenceByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentActivityArgs = {
+  input: UpdateAgentActivityInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentActivityByIdArgs = {
+  input: UpdateAgentActivityByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentConfigArgs = {
+  input: UpdateAgentConfigInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentConfigByIdArgs = {
+  input: UpdateAgentConfigByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentPersonaArgs = {
+  input: UpdateAgentPersonaInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentPersonaByIdArgs = {
+  input: UpdateAgentPersonaByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentSessionArgs = {
+  input: UpdateAgentSessionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateAgentSessionByIdArgs = {
+  input: UpdateAgentSessionByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateAssigneeArgs = {
   input: UpdateAssigneeInput;
 };
@@ -3043,6 +5957,30 @@ export type MutationUpdateEmojiArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateEmojiByIdArgs = {
   input: UpdateEmojiByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateGithubInstallationArgs = {
+  input: UpdateGithubInstallationInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateGithubInstallationByIdArgs = {
+  input: UpdateGithubInstallationByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateGithubRepositoryArgs = {
+  input: UpdateGithubRepositoryInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateGithubRepositoryByIdArgs = {
+  input: UpdateGithubRepositoryByIdInput;
 };
 
 
@@ -3107,18 +6045,6 @@ export type MutationUpdateProjectLabelByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateProjectLinkArgs = {
-  input: UpdateProjectLinkInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
-export type MutationUpdateProjectLinkByIdArgs = {
-  input: UpdateProjectLinkByIdInput;
-};
-
-
-/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateProjectProjectLabelArgs = {
   input: UpdateProjectProjectLabelInput;
 };
@@ -3151,6 +6077,18 @@ export type MutationUpdateTaskArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateTaskByIdArgs = {
   input: UpdateTaskByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTaskExecutionArgs = {
+  input: UpdateTaskExecutionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTaskExecutionByIdArgs = {
+  input: UpdateTaskExecutionByIdInput;
 };
 
 
@@ -3222,18 +6160,35 @@ export type Post = Node & {
   /** Reads a single `User` that is related to this `Post`. */
   author?: Maybe<User>;
   authorId?: Maybe<Scalars['UUID']['output']>;
+  /** Reads and enables pagination through a set of `Post`. */
+  childPosts: PostConnection;
   createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
   /** Reads and enables pagination through a set of `Emoji`. */
   emojis: EmojiConnection;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+  /** Reads a single `Post` that is related to this `Post`. */
+  parent?: Maybe<Post>;
+  parentId?: Maybe<Scalars['UUID']['output']>;
   rowId: Scalars['UUID']['output'];
   /** Reads a single `Task` that is related to this `Post`. */
   task?: Maybe<Task>;
   taskId: Scalars['UUID']['output'];
   title?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['Datetime']['output'];
+};
+
+
+export type PostChildPostsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<PostCondition>;
+  filter?: InputMaybe<PostFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PostOrderBy>>;
 };
 
 
@@ -3271,6 +6226,8 @@ export type PostCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `description` field. */
   description?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `parentId` field. */
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `taskId` field. */
@@ -3309,6 +6266,7 @@ export type PostDistinctCountAggregateFilter = {
   authorId?: InputMaybe<BigIntFilter>;
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
+  parentId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   taskId?: InputMaybe<BigIntFilter>;
   title?: InputMaybe<BigIntFilter>;
@@ -3323,6 +6281,8 @@ export type PostDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of description across the matching connection */
   description?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of parentId across the matching connection */
+  parentId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of taskId across the matching connection */
@@ -3352,6 +6312,10 @@ export type PostFilter = {
   authorExists?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `authorId` field. */
   authorId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `childPosts` relation. */
+  childPosts?: InputMaybe<PostToManyPostFilter>;
+  /** Some related `childPosts` exist. */
+  childPostsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `description` field. */
@@ -3364,6 +6328,12 @@ export type PostFilter = {
   not?: InputMaybe<PostFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<PostFilter>>;
+  /** Filter by the object’s `parent` relation. */
+  parent?: InputMaybe<PostFilter>;
+  /** A related `parent` exists. */
+  parentExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `parentId` field. */
+  parentId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `task` relation. */
@@ -3383,6 +6353,7 @@ export enum PostGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
+  ParentId = 'PARENT_ID',
   TaskId = 'TASK_ID',
   Title = 'TITLE',
   UpdatedAt = 'UPDATED_AT',
@@ -3455,6 +6426,7 @@ export type PostInput = {
   authorId?: InputMaybe<Scalars['UUID']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   taskId: Scalars['UUID']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
@@ -3465,6 +6437,24 @@ export type PostInput = {
 export enum PostOrderBy {
   AuthorIdAsc = 'AUTHOR_ID_ASC',
   AuthorIdDesc = 'AUTHOR_ID_DESC',
+  ChildPostsCountAsc = 'CHILD_POSTS_COUNT_ASC',
+  ChildPostsCountDesc = 'CHILD_POSTS_COUNT_DESC',
+  ChildPostsDistinctCountAuthorIdAsc = 'CHILD_POSTS_DISTINCT_COUNT_AUTHOR_ID_ASC',
+  ChildPostsDistinctCountAuthorIdDesc = 'CHILD_POSTS_DISTINCT_COUNT_AUTHOR_ID_DESC',
+  ChildPostsDistinctCountCreatedAtAsc = 'CHILD_POSTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ChildPostsDistinctCountCreatedAtDesc = 'CHILD_POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ChildPostsDistinctCountDescriptionAsc = 'CHILD_POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
+  ChildPostsDistinctCountDescriptionDesc = 'CHILD_POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  ChildPostsDistinctCountParentIdAsc = 'CHILD_POSTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  ChildPostsDistinctCountParentIdDesc = 'CHILD_POSTS_DISTINCT_COUNT_PARENT_ID_DESC',
+  ChildPostsDistinctCountRowIdAsc = 'CHILD_POSTS_DISTINCT_COUNT_ROW_ID_ASC',
+  ChildPostsDistinctCountRowIdDesc = 'CHILD_POSTS_DISTINCT_COUNT_ROW_ID_DESC',
+  ChildPostsDistinctCountTaskIdAsc = 'CHILD_POSTS_DISTINCT_COUNT_TASK_ID_ASC',
+  ChildPostsDistinctCountTaskIdDesc = 'CHILD_POSTS_DISTINCT_COUNT_TASK_ID_DESC',
+  ChildPostsDistinctCountTitleAsc = 'CHILD_POSTS_DISTINCT_COUNT_TITLE_ASC',
+  ChildPostsDistinctCountTitleDesc = 'CHILD_POSTS_DISTINCT_COUNT_TITLE_DESC',
+  ChildPostsDistinctCountUpdatedAtAsc = 'CHILD_POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  ChildPostsDistinctCountUpdatedAtDesc = 'CHILD_POSTS_DISTINCT_COUNT_UPDATED_AT_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
@@ -3484,6 +6474,8 @@ export enum PostOrderBy {
   EmojisDistinctCountUserIdAsc = 'EMOJIS_DISTINCT_COUNT_USER_ID_ASC',
   EmojisDistinctCountUserIdDesc = 'EMOJIS_DISTINCT_COUNT_USER_ID_DESC',
   Natural = 'NATURAL',
+  ParentIdAsc = 'PARENT_ID_ASC',
+  ParentIdDesc = 'PARENT_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RowIdAsc = 'ROW_ID_ASC',
@@ -3501,6 +6493,7 @@ export type PostPatch = {
   authorId?: InputMaybe<Scalars['UUID']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  parentId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   taskId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
@@ -3519,14 +6512,31 @@ export type PostToManyEmojiFilter = {
   some?: InputMaybe<EmojiFilter>;
 };
 
+/** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyPostFilter = {
+  /** Aggregates across related `Post` match the filter criteria. */
+  aggregates?: InputMaybe<PostAggregatesFilter>;
+  /** Every related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<PostFilter>;
+  /** No related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<PostFilter>;
+  /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<PostFilter>;
+};
+
 export type Project = Node & {
   __typename?: 'Project';
-  color?: Maybe<Scalars['String']['output']>;
+  /** Reads and enables pagination through a set of `AgentActivity`. */
+  agentActivities: AgentActivityConnection;
+  /** Reads and enables pagination through a set of `AgentSession`. */
+  agentSessions: AgentSessionConnection;
   columnIndex: Scalars['Int']['output'];
   /** Reads and enables pagination through a set of `Column`. */
   columns: ColumnConnection;
   createdAt: Scalars['Datetime']['output'];
   description?: Maybe<Scalars['String']['output']>;
+  /** Reads and enables pagination through a set of `GithubRepository`. */
+  githubRepositories: GithubRepositoryConnection;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   isPublic: Scalars['Boolean']['output'];
@@ -3539,17 +6549,41 @@ export type Project = Node & {
   /** Reads a single `ProjectColumn` that is related to this `Project`. */
   projectColumn?: Maybe<ProjectColumn>;
   projectColumnId: Scalars['UUID']['output'];
-  /** Reads and enables pagination through a set of `ProjectLink`. */
-  projectLinks: ProjectLinkConnection;
   /** Reads and enables pagination through a set of `ProjectProjectLabel`. */
   projectProjectLabels: ProjectProjectLabelConnection;
   rowId: Scalars['UUID']['output'];
   slug: Scalars['String']['output'];
+  /** Reads and enables pagination through a set of `TaskExecution`. */
+  taskExecutions: TaskExecutionConnection;
   /** Reads and enables pagination through a set of `Task`. */
   tasks: TaskConnection;
   updatedAt: Scalars['Datetime']['output'];
   /** Reads and enables pagination through a set of `UserPreference`. */
   userPreferences: UserPreferenceConnection;
+};
+
+
+export type ProjectAgentActivitiesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentActivityCondition>;
+  filter?: InputMaybe<AgentActivityFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentActivityOrderBy>>;
+};
+
+
+export type ProjectAgentSessionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentSessionCondition>;
+  filter?: InputMaybe<AgentSessionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentSessionOrderBy>>;
 };
 
 
@@ -3565,6 +6599,18 @@ export type ProjectColumnsArgs = {
 };
 
 
+export type ProjectGithubRepositoriesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<GithubRepositoryCondition>;
+  filter?: InputMaybe<GithubRepositoryFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<GithubRepositoryOrderBy>>;
+};
+
+
 export type ProjectLabelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -3577,18 +6623,6 @@ export type ProjectLabelsArgs = {
 };
 
 
-export type ProjectProjectLinksArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<ProjectLinkCondition>;
-  filter?: InputMaybe<ProjectLinkFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ProjectLinkOrderBy>>;
-};
-
-
 export type ProjectProjectProjectLabelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -3598,6 +6632,18 @@ export type ProjectProjectProjectLabelsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ProjectProjectLabelOrderBy>>;
+};
+
+
+export type ProjectTaskExecutionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskExecutionCondition>;
+  filter?: InputMaybe<TaskExecutionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskExecutionOrderBy>>;
 };
 
 
@@ -3965,8 +7011,6 @@ export enum ProjectColumnOrderBy {
   ProjectsAverageNextTaskNumberDesc = 'PROJECTS_AVERAGE_NEXT_TASK_NUMBER_DESC',
   ProjectsCountAsc = 'PROJECTS_COUNT_ASC',
   ProjectsCountDesc = 'PROJECTS_COUNT_DESC',
-  ProjectsDistinctCountColorAsc = 'PROJECTS_DISTINCT_COUNT_COLOR_ASC',
-  ProjectsDistinctCountColorDesc = 'PROJECTS_DISTINCT_COUNT_COLOR_DESC',
   ProjectsDistinctCountColumnIndexAsc = 'PROJECTS_DISTINCT_COUNT_COLUMN_INDEX_ASC',
   ProjectsDistinctCountColumnIndexDesc = 'PROJECTS_DISTINCT_COUNT_COLUMN_INDEX_DESC',
   ProjectsDistinctCountCreatedAtAsc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -4082,8 +7126,6 @@ export type ProjectColumnVarianceSampleAggregates = {
 
 /** A condition to be used against `Project` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type ProjectCondition = {
-  /** Checks for equality with the object’s `color` field. */
-  color?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `columnIndex` field. */
   columnIndex?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
@@ -4135,7 +7177,6 @@ export type ProjectConnectionGroupedAggregatesArgs = {
 };
 
 export type ProjectDistinctCountAggregateFilter = {
-  color?: InputMaybe<BigIntFilter>;
   columnIndex?: InputMaybe<BigIntFilter>;
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
@@ -4152,8 +7193,6 @@ export type ProjectDistinctCountAggregateFilter = {
 
 export type ProjectDistinctCountAggregates = {
   __typename?: 'ProjectDistinctCountAggregates';
-  /** Distinct count of color across the matching connection */
-  color?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of columnIndex across the matching connection */
   columnIndex?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of createdAt across the matching connection */
@@ -4191,10 +7230,16 @@ export type ProjectEdge = {
 
 /** A filter to be used against `Project` object types. All fields are combined with a logical ‘and.’ */
 export type ProjectFilter = {
+  /** Filter by the object’s `agentActivities` relation. */
+  agentActivities?: InputMaybe<ProjectToManyAgentActivityFilter>;
+  /** Some related `agentActivities` exist. */
+  agentActivitiesExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `agentSessions` relation. */
+  agentSessions?: InputMaybe<ProjectToManyAgentSessionFilter>;
+  /** Some related `agentSessions` exist. */
+  agentSessionsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<ProjectFilter>>;
-  /** Filter by the object’s `color` field. */
-  color?: InputMaybe<StringFilter>;
   /** Filter by the object’s `columnIndex` field. */
   columnIndex?: InputMaybe<IntFilter>;
   /** Filter by the object’s `columns` relation. */
@@ -4205,6 +7250,10 @@ export type ProjectFilter = {
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `description` field. */
   description?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `githubRepositories` relation. */
+  githubRepositories?: InputMaybe<ProjectToManyGithubRepositoryFilter>;
+  /** Some related `githubRepositories` exist. */
+  githubRepositoriesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `isPublic` field. */
   isPublic?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `labels` relation. */
@@ -4227,10 +7276,6 @@ export type ProjectFilter = {
   projectColumn?: InputMaybe<ProjectColumnFilter>;
   /** Filter by the object’s `projectColumnId` field. */
   projectColumnId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `projectLinks` relation. */
-  projectLinks?: InputMaybe<ProjectToManyProjectLinkFilter>;
-  /** Some related `projectLinks` exist. */
-  projectLinksExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `projectProjectLabels` relation. */
   projectProjectLabels?: InputMaybe<ProjectToManyProjectProjectLabelFilter>;
   /** Some related `projectProjectLabels` exist. */
@@ -4239,6 +7284,10 @@ export type ProjectFilter = {
   rowId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `slug` field. */
   slug?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `taskExecutions` relation. */
+  taskExecutions?: InputMaybe<ProjectToManyTaskExecutionFilter>;
+  /** Some related `taskExecutions` exist. */
+  taskExecutionsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `tasks` relation. */
   tasks?: InputMaybe<ProjectToManyTaskFilter>;
   /** Some related `tasks` exist. */
@@ -4253,7 +7302,6 @@ export type ProjectFilter = {
 
 /** Grouping methods for `Project` for usage during aggregation. */
 export enum ProjectGroupBy {
-  Color = 'COLOR',
   ColumnIndex = 'COLUMN_INDEX',
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
@@ -4351,7 +7399,6 @@ export type ProjectHavingVarianceSampleInput = {
 
 /** An input for mutations affecting `Project` */
 export type ProjectInput = {
-  color?: InputMaybe<Scalars['String']['input']>;
   columnIndex?: InputMaybe<Scalars['Int']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
@@ -4637,382 +7684,6 @@ export type ProjectLabelToManyProjectProjectLabelFilter = {
   some?: InputMaybe<ProjectProjectLabelFilter>;
 };
 
-export type ProjectLink = Node & {
-  __typename?: 'ProjectLink';
-  createdAt: Scalars['Datetime']['output'];
-  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
-  id: Scalars['ID']['output'];
-  order: Scalars['Int']['output'];
-  /** Reads a single `Project` that is related to this `ProjectLink`. */
-  project?: Maybe<Project>;
-  projectId: Scalars['UUID']['output'];
-  rowId: Scalars['UUID']['output'];
-  title?: Maybe<Scalars['String']['output']>;
-  updatedAt: Scalars['Datetime']['output'];
-  url: Scalars['String']['output'];
-};
-
-export type ProjectLinkAggregates = {
-  __typename?: 'ProjectLinkAggregates';
-  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  average?: Maybe<ProjectLinkAverageAggregates>;
-  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  distinctCount?: Maybe<ProjectLinkDistinctCountAggregates>;
-  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  max?: Maybe<ProjectLinkMaxAggregates>;
-  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  min?: Maybe<ProjectLinkMinAggregates>;
-  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  stddevPopulation?: Maybe<ProjectLinkStddevPopulationAggregates>;
-  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  stddevSample?: Maybe<ProjectLinkStddevSampleAggregates>;
-  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  sum?: Maybe<ProjectLinkSumAggregates>;
-  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  variancePopulation?: Maybe<ProjectLinkVariancePopulationAggregates>;
-  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  varianceSample?: Maybe<ProjectLinkVarianceSampleAggregates>;
-};
-
-/** A filter to be used against aggregates of `ProjectLink` object types. */
-export type ProjectLinkAggregatesFilter = {
-  /** Mean average aggregate over matching `ProjectLink` objects. */
-  average?: InputMaybe<ProjectLinkAverageAggregateFilter>;
-  /** Distinct count aggregate over matching `ProjectLink` objects. */
-  distinctCount?: InputMaybe<ProjectLinkDistinctCountAggregateFilter>;
-  /** A filter that must pass for the relevant `ProjectLink` object to be included within the aggregate. */
-  filter?: InputMaybe<ProjectLinkFilter>;
-  /** Maximum aggregate over matching `ProjectLink` objects. */
-  max?: InputMaybe<ProjectLinkMaxAggregateFilter>;
-  /** Minimum aggregate over matching `ProjectLink` objects. */
-  min?: InputMaybe<ProjectLinkMinAggregateFilter>;
-  /** Population standard deviation aggregate over matching `ProjectLink` objects. */
-  stddevPopulation?: InputMaybe<ProjectLinkStddevPopulationAggregateFilter>;
-  /** Sample standard deviation aggregate over matching `ProjectLink` objects. */
-  stddevSample?: InputMaybe<ProjectLinkStddevSampleAggregateFilter>;
-  /** Sum aggregate over matching `ProjectLink` objects. */
-  sum?: InputMaybe<ProjectLinkSumAggregateFilter>;
-  /** Population variance aggregate over matching `ProjectLink` objects. */
-  variancePopulation?: InputMaybe<ProjectLinkVariancePopulationAggregateFilter>;
-  /** Sample variance aggregate over matching `ProjectLink` objects. */
-  varianceSample?: InputMaybe<ProjectLinkVarianceSampleAggregateFilter>;
-};
-
-export type ProjectLinkAverageAggregateFilter = {
-  order?: InputMaybe<BigFloatFilter>;
-};
-
-export type ProjectLinkAverageAggregates = {
-  __typename?: 'ProjectLinkAverageAggregates';
-  /** Mean average of order across the matching connection */
-  order?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-/**
- * A condition to be used against `ProjectLink` object types. All fields are tested
- * for equality and combined with a logical ‘and.’
- */
-export type ProjectLinkCondition = {
-  /** Checks for equality with the object’s `createdAt` field. */
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `order` field. */
-  order?: InputMaybe<Scalars['Int']['input']>;
-  /** Checks for equality with the object’s `projectId` field. */
-  projectId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `rowId` field. */
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  /** Checks for equality with the object’s `title` field. */
-  title?: InputMaybe<Scalars['String']['input']>;
-  /** Checks for equality with the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `url` field. */
-  url?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** A connection to a list of `ProjectLink` values. */
-export type ProjectLinkConnection = {
-  __typename?: 'ProjectLinkConnection';
-  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  aggregates?: Maybe<ProjectLinkAggregates>;
-  /** A list of edges which contains the `ProjectLink` and cursor to aid in pagination. */
-  edges: Array<ProjectLinkEdge>;
-  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  groupedAggregates?: Maybe<Array<ProjectLinkAggregates>>;
-  /** A list of `ProjectLink` objects. */
-  nodes: Array<ProjectLink>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** The count of *all* `ProjectLink` you could get from the connection. */
-  totalCount: Scalars['Int']['output'];
-};
-
-
-/** A connection to a list of `ProjectLink` values. */
-export type ProjectLinkConnectionGroupedAggregatesArgs = {
-  groupBy: Array<ProjectLinkGroupBy>;
-  having?: InputMaybe<ProjectLinkHavingInput>;
-};
-
-export type ProjectLinkDistinctCountAggregateFilter = {
-  createdAt?: InputMaybe<BigIntFilter>;
-  order?: InputMaybe<BigIntFilter>;
-  projectId?: InputMaybe<BigIntFilter>;
-  rowId?: InputMaybe<BigIntFilter>;
-  title?: InputMaybe<BigIntFilter>;
-  updatedAt?: InputMaybe<BigIntFilter>;
-  url?: InputMaybe<BigIntFilter>;
-};
-
-export type ProjectLinkDistinctCountAggregates = {
-  __typename?: 'ProjectLinkDistinctCountAggregates';
-  /** Distinct count of createdAt across the matching connection */
-  createdAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of order across the matching connection */
-  order?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of projectId across the matching connection */
-  projectId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of rowId across the matching connection */
-  rowId?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of title across the matching connection */
-  title?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of updatedAt across the matching connection */
-  updatedAt?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of url across the matching connection */
-  url?: Maybe<Scalars['BigInt']['output']>;
-};
-
-/** A `ProjectLink` edge in the connection. */
-export type ProjectLinkEdge = {
-  __typename?: 'ProjectLinkEdge';
-  /** A cursor for use in pagination. */
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  /** The `ProjectLink` at the end of the edge. */
-  node: ProjectLink;
-};
-
-/** A filter to be used against `ProjectLink` object types. All fields are combined with a logical ‘and.’ */
-export type ProjectLinkFilter = {
-  /** Checks for all expressions in this list. */
-  and?: InputMaybe<Array<ProjectLinkFilter>>;
-  /** Filter by the object’s `createdAt` field. */
-  createdAt?: InputMaybe<DatetimeFilter>;
-  /** Negates the expression. */
-  not?: InputMaybe<ProjectLinkFilter>;
-  /** Checks for any expressions in this list. */
-  or?: InputMaybe<Array<ProjectLinkFilter>>;
-  /** Filter by the object’s `order` field. */
-  order?: InputMaybe<IntFilter>;
-  /** Filter by the object’s `project` relation. */
-  project?: InputMaybe<ProjectFilter>;
-  /** Filter by the object’s `projectId` field. */
-  projectId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `rowId` field. */
-  rowId?: InputMaybe<UuidFilter>;
-  /** Filter by the object’s `title` field. */
-  title?: InputMaybe<StringFilter>;
-  /** Filter by the object’s `updatedAt` field. */
-  updatedAt?: InputMaybe<DatetimeFilter>;
-  /** Filter by the object’s `url` field. */
-  url?: InputMaybe<StringFilter>;
-};
-
-/** Grouping methods for `ProjectLink` for usage during aggregation. */
-export enum ProjectLinkGroupBy {
-  CreatedAt = 'CREATED_AT',
-  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
-  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
-  Order = 'ORDER',
-  ProjectId = 'PROJECT_ID',
-  Title = 'TITLE',
-  UpdatedAt = 'UPDATED_AT',
-  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
-  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
-  Url = 'URL'
-}
-
-export type ProjectLinkHavingAverageInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  order?: InputMaybe<HavingIntFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectLinkHavingDistinctCountInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  order?: InputMaybe<HavingIntFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** Conditions for `ProjectLink` aggregates. */
-export type ProjectLinkHavingInput = {
-  AND?: InputMaybe<Array<ProjectLinkHavingInput>>;
-  OR?: InputMaybe<Array<ProjectLinkHavingInput>>;
-  average?: InputMaybe<ProjectLinkHavingAverageInput>;
-  distinctCount?: InputMaybe<ProjectLinkHavingDistinctCountInput>;
-  max?: InputMaybe<ProjectLinkHavingMaxInput>;
-  min?: InputMaybe<ProjectLinkHavingMinInput>;
-  stddevPopulation?: InputMaybe<ProjectLinkHavingStddevPopulationInput>;
-  stddevSample?: InputMaybe<ProjectLinkHavingStddevSampleInput>;
-  sum?: InputMaybe<ProjectLinkHavingSumInput>;
-  variancePopulation?: InputMaybe<ProjectLinkHavingVariancePopulationInput>;
-  varianceSample?: InputMaybe<ProjectLinkHavingVarianceSampleInput>;
-};
-
-export type ProjectLinkHavingMaxInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  order?: InputMaybe<HavingIntFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectLinkHavingMinInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  order?: InputMaybe<HavingIntFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectLinkHavingStddevPopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  order?: InputMaybe<HavingIntFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectLinkHavingStddevSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  order?: InputMaybe<HavingIntFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectLinkHavingSumInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  order?: InputMaybe<HavingIntFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectLinkHavingVariancePopulationInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  order?: InputMaybe<HavingIntFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-export type ProjectLinkHavingVarianceSampleInput = {
-  createdAt?: InputMaybe<HavingDatetimeFilter>;
-  order?: InputMaybe<HavingIntFilter>;
-  updatedAt?: InputMaybe<HavingDatetimeFilter>;
-};
-
-/** An input for mutations affecting `ProjectLink` */
-export type ProjectLinkInput = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  order?: InputMaybe<Scalars['Int']['input']>;
-  projectId: Scalars['UUID']['input'];
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  url: Scalars['String']['input'];
-};
-
-export type ProjectLinkMaxAggregateFilter = {
-  order?: InputMaybe<IntFilter>;
-};
-
-export type ProjectLinkMaxAggregates = {
-  __typename?: 'ProjectLinkMaxAggregates';
-  /** Maximum of order across the matching connection */
-  order?: Maybe<Scalars['Int']['output']>;
-};
-
-export type ProjectLinkMinAggregateFilter = {
-  order?: InputMaybe<IntFilter>;
-};
-
-export type ProjectLinkMinAggregates = {
-  __typename?: 'ProjectLinkMinAggregates';
-  /** Minimum of order across the matching connection */
-  order?: Maybe<Scalars['Int']['output']>;
-};
-
-/** Methods to use when ordering `ProjectLink`. */
-export enum ProjectLinkOrderBy {
-  CreatedAtAsc = 'CREATED_AT_ASC',
-  CreatedAtDesc = 'CREATED_AT_DESC',
-  Natural = 'NATURAL',
-  OrderAsc = 'ORDER_ASC',
-  OrderDesc = 'ORDER_DESC',
-  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
-  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  ProjectIdAsc = 'PROJECT_ID_ASC',
-  ProjectIdDesc = 'PROJECT_ID_DESC',
-  RowIdAsc = 'ROW_ID_ASC',
-  RowIdDesc = 'ROW_ID_DESC',
-  TitleAsc = 'TITLE_ASC',
-  TitleDesc = 'TITLE_DESC',
-  UpdatedAtAsc = 'UPDATED_AT_ASC',
-  UpdatedAtDesc = 'UPDATED_AT_DESC',
-  UrlAsc = 'URL_ASC',
-  UrlDesc = 'URL_DESC'
-}
-
-/** Represents an update to a `ProjectLink`. Fields that are set will be updated. */
-export type ProjectLinkPatch = {
-  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  order?: InputMaybe<Scalars['Int']['input']>;
-  projectId?: InputMaybe<Scalars['UUID']['input']>;
-  rowId?: InputMaybe<Scalars['UUID']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type ProjectLinkStddevPopulationAggregateFilter = {
-  order?: InputMaybe<BigFloatFilter>;
-};
-
-export type ProjectLinkStddevPopulationAggregates = {
-  __typename?: 'ProjectLinkStddevPopulationAggregates';
-  /** Population standard deviation of order across the matching connection */
-  order?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type ProjectLinkStddevSampleAggregateFilter = {
-  order?: InputMaybe<BigFloatFilter>;
-};
-
-export type ProjectLinkStddevSampleAggregates = {
-  __typename?: 'ProjectLinkStddevSampleAggregates';
-  /** Sample standard deviation of order across the matching connection */
-  order?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type ProjectLinkSumAggregateFilter = {
-  order?: InputMaybe<BigIntFilter>;
-};
-
-export type ProjectLinkSumAggregates = {
-  __typename?: 'ProjectLinkSumAggregates';
-  /** Sum of order across the matching connection */
-  order: Scalars['BigInt']['output'];
-};
-
-export type ProjectLinkVariancePopulationAggregateFilter = {
-  order?: InputMaybe<BigFloatFilter>;
-};
-
-export type ProjectLinkVariancePopulationAggregates = {
-  __typename?: 'ProjectLinkVariancePopulationAggregates';
-  /** Population variance of order across the matching connection */
-  order?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type ProjectLinkVarianceSampleAggregateFilter = {
-  order?: InputMaybe<BigFloatFilter>;
-};
-
-export type ProjectLinkVarianceSampleAggregates = {
-  __typename?: 'ProjectLinkVarianceSampleAggregates';
-  /** Sample variance of order across the matching connection */
-  order?: Maybe<Scalars['BigFloat']['output']>;
-};
-
 export type ProjectMaxAggregateFilter = {
   columnIndex?: InputMaybe<IntFilter>;
   nextTaskNumber?: InputMaybe<IntFilter>;
@@ -5041,8 +7712,78 @@ export type ProjectMinAggregates = {
 
 /** Methods to use when ordering `Project`. */
 export enum ProjectOrderBy {
-  ColorAsc = 'COLOR_ASC',
-  ColorDesc = 'COLOR_DESC',
+  AgentActivitiesCountAsc = 'AGENT_ACTIVITIES_COUNT_ASC',
+  AgentActivitiesCountDesc = 'AGENT_ACTIVITIES_COUNT_DESC',
+  AgentActivitiesDistinctCountAffectedTaskIdsAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_AFFECTED_TASK_IDS_ASC',
+  AgentActivitiesDistinctCountAffectedTaskIdsDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_AFFECTED_TASK_IDS_DESC',
+  AgentActivitiesDistinctCountApprovalStatusAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_APPROVAL_STATUS_ASC',
+  AgentActivitiesDistinctCountApprovalStatusDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_APPROVAL_STATUS_DESC',
+  AgentActivitiesDistinctCountCreatedAtAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_CREATED_AT_ASC',
+  AgentActivitiesDistinctCountCreatedAtDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_CREATED_AT_DESC',
+  AgentActivitiesDistinctCountErrorMessageAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ERROR_MESSAGE_ASC',
+  AgentActivitiesDistinctCountErrorMessageDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ERROR_MESSAGE_DESC',
+  AgentActivitiesDistinctCountOrganizationIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AgentActivitiesDistinctCountOrganizationIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AgentActivitiesDistinctCountProjectIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_PROJECT_ID_ASC',
+  AgentActivitiesDistinctCountProjectIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_PROJECT_ID_DESC',
+  AgentActivitiesDistinctCountRequiresApprovalAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_REQUIRES_APPROVAL_ASC',
+  AgentActivitiesDistinctCountRequiresApprovalDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_REQUIRES_APPROVAL_DESC',
+  AgentActivitiesDistinctCountRowIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ROW_ID_ASC',
+  AgentActivitiesDistinctCountRowIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ROW_ID_DESC',
+  AgentActivitiesDistinctCountSessionIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SESSION_ID_ASC',
+  AgentActivitiesDistinctCountSessionIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SESSION_ID_DESC',
+  AgentActivitiesDistinctCountSnapshotBeforeAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SNAPSHOT_BEFORE_ASC',
+  AgentActivitiesDistinctCountSnapshotBeforeDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SNAPSHOT_BEFORE_DESC',
+  AgentActivitiesDistinctCountStatusAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_STATUS_ASC',
+  AgentActivitiesDistinctCountStatusDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_STATUS_DESC',
+  AgentActivitiesDistinctCountToolInputAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_INPUT_ASC',
+  AgentActivitiesDistinctCountToolInputDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_INPUT_DESC',
+  AgentActivitiesDistinctCountToolNameAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_NAME_ASC',
+  AgentActivitiesDistinctCountToolNameDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_NAME_DESC',
+  AgentActivitiesDistinctCountToolOutputAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_OUTPUT_ASC',
+  AgentActivitiesDistinctCountToolOutputDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_OUTPUT_DESC',
+  AgentActivitiesDistinctCountUserIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_USER_ID_ASC',
+  AgentActivitiesDistinctCountUserIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_USER_ID_DESC',
+  AgentSessionsAverageToolCallCountAsc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsAverageToolCallCountDesc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_DESC',
+  AgentSessionsCountAsc = 'AGENT_SESSIONS_COUNT_ASC',
+  AgentSessionsCountDesc = 'AGENT_SESSIONS_COUNT_DESC',
+  AgentSessionsDistinctCountCreatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  AgentSessionsDistinctCountCreatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  AgentSessionsDistinctCountMessagesAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_ASC',
+  AgentSessionsDistinctCountMessagesDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_DESC',
+  AgentSessionsDistinctCountMetadataAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_METADATA_ASC',
+  AgentSessionsDistinctCountMetadataDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_METADATA_DESC',
+  AgentSessionsDistinctCountOrganizationIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AgentSessionsDistinctCountOrganizationIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AgentSessionsDistinctCountProjectIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  AgentSessionsDistinctCountProjectIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  AgentSessionsDistinctCountRowIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  AgentSessionsDistinctCountRowIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  AgentSessionsDistinctCountTitleAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TITLE_ASC',
+  AgentSessionsDistinctCountTitleDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TITLE_DESC',
+  AgentSessionsDistinctCountToolCallCountAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_ASC',
+  AgentSessionsDistinctCountToolCallCountDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_DESC',
+  AgentSessionsDistinctCountTypeAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_ASC',
+  AgentSessionsDistinctCountTypeDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_DESC',
+  AgentSessionsDistinctCountUpdatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  AgentSessionsDistinctCountUpdatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  AgentSessionsDistinctCountUserIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_ASC',
+  AgentSessionsDistinctCountUserIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_DESC',
+  AgentSessionsMaxToolCallCountAsc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_ASC',
+  AgentSessionsMaxToolCallCountDesc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_DESC',
+  AgentSessionsMinToolCallCountAsc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_ASC',
+  AgentSessionsMinToolCallCountDesc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_DESC',
+  AgentSessionsStddevPopulationToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_ASC',
+  AgentSessionsStddevPopulationToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_DESC',
+  AgentSessionsStddevSampleToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsStddevSampleToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_DESC',
+  AgentSessionsSumToolCallCountAsc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_ASC',
+  AgentSessionsSumToolCallCountDesc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_DESC',
+  AgentSessionsVariancePopulationToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_ASC',
+  AgentSessionsVariancePopulationToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_DESC',
+  AgentSessionsVarianceSampleToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsVarianceSampleToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_DESC',
   ColumnsAverageIndexAsc = 'COLUMNS_AVERAGE_INDEX_ASC',
   ColumnsAverageIndexDesc = 'COLUMNS_AVERAGE_INDEX_DESC',
   ColumnsCountAsc = 'COLUMNS_COUNT_ASC',
@@ -5081,6 +7822,42 @@ export enum ProjectOrderBy {
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
   DescriptionDesc = 'DESCRIPTION_DESC',
+  GithubRepositoriesAverageRepoIdAsc = 'GITHUB_REPOSITORIES_AVERAGE_REPO_ID_ASC',
+  GithubRepositoriesAverageRepoIdDesc = 'GITHUB_REPOSITORIES_AVERAGE_REPO_ID_DESC',
+  GithubRepositoriesCountAsc = 'GITHUB_REPOSITORIES_COUNT_ASC',
+  GithubRepositoriesCountDesc = 'GITHUB_REPOSITORIES_COUNT_DESC',
+  GithubRepositoriesDistinctCountCreatedAtAsc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_CREATED_AT_ASC',
+  GithubRepositoriesDistinctCountCreatedAtDesc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_CREATED_AT_DESC',
+  GithubRepositoriesDistinctCountDefaultBranchAsc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_DEFAULT_BRANCH_ASC',
+  GithubRepositoriesDistinctCountDefaultBranchDesc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_DEFAULT_BRANCH_DESC',
+  GithubRepositoriesDistinctCountEnabledAsc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_ENABLED_ASC',
+  GithubRepositoriesDistinctCountEnabledDesc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_ENABLED_DESC',
+  GithubRepositoriesDistinctCountOrganizationIdAsc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  GithubRepositoriesDistinctCountOrganizationIdDesc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  GithubRepositoriesDistinctCountProjectIdAsc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_PROJECT_ID_ASC',
+  GithubRepositoriesDistinctCountProjectIdDesc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_PROJECT_ID_DESC',
+  GithubRepositoriesDistinctCountRepoFullNameAsc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_REPO_FULL_NAME_ASC',
+  GithubRepositoriesDistinctCountRepoFullNameDesc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_REPO_FULL_NAME_DESC',
+  GithubRepositoriesDistinctCountRepoIdAsc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_REPO_ID_ASC',
+  GithubRepositoriesDistinctCountRepoIdDesc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_REPO_ID_DESC',
+  GithubRepositoriesDistinctCountRowIdAsc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_ROW_ID_ASC',
+  GithubRepositoriesDistinctCountRowIdDesc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_ROW_ID_DESC',
+  GithubRepositoriesDistinctCountUpdatedAtAsc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_UPDATED_AT_ASC',
+  GithubRepositoriesDistinctCountUpdatedAtDesc = 'GITHUB_REPOSITORIES_DISTINCT_COUNT_UPDATED_AT_DESC',
+  GithubRepositoriesMaxRepoIdAsc = 'GITHUB_REPOSITORIES_MAX_REPO_ID_ASC',
+  GithubRepositoriesMaxRepoIdDesc = 'GITHUB_REPOSITORIES_MAX_REPO_ID_DESC',
+  GithubRepositoriesMinRepoIdAsc = 'GITHUB_REPOSITORIES_MIN_REPO_ID_ASC',
+  GithubRepositoriesMinRepoIdDesc = 'GITHUB_REPOSITORIES_MIN_REPO_ID_DESC',
+  GithubRepositoriesStddevPopulationRepoIdAsc = 'GITHUB_REPOSITORIES_STDDEV_POPULATION_REPO_ID_ASC',
+  GithubRepositoriesStddevPopulationRepoIdDesc = 'GITHUB_REPOSITORIES_STDDEV_POPULATION_REPO_ID_DESC',
+  GithubRepositoriesStddevSampleRepoIdAsc = 'GITHUB_REPOSITORIES_STDDEV_SAMPLE_REPO_ID_ASC',
+  GithubRepositoriesStddevSampleRepoIdDesc = 'GITHUB_REPOSITORIES_STDDEV_SAMPLE_REPO_ID_DESC',
+  GithubRepositoriesSumRepoIdAsc = 'GITHUB_REPOSITORIES_SUM_REPO_ID_ASC',
+  GithubRepositoriesSumRepoIdDesc = 'GITHUB_REPOSITORIES_SUM_REPO_ID_DESC',
+  GithubRepositoriesVariancePopulationRepoIdAsc = 'GITHUB_REPOSITORIES_VARIANCE_POPULATION_REPO_ID_ASC',
+  GithubRepositoriesVariancePopulationRepoIdDesc = 'GITHUB_REPOSITORIES_VARIANCE_POPULATION_REPO_ID_DESC',
+  GithubRepositoriesVarianceSampleRepoIdAsc = 'GITHUB_REPOSITORIES_VARIANCE_SAMPLE_REPO_ID_ASC',
+  GithubRepositoriesVarianceSampleRepoIdDesc = 'GITHUB_REPOSITORIES_VARIANCE_SAMPLE_REPO_ID_DESC',
   IsPublicAsc = 'IS_PUBLIC_ASC',
   IsPublicDesc = 'IS_PUBLIC_DESC',
   LabelsCountAsc = 'LABELS_COUNT_ASC',
@@ -5114,38 +7891,6 @@ export enum ProjectOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   ProjectColumnIdAsc = 'PROJECT_COLUMN_ID_ASC',
   ProjectColumnIdDesc = 'PROJECT_COLUMN_ID_DESC',
-  ProjectLinksAverageOrderAsc = 'PROJECT_LINKS_AVERAGE_ORDER_ASC',
-  ProjectLinksAverageOrderDesc = 'PROJECT_LINKS_AVERAGE_ORDER_DESC',
-  ProjectLinksCountAsc = 'PROJECT_LINKS_COUNT_ASC',
-  ProjectLinksCountDesc = 'PROJECT_LINKS_COUNT_DESC',
-  ProjectLinksDistinctCountCreatedAtAsc = 'PROJECT_LINKS_DISTINCT_COUNT_CREATED_AT_ASC',
-  ProjectLinksDistinctCountCreatedAtDesc = 'PROJECT_LINKS_DISTINCT_COUNT_CREATED_AT_DESC',
-  ProjectLinksDistinctCountOrderAsc = 'PROJECT_LINKS_DISTINCT_COUNT_ORDER_ASC',
-  ProjectLinksDistinctCountOrderDesc = 'PROJECT_LINKS_DISTINCT_COUNT_ORDER_DESC',
-  ProjectLinksDistinctCountProjectIdAsc = 'PROJECT_LINKS_DISTINCT_COUNT_PROJECT_ID_ASC',
-  ProjectLinksDistinctCountProjectIdDesc = 'PROJECT_LINKS_DISTINCT_COUNT_PROJECT_ID_DESC',
-  ProjectLinksDistinctCountRowIdAsc = 'PROJECT_LINKS_DISTINCT_COUNT_ROW_ID_ASC',
-  ProjectLinksDistinctCountRowIdDesc = 'PROJECT_LINKS_DISTINCT_COUNT_ROW_ID_DESC',
-  ProjectLinksDistinctCountTitleAsc = 'PROJECT_LINKS_DISTINCT_COUNT_TITLE_ASC',
-  ProjectLinksDistinctCountTitleDesc = 'PROJECT_LINKS_DISTINCT_COUNT_TITLE_DESC',
-  ProjectLinksDistinctCountUpdatedAtAsc = 'PROJECT_LINKS_DISTINCT_COUNT_UPDATED_AT_ASC',
-  ProjectLinksDistinctCountUpdatedAtDesc = 'PROJECT_LINKS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  ProjectLinksDistinctCountUrlAsc = 'PROJECT_LINKS_DISTINCT_COUNT_URL_ASC',
-  ProjectLinksDistinctCountUrlDesc = 'PROJECT_LINKS_DISTINCT_COUNT_URL_DESC',
-  ProjectLinksMaxOrderAsc = 'PROJECT_LINKS_MAX_ORDER_ASC',
-  ProjectLinksMaxOrderDesc = 'PROJECT_LINKS_MAX_ORDER_DESC',
-  ProjectLinksMinOrderAsc = 'PROJECT_LINKS_MIN_ORDER_ASC',
-  ProjectLinksMinOrderDesc = 'PROJECT_LINKS_MIN_ORDER_DESC',
-  ProjectLinksStddevPopulationOrderAsc = 'PROJECT_LINKS_STDDEV_POPULATION_ORDER_ASC',
-  ProjectLinksStddevPopulationOrderDesc = 'PROJECT_LINKS_STDDEV_POPULATION_ORDER_DESC',
-  ProjectLinksStddevSampleOrderAsc = 'PROJECT_LINKS_STDDEV_SAMPLE_ORDER_ASC',
-  ProjectLinksStddevSampleOrderDesc = 'PROJECT_LINKS_STDDEV_SAMPLE_ORDER_DESC',
-  ProjectLinksSumOrderAsc = 'PROJECT_LINKS_SUM_ORDER_ASC',
-  ProjectLinksSumOrderDesc = 'PROJECT_LINKS_SUM_ORDER_DESC',
-  ProjectLinksVariancePopulationOrderAsc = 'PROJECT_LINKS_VARIANCE_POPULATION_ORDER_ASC',
-  ProjectLinksVariancePopulationOrderDesc = 'PROJECT_LINKS_VARIANCE_POPULATION_ORDER_DESC',
-  ProjectLinksVarianceSampleOrderAsc = 'PROJECT_LINKS_VARIANCE_SAMPLE_ORDER_ASC',
-  ProjectLinksVarianceSampleOrderDesc = 'PROJECT_LINKS_VARIANCE_SAMPLE_ORDER_DESC',
   ProjectProjectLabelsCountAsc = 'PROJECT_PROJECT_LABELS_COUNT_ASC',
   ProjectProjectLabelsCountDesc = 'PROJECT_PROJECT_LABELS_COUNT_DESC',
   ProjectProjectLabelsDistinctCountCreatedAtAsc = 'PROJECT_PROJECT_LABELS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -5216,10 +7961,34 @@ export enum ProjectOrderBy {
   TasksVarianceSampleColumnIndexDesc = 'TASKS_VARIANCE_SAMPLE_COLUMN_INDEX_DESC',
   TasksVarianceSampleNumberAsc = 'TASKS_VARIANCE_SAMPLE_NUMBER_ASC',
   TasksVarianceSampleNumberDesc = 'TASKS_VARIANCE_SAMPLE_NUMBER_DESC',
+  TaskExecutionsCountAsc = 'TASK_EXECUTIONS_COUNT_ASC',
+  TaskExecutionsCountDesc = 'TASK_EXECUTIONS_COUNT_DESC',
+  TaskExecutionsDistinctCountCreatedAtAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  TaskExecutionsDistinctCountCreatedAtDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  TaskExecutionsDistinctCountMetadataAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_METADATA_ASC',
+  TaskExecutionsDistinctCountMetadataDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_METADATA_DESC',
+  TaskExecutionsDistinctCountOrganizationIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  TaskExecutionsDistinctCountOrganizationIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  TaskExecutionsDistinctCountProjectIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  TaskExecutionsDistinctCountProjectIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  TaskExecutionsDistinctCountRowIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  TaskExecutionsDistinctCountRowIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  TaskExecutionsDistinctCountSessionIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_SESSION_ID_ASC',
+  TaskExecutionsDistinctCountSessionIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_SESSION_ID_DESC',
+  TaskExecutionsDistinctCountStatusAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_STATUS_ASC',
+  TaskExecutionsDistinctCountStatusDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_STATUS_DESC',
+  TaskExecutionsDistinctCountTaskIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_TASK_ID_ASC',
+  TaskExecutionsDistinctCountTaskIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_TASK_ID_DESC',
+  TaskExecutionsDistinctCountTriggeredByAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_TRIGGERED_BY_ASC',
+  TaskExecutionsDistinctCountTriggeredByDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_TRIGGERED_BY_DESC',
+  TaskExecutionsDistinctCountUpdatedAtAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  TaskExecutionsDistinctCountUpdatedAtDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   UserPreferencesCountAsc = 'USER_PREFERENCES_COUNT_ASC',
   UserPreferencesCountDesc = 'USER_PREFERENCES_COUNT_DESC',
+  UserPreferencesDistinctCountColorAsc = 'USER_PREFERENCES_DISTINCT_COUNT_COLOR_ASC',
+  UserPreferencesDistinctCountColorDesc = 'USER_PREFERENCES_DISTINCT_COUNT_COLOR_DESC',
   UserPreferencesDistinctCountCreatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_ASC',
   UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
   UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
@@ -5238,7 +8007,6 @@ export enum ProjectOrderBy {
 
 /** Represents an update to a `Project`. Fields that are set will be updated. */
 export type ProjectPatch = {
-  color?: InputMaybe<Scalars['String']['input']>;
   columnIndex?: InputMaybe<Scalars['Int']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
@@ -5489,6 +8257,30 @@ export type ProjectSumAggregates = {
   nextTaskNumber: Scalars['BigInt']['output'];
 };
 
+/** A filter to be used against many `AgentActivity` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyAgentActivityFilter = {
+  /** Aggregates across related `AgentActivity` match the filter criteria. */
+  aggregates?: InputMaybe<AgentActivityAggregatesFilter>;
+  /** Every related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AgentActivityFilter>;
+  /** No related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AgentActivityFilter>;
+  /** Some related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AgentActivityFilter>;
+};
+
+/** A filter to be used against many `AgentSession` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyAgentSessionFilter = {
+  /** Aggregates across related `AgentSession` match the filter criteria. */
+  aggregates?: InputMaybe<AgentSessionAggregatesFilter>;
+  /** Every related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AgentSessionFilter>;
+  /** No related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AgentSessionFilter>;
+  /** Some related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AgentSessionFilter>;
+};
+
 /** A filter to be used against many `Column` object types. All fields are combined with a logical ‘and.’ */
 export type ProjectToManyColumnFilter = {
   /** Aggregates across related `Column` match the filter criteria. */
@@ -5499,6 +8291,18 @@ export type ProjectToManyColumnFilter = {
   none?: InputMaybe<ColumnFilter>;
   /** Some related `Column` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<ColumnFilter>;
+};
+
+/** A filter to be used against many `GithubRepository` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyGithubRepositoryFilter = {
+  /** Aggregates across related `GithubRepository` match the filter criteria. */
+  aggregates?: InputMaybe<GithubRepositoryAggregatesFilter>;
+  /** Every related `GithubRepository` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<GithubRepositoryFilter>;
+  /** No related `GithubRepository` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<GithubRepositoryFilter>;
+  /** Some related `GithubRepository` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<GithubRepositoryFilter>;
 };
 
 /** A filter to be used against many `Label` object types. All fields are combined with a logical ‘and.’ */
@@ -5513,18 +8317,6 @@ export type ProjectToManyLabelFilter = {
   some?: InputMaybe<LabelFilter>;
 };
 
-/** A filter to be used against many `ProjectLink` object types. All fields are combined with a logical ‘and.’ */
-export type ProjectToManyProjectLinkFilter = {
-  /** Aggregates across related `ProjectLink` match the filter criteria. */
-  aggregates?: InputMaybe<ProjectLinkAggregatesFilter>;
-  /** Every related `ProjectLink` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  every?: InputMaybe<ProjectLinkFilter>;
-  /** No related `ProjectLink` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  none?: InputMaybe<ProjectLinkFilter>;
-  /** Some related `ProjectLink` matches the filter criteria. All fields are combined with a logical ‘and.’ */
-  some?: InputMaybe<ProjectLinkFilter>;
-};
-
 /** A filter to be used against many `ProjectProjectLabel` object types. All fields are combined with a logical ‘and.’ */
 export type ProjectToManyProjectProjectLabelFilter = {
   /** Aggregates across related `ProjectProjectLabel` match the filter criteria. */
@@ -5535,6 +8327,18 @@ export type ProjectToManyProjectProjectLabelFilter = {
   none?: InputMaybe<ProjectProjectLabelFilter>;
   /** Some related `ProjectProjectLabel` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<ProjectProjectLabelFilter>;
+};
+
+/** A filter to be used against many `TaskExecution` object types. All fields are combined with a logical ‘and.’ */
+export type ProjectToManyTaskExecutionFilter = {
+  /** Aggregates across related `TaskExecution` match the filter criteria. */
+  aggregates?: InputMaybe<TaskExecutionAggregatesFilter>;
+  /** Every related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<TaskExecutionFilter>;
+  /** No related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<TaskExecutionFilter>;
+  /** Some related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<TaskExecutionFilter>;
 };
 
 /** A filter to be used against many `Task` object types. All fields are combined with a logical ‘and.’ */
@@ -5590,6 +8394,32 @@ export type ProjectVarianceSampleAggregates = {
 /** The root query type which gives access points into the data universe. */
 export type Query = Node & {
   __typename?: 'Query';
+  /** Reads and enables pagination through a set of `AgentActivity`. */
+  agentActivities?: Maybe<AgentActivityConnection>;
+  /** Get a single `AgentActivity`. */
+  agentActivity?: Maybe<AgentActivity>;
+  /** Reads a single `AgentActivity` using its globally unique `ID`. */
+  agentActivityById?: Maybe<AgentActivity>;
+  /** Get a single `AgentConfig`. */
+  agentConfig?: Maybe<AgentConfig>;
+  /** Reads a single `AgentConfig` using its globally unique `ID`. */
+  agentConfigById?: Maybe<AgentConfig>;
+  /** Get a single `AgentConfig`. */
+  agentConfigByOrganizationId?: Maybe<AgentConfig>;
+  /** Reads and enables pagination through a set of `AgentConfig`. */
+  agentConfigs?: Maybe<AgentConfigConnection>;
+  /** Get a single `AgentPersona`. */
+  agentPersona?: Maybe<AgentPersona>;
+  /** Reads a single `AgentPersona` using its globally unique `ID`. */
+  agentPersonaById?: Maybe<AgentPersona>;
+  /** Reads and enables pagination through a set of `AgentPersona`. */
+  agentPersonas?: Maybe<AgentPersonaConnection>;
+  /** Get a single `AgentSession`. */
+  agentSession?: Maybe<AgentSession>;
+  /** Reads a single `AgentSession` using its globally unique `ID`. */
+  agentSessionById?: Maybe<AgentSession>;
+  /** Reads and enables pagination through a set of `AgentSession`. */
+  agentSessions?: Maybe<AgentSessionConnection>;
   /** Get a single `Assignee`. */
   assignee?: Maybe<Assignee>;
   /** Reads a single `Assignee` using its globally unique `ID`. */
@@ -5610,6 +8440,18 @@ export type Query = Node & {
   emojiById?: Maybe<Emoji>;
   /** Reads and enables pagination through a set of `Emoji`. */
   emojis?: Maybe<EmojiConnection>;
+  /** Get a single `GithubInstallation`. */
+  githubInstallation?: Maybe<GithubInstallation>;
+  /** Reads a single `GithubInstallation` using its globally unique `ID`. */
+  githubInstallationById?: Maybe<GithubInstallation>;
+  /** Reads and enables pagination through a set of `GithubInstallation`. */
+  githubInstallations?: Maybe<GithubInstallationConnection>;
+  /** Reads and enables pagination through a set of `GithubRepository`. */
+  githubRepositories?: Maybe<GithubRepositoryConnection>;
+  /** Get a single `GithubRepository`. */
+  githubRepository?: Maybe<GithubRepository>;
+  /** Reads a single `GithubRepository` using its globally unique `ID`. */
+  githubRepositoryById?: Maybe<GithubRepository>;
   /** The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`. */
   id: Scalars['ID']['output'];
   /** Get a single `Label`. */
@@ -5649,12 +8491,6 @@ export type Query = Node & {
   projectLabelById?: Maybe<ProjectLabel>;
   /** Reads and enables pagination through a set of `ProjectLabel`. */
   projectLabels?: Maybe<ProjectLabelConnection>;
-  /** Get a single `ProjectLink`. */
-  projectLink?: Maybe<ProjectLink>;
-  /** Reads a single `ProjectLink` using its globally unique `ID`. */
-  projectLinkById?: Maybe<ProjectLink>;
-  /** Reads and enables pagination through a set of `ProjectLink`. */
-  projectLinks?: Maybe<ProjectLinkConnection>;
   /** Get a single `ProjectProjectLabel`. */
   projectProjectLabel?: Maybe<ProjectProjectLabel>;
   /** Reads a single `ProjectProjectLabel` using its globally unique `ID`. */
@@ -5682,6 +8518,12 @@ export type Query = Node & {
   taskById?: Maybe<Task>;
   /** Get a single `Task`. */
   taskByProjectIdAndNumber?: Maybe<Task>;
+  /** Get a single `TaskExecution`. */
+  taskExecution?: Maybe<TaskExecution>;
+  /** Reads a single `TaskExecution` using its globally unique `ID`. */
+  taskExecutionById?: Maybe<TaskExecution>;
+  /** Reads and enables pagination through a set of `TaskExecution`. */
+  taskExecutions?: Maybe<TaskExecutionConnection>;
   /** Get a single `TaskLabel`. */
   taskLabel?: Maybe<TaskLabel>;
   /** Reads a single `TaskLabel` using its globally unique `ID`. */
@@ -5710,6 +8552,112 @@ export type Query = Node & {
   userPreferences?: Maybe<UserPreferenceConnection>;
   /** Reads and enables pagination through a set of `User`. */
   users?: Maybe<UserConnection>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentActivitiesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentActivityCondition>;
+  filter?: InputMaybe<AgentActivityFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentActivityOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentActivityArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentActivityByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentConfigArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentConfigByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentConfigByOrganizationIdArgs = {
+  organizationId: Scalars['String']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentConfigsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentConfigCondition>;
+  filter?: InputMaybe<AgentConfigFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentConfigOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentPersonaArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentPersonaByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentPersonasArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentPersonaCondition>;
+  filter?: InputMaybe<AgentPersonaFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentPersonaOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentSessionArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentSessionByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAgentSessionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentSessionCondition>;
+  filter?: InputMaybe<AgentSessionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentSessionOrderBy>>;
 };
 
 
@@ -5793,6 +8741,56 @@ export type QueryEmojisArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<EmojiOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryGithubInstallationArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryGithubInstallationByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryGithubInstallationsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<GithubInstallationCondition>;
+  filter?: InputMaybe<GithubInstallationFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<GithubInstallationOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryGithubRepositoriesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<GithubRepositoryCondition>;
+  filter?: InputMaybe<GithubRepositoryFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<GithubRepositoryOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryGithubRepositoryArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryGithubRepositoryByIdArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -5922,31 +8920,6 @@ export type QueryProjectLabelsArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
-export type QueryProjectLinkArgs = {
-  rowId: Scalars['UUID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryProjectLinkByIdArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-/** The root query type which gives access points into the data universe. */
-export type QueryProjectLinksArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  condition?: InputMaybe<ProjectLinkCondition>;
-  filter?: InputMaybe<ProjectLinkFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ProjectLinkOrderBy>>;
-};
-
-
-/** The root query type which gives access points into the data universe. */
 export type QueryProjectProjectLabelArgs = {
   projectId: Scalars['UUID']['input'];
   projectLabelId: Scalars['UUID']['input'];
@@ -6032,6 +9005,31 @@ export type QueryTaskByIdArgs = {
 export type QueryTaskByProjectIdAndNumberArgs = {
   number: Scalars['Int']['input'];
   projectId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTaskExecutionArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTaskExecutionByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTaskExecutionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskExecutionCondition>;
+  filter?: InputMaybe<TaskExecutionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskExecutionOrderBy>>;
 };
 
 
@@ -6556,6 +9554,8 @@ export type Task = Node & {
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
   rowId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `TaskExecution`. */
+  taskExecutions: TaskExecutionConnection;
   /** Reads and enables pagination through a set of `TaskLabel`. */
   taskLabels: TaskLabelConnection;
   updatedAt: Scalars['Datetime']['output'];
@@ -6583,6 +9583,18 @@ export type TaskPostsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<PostOrderBy>>;
+};
+
+
+export type TaskTaskExecutionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskExecutionCondition>;
+  filter?: InputMaybe<TaskExecutionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskExecutionOrderBy>>;
 };
 
 
@@ -6761,6 +9773,308 @@ export type TaskEdge = {
   node: Task;
 };
 
+export type TaskExecution = Node & {
+  __typename?: 'TaskExecution';
+  createdAt: Scalars['Datetime']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  metadata: Scalars['JSON']['output'];
+  organizationId: Scalars['String']['output'];
+  /** Reads a single `Project` that is related to this `TaskExecution`. */
+  project?: Maybe<Project>;
+  projectId: Scalars['UUID']['output'];
+  rowId: Scalars['UUID']['output'];
+  /** Reads a single `AgentSession` that is related to this `TaskExecution`. */
+  session?: Maybe<AgentSession>;
+  sessionId?: Maybe<Scalars['UUID']['output']>;
+  status: Scalars['String']['output'];
+  /** Reads a single `Task` that is related to this `TaskExecution`. */
+  task?: Maybe<Task>;
+  taskId: Scalars['UUID']['output'];
+  triggeredBy: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+  /** Reads a single `User` that is related to this `TaskExecution`. */
+  user?: Maybe<User>;
+};
+
+export type TaskExecutionAggregates = {
+  __typename?: 'TaskExecutionAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<TaskExecutionDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `TaskExecution` object types. */
+export type TaskExecutionAggregatesFilter = {
+  /** Distinct count aggregate over matching `TaskExecution` objects. */
+  distinctCount?: InputMaybe<TaskExecutionDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `TaskExecution` object to be included within the aggregate. */
+  filter?: InputMaybe<TaskExecutionFilter>;
+};
+
+/**
+ * A condition to be used against `TaskExecution` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type TaskExecutionCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `projectId` field. */
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `sessionId` field. */
+  sessionId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `taskId` field. */
+  taskId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `triggeredBy` field. */
+  triggeredBy?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `TaskExecution` values. */
+export type TaskExecutionConnection = {
+  __typename?: 'TaskExecutionConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<TaskExecutionAggregates>;
+  /** A list of edges which contains the `TaskExecution` and cursor to aid in pagination. */
+  edges: Array<TaskExecutionEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<TaskExecutionAggregates>>;
+  /** A list of `TaskExecution` objects. */
+  nodes: Array<TaskExecution>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `TaskExecution` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `TaskExecution` values. */
+export type TaskExecutionConnectionGroupedAggregatesArgs = {
+  groupBy: Array<TaskExecutionGroupBy>;
+  having?: InputMaybe<TaskExecutionHavingInput>;
+};
+
+export type TaskExecutionDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  metadata?: InputMaybe<BigIntFilter>;
+  organizationId?: InputMaybe<BigIntFilter>;
+  projectId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  sessionId?: InputMaybe<BigIntFilter>;
+  status?: InputMaybe<BigIntFilter>;
+  taskId?: InputMaybe<BigIntFilter>;
+  triggeredBy?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type TaskExecutionDistinctCountAggregates = {
+  __typename?: 'TaskExecutionDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of metadata across the matching connection */
+  metadata?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of projectId across the matching connection */
+  projectId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of sessionId across the matching connection */
+  sessionId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of status across the matching connection */
+  status?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of taskId across the matching connection */
+  taskId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of triggeredBy across the matching connection */
+  triggeredBy?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `TaskExecution` edge in the connection. */
+export type TaskExecutionEdge = {
+  __typename?: 'TaskExecutionEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `TaskExecution` at the end of the edge. */
+  node: TaskExecution;
+};
+
+/** A filter to be used against `TaskExecution` object types. All fields are combined with a logical ‘and.’ */
+export type TaskExecutionFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<TaskExecutionFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<TaskExecutionFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<TaskExecutionFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `project` relation. */
+  project?: InputMaybe<ProjectFilter>;
+  /** Filter by the object’s `projectId` field. */
+  projectId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `session` relation. */
+  session?: InputMaybe<AgentSessionFilter>;
+  /** A related `session` exists. */
+  sessionExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `sessionId` field. */
+  sessionId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `status` field. */
+  status?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `task` relation. */
+  task?: InputMaybe<TaskFilter>;
+  /** Filter by the object’s `taskId` field. */
+  taskId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `triggeredBy` field. */
+  triggeredBy?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+};
+
+/** Grouping methods for `TaskExecution` for usage during aggregation. */
+export enum TaskExecutionGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Metadata = 'METADATA',
+  OrganizationId = 'ORGANIZATION_ID',
+  ProjectId = 'PROJECT_ID',
+  SessionId = 'SESSION_ID',
+  Status = 'STATUS',
+  TaskId = 'TASK_ID',
+  TriggeredBy = 'TRIGGERED_BY',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type TaskExecutionHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `TaskExecution` aggregates. */
+export type TaskExecutionHavingInput = {
+  AND?: InputMaybe<Array<TaskExecutionHavingInput>>;
+  OR?: InputMaybe<Array<TaskExecutionHavingInput>>;
+  average?: InputMaybe<TaskExecutionHavingAverageInput>;
+  distinctCount?: InputMaybe<TaskExecutionHavingDistinctCountInput>;
+  max?: InputMaybe<TaskExecutionHavingMaxInput>;
+  min?: InputMaybe<TaskExecutionHavingMinInput>;
+  stddevPopulation?: InputMaybe<TaskExecutionHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<TaskExecutionHavingStddevSampleInput>;
+  sum?: InputMaybe<TaskExecutionHavingSumInput>;
+  variancePopulation?: InputMaybe<TaskExecutionHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<TaskExecutionHavingVarianceSampleInput>;
+};
+
+export type TaskExecutionHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `TaskExecution` */
+export type TaskExecutionInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  metadata?: InputMaybe<Scalars['JSON']['input']>;
+  organizationId: Scalars['String']['input'];
+  projectId: Scalars['UUID']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sessionId?: InputMaybe<Scalars['UUID']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  taskId: Scalars['UUID']['input'];
+  triggeredBy: Scalars['UUID']['input'];
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** Methods to use when ordering `TaskExecution`. */
+export enum TaskExecutionOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  ProjectIdAsc = 'PROJECT_ID_ASC',
+  ProjectIdDesc = 'PROJECT_ID_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  SessionIdAsc = 'SESSION_ID_ASC',
+  SessionIdDesc = 'SESSION_ID_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  TaskIdAsc = 'TASK_ID_ASC',
+  TaskIdDesc = 'TASK_ID_DESC',
+  TriggeredByAsc = 'TRIGGERED_BY_ASC',
+  TriggeredByDesc = 'TRIGGERED_BY_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `TaskExecution`. Fields that are set will be updated. */
+export type TaskExecutionPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  metadata?: InputMaybe<Scalars['JSON']['input']>;
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  projectId?: InputMaybe<Scalars['UUID']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sessionId?: InputMaybe<Scalars['UUID']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  taskId?: InputMaybe<Scalars['UUID']['input']>;
+  triggeredBy?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
 /** A filter to be used against `Task` object types. All fields are combined with a logical ‘and.’ */
 export type TaskFilter = {
   /** Checks for all expressions in this list. */
@@ -6807,6 +10121,10 @@ export type TaskFilter = {
   projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `taskExecutions` relation. */
+  taskExecutions?: InputMaybe<TaskToManyTaskExecutionFilter>;
+  /** Some related `taskExecutions` exist. */
+  taskExecutionsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `taskLabels` relation. */
   taskLabels?: InputMaybe<TaskToManyTaskLabelFilter>;
   /** Some related `taskLabels` exist. */
@@ -7225,6 +10543,8 @@ export enum TaskOrderBy {
   PostsDistinctCountCreatedAtDesc = 'POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
   PostsDistinctCountDescriptionAsc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   PostsDistinctCountDescriptionDesc = 'POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  PostsDistinctCountParentIdAsc = 'POSTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  PostsDistinctCountParentIdDesc = 'POSTS_DISTINCT_COUNT_PARENT_ID_DESC',
   PostsDistinctCountRowIdAsc = 'POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   PostsDistinctCountRowIdDesc = 'POSTS_DISTINCT_COUNT_ROW_ID_DESC',
   PostsDistinctCountTaskIdAsc = 'POSTS_DISTINCT_COUNT_TASK_ID_ASC',
@@ -7241,6 +10561,28 @@ export enum TaskOrderBy {
   ProjectIdDesc = 'PROJECT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  TaskExecutionsCountAsc = 'TASK_EXECUTIONS_COUNT_ASC',
+  TaskExecutionsCountDesc = 'TASK_EXECUTIONS_COUNT_DESC',
+  TaskExecutionsDistinctCountCreatedAtAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  TaskExecutionsDistinctCountCreatedAtDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  TaskExecutionsDistinctCountMetadataAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_METADATA_ASC',
+  TaskExecutionsDistinctCountMetadataDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_METADATA_DESC',
+  TaskExecutionsDistinctCountOrganizationIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  TaskExecutionsDistinctCountOrganizationIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  TaskExecutionsDistinctCountProjectIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  TaskExecutionsDistinctCountProjectIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  TaskExecutionsDistinctCountRowIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  TaskExecutionsDistinctCountRowIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  TaskExecutionsDistinctCountSessionIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_SESSION_ID_ASC',
+  TaskExecutionsDistinctCountSessionIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_SESSION_ID_DESC',
+  TaskExecutionsDistinctCountStatusAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_STATUS_ASC',
+  TaskExecutionsDistinctCountStatusDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_STATUS_DESC',
+  TaskExecutionsDistinctCountTaskIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_TASK_ID_ASC',
+  TaskExecutionsDistinctCountTaskIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_TASK_ID_DESC',
+  TaskExecutionsDistinctCountTriggeredByAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_TRIGGERED_BY_ASC',
+  TaskExecutionsDistinctCountTriggeredByDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_TRIGGERED_BY_DESC',
+  TaskExecutionsDistinctCountUpdatedAtAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  TaskExecutionsDistinctCountUpdatedAtDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
   TaskLabelsCountAsc = 'TASK_LABELS_COUNT_ASC',
   TaskLabelsCountDesc = 'TASK_LABELS_COUNT_DESC',
   TaskLabelsDistinctCountCreatedAtAsc = 'TASK_LABELS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -7334,6 +10676,18 @@ export type TaskToManyPostFilter = {
   some?: InputMaybe<PostFilter>;
 };
 
+/** A filter to be used against many `TaskExecution` object types. All fields are combined with a logical ‘and.’ */
+export type TaskToManyTaskExecutionFilter = {
+  /** Aggregates across related `TaskExecution` match the filter criteria. */
+  aggregates?: InputMaybe<TaskExecutionAggregatesFilter>;
+  /** Every related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<TaskExecutionFilter>;
+  /** No related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<TaskExecutionFilter>;
+  /** Some related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<TaskExecutionFilter>;
+};
+
 /** A filter to be used against many `TaskLabel` object types. All fields are combined with a logical ‘and.’ */
 export type TaskToManyTaskLabelFilter = {
   /** Aggregates across related `TaskLabel` match the filter criteria. */
@@ -7396,6 +10750,194 @@ export type UuidFilter = {
   notEqualTo?: InputMaybe<Scalars['UUID']['input']>;
   /** Not included in the specified list. */
   notIn?: InputMaybe<Array<Scalars['UUID']['input']>>;
+};
+
+/** All input for the `updateAgentActivityById` mutation. */
+export type UpdateAgentActivityByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentActivity` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `AgentActivity` being updated. */
+  patch: AgentActivityPatch;
+};
+
+/** All input for the `updateAgentActivity` mutation. */
+export type UpdateAgentActivityInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `AgentActivity` being updated. */
+  patch: AgentActivityPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `AgentActivity` mutation. */
+export type UpdateAgentActivityPayload = {
+  __typename?: 'UpdateAgentActivityPayload';
+  /** The `AgentActivity` that was updated by this mutation. */
+  agentActivity?: Maybe<AgentActivity>;
+  /** An edge for our `AgentActivity`. May be used by Relay 1. */
+  agentActivityEdge?: Maybe<AgentActivityEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `AgentActivity` mutation. */
+export type UpdateAgentActivityPayloadAgentActivityEdgeArgs = {
+  orderBy?: Array<AgentActivityOrderBy>;
+};
+
+/** All input for the `updateAgentConfigById` mutation. */
+export type UpdateAgentConfigByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentConfig` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `AgentConfig` being updated. */
+  patch: AgentConfigPatch;
+};
+
+/** All input for the `updateAgentConfig` mutation. */
+export type UpdateAgentConfigInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `AgentConfig` being updated. */
+  patch: AgentConfigPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `AgentConfig` mutation. */
+export type UpdateAgentConfigPayload = {
+  __typename?: 'UpdateAgentConfigPayload';
+  /** The `AgentConfig` that was updated by this mutation. */
+  agentConfig?: Maybe<AgentConfig>;
+  /** An edge for our `AgentConfig`. May be used by Relay 1. */
+  agentConfigEdge?: Maybe<AgentConfigEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `AgentConfig` mutation. */
+export type UpdateAgentConfigPayloadAgentConfigEdgeArgs = {
+  orderBy?: Array<AgentConfigOrderBy>;
+};
+
+/** All input for the `updateAgentPersonaById` mutation. */
+export type UpdateAgentPersonaByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentPersona` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `AgentPersona` being updated. */
+  patch: AgentPersonaPatch;
+};
+
+/** All input for the `updateAgentPersona` mutation. */
+export type UpdateAgentPersonaInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `AgentPersona` being updated. */
+  patch: AgentPersonaPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `AgentPersona` mutation. */
+export type UpdateAgentPersonaPayload = {
+  __typename?: 'UpdateAgentPersonaPayload';
+  /** The `AgentPersona` that was updated by this mutation. */
+  agentPersona?: Maybe<AgentPersona>;
+  /** An edge for our `AgentPersona`. May be used by Relay 1. */
+  agentPersonaEdge?: Maybe<AgentPersonaEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `AgentPersona` mutation. */
+export type UpdateAgentPersonaPayloadAgentPersonaEdgeArgs = {
+  orderBy?: Array<AgentPersonaOrderBy>;
+};
+
+/** All input for the `updateAgentSessionById` mutation. */
+export type UpdateAgentSessionByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `AgentSession` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `AgentSession` being updated. */
+  patch: AgentSessionPatch;
+};
+
+/** All input for the `updateAgentSession` mutation. */
+export type UpdateAgentSessionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `AgentSession` being updated. */
+  patch: AgentSessionPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `AgentSession` mutation. */
+export type UpdateAgentSessionPayload = {
+  __typename?: 'UpdateAgentSessionPayload';
+  /** The `AgentSession` that was updated by this mutation. */
+  agentSession?: Maybe<AgentSession>;
+  /** An edge for our `AgentSession`. May be used by Relay 1. */
+  agentSessionEdge?: Maybe<AgentSessionEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `AgentSession` mutation. */
+export type UpdateAgentSessionPayloadAgentSessionEdgeArgs = {
+  orderBy?: Array<AgentSessionOrderBy>;
 };
 
 /** All input for the `updateAssigneeById` mutation. */
@@ -7538,6 +11080,100 @@ export type UpdateEmojiPayload = {
 /** The output of our update `Emoji` mutation. */
 export type UpdateEmojiPayloadEmojiEdgeArgs = {
   orderBy?: Array<EmojiOrderBy>;
+};
+
+/** All input for the `updateGithubInstallationById` mutation. */
+export type UpdateGithubInstallationByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `GithubInstallation` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `GithubInstallation` being updated. */
+  patch: GithubInstallationPatch;
+};
+
+/** All input for the `updateGithubInstallation` mutation. */
+export type UpdateGithubInstallationInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `GithubInstallation` being updated. */
+  patch: GithubInstallationPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `GithubInstallation` mutation. */
+export type UpdateGithubInstallationPayload = {
+  __typename?: 'UpdateGithubInstallationPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `GithubInstallation` that was updated by this mutation. */
+  githubInstallation?: Maybe<GithubInstallation>;
+  /** An edge for our `GithubInstallation`. May be used by Relay 1. */
+  githubInstallationEdge?: Maybe<GithubInstallationEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `GithubInstallation` mutation. */
+export type UpdateGithubInstallationPayloadGithubInstallationEdgeArgs = {
+  orderBy?: Array<GithubInstallationOrderBy>;
+};
+
+/** All input for the `updateGithubRepositoryById` mutation. */
+export type UpdateGithubRepositoryByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `GithubRepository` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `GithubRepository` being updated. */
+  patch: GithubRepositoryPatch;
+};
+
+/** All input for the `updateGithubRepository` mutation. */
+export type UpdateGithubRepositoryInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `GithubRepository` being updated. */
+  patch: GithubRepositoryPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `GithubRepository` mutation. */
+export type UpdateGithubRepositoryPayload = {
+  __typename?: 'UpdateGithubRepositoryPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `GithubRepository` that was updated by this mutation. */
+  githubRepository?: Maybe<GithubRepository>;
+  /** An edge for our `GithubRepository`. May be used by Relay 1. */
+  githubRepositoryEdge?: Maybe<GithubRepositoryEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `GithubRepository` mutation. */
+export type UpdateGithubRepositoryPayloadGithubRepositoryEdgeArgs = {
+  orderBy?: Array<GithubRepositoryOrderBy>;
 };
 
 /** All input for the `updateLabelById` mutation. */
@@ -7753,53 +11389,6 @@ export type UpdateProjectLabelPayloadProjectLabelEdgeArgs = {
   orderBy?: Array<ProjectLabelOrderBy>;
 };
 
-/** All input for the `updateProjectLinkById` mutation. */
-export type UpdateProjectLinkByIdInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** The globally unique `ID` which will identify a single `ProjectLink` to be updated. */
-  id: Scalars['ID']['input'];
-  /** An object where the defined keys will be set on the `ProjectLink` being updated. */
-  patch: ProjectLinkPatch;
-};
-
-/** All input for the `updateProjectLink` mutation. */
-export type UpdateProjectLinkInput = {
-  /**
-   * An arbitrary string value with no semantic meaning. Will be included in the
-   * payload verbatim. May be used to track mutations by the client.
-   */
-  clientMutationId?: InputMaybe<Scalars['String']['input']>;
-  /** An object where the defined keys will be set on the `ProjectLink` being updated. */
-  patch: ProjectLinkPatch;
-  rowId: Scalars['UUID']['input'];
-};
-
-/** The output of our update `ProjectLink` mutation. */
-export type UpdateProjectLinkPayload = {
-  __typename?: 'UpdateProjectLinkPayload';
-  /**
-   * The exact same `clientMutationId` that was provided in the mutation input,
-   * unchanged and unused. May be used by a client to track mutations.
-   */
-  clientMutationId?: Maybe<Scalars['String']['output']>;
-  /** The `ProjectLink` that was updated by this mutation. */
-  projectLink?: Maybe<ProjectLink>;
-  /** An edge for our `ProjectLink`. May be used by Relay 1. */
-  projectLinkEdge?: Maybe<ProjectLinkEdge>;
-  /** Our root query field type. Allows us to run any query from our mutation payload. */
-  query?: Maybe<Query>;
-};
-
-
-/** The output of our update `ProjectLink` mutation. */
-export type UpdateProjectLinkPayloadProjectLinkEdgeArgs = {
-  orderBy?: Array<ProjectLinkOrderBy>;
-};
-
 /** The output of our update `Project` mutation. */
 export type UpdateProjectPayload = {
   __typename?: 'UpdateProjectPayload';
@@ -7928,6 +11517,53 @@ export type UpdateTaskByIdInput = {
   id: Scalars['ID']['input'];
   /** An object where the defined keys will be set on the `Task` being updated. */
   patch: TaskPatch;
+};
+
+/** All input for the `updateTaskExecutionById` mutation. */
+export type UpdateTaskExecutionByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `TaskExecution` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `TaskExecution` being updated. */
+  patch: TaskExecutionPatch;
+};
+
+/** All input for the `updateTaskExecution` mutation. */
+export type UpdateTaskExecutionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `TaskExecution` being updated. */
+  patch: TaskExecutionPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `TaskExecution` mutation. */
+export type UpdateTaskExecutionPayload = {
+  __typename?: 'UpdateTaskExecutionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `TaskExecution` that was updated by this mutation. */
+  taskExecution?: Maybe<TaskExecution>;
+  /** An edge for our `TaskExecution`. May be used by Relay 1. */
+  taskExecutionEdge?: Maybe<TaskExecutionEdge>;
+};
+
+
+/** The output of our update `TaskExecution` mutation. */
+export type UpdateTaskExecutionPayloadTaskExecutionEdgeArgs = {
+  orderBy?: Array<TaskExecutionOrderBy>;
 };
 
 /** All input for the `updateTask` mutation. */
@@ -8108,6 +11744,10 @@ export type UpdateUserPreferencePayloadUserPreferenceEdgeArgs = {
 
 export type User = Node & {
   __typename?: 'User';
+  /** Reads and enables pagination through a set of `AgentActivity`. */
+  agentActivities: AgentActivityConnection;
+  /** Reads and enables pagination through a set of `AgentSession`. */
+  agentSessions: AgentSessionConnection;
   /** Reads and enables pagination through a set of `Assignee`. */
   assignees: AssigneeConnection;
   /** Reads and enables pagination through a set of `Post`. */
@@ -8124,9 +11764,35 @@ export type User = Node & {
   identityProviderId: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
   rowId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `TaskExecution`. */
+  taskExecutionsByTriggeredBy: TaskExecutionConnection;
   updatedAt: Scalars['Datetime']['output'];
   /** Reads and enables pagination through a set of `UserPreference`. */
   userPreferences: UserPreferenceConnection;
+};
+
+
+export type UserAgentActivitiesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentActivityCondition>;
+  filter?: InputMaybe<AgentActivityFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentActivityOrderBy>>;
+};
+
+
+export type UserAgentSessionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AgentSessionCondition>;
+  filter?: InputMaybe<AgentSessionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AgentSessionOrderBy>>;
 };
 
 
@@ -8175,6 +11841,18 @@ export type UserEmojisArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<EmojiOrderBy>>;
+};
+
+
+export type UserTaskExecutionsByTriggeredByArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskExecutionCondition>;
+  filter?: InputMaybe<TaskExecutionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskExecutionOrderBy>>;
 };
 
 
@@ -8267,6 +11945,14 @@ export type UserEdge = {
 
 /** A filter to be used against `User` object types. All fields are combined with a logical ‘and.’ */
 export type UserFilter = {
+  /** Filter by the object’s `agentActivities` relation. */
+  agentActivities?: InputMaybe<UserToManyAgentActivityFilter>;
+  /** Some related `agentActivities` exist. */
+  agentActivitiesExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `agentSessions` relation. */
+  agentSessions?: InputMaybe<UserToManyAgentSessionFilter>;
+  /** Some related `agentSessions` exist. */
+  agentSessionsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<UserFilter>>;
   /** Filter by the object’s `assignees` relation. */
@@ -8301,6 +11987,10 @@ export type UserFilter = {
   or?: InputMaybe<Array<UserFilter>>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `taskExecutionsByTriggeredBy` relation. */
+  taskExecutionsByTriggeredBy?: InputMaybe<UserToManyTaskExecutionFilter>;
+  /** Some related `taskExecutionsByTriggeredBy` exist. */
+  taskExecutionsByTriggeredByExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `userPreferences` relation. */
@@ -8394,6 +12084,78 @@ export type UserInput = {
 
 /** Methods to use when ordering `User`. */
 export enum UserOrderBy {
+  AgentActivitiesCountAsc = 'AGENT_ACTIVITIES_COUNT_ASC',
+  AgentActivitiesCountDesc = 'AGENT_ACTIVITIES_COUNT_DESC',
+  AgentActivitiesDistinctCountAffectedTaskIdsAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_AFFECTED_TASK_IDS_ASC',
+  AgentActivitiesDistinctCountAffectedTaskIdsDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_AFFECTED_TASK_IDS_DESC',
+  AgentActivitiesDistinctCountApprovalStatusAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_APPROVAL_STATUS_ASC',
+  AgentActivitiesDistinctCountApprovalStatusDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_APPROVAL_STATUS_DESC',
+  AgentActivitiesDistinctCountCreatedAtAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_CREATED_AT_ASC',
+  AgentActivitiesDistinctCountCreatedAtDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_CREATED_AT_DESC',
+  AgentActivitiesDistinctCountErrorMessageAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ERROR_MESSAGE_ASC',
+  AgentActivitiesDistinctCountErrorMessageDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ERROR_MESSAGE_DESC',
+  AgentActivitiesDistinctCountOrganizationIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AgentActivitiesDistinctCountOrganizationIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AgentActivitiesDistinctCountProjectIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_PROJECT_ID_ASC',
+  AgentActivitiesDistinctCountProjectIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_PROJECT_ID_DESC',
+  AgentActivitiesDistinctCountRequiresApprovalAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_REQUIRES_APPROVAL_ASC',
+  AgentActivitiesDistinctCountRequiresApprovalDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_REQUIRES_APPROVAL_DESC',
+  AgentActivitiesDistinctCountRowIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ROW_ID_ASC',
+  AgentActivitiesDistinctCountRowIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_ROW_ID_DESC',
+  AgentActivitiesDistinctCountSessionIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SESSION_ID_ASC',
+  AgentActivitiesDistinctCountSessionIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SESSION_ID_DESC',
+  AgentActivitiesDistinctCountSnapshotBeforeAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SNAPSHOT_BEFORE_ASC',
+  AgentActivitiesDistinctCountSnapshotBeforeDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_SNAPSHOT_BEFORE_DESC',
+  AgentActivitiesDistinctCountStatusAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_STATUS_ASC',
+  AgentActivitiesDistinctCountStatusDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_STATUS_DESC',
+  AgentActivitiesDistinctCountToolInputAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_INPUT_ASC',
+  AgentActivitiesDistinctCountToolInputDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_INPUT_DESC',
+  AgentActivitiesDistinctCountToolNameAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_NAME_ASC',
+  AgentActivitiesDistinctCountToolNameDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_NAME_DESC',
+  AgentActivitiesDistinctCountToolOutputAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_OUTPUT_ASC',
+  AgentActivitiesDistinctCountToolOutputDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_TOOL_OUTPUT_DESC',
+  AgentActivitiesDistinctCountUserIdAsc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_USER_ID_ASC',
+  AgentActivitiesDistinctCountUserIdDesc = 'AGENT_ACTIVITIES_DISTINCT_COUNT_USER_ID_DESC',
+  AgentSessionsAverageToolCallCountAsc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsAverageToolCallCountDesc = 'AGENT_SESSIONS_AVERAGE_TOOL_CALL_COUNT_DESC',
+  AgentSessionsCountAsc = 'AGENT_SESSIONS_COUNT_ASC',
+  AgentSessionsCountDesc = 'AGENT_SESSIONS_COUNT_DESC',
+  AgentSessionsDistinctCountCreatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  AgentSessionsDistinctCountCreatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  AgentSessionsDistinctCountMessagesAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_ASC',
+  AgentSessionsDistinctCountMessagesDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_MESSAGES_DESC',
+  AgentSessionsDistinctCountMetadataAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_METADATA_ASC',
+  AgentSessionsDistinctCountMetadataDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_METADATA_DESC',
+  AgentSessionsDistinctCountOrganizationIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AgentSessionsDistinctCountOrganizationIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AgentSessionsDistinctCountProjectIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_PROJECT_ID_ASC',
+  AgentSessionsDistinctCountProjectIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_PROJECT_ID_DESC',
+  AgentSessionsDistinctCountRowIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  AgentSessionsDistinctCountRowIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  AgentSessionsDistinctCountTitleAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TITLE_ASC',
+  AgentSessionsDistinctCountTitleDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TITLE_DESC',
+  AgentSessionsDistinctCountToolCallCountAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_ASC',
+  AgentSessionsDistinctCountToolCallCountDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TOOL_CALL_COUNT_DESC',
+  AgentSessionsDistinctCountTypeAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_ASC',
+  AgentSessionsDistinctCountTypeDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_TYPE_DESC',
+  AgentSessionsDistinctCountUpdatedAtAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  AgentSessionsDistinctCountUpdatedAtDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  AgentSessionsDistinctCountUserIdAsc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_ASC',
+  AgentSessionsDistinctCountUserIdDesc = 'AGENT_SESSIONS_DISTINCT_COUNT_USER_ID_DESC',
+  AgentSessionsMaxToolCallCountAsc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_ASC',
+  AgentSessionsMaxToolCallCountDesc = 'AGENT_SESSIONS_MAX_TOOL_CALL_COUNT_DESC',
+  AgentSessionsMinToolCallCountAsc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_ASC',
+  AgentSessionsMinToolCallCountDesc = 'AGENT_SESSIONS_MIN_TOOL_CALL_COUNT_DESC',
+  AgentSessionsStddevPopulationToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_ASC',
+  AgentSessionsStddevPopulationToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_POPULATION_TOOL_CALL_COUNT_DESC',
+  AgentSessionsStddevSampleToolCallCountAsc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsStddevSampleToolCallCountDesc = 'AGENT_SESSIONS_STDDEV_SAMPLE_TOOL_CALL_COUNT_DESC',
+  AgentSessionsSumToolCallCountAsc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_ASC',
+  AgentSessionsSumToolCallCountDesc = 'AGENT_SESSIONS_SUM_TOOL_CALL_COUNT_DESC',
+  AgentSessionsVariancePopulationToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_ASC',
+  AgentSessionsVariancePopulationToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_POPULATION_TOOL_CALL_COUNT_DESC',
+  AgentSessionsVarianceSampleToolCallCountAsc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_ASC',
+  AgentSessionsVarianceSampleToolCallCountDesc = 'AGENT_SESSIONS_VARIANCE_SAMPLE_TOOL_CALL_COUNT_DESC',
   AssigneesCountAsc = 'ASSIGNEES_COUNT_ASC',
   AssigneesCountDesc = 'ASSIGNEES_COUNT_DESC',
   AssigneesDistinctCountCreatedAtAsc = 'ASSIGNEES_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -8414,6 +12176,8 @@ export enum UserOrderBy {
   AuthoredPostsDistinctCountCreatedAtDesc = 'AUTHORED_POSTS_DISTINCT_COUNT_CREATED_AT_DESC',
   AuthoredPostsDistinctCountDescriptionAsc = 'AUTHORED_POSTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   AuthoredPostsDistinctCountDescriptionDesc = 'AUTHORED_POSTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  AuthoredPostsDistinctCountParentIdAsc = 'AUTHORED_POSTS_DISTINCT_COUNT_PARENT_ID_ASC',
+  AuthoredPostsDistinctCountParentIdDesc = 'AUTHORED_POSTS_DISTINCT_COUNT_PARENT_ID_DESC',
   AuthoredPostsDistinctCountRowIdAsc = 'AUTHORED_POSTS_DISTINCT_COUNT_ROW_ID_ASC',
   AuthoredPostsDistinctCountRowIdDesc = 'AUTHORED_POSTS_DISTINCT_COUNT_ROW_ID_DESC',
   AuthoredPostsDistinctCountTaskIdAsc = 'AUTHORED_POSTS_DISTINCT_COUNT_TASK_ID_ASC',
@@ -8509,10 +12273,34 @@ export enum UserOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  TaskExecutionsByTriggeredByCountAsc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_COUNT_ASC',
+  TaskExecutionsByTriggeredByCountDesc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_COUNT_DESC',
+  TaskExecutionsByTriggeredByDistinctCountCreatedAtAsc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_CREATED_AT_ASC',
+  TaskExecutionsByTriggeredByDistinctCountCreatedAtDesc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_CREATED_AT_DESC',
+  TaskExecutionsByTriggeredByDistinctCountMetadataAsc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_METADATA_ASC',
+  TaskExecutionsByTriggeredByDistinctCountMetadataDesc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_METADATA_DESC',
+  TaskExecutionsByTriggeredByDistinctCountOrganizationIdAsc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  TaskExecutionsByTriggeredByDistinctCountOrganizationIdDesc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  TaskExecutionsByTriggeredByDistinctCountProjectIdAsc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_PROJECT_ID_ASC',
+  TaskExecutionsByTriggeredByDistinctCountProjectIdDesc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_PROJECT_ID_DESC',
+  TaskExecutionsByTriggeredByDistinctCountRowIdAsc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_ROW_ID_ASC',
+  TaskExecutionsByTriggeredByDistinctCountRowIdDesc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_ROW_ID_DESC',
+  TaskExecutionsByTriggeredByDistinctCountSessionIdAsc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_SESSION_ID_ASC',
+  TaskExecutionsByTriggeredByDistinctCountSessionIdDesc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_SESSION_ID_DESC',
+  TaskExecutionsByTriggeredByDistinctCountStatusAsc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_STATUS_ASC',
+  TaskExecutionsByTriggeredByDistinctCountStatusDesc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_STATUS_DESC',
+  TaskExecutionsByTriggeredByDistinctCountTaskIdAsc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_TASK_ID_ASC',
+  TaskExecutionsByTriggeredByDistinctCountTaskIdDesc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_TASK_ID_DESC',
+  TaskExecutionsByTriggeredByDistinctCountTriggeredByAsc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_TRIGGERED_BY_ASC',
+  TaskExecutionsByTriggeredByDistinctCountTriggeredByDesc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_TRIGGERED_BY_DESC',
+  TaskExecutionsByTriggeredByDistinctCountUpdatedAtAsc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_UPDATED_AT_ASC',
+  TaskExecutionsByTriggeredByDistinctCountUpdatedAtDesc = 'TASK_EXECUTIONS_BY_TRIGGERED_BY_DISTINCT_COUNT_UPDATED_AT_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   UserPreferencesCountAsc = 'USER_PREFERENCES_COUNT_ASC',
   UserPreferencesCountDesc = 'USER_PREFERENCES_COUNT_DESC',
+  UserPreferencesDistinctCountColorAsc = 'USER_PREFERENCES_DISTINCT_COUNT_COLOR_ASC',
+  UserPreferencesDistinctCountColorDesc = 'USER_PREFERENCES_DISTINCT_COUNT_COLOR_DESC',
   UserPreferencesDistinctCountCreatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_ASC',
   UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
   UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
@@ -8542,6 +12330,7 @@ export type UserPatch = {
 
 export type UserPreference = Node & {
   __typename?: 'UserPreference';
+  color?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['Datetime']['output'];
   hiddenColumnIds: Array<Maybe<Scalars['String']['output']>>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
@@ -8577,6 +12366,8 @@ export type UserPreferenceAggregatesFilter = {
  * tested for equality and combined with a logical ‘and.’
  */
 export type UserPreferenceCondition = {
+  /** Checks for equality with the object’s `color` field. */
+  color?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
@@ -8616,6 +12407,7 @@ export type UserPreferenceConnectionGroupedAggregatesArgs = {
 };
 
 export type UserPreferenceDistinctCountAggregateFilter = {
+  color?: InputMaybe<BigIntFilter>;
   createdAt?: InputMaybe<BigIntFilter>;
   hiddenColumnIds?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
@@ -8627,6 +12419,8 @@ export type UserPreferenceDistinctCountAggregateFilter = {
 
 export type UserPreferenceDistinctCountAggregates = {
   __typename?: 'UserPreferenceDistinctCountAggregates';
+  /** Distinct count of color across the matching connection */
+  color?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of createdAt across the matching connection */
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of hiddenColumnIds across the matching connection */
@@ -8656,6 +12450,8 @@ export type UserPreferenceEdge = {
 export type UserPreferenceFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<UserPreferenceFilter>>;
+  /** Filter by the object’s `color` field. */
+  color?: InputMaybe<StringFilter>;
   /** Filter by the object’s `createdAt` field. */
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `hiddenColumnIds` field. */
@@ -8682,6 +12478,7 @@ export type UserPreferenceFilter = {
 
 /** Grouping methods for `UserPreference` for usage during aggregation. */
 export enum UserPreferenceGroupBy {
+  Color = 'COLOR',
   CreatedAt = 'CREATED_AT',
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
@@ -8756,6 +12553,7 @@ export type UserPreferenceHavingVarianceSampleInput = {
 
 /** An input for mutations affecting `UserPreference` */
 export type UserPreferenceInput = {
+  color?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   projectId: Scalars['UUID']['input'];
@@ -8767,6 +12565,8 @@ export type UserPreferenceInput = {
 
 /** Methods to use when ordering `UserPreference`. */
 export enum UserPreferenceOrderBy {
+  ColorAsc = 'COLOR_ASC',
+  ColorDesc = 'COLOR_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   Natural = 'NATURAL',
@@ -8786,6 +12586,7 @@ export enum UserPreferenceOrderBy {
 
 /** Represents an update to a `UserPreference`. Fields that are set will be updated. */
 export type UserPreferencePatch = {
+  color?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
@@ -8793,6 +12594,30 @@ export type UserPreferencePatch = {
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** A filter to be used against many `AgentActivity` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyAgentActivityFilter = {
+  /** Aggregates across related `AgentActivity` match the filter criteria. */
+  aggregates?: InputMaybe<AgentActivityAggregatesFilter>;
+  /** Every related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AgentActivityFilter>;
+  /** No related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AgentActivityFilter>;
+  /** Some related `AgentActivity` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AgentActivityFilter>;
+};
+
+/** A filter to be used against many `AgentSession` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyAgentSessionFilter = {
+  /** Aggregates across related `AgentSession` match the filter criteria. */
+  aggregates?: InputMaybe<AgentSessionAggregatesFilter>;
+  /** Every related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AgentSessionFilter>;
+  /** No related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AgentSessionFilter>;
+  /** Some related `AgentSession` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AgentSessionFilter>;
 };
 
 /** A filter to be used against many `Assignee` object types. All fields are combined with a logical ‘and.’ */
@@ -8831,6 +12656,18 @@ export type UserToManyPostFilter = {
   some?: InputMaybe<PostFilter>;
 };
 
+/** A filter to be used against many `TaskExecution` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyTaskExecutionFilter = {
+  /** Aggregates across related `TaskExecution` match the filter criteria. */
+  aggregates?: InputMaybe<TaskExecutionAggregatesFilter>;
+  /** Every related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<TaskExecutionFilter>;
+  /** No related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<TaskExecutionFilter>;
+  /** Some related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<TaskExecutionFilter>;
+};
+
 /** A filter to be used against many `Task` object types. All fields are combined with a logical ‘and.’ */
 export type UserToManyTaskFilter = {
   /** Aggregates across related `Task` match the filter criteria. */
@@ -8861,7 +12698,7 @@ export type LabelFragment = { __typename?: 'Label', color: string, icon?: string
 
 export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: string, index: number, rowId: string, icon?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } };
 
 export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: number, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number } };
 
@@ -8988,28 +12825,6 @@ export type UpdateProjectColumnMutationVariables = Exact<{
 
 export type UpdateProjectColumnMutation = { __typename?: 'Mutation', updateProjectColumn?: { __typename?: 'UpdateProjectColumnPayload', projectColumn?: { __typename?: 'ProjectColumn', rowId: string } | null } | null };
 
-export type CreateProjectLinkMutationVariables = Exact<{
-  projectLink: ProjectLinkInput;
-}>;
-
-
-export type CreateProjectLinkMutation = { __typename?: 'Mutation', createProjectLink?: { __typename?: 'CreateProjectLinkPayload', projectLink?: { __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number } | null } | null };
-
-export type DeleteProjectLinkMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
-}>;
-
-
-export type DeleteProjectLinkMutation = { __typename?: 'Mutation', deleteProjectLink?: { __typename?: 'DeleteProjectLinkPayload', projectLink?: { __typename?: 'ProjectLink', rowId: string } | null } | null };
-
-export type UpdateProjectLinkMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
-  patch: ProjectLinkPatch;
-}>;
-
-
-export type UpdateProjectLinkMutation = { __typename?: 'Mutation', updateProjectLink?: { __typename?: 'UpdateProjectLinkPayload', projectLink?: { __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number } | null } | null };
-
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
@@ -9099,6 +12914,47 @@ export type DeleteUserMutationVariables = Exact<{
 
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser?: { __typename?: 'DeleteUserPayload', clientMutationId?: string | null } | null };
 
+export type AgentActivitiesQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  filter?: InputMaybe<AgentActivityFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+}>;
+
+
+export type AgentActivitiesQuery = { __typename?: 'Query', agentActivities?: { __typename?: 'AgentActivityConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentActivity', rowId: string, toolName: string, toolInput: any, toolOutput?: any | null, status: string, approvalStatus?: string | null, requiresApproval: boolean, errorMessage?: string | null, affectedTaskIds: any, snapshotBefore?: any | null, createdAt: Date, session?: { __typename?: 'AgentSession', rowId: string, title?: string | null } | null }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null } } | null };
+
+export type AgentActivitiesByTaskIdQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type AgentActivitiesByTaskIdQuery = { __typename?: 'Query', agentActivities?: { __typename?: 'AgentActivityConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentActivity', rowId: string, toolName: string, toolInput: any, toolOutput?: any | null, status: string, approvalStatus?: string | null, requiresApproval: boolean, errorMessage?: string | null, affectedTaskIds: any, createdAt: Date, session?: { __typename?: 'AgentSession', rowId: string, title?: string | null } | null }> } | null };
+
+export type AgentSessionQueryVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type AgentSessionQuery = { __typename?: 'Query', agentSession?: { __typename?: 'AgentSession', rowId: string, title?: string | null, messages: any, toolCallCount: number, createdAt: Date, updatedAt: Date } | null };
+
+export type AgentSessionTokenUsageQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type AgentSessionTokenUsageQuery = { __typename?: 'Query', agentSessions?: { __typename?: 'AgentSessionConnection', totalCount: number, aggregates?: { __typename?: 'AgentSessionAggregates', sum?: { __typename?: 'AgentSessionSumAggregates', toolCallCount: string } | null } | null } | null };
+
+export type AgentSessionsQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  userId: Scalars['UUID']['input'];
+  first?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type AgentSessionsQuery = { __typename?: 'Query', agentSessions?: { __typename?: 'AgentSessionConnection', totalCount: number, nodes: Array<{ __typename?: 'AgentSession', rowId: string, title?: string | null, toolCallCount: number, createdAt: Date, updatedAt: Date }> } | null };
+
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -9142,7 +12998,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, color?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> } } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -9150,7 +13006,7 @@ export type ProjectBySlugQueryVariables = Exact<{
 }>;
 
 
-export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name: string, isPublic: boolean, color?: string | null, description?: string | null } | null };
+export type ProjectBySlugQuery = { __typename?: 'Query', projectBySlugAndOrganizationId?: { __typename?: 'Project', rowId: string, name: string, prefix?: string | null, isPublic: boolean } | null };
 
 export type ProjectsQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -9159,7 +13015,7 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string }> }, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } }> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, color?: string | null, viewMode: string }> }, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
 
 export type ProjectsSidebarQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -9167,7 +13023,7 @@ export type ProjectsSidebarQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsSidebarQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string }> } }> } | null };
+export type ProjectsSidebarQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, color?: string | null, viewMode: string }> } }> } | null };
 
 export type SettingByOrganizationIdQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -9181,7 +13037,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, icon?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, parentId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, icon?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -9200,7 +13056,7 @@ export type UserPreferencesQueryVariables = Exact<{
 }>;
 
 
-export type UserPreferencesQuery = { __typename?: 'Query', userPreferenceByUserIdAndProjectId?: { __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string } | null };
+export type UserPreferencesQuery = { __typename?: 'Query', userPreferenceByUserIdAndProjectId?: { __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string, color?: string | null } | null };
 
 export type UserQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -9249,20 +13105,11 @@ export const ProjectFragmentDoc = `
   isPublic
   projectColumnId
   columnIndex
-  color
   allTasks: tasks {
     totalCount
   }
   completedTasks: tasks(filter: {column: {title: {equalTo: "Done"}}}) {
     totalCount
-  }
-  projectLinks(orderBy: ORDER_ASC) {
-    nodes {
-      rowId
-      url
-      title
-      order
-    }
   }
 }
     `;
@@ -9787,96 +13634,6 @@ useUpdateProjectColumnMutation.getKey = () => ['UpdateProjectColumn'];
 
 useUpdateProjectColumnMutation.fetcher = (variables: UpdateProjectColumnMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectColumnMutation, UpdateProjectColumnMutationVariables>(UpdateProjectColumnDocument, variables, options);
 
-export const CreateProjectLinkDocument = `
-    mutation CreateProjectLink($projectLink: ProjectLinkInput!) {
-  createProjectLink(input: {projectLink: $projectLink}) {
-    projectLink {
-      rowId
-      url
-      title
-      order
-    }
-  }
-}
-    `;
-
-export const useCreateProjectLinkMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<CreateProjectLinkMutation, TError, CreateProjectLinkMutationVariables, TContext>) => {
-    
-    return useMutation<CreateProjectLinkMutation, TError, CreateProjectLinkMutationVariables, TContext>(
-      {
-    mutationKey: ['CreateProjectLink'],
-    mutationFn: (variables?: CreateProjectLinkMutationVariables) => graphqlFetch<CreateProjectLinkMutation, CreateProjectLinkMutationVariables>(CreateProjectLinkDocument, variables)(),
-    ...options
-  }
-    )};
-
-useCreateProjectLinkMutation.getKey = () => ['CreateProjectLink'];
-
-
-useCreateProjectLinkMutation.fetcher = (variables: CreateProjectLinkMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectLinkMutation, CreateProjectLinkMutationVariables>(CreateProjectLinkDocument, variables, options);
-
-export const DeleteProjectLinkDocument = `
-    mutation DeleteProjectLink($rowId: UUID!) {
-  deleteProjectLink(input: {rowId: $rowId}) {
-    projectLink {
-      rowId
-    }
-  }
-}
-    `;
-
-export const useDeleteProjectLinkMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteProjectLinkMutation, TError, DeleteProjectLinkMutationVariables, TContext>) => {
-    
-    return useMutation<DeleteProjectLinkMutation, TError, DeleteProjectLinkMutationVariables, TContext>(
-      {
-    mutationKey: ['DeleteProjectLink'],
-    mutationFn: (variables?: DeleteProjectLinkMutationVariables) => graphqlFetch<DeleteProjectLinkMutation, DeleteProjectLinkMutationVariables>(DeleteProjectLinkDocument, variables)(),
-    ...options
-  }
-    )};
-
-useDeleteProjectLinkMutation.getKey = () => ['DeleteProjectLink'];
-
-
-useDeleteProjectLinkMutation.fetcher = (variables: DeleteProjectLinkMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectLinkMutation, DeleteProjectLinkMutationVariables>(DeleteProjectLinkDocument, variables, options);
-
-export const UpdateProjectLinkDocument = `
-    mutation UpdateProjectLink($rowId: UUID!, $patch: ProjectLinkPatch!) {
-  updateProjectLink(input: {rowId: $rowId, patch: $patch}) {
-    projectLink {
-      rowId
-      url
-      title
-      order
-    }
-  }
-}
-    `;
-
-export const useUpdateProjectLinkMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateProjectLinkMutation, TError, UpdateProjectLinkMutationVariables, TContext>) => {
-    
-    return useMutation<UpdateProjectLinkMutation, TError, UpdateProjectLinkMutationVariables, TContext>(
-      {
-    mutationKey: ['UpdateProjectLink'],
-    mutationFn: (variables?: UpdateProjectLinkMutationVariables) => graphqlFetch<UpdateProjectLinkMutation, UpdateProjectLinkMutationVariables>(UpdateProjectLinkDocument, variables)(),
-    ...options
-  }
-    )};
-
-useUpdateProjectLinkMutation.getKey = () => ['UpdateProjectLink'];
-
-
-useUpdateProjectLinkMutation.fetcher = (variables: UpdateProjectLinkMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectLinkMutation, UpdateProjectLinkMutationVariables>(UpdateProjectLinkDocument, variables, options);
-
 export const CreateProjectDocument = `
     mutation CreateProject($input: CreateProjectInput!) {
   createProject(input: $input) {
@@ -10211,6 +13968,519 @@ useDeleteUserMutation.getKey = () => ['DeleteUser'];
 
 useDeleteUserMutation.fetcher = (variables: DeleteUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, variables, options);
 
+export const AgentActivitiesDocument = `
+    query AgentActivities($projectId: UUID!, $filter: AgentActivityFilter, $first: Int = 20, $after: Cursor) {
+  agentActivities(
+    condition: {projectId: $projectId}
+    filter: $filter
+    orderBy: [CREATED_AT_DESC]
+    first: $first
+    after: $after
+  ) {
+    nodes {
+      rowId
+      toolName
+      toolInput
+      toolOutput
+      status
+      approvalStatus
+      requiresApproval
+      errorMessage
+      affectedTaskIds
+      snapshotBefore
+      createdAt
+      session {
+        rowId
+        title
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}
+    `;
+
+export const useAgentActivitiesQuery = <
+      TData = AgentActivitiesQuery,
+      TError = unknown
+    >(
+      variables: AgentActivitiesQueryVariables,
+      options?: Omit<UseQueryOptions<AgentActivitiesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AgentActivitiesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AgentActivitiesQuery, TError, TData>(
+      {
+    queryKey: ['AgentActivities', variables],
+    queryFn: graphqlFetch<AgentActivitiesQuery, AgentActivitiesQueryVariables>(AgentActivitiesDocument, variables),
+    ...options
+  }
+    )};
+
+useAgentActivitiesQuery.getKey = (variables: AgentActivitiesQueryVariables) => ['AgentActivities', variables];
+
+export const useSuspenseAgentActivitiesQuery = <
+      TData = AgentActivitiesQuery,
+      TError = unknown
+    >(
+      variables: AgentActivitiesQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<AgentActivitiesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<AgentActivitiesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<AgentActivitiesQuery, TError, TData>(
+      {
+    queryKey: ['AgentActivities', variables],
+    queryFn: graphqlFetch<AgentActivitiesQuery, AgentActivitiesQueryVariables>(AgentActivitiesDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseAgentActivitiesQuery.getKey = (variables: AgentActivitiesQueryVariables) => ['AgentActivities', variables];
+
+export const useInfiniteAgentActivitiesQuery = <
+      TData = InfiniteData<AgentActivitiesQuery>,
+      TError = unknown
+    >(
+      variables: AgentActivitiesQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AgentActivitiesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AgentActivitiesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AgentActivitiesQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentActivities.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentActivitiesQuery, AgentActivitiesQueryVariables>(AgentActivitiesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAgentActivitiesQuery.getKey = (variables: AgentActivitiesQueryVariables) => ['AgentActivities.infinite', variables];
+
+export const useSuspenseInfiniteAgentActivitiesQuery = <
+      TData = InfiniteData<AgentActivitiesQuery>,
+      TError = unknown
+    >(
+      variables: AgentActivitiesQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<AgentActivitiesQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<AgentActivitiesQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<AgentActivitiesQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentActivities.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentActivitiesQuery, AgentActivitiesQueryVariables>(AgentActivitiesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteAgentActivitiesQuery.getKey = (variables: AgentActivitiesQueryVariables) => ['AgentActivities.infinite', variables];
+
+
+useAgentActivitiesQuery.fetcher = (variables: AgentActivitiesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<AgentActivitiesQuery, AgentActivitiesQueryVariables>(AgentActivitiesDocument, variables, options);
+
+export const AgentActivitiesByTaskIdDocument = `
+    query AgentActivitiesByTaskId($projectId: UUID!, $first: Int = 50) {
+  agentActivities(
+    condition: {projectId: $projectId}
+    orderBy: [CREATED_AT_DESC]
+    first: $first
+  ) {
+    nodes {
+      rowId
+      toolName
+      toolInput
+      toolOutput
+      status
+      approvalStatus
+      requiresApproval
+      errorMessage
+      affectedTaskIds
+      createdAt
+      session {
+        rowId
+        title
+      }
+    }
+    totalCount
+  }
+}
+    `;
+
+export const useAgentActivitiesByTaskIdQuery = <
+      TData = AgentActivitiesByTaskIdQuery,
+      TError = unknown
+    >(
+      variables: AgentActivitiesByTaskIdQueryVariables,
+      options?: Omit<UseQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AgentActivitiesByTaskIdQuery, TError, TData>(
+      {
+    queryKey: ['AgentActivitiesByTaskId', variables],
+    queryFn: graphqlFetch<AgentActivitiesByTaskIdQuery, AgentActivitiesByTaskIdQueryVariables>(AgentActivitiesByTaskIdDocument, variables),
+    ...options
+  }
+    )};
+
+useAgentActivitiesByTaskIdQuery.getKey = (variables: AgentActivitiesByTaskIdQueryVariables) => ['AgentActivitiesByTaskId', variables];
+
+export const useSuspenseAgentActivitiesByTaskIdQuery = <
+      TData = AgentActivitiesByTaskIdQuery,
+      TError = unknown
+    >(
+      variables: AgentActivitiesByTaskIdQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<AgentActivitiesByTaskIdQuery, TError, TData>(
+      {
+    queryKey: ['AgentActivitiesByTaskId', variables],
+    queryFn: graphqlFetch<AgentActivitiesByTaskIdQuery, AgentActivitiesByTaskIdQueryVariables>(AgentActivitiesByTaskIdDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseAgentActivitiesByTaskIdQuery.getKey = (variables: AgentActivitiesByTaskIdQueryVariables) => ['AgentActivitiesByTaskId', variables];
+
+export const useInfiniteAgentActivitiesByTaskIdQuery = <
+      TData = InfiniteData<AgentActivitiesByTaskIdQuery>,
+      TError = unknown
+    >(
+      variables: AgentActivitiesByTaskIdQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AgentActivitiesByTaskIdQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentActivitiesByTaskId.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentActivitiesByTaskIdQuery, AgentActivitiesByTaskIdQueryVariables>(AgentActivitiesByTaskIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAgentActivitiesByTaskIdQuery.getKey = (variables: AgentActivitiesByTaskIdQueryVariables) => ['AgentActivitiesByTaskId.infinite', variables];
+
+export const useSuspenseInfiniteAgentActivitiesByTaskIdQuery = <
+      TData = InfiniteData<AgentActivitiesByTaskIdQuery>,
+      TError = unknown
+    >(
+      variables: AgentActivitiesByTaskIdQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<AgentActivitiesByTaskIdQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<AgentActivitiesByTaskIdQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentActivitiesByTaskId.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentActivitiesByTaskIdQuery, AgentActivitiesByTaskIdQueryVariables>(AgentActivitiesByTaskIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteAgentActivitiesByTaskIdQuery.getKey = (variables: AgentActivitiesByTaskIdQueryVariables) => ['AgentActivitiesByTaskId.infinite', variables];
+
+
+useAgentActivitiesByTaskIdQuery.fetcher = (variables: AgentActivitiesByTaskIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<AgentActivitiesByTaskIdQuery, AgentActivitiesByTaskIdQueryVariables>(AgentActivitiesByTaskIdDocument, variables, options);
+
+export const AgentSessionDocument = `
+    query AgentSession($rowId: UUID!) {
+  agentSession(rowId: $rowId) {
+    rowId
+    title
+    messages
+    toolCallCount
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+export const useAgentSessionQuery = <
+      TData = AgentSessionQuery,
+      TError = unknown
+    >(
+      variables: AgentSessionQueryVariables,
+      options?: Omit<UseQueryOptions<AgentSessionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AgentSessionQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AgentSessionQuery, TError, TData>(
+      {
+    queryKey: ['AgentSession', variables],
+    queryFn: graphqlFetch<AgentSessionQuery, AgentSessionQueryVariables>(AgentSessionDocument, variables),
+    ...options
+  }
+    )};
+
+useAgentSessionQuery.getKey = (variables: AgentSessionQueryVariables) => ['AgentSession', variables];
+
+export const useSuspenseAgentSessionQuery = <
+      TData = AgentSessionQuery,
+      TError = unknown
+    >(
+      variables: AgentSessionQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<AgentSessionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<AgentSessionQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<AgentSessionQuery, TError, TData>(
+      {
+    queryKey: ['AgentSession', variables],
+    queryFn: graphqlFetch<AgentSessionQuery, AgentSessionQueryVariables>(AgentSessionDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseAgentSessionQuery.getKey = (variables: AgentSessionQueryVariables) => ['AgentSession', variables];
+
+export const useInfiniteAgentSessionQuery = <
+      TData = InfiniteData<AgentSessionQuery>,
+      TError = unknown
+    >(
+      variables: AgentSessionQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AgentSessionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AgentSessionQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AgentSessionQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentSession.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentSessionQuery, AgentSessionQueryVariables>(AgentSessionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAgentSessionQuery.getKey = (variables: AgentSessionQueryVariables) => ['AgentSession.infinite', variables];
+
+export const useSuspenseInfiniteAgentSessionQuery = <
+      TData = InfiniteData<AgentSessionQuery>,
+      TError = unknown
+    >(
+      variables: AgentSessionQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<AgentSessionQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<AgentSessionQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<AgentSessionQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentSession.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentSessionQuery, AgentSessionQueryVariables>(AgentSessionDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteAgentSessionQuery.getKey = (variables: AgentSessionQueryVariables) => ['AgentSession.infinite', variables];
+
+
+useAgentSessionQuery.fetcher = (variables: AgentSessionQueryVariables, options?: RequestInit['headers']) => graphqlFetch<AgentSessionQuery, AgentSessionQueryVariables>(AgentSessionDocument, variables, options);
+
+export const AgentSessionTokenUsageDocument = `
+    query AgentSessionTokenUsage($organizationId: String!) {
+  agentSessions(condition: {organizationId: $organizationId}) {
+    aggregates {
+      sum {
+        toolCallCount
+      }
+    }
+    totalCount
+  }
+}
+    `;
+
+export const useAgentSessionTokenUsageQuery = <
+      TData = AgentSessionTokenUsageQuery,
+      TError = unknown
+    >(
+      variables: AgentSessionTokenUsageQueryVariables,
+      options?: Omit<UseQueryOptions<AgentSessionTokenUsageQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AgentSessionTokenUsageQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AgentSessionTokenUsageQuery, TError, TData>(
+      {
+    queryKey: ['AgentSessionTokenUsage', variables],
+    queryFn: graphqlFetch<AgentSessionTokenUsageQuery, AgentSessionTokenUsageQueryVariables>(AgentSessionTokenUsageDocument, variables),
+    ...options
+  }
+    )};
+
+useAgentSessionTokenUsageQuery.getKey = (variables: AgentSessionTokenUsageQueryVariables) => ['AgentSessionTokenUsage', variables];
+
+export const useSuspenseAgentSessionTokenUsageQuery = <
+      TData = AgentSessionTokenUsageQuery,
+      TError = unknown
+    >(
+      variables: AgentSessionTokenUsageQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<AgentSessionTokenUsageQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<AgentSessionTokenUsageQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<AgentSessionTokenUsageQuery, TError, TData>(
+      {
+    queryKey: ['AgentSessionTokenUsage', variables],
+    queryFn: graphqlFetch<AgentSessionTokenUsageQuery, AgentSessionTokenUsageQueryVariables>(AgentSessionTokenUsageDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseAgentSessionTokenUsageQuery.getKey = (variables: AgentSessionTokenUsageQueryVariables) => ['AgentSessionTokenUsage', variables];
+
+export const useInfiniteAgentSessionTokenUsageQuery = <
+      TData = InfiniteData<AgentSessionTokenUsageQuery>,
+      TError = unknown
+    >(
+      variables: AgentSessionTokenUsageQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AgentSessionTokenUsageQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AgentSessionTokenUsageQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AgentSessionTokenUsageQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentSessionTokenUsage.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentSessionTokenUsageQuery, AgentSessionTokenUsageQueryVariables>(AgentSessionTokenUsageDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAgentSessionTokenUsageQuery.getKey = (variables: AgentSessionTokenUsageQueryVariables) => ['AgentSessionTokenUsage.infinite', variables];
+
+export const useSuspenseInfiniteAgentSessionTokenUsageQuery = <
+      TData = InfiniteData<AgentSessionTokenUsageQuery>,
+      TError = unknown
+    >(
+      variables: AgentSessionTokenUsageQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<AgentSessionTokenUsageQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<AgentSessionTokenUsageQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<AgentSessionTokenUsageQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentSessionTokenUsage.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentSessionTokenUsageQuery, AgentSessionTokenUsageQueryVariables>(AgentSessionTokenUsageDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteAgentSessionTokenUsageQuery.getKey = (variables: AgentSessionTokenUsageQueryVariables) => ['AgentSessionTokenUsage.infinite', variables];
+
+
+useAgentSessionTokenUsageQuery.fetcher = (variables: AgentSessionTokenUsageQueryVariables, options?: RequestInit['headers']) => graphqlFetch<AgentSessionTokenUsageQuery, AgentSessionTokenUsageQueryVariables>(AgentSessionTokenUsageDocument, variables, options);
+
+export const AgentSessionsDocument = `
+    query AgentSessions($projectId: UUID!, $userId: UUID!, $first: Int = 20) {
+  agentSessions(
+    condition: {projectId: $projectId, userId: $userId}
+    orderBy: [UPDATED_AT_DESC]
+    first: $first
+  ) {
+    nodes {
+      rowId
+      title
+      toolCallCount
+      createdAt
+      updatedAt
+    }
+    totalCount
+  }
+}
+    `;
+
+export const useAgentSessionsQuery = <
+      TData = AgentSessionsQuery,
+      TError = unknown
+    >(
+      variables: AgentSessionsQueryVariables,
+      options?: Omit<UseQueryOptions<AgentSessionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<AgentSessionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<AgentSessionsQuery, TError, TData>(
+      {
+    queryKey: ['AgentSessions', variables],
+    queryFn: graphqlFetch<AgentSessionsQuery, AgentSessionsQueryVariables>(AgentSessionsDocument, variables),
+    ...options
+  }
+    )};
+
+useAgentSessionsQuery.getKey = (variables: AgentSessionsQueryVariables) => ['AgentSessions', variables];
+
+export const useSuspenseAgentSessionsQuery = <
+      TData = AgentSessionsQuery,
+      TError = unknown
+    >(
+      variables: AgentSessionsQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<AgentSessionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<AgentSessionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<AgentSessionsQuery, TError, TData>(
+      {
+    queryKey: ['AgentSessions', variables],
+    queryFn: graphqlFetch<AgentSessionsQuery, AgentSessionsQueryVariables>(AgentSessionsDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseAgentSessionsQuery.getKey = (variables: AgentSessionsQueryVariables) => ['AgentSessions', variables];
+
+export const useInfiniteAgentSessionsQuery = <
+      TData = InfiniteData<AgentSessionsQuery>,
+      TError = unknown
+    >(
+      variables: AgentSessionsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<AgentSessionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<AgentSessionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<AgentSessionsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentSessions.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentSessionsQuery, AgentSessionsQueryVariables>(AgentSessionsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteAgentSessionsQuery.getKey = (variables: AgentSessionsQueryVariables) => ['AgentSessions.infinite', variables];
+
+export const useSuspenseInfiniteAgentSessionsQuery = <
+      TData = InfiniteData<AgentSessionsQuery>,
+      TError = unknown
+    >(
+      variables: AgentSessionsQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<AgentSessionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<AgentSessionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<AgentSessionsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['AgentSessions.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<AgentSessionsQuery, AgentSessionsQueryVariables>(AgentSessionsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteAgentSessionsQuery.getKey = (variables: AgentSessionsQueryVariables) => ['AgentSessions.infinite', variables];
+
+
+useAgentSessionsQuery.fetcher = (variables: AgentSessionsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<AgentSessionsQuery, AgentSessionsQueryVariables>(AgentSessionsDocument, variables, options);
+
 export const ColumnsDocument = `
     query Columns($projectId: UUID!) {
   columns(condition: {projectId: $projectId}, orderBy: INDEX_ASC) {
@@ -10249,13 +14519,13 @@ export const useSuspenseColumnsQuery = <
     
     return useSuspenseQuery<ColumnsQuery, TError, TData>(
       {
-    queryKey: ['ColumnsSuspense', variables],
+    queryKey: ['Columns', variables],
     queryFn: graphqlFetch<ColumnsQuery, ColumnsQueryVariables>(ColumnsDocument, variables),
     ...options
   }
     )};
 
-useSuspenseColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['ColumnsSuspense', variables];
+useSuspenseColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['Columns', variables];
 
 export const useInfiniteColumnsQuery = <
       TData = InfiniteData<ColumnsQuery>,
@@ -10290,14 +14560,14 @@ export const useSuspenseInfiniteColumnsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Columns.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['Columns.infinite', variables],
       queryFn: (metaData) => graphqlFetch<ColumnsQuery, ColumnsQueryVariables>(ColumnsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['Columns.infiniteSuspense', variables];
+useSuspenseInfiniteColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['Columns.infinite', variables];
 
 
 useColumnsQuery.fetcher = (variables: ColumnsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ColumnsQuery, ColumnsQueryVariables>(ColumnsDocument, variables, options);
@@ -10355,13 +14625,13 @@ export const useSuspensePostEmojisQuery = <
     
     return useSuspenseQuery<PostEmojisQuery, TError, TData>(
       {
-    queryKey: ['PostEmojisSuspense', variables],
+    queryKey: ['PostEmojis', variables],
     queryFn: graphqlFetch<PostEmojisQuery, PostEmojisQueryVariables>(PostEmojisDocument, variables),
     ...options
   }
     )};
 
-useSuspensePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojisSuspense', variables];
+useSuspensePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojis', variables];
 
 export const useInfinitePostEmojisQuery = <
       TData = InfiniteData<PostEmojisQuery>,
@@ -10396,14 +14666,14 @@ export const useSuspenseInfinitePostEmojisQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['PostEmojis.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['PostEmojis.infinite', variables],
       queryFn: (metaData) => graphqlFetch<PostEmojisQuery, PostEmojisQueryVariables>(PostEmojisDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfinitePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojis.infiniteSuspense', variables];
+useSuspenseInfinitePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojis.infinite', variables];
 
 
 usePostEmojisQuery.fetcher = (variables: PostEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<PostEmojisQuery, PostEmojisQueryVariables>(PostEmojisDocument, variables, options);
@@ -10446,13 +14716,13 @@ export const useSuspenseUserEmojisQuery = <
     
     return useSuspenseQuery<UserEmojisQuery, TError, TData>(
       {
-    queryKey: ['UserEmojisSuspense', variables],
+    queryKey: ['UserEmojis', variables],
     queryFn: graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, variables),
     ...options
   }
     )};
 
-useSuspenseUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojisSuspense', variables];
+useSuspenseUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojis', variables];
 
 export const useInfiniteUserEmojisQuery = <
       TData = InfiniteData<UserEmojisQuery>,
@@ -10487,14 +14757,14 @@ export const useSuspenseInfiniteUserEmojisQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['UserEmojis.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['UserEmojis.infinite', variables],
       queryFn: (metaData) => graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojis.infiniteSuspense', variables];
+useSuspenseInfiniteUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojis.infinite', variables];
 
 
 useUserEmojisQuery.fetcher = (variables: UserEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, variables, options);
@@ -10537,13 +14807,13 @@ export const useSuspenseLabelsQuery = <
     
     return useSuspenseQuery<LabelsQuery, TError, TData>(
       {
-    queryKey: ['LabelsSuspense', variables],
+    queryKey: ['Labels', variables],
     queryFn: graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, variables),
     ...options
   }
     )};
 
-useSuspenseLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['LabelsSuspense', variables];
+useSuspenseLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['Labels', variables];
 
 export const useInfiniteLabelsQuery = <
       TData = InfiniteData<LabelsQuery>,
@@ -10578,14 +14848,14 @@ export const useSuspenseInfiniteLabelsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Labels.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['Labels.infinite', variables],
       queryFn: (metaData) => graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['Labels.infiniteSuspense', variables];
+useSuspenseInfiniteLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['Labels.infinite', variables];
 
 
 useLabelsQuery.fetcher = (variables: LabelsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, variables, options);
@@ -10634,13 +14904,13 @@ export const useSuspenseProjectColumnsQuery = <
     
     return useSuspenseQuery<ProjectColumnsQuery, TError, TData>(
       {
-    queryKey: ['ProjectColumnsSuspense', variables],
+    queryKey: ['ProjectColumns', variables],
     queryFn: graphqlFetch<ProjectColumnsQuery, ProjectColumnsQueryVariables>(ProjectColumnsDocument, variables),
     ...options
   }
     )};
 
-useSuspenseProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumnsSuspense', variables];
+useSuspenseProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumns', variables];
 
 export const useInfiniteProjectColumnsQuery = <
       TData = InfiniteData<ProjectColumnsQuery>,
@@ -10675,14 +14945,14 @@ export const useSuspenseInfiniteProjectColumnsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['ProjectColumns.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['ProjectColumns.infinite', variables],
       queryFn: (metaData) => graphqlFetch<ProjectColumnsQuery, ProjectColumnsQueryVariables>(ProjectColumnsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumns.infiniteSuspense', variables];
+useSuspenseInfiniteProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumns.infinite', variables];
 
 
 useProjectColumnsQuery.fetcher = (variables: ProjectColumnsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectColumnsQuery, ProjectColumnsQueryVariables>(ProjectColumnsDocument, variables, options);
@@ -10698,7 +14968,6 @@ export const ProjectDocument = `
     isPublic
     projectColumnId
     nextTaskNumber
-    color
     tasks {
       totalCount
     }
@@ -10711,14 +14980,6 @@ export const ProjectDocument = `
         tasks {
           totalCount
         }
-      }
-    }
-    projectLinks(orderBy: ORDER_ASC) {
-      nodes {
-        rowId
-        url
-        title
-        order
       }
     }
   }
@@ -10753,13 +15014,13 @@ export const useSuspenseProjectQuery = <
     
     return useSuspenseQuery<ProjectQuery, TError, TData>(
       {
-    queryKey: ['ProjectSuspense', variables],
+    queryKey: ['Project', variables],
     queryFn: graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables),
     ...options
   }
     )};
 
-useSuspenseProjectQuery.getKey = (variables: ProjectQueryVariables) => ['ProjectSuspense', variables];
+useSuspenseProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project', variables];
 
 export const useInfiniteProjectQuery = <
       TData = InfiniteData<ProjectQuery>,
@@ -10794,14 +15055,14 @@ export const useSuspenseInfiniteProjectQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Project.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['Project.infinite', variables],
       queryFn: (metaData) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infiniteSuspense', variables];
+useSuspenseInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
 
 
 useProjectQuery.fetcher = (variables: ProjectQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables, options);
@@ -10811,9 +15072,8 @@ export const ProjectBySlugDocument = `
   projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
     rowId
     name
+    prefix
     isPublic
-    color
-    description
   }
 }
     `;
@@ -10846,13 +15106,13 @@ export const useSuspenseProjectBySlugQuery = <
     
     return useSuspenseQuery<ProjectBySlugQuery, TError, TData>(
       {
-    queryKey: ['ProjectBySlugSuspense', variables],
+    queryKey: ['ProjectBySlug', variables],
     queryFn: graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables),
     ...options
   }
     )};
 
-useSuspenseProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlugSuspense', variables];
+useSuspenseProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug', variables];
 
 export const useInfiniteProjectBySlugQuery = <
       TData = InfiniteData<ProjectBySlugQuery>,
@@ -10887,14 +15147,14 @@ export const useSuspenseInfiniteProjectBySlugQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['ProjectBySlug.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['ProjectBySlug.infinite', variables],
       queryFn: (metaData) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug.infiniteSuspense', variables];
+useSuspenseInfiniteProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug.infinite', variables];
 
 
 useProjectBySlugQuery.fetcher = (variables: ProjectBySlugQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables, options);
@@ -10911,6 +15171,7 @@ export const ProjectsDocument = `
       userPreferences(condition: {userId: $userId}, first: 1) {
         nodes {
           rowId
+          color
           viewMode
         }
       }
@@ -10947,13 +15208,13 @@ export const useSuspenseProjectsQuery = <
     
     return useSuspenseQuery<ProjectsQuery, TError, TData>(
       {
-    queryKey: ['ProjectsSuspense', variables],
+    queryKey: ['Projects', variables],
     queryFn: graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables),
     ...options
   }
     )};
 
-useSuspenseProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['ProjectsSuspense', variables];
+useSuspenseProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects', variables];
 
 export const useInfiniteProjectsQuery = <
       TData = InfiniteData<ProjectsQuery>,
@@ -10988,14 +15249,14 @@ export const useSuspenseInfiniteProjectsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Projects.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['Projects.infinite', variables],
       queryFn: (metaData) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects.infiniteSuspense', variables];
+useSuspenseInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects.infinite', variables];
 
 
 useProjectsQuery.fetcher = (variables: ProjectsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables, options);
@@ -11010,10 +15271,10 @@ export const ProjectsSidebarDocument = `
       rowId
       name
       slug
-      color
       userPreferences(condition: {userId: $userId}, first: 1) {
         nodes {
           rowId
+          color
           viewMode
         }
       }
@@ -11050,13 +15311,13 @@ export const useSuspenseProjectsSidebarQuery = <
     
     return useSuspenseQuery<ProjectsSidebarQuery, TError, TData>(
       {
-    queryKey: ['ProjectsSidebarSuspense', variables],
+    queryKey: ['ProjectsSidebar', variables],
     queryFn: graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, variables),
     ...options
   }
     )};
 
-useSuspenseProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebarSuspense', variables];
+useSuspenseProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebar', variables];
 
 export const useInfiniteProjectsSidebarQuery = <
       TData = InfiniteData<ProjectsSidebarQuery>,
@@ -11091,14 +15352,14 @@ export const useSuspenseInfiniteProjectsSidebarQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['ProjectsSidebar.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['ProjectsSidebar.infinite', variables],
       queryFn: (metaData) => graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebar.infiniteSuspense', variables];
+useSuspenseInfiniteProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebar.infinite', variables];
 
 
 useProjectsSidebarQuery.fetcher = (variables: ProjectsSidebarQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, variables, options);
@@ -11143,13 +15404,13 @@ export const useSuspenseSettingByOrganizationIdQuery = <
     
     return useSuspenseQuery<SettingByOrganizationIdQuery, TError, TData>(
       {
-    queryKey: ['SettingByOrganizationIdSuspense', variables],
+    queryKey: ['SettingByOrganizationId', variables],
     queryFn: graphqlFetch<SettingByOrganizationIdQuery, SettingByOrganizationIdQueryVariables>(SettingByOrganizationIdDocument, variables),
     ...options
   }
     )};
 
-useSuspenseSettingByOrganizationIdQuery.getKey = (variables: SettingByOrganizationIdQueryVariables) => ['SettingByOrganizationIdSuspense', variables];
+useSuspenseSettingByOrganizationIdQuery.getKey = (variables: SettingByOrganizationIdQueryVariables) => ['SettingByOrganizationId', variables];
 
 export const useInfiniteSettingByOrganizationIdQuery = <
       TData = InfiniteData<SettingByOrganizationIdQuery>,
@@ -11184,14 +15445,14 @@ export const useSuspenseInfiniteSettingByOrganizationIdQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['SettingByOrganizationId.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['SettingByOrganizationId.infinite', variables],
       queryFn: (metaData) => graphqlFetch<SettingByOrganizationIdQuery, SettingByOrganizationIdQueryVariables>(SettingByOrganizationIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteSettingByOrganizationIdQuery.getKey = (variables: SettingByOrganizationIdQueryVariables) => ['SettingByOrganizationId.infiniteSuspense', variables];
+useSuspenseInfiniteSettingByOrganizationIdQuery.getKey = (variables: SettingByOrganizationIdQueryVariables) => ['SettingByOrganizationId.infinite', variables];
 
 
 useSettingByOrganizationIdQuery.fetcher = (variables: SettingByOrganizationIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<SettingByOrganizationIdQuery, SettingByOrganizationIdQueryVariables>(SettingByOrganizationIdDocument, variables, options);
@@ -11227,6 +15488,7 @@ export const TaskDocument = `
         description
         createdAt
         authorId
+        parentId
         author {
           name
           avatarUrl
@@ -11288,13 +15550,13 @@ export const useSuspenseTaskQuery = <
     
     return useSuspenseQuery<TaskQuery, TError, TData>(
       {
-    queryKey: ['TaskSuspense', variables],
+    queryKey: ['Task', variables],
     queryFn: graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, variables),
     ...options
   }
     )};
 
-useSuspenseTaskQuery.getKey = (variables: TaskQueryVariables) => ['TaskSuspense', variables];
+useSuspenseTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task', variables];
 
 export const useInfiniteTaskQuery = <
       TData = InfiniteData<TaskQuery>,
@@ -11329,14 +15591,14 @@ export const useSuspenseInfiniteTaskQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Task.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['Task.infinite', variables],
       queryFn: (metaData) => graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task.infiniteSuspense', variables];
+useSuspenseInfiniteTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task.infinite', variables];
 
 
 useTaskQuery.fetcher = (variables: TaskQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, variables, options);
@@ -11382,13 +15644,13 @@ export const useSuspenseTasksQuery = <
     
     return useSuspenseQuery<TasksQuery, TError, TData>(
       {
-    queryKey: ['TasksSuspense', variables],
+    queryKey: ['Tasks', variables],
     queryFn: graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables),
     ...options
   }
     )};
 
-useSuspenseTasksQuery.getKey = (variables: TasksQueryVariables) => ['TasksSuspense', variables];
+useSuspenseTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks', variables];
 
 export const useInfiniteTasksQuery = <
       TData = InfiniteData<TasksQuery>,
@@ -11423,14 +15685,14 @@ export const useSuspenseInfiniteTasksQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Tasks.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['Tasks.infinite', variables],
       queryFn: (metaData) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks.infiniteSuspense', variables];
+useSuspenseInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks.infinite', variables];
 
 
 useTasksQuery.fetcher = (variables: TasksQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables, options);
@@ -11441,6 +15703,7 @@ export const UserPreferencesDocument = `
     hiddenColumnIds
     viewMode
     rowId
+    color
   }
 }
     `;
@@ -11473,13 +15736,13 @@ export const useSuspenseUserPreferencesQuery = <
     
     return useSuspenseQuery<UserPreferencesQuery, TError, TData>(
       {
-    queryKey: ['UserPreferencesSuspense', variables],
+    queryKey: ['UserPreferences', variables],
     queryFn: graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, variables),
     ...options
   }
     )};
 
-useSuspenseUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferencesSuspense', variables];
+useSuspenseUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferences', variables];
 
 export const useInfiniteUserPreferencesQuery = <
       TData = InfiniteData<UserPreferencesQuery>,
@@ -11514,14 +15777,14 @@ export const useSuspenseInfiniteUserPreferencesQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['UserPreferences.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['UserPreferences.infinite', variables],
       queryFn: (metaData) => graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferences.infiniteSuspense', variables];
+useSuspenseInfiniteUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferences.infinite', variables];
 
 
 useUserPreferencesQuery.fetcher = (variables: UserPreferencesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, variables, options);
@@ -11564,13 +15827,13 @@ export const useSuspenseUserQuery = <
     
     return useSuspenseQuery<UserQuery, TError, TData>(
       {
-    queryKey: ['UserSuspense', variables],
+    queryKey: ['User', variables],
     queryFn: graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables),
     ...options
   }
     )};
 
-useSuspenseUserQuery.getKey = (variables: UserQueryVariables) => ['UserSuspense', variables];
+useSuspenseUserQuery.getKey = (variables: UserQueryVariables) => ['User', variables];
 
 export const useInfiniteUserQuery = <
       TData = InfiniteData<UserQuery>,
@@ -11605,14 +15868,14 @@ export const useSuspenseInfiniteUserQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['User.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['User.infinite', variables],
       queryFn: (metaData) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infiniteSuspense', variables];
+useSuspenseInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite', variables];
 
 
 useUserQuery.fetcher = (variables: UserQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables, options);
@@ -11653,13 +15916,13 @@ export const useSuspenseUserByIdentityProviderIdQuery = <
     
     return useSuspenseQuery<UserByIdentityProviderIdQuery, TError, TData>(
       {
-    queryKey: ['UserByIdentityProviderIdSuspense', variables],
+    queryKey: ['UserByIdentityProviderId', variables],
     queryFn: graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, variables),
     ...options
   }
     )};
 
-useSuspenseUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderIdSuspense', variables];
+useSuspenseUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderId', variables];
 
 export const useInfiniteUserByIdentityProviderIdQuery = <
       TData = InfiniteData<UserByIdentityProviderIdQuery>,
@@ -11694,14 +15957,14 @@ export const useSuspenseInfiniteUserByIdentityProviderIdQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['UserByIdentityProviderId.infiniteSuspense', variables],
+      queryKey: optionsQueryKey ?? ['UserByIdentityProviderId.infinite', variables],
       queryFn: (metaData) => graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderId.infiniteSuspense', variables];
+useSuspenseInfiniteUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderId.infinite', variables];
 
 
 useUserByIdentityProviderIdQuery.fetcher = (variables: UserByIdentityProviderIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, variables, options);
