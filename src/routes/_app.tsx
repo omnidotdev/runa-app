@@ -184,7 +184,7 @@ function AppLayout() {
             <Link
               to="/"
               variant="ghost"
-              className="gap-2 hover:bg-transparent dark:hover:bg-transparent"
+              className="-ml-4 gap-2 hover:bg-transparent dark:hover:bg-transparent"
             >
               <span className="text-xl">🌙</span>
               <span className="font-bold text-lg tracking-tight">
@@ -192,7 +192,7 @@ function AppLayout() {
               </span>
             </Link>
 
-            <div className="flex items-center gap-2">
+            <div className="-mr-2 flex items-center gap-2">
               <ThemeToggle />
               <Button
                 size="sm"
