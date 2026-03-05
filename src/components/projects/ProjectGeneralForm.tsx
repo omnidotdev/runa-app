@@ -365,7 +365,7 @@ export default function ProjectGeneralForm() {
 
               <div className="flex items-center gap-2 pr-2">
                 <code className="rounded bg-base-100 px-2 py-0.5 text-xs dark:bg-base-800">
-                  {BASE_URL}/workspaces/{workspaceSlug}/projects/{projectSlug}
+                  {BASE_URL}/board/{workspaceSlug}/{projectSlug}
                 </code>
                 <Button
                   variant="ghost"
@@ -373,7 +373,7 @@ export default function ProjectGeneralForm() {
                   className="size-7"
                   onClick={() => {
                     navigator.clipboard.writeText(
-                      `${BASE_URL}/workspaces/${workspaceSlug}/projects/${projectSlug}`,
+                      `${BASE_URL}/board/${workspaceSlug}/${projectSlug}`,
                     );
                     toast.success("Link copied to clipboard");
                   }}
