@@ -43,10 +43,8 @@ import type { DemoTask } from "./demoBoardData";
 
 const DEMO_PROJECT_PREFIX = "DEMO";
 
-/** Demo column width (320px) + gap (12px) */
-const COLUMN_WIDTH = 320;
-const COLUMN_GAP = 12;
-const CONTAINER_PADDING = 32; // p-4 = 16px * 2
+/** 3 columns (320px) + 2 gaps (12px) + padding (32px) */
+const BOARD_WIDTH = 3 * 320 + 2 * 12 + 32;
 const BOARD_HEIGHT = 420; // Fixed height to prevent layout shift
 
 /**
@@ -205,16 +203,11 @@ const DemoBoard = () => {
   const getDisplayId = (task: DemoTask) =>
     `${DEMO_PROJECT_PREFIX}-${task.number}`;
 
-  // Calculate exact width for 3 columns
-  const boardWidth =
-    demoColumns.length * COLUMN_WIDTH +
-    (demoColumns.length - 1) * COLUMN_GAP +
-    CONTAINER_PADDING;
-
   return (
     <div
       ref={containerRef}
       className="max-w-full overflow-hidden rounded-2xl bg-white/95 ring-1 ring-primary-500/10 dark:bg-base-900/95"
+      style={{ width: BOARD_WIDTH }}
     >
       {/* Toolbar header */}
       <div className="flex items-center justify-end gap-1 border-primary-500/10 border-b px-4 py-2">
@@ -333,7 +326,7 @@ const DemoBoard = () => {
         ) : (
           <div
             className="custom-scrollbar overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/15"
-            style={{ height: BOARD_HEIGHT, width: boardWidth }}
+            style={{ height: BOARD_HEIGHT }}
           >
             {demoColumns.map((column, index) => {
               const columnTasks = getColumnTasks(column.rowId);
