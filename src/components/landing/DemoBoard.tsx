@@ -43,6 +43,10 @@ import type { DemoTask } from "./demoBoardData";
 
 const DEMO_PROJECT_PREFIX = "DEMO";
 
+/** Demo column width (320px) + gap (12px) */
+const COLUMN_WIDTH = 320;
+const COLUMN_GAP = 12;
+const CONTAINER_PADDING = 32; // p-4 = 16px * 2
 const BOARD_HEIGHT = 420; // Fixed height to prevent layout shift
 
 /**
@@ -201,6 +205,12 @@ const DemoBoard = () => {
   const getDisplayId = (task: DemoTask) =>
     `${DEMO_PROJECT_PREFIX}-${task.number}`;
 
+  // Calculate exact width for 3 columns
+  const boardWidth =
+    demoColumns.length * COLUMN_WIDTH +
+    (demoColumns.length - 1) * COLUMN_GAP +
+    CONTAINER_PADDING;
+
   return (
     <div
       ref={containerRef}
@@ -323,7 +333,7 @@ const DemoBoard = () => {
         ) : (
           <div
             className="custom-scrollbar overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/15"
-            style={{ height: BOARD_HEIGHT }}
+            style={{ height: BOARD_HEIGHT, width: boardWidth }}
           >
             {demoColumns.map((column, index) => {
               const columnTasks = getColumnTasks(column.rowId);
@@ -331,7 +341,7 @@ const DemoBoard = () => {
               return (
                 <CollapsibleRoot
                   key={column.rowId}
-                  className="mb-4 rounded-lg border bg-background last:mb-0"
+                  className="mb-4 w-full rounded-lg border bg-background last:mb-0"
                   open={columnOpenStates[index]}
                   onOpenChange={({ open }) => {
                     setColumnOpenStates((prev) => {
