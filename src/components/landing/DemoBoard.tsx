@@ -220,9 +220,9 @@ const DemoBoard = () => {
               className="gap-2 text-base-600 text-xs dark:text-base-400"
             >
               {theme === "dark" ? (
-                <SunIcon className="size-4" />
-              ) : (
                 <MoonIcon className="size-4" />
+              ) : (
+                <SunIcon className="size-4" />
               )}
               <Shortcut>T</Shortcut>
             </Button>
