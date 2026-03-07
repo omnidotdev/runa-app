@@ -9,6 +9,7 @@ import {
   ProjectDataSection,
   ProjectGeneralForm,
   ProjectLabelsForm,
+  ProjectLinksForm,
   ProjectSettingsHeader,
 } from "@/components/projects";
 import {
@@ -116,6 +117,8 @@ function ProjectSettingsPage() {
 
       <div className="ml-2 flex flex-col gap-12 lg:ml-0">
         <ProjectGeneralForm />
+
+        <ProjectLinksForm />
 
         <ProjectLabelsForm />
 

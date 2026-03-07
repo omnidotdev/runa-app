@@ -9,6 +9,7 @@ export { default as ColumnSelector } from "./ColumnSelector";
 export { default as ColumnTrigger } from "./ColumnTrigger";
 export { default as DestructiveActionDialog } from "./DestructiveActionDialog";
 export { default as EmojiSelector } from "./EmojiSelector";
+export { default as Favicon } from "./Favicon";
 export { default as IconSelector } from "./IconSelector";
 export { default as Label } from "./Label";
 export { default as LabelIcon } from "./LabelIcon";
