@@ -49,11 +49,11 @@ const List = ({
   }, [tasks]);
 
   const { projectId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { setColumnId } = useTaskStore();
@@ -91,10 +91,10 @@ const List = ({
     <div
       className="custom-scrollbar h-full overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/20"
       style={{
-        backgroundColor: userPreferences?.color
+        backgroundColor: project?.color
           ? theme === "dark"
-            ? `${userPreferences?.color}12`
-            : `${userPreferences?.color}0D`
+            ? `${project?.color}12`
+            : `${project?.color}0D`
           : undefined,
       }}
     >
@@ -162,8 +162,8 @@ const List = ({
                     )}
                     style={{
                       backgroundColor:
-                        userPreferences?.color && snapshot.isDraggingOver
-                          ? `${userPreferences?.color}0D`
+                        project?.color && snapshot.isDraggingOver
+                          ? `${project?.color}0D`
                           : undefined,
                     }}
                   >

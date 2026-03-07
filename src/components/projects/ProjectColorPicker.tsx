@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import { PipetteIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -29,55 +29,36 @@ import {
   parseColor,
 } from "@/components/ui/color-picker";
 import {
-  useCreateUserPreferenceMutation,
+  useProjectQuery,
+  useProjectsQuery,
   useProjectsSidebarQuery,
-  useUpdateUserPreferenceMutation,
+  useUpdateProjectMutation,
 } from "@/generated/graphql";
 import { colors } from "@/lib/constants/colors";
 import useForm from "@/lib/hooks/useForm";
-import userPreferencesOptions from "@/lib/options/userPreferences.options";
+import projectOptions from "@/lib/options/project.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { ComponentProps } from "react";
 
 const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
   const { projectId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-  });
-
-  const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
 
   const [isUpdatingColorPreferences, setIsUpdatingColorPreferences] =
     useState(false);
 
-  const { data: userPreferences } = useSuspenseQuery({
-    ...userPreferencesOptions({
-      userId: session?.user?.rowId!,
-      projectId,
-    }),
-    select: (data) => data?.userPreferenceByUserIdAndProjectId,
+  const { data: project } = useSuspenseQuery({
+    ...projectOptions({ rowId: projectId }),
+    select: (data) => data?.project,
   });
 
-  const userPreferencesQueryKey = userPreferencesOptions({
-    userId: session?.user?.rowId!,
-    projectId,
-  }).queryKey;
-
-  const { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
+  const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
       invalidates: [
-        userPreferencesQueryKey,
-        getQueryKeyPrefix(useProjectsSidebarQuery),
-      ],
-    },
-  });
-
-  const { mutate: createUserPreference } = useCreateUserPreferenceMutation({
-    meta: {
-      invalidates: [
-        userPreferencesQueryKey,
+        getQueryKeyPrefix(useProjectQuery),
+        getQueryKeyPrefix(useProjectsQuery),
         getQueryKeyPrefix(useProjectsSidebarQuery),
       ],
     },
@@ -85,27 +66,15 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
 
   const form = useForm({
     defaultValues: {
-      color: userPreferences?.color ?? "#e4a21b",
+      color: project?.color ?? "#e4a21b",
     },
     onSubmit: ({ value }) => {
-      if (!userPreferences) {
-        createUserPreference({
-          input: {
-            userPreference: {
-              userId: session?.user?.rowId!,
-              projectId,
-              color: value.color,
-            },
-          },
-        });
-      } else {
-        updateUserPreferences({
-          rowId: userPreferences.rowId,
-          patch: {
-            color: value.color,
-          },
-        });
-      }
+      updateProject({
+        rowId: projectId,
+        patch: {
+          color: value.color,
+        },
+      });
 
       setIsUpdatingColorPreferences(false);
     },

@@ -47,7 +47,7 @@ import {
 } from "@/components/ui/sidebar";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
-import { CONSOLE_URL } from "@/lib/config/env.config";
+import { CONSOLE_URL, isSelfHosted } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { getSidebarCookies } from "@/providers/SidebarProvider";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -150,24 +150,28 @@ const AppSidebarFooter = () => {
                 }
               />
 
-              <Tooltip
-                positioning={{ placement: "right" }}
-                tooltip="Pricing"
-                disabled={isMobile || open}
-                trigger={
-                  <Link
-                    to="/pricing"
-                    preload="intent"
-                    className="w-full"
-                    tabIndex={-1}
-                  >
-                    <SidebarMenuButton onClick={closeMobileSidebar}>
-                      <TagIcon />
-                      <span className="flex w-full items-center">Pricing</span>
-                    </SidebarMenuButton>
-                  </Link>
-                }
-              />
+              {!isSelfHosted && (
+                <Tooltip
+                  positioning={{ placement: "right" }}
+                  tooltip="Pricing"
+                  disabled={isMobile || open}
+                  trigger={
+                    <Link
+                      to="/pricing"
+                      preload="intent"
+                      className="w-full"
+                      tabIndex={-1}
+                    >
+                      <SidebarMenuButton onClick={closeMobileSidebar}>
+                        <TagIcon />
+                        <span className="flex w-full items-center">
+                          Pricing
+                        </span>
+                      </SidebarMenuButton>
+                    </Link>
+                  }
+                />
+              )}
 
               <Tooltip
                 positioning={{ placement: "right" }}

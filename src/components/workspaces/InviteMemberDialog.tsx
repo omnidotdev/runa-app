@@ -31,6 +31,7 @@ import {
   TagsInputLabel,
   TagsInputRoot,
 } from "@/components/ui/tags-input";
+import { isSelfHosted } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import { useInviteMember } from "@/lib/hooks/useOrganizationMembers";
@@ -50,10 +51,10 @@ interface Props {
 
 const InviteMemberDialog = ({ triggerRef }: Props) => {
   const { organizationId, subscription, prices } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
   const orgContext = useOrganization();
 
@@ -86,8 +87,9 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     prices,
     subscription?.priceId,
   );
-  const maxMembers =
-    tier === Tier.Team || tier === Tier.Enterprise
+  const maxMembers = isSelfHosted
+    ? Infinity
+    : tier === Tier.Team || tier === Tier.Enterprise
       ? Infinity
       : tier === Tier.Basic
         ? 10

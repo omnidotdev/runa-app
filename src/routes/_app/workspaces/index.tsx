@@ -15,7 +15,7 @@ import {
   setLastWorkspaceCookie,
 } from "@/server/functions/lastWorkspace";
 
-export const Route = createFileRoute("/_auth/workspaces/")({
+export const Route = createFileRoute("/_app/workspaces/")({
   beforeLoad: async ({ context: { session } }) => {
     const organizations = session?.organizations ?? [];
     if (!organizations.length) return;

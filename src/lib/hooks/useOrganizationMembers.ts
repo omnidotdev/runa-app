@@ -5,7 +5,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { removeMember, updateMemberRole } from "@/lib/idp";
-import { inviteOrganizationMember } from "@/server/functions/organizations";
+import {
+  cancelOrganizationInvitation,
+  inviteOrganizationMember,
+} from "@/server/functions/organizations";
 
 import type { RemoveMemberParams, UpdateMemberRoleParams } from "@/lib/idp";
 
@@ -57,9 +60,31 @@ export function useInviteMember() {
       role: "admin" | "member";
     }) => inviteOrganizationMember({ data: params }),
     onSuccess: (_data, variables) => {
-      // Invalidate the organization members query to refresh the list
+      // Invalidate both members and invitations queries
       queryClient.invalidateQueries({
         queryKey: ["organizationMembers", variables.organizationId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["organizationInvitations", variables.organizationId],
+      });
+    },
+  });
+}
+
+/**
+ * Hook to cancel an organization invitation via server function.
+ */
+export function useCancelInvitation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params: { invitationId: string; organizationId: string }) =>
+      cancelOrganizationInvitation({
+        data: { invitationId: params.invitationId },
+      }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["organizationInvitations", variables.organizationId],
       });
     },
   });

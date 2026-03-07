@@ -9,10 +9,10 @@ query ProjectsSidebar($organizationId: String!, $userId: UUID) {
       rowId
       name
       slug
+      color
       userPreferences(condition: { userId: $userId }, first: 1) {
         nodes {
           rowId
-          color
           viewMode
         }
       }

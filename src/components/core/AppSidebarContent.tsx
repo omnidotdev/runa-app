@@ -69,8 +69,8 @@ interface SidebarMenuItemType {
 // TODO break up this behemoth
 
 const AppSidebarContent = () => {
-  const { organizationId } = useLoaderData({ from: "/_auth" });
-  const { session } = useRouteContext({ from: "/_auth" });
+  const { organizationId } = useLoaderData({ from: "/_app" });
+  const { session } = useRouteContext({ from: "/_app" });
   const queryClient = useQueryClient();
   const { workspaceSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
@@ -245,14 +245,14 @@ const AppSidebarContent = () => {
                               <Grid2X2Icon
                                 className="size-4 text-primary-500"
                                 style={{
-                                  color: userPreferences?.color ?? undefined,
+                                  color: project?.color ?? undefined,
                                 }}
                               />
                             ) : (
                               <ListIcon
                                 className="size-4 text-primary-500"
                                 style={{
-                                  color: userPreferences?.color ?? undefined,
+                                  color: project?.color ?? undefined,
                                 }}
                               />
                             )}
@@ -374,14 +374,14 @@ const AppSidebarContent = () => {
                               <Grid2X2Icon
                                 className="text-primary-500"
                                 style={{
-                                  color: userPreferences?.color ?? undefined,
+                                  color: project?.color ?? undefined,
                                 }}
                               />
                             ) : (
                               <ListIcon
                                 className="text-primary-500"
                                 style={{
-                                  color: userPreferences?.color ?? undefined,
+                                  color: project?.color ?? undefined,
                                 }}
                               />
                             )}

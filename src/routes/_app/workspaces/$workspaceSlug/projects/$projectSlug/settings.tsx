@@ -30,7 +30,7 @@ import { useOrganization } from "@/providers/OrganizationProvider";
 // TODO: Warn users about unsaved changes when attempting to navigate away from this page.
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
 )({
   loader: async ({
     params: { projectSlug },

@@ -38,11 +38,11 @@ import UpdateCommentForm from "./UpdateCommentForm";
 
 const Comments = () => {
   const { taskId } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
   const [activePostId, setActivePostId] = useState<string | null>(null);

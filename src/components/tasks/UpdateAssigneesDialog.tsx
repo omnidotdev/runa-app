@@ -38,8 +38,8 @@ const UpdateAssigneesDialog = () => {
     strict: false,
   });
 
-  const { organizationId } = useLoaderData({ from: "/_auth" });
-  const { session } = useRouteContext({ from: "/_auth" });
+  const { organizationId } = useLoaderData({ from: "/_app" });
+  const { session } = useRouteContext({ from: "/_app" });
 
   const { taskId: storeTaskId, setTaskId } = useTaskStore();
 

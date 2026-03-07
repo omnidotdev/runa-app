@@ -39,15 +39,15 @@ import { useOrganization } from "@/providers/OrganizationProvider";
 
 const Projects = () => {
   const { workspaceSlug } = useParams({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
 
   const { organizationId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/settings",
+    from: "/_app/workspaces/$workspaceSlug/settings",
   });
 
   const [selectedProject, setSelectedProject] = useState<{
@@ -159,9 +159,7 @@ const Projects = () => {
                       <div
                         className="flex size-6 items-center justify-center rounded-full border bg-primary font-medium text-background text-sm uppercase shadow"
                         style={{
-                          backgroundColor:
-                            project?.userPreferences.nodes?.[0]?.color ??
-                            undefined,
+                          backgroundColor: project?.color ?? undefined,
                         }}
                       >
                         {project?.name[0]}

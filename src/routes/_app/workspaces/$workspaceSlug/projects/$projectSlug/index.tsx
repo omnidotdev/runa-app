@@ -8,6 +8,7 @@ import {
 import { zodValidator } from "@tanstack/zod-adapter";
 import { all } from "better-all";
 import {
+  GlobeIcon,
   Grid2X2Icon,
   ListIcon,
   Maximize2Icon,
@@ -15,14 +16,19 @@ import {
   SearchIcon,
   Settings2,
 } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { Suspense, useCallback, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
 import { Link, Tooltip } from "@/components/core";
 import { NotFound } from "@/components/layout";
-import { Board, List, ProjectPageSkeleton } from "@/components/projects";
+import {
+  Board,
+  List,
+  ProjectPageSkeleton,
+  PublicBoard,
+} from "@/components/projects";
 import {
   CreateTaskDialog,
   Filter,
@@ -30,6 +36,7 @@ import {
   UpdateDueDateDialog,
   UpdateTaskLabelsDialog,
 } from "@/components/tasks";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -61,10 +68,11 @@ const projectSearchParamsSchema = z.object({
   assignees: z.array(z.guid()).default([]),
   labels: z.array(z.guid()).default([]),
   priorities: z.array(z.enum(["low", "medium", "high"])).default([]),
+  mode: z.enum(["public"]).optional(),
 });
 
 export const Route = createFileRoute(
-  "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
 )({
   pendingComponent: ProjectPageSkeleton,
   pendingMinMs: 500,
@@ -80,6 +88,42 @@ export const Route = createFileRoute(
     context: { session, queryClient, organizationId },
   }) => {
     if (!organizationId) throw notFound();
+
+    // Unauthenticated public access
+    if (!session?.user?.rowId) {
+      const { project } = await all({
+        async project() {
+          const { projectBySlugAndOrganizationId } =
+            await queryClient.ensureQueryData(
+              projectBySlugOptions({ slug: projectSlug, organizationId }),
+            );
+
+          if (!projectBySlugAndOrganizationId) throw notFound();
+          if (!projectBySlugAndOrganizationId.isPublic) throw notFound();
+
+          return projectBySlugAndOrganizationId;
+        },
+        async projectData() {
+          const project = await this.$.project;
+          return queryClient.ensureQueryData(
+            projectOptions({ rowId: project.rowId }),
+          );
+        },
+        async tasks() {
+          const project = await this.$.project;
+          return queryClient.ensureQueryData(
+            tasksOptions({ projectId: project.rowId }),
+          );
+        },
+      });
+
+      return {
+        name: project.name,
+        projectId: project.rowId,
+        organizationId,
+        isPublicAccess: true,
+      };
+    }
 
     const { project } = await all({
       async project() {
@@ -137,6 +181,7 @@ export const Route = createFileRoute(
         assignees: [],
         labels: [],
         priorities: [],
+        mode: undefined,
       }),
     ],
   },
@@ -156,9 +201,25 @@ export const Route = createFileRoute(
 });
 
 function ProjectPage() {
+  const loaderData = Route.useLoaderData();
+  const { session } = Route.useRouteContext();
+  const { mode } = Route.useSearch();
+  const isPublicAccess =
+    "isPublicAccess" in loaderData && loaderData.isPublicAccess;
+
+  // Show public view for unauth users or when previewing public board
+  if (isPublicAccess || !session?.user?.rowId || mode === "public") {
+    return <PublicProjectView projectId={loaderData.projectId} />;
+  }
+
+  return <AuthenticatedProjectPage />;
+}
+
+function AuthenticatedProjectPage() {
   const { session } = Route.useRouteContext();
   const { projectSlug, workspaceSlug } = Route.useParams();
-  const { projectId, organizationId } = Route.useLoaderData();
+  const loaderData = Route.useLoaderData();
+  const { projectId, organizationId } = loaderData;
   const { search, assignees, labels, priorities } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
 
@@ -485,7 +546,24 @@ function ProjectPage() {
       <div className="flex size-full flex-col">
         <div className="border-b px-6 py-4">
           <div className="flex flex-col gap-2">
-            <h1 className="font-semibold text-2xl">{project?.name}</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="font-semibold text-2xl">{project?.name}</h1>
+              {project?.isPublic && (
+                <Link
+                  to="/workspaces/$workspaceSlug/projects/$projectSlug"
+                  params={{ workspaceSlug, projectSlug }}
+                  search={{ mode: "public" }}
+                  target="_blank"
+                  variant="unstyled"
+                  className="h-auto rounded-none p-0 font-normal"
+                >
+                  <Badge variant="secondary" className="gap-1">
+                    <GlobeIcon className="size-3" />
+                    Public
+                  </Badge>
+                </Link>
+              )}
+            </div>
 
             {project?.description && (
               <p className="text-base-600 text-sm dark:text-base-400">
@@ -601,6 +679,40 @@ function ProjectPage() {
       <UpdateAssigneesDialog />
       <UpdateDueDateDialog />
       <UpdateTaskLabelsDialog />
+    </div>
+  );
+}
+
+function PublicProjectView({ projectId }: { projectId: string }) {
+  const { data: project } = useSuspenseQuery({
+    ...projectOptions({ rowId: projectId }),
+    select: (data) => data?.project,
+  });
+
+  const { data: tasks } = useSuspenseQuery({
+    ...tasksOptions({ projectId }),
+    select: (data) => data?.tasks?.nodes ?? [],
+  });
+
+  if (!project) return null;
+
+  return (
+    <div className="flex size-full flex-col">
+      <div className="border-b px-6 py-4">
+        <div className="flex items-center justify-between">
+          <h1 className="font-semibold text-2xl">{project.name}</h1>
+        </div>
+
+        {project.description && (
+          <p className="mt-1 text-base-600 text-sm dark:text-base-400">
+            {project.description}
+          </p>
+        )}
+      </div>
+
+      <Suspense>
+        <PublicBoard project={project} tasks={tasks} />
+      </Suspense>
     </div>
   );
 }

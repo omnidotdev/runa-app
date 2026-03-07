@@ -4,8 +4,10 @@ fragment Project on Project {
   slug
   description
   prefix
+  isPublic
   projectColumnId
   columnIndex
+  color
   allTasks: tasks {
     totalCount
   }

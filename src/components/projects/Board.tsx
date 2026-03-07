@@ -57,11 +57,11 @@ const Board = ({ tasks }: Props) => {
   useAutoScrollOnDrag({ isDragging, scrollContainerRef });
 
   const { projectId } = useLoaderData({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { session } = useRouteContext({
-    from: "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const { setColumnId } = useTaskStore();
@@ -100,10 +100,10 @@ const Board = ({ tasks }: Props) => {
       ref={scrollContainerRef}
       className={cn(boardContainerStyles.base, boardContainerStyles.background)}
       style={{
-        backgroundColor: userPreferences?.color
+        backgroundColor: project?.color
           ? theme === "dark"
-            ? `${userPreferences?.color}12`
-            : `${userPreferences?.color}0D`
+            ? `${project?.color}12`
+            : `${project?.color}0D`
           : undefined,
       }}
       onMouseDown={handleMouseDown}
@@ -149,8 +149,8 @@ const Board = ({ tasks }: Props) => {
                       )}
                       style={{
                         backgroundColor:
-                          userPreferences?.color && snapshot.isDraggingOver
-                            ? `${userPreferences?.color}0D`
+                          project?.color && snapshot.isDraggingOver
+                            ? `${project?.color}0D`
                             : undefined,
                       }}
                     >

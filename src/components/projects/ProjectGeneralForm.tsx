@@ -1,18 +1,27 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
-import { CheckIcon, PenLineIcon, XIcon } from "lucide-react";
+import {
+  CheckIcon,
+  CopyIcon,
+  GlobeIcon,
+  PenLineIcon,
+  XIcon,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Tooltip } from "@/components/core";
 import { ProjectColorPicker } from "@/components/projects";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   useProjectQuery,
   useProjectsQuery,
   useUpdateProjectMutation,
 } from "@/generated/graphql";
+import { BASE_URL } from "@/lib/config/env.config";
 import getSdk from "@/lib/graphql/getSdk";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useForm from "@/lib/hooks/useForm";
@@ -23,7 +32,7 @@ import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 const routeApi = getRouteApi(
-  "/_auth/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
 );
 
 export default function ProjectGeneralForm() {
@@ -42,6 +51,8 @@ export default function ProjectGeneralForm() {
     ...projectOptions({ rowId: projectId }),
     select: (data) => data?.project,
   });
+
+  const [isPublic, setIsPublic] = useState(project?.isPublic ?? false);
 
   const { mutate: updateProject } = useUpdateProjectMutation({
     meta: {
@@ -331,6 +342,69 @@ export default function ProjectGeneralForm() {
           </form.Field>
         </div>
       </form>
+
+      {/* Visibility toggle — outside form since it takes immediate effect */}
+      <div className="mt-6 flex flex-col">
+        <h2 className="mb-1 ml-2 flex h-10 items-center font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+          Visibility
+        </h2>
+
+        <div className="flex flex-col divide-y border-y">
+          <div className="flex h-10 w-full items-center justify-between">
+            <div className="flex items-center gap-3 pl-2 lg:pl-0">
+              <GlobeIcon className="size-4 text-base-500" />
+              <span className="text-sm">Public</span>
+            </div>
+
+            <div className="flex items-center gap-2 pr-2">
+              <span className="text-base-500 text-xs">
+                {isPublic
+                  ? "Anyone with the link can view"
+                  : "Only workspace members can access"}
+              </span>
+              <Switch
+                checked={isPublic}
+                onCheckedChange={(checked) => {
+                  setIsPublic(checked);
+                  updateProject({
+                    rowId: projectId,
+                    patch: { isPublic: checked },
+                  });
+                }}
+                disabled={isMember}
+              />
+            </div>
+          </div>
+
+          {isPublic && (
+            <div className="flex h-10 w-full items-center justify-between">
+              <div className="flex items-center gap-3 pl-2 lg:pl-0">
+                <span className="text-base-500 text-sm">Share link</span>
+              </div>
+
+              <div className="flex items-center gap-2 pr-2">
+                <code className="rounded bg-base-100 px-2 py-0.5 text-xs dark:bg-base-800">
+                  {BASE_URL}/workspaces/{workspaceSlug}/projects/
+                  {projectSlug}?mode=public
+                </code>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-7"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `${BASE_URL}/workspaces/${workspaceSlug}/projects/${projectSlug}?mode=public`,
+                    );
+                    toast.success("Link copied to clipboard");
+                  }}
+                >
+                  <CopyIcon className="size-3.5" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

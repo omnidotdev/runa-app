@@ -49,6 +49,17 @@ export async function fetchOrganizationMembers(
   return response.json();
 }
 
+export interface IdpInvitation {
+  id: string;
+  email: string;
+  role: string | null;
+  status: "pending" | "accepted" | "rejected" | "cancelled";
+  expiresAt: string;
+  inviterId: string;
+  organizationId: string;
+  createdAt: string;
+}
+
 export interface UpdateMemberRoleParams {
   organizationId: string;
   memberId: string;

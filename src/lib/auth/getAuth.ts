@@ -1,4 +1,7 @@
-import { extractOrgClaims } from "@omnidotdev/providers";
+import {
+  ensureFreshAccessToken,
+  extractOrgClaims,
+} from "@omnidotdev/providers";
 import { setCookie } from "@tanstack/react-start/server";
 import { GraphQLClient } from "graphql-request";
 
@@ -65,14 +68,22 @@ export async function getAuth(request: Request) {
 
     // Get tokens from Gatekeeper via Better Auth
     try {
-      const tokenResult = await auth.api.getAccessToken({
-        body: { providerId: "omni" },
-        headers: request.headers,
+      const tokenResult = await ensureFreshAccessToken({
+        getAccessToken: () =>
+          auth.api.getAccessToken({
+            body: { providerId: "omni" },
+            headers: request.headers,
+          }),
+        refreshToken: () =>
+          auth.api.refreshToken({
+            body: { providerId: "omni" },
+            headers: request.headers,
+          }),
       });
       accessToken = tokenResult?.accessToken;
 
       if (!accessToken) {
-        console.warn("[getAuth] getAccessToken returned no accessToken");
+        console.warn("[getAuth] No access token after refresh attempt");
       }
 
       // Extract claims from ID token (verified via OIDC discovery + JWKS)

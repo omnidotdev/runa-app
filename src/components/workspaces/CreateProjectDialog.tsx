@@ -59,8 +59,8 @@ const DEFAULT_PROJECT_COLUMNS = [
 ];
 
 const CreateProjectDialog = () => {
-  const { session } = useRouteContext({ from: "/_auth" });
-  const { organizationId } = useLoaderData({ from: "/_auth" });
+  const { session } = useRouteContext({ from: "/_app" });
+  const { organizationId } = useLoaderData({ from: "/_app" });
   const { workspaceSlug, projectSlug } = useParams({ strict: false });
 
   const navigate = useNavigate();

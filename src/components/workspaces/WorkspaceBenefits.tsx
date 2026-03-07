@@ -17,7 +17,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { BASE_URL } from "@/lib/config/env.config";
+import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import { isOwner } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
@@ -29,7 +29,7 @@ import {
   renewSubscription,
 } from "@/server/functions/subscriptions";
 
-const routeApi = getRouteApi("/_auth/workspaces/$workspaceSlug/settings");
+const routeApi = getRouteApi("/_app/workspaces/$workspaceSlug/settings");
 
 export default function WorkspaceBenefits() {
   const { organizationId, subscription, prices } = routeApi.useLoaderData();
@@ -80,6 +80,8 @@ export default function WorkspaceBenefits() {
       router.invalidate();
     },
   });
+
+  if (isSelfHosted) return null;
 
   return (
     <div
