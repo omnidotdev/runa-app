@@ -348,3 +348,9 @@
     background-position: -200% center;
   }
 }
+
+em-emoji-picker {
+  --rgb-background: var(--base-950);
+  --rgb-input: var(--input);
+  --shadow: none;
+}

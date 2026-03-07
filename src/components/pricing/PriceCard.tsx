@@ -169,7 +169,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
       <CardRoot
         key={price?.id}
         className={cn(
-          "relative flex flex-1 flex-col border-2",
+          "relative flex flex-col border-2",
           isTeamTier &&
             "border-primary-700 bg-primary-50 shadow-primary/20 dark:border-primary dark:bg-primary-1000",
         )}

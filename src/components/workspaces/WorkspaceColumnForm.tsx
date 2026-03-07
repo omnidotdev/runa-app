@@ -175,28 +175,30 @@ const ColumnForm = ({
         form.handleSubmit();
       }}
       className={cn(
-        "group flex h-10 w-full items-center px-2",
+        "group flex h-10 w-full items-center gap-2 px-2",
         isActive || column.rowId === "pending"
           ? "bg-accent"
           : "hover:bg-accent",
         hasActiveColumn && !isActive && "pointer-events-none",
+        isDragging && "border-y",
       )}
     >
-      <div
+      <Button
         {...attributes}
         {...listeners}
-        role="button"
+        variant="unstyled"
+        size="icon"
         tabIndex={0}
         aria-describedby={`DndDescribedBy-${column.rowId}`}
         className={cn(
-          "mr-1 h-9 cursor-move items-center justify-center rounded-sm outline-hidden transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 focus-visible:ring-offset-background",
+          "w-6 cursor-move items-center justify-center rounded-md outline-hidden transition-[color,box-shadow] focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0",
           canDrag ? "flex" : "invisible",
           isMember && "hidden",
         )}
         aria-label="Drag handle"
       >
-        <GripVerticalIcon className="size-3 text-muted-foreground" />
-      </div>
+        <GripVerticalIcon className="flex size-3 text-muted-foreground" />
+      </Button>
 
       <form.Field name="icon">
         {(field) => (
@@ -213,12 +215,15 @@ const ColumnForm = ({
       <form.Field name="title">
         {(field) => (
           <Input
-            ref={inputRef}
             value={field.state.value}
             onChange={(e) => field.handleChange(e.target.value)}
             disabled={!isActive}
             placeholder="Enter a column name..."
-            className="rounded border-0 shadow-none focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100"
+            className={cn(
+              "rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
+              isActive &&
+                "border border-primary bg-background focus-visible:ring-0",
+            )}
             id="column-title-input"
             autoComplete="off"
           />
@@ -249,16 +254,13 @@ const ColumnForm = ({
 
           <MenuPositioner>
             <MenuContent className="focus-within:outline-none">
-              <MenuItem
-                value="reset"
-                onClick={() => onSetActive(column.rowId!)}
-              >
+              <MenuItem value="edit" onClick={() => onSetActive(column.rowId!)}>
                 <PenLineIcon />
                 <span> Edit</span>
               </MenuItem>
 
               <MenuItem
-                value="reset"
+                value="delete"
                 variant="destructive"
                 onClick={() => {
                   setColumnToDelete?.(column);
@@ -280,7 +282,7 @@ const ColumnForm = ({
           ]}
         >
           {([canSubmit, isSubmitting, isDefaultValue]) => (
-            <div className="ml-2 flex items-center justify-center">
+            <div className="ml-2 flex items-center justify-center gap-1">
               <Tooltip
                 tooltip="Cancel"
                 trigger={
@@ -292,10 +294,10 @@ const ColumnForm = ({
                       form.reset();
                     }}
                     disabled={isSubmitting}
-                    className="focus-visible:ring-offset-0"
+                    className="size-7 hover:text-destructive focus-visible:ring-destructive focus-visible:ring-offset-0"
                     aria-label="Cancel"
                   >
-                    <XIcon size={12} />
+                    <XIcon className="size-4" />
                   </Button>
                 }
               />
@@ -308,10 +310,10 @@ const ColumnForm = ({
                     variant="ghost"
                     size="icon"
                     disabled={!canSubmit || isSubmitting || isDefaultValue}
-                    className="focus-visible:ring-offset-0"
+                    className="size-7 hover:text-green-500 focus-visible:ring-green-500 focus-visible:ring-offset-0"
                     aria-label="Save"
                   >
-                    <CheckIcon size={12} />
+                    <CheckIcon className="size-4" />
                   </Button>
                 }
               />

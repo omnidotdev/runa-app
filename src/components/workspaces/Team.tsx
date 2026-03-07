@@ -429,7 +429,6 @@ const Team = () => {
           })
         }
         dialogType={DialogType.DeleteTeamMember}
-        confirmation={selectedMember?.name}
       />
 
       <DialogRoot

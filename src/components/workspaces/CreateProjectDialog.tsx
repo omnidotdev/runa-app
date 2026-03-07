@@ -28,6 +28,7 @@ import {
   useCreateUserPreferenceMutation,
   useProjectColumnsQuery,
   useProjectsQuery,
+  useProjectsSidebarQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -129,6 +130,7 @@ const CreateProjectDialog = () => {
       invalidates: [
         getQueryKeyPrefix(useProjectsQuery),
         getQueryKeyPrefix(useProjectColumnsQuery),
+        getQueryKeyPrefix(useProjectsSidebarQuery),
       ],
     },
     onSuccess: async ({ createProject }) => {
