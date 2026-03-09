@@ -89,11 +89,13 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
   );
   const maxMembers = isSelfHosted
     ? Infinity
-    : tier === Tier.Team || tier === Tier.Enterprise
+    : tier === Tier.Enterprise
       ? Infinity
-      : tier === Tier.Basic
-        ? 10
-        : 3;
+      : tier === Tier.Team
+        ? 50
+        : tier === Tier.Pro
+          ? 20
+          : 5;
   const _canInviteMore = memberCount < maxMembers;
 
   const [numberOfToasts, setNumberOfToasts] = useState(0);
