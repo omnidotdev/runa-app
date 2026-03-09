@@ -34,7 +34,11 @@ export const FREE_PRICE: Price = {
     id: "free-product",
     name: "Free",
     description: "Start for free.",
-    marketing_features: [{ name: "2 projects" }, { name: "500 total tasks" }],
+    marketing_features: [
+      { name: "5 projects" },
+      { name: "1,500 total tasks" },
+      { name: "5 members" },
+    ],
   },
 };
 
@@ -52,7 +56,7 @@ const faqItems = [
 ];
 
 const searchSchema = z.object({
-  tier: z.enum(["free", "basic", "team"]).optional(),
+  tier: z.enum(["free", "pro", "team"]).optional(),
 });
 
 export const Route = createFileRoute("/_public/pricing")({
@@ -127,7 +131,7 @@ function PricingPage() {
             <TabsTrigger value="year" className="relative rounded-lg">
               Yearly{" "}
               <Badge className="absolute -top-4 -right-4 rotate-12 px-1">
-                save 25%
+                save 20%
               </Badge>
             </TabsTrigger>
           </TabsList>

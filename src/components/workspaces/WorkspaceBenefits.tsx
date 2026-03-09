@@ -151,7 +151,7 @@ export default function WorkspaceBenefits() {
             </MenuTrigger>
             <MenuPositioner>
               <MenuContent className="w-60">
-                {(["basic", "team"] as const).map((tier, index) => (
+                {(["pro", "team"] as const).map((tier, index) => (
                   <Fragment key={tier}>
                     <MenuItemGroup>
                       <MenuItemGroupLabel className="text-muted-foreground">
