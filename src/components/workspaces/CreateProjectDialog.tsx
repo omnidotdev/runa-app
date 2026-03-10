@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   useLoaderData,
-  useNavigate,
   useParams,
   useRouteContext,
 } from "@tanstack/react-router";
@@ -63,7 +62,6 @@ const CreateProjectDialog = () => {
   const { organizationId } = useLoaderData({ from: "/_app" });
   const { workspaceSlug, projectSlug } = useParams({ strict: false });
 
-  const navigate = useNavigate();
   const nameRef = useRef<HTMLInputElement>(null);
   const orgContext = useOrganization();
 
@@ -162,14 +160,6 @@ const CreateProjectDialog = () => {
               },
             },
           });
-        },
-      });
-
-      navigate({
-        to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-        params: {
-          workspaceSlug: workspaceSlug!,
-          projectSlug: createProject?.project?.slug!,
         },
       });
     },
