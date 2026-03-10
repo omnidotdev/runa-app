@@ -72,9 +72,16 @@ interface Props {
   onChange: (icon: string) => void;
   triggerProps?: ComponentProps<typeof Button>;
   disabled?: boolean;
+  isActive?: boolean;
 }
 
-const IconSelector = ({ value, onChange, triggerProps, disabled }: Props) => {
+const IconSelector = ({
+  value,
+  onChange,
+  triggerProps,
+  disabled,
+  isActive,
+}: Props) => {
   const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -127,7 +134,7 @@ const IconSelector = ({ value, onChange, triggerProps, disabled }: Props) => {
           disabled={disabled}
           className={cn(
             "size-9 rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
-            !disabled &&
+            isActive &&
               "border border-primary bg-background focus-visible:ring-0",
           )}
           {...triggerProps}

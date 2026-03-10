@@ -205,6 +205,7 @@ const ColumnForm = ({
           <IconSelector
             value={field.state.value}
             onChange={(icon) => field.handleChange(icon)}
+            isActive={isActive}
             triggerProps={{
               disabled: !isActive,
             }}
