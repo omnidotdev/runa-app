@@ -5,7 +5,7 @@
  */
 export enum Tier {
   Free = "free",
-  Basic = "basic",
+  Pro = "pro",
   Team = "team",
   Enterprise = "enterprise",
 }
@@ -32,17 +32,17 @@ export function getTierFromSubscription(
     product?: { metadata?: { tier?: string } } | null;
   };
   if (sub.product?.metadata?.tier) {
-    return (sub.product.metadata.tier as Tier) ?? Tier.Basic;
+    return (sub.product.metadata.tier as Tier) ?? Tier.Pro;
   }
 
   // Fallback: find the price and get tier from its metadata
   if (prices && subscriptionPriceId) {
     const price = prices.find((p) => p.id === subscriptionPriceId);
     if (price?.metadata?.tier) {
-      return (price.metadata.tier as Tier) ?? Tier.Basic;
+      return (price.metadata.tier as Tier) ?? Tier.Pro;
     }
   }
 
-  // Default to basic if subscription exists but tier can't be determined
-  return Tier.Basic;
+  // Default to pro if subscription exists but tier can't be determined
+  return Tier.Pro;
 }

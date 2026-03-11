@@ -1,10 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useNavigate,
-  useParams,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { useLoaderData, useNavigate, useParams } from "@tanstack/react-router";
 import { all } from "better-all";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -22,10 +17,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
-  useCreateColumnMutation,
   useCreateProjectColumnMutation,
   useCreateProjectMutation,
-  useCreateUserPreferenceMutation,
   useProjectColumnsQuery,
   useProjectsQuery,
 } from "@/generated/graphql";
@@ -43,22 +36,13 @@ import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
-const DEFAULT_COLUMNS = [
-  { title: "Backlog", index: 0, icon: "emoji:📚" },
-  { title: "To Do", index: 1, icon: "emoji:📝" },
-  { title: "In Progress", index: 2, icon: "emoji:🚧" },
-  { title: "Awaiting Review", index: 3, icon: "emoji:🔍" },
-  { title: "Done", index: 4, icon: "emoji:✅" },
-];
-
 const DEFAULT_PROJECT_COLUMNS = [
-  { title: "Planned", index: 0, icon: "emoji:🗓" },
-  { title: "In Progress", index: 1, icon: "emoji:🚧" },
-  { title: "Completed", index: 2, icon: "emoji:✅" },
+  { title: "Planned", index: 0, icon: "emoji:🌑" },
+  { title: "In Progress", index: 1, icon: "emoji:🌓" },
+  { title: "Completed", index: 2, icon: "emoji:🌕" },
 ];
 
 const CreateProjectDialog = () => {
-  const { session } = useRouteContext({ from: "/_app" });
   const { organizationId } = useLoaderData({ from: "/_app" });
   const { workspaceSlug, projectSlug } = useParams({ strict: false });
 
@@ -115,9 +99,6 @@ const CreateProjectDialog = () => {
     [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug, projectSlug],
   );
 
-  const { mutateAsync: createColumn } = useCreateColumnMutation();
-  const { mutateAsync: createUserPreference } =
-    useCreateUserPreferenceMutation();
   const { mutateAsync: createProjectColumn } = useCreateProjectColumnMutation({
     meta: {
       invalidates: [getQueryKeyPrefix(useProjectColumnsQuery)],
@@ -131,38 +112,8 @@ const CreateProjectDialog = () => {
         getQueryKeyPrefix(useProjectColumnsQuery),
       ],
     },
-    onSuccess: async ({ createProject }) => {
-      const projectId = createProject?.project?.rowId!;
-
-      await all({
-        async columns() {
-          return Promise.all(
-            DEFAULT_COLUMNS.map((column) =>
-              createColumn({
-                input: {
-                  column: {
-                    title: column.title,
-                    index: column.index,
-                    projectId,
-                    icon: column.icon,
-                  },
-                },
-              }),
-            ),
-          );
-        },
-        async userPreference() {
-          return createUserPreference({
-            input: {
-              userPreference: {
-                projectId,
-                userId: session?.user?.rowId!,
-              },
-            },
-          });
-        },
-      });
-
+    // Default columns and user preference are created server-side
+    onSuccess: ({ createProject }) => {
       navigate({
         to: "/workspaces/$workspaceSlug/projects/$projectSlug",
         params: {

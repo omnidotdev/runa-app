@@ -1,0 +1,10 @@
+mutation CreateProjectLink($projectLink: ProjectLinkInput!) {
+  createProjectLink(input: { projectLink: $projectLink }) {
+    projectLink {
+      rowId
+      url
+      title
+      order
+    }
+  }
+}

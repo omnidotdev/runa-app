@@ -1,0 +1,10 @@
+mutation UpdateProjectLink($rowId: UUID!, $patch: ProjectLinkPatch!) {
+  updateProjectLink(input: { rowId: $rowId, patch: $patch }) {
+    projectLink {
+      rowId
+      url
+      title
+      order
+    }
+  }
+}

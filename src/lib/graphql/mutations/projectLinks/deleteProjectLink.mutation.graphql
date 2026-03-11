@@ -1,0 +1,7 @@
+mutation DeleteProjectLink($rowId: UUID!) {
+  deleteProjectLink(input: { rowId: $rowId }) {
+    projectLink {
+      rowId
+    }
+  }
+}

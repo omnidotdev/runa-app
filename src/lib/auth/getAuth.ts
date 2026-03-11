@@ -1,6 +1,7 @@
 import {
   ensureFreshAccessToken,
   extractOrgClaims,
+  isInvalidGrant,
 } from "@omnidotdev/providers";
 import { setCookie } from "@tanstack/react-start/server";
 import { GraphQLClient } from "graphql-request";
@@ -124,6 +125,18 @@ export async function getAuth(request: Request) {
       }
     } catch (err) {
       console.error("[getAuth] Token fetch error:", err);
+
+      if (isInvalidGrant(err)) {
+        console.warn("[getAuth] Invalid refresh token, clearing session");
+        try {
+          await auth.api.signOut({ headers: request.headers });
+        } catch {
+          // Sign-out may fail if session is already corrupt
+        }
+        // Clear the auth cache cookie so stale rowId doesn't persist
+        setCookie(authCache.cookieName, "", { maxAge: 0, path: "/" });
+        return null;
+      }
     }
 
     return {

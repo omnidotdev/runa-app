@@ -7,10 +7,19 @@ fragment Project on Project {
   isPublic
   projectColumnId
   columnIndex
+  color
   allTasks: tasks {
     totalCount
   }
   completedTasks: tasks(filter: { column: { title: { equalTo: "Done" } } }) {
     totalCount
+  }
+  projectLinks(orderBy: ORDER_ASC) {
+    nodes {
+      rowId
+      url
+      title
+      order
+    }
   }
 }

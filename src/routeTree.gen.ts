@@ -21,6 +21,7 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppProfileUserIdRouteImport } from './routes/_app/profile/$userId'
 import { Route as AppWorkspacesWorkspaceSlugSettingsRouteImport } from './routes/_app/workspaces/$workspaceSlug/settings'
 import { Route as AppWorkspacesWorkspaceSlugProjectsIndexRouteImport } from './routes/_app/workspaces/$workspaceSlug/projects/index'
+import { Route as ApiOgProjectWorkspaceSlugProjectSlugRouteImport } from './routes/api/og/project.$workspaceSlug.$projectSlug'
 import { Route as AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport } from './routes/_app/workspaces/$workspaceSlug/projects/$projectSlug/index'
 import { Route as AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRouteImport } from './routes/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings'
 import { Route as AppWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRouteImport } from './routes/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
@@ -85,6 +86,12 @@ const AppWorkspacesWorkspaceSlugProjectsIndexRoute =
     path: '/workspaces/$workspaceSlug/projects/',
     getParentRoute: () => AppRoute,
   } as any)
+const ApiOgProjectWorkspaceSlugProjectSlugRoute =
+  ApiOgProjectWorkspaceSlugProjectSlugRouteImport.update({
+    id: '/api/og/project/$workspaceSlug/$projectSlug',
+    path: '/api/og/project/$workspaceSlug/$projectSlug',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute =
   AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport.update({
     id: '/workspaces/$workspaceSlug/projects/$projectSlug/',
@@ -114,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces/': typeof AppWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AppWorkspacesWorkspaceSlugSettingsRoute
+  '/api/og/project/$workspaceSlug/$projectSlug': typeof ApiOgProjectWorkspaceSlugProjectSlugRoute
   '/workspaces/$workspaceSlug/projects/': typeof AppWorkspacesWorkspaceSlugProjectsIndexRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
@@ -129,6 +137,7 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AppWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AppWorkspacesWorkspaceSlugSettingsRoute
+  '/api/og/project/$workspaceSlug/$projectSlug': typeof ApiOgProjectWorkspaceSlugProjectSlugRoute
   '/workspaces/$workspaceSlug/projects': typeof AppWorkspacesWorkspaceSlugProjectsIndexRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
@@ -147,6 +156,7 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/workspaces/': typeof AppWorkspacesIndexRoute
   '/_app/workspaces/$workspaceSlug/settings': typeof AppWorkspacesWorkspaceSlugSettingsRoute
+  '/api/og/project/$workspaceSlug/$projectSlug': typeof ApiOgProjectWorkspaceSlugProjectSlugRoute
   '/_app/workspaces/$workspaceSlug/projects/': typeof AppWorkspacesWorkspaceSlugProjectsIndexRoute
   '/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
   '/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/workspaces/'
     | '/workspaces/$workspaceSlug/settings'
+    | '/api/og/project/$workspaceSlug/$projectSlug'
     | '/workspaces/$workspaceSlug/projects/'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/workspaces'
     | '/workspaces/$workspaceSlug/settings'
+    | '/api/og/project/$workspaceSlug/$projectSlug'
     | '/workspaces/$workspaceSlug/projects'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
@@ -196,6 +208,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/_app/workspaces/'
     | '/_app/workspaces/$workspaceSlug/settings'
+    | '/api/og/project/$workspaceSlug/$projectSlug'
     | '/_app/workspaces/$workspaceSlug/projects/'
     | '/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
     | '/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings'
@@ -208,6 +221,7 @@ export interface RootRouteChildren {
   ApiHealthRoute: typeof ApiHealthRoute
   ApiVersionRoute: typeof ApiVersionRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiOgProjectWorkspaceSlugProjectSlugRoute: typeof ApiOgProjectWorkspaceSlugProjectSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -296,6 +310,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWorkspacesWorkspaceSlugProjectsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/og/project/$workspaceSlug/$projectSlug': {
+      id: '/api/og/project/$workspaceSlug/$projectSlug'
+      path: '/api/og/project/$workspaceSlug/$projectSlug'
+      fullPath: '/api/og/project/$workspaceSlug/$projectSlug'
+      preLoaderRoute: typeof ApiOgProjectWorkspaceSlugProjectSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app/workspaces/$workspaceSlug/projects/$projectSlug/': {
       id: '/_app/workspaces/$workspaceSlug/projects/$projectSlug/'
       path: '/workspaces/$workspaceSlug/projects/$projectSlug'
@@ -368,6 +389,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiHealthRoute: ApiHealthRoute,
   ApiVersionRoute: ApiVersionRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiOgProjectWorkspaceSlugProjectSlugRoute:
+    ApiOgProjectWorkspaceSlugProjectSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
