@@ -13,7 +13,6 @@ import { useDebounceCallback } from "usehooks-ts";
 
 import {
   ColumnSelector,
-  DestructiveActionDialog,
   Link,
   PrioritySelector,
   RichTextEditor,
@@ -317,7 +316,10 @@ function AuthenticatedTaskPage() {
               "justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20",
               !isAuthor && isMember && "hidden",
             )}
-            onClick={() => setIsDeleteTaskDialogOpen(true)}
+            onClick={
+              () => deleteTask({ rowId: taskId })
+              // setIsDeleteTaskDialogOpen(true)
+            }
             aria-label="Delete Task"
           >
             <Trash2Icon className="size-4" />
@@ -415,13 +417,6 @@ function AuthenticatedTaskPage() {
       <UpdateAssigneesDialog />
       <UpdateDueDateDialog />
       <UpdateTaskLabelsDialog />
-      <DestructiveActionDialog
-        title="Delete Task"
-        description="This will permanently delete this task.
-        This action cannot be undone."
-        onConfirm={() => deleteTask({ rowId: taskId })}
-        dialogType={DialogType.DeleteTask}
-      />
     </div>
   );
 }

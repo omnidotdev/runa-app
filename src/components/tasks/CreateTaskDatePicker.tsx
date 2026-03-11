@@ -61,10 +61,10 @@ const CreateTaskDatePicker = withForm({
               <DatePickerTrigger asChild>
                 <Button variant="outline">
                   <CalendarIcon className="size-4" />
-                  {!!field.state.value.length && // TODO: timezone handling
-                    dayjs(field.state.value).format("MMM D, YYYY")}
-
-                  {!isMobile && "Set due date"}
+                  {field.state.value.length
+                    ? // TODO: timezone handling
+                      dayjs(field.state.value).format("MMM D, YYYY")
+                    : !isMobile && "Set due date"}
                 </Button>
               </DatePickerTrigger>
             </DatePickerControl>
