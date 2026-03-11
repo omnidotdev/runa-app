@@ -44,7 +44,7 @@ interface UseUndoActivityOptions {
  *
  * This is an optimistic check - the server will perform additional validation.
  */
-function canUndoLocally({
+export function canUndoLocally({
   activityCreatedAt,
   activityStatus,
   hasSnapshot,
