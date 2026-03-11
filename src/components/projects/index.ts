@@ -11,6 +11,8 @@ export { default as ProjectDataSection } from "./ProjectDataSection";
 export { default as ProjectGeneralForm } from "./ProjectGeneralForm";
 export { default as ProjectLabelForm } from "./ProjectLabelForm";
 export { default as ProjectLabelsForm } from "./ProjectLabelsForm";
+export { default as ProjectLinks } from "./ProjectLinks";
+export { default as ProjectLinksForm } from "./ProjectLinksForm";
 export { default as ProjectPageSkeleton } from "./ProjectPageSkeleton";
 export { default as ProjectSettingsHeader } from "./ProjectSettingsHeader";
 export { default as PublicBoard } from "./PublicBoard";

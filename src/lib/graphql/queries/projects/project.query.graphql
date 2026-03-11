@@ -8,6 +8,7 @@ query Project($rowId: UUID!) {
     isPublic
     projectColumnId
     nextTaskNumber
+    color
     tasks {
       totalCount
     }
@@ -20,6 +21,14 @@ query Project($rowId: UUID!) {
         tasks {
           totalCount
         }
+      }
+    }
+    projectLinks(orderBy: ORDER_ASC) {
+      nodes {
+        rowId
+        url
+        title
+        order
       }
     }
   }

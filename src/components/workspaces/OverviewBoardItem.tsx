@@ -25,8 +25,6 @@ const BoardItem = ({ project }: Props) => {
   const progressPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  const userPreferences = project.userPreferences?.nodes?.[0];
-
   return (
     <div
       onClick={() =>
@@ -65,11 +63,11 @@ const BoardItem = ({ project }: Props) => {
             <div
               className={cn(
                 "h-2 rounded-full bg-primary transition-all",
-                !userPreferences && "bg-transparent",
+                !project?.color && "bg-transparent",
               )}
               style={{
                 width: `${progressPercentage}%`,
-                backgroundColor: userPreferences?.color ?? undefined,
+                backgroundColor: project?.color ?? undefined,
               }}
             />
           </div>

@@ -382,6 +382,72 @@ export const mockUpdateProjectColumnMutation = (resolver: GraphQLResponseResolve
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockCreateProjectLinkMutation(
+ *   ({ query, variables }) => {
+ *     const { projectLink } = variables;
+ *     return HttpResponse.json({
+ *       data: { createProjectLink }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockCreateProjectLinkMutation = (resolver: GraphQLResponseResolver<Types.CreateProjectLinkMutation, Types.CreateProjectLinkMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.CreateProjectLinkMutation, Types.CreateProjectLinkMutationVariables>(
+    'CreateProjectLink',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockDeleteProjectLinkMutation(
+ *   ({ query, variables }) => {
+ *     const { rowId } = variables;
+ *     return HttpResponse.json({
+ *       data: { deleteProjectLink }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockDeleteProjectLinkMutation = (resolver: GraphQLResponseResolver<Types.DeleteProjectLinkMutation, Types.DeleteProjectLinkMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.DeleteProjectLinkMutation, Types.DeleteProjectLinkMutationVariables>(
+    'DeleteProjectLink',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUpdateProjectLinkMutation(
+ *   ({ query, variables }) => {
+ *     const { rowId, patch } = variables;
+ *     return HttpResponse.json({
+ *       data: { updateProjectLink }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockUpdateProjectLinkMutation = (resolver: GraphQLResponseResolver<Types.UpdateProjectLinkMutation, Types.UpdateProjectLinkMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.UpdateProjectLinkMutation, Types.UpdateProjectLinkMutationVariables>(
+    'UpdateProjectLink',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockCreateProjectMutation(
  *   ({ query, variables }) => {
  *     const { input } = variables;

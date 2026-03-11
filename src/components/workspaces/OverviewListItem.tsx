@@ -24,8 +24,6 @@ const ListItem = ({ project }: Props) => {
   const progressPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  const userPreferences = project.userPreferences?.nodes?.[0];
-
   return (
     <div
       className="cursor-pointer border-base-200 border-b p-4 last:border-b-0 dark:border-base-700"
@@ -68,11 +66,11 @@ const ListItem = ({ project }: Props) => {
                 <div
                   className={cn(
                     "h-2 rounded-full bg-primary transition-all",
-                    !userPreferences && "bg-transparent",
+                    !project?.color && "bg-transparent",
                   )}
                   style={{
                     width: `${progressPercentage}%`,
-                    backgroundColor: userPreferences?.color ?? undefined,
+                    backgroundColor: project?.color ?? undefined,
                   }}
                 />
               </div>

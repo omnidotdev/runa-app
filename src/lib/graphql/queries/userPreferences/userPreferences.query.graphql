@@ -3,6 +3,5 @@ query UserPreferences($userId: UUID!, $projectId: UUID!) {
     hiddenColumnIds
     viewMode
     rowId
-    color
   }
 }

@@ -250,14 +250,14 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                               <Grid2X2Icon
                                 className="size-4 text-primary-500"
                                 style={{
-                                  color: userPreferences?.color ?? undefined,
+                                  color: project?.color ?? undefined,
                                 }}
                               />
                             ) : (
                               <ListIcon
                                 className="size-4 text-primary-500"
                                 style={{
-                                  color: userPreferences?.color ?? undefined,
+                                  color: project?.color ?? undefined,
                                 }}
                               />
                             )}
@@ -381,14 +381,14 @@ const AppSidebarContent = ({ setSelectedProject }: Props) => {
                               <Grid2X2Icon
                                 className="text-primary-500"
                                 style={{
-                                  color: userPreferences?.color ?? undefined,
+                                  color: project?.color ?? undefined,
                                 }}
                               />
                             ) : (
                               <ListIcon
                                 className="text-primary-500"
                                 style={{
-                                  color: userPreferences?.color ?? undefined,
+                                  color: project?.color ?? undefined,
                                 }}
                               />
                             )}
