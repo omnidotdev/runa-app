@@ -1,10 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useNavigate,
-  useParams,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { useLoaderData, useNavigate, useParams } from "@tanstack/react-router";
 import { all } from "better-all";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -24,7 +19,6 @@ import { Input } from "@/components/ui/input";
 import {
   useCreateProjectColumnMutation,
   useCreateProjectMutation,
-  useCreateUserPreferenceMutation,
   useProjectColumnsQuery,
   useProjectsQuery,
 } from "@/generated/graphql";
@@ -49,7 +43,6 @@ const DEFAULT_PROJECT_COLUMNS = [
 ];
 
 const CreateProjectDialog = () => {
-  const { session } = useRouteContext({ from: "/_app" });
   const { organizationId } = useLoaderData({ from: "/_app" });
   const { workspaceSlug, projectSlug } = useParams({ strict: false });
 
@@ -106,8 +99,6 @@ const CreateProjectDialog = () => {
     [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug, projectSlug],
   );
 
-  const { mutateAsync: createUserPreference } =
-    useCreateUserPreferenceMutation();
   const { mutateAsync: createProjectColumn } = useCreateProjectColumnMutation({
     meta: {
       invalidates: [getQueryKeyPrefix(useProjectColumnsQuery)],
@@ -121,19 +112,8 @@ const CreateProjectDialog = () => {
         getQueryKeyPrefix(useProjectColumnsQuery),
       ],
     },
-    onSuccess: async ({ createProject }) => {
-      const projectId = createProject?.project?.rowId!;
-
-      // Default columns are now created server-side via DefaultColumnsPlugin
-      await createUserPreference({
-        input: {
-          userPreference: {
-            projectId,
-            userId: session?.user?.rowId!,
-          },
-        },
-      });
-
+    // Default columns and user preference are created server-side
+    onSuccess: ({ createProject }) => {
       navigate({
         to: "/workspaces/$workspaceSlug/projects/$projectSlug",
         params: {
