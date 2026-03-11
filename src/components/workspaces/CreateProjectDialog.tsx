@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
-  useCreateColumnMutation,
   useCreateProjectColumnMutation,
   useCreateProjectMutation,
   useCreateUserPreferenceMutation,
@@ -43,18 +42,10 @@ import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
-const DEFAULT_COLUMNS = [
-  { title: "Backlog", index: 0, icon: "emoji:📚" },
-  { title: "To Do", index: 1, icon: "emoji:📝" },
-  { title: "In Progress", index: 2, icon: "emoji:🚧" },
-  { title: "Awaiting Review", index: 3, icon: "emoji:🔍" },
-  { title: "Done", index: 4, icon: "emoji:✅" },
-];
-
 const DEFAULT_PROJECT_COLUMNS = [
-  { title: "Planned", index: 0, icon: "emoji:🗓" },
-  { title: "In Progress", index: 1, icon: "emoji:🚧" },
-  { title: "Completed", index: 2, icon: "emoji:✅" },
+  { title: "Planned", index: 0, icon: "emoji:🌑" },
+  { title: "In Progress", index: 1, icon: "emoji:🌓" },
+  { title: "Completed", index: 2, icon: "emoji:🌕" },
 ];
 
 const CreateProjectDialog = () => {
@@ -115,7 +106,6 @@ const CreateProjectDialog = () => {
     [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug, projectSlug],
   );
 
-  const { mutateAsync: createColumn } = useCreateColumnMutation();
   const { mutateAsync: createUserPreference } =
     useCreateUserPreferenceMutation();
   const { mutateAsync: createProjectColumn } = useCreateProjectColumnMutation({
@@ -134,32 +124,13 @@ const CreateProjectDialog = () => {
     onSuccess: async ({ createProject }) => {
       const projectId = createProject?.project?.rowId!;
 
-      await all({
-        async columns() {
-          return Promise.all(
-            DEFAULT_COLUMNS.map((column) =>
-              createColumn({
-                input: {
-                  column: {
-                    title: column.title,
-                    index: column.index,
-                    projectId,
-                    icon: column.icon,
-                  },
-                },
-              }),
-            ),
-          );
-        },
-        async userPreference() {
-          return createUserPreference({
-            input: {
-              userPreference: {
-                projectId,
-                userId: session?.user?.rowId!,
-              },
-            },
-          });
+      // Default columns are now created server-side via DefaultColumnsPlugin
+      await createUserPreference({
+        input: {
+          userPreference: {
+            projectId,
+            userId: session?.user?.rowId!,
+          },
         },
       });
 
