@@ -58,14 +58,14 @@ const Assignees = ({
       {...rest}
       className={cn(
         "flex items-center",
-        showUsername ? "flex-col gap-1" : "-space-x-1",
+        showUsername ? "gap-2" : "-space-x-1",
         rest.className,
       )}
     >
       {visibleUsers.map((member) => {
         const userColor = getUserColor(member.userId);
         return (
-          <div key={member.userId} className="flex items-center gap-0">
+          <div key={member.userId} className="flex items-center gap-2">
             <AvatarRoot className="size-6 rounded-full border-2 border-background font-medium text-xs">
               <AvatarImage
                 src={member.user.image ?? undefined}
@@ -82,7 +82,9 @@ const Assignees = ({
             </AvatarRoot>
 
             {showUsername && (
-              <p className="ml-2 hidden text-xs md:flex">{member.user.name}</p>
+              <p className="hidden items-center text-xs md:flex">
+                {member.user.name}
+              </p>
             )}
           </div>
         );

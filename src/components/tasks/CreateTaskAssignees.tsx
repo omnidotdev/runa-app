@@ -109,6 +109,7 @@ const CreateTaskAssignees = withForm({
                           <p className="hidden text-sm md:flex">Assign</p>
                         </div>
                       ) : (
+                        // TODO: Look into better UI for mobile when multiple assignees are present
                         <Assignees
                           showUsername={select.value.length === 1}
                           assignees={select.value}
