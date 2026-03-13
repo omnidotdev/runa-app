@@ -30,6 +30,7 @@ import {
 } from "@/components/tasks";
 import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
+import { useSidebar } from "@/components/ui/sidebar";
 import {
   useDeleteTaskMutation,
   useProjectQuery,
@@ -256,9 +257,7 @@ function AuthenticatedTaskPage() {
     type: DialogType.UpdateDueDate,
   });
 
-  const { setIsOpen: setIsDeleteTaskDialogOpen } = useDialogStore({
-    type: DialogType.DeleteTask,
-  });
+  const { isMobile } = useSidebar();
 
   useEffect(() => {
     if (matches && isTaskSidebarOpen) {
@@ -367,8 +366,10 @@ function AuthenticatedTaskPage() {
                     <CalendarIcon className="size-3" />
                     {dayjs(task.dueDate).format("MMM D, YYYY")}
                   </div>
+                ) : !isMobile ? (
+                  "Set due date"
                 ) : (
-                  <p className="text-sm">Set due date</p>
+                  <CalendarIcon className="size-4" />
                 )}
               </Button>
             }
