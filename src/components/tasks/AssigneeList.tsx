@@ -28,7 +28,7 @@ export default function AssigneeList({
 }: AssigneeListProps) {
   if (viewMode === "grid") {
     return (
-      <div className="max-h-80 overflow-y-auto rounded-lg">
+      <div className="h-56 max-h-80 overflow-y-auto rounded-md">
         <div className="grid grid-cols-4 gap-1.5 outline-none">
           {items.map((item) => {
             const isSelected = selected.includes(item.value);
@@ -40,39 +40,32 @@ export default function AssigneeList({
                 key={item.value}
                 onClick={() => onToggle(item.value)}
                 className={cn(
-                  "group relative flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border p-3",
+                  "group relative flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border p-3 active:scale-[0.97]",
                   isSelected
-                    ? "bg-primary/5 hover:bg-primary/10"
-                    : "bg-transparent hover:bg-base-50 dark:hover:bg-base-900",
+                    ? "border border-primary bg-primary/10 hover:bg-primary/15"
+                    : "hover:border-input hover:bg-muted",
                   isDisabled &&
                     "pointer-events-none cursor-not-allowed opacity-40",
                 )}
               >
                 <AvatarRoot
                   className={cn(
-                    "size-9 shrink-0 rounded-full border-2 font-medium text-sm",
+                    "size-10 shrink-0 rounded-full border font-medium text-sm",
                     isSelected
-                      ? "border-primary/50"
-                      : "border-base-200 opacity-70 grayscale group-hover:border-base-300 group-hover:opacity-100 group-hover:grayscale-0 dark:border-base-700 dark:group-hover:border-base-600",
+                      ? "border-primary"
+                      : "border opacity-70 grayscale group-hover:border-input group-hover:opacity-100 group-hover:grayscale-0",
                   )}
                 >
                   <AvatarImage
                     src={item.user.avatarUrl ?? undefined}
                     alt={item.user.name}
                   />
-                  <AvatarFallback className="bg-base-100 text-xs dark:bg-base-800">
+                  <AvatarFallback className="bg-background text-xs">
                     {item.user.name?.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </AvatarRoot>
 
-                <span
-                  className={cn(
-                    "w-full truncate text-center font-medium text-xs",
-                    isSelected
-                      ? "text-base-900 dark:text-base-100"
-                      : "text-base-500 group-hover:text-base-700 dark:text-base-400 dark:group-hover:text-base-200",
-                  )}
-                >
+                <span className="w-full truncate text-center text-muted-foreground text-xs group-hover:text-foreground">
                   {item.user.name?.split(" ")[0]}
                 </span>
 
@@ -80,8 +73,8 @@ export default function AssigneeList({
                   className={cn(
                     "absolute top-1.5 right-1.5 flex size-4 items-center justify-center rounded-full",
                     isSelected
-                      ? "bg-primary text-white"
-                      : "bg-base-200 opacity-0 group-hover:opacity-40 dark:bg-base-700",
+                      ? "bg-primary text-white dark:text-black"
+                      : "bg-input opacity-0 group-hover:opacity-40",
                   )}
                 >
                   <CheckIcon className="size-2.5" />
@@ -95,8 +88,8 @@ export default function AssigneeList({
   }
 
   return (
-    <div className="max-h-80 overflow-y-auto rounded-xl border border-base-200 dark:border-base-700">
-      <div className="flex flex-col">
+    <div className="h-56 max-h-80 overflow-y-auto rounded-md">
+      <div className="flex flex-col divide-y rounded-md border border-input">
         {items.map((item, index) => {
           const isSelected = selected.includes(item.value);
           const isDisabled = !isSelected && atLimit && maxAssignees > 1;
@@ -107,52 +100,46 @@ export default function AssigneeList({
               key={item.value}
               onClick={() => onToggle(item.value)}
               className={cn(
-                "group flex cursor-pointer items-center gap-3 px-3 py-2.5",
-                index !== 0 && "border-base-100 border-t dark:border-base-800",
+                "group flex cursor-pointer items-center gap-3 px-3 py-2",
+                index === 0 && "rounded-t",
+                index === items.length - 1 && "rounded-b",
                 isSelected
-                  ? "bg-primary/5 hover:bg-primary/10"
-                  : "bg-transparent hover:bg-base-50 dark:hover:bg-base-900",
+                  ? "bg-primary/10 hover:bg-primary/15"
+                  : "hover:bg-muted",
                 isDisabled &&
                   "pointer-events-none cursor-not-allowed opacity-40",
               )}
             >
               <AvatarRoot
                 className={cn(
-                  "size-9 shrink-0 rounded-full border-2 font-medium text-sm",
+                  "size-6 shrink-0 rounded-full border font-medium text-sm",
                   isSelected
-                    ? "border-primary/50"
-                    : "border-base-200 opacity-70 grayscale group-hover:border-base-300 group-hover:opacity-100 group-hover:grayscale-0 dark:border-base-700 dark:group-hover:border-base-600",
+                    ? "border-primary"
+                    : "border opacity-70 grayscale group-hover:border-input group-hover:opacity-100 group-hover:grayscale-0",
                 )}
               >
                 <AvatarImage
                   src={item.user.avatarUrl ?? undefined}
                   alt={item.user.name}
                 />
-                <AvatarFallback className="bg-base-100 text-xs dark:bg-base-800">
+                <AvatarFallback className="bg-background text-xs">
                   {item.user.name?.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </AvatarRoot>
 
-              <span
-                className={cn(
-                  "flex-1 truncate text-left font-medium text-sm",
-                  isSelected
-                    ? "text-base-900 dark:text-base-100"
-                    : "text-base-500 group-hover:text-base-700 dark:text-base-400 dark:group-hover:text-base-200",
-                )}
-              >
+              <span className="w-full truncate text-left text-muted-foreground text-xs hover:text-foreground">
                 {item.user.name}
               </span>
 
               <div
                 className={cn(
-                  "flex size-5 shrink-0 items-center justify-center rounded-md",
+                  "flex size-4 shrink-0 items-center justify-center rounded-md",
                   isSelected
                     ? "bg-primary text-white"
-                    : "border border-base-300 bg-transparent group-hover:border-base-400 dark:border-base-600 dark:group-hover:border-base-500",
+                    : "border bg-transparent opacity-0 group-hover:border-input group-hover:opacity-100",
                 )}
               >
-                {isSelected && <CheckIcon className="size-3" />}
+                {isSelected && <CheckIcon className="size-2.5" />}
               </div>
             </button>
           );

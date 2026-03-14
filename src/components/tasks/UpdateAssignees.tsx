@@ -8,6 +8,7 @@ import useCookieState from "@/lib/hooks/useCookieState";
 import { withForm } from "@/lib/hooks/useForm";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import { cn } from "@/lib/utils";
+import Tooltip from "../core/Tooltip";
 import { Input } from "../ui/input";
 import AssigneeList from "./AssigneeList";
 
@@ -26,8 +27,9 @@ const UpdateAssignees = withForm({
   defaultValues: taskFormDefaults,
   props: {
     maxAssignees: 1 as number,
+    initialAssignees: [] as string[] | undefined,
   },
-  render: ({ form, maxAssignees }) => {
+  render: ({ form, maxAssignees, initialAssignees }) => {
     const { organizationId } = useLoaderData({ from: "/_app" });
     const { session } = useRouteContext({ from: "/_app" });
     const { contains } = useFilter({ sensitivity: "base" });
@@ -64,14 +66,15 @@ const UpdateAssignees = withForm({
       <form.Field name="assignees">
         {(field) => {
           const selected: string[] = field.state.value ?? [];
-          const selectedSet = new Set(selected);
           const atLimit = selected.length >= maxAssignees;
 
-          // Sort items so that selected users appear first
+          const initialSet = new Set(initialAssignees);
+
           const sortedItems = [...usersCollection.items].sort((a, b) => {
-            const aVal = selectedSet.has(a.value) ? 0 : 1;
-            const bVal = selectedSet.has(b.value) ? 0 : 1;
-            return aVal - bVal;
+            const aAssigned = initialSet.has(a.value) ? 0 : 1;
+            const bAssigned = initialSet.has(b.value) ? 0 : 1;
+            if (aAssigned !== bAssigned) return aAssigned - bAssigned;
+            return a.label.localeCompare(b.label);
           });
 
           const handleToggle = (userId: string) => {
@@ -86,20 +89,11 @@ const UpdateAssignees = withForm({
             }
           };
 
-          // const handleToggle = (userId: string) => {
-          //   const isSelected = selected.includes(userId);
-          //   if (isSelected) {
-          //     field.setValue(selected.filter((id) => id !== userId));
-          //   } else {
-          //     field.pushValue(userId);
-          //   }
-          // };
-
           return (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
-                  <SearchIcon className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 text-base-400" />
+                  <SearchIcon className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     placeholder="Filter members…"
                     className="h-8 pl-8 text-sm shadow-none"
@@ -107,38 +101,47 @@ const UpdateAssignees = withForm({
                   />
                 </div>
 
-                <div className="flex items-center rounded-lg border border-base-200 p-0.5 dark:border-base-700">
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("grid")}
-                    className={cn(
-                      "rounded-md p-1.5",
-                      viewMode === "grid"
-                        ? "bg-base-100 text-base-900 dark:bg-base-800 dark:text-base-100"
-                        : "text-base-400 hover:text-base-600 dark:text-base-500 dark:hover:text-base-300",
-                    )}
-                  >
-                    <LayoutGridIcon className="size-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setViewMode("list")}
-                    className={cn(
-                      "rounded-md p-1.5",
-                      viewMode === "list"
-                        ? "bg-base-100 text-base-900 dark:bg-base-800 dark:text-base-100"
-                        : "text-base-400 hover:text-base-600 dark:text-base-500 dark:hover:text-base-300",
-                    )}
-                  >
-                    <ListIcon className="size-3.5" />
-                  </button>
+                <div className="flex items-center gap-1 rounded-md border border-input p-0.5">
+                  <Tooltip
+                    tooltip="Grid view"
+                    trigger={
+                      <button
+                        type="button"
+                        onClick={() => setViewMode("grid")}
+                        className={cn(
+                          "rounded-md p-1.5",
+                          viewMode === "grid"
+                            ? "bg-accent"
+                            : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        <LayoutGridIcon className="size-3.5" />
+                      </button>
+                    }
+                  />
+
+                  <Tooltip
+                    tooltip="List view"
+                    trigger={
+                      <button
+                        type="button"
+                        onClick={() => setViewMode("list")}
+                        className={cn(
+                          "rounded-md p-1.5",
+                          viewMode === "list"
+                            ? "bg-accent"
+                            : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        <ListIcon className="size-3.5" />
+                      </button>
+                    }
+                  />
                 </div>
               </div>
 
               {sortedItems.length === 0 ? (
-                <p className="py-6 text-center text-base-400 text-xs">
-                  No members found
-                </p>
+                <p className="py-6 text-center text-xs">No members found</p>
               ) : (
                 <AssigneeList
                   viewMode={viewMode}
@@ -152,7 +155,7 @@ const UpdateAssignees = withForm({
 
               {/* Show a hint when at limit on multi-assignee tiers */}
               {atLimit && maxAssignees > 1 && maxAssignees < Infinity && (
-                <p className="text-base-400 text-xs">
+                <p className="text-muted-foreground text-xs">
                   Max {maxAssignees} assignees reached — deselect someone to
                   swap.
                 </p>

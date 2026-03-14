@@ -65,13 +65,17 @@ const Assignees = ({
       {visibleUsers.map((member) => {
         const userColor = getUserColor(member.userId);
         return (
-          <div key={member.userId} className="flex items-center gap-2">
-            <AvatarRoot className="size-6 rounded-full border-2 border-background font-medium text-xs">
+          <div
+            key={member.userId}
+            className="flex items-center gap-2 -space-x-1"
+          >
+            <AvatarRoot className="size-6 border-2 border-background">
               <AvatarImage
                 src={member.user.image ?? undefined}
                 alt={member.user.name}
               />
               <AvatarFallback
+                className="text-xs"
                 style={{
                   backgroundColor: `${userColor}20`,
                   color: userColor,

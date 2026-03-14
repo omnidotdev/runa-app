@@ -60,7 +60,7 @@
     "sharp": "^0.34.5",
     "sonner": "^2.0.7",
     "stripe": "^20.1.2",
-    "tailwind-merge": "^3.4.0",
+    "tailwind-merge": "^3.5.0",
     "three": "^0.182.0",
     "ts-pattern": "^5.9.0",
     "unleash-client": "^6.3.0",
