@@ -82,8 +82,18 @@ class AetherBillingProvider implements BillingProvider {
       expand: ["data.product"],
     });
 
+    // Deduplicate by tier + billing interval (stale Stripe products may coexist)
+    const seen = new Set<string>();
     return prices.data
       .filter((p) => p.active)
+      .filter((p) => {
+        const tier = p.metadata?.tier ?? "unknown";
+        const interval = p.recurring?.interval ?? "one_time";
+        const key = `${tier}:${interval}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
       .sort((a, b) => (a.unit_amount ?? 0) - (b.unit_amount ?? 0))
       .map((p) => ({
         id: p.id,
