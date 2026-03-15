@@ -187,7 +187,7 @@ export const listOrganizationInvitations = createServerFn({ method: "GET" })
     }
 
     const response = await fetch(
-      `${AUTH_BASE_URL}/organization/list-invitations?query=${encodeURIComponent(JSON.stringify({ organizationId: data.organizationId }))}`,
+      `${AUTH_BASE_URL}/organization/list-invitations?organizationId=${encodeURIComponent(data.organizationId)}`,
       {
         method: "GET",
         headers: {
@@ -299,7 +299,7 @@ export const getOrganizationBySlug = createServerFn({ method: "GET" })
     // Use Bearer auth — Gatekeeper's oidcAccessTokenPlugin resolves
     // opaque access tokens to authenticated sessions
     const response = await fetch(
-      `${AUTH_BASE_URL}/organization/get-full-organization?query=${encodeURIComponent(JSON.stringify({ slug: data.slug }))}`,
+      `${AUTH_BASE_URL}/organization/get-full-organization?organizationSlug=${encodeURIComponent(data.slug)}`,
       {
         method: "GET",
         headers: {
