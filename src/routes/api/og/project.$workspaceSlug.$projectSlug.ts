@@ -8,7 +8,7 @@ import satori from "satori";
 import sharp from "sharp";
 
 import { ProjectBySlugDocument } from "@/generated/graphql";
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import gatekeeperOrg from "@/lib/config/gatekeeper";
 import { getGraphQLClient } from "@/lib/graphql/graphqlClientFactory";
 
 import type { ReactNode } from "react";
@@ -60,11 +60,7 @@ const getLogoDataUri = (): string => {
 
 const resolveOrganizationId = async (slug: string): Promise<string | null> => {
   try {
-    const response = await fetch(
-      `${AUTH_BASE_URL}/api/organization/by-slug/${encodeURIComponent(slug)}`,
-    );
-    if (!response.ok) return null;
-    const org = await response.json();
+    const org = await gatekeeperOrg.fetchOrganizationBySlug(slug);
     return org?.id ?? null;
   } catch {
     return null;
