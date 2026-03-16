@@ -1,4 +1,3 @@
-import { useTabs } from "@ark-ui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
@@ -13,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   TabsContent,
   TabsList,
-  TabsProvider,
+  TabsRoot,
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { BASE_URL } from "@/lib/config/env.config";
@@ -33,7 +32,7 @@ export const FREE_PRICE: Price = {
   product: {
     id: "free-product",
     name: "Free",
-    description: "Start for free.",
+    description: "Project management to get started",
     marketing_features: [
       { name: "5 projects" },
       { name: "1,500 total tasks" },
@@ -103,8 +102,6 @@ function PricingPage() {
   const { prices, orgSubscriptions } = Route.useLoaderData();
   const { session: _session } = Route.useRouteContext();
 
-  const tabs = useTabs({ defaultValue: "month" });
-
   return (
     <div className="size-full pt-8">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -118,7 +115,7 @@ function PricingPage() {
           </p>
         </div>
 
-        <TabsProvider value={tabs} className="flex w-full flex-col">
+        <TabsRoot defaultValue="month" className="flex w-full flex-col">
           <TabsList className="place-self-center">
             <TabsTrigger value="month" className="rounded-lg">
               Monthly
@@ -156,7 +153,7 @@ function PricingPage() {
               </TabsContent>
             ))}
           </div>
-        </TabsProvider>
+        </TabsRoot>
 
         <div className="mt-24 text-center">
           <h2 className="mb-4 font-bold text-2xl text-foreground">
