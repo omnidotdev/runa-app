@@ -15,7 +15,7 @@ import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { Role } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 
-import type { OrganizationClaim } from "@/lib/auth/getAuth";
+import type { OrganizationClaim } from "@omnidotdev/providers";
 
 interface Props {
   organizations: OrganizationClaim[];
