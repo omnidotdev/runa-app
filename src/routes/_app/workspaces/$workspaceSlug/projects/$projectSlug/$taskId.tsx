@@ -315,10 +315,7 @@ function AuthenticatedTaskPage() {
               "justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20",
               !isAuthor && isMember && "hidden",
             )}
-            onClick={
-              () => deleteTask({ rowId: taskId })
-              // setIsDeleteTaskDialogOpen(true)
-            }
+            onClick={() => deleteTask({ rowId: taskId })}
             aria-label="Delete Task"
           >
             <Trash2Icon className="size-4" />
