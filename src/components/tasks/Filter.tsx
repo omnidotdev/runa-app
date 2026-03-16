@@ -51,12 +51,12 @@ const Filter = () => {
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
-  const { assignees, labels, priorities } = useSearch({
+  const { assignees, labels, priorities, search } = useSearch({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
+    from: "/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);

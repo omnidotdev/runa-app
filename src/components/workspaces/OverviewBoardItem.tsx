@@ -67,7 +67,7 @@ const BoardItem = ({ project }: Props) => {
               )}
               style={{
                 width: `${progressPercentage}%`,
-                backgroundColor: project?.color ?? undefined,
+                backgroundColor: project?.color ?? "var(--primary-400)",
               }}
             />
           </div>

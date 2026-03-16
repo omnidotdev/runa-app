@@ -70,7 +70,7 @@ const TaskSidebar = () => {
 
         <CardContent className="flex max-h-80 overflow-y-auto p-4">
           {task?.assignees?.nodes?.length ? (
-            <div>
+            <div className="flex flex-col gap-1">
               {task?.assignees?.nodes?.map(({ user }) => (
                 <div key={user?.rowId} className="flex items-center gap-2">
                   <AvatarRoot className="size-6 rounded-full border-2 bg-background font-medium text-xs">
