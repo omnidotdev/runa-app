@@ -2,9 +2,6 @@ import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest, setCookie } from "@tanstack/react-start/server";
 
-import auth from "@/lib/auth/auth";
-import { authCache } from "@/lib/auth/authCache";
-import { getAuth } from "@/lib/auth/getAuth";
 import {
   AUTH_BASE_URL,
   AUTH_CLIENT_ID,
@@ -12,6 +9,7 @@ import {
 } from "@/lib/config/env.config";
 
 export const fetchSession = createServerFn().handler(async () => {
+  const { getAuth } = await import("@/lib/auth/getAuth");
   const request = getRequest();
 
   const session = await getAuth(request);
@@ -19,30 +17,32 @@ export const fetchSession = createServerFn().handler(async () => {
   return { session };
 });
 
-const clearRowIdCacheCookie = () => {
+const clearRowIdCacheCookie = async () => {
+  const { authCache } = await import("@/lib/auth/authCache");
   setCookie(authCache.cookieName, "", { maxAge: 0, path: "/" });
 };
 
 /** @knipignore */
 export const clearRowIdCache = createServerFn({ method: "POST" }).handler(
   async () => {
-    clearRowIdCacheCookie();
+    await clearRowIdCacheCookie();
   },
 );
 
 export const signOutAndRedirect = createServerFn({ method: "POST" }).handler(
   async () => {
+    const auth = (await import("@/lib/auth/auth")).default;
     const request = getRequest();
 
     await auth.api.signOut({ headers: request.headers });
-    clearRowIdCacheCookie();
+    await clearRowIdCacheCookie();
 
     throw redirect({ to: "/" });
   },
 );
 
 /**
- * Build the IDP end_session URL for federated logout
+ * Build the IDP end_session URL for federated logout.
  */
 export function getIdpLogoutUrl(): string | null {
   if (!AUTH_BASE_URL || !AUTH_CLIENT_ID || !BASE_URL) return null;
@@ -55,15 +55,16 @@ export function getIdpLogoutUrl(): string | null {
 }
 
 /**
- * Sign out from the local session (server-side)
- * Returns the IDP logout URL for federated logout redirect
+ * Sign out from the local session (server-side).
+ * Returns the IDP logout URL for federated logout redirect.
  */
 export const signOutLocal = createServerFn({ method: "POST" }).handler(
   async () => {
+    const auth = (await import("@/lib/auth/auth")).default;
     const request = getRequest();
 
     await auth.api.signOut({ headers: request.headers });
-    clearRowIdCacheCookie();
+    await clearRowIdCacheCookie();
 
     return { idpLogoutUrl: getIdpLogoutUrl() };
   },

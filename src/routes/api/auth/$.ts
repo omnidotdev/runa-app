@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createMiddleware } from "@tanstack/react-start";
 
-import auth from "@/lib/auth/auth";
-
 /**
  * Server logging middleware.
  */
@@ -29,8 +27,14 @@ export const Route = createFileRoute("/api/auth/$")({
   server: {
     middleware: [loggingMiddleware],
     handlers: {
-      GET: ({ request }) => auth.handler(request),
-      POST: ({ request }) => auth.handler(request),
+      GET: async ({ request }) => {
+        const auth = (await import("@/lib/auth/auth")).default;
+        return auth.handler(request);
+      },
+      POST: async ({ request }) => {
+        const auth = (await import("@/lib/auth/auth")).default;
+        return auth.handler(request);
+      },
     },
   },
 });
