@@ -2,6 +2,9 @@ import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest, setCookie } from "@tanstack/react-start/server";
 
+import auth from "@/lib/auth/auth";
+import { authCache } from "@/lib/auth/authCache";
+import { getAuth } from "@/lib/auth/getAuth";
 import {
   AUTH_BASE_URL,
   AUTH_CLIENT_ID,
@@ -9,7 +12,6 @@ import {
 } from "@/lib/config/env.config";
 
 export const fetchSession = createServerFn().handler(async () => {
-  const { getAuth } = await import("@/lib/auth/getAuth");
   const request = getRequest();
 
   const session = await getAuth(request);
@@ -17,25 +19,23 @@ export const fetchSession = createServerFn().handler(async () => {
   return { session };
 });
 
-const clearRowIdCacheCookie = async () => {
-  const { authCache } = await import("@/lib/auth/authCache");
+const clearRowIdCacheCookie = () => {
   setCookie(authCache.cookieName, "", { maxAge: 0, path: "/" });
 };
 
 /** @knipignore */
 export const clearRowIdCache = createServerFn({ method: "POST" }).handler(
   async () => {
-    await clearRowIdCacheCookie();
+    clearRowIdCacheCookie();
   },
 );
 
 export const signOutAndRedirect = createServerFn({ method: "POST" }).handler(
   async () => {
-    const auth = (await import("@/lib/auth/auth")).default;
     const request = getRequest();
 
     await auth.api.signOut({ headers: request.headers });
-    await clearRowIdCacheCookie();
+    clearRowIdCacheCookie();
 
     throw redirect({ to: "/" });
   },
@@ -60,11 +60,10 @@ export function getIdpLogoutUrl(): string | null {
  */
 export const signOutLocal = createServerFn({ method: "POST" }).handler(
   async () => {
-    const auth = (await import("@/lib/auth/auth")).default;
     const request = getRequest();
 
     await auth.api.signOut({ headers: request.headers });
-    await clearRowIdCacheCookie();
+    clearRowIdCacheCookie();
 
     return { idpLogoutUrl: getIdpLogoutUrl() };
   },
