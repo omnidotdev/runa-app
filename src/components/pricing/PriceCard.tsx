@@ -89,6 +89,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
     mutationFn: async (params: {
       workspaceId?: string;
       createWorkspace?: { name: string; slug: string };
+      quantity?: number;
     }) => {
       setIsCheckoutLoading(true);
       return createCheckoutWithWorkspace({
@@ -96,6 +97,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
           priceId: price.id,
           successUrl: `${BASE_URL}/workspaces/__SLUG__/settings`,
           cancelUrl: `${BASE_URL}/pricing`,
+          quantity: params.quantity ?? 1,
           ...params,
         },
       });
@@ -204,7 +206,9 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
                 currency="USD"
               />
               <span className="ml-1 font-medium text-lg text-muted-foreground">
-                {price.recurring && `/workspace/${price.recurring.interval}`}
+                {price.recurring &&
+                  !isFreeTier &&
+                  `/seat/${price.recurring.interval}`}
               </span>
             </div>
           </div>

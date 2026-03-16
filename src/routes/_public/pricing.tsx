@@ -105,10 +105,6 @@ function PricingPage() {
 
   const tabs = useTabs({ defaultValue: "month" });
 
-  const filteredPrices = prices.filter(
-    (price) => price.recurring?.interval === tabs.value,
-  );
-
   return (
     <div className="size-full pt-8">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -148,13 +144,15 @@ function PricingPage() {
                   orgSubscriptions={orgSubscriptions}
                 />
 
-                {filteredPrices.map((price) => (
-                  <PriceCard
-                    key={price.id}
-                    price={price}
-                    orgSubscriptions={orgSubscriptions}
-                  />
-                ))}
+                {prices
+                  .filter((price) => price.recurring?.interval === tab)
+                  .map((price) => (
+                    <PriceCard
+                      key={price.id}
+                      price={price}
+                      orgSubscriptions={orgSubscriptions}
+                    />
+                  ))}
               </TabsContent>
             ))}
           </div>

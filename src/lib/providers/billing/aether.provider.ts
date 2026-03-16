@@ -171,6 +171,7 @@ class AetherBillingProvider implements BillingProvider {
         priceId: params.priceId,
         successUrl: params.successUrl,
         cancelUrl: params.cancelUrl,
+        quantity: params.quantity,
         ...(params.workspaceId && { workspaceId: params.workspaceId }),
         ...(params.createWorkspace && {
           createWorkspace: params.createWorkspace,

@@ -137,19 +137,13 @@ const Team = () => {
   const _maxNumberOfMembersReached = isSelfHosted
     ? false
     : match(tier)
-        .with(Tier.Team, Tier.Enterprise, () => members.length >= 50)
-        .with(Tier.Pro, () => members.length >= 20)
+        .with(Tier.Pro, Tier.Team, Tier.Enterprise, () => false)
         .otherwise(() => members.length >= 5);
 
   const maxNumberofAdminsReached = isSelfHosted
     ? false
     : match(tier)
-        .with(Tier.Team, Tier.Enterprise, () => false)
-        .with(
-          Tier.Pro,
-          () =>
-            members.filter((member) => member.role !== "member").length >= 5,
-        )
+        .with(Tier.Pro, Tier.Team, Tier.Enterprise, () => false)
         .otherwise(
           () =>
             members.filter((member) => member.role !== "member").length >= 1,

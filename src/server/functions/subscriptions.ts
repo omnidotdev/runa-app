@@ -25,6 +25,7 @@ const checkoutWithWorkspaceSchema = z
     priceId: z.string().startsWith("price_"),
     successUrl: z.string().url(),
     cancelUrl: z.string().url(),
+    quantity: z.number().int().positive().optional(),
     // Either workspaceId or createWorkspace must be provided
     workspaceId: z.string().uuid().optional(),
     createWorkspace: z
@@ -141,6 +142,7 @@ export const createCheckoutWithWorkspace = createServerFn({ method: "POST" })
       priceId: data.priceId,
       successUrl: data.successUrl,
       cancelUrl: data.cancelUrl,
+      quantity: data.quantity,
       accessToken: requireAccessToken(context.session.accessToken),
       workspaceId: data.workspaceId,
       createWorkspace: data.createWorkspace,
