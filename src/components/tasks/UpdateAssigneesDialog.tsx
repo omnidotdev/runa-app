@@ -130,62 +130,21 @@ export default function UpdateAssigneesDialog() {
         );
       }
 
+      //   Wait so invalidation refetches happen while the query is still enabled
       await Promise.allSettled(mutations);
+
+      //   // const failures = results.filter((result) => result.status === "rejected");
+
+      //   // if (failures.length > 0) {
+      //   //   toast.error("Failed to update some assignees. Please try again.");
+      //   // } else if (results.length > 0) {
+      //   //   toast.success("Assignees updated");
+      //   // }
 
       formApi.reset();
       setIsOpen(false);
       setTaskId(null);
     },
-    // onSubmit: async ({ value: { assignees }, formApi }) => {
-    //   const currentNodes = task?.assignees?.nodes ?? [];
-
-    //   const toRemove = currentNodes.filter(
-    //     (node) => !assignees.includes(node?.user?.identityProviderId!),
-    //   );
-    //   const toAdd = assignees.filter(
-    //     (node) => !defaultAssignees?.includes(node),
-    //   );
-
-    //   // Fire all mutations and wait for them to settle
-    //   const mutations: Promise<unknown>[] = [];
-
-    //   for (const node of toRemove) {
-    //     mutations.push(
-    //       new Promise((resolve, reject) =>
-    //         removeAssignee(
-    //           { taskId: taskId!, userId: node.userId },
-    //           { onSuccess: resolve, onError: reject },
-    //         ),
-    //       ),
-    //     );
-    //   }
-
-    //   for (const userId of toAdd) {
-    //     mutations.push(
-    //       new Promise((resolve, reject) =>
-    //         addNewAssignee(
-    //           { input: { assignee: { taskId: taskId!, userId } } },
-    //           { onSuccess: resolve, onError: reject },
-    //         ),
-    //       ),
-    //     );
-    //   }
-
-    //   // Wait so invalidation refetches happen while the query is still enabled
-    //   await Promise.allSettled(mutations);
-
-    //   // const failures = results.filter((result) => result.status === "rejected");
-
-    //   // if (failures.length > 0) {
-    //   //   toast.error("Failed to update some assignees. Please try again.");
-    //   // } else if (results.length > 0) {
-    //   //   toast.success("Assignees updated");
-    //   // }
-
-    //   formApi.reset();
-    //   setIsOpen(false);
-    //   setTaskId(null);
-    // },
   });
 
   useHotkeys(

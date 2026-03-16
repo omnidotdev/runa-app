@@ -98,6 +98,7 @@ const ColumnSelector = ({
               <SelectItem key={column.value} item={column}>
                 <SelectItemText>
                   <LabelIcon icon={column.icon} className="size-4" />
+
                   <p className="ml-1">{column.label}</p>
                 </SelectItemText>
                 <SelectItemIndicator />

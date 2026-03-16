@@ -1,74 +1,41 @@
 /**
  * IDP (Identity Provider) client for organization member management.
- * Fetches member data from Gatekeeper (source of truth).
+ * Delegates to GatekeeperOrgClient (source of truth)
  */
 
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import gatekeeperOrg from "@/lib/config/gatekeeper";
 
-export interface IdpMember {
-  id: string;
-  userId: string;
+import type { GatekeeperMember } from "@omnidotdev/providers/auth";
+
+// Backwards-compatible type aliases
+export type IdpMember = GatekeeperMember;
+export type IdpMembersResponse = { data: IdpMember[] };
+
+export type UpdateMemberRoleParams = {
   organizationId: string;
+  memberId: string;
   role: "owner" | "admin" | "member";
-  createdAt: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    image: string | null;
-  };
-}
+  accessToken: string;
+};
 
-export interface IdpMembersResponse {
-  data: IdpMember[];
-}
+export type RemoveMemberParams = {
+  organizationId: string;
+  memberId: string;
+  accessToken: string;
+};
 
 /**
- * Fetch organization members from Gatekeeper.
+ * Fetch organization members from Gatekeeper
  */
 export async function fetchOrganizationMembers(
   organizationId: string,
   accessToken: string,
 ): Promise<IdpMembersResponse> {
-  const url = new URL("/api/organization/members", AUTH_BASE_URL);
-  url.searchParams.set("orgId", organizationId);
-
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to fetch organization members: ${response.status} ${response.statusText}`,
-    );
-  }
-
-  return response.json();
-}
-
-export interface IdpInvitation {
-  id: string;
-  email: string;
-  role: string | null;
-  status: "pending" | "accepted" | "rejected" | "cancelled";
-  expiresAt: string;
-  inviterId: string;
-  organizationId: string;
-  createdAt: string;
-}
-
-export interface UpdateMemberRoleParams {
-  organizationId: string;
-  memberId: string;
-  role: "owner" | "admin" | "member";
-  accessToken: string;
+  return gatekeeperOrg.listMembers(organizationId, accessToken);
 }
 
 /**
- * Update a member's role in the organization via Gatekeeper.
+ * Update a member's role in the organization via Gatekeeper
  */
 export async function updateMemberRole({
   organizationId,
@@ -76,57 +43,19 @@ export async function updateMemberRole({
   role,
   accessToken,
 }: UpdateMemberRoleParams): Promise<IdpMember> {
-  const url = new URL("/api/organization/members", AUTH_BASE_URL);
-  url.searchParams.set("orgId", organizationId);
-  url.searchParams.set("memberId", memberId);
-
-  const response = await fetch(url, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ role }),
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to update member role: ${response.status} ${response.statusText}`,
-    );
-  }
-
-  return response.json();
-}
-
-export interface RemoveMemberParams {
-  organizationId: string;
-  memberId: string;
-  accessToken: string;
+  return gatekeeperOrg.updateMemberRole(
+    { organizationId, memberId, role },
+    accessToken,
+  );
 }
 
 /**
- * Remove a member from the organization via Gatekeeper.
+ * Remove a member from the organization via Gatekeeper
  */
 export async function removeMember({
   organizationId,
   memberId,
   accessToken,
 }: RemoveMemberParams): Promise<void> {
-  const url = new URL("/api/organization/members", AUTH_BASE_URL);
-  url.searchParams.set("orgId", organizationId);
-  url.searchParams.set("memberId", memberId);
-
-  const response = await fetch(url, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to remove member: ${response.status} ${response.statusText}`,
-    );
-  }
+  return gatekeeperOrg.removeMember({ organizationId, memberId }, accessToken);
 }

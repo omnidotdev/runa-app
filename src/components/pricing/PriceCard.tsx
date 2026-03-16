@@ -36,7 +36,7 @@ import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
 import { createCheckoutWithWorkspace } from "@/server/functions/subscriptions";
 
-import type { OrganizationClaim } from "@/lib/auth/getAuth";
+import type { OrganizationClaim } from "@omnidotdev/providers/auth";
 import type { Price, Subscription } from "@/lib/providers/billing";
 
 interface Props {
@@ -89,6 +89,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
     mutationFn: async (params: {
       workspaceId?: string;
       createWorkspace?: { name: string; slug: string };
+      quantity?: number;
     }) => {
       setIsCheckoutLoading(true);
       return createCheckoutWithWorkspace({
@@ -96,6 +97,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
           priceId: price.id,
           successUrl: `${BASE_URL}/workspaces/__SLUG__/settings`,
           cancelUrl: `${BASE_URL}/pricing`,
+          quantity: params.quantity ?? 1,
           ...params,
         },
       });
@@ -169,7 +171,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
       <CardRoot
         key={price?.id}
         className={cn(
-          "relative flex flex-col border-2",
+          "relative flex flex-1 flex-col border-2",
           isTeamTier &&
             "border-primary-700 bg-primary-50 shadow-primary/20 dark:border-primary dark:bg-primary-1000",
         )}
@@ -204,7 +206,9 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
                 currency="USD"
               />
               <span className="ml-1 font-medium text-lg text-muted-foreground">
-                {price.recurring && `/workspace/${price.recurring.interval}`}
+                {price.recurring &&
+                  !isFreeTier &&
+                  `/seat/${price.recurring.interval}`}
               </span>
             </div>
           </div>

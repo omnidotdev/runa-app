@@ -42,7 +42,7 @@ export const signOutAndRedirect = createServerFn({ method: "POST" }).handler(
 );
 
 /**
- * Build the IDP end_session URL for federated logout
+ * Build the IDP end_session URL for federated logout.
  */
 export function getIdpLogoutUrl(): string | null {
   if (!AUTH_BASE_URL || !AUTH_CLIENT_ID || !BASE_URL) return null;
@@ -55,8 +55,8 @@ export function getIdpLogoutUrl(): string | null {
 }
 
 /**
- * Sign out from the local session (server-side)
- * Returns the IDP logout URL for federated logout redirect
+ * Sign out from the local session (server-side).
+ * Returns the IDP logout URL for federated logout redirect.
  */
 export const signOutLocal = createServerFn({ method: "POST" }).handler(
   async () => {

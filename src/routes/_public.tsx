@@ -1,12 +1,9 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { XIcon as CloseIcon, MenuIcon } from "lucide-react";
 import { useState } from "react";
+import { FaLinkedin as LinkedinIcon } from "react-icons/fa";
 import { LuGithub as GithubIcon } from "react-icons/lu";
-import {
-  SiDiscord as DiscordIcon,
-  SiLinkedin as LinkedinIcon,
-  SiX as XIcon,
-} from "react-icons/si";
+import { SiDiscord as DiscordIcon, SiX as XIcon } from "react-icons/si";
 
 import { Link, ThemeToggle } from "@/components/core";
 import { ShootingStars } from "@/components/landing";
@@ -205,7 +202,7 @@ function PublicLayout() {
                 href={app.links.docs}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-md px-4 py-2 font-medium text-base-600 text-sm hover:bg-base-100 hover:text-foreground dark:text-base-400 dark:hover:bg-base-800 dark:hover:text-foreground"
+                className="block rounded-md px-3 py-2 font-medium text-base-600 text-sm hover:bg-base-100 hover:text-foreground dark:text-base-400 dark:hover:bg-base-800 dark:hover:text-foreground"
               >
                 Docs
               </a>

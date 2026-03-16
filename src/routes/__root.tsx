@@ -35,7 +35,7 @@ interface ExtendedUser {
   username?: string;
 }
 
-import type { OrganizationClaim } from "@/lib/auth/getAuth";
+import type { OrganizationClaim } from "@omnidotdev/providers/auth";
 
 interface ExtendedSession extends Omit<Session, "user"> {
   user: ExtendedUser;

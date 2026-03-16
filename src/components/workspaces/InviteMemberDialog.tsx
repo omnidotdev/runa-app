@@ -163,7 +163,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
           <DialogCloseTrigger />
           <DialogTitle>Invite Team Member</DialogTitle>
           <DialogDescription>
-            Invite new team member(s) for the{" "}
+            Invite a new team member for the{" "}
             <strong className="text-primary">{orgName}</strong> workspace.
           </DialogDescription>
 

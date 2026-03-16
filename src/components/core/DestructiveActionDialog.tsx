@@ -60,7 +60,6 @@ const DestructiveActionDialog = ({
             <div className="flex size-10 items-center justify-center rounded-full border border-destructive bg-destructive/10">
               <AlertTriangle className="size-5 text-destructive" />
             </div>
-
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
           </div>
