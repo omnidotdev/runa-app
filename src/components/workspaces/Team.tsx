@@ -5,6 +5,7 @@ import {
   ChevronDownIcon,
   MoreHorizontalIcon,
   PlusIcon,
+  RefreshCwIcon,
   Trash2Icon,
   XIcon,
 } from "lucide-react";
@@ -45,6 +46,7 @@ import {
 import {
   useCancelInvitation,
   useRemoveMember,
+  useResendInvitation,
   useUpdateMemberRole,
 } from "@/lib/hooks/useOrganizationMembers";
 import organizationInvitationsOptions from "@/lib/options/organizationInvitations.options";
@@ -100,12 +102,15 @@ const Team = () => {
     useCanManageTeam(currentUserRole);
 
   // Fetch pending invitations (visible to admins+)
-  const { data: pendingInvitations = [] } = useQuery({
+  const { data: invitationsData } = useQuery({
     ...organizationInvitationsOptions({
       organizationId: organizationId!,
     }),
     enabled: !!organizationId && canInvite,
   });
+
+  const activeInvitations = invitationsData?.active ?? [];
+  const expiredInvitations = invitationsData?.expired ?? [];
 
   const [selectedInvitation, setSelectedInvitation] = useState<{
     id: string;
@@ -115,6 +120,8 @@ const Team = () => {
   const { mutate: removeMember } = useRemoveMember();
   const { mutate: updateMemberRole } = useUpdateMemberRole();
   const { mutate: cancelInvitation } = useCancelInvitation();
+  const { mutate: resendInvitation, isPending: isResending } =
+    useResendInvitation();
 
   const { setIsOpen: setIsDeleteTeamMemberOpen } = useDialogStore({
       type: DialogType.DeleteTeamMember,
@@ -348,9 +355,9 @@ const Team = () => {
             </h2>
           </div>
 
-          {pendingInvitations.length ? (
+          {activeInvitations.length || expiredInvitations.length ? (
             <div className="flex flex-col divide-y border-y">
-              {pendingInvitations.map((invitation) => (
+              {activeInvitations.map((invitation) => (
                 <div
                   key={invitation.id}
                   className="group flex h-10 w-full items-center px-2 hover:bg-accent lg:px-0"
@@ -378,6 +385,102 @@ const Team = () => {
                     </Badge>
 
                     <div className="mr-2 ml-auto flex gap-1">
+                      <Tooltip
+                        positioning={{ placement: "left" }}
+                        tooltip="Revoke invitation"
+                        trigger={
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7 text-base-400 hover:text-destructive"
+                            aria-label={`Revoke invitation for ${invitation.email}`}
+                            onClick={() => {
+                              setSelectedInvitation({
+                                id: invitation.id,
+                                email: invitation.email,
+                              });
+                              setIsCancelInvitationOpen(true);
+                            }}
+                          >
+                            <XIcon className="size-4" />
+                          </Button>
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {expiredInvitations.map((invitation) => (
+                <div
+                  key={invitation.id}
+                  className="group flex h-10 w-full items-center px-2 opacity-60 hover:bg-accent hover:opacity-100 lg:px-0"
+                >
+                  <div className="flex w-full items-center">
+                    <div className="flex size-10 items-center justify-center">
+                      <AvatarRoot
+                        size="xs"
+                        className="size-6 rounded-full border bg-background font-medium text-sm uppercase shadow"
+                      >
+                        <AvatarFallback>
+                          {invitation.email.charAt(0)}
+                        </AvatarFallback>
+                      </AvatarRoot>
+                    </div>
+
+                    <span className="px-3 text-xs md:text-sm">
+                      {invitation.email}
+                    </span>
+
+                    <Badge
+                      variant="outline"
+                      className="border-destructive/40 text-destructive"
+                    >
+                      Expired
+                    </Badge>
+
+                    <div className="mr-2 ml-auto flex gap-1">
+                      <Tooltip
+                        positioning={{ placement: "left" }}
+                        tooltip="Resend invitation"
+                        trigger={
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-7 text-base-400 hover:text-primary"
+                            aria-label={`Resend invitation to ${invitation.email}`}
+                            disabled={isResending}
+                            onClick={() =>
+                              resendInvitation(
+                                {
+                                  organizationId: organizationId!,
+                                  email: invitation.email,
+                                  role:
+                                    (invitation.role as
+                                      | "admin"
+                                      | "member"
+                                      | null) ?? "member",
+                                },
+                                {
+                                  onSuccess: () =>
+                                    toast.success(
+                                      `Invitation resent to ${invitation.email}`,
+                                    ),
+                                  onError: (error) =>
+                                    toast.error(
+                                      error instanceof Error
+                                        ? error.message
+                                        : "Failed to resend invitation",
+                                    ),
+                                },
+                              )
+                            }
+                          >
+                            <RefreshCwIcon className="size-4" />
+                          </Button>
+                        }
+                      />
+
                       <Tooltip
                         positioning={{ placement: "left" }}
                         tooltip="Revoke invitation"

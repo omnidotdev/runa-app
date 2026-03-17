@@ -1,26 +1,44 @@
 import { describe, expect, it } from "bun:test";
 
-import { validateInvitation } from "@/lib/validation/invitation";
+import {
+  isInvitationExpired,
+  validateInvitation,
+} from "@/lib/validation/invitation";
 
 import type { GatekeeperInvitation } from "@omnidotdev/providers/auth";
 
 const makeInvitation = (
   email: string,
-  status: GatekeeperInvitation["status"] = "pending",
+  overrides?: Partial<GatekeeperInvitation>,
 ): GatekeeperInvitation => ({
   id: crypto.randomUUID(),
   email,
   role: "member",
-  status,
+  status: "pending",
   expiresAt: new Date(Date.now() + 86_400_000).toISOString(),
   inviterId: crypto.randomUUID(),
   organizationId: crypto.randomUUID(),
   createdAt: new Date().toISOString(),
+  ...overrides,
+});
+
+describe("isInvitationExpired", () => {
+  it("returns false for future expiresAt", () => {
+    const inv = makeInvitation("a@b.com");
+    expect(isInvitationExpired(inv)).toBe(false);
+  });
+
+  it("returns true for past expiresAt", () => {
+    const inv = makeInvitation("a@b.com", {
+      expiresAt: new Date(Date.now() - 1000).toISOString(),
+    });
+    expect(isInvitationExpired(inv)).toBe(true);
+  });
 });
 
 describe("validateInvitation", () => {
   describe("duplicate pending invitation", () => {
-    it("rejects email with an existing pending invitation", () => {
+    it("rejects email with an active pending invitation", () => {
       const pendingInvitations = [makeInvitation("alice@example.com")];
 
       const result = validateInvitation({
@@ -52,7 +70,23 @@ describe("validateInvitation", () => {
 
     it("ignores non-pending invitations", () => {
       const pendingInvitations = [
-        makeInvitation("alice@example.com", "cancelled"),
+        makeInvitation("alice@example.com", { status: "cancelled" }),
+      ];
+
+      const result = validateInvitation({
+        email: "alice@example.com",
+        pendingInvitations,
+        memberEmails: [],
+      });
+
+      expect(result).toEqual({ valid: true });
+    });
+
+    it("allows re-invite when pending invitation has expired", () => {
+      const pendingInvitations = [
+        makeInvitation("alice@example.com", {
+          expiresAt: new Date(Date.now() - 60_000).toISOString(),
+        }),
       ];
 
       const result = validateInvitation({

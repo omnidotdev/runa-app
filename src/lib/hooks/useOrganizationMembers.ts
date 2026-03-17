@@ -72,6 +72,27 @@ export function useInviteMember() {
 }
 
 /**
+ * Hook to resend an expired invitation.
+ * Gatekeeper's `cancelPendingInvitationsOnReInvite` cancels the old one automatically.
+ */
+export function useResendInvitation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params: {
+      organizationId: string;
+      email: string;
+      role: "admin" | "member";
+    }) => inviteOrganizationMember({ data: params }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["organizationInvitations", variables.organizationId],
+      });
+    },
+  });
+}
+
+/**
  * Hook to cancel an organization invitation via server function.
  */
 export function useCancelInvitation() {

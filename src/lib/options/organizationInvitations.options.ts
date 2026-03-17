@@ -4,6 +4,7 @@
 
 import { queryOptions } from "@tanstack/react-query";
 
+import { isInvitationExpired } from "@/lib/validation/invitation";
 import { listOrganizationInvitations } from "@/server/functions/organizations";
 
 export interface OrganizationInvitationsVariables {
@@ -11,7 +12,8 @@ export interface OrganizationInvitationsVariables {
 }
 
 /**
- * Query options for fetching pending organization invitations.
+ * Query options for fetching pending organization invitations,
+ * split into active (non-expired) and expired groups.
  */
 const organizationInvitationsOptions = ({
   organizationId,
@@ -23,9 +25,14 @@ const organizationInvitationsOptions = ({
         data: { organizationId },
       });
 
-      return invitations.filter(
+      const pending = invitations.filter(
         (invitation) => invitation.status === "pending",
       );
+
+      return {
+        active: pending.filter((inv) => !isInvitationExpired(inv)),
+        expired: pending.filter((inv) => isInvitationExpired(inv)),
+      };
     },
     enabled: !!organizationId,
   });

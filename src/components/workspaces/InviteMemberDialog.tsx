@@ -85,10 +85,11 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
   const memberEmails = membersData?.data?.map((m) => m.user.email) ?? [];
 
   // Fetch pending invitations for dedup validation
-  const { data: pendingInvitations } = useQuery({
+  const { data: invitationsData } = useQuery({
     ...organizationInvitationsOptions({ organizationId: organizationId! }),
     enabled: !!organizationId,
   });
+  const pendingInvitations = invitationsData?.active ?? [];
 
   // Derive tier from subscription
   const tier = getTierFromSubscription(
@@ -221,7 +222,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
                     for (const email of emails) {
                       const result = validateInvitation({
                         email,
-                        pendingInvitations: pendingInvitations ?? [],
+                        pendingInvitations,
                         memberEmails,
                       });
 
