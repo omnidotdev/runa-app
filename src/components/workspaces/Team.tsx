@@ -53,6 +53,7 @@ import organizationInvitationsOptions from "@/lib/options/organizationInvitation
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import { Tier, getTierFromSubscription } from "@/lib/types/tier";
 import { cn } from "@/lib/utils";
+import { getInviteTimeInfo } from "@/lib/validation/invitation";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import InviteMemberDialog from "./InviteMemberDialog";
 
@@ -357,155 +358,122 @@ const Team = () => {
 
           {activeInvitations.length || expiredInvitations.length ? (
             <div className="flex flex-col divide-y border-y">
-              {activeInvitations.map((invitation) => (
-                <div
-                  key={invitation.id}
-                  className="group flex h-10 w-full items-center px-2 hover:bg-accent lg:px-0"
-                >
-                  <div className="flex w-full items-center">
-                    <div className="flex size-10 items-center justify-center">
-                      <AvatarRoot
-                        size="xs"
-                        className="size-6 rounded-full border bg-background font-medium text-sm uppercase shadow"
-                      >
-                        <AvatarFallback>
-                          {invitation.email.charAt(0)}
-                        </AvatarFallback>
-                      </AvatarRoot>
-                    </div>
+              {[...activeInvitations, ...expiredInvitations].map(
+                (invitation) => {
+                  const timeInfo = getInviteTimeInfo(invitation);
 
-                    <span className="px-3 text-xs md:text-sm">
-                      {invitation.email}
-                    </span>
-
-                    <Badge variant="outline">
-                      <p className="first-letter:uppercase">
-                        {invitation.role ?? "member"}
-                      </p>
-                    </Badge>
-
-                    <div className="mr-2 ml-auto flex gap-1">
-                      <Tooltip
-                        positioning={{ placement: "left" }}
-                        tooltip="Revoke invitation"
-                        trigger={
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-7 text-base-400 hover:text-destructive"
-                            aria-label={`Revoke invitation for ${invitation.email}`}
-                            onClick={() => {
-                              setSelectedInvitation({
-                                id: invitation.id,
-                                email: invitation.email,
-                              });
-                              setIsCancelInvitationOpen(true);
-                            }}
-                          >
-                            <XIcon className="size-4" />
-                          </Button>
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {expiredInvitations.map((invitation) => (
-                <div
-                  key={invitation.id}
-                  className="group flex h-10 w-full items-center px-2 opacity-60 hover:bg-accent hover:opacity-100 lg:px-0"
-                >
-                  <div className="flex w-full items-center">
-                    <div className="flex size-10 items-center justify-center">
-                      <AvatarRoot
-                        size="xs"
-                        className="size-6 rounded-full border bg-background font-medium text-sm uppercase shadow"
-                      >
-                        <AvatarFallback>
-                          {invitation.email.charAt(0)}
-                        </AvatarFallback>
-                      </AvatarRoot>
-                    </div>
-
-                    <span className="px-3 text-xs md:text-sm">
-                      {invitation.email}
-                    </span>
-
-                    <Badge
-                      variant="outline"
-                      className="border-destructive/40 text-destructive"
+                  return (
+                    <div
+                      key={invitation.id}
+                      className={cn(
+                        "group flex h-10 w-full items-center px-2 hover:bg-accent lg:px-0",
+                        timeInfo.isExpired && "opacity-60 hover:opacity-100",
+                      )}
                     >
-                      Expired
-                    </Badge>
+                      <div className="flex w-full items-center">
+                        <div className="flex size-10 items-center justify-center">
+                          <AvatarRoot
+                            size="xs"
+                            className="size-6 rounded-full border bg-background font-medium text-sm uppercase shadow"
+                          >
+                            <AvatarFallback>
+                              {invitation.email.charAt(0)}
+                            </AvatarFallback>
+                          </AvatarRoot>
+                        </div>
 
-                    <div className="mr-2 ml-auto flex gap-1">
-                      <Tooltip
-                        positioning={{ placement: "left" }}
-                        tooltip="Resend invitation"
-                        trigger={
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-7 text-base-400 hover:text-primary"
-                            aria-label={`Resend invitation to ${invitation.email}`}
-                            disabled={isResending}
-                            onClick={() =>
-                              resendInvitation(
-                                {
-                                  organizationId: organizationId!,
-                                  email: invitation.email,
-                                  role:
-                                    (invitation.role as
-                                      | "admin"
-                                      | "member"
-                                      | null) ?? "member",
-                                },
-                                {
-                                  onSuccess: () =>
-                                    toast.success(
-                                      `Invitation resent to ${invitation.email}`,
-                                    ),
-                                  onError: (error) =>
-                                    toast.error(
-                                      error instanceof Error
-                                        ? error.message
-                                        : "Failed to resend invitation",
-                                    ),
-                                },
-                              )
+                        <span className="px-3 text-xs md:text-sm">
+                          {invitation.email}
+                        </span>
+
+                        {timeInfo.isExpired ? (
+                          <Badge
+                            variant="outline"
+                            className="border-destructive/40 text-destructive"
+                          >
+                            Expired
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline">
+                            <p className="first-letter:uppercase">
+                              {invitation.role ?? "member"}
+                            </p>
+                          </Badge>
+                        )}
+
+                        <span className="ml-2 hidden text-base-400 text-xs group-hover:inline">
+                          {timeInfo.expiresLabel}
+                        </span>
+
+                        <div className="mr-2 ml-auto flex gap-1">
+                          <Tooltip
+                            positioning={{ placement: "left" }}
+                            tooltip="Resend invitation"
+                            trigger={
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-7 text-base-400 hover:text-primary"
+                                aria-label={`Resend invitation to ${invitation.email}`}
+                                disabled={isResending}
+                                onClick={() =>
+                                  resendInvitation(
+                                    {
+                                      organizationId: organizationId!,
+                                      email: invitation.email,
+                                      role:
+                                        (invitation.role as
+                                          | "admin"
+                                          | "member"
+                                          | null) ?? "member",
+                                    },
+                                    {
+                                      onSuccess: () =>
+                                        toast.success(
+                                          `Invitation resent to ${invitation.email}`,
+                                        ),
+                                      onError: (error) =>
+                                        toast.error(
+                                          error instanceof Error
+                                            ? error.message
+                                            : "Failed to resend invitation",
+                                        ),
+                                    },
+                                  )
+                                }
+                              >
+                                <RefreshCwIcon className="size-4" />
+                              </Button>
                             }
-                          >
-                            <RefreshCwIcon className="size-4" />
-                          </Button>
-                        }
-                      />
+                          />
 
-                      <Tooltip
-                        positioning={{ placement: "left" }}
-                        tooltip="Revoke invitation"
-                        trigger={
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-7 text-base-400 hover:text-destructive"
-                            aria-label={`Revoke invitation for ${invitation.email}`}
-                            onClick={() => {
-                              setSelectedInvitation({
-                                id: invitation.id,
-                                email: invitation.email,
-                              });
-                              setIsCancelInvitationOpen(true);
-                            }}
-                          >
-                            <XIcon className="size-4" />
-                          </Button>
-                        }
-                      />
+                          <Tooltip
+                            positioning={{ placement: "left" }}
+                            tooltip="Revoke invitation"
+                            trigger={
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-7 text-base-400 hover:text-destructive"
+                                aria-label={`Revoke invitation for ${invitation.email}`}
+                                onClick={() => {
+                                  setSelectedInvitation({
+                                    id: invitation.id,
+                                    email: invitation.email,
+                                  });
+                                  setIsCancelInvitationOpen(true);
+                                }}
+                              >
+                                <XIcon className="size-4" />
+                              </Button>
+                            }
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  );
+                },
+              )}
             </div>
           ) : (
             <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
