@@ -82,6 +82,7 @@ const resendOrganizationInvitationSchema = z.object({
  * Resend an invitation (active or expired).
  * Skips the active-pending check since Gatekeeper's
  * `cancelPendingInvitationsOnReInvite` auto-cancels the old one
+ * @knipignore
  */
 export const resendOrganizationInvitation = createServerFn({ method: "POST" })
   .inputValidator((data) => resendOrganizationInvitationSchema.parse(data))
@@ -182,4 +183,65 @@ export const fetchOrganizationBySlug = createServerFn()
       console.error("Error fetching organization by slug:", error);
       return null;
     }
+  });
+
+const listOrganizationMembersSchema = z.object({
+  organizationId: z.string(),
+  accessToken: z.string(),
+});
+
+/**
+ * List members of an organization via Gatekeeper.
+ * Takes `accessToken` in data to support contexts without auth middleware
+ * @knipignore
+ */
+export const listOrganizationMembers = createServerFn({ method: "GET" })
+  .inputValidator((data) => listOrganizationMembersSchema.parse(data))
+  .handler(async ({ data }) => {
+    return gatekeeperOrg.listMembers(data.organizationId, data.accessToken);
+  });
+
+const updateOrganizationMemberRoleSchema = z.object({
+  organizationId: z.string(),
+  memberId: z.string(),
+  role: z.enum(["owner", "admin", "member"]),
+});
+
+/**
+ * Update the role of an organization member via Gatekeeper
+ * @knipignore
+ */
+export const updateOrganizationMemberRole = createServerFn({ method: "POST" })
+  .inputValidator((data) => updateOrganizationMemberRoleSchema.parse(data))
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) => {
+    const accessToken = context.session.accessToken;
+
+    if (!accessToken) {
+      throw new Error("No access token available");
+    }
+
+    return gatekeeperOrg.updateMemberRole(data, accessToken);
+  });
+
+const removeOrganizationMemberSchema = z.object({
+  organizationId: z.string(),
+  memberId: z.string(),
+});
+
+/**
+ * Remove a member from an organization via Gatekeeper
+ * @knipignore
+ */
+export const removeOrganizationMember = createServerFn({ method: "POST" })
+  .inputValidator((data) => removeOrganizationMemberSchema.parse(data))
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) => {
+    const accessToken = context.session.accessToken;
+
+    if (!accessToken) {
+      throw new Error("No access token available");
+    }
+
+    return gatekeeperOrg.removeMember(data, accessToken);
   });
