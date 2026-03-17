@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import gatekeeperOrg from "@/lib/config/gatekeeper";
+import { validateInvitation } from "@/lib/validation/invitation";
 import { authMiddleware } from "@/server/middleware";
 
 export type { GatekeeperOrganization as Organization } from "@omnidotdev/providers/auth";
@@ -50,6 +51,22 @@ export const inviteOrganizationMember = createServerFn({ method: "POST" })
 
     if (!accessToken) {
       throw new Error("No access token available");
+    }
+
+    // Check for duplicate pending invitations and existing members
+    const [invitations, membersResponse] = await Promise.all([
+      gatekeeperOrg.listInvitations(data.organizationId, accessToken),
+      gatekeeperOrg.listMembers(data.organizationId, accessToken),
+    ]);
+
+    const result = validateInvitation({
+      email: data.email,
+      pendingInvitations: invitations,
+      memberEmails: membersResponse.data.map((m) => m.user.email),
+    });
+
+    if (!result.valid) {
+      throw new Error(result.reason);
     }
 
     return gatekeeperOrg.inviteMember(data, accessToken);

@@ -35,8 +35,10 @@ import { isSelfHosted } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import { useInviteMember } from "@/lib/hooks/useOrganizationMembers";
+import organizationInvitationsOptions from "@/lib/options/organizationInvitations.options";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import { Tier, getTierFromSubscription } from "@/lib/types/tier";
+import { validateInvitation } from "@/lib/validation/invitation";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
 import type { RefObject } from "react";
@@ -80,6 +82,13 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
   });
 
   const memberCount = membersData?.data?.length ?? 0;
+  const memberEmails = membersData?.data?.map((m) => m.user.email) ?? [];
+
+  // Fetch pending invitations for dedup validation
+  const { data: pendingInvitations } = useQuery({
+    ...organizationInvitationsOptions({ organizationId: organizationId! }),
+    enabled: !!organizationId,
+  });
 
   // Derive tier from subscription
   const tier = getTierFromSubscription(
@@ -196,7 +205,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
                       return false;
                     }
 
-                    // fail if email that is currently being pasted or added is a duplicate
+                    // fail if email is a duplicate in the current form input
                     if (emails.some((email) => details.value.includes(email))) {
                       rateLimiter.maybeExecute(numberOfToasts + 1);
 
@@ -206,6 +215,26 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
                       }
 
                       return false;
+                    }
+
+                    // fail if email conflicts with pending invitations or existing members
+                    for (const email of emails) {
+                      const result = validateInvitation({
+                        email,
+                        pendingInvitations: pendingInvitations ?? [],
+                        memberEmails,
+                      });
+
+                      if (!result.valid) {
+                        rateLimiter.maybeExecute(numberOfToasts + 1);
+
+                        if (rateLimiter.getRemainingInWindow()) {
+                          // TODO: toasts
+                          alert(result.reason);
+                        }
+
+                        return false;
+                      }
                     }
 
                     return emails.every((email) =>
