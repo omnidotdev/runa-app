@@ -1,10 +1,9 @@
 import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
-import { useRateLimiter } from "@tanstack/react-pacer/rate-limiter";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import ms from "ms";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -108,13 +107,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
           : 5;
   const _canInviteMore = memberCount < maxMembers;
 
-  const [numberOfToasts, setNumberOfToasts] = useState(0);
   const emailRef = useRef<HTMLInputElement>(null);
-
-  const rateLimiter = useRateLimiter(setNumberOfToasts, {
-    limit: 2,
-    window: ms("1s"),
-  });
 
   const { mutateAsync: inviteMemberMutation } = useInviteMember();
 
@@ -194,31 +187,16 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
                   validate={(details) => {
                     const emails = details.inputValue.split(",");
 
-                    // fail if more than max number of invites
                     if (emails.length > MAX_NUMBER_OF_INVITES) {
-                      rateLimiter.maybeExecute(numberOfToasts + 1);
-
-                      if (rateLimiter.getRemainingInWindow()) {
-                        // TODO: toasts
-                        alert("max number of invites reached");
-                      }
-
+                      toast.error("Maximum number of invites reached");
                       return false;
                     }
 
-                    // fail if email is a duplicate in the current form input
                     if (emails.some((email) => details.value.includes(email))) {
-                      rateLimiter.maybeExecute(numberOfToasts + 1);
-
-                      if (rateLimiter.getRemainingInWindow()) {
-                        // TODO: toasts
-                        alert("This is a duplicate invite");
-                      }
-
+                      toast.error("This email is already in the invite list");
                       return false;
                     }
 
-                    // fail if email conflicts with pending invitations or existing members
                     for (const email of emails) {
                       const result = validateInvitation({
                         email,
@@ -227,13 +205,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
                       });
 
                       if (!result.valid) {
-                        rateLimiter.maybeExecute(numberOfToasts + 1);
-
-                        if (rateLimiter.getRemainingInWindow()) {
-                          // TODO: toasts
-                          alert(result.reason);
-                        }
-
+                        toast.error(result.reason);
                         return false;
                       }
                     }
