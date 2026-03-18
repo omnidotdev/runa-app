@@ -3,7 +3,7 @@ export enum Hotkeys {
   ToggleTheme = "t",
   ToggleViewMode = "v",
   CreateTask = "c",
-  CreateProject = "c",
+  CreateProject = "p",
   ToggleFilter = "f",
   UpdateAssignees = "a",
   UpdateDueDate = "d",
