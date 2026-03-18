@@ -8,6 +8,7 @@ import { removeMember, updateMemberRole } from "@/lib/idp";
 import {
   cancelOrganizationInvitation,
   inviteOrganizationMember,
+  resendOrganizationInvitation,
 } from "@/server/functions/organizations";
 
 import type { RemoveMemberParams, UpdateMemberRoleParams } from "@/lib/idp";
@@ -64,6 +65,27 @@ export function useInviteMember() {
       queryClient.invalidateQueries({
         queryKey: ["organizationMembers", variables.organizationId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["organizationInvitations", variables.organizationId],
+      });
+    },
+  });
+}
+
+/**
+ * Hook to resend an invitation (active or expired).
+ * Uses dedicated server function that skips active-pending validation
+ */
+export function useResendInvitation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params: {
+      organizationId: string;
+      email: string;
+      role: "admin" | "member";
+    }) => resendOrganizationInvitation({ data: params }),
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["organizationInvitations", variables.organizationId],
       });

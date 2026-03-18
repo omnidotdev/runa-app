@@ -1,10 +1,9 @@
 import { useAsyncQueuer } from "@tanstack/react-pacer/async-queuer";
-import { useRateLimiter } from "@tanstack/react-pacer/rate-limiter";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import ms from "ms";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -35,8 +34,10 @@ import { isSelfHosted } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import { useInviteMember } from "@/lib/hooks/useOrganizationMembers";
+import organizationInvitationsOptions from "@/lib/options/organizationInvitations.options";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import { Tier, getTierFromSubscription } from "@/lib/types/tier";
+import { validateInvitation } from "@/lib/validation/invitation";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
 import type { RefObject } from "react";
@@ -80,6 +81,14 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
   });
 
   const memberCount = membersData?.data?.length ?? 0;
+  const memberEmails = membersData?.data?.map((m) => m.user.email) ?? [];
+
+  // Fetch pending invitations for dedup validation
+  const { data: invitationsData } = useQuery({
+    ...organizationInvitationsOptions({ organizationId: organizationId! }),
+    enabled: !!organizationId,
+  });
+  const pendingInvitations = invitationsData?.active ?? [];
 
   // Derive tier from subscription
   const tier = getTierFromSubscription(
@@ -98,13 +107,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
           : 5;
   const _canInviteMore = memberCount < maxMembers;
 
-  const [numberOfToasts, setNumberOfToasts] = useState(0);
   const emailRef = useRef<HTMLInputElement>(null);
-
-  const rateLimiter = useRateLimiter(setNumberOfToasts, {
-    limit: 2,
-    window: ms("1s"),
-  });
 
   const { mutateAsync: inviteMemberMutation } = useInviteMember();
 
@@ -184,28 +187,27 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
                   validate={(details) => {
                     const emails = details.inputValue.split(",");
 
-                    // fail if more than max number of invites
                     if (emails.length > MAX_NUMBER_OF_INVITES) {
-                      rateLimiter.maybeExecute(numberOfToasts + 1);
-
-                      if (rateLimiter.getRemainingInWindow()) {
-                        // TODO: toasts
-                        alert("max number of invites reached");
-                      }
-
+                      toast.error("Maximum number of invites reached");
                       return false;
                     }
 
-                    // fail if email that is currently being pasted or added is a duplicate
                     if (emails.some((email) => details.value.includes(email))) {
-                      rateLimiter.maybeExecute(numberOfToasts + 1);
-
-                      if (rateLimiter.getRemainingInWindow()) {
-                        // TODO: toasts
-                        alert("This is a duplicate invite");
-                      }
-
+                      toast.error("This email is already in the invite list");
                       return false;
+                    }
+
+                    for (const email of emails) {
+                      const result = validateInvitation({
+                        email,
+                        pendingInvitations,
+                        memberEmails,
+                      });
+
+                      if (!result.valid) {
+                        toast.error(result.reason);
+                        return false;
+                      }
                     }
 
                     return emails.every((email) =>
