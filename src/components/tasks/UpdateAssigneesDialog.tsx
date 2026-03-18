@@ -130,16 +130,7 @@ export default function UpdateAssigneesDialog() {
         );
       }
 
-      //   Wait so invalidation refetches happen while the query is still enabled
       await Promise.allSettled(mutations);
-
-      //   // const failures = results.filter((result) => result.status === "rejected");
-
-      //   // if (failures.length > 0) {
-      //   //   toast.error("Failed to update some assignees. Please try again.");
-      //   // } else if (results.length > 0) {
-      //   //   toast.success("Assignees updated");
-      //   // }
 
       formApi.reset();
       setIsOpen(false);

@@ -12,6 +12,7 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { DestructiveActionDialog, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
@@ -87,7 +88,7 @@ const Projects = () => {
 
   const maxProjectsReached = useMaxProjectsReached();
 
-  const { mutate: deleteProject } = useDeleteProjectMutation({
+  const { mutateAsync: deleteProject } = useDeleteProjectMutation({
     meta: {
       invalidates: [
         getQueryKeyPrefix(useProjectsQuery),
@@ -102,6 +103,15 @@ const Projects = () => {
     { setIsOpen: setIsDeleteProjectOpen } = useDialogStore({
       type: DialogType.DeleteProject,
     });
+
+  const handleDeleteProject = () => {
+    // TODO: Incorporate a toast action that allows users to undo the deletion.
+    toast.promise(deleteProject({ rowId: selectedProject?.rowId! }), {
+      loading: "Deleting project...",
+      success: "Project deleted successfully!",
+      error: "Failed to delete project. Please try again.",
+    });
+  };
 
   return (
     <>
@@ -250,24 +260,20 @@ const Projects = () => {
       </div>
 
       <DestructiveActionDialog
-        title="Danger Zone"
+        title="Delete project"
         description={
           <span>
-            This will delete the project{" "}
+            This will permanently delete the{" "}
             <strong className="font-medium text-base-900 dark:text-base-100">
               {selectedProject?.name}
             </strong>{" "}
-            from{" "}
-            <strong className="font-medium text-base-900 dark:text-base-100">
-              {orgName}
-            </strong>{" "}
-            workspace . This action cannot be undone.
+            project, including all tasks, labels, and member assignments. This
+            action cannot be undone.
           </span>
         }
-        onConfirm={() => {
-          deleteProject({ rowId: selectedProject?.rowId! });
-        }}
+        onConfirm={handleDeleteProject}
         dialogType={DialogType.DeleteProject}
+        confirmation={selectedProject?.name}
       />
     </>
   );

@@ -142,7 +142,7 @@ const OverviewBoard = ({ projects }: Props) => {
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
-                                  className="rounded-lg outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                  className="h-auto shrink-0 cursor-pointer overflow-hidden rounded-lg border bg-background p-3 outline-hidden hover:border-input hover:shadow-sm focus-visible:border-primary"
                                   onKeyDown={(evt) => {
                                     if (evt.key === "Enter") {
                                       navigate({

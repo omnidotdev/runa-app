@@ -34,7 +34,6 @@ import {
   useUpdateUserPreferenceMutation,
   useUserPreferencesQuery,
 } from "@/generated/graphql";
-import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useForm from "@/lib/hooks/useForm";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
@@ -89,10 +88,6 @@ const ColumnForm = ({
     isDragging,
   } = useSortable({
     id: column.rowId,
-  });
-
-  const { setIsOpen: setIsDeleteColumnDialogOpen } = useDialogStore({
-    type: DialogType.DeleteColumn,
   });
 
   const style: CSSProperties = {
@@ -349,10 +344,7 @@ const ColumnForm = ({
                 value="delete"
                 variant="destructive"
                 className={cn("hidden", !isMember && "flex")}
-                onClick={() => {
-                  setColumnToDelete?.(column);
-                  setIsDeleteColumnDialogOpen(true);
-                }}
+                onClick={() => setColumnToDelete?.(column)}
               >
                 <Trash2Icon />
                 <span> Delete </span>

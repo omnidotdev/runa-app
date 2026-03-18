@@ -484,8 +484,20 @@ const Team = () => {
       )}
 
       <DestructiveActionDialog
-        title="Danger Zone"
-        description={`This will remove ${selectedMember?.name} from ${orgName} organization. This action cannot be undone.`}
+        title="Remove team member"
+        description={
+          <span>
+            This will remove{" "}
+            <strong className="font-medium text-base-900 dark:text-base-100">
+              {selectedMember?.name}
+            </strong>{" "}
+            from the{" "}
+            <strong className="font-medium text-base-900 dark:text-base-100">
+              {orgName}
+            </strong>{" "}
+            organization. They will lose access to all projects.
+          </span>
+        }
         onConfirm={() =>
           removeMember({
             organizationId: organizationId!,

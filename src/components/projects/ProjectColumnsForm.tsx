@@ -20,6 +20,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { AlignJustifyIcon, MoreHorizontalIcon, PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { DestructiveActionDialog, LabelIcon, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
@@ -44,7 +45,7 @@ import {
   useUpdateUserPreferenceMutation,
   useUserPreferencesQuery,
 } from "@/generated/graphql";
-import { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import columnsOptions from "@/lib/options/columns.options";
 import projectOptions from "@/lib/options/project.options";
@@ -106,7 +107,7 @@ const ProjectColumnsForm = () => {
         ],
       },
     }),
-    { mutate: deleteColumn } = useDeleteColumnMutation({
+    { mutateAsync: deleteColumn } = useDeleteColumnMutation({
       meta: {
         invalidates: [
           getQueryKeyPrefix(useColumnsQuery),
@@ -171,6 +172,49 @@ const ProjectColumnsForm = () => {
   const hasActiveColumn = localColumns?.some(
     (label) => label.rowId === activeColumnId,
   );
+
+  const { setIsOpen: setDeleteDialogOpen } = useDialogStore({
+    type: DialogType.DeleteColumn,
+  });
+
+  const handleRequestDeleteColumn = (column: Column) => {
+    const hasTasks = (column.tasks?.totalCount ?? 0) > 0;
+
+    // Only open the dialog when there are tasks
+    if (hasTasks) {
+      setColumnToDelete(column);
+      setDeleteDialogOpen(true);
+    } else {
+      handleDeleteColumn(column);
+    }
+  };
+
+  const handleDeleteColumn = (column: Column) => {
+    const remainingColumns = localColumns.filter(
+      (c) => c.rowId !== column.rowId,
+    );
+
+    const taskCount = column.tasks?.totalCount ?? 0;
+    const promise = deleteColumn({ rowId: column.rowId });
+
+    for (const c of remainingColumns) {
+      updateColumn({
+        rowId: c.rowId,
+        patch: {
+          index: remainingColumns.findIndex((col) => col.rowId === c.rowId),
+        },
+      });
+    }
+
+    toast.promise(promise, {
+      loading: "Deleting column and tasks...",
+      success:
+        taskCount > 0
+          ? `Project column "${column.title}" and ${taskCount} ${taskCount === 1 ? "task" : "tasks"} deleted`
+          : `Project column "${column.title}" deleted`,
+      error: "Failed to delete column",
+    });
+  };
 
   return (
     <>
@@ -339,7 +383,7 @@ const ProjectColumnsForm = () => {
                     hasActiveColumn={
                       hasActiveColumn || activeColumnId === "pending"
                     }
-                    setColumnToDelete={setColumnToDelete}
+                    setColumnToDelete={handleRequestDeleteColumn}
                     setLocalColumns={setLocalColumns}
                     canDrag={localColumns.length > 1}
                   />
@@ -355,16 +399,17 @@ const ProjectColumnsForm = () => {
       </div>
 
       <DestructiveActionDialog
-        title="Danger Zone"
+        title="Delete column"
         description={
           <span>
             This will delete the column{" "}
             <strong className="font-medium text-base-900 dark:text-base-100">
               {columnToDelete?.title}
             </strong>{" "}
-            including{" "}
+            and its{" "}
             <strong className="font-medium text-base-900 dark:text-base-100">
-              {columnToDelete?.tasks?.totalCount ?? 0} tasks
+              {columnToDelete?.tasks?.totalCount}{" "}
+              {columnToDelete?.tasks?.totalCount === 1 ? "task" : "tasks"}
             </strong>
             . This action cannot be undone.
           </span>
@@ -372,24 +417,10 @@ const ProjectColumnsForm = () => {
         onConfirm={() => {
           if (!columnToDelete) return;
 
-          const currentColumns = localColumns.filter(
-            (c) => c.rowId !== columnToDelete.rowId,
-          );
-
-          deleteColumn({
-            rowId: columnToDelete.rowId,
-          });
-
-          for (const c of currentColumns) {
-            updateColumn({
-              rowId: c.rowId,
-              patch: {
-                index: currentColumns.findIndex((col) => col.rowId === c.rowId),
-              },
-            });
-          }
+          handleDeleteColumn(columnToDelete);
         }}
         dialogType={DialogType.DeleteColumn}
+        confirmation={columnToDelete?.title}
       />
     </>
   );
