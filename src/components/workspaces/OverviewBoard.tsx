@@ -13,6 +13,7 @@ import {
   boardContainerStyles,
   boardLayoutStyles,
 } from "@/lib/board/styles";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
@@ -97,7 +98,9 @@ const Board = ({ projects }: Props) => {
                   title: maxProjectsReached
                     ? "Upgrade workspace to create more projects"
                     : "Create Project",
-                  shortcut: !maxProjectsReached ? "P" : undefined,
+                  shortcut: !maxProjectsReached
+                    ? Hotkeys.CreateProject.toUpperCase()
+                    : undefined,
                 }}
                 icon={column.icon}
                 onCreate={() => {

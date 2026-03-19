@@ -7,6 +7,7 @@ import {
   CollapsibleContent,
   CollapsibleRoot,
 } from "@/components/ui/collapsible";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
@@ -69,7 +70,9 @@ const List = ({ projects }: Props) => {
               title: maxProjectsReached
                 ? "Upgrade workspace to create more projects"
                 : "Create Project",
-              shortcut: !maxProjectsReached ? "P" : undefined,
+              shortcut: !maxProjectsReached
+                ? Hotkeys.CreateProject.toUpperCase()
+                : undefined,
             }}
             icon={column.icon}
             onCreate={(e) => {
