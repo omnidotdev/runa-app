@@ -594,7 +594,7 @@ function AuthenticatedProjectPage() {
                     ? "Board View"
                     : "List View"
                 }
-                shortcut="V"
+                shortcut={Hotkeys.ToggleViewMode.toUpperCase()}
                 trigger={
                   <Button
                     variant="outline"
