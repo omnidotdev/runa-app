@@ -50,8 +50,7 @@ export const Route = createFileRoute(
       },
       async subscription() {
         const setting = await this.$.setting;
-        // NB: fetchQuery used to guarantee fresh data if it is stale (i.e. when renewSubscription handler invalidates data)
-        return queryClient.fetchQuery(
+        return queryClient.ensureQueryData(
           subscriptionOptions(setting.organizationId),
         );
       },

@@ -75,7 +75,8 @@ export default function WorkspaceBenefits() {
           data: { organizationId },
         }),
       onSuccess: async () => {
-        await queryClient.invalidateQueries({
+        // NB: force loader to refetch subscription data. `ensureQueryData` will return stale data by default
+        await queryClient.resetQueries({
           queryKey: ["stripe", "subscription", organizationId],
         });
         await router.invalidate();
