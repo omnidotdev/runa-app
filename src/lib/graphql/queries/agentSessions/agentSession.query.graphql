@@ -1,0 +1,10 @@
+query AgentSession($rowId: UUID!) {
+  agentSession(rowId: $rowId) {
+    rowId
+    title
+    messages
+    toolCallCount
+    createdAt
+    updatedAt
+  }
+}

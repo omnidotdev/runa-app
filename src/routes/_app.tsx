@@ -17,6 +17,7 @@ import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
+import toolRegistryOptions from "@/lib/options/toolRegistry.options";
 import { EventsProvider } from "@/providers/EventsProvider";
 import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
@@ -129,6 +130,10 @@ export const Route = createFileRoute("/_app")({
             userId: session?.user?.rowId,
           }),
         );
+      },
+      // Prefetch tool registry for agent features (static, cached forever)
+      async toolRegistry() {
+        return await queryClient.ensureQueryData(toolRegistryOptions());
       },
     });
 

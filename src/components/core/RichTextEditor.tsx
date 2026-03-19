@@ -27,6 +27,8 @@ import {
 import { cn } from "@/lib/utils";
 import CodeBlockPlugin from "./CodeBlockPlugin";
 import theme from "./lexical-theme";
+import { MentionNode } from "./MentionNode";
+import MentionSuggestionPlugin from "./MentionSuggestionPlugin";
 
 import type { EditorState, LexicalEditor } from "lexical";
 import type { ComponentProps, RefObject } from "react";
@@ -44,10 +46,23 @@ interface Props extends Omit<ComponentProps<"div">, "placeholder"> {
     getText: () => string;
     isEmpty: boolean;
   }) => void;
+  /**
+   * Called once after the editor is initialized and any initial content is loaded.
+   * Use this to know when the editor is ready for measurements or interactions.
+   */
+  onReady?: () => void;
   defaultContent?: string;
+  /**
+   * When provided, syncs external content changes to the editor.
+   * Use this for reactive updates from server/agent while preserving user edits.
+   * Only updates if current content differs from syncContent.
+   */
+  syncContent?: string;
   editable?: boolean;
   placeholder?: string;
   skeletonClassName?: string;
+  /** Enable @agent mention autocomplete suggestions. */
+  enableMentions?: boolean;
 }
 
 // Plugin to register code highlighting
@@ -79,20 +94,56 @@ const EditablePlugin = ({ editable }: { editable: boolean }) => {
 const EditorApiPlugin = ({
   editorApi,
   defaultContent,
+  syncContent,
+  onReady,
 }: {
   editorApi?: RefObject<EditorApi | null>;
   defaultContent?: string;
+  syncContent?: string;
+  onReady?: () => void;
 }) => {
   const [editor] = useLexicalComposerContext();
   const hasSetInitialContent = useRef(false);
+  const lastSyncedContent = useRef<string | undefined>(undefined);
+  const hasCalledOnReady = useRef(false);
 
   // Set initial content from HTML
   useEffect(() => {
     if (defaultContent && !hasSetInitialContent.current) {
       hasSetInitialContent.current = true;
+      lastSyncedContent.current = defaultContent;
       importFromHtml(editor, defaultContent);
     }
-  }, [editor, defaultContent]);
+
+    // Call onReady after initial setup (with or without content)
+    if (!hasCalledOnReady.current) {
+      hasCalledOnReady.current = true;
+      // Use requestAnimationFrame to ensure DOM has updated after import
+      requestAnimationFrame(() => {
+        onReady?.();
+      });
+    }
+  }, [editor, defaultContent, onReady]);
+
+  // Sync external content changes (e.g., from server/agent updates)
+  useEffect(() => {
+    if (syncContent === undefined) return;
+    if (!hasSetInitialContent.current) return; // Let defaultContent handle initial
+    if (syncContent === lastSyncedContent.current) return; // No change
+
+    // Get current editor content to compare
+    const currentContent = exportToHtml(editor);
+
+    // Only sync if the editor content matches what we last synced
+    // This prevents overwriting user edits
+    if (currentContent === lastSyncedContent.current) {
+      lastSyncedContent.current = syncContent;
+      importFromHtml(editor, syncContent);
+    } else {
+      // User has edited, just update our tracking
+      lastSyncedContent.current = syncContent;
+    }
+  }, [editor, syncContent]);
 
   // Expose API methods via ref
   useEffect(() => {
@@ -106,6 +157,7 @@ const EditorApiPlugin = ({
             root.append(paragraph);
             paragraph.select();
           });
+          lastSyncedContent.current = undefined;
         },
         focus: () => {
           editor.focus(() => {
@@ -144,11 +196,14 @@ const PlaceholderPlugin = ({
 const RichTextEditor = ({
   editorApi,
   onUpdate,
+  onReady,
   defaultContent,
+  syncContent,
   className,
   editable = true,
   placeholder,
   skeletonClassName,
+  enableMentions = false,
   ...rest
 }: Props) => {
   const editorContainerRef = useRef<HTMLDivElement>(null);
@@ -171,6 +226,7 @@ const RichTextEditor = ({
       CodeHighlightNode,
       LinkNode,
       AutoLinkNode,
+      MentionNode,
     ],
   };
 
@@ -231,7 +287,10 @@ const RichTextEditor = ({
             <EditorApiPlugin
               editorApi={editorApi}
               defaultContent={defaultContent}
+              syncContent={syncContent}
+              onReady={onReady}
             />
+            {enableMentions && <MentionSuggestionPlugin />}
           </div>
         </LexicalComposer>
       </ClientOnly>

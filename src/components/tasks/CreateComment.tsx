@@ -10,7 +10,12 @@ import taskOptions from "@/lib/options/task.options";
 
 import type { EditorApi } from "@/components/core";
 
-const CreateComment = () => {
+interface CreateCommentProps {
+  /** Called when a comment containing @mention is submitted (for polling). */
+  onMentionSubmit: (html: string) => void;
+}
+
+const CreateComment = ({ onMentionSubmit }: CreateCommentProps) => {
   const editorApi = useRef<EditorApi | null>(null);
   const { taskId } = useParams({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
@@ -31,16 +36,22 @@ const CreateComment = () => {
       comment: "",
     },
     onSubmit: ({ value, formApi }) => {
+      const authorId = session?.user?.rowId;
+      if (!authorId) return;
+
       if (value.comment.trim()) {
         addComment({
           input: {
             post: {
               taskId,
-              authorId: session?.user?.rowId!,
+              authorId,
               description: value.comment,
             },
           },
         });
+
+        // Start polling if comment contains a mention
+        onMentionSubmit(value.comment);
       }
 
       formApi.reset();
@@ -55,21 +66,22 @@ const CreateComment = () => {
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="relative mb-8 flex w-full flex-col gap-2 px-1"
+      className="relative flex w-full flex-col gap-2 pb-8"
     >
       <form.Field name="comment">
         {(field) => (
           <RichTextEditor
             editorApi={editorApi}
             onUpdate={({ getHTML }) => field.handleChange(getHTML())}
-            placeholder="Add a comment..."
+            placeholder="Add a comment... (type @runa to mention the AI agent)"
+            enableMentions
             className="flex min-h-32 w-full rounded-xl border text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40"
             skeletonClassName="h-[128px] w-full"
           />
         )}
       </form.Field>
 
-      <div className="absolute right-2 bottom-0 mt-4 flex justify-end gap-2 p-2">
+      <div className="-mt-14 flex justify-end gap-2 p-2">
         <form.Subscribe
           selector={(state) => [
             state.canSubmit,

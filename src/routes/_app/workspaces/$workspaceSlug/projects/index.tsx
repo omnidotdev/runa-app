@@ -13,6 +13,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
+import { CreateProjectWithAIButton } from "@/components/agent/CreateProjectWithAIButton";
 import { Tooltip } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import { Button } from "@/components/ui/button";
@@ -99,6 +100,7 @@ export const Route = createFileRoute(
 function ProjectsOverviewPage() {
   const { session } = Route.useRouteContext();
   const { organizationId } = Route.useLoaderData();
+  const { workspaceSlug } = Route.useParams();
   const { search } = Route.useSearch();
   const navigate = Route.useNavigate();
   const { queryClient } = Route.useRouteContext();
@@ -443,6 +445,14 @@ function ProjectsOverviewPage() {
                     <Plus className="size-4" />
                   </Button>
                 }
+              />
+
+              <CreateProjectWithAIButton
+                organizationId={organizationId}
+                workspaceSlug={workspaceSlug}
+                iconOnly
+                disabled={maxProjectsReached}
+                className={cn("hidden", !isMember && "inline-flex")}
               />
             </div>
           </div>

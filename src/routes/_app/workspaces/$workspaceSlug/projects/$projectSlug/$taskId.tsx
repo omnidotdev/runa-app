@@ -22,13 +22,13 @@ import {
 import { NotFound } from "@/components/layout";
 import {
   Comments,
-  CreateComment,
   TaskDescription,
   TaskSidebar,
   UpdateAssigneesDialog,
   UpdateDueDateDialog,
   UpdateTaskLabelsDialog,
 } from "@/components/tasks";
+import { TaskAgentActivity } from "@/components/tasks/TaskAgentActivity";
 import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import {
@@ -41,6 +41,7 @@ import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
+import agentActivitiesByTaskIdOptions from "@/lib/options/agentActivitiesByTaskId.options";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import taskOptions from "@/lib/options/task.options";
@@ -81,6 +82,15 @@ export const Route = createFileRoute(
         );
         if (!task) throw notFound();
         return task;
+      },
+      async agentActivities() {
+        const project = await this.$.project;
+        return queryClient.ensureQueryData(
+          agentActivitiesByTaskIdOptions({
+            projectId: project.rowId,
+            first: 50,
+          }),
+        );
       },
     });
 
@@ -288,6 +298,7 @@ function AuthenticatedTaskPage() {
         <div className="flex flex-col gap-2">
           <RichTextEditor
             defaultContent={task?.content}
+            syncContent={task?.content}
             className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
             skeletonClassName="h-8 min-w-40"
             editable={isAuthor || !isMember}
@@ -402,8 +413,8 @@ function AuthenticatedTaskPage() {
               description: task?.description,
             }}
           />
+          <TaskAgentActivity taskId={taskId} projectId={projectId} />
           <Comments />
-          <CreateComment />
         </div>
 
         {/* Sidebar (Sticky, hidden on mobile) */}

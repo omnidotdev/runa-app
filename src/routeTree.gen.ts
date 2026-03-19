@@ -112,27 +112,27 @@ const AppWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof PublicIndexRoute
   '/demo': typeof PublicDemoRoute
   '/pricing': typeof PublicPricingRoute
   '/api/health': typeof ApiHealthRoute
   '/api/version': typeof ApiVersionRoute
-  '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AppProfileUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/workspaces': typeof AppWorkspacesIndexRoute
+  '/workspaces/': typeof AppWorkspacesIndexRoute
   '/workspaces/$workspaceSlug/settings': typeof AppWorkspacesWorkspaceSlugSettingsRoute
   '/api/og/project/$workspaceSlug/$projectSlug': typeof ApiOgProjectWorkspaceSlugProjectSlugRoute
-  '/workspaces/$workspaceSlug/projects': typeof AppWorkspacesWorkspaceSlugProjectsIndexRoute
+  '/workspaces/$workspaceSlug/projects/': typeof AppWorkspacesWorkspaceSlugProjectsIndexRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugTaskIdRoute
   '/workspaces/$workspaceSlug/projects/$projectSlug/settings': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugSettingsRoute
-  '/workspaces/$workspaceSlug/projects/$projectSlug': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
+  '/workspaces/$workspaceSlug/projects/$projectSlug/': typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof PublicIndexRoute
   '/demo': typeof PublicDemoRoute
   '/pricing': typeof PublicPricingRoute
   '/api/health': typeof ApiHealthRoute
   '/api/version': typeof ApiVersionRoute
-  '/': typeof PublicIndexRoute
   '/profile/$userId': typeof AppProfileUserIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspaces': typeof AppWorkspacesIndexRoute
@@ -165,27 +165,27 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/demo'
     | '/pricing'
     | '/api/health'
     | '/api/version'
-    | '/'
     | '/profile/$userId'
     | '/api/auth/$'
-    | '/workspaces'
+    | '/workspaces/'
     | '/workspaces/$workspaceSlug/settings'
     | '/api/og/project/$workspaceSlug/$projectSlug'
-    | '/workspaces/$workspaceSlug/projects'
+    | '/workspaces/$workspaceSlug/projects/'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/$taskId'
     | '/workspaces/$workspaceSlug/projects/$projectSlug/settings'
-    | '/workspaces/$workspaceSlug/projects/$projectSlug'
+    | '/workspaces/$workspaceSlug/projects/$projectSlug/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/demo'
     | '/pricing'
     | '/api/health'
     | '/api/version'
-    | '/'
     | '/profile/$userId'
     | '/api/auth/$'
     | '/workspaces'
@@ -229,14 +229,14 @@ declare module '@tanstack/react-router' {
     '/_public': {
       id: '/_public'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app': {
       id: '/_app'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -278,7 +278,7 @@ declare module '@tanstack/react-router' {
     '/_app/workspaces/': {
       id: '/_app/workspaces/'
       path: '/workspaces'
-      fullPath: '/workspaces'
+      fullPath: '/workspaces/'
       preLoaderRoute: typeof AppWorkspacesIndexRouteImport
       parentRoute: typeof AppRoute
     }
@@ -306,7 +306,7 @@ declare module '@tanstack/react-router' {
     '/_app/workspaces/$workspaceSlug/projects/': {
       id: '/_app/workspaces/$workspaceSlug/projects/'
       path: '/workspaces/$workspaceSlug/projects'
-      fullPath: '/workspaces/$workspaceSlug/projects'
+      fullPath: '/workspaces/$workspaceSlug/projects/'
       preLoaderRoute: typeof AppWorkspacesWorkspaceSlugProjectsIndexRouteImport
       parentRoute: typeof AppRoute
     }
@@ -320,7 +320,7 @@ declare module '@tanstack/react-router' {
     '/_app/workspaces/$workspaceSlug/projects/$projectSlug/': {
       id: '/_app/workspaces/$workspaceSlug/projects/$projectSlug/'
       path: '/workspaces/$workspaceSlug/projects/$projectSlug'
-      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug'
+      fullPath: '/workspaces/$workspaceSlug/projects/$projectSlug/'
       preLoaderRoute: typeof AppWorkspacesWorkspaceSlugProjectsProjectSlugIndexRouteImport
       parentRoute: typeof AppRoute
     }

@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { all } from "better-all";
 
+import { AgentConfigSection } from "@/components/agent/AgentConfigSection";
 import { NotFound } from "@/components/layout";
 import {
   Projects,
@@ -10,6 +11,9 @@ import {
   WorkspaceSettingsHeader,
 } from "@/components/workspaces";
 import { BASE_URL } from "@/lib/config/env.config";
+import agentConfigOptions from "@/lib/options/agentConfig.options";
+import agentPersonasOptions from "@/lib/options/agentPersonas.options";
+import agentSessionTokenUsageOptions from "@/lib/options/agentSessionTokenUsage.options";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import pricesOptions from "@/lib/options/prices.options";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
@@ -62,6 +66,30 @@ export const Route = createFileRoute(
           }),
         );
       },
+      async agentConfig() {
+        // Prefetch agent config to prevent CLS in AgentConfigSection
+        return queryClient.ensureQueryData(
+          agentConfigOptions({
+            organizationId: organizationId!,
+            accessToken: session?.accessToken!,
+          }),
+        );
+      },
+      async agentPersonas() {
+        // Prefetch agent personas to prevent CLS in AgentPersonaManager
+        return queryClient.ensureQueryData(
+          agentPersonasOptions({
+            organizationId: organizationId!,
+            accessToken: session?.accessToken!,
+          }),
+        );
+      },
+      async agentTokenUsage() {
+        // Prefetch token usage stats to prevent CLS in AgentTokenUsage
+        return queryClient.ensureQueryData(
+          agentSessionTokenUsageOptions({ organizationId: organizationId! }),
+        );
+      },
     });
 
     return {
@@ -95,6 +123,8 @@ function SettingsPage() {
         <Projects />
 
         <WorkspaceColumnsForm />
+
+        <AgentConfigSection />
 
         <WorkspaceBenefits />
       </div>

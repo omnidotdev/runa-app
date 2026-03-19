@@ -1,0 +1,25 @@
+query AgentActivitiesByTaskId($projectId: UUID!, $first: Int = 50) {
+  agentActivities(
+    condition: { projectId: $projectId }
+    orderBy: [CREATED_AT_DESC]
+    first: $first
+  ) {
+    nodes {
+      rowId
+      toolName
+      toolInput
+      toolOutput
+      status
+      approvalStatus
+      requiresApproval
+      errorMessage
+      affectedTaskIds
+      createdAt
+      session {
+        rowId
+        title
+      }
+    }
+    totalCount
+  }
+}

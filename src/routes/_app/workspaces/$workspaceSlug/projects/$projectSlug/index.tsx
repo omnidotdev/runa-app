@@ -15,12 +15,14 @@ import {
   Minimize2Icon,
   SearchIcon,
   Settings2,
+  SparklesIcon,
 } from "lucide-react";
 import { Suspense, useCallback, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
+import { AgentChatPanel } from "@/components/agent";
 import { Link, Tooltip } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import {
@@ -40,6 +42,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SheetContent, SheetRoot } from "@/components/ui/sheet";
 import {
   useSettingByOrganizationIdQuery,
   useTaskQuery,
@@ -51,6 +54,7 @@ import {
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import useIsMobile from "@/lib/hooks/useIsMobile";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
@@ -172,6 +176,7 @@ export const Route = createFileRoute(
       name: project.name,
       projectId: project.rowId,
       organizationId,
+      projectPrefix: project.prefix ?? null,
     };
   },
   validateSearch: zodValidator(projectSearchParamsSchema),
@@ -224,6 +229,8 @@ function AuthenticatedProjectPage() {
   const { projectId, organizationId } = loaderData;
   const { search, assignees, labels, priorities } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
+  const [isAgentOpen, setIsAgentOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   const navigate = Route.useNavigate();
 
@@ -543,9 +550,11 @@ function AuthenticatedProjectPage() {
     [updateViewMode, userPreferences?.viewMode, projectId],
   );
 
+  useHotkeys(Hotkeys.ToggleAgent, () => setIsAgentOpen((prev) => !prev), []);
+
   return (
     <div className="flex size-full">
-      <div className="flex size-full flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         <div className="border-b px-6 py-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
@@ -642,6 +651,22 @@ function AuthenticatedProjectPage() {
                 }
               />
 
+              <Tooltip
+                positioning={{ placement: "bottom" }}
+                tooltip="Agent Chat"
+                shortcut="Shift+A"
+                trigger={
+                  <Button
+                    variant={isAgentOpen ? "muted" : "outline"}
+                    size="icon"
+                    onClick={() => setIsAgentOpen((prev) => !prev)}
+                    aria-label="Toggle agent chat"
+                  >
+                    <SparklesIcon />
+                  </Button>
+                }
+              />
+
               {userPreferences?.viewMode === "list" && (
                 <Tooltip
                   positioning={{ placement: "bottom" }}
@@ -677,6 +702,32 @@ function AuthenticatedProjectPage() {
           )}
         </DragDropContext>
       </div>
+
+      {isAgentOpen &&
+        session?.accessToken &&
+        (isMobile ? (
+          <SheetRoot
+            open={isAgentOpen}
+            onOpenChange={({ open }) => setIsAgentOpen(open)}
+          >
+            <SheetContent side="right" className="w-full p-0 sm:max-w-full">
+              <AgentChatPanel
+                projectId={projectId}
+                organizationId={organizationId}
+                userId={session.user.rowId!}
+                onClose={() => setIsAgentOpen(false)}
+                className="w-full border-l-0"
+              />
+            </SheetContent>
+          </SheetRoot>
+        ) : (
+          <AgentChatPanel
+            projectId={projectId}
+            organizationId={organizationId}
+            userId={session.user.rowId!}
+            onClose={() => setIsAgentOpen(false)}
+          />
+        ))}
 
       <CreateTaskDialog />
       <UpdateAssigneesDialog />
