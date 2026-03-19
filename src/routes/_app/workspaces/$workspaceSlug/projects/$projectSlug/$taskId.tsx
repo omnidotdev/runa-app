@@ -38,6 +38,7 @@ import {
   useUpdateTaskMutation,
 } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
@@ -365,7 +366,7 @@ function AuthenticatedTaskPage() {
           <Tooltip
             positioning={{ placement: "top" }}
             tooltip="Update Due Date"
-            shortcut="D"
+            shortcut={Hotkeys.UpdateDueDate.toUpperCase()}
             trigger={
               <Button
                 onClick={() => setIsUpdateDueDateDialogOpen(true)}

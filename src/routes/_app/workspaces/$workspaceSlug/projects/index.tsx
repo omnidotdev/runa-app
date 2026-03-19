@@ -401,7 +401,7 @@ function ProjectsOverviewPage() {
                 tooltip={
                   settings?.viewMode === "list" ? "Board View" : "List View"
                 }
-                shortcut="V"
+                shortcut={Hotkeys.ToggleViewMode.toUpperCase()}
                 trigger={
                   <Button
                     variant="outline"
@@ -431,7 +431,7 @@ function ProjectsOverviewPage() {
               <Tooltip
                 positioning={{ placement: "bottom" }}
                 tooltip="Create Project"
-                shortcut="P"
+                shortcut={Hotkeys.CreateProject.toUpperCase()}
                 trigger={
                   <Button
                     variant="outline"
