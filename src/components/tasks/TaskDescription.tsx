@@ -77,14 +77,13 @@ const TaskDescription = ({ task }: Props) => {
           className="border-0"
           skeletonClassName="h-[120px] rounded-t-none"
           onUpdate={({ getHTML, isEmpty }) => {
-            !isEmpty &&
-              handleTaskUpdate({
-                rowId: task?.rowId,
-                patch: {
-                  // TODO: discuss if description should be nullable. Current schema structure doesn't allow it
-                  description: getHTML(),
-                },
-              });
+            handleTaskUpdate({
+              rowId: task?.rowId,
+              patch: {
+                // TODO: discuss if description should be nullable. Current schema structure doesn't allow it
+                description: !isEmpty ? getHTML() : "",
+              },
+            });
           }}
         />
       </CardContent>
