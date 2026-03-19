@@ -68,18 +68,19 @@ export default function WorkspaceBenefits() {
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
   });
 
-  const { mutateAsync: handleRenewSubscription } = useMutation({
-    mutationFn: async () =>
-      await renewSubscription({
-        data: { organizationId },
-      }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ["stripe", "subscription", organizationId],
-      });
-      router.invalidate();
-    },
-  });
+  const { mutateAsync: handleRenewSubscription, isPending: isRenewing } =
+    useMutation({
+      mutationFn: async () =>
+        await renewSubscription({
+          data: { organizationId },
+        }),
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ["stripe", "subscription", organizationId],
+        });
+        await router.invalidate();
+      },
+    });
 
   if (isSelfHosted) return null;
 
@@ -125,8 +126,11 @@ export default function WorkspaceBenefits() {
         {subscription ? (
           <div className="flex gap-2">
             {subscription.cancelAt ? (
-              <Button onClick={() => handleRenewSubscription()}>
-                Renew Subscription
+              <Button
+                onClick={() => handleRenewSubscription()}
+                disabled={isRenewing}
+              >
+                {isRenewing ? "Renewing..." : "Renew Subscription"}
               </Button>
             ) : (
               <Button className="w-fit" onClick={() => openBillingPortal()}>
