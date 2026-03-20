@@ -41,22 +41,6 @@ import Shortcut from "./Shortcut";
 
 import type { ProjectsSidebarQuery } from "@/generated/graphql";
 
-interface ViewModeIconProps {
-  color?: string | null;
-  viewMode?: string;
-  className?: string;
-}
-
-const ViewModeIcon = ({ color, viewMode, className }: ViewModeIconProps) => {
-  const Icon = viewMode !== "list" ? Grid2X2Icon : ListIcon;
-  return (
-    <Icon
-      className={className ?? "size-4 text-primary-500"}
-      style={{ color: color ?? undefined }}
-    />
-  );
-};
-
 type ProjectWithPreferences = NonNullable<
   ProjectsSidebarQuery["projects"]
 >["nodes"][number];
@@ -64,7 +48,7 @@ interface Props {
   project: ProjectWithPreferences;
 }
 
-const AppSidebarProject = ({ project }: Props) => {
+const AppSidebarProjectItem = ({ project }: Props) => {
   const { organizationId } = useLoaderData({ from: "/_app" });
   const { workspaceSlug } = useParams({ strict: false });
   const { session } = useRouteContext({ from: "/_app" });
@@ -74,7 +58,9 @@ const AppSidebarProject = ({ project }: Props) => {
   const { isMobile, closeMobileSidebar } = useSidebar();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { rowId, pinned, viewMode } = project.userPreferences.nodes[0];
+  const userPref = project.userPreferences?.nodes?.[0];
+  const { rowId, pinned, viewMode } = userPref ?? {};
+
   const isPinned = pinned ?? false;
   const isBoardView = viewMode === "board";
   const isActive =
@@ -138,11 +124,17 @@ const AppSidebarProject = ({ project }: Props) => {
         tabIndex={-1}
       >
         <SidebarMenuButton isActive={isActive} onClick={closeMobileSidebar}>
-          <ViewModeIcon
-            color={project?.color}
-            viewMode={viewMode}
-            className="text-primary-500"
-          />
+          {viewMode !== "list" ? (
+            <Grid2X2Icon
+              className="text-primary-500"
+              style={{ color: project?.color ?? undefined }}
+            />
+          ) : (
+            <ListIcon
+              className="text-primary-500"
+              style={{ color: project?.color ?? undefined }}
+            />
+          )}
           <span className="w-full truncate">{project?.name}</span>
 
           {isPinned && <PinIcon className="size-3 shrink-0 text-base-400" />}
@@ -224,4 +216,4 @@ const AppSidebarProject = ({ project }: Props) => {
   );
 };
 
-export default AppSidebarProject;
+export default AppSidebarProjectItem;

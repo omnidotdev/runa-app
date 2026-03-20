@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   Link,
-  notFound,
   useLocation,
   useParams,
   useRouteContext,
@@ -44,26 +43,10 @@ import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
 import { Role } from "@/lib/permissions";
-import AppSidebarProject from "./AppSidebarProject";
+import AppSidebarProjectItem from "./AppSidebarProjectItem";
 import Tooltip from "./Tooltip";
 
-interface ViewModeIconProps {
-  color?: string | null;
-  viewMode?: string;
-  className?: string;
-}
-
-const ViewModeIcon = ({ color, viewMode, className }: ViewModeIconProps) => {
-  const Icon = viewMode !== "list" ? Grid2X2Icon : ListIcon;
-  return (
-    <Icon
-      className={className ?? "size-4 text-primary-500"}
-      style={{ color: color ?? undefined }}
-    />
-  );
-};
-
-const AppSidebarProjects = () => {
+const AppSidebarProjectList = () => {
   const { organizationId, session } = useRouteContext({ from: "/_app" });
   const { workspaceSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
@@ -107,7 +90,7 @@ const AppSidebarProjects = () => {
       select: (data) => data.projectColumns?.nodes,
     });
 
-  if (!workspaceSlug) throw notFound();
+  if (!workspaceSlug) return null;
 
   if (!open && !!sortedProjects?.length)
     return (
@@ -154,10 +137,17 @@ const AppSidebarProjects = () => {
                     }}
                     onClick={closeMobileSidebar}
                   >
-                    <ViewModeIcon
-                      color={project?.color}
-                      viewMode={userPreferences?.viewMode}
-                    />
+                    {userPreferences?.viewMode !== "list" ? (
+                      <Grid2X2Icon
+                        className="text-primary-500"
+                        style={{ color: project?.color ?? undefined }}
+                      />
+                    ) : (
+                      <ListIcon
+                        className="text-primary-500"
+                        style={{ color: project?.color ?? undefined }}
+                      />
+                    )}
                     <span className="truncate">{project?.name}</span>
 
                     {userPreferences?.pinned && (
@@ -217,7 +207,7 @@ const AppSidebarProjects = () => {
         <CollapsibleContent className="-mx-2 p-0">
           <SidebarMenu className="my-1 px-2">
             {sortedProjects?.map((project) => (
-              <AppSidebarProject key={project.rowId} project={project} />
+              <AppSidebarProjectItem key={project.rowId} project={project} />
             ))}
           </SidebarMenu>
         </CollapsibleContent>
@@ -226,4 +216,4 @@ const AppSidebarProjects = () => {
   );
 };
 
-export default AppSidebarProjects;
+export default AppSidebarProjectList;

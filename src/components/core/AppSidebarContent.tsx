@@ -14,7 +14,7 @@ import {
   SidebarMenuButton,
   useSidebar,
 } from "@/components/ui/sidebar";
-import AppSidebarProjects from "./AppSidebarProjects";
+import AppSidebarProjectList from "./AppSidebarProjectList";
 
 interface SidebarMenuItemType {
   isActive: boolean;
@@ -102,9 +102,7 @@ const AppSidebarContent = () => {
             </SidebarGroup>
           </CollapsibleRoot>
 
-          {/* <Suspense fallback={<div className="p-4">Loading projects...</div>}> */}
-          <AppSidebarProjects />
-          {/* </Suspense> */}
+          <AppSidebarProjectList />
         </>
       )}
     </SidebarContent>
