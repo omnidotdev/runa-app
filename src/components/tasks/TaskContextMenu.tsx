@@ -10,15 +10,9 @@ import {
   MenuPositioner,
   MenuRoot,
 } from "@/components/ui/menu";
-import {
-  useDeleteTaskMutation,
-  useProjectQuery,
-  useTasksQuery,
-} from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
-import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { PropsWithChildren } from "react";
 
@@ -33,6 +27,7 @@ const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
   });
 
   const { setTaskId } = useTaskStore();
+
   const { setIsOpen: setIsUpdateAssigneesDialogOpen } = useDialogStore({
     type: DialogType.UpdateAssignees,
   });
@@ -41,6 +36,9 @@ const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
   });
   const { setIsOpen: setIsUpdateTaskLabelsDialogOpen } = useDialogStore({
     type: DialogType.UpdateTaskLabels,
+  });
+  const { setIsOpen: setIsDeleteTaskDialogOpen } = useDialogStore({
+    type: DialogType.DeleteTask,
   });
 
   const navigateToTask = () => {
@@ -65,21 +63,10 @@ const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
     setIsUpdateTaskLabelsDialogOpen(true);
   };
 
-  const { mutate: deleteTask } = useDeleteTaskMutation({
-    meta: {
-      invalidates: [
-        getQueryKeyPrefix(useTasksQuery),
-        getQueryKeyPrefix(useProjectQuery),
-      ],
-    },
-    onSuccess: () => {
-      navigate({
-        to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-        params: { workspaceSlug, projectSlug },
-        replace: true,
-      });
-    },
-  });
+  const handleOpenDeleteTaskDialog = () => {
+    setTaskId(taskRowId);
+    setIsDeleteTaskDialogOpen(true);
+  };
 
   return (
     <MenuRoot>
@@ -110,7 +97,8 @@ const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
             <MenuItem
               value="delete"
               variant="destructive"
-              onSelect={() => deleteTask({ rowId: taskRowId })}
+              // onSelect={() => deleteTask({ rowId: taskRowId })}
+              onSelect={handleOpenDeleteTaskDialog}
             >
               <Trash2Icon /> <span>Delete</span>
             </MenuItem>

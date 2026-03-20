@@ -28,15 +28,11 @@ import {
   UpdateDueDateDialog,
   UpdateTaskLabelsDialog,
 } from "@/components/tasks";
+import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
 import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar";
-import {
-  useDeleteTaskMutation,
-  useProjectQuery,
-  useTasksQuery,
-  useUpdateTaskMutation,
-} from "@/generated/graphql";
+import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -174,7 +170,6 @@ function PublicTaskView() {
 }
 
 function AuthenticatedTaskPage() {
-  const navigate = Route.useNavigate();
   const { projectId, organizationId } = Route.useLoaderData();
   const { session } = Route.useRouteContext();
   const { workspaceSlug, projectSlug, taskId } = Route.useParams();
@@ -236,26 +231,14 @@ function AuthenticatedTaskPage() {
     },
   });
 
-  const { mutate: deleteTask } = useDeleteTaskMutation({
-    meta: {
-      invalidates: [
-        getQueryKeyPrefix(useTasksQuery),
-        getQueryKeyPrefix(useProjectQuery),
-      ],
-    },
-    onSuccess: () => {
-      navigate({
-        to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-        params: { workspaceSlug, projectSlug },
-        replace: true,
-      });
-    },
-  });
-
   const handleTaskUpdate = useDebounceCallback(updateTask, 300);
 
   const { setIsOpen: setIsUpdateDueDateDialogOpen } = useDialogStore({
     type: DialogType.UpdateDueDate,
+  });
+
+  const { setIsOpen: setIsDeleteTaskDialogOpen } = useDialogStore({
+    type: DialogType.DeleteTask,
   });
 
   const { isMobile } = useSidebar();
@@ -316,7 +299,7 @@ function AuthenticatedTaskPage() {
               "justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20",
               !isAuthor && isMember && "hidden",
             )}
-            onClick={() => deleteTask({ rowId: taskId })}
+            onClick={() => setIsDeleteTaskDialogOpen(true)}
             aria-label="Delete Task"
           >
             <Trash2Icon className="size-4" />
@@ -416,6 +399,7 @@ function AuthenticatedTaskPage() {
       <UpdateAssigneesDialog />
       <UpdateDueDateDialog />
       <UpdateTaskLabelsDialog />
+      <DeleteTaskDialog />
     </div>
   );
 }
