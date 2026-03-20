@@ -20,7 +20,10 @@ export default function useCookieState<T extends string>(
   const { maxAge, path, sameSite } = { ...DEFAULT_OPTIONS, ...options };
 
   const [value, setValue] = useState<T>(() => {
-    const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+    const match =
+      typeof document !== "undefined"
+        ? document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
+        : null;
     return (match?.[1] as T) ?? fallback;
   });
 

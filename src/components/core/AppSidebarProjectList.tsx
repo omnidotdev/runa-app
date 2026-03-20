@@ -64,31 +64,32 @@ const AppSidebarProjectList = () => {
   const isMember = organizationId == null || role === Role.Member;
 
   const { data: sortedProjects } = useQuery({
-      ...projectsSidebarOptions({
-        organizationId: organizationId!,
-        userId: session?.user?.rowId!,
-      }),
-      enabled: !!organizationId && !!session?.user?.rowId,
-      select: (data) => {
-        const nodes = data.projects?.nodes;
-        if (!nodes) return undefined;
-        return [...nodes].sort((a, b) => {
-          const aPinned = a.userPreferences?.nodes?.[0]?.pinned ?? false;
-          const bPinned = b.userPreferences?.nodes?.[0]?.pinned ?? false;
-          if (aPinned !== bPinned) return aPinned ? -1 : 1;
-          return a.name.localeCompare(b.name, undefined, {
-            sensitivity: "base",
-          });
-        }) as Array<(typeof nodes)[0] & { id: string }>;
-      },
+    ...projectsSidebarOptions({
+      organizationId: organizationId!,
+      userId: session?.user?.rowId!,
     }),
-    { data: projectColumns } = useQuery({
-      ...projectColumnsOptions({
-        organizationId: organizationId!,
-      }),
-      enabled: !!organizationId,
-      select: (data) => data.projectColumns?.nodes,
-    });
+    enabled: !!organizationId && !!session?.user?.rowId,
+    select: (data) => {
+      const nodes = data.projects?.nodes;
+      if (!nodes) return undefined;
+      return [...nodes].sort((a, b) => {
+        const aPinned = a.userPreferences?.nodes?.[0]?.pinned ?? false;
+        const bPinned = b.userPreferences?.nodes?.[0]?.pinned ?? false;
+        if (aPinned !== bPinned) return aPinned ? -1 : 1;
+        return a.name.localeCompare(b.name, undefined, {
+          sensitivity: "base",
+        });
+      }) as Array<(typeof nodes)[0] & { id: string }>;
+    },
+  });
+
+  const { data: projectColumns } = useQuery({
+    ...projectColumnsOptions({
+      organizationId: organizationId!,
+    }),
+    enabled: !!organizationId,
+    select: (data) => data.projectColumns?.nodes,
+  });
 
   if (!workspaceSlug) return null;
 

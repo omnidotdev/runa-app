@@ -52,7 +52,7 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import { getSidebarCookies } from "@/providers/SidebarProvider";
 import { useTheme } from "@/providers/ThemeProvider";
 import Shortcut from "./Shortcut";
-import Tooltip from ".//Tooltip";
+import Tooltip from "./Tooltip";
 
 const SIDEBAR_OPTIONS_COOKIE_NAME = "sidebar:options";
 const SIDEBAR_OPTIONS_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

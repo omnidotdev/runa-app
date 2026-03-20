@@ -101,31 +101,6 @@ const CreateProjectDialog = () => {
       ],
     },
     // Default columns and user preference are created server-side
-    // TODO: Fix server-side side effect and remove this client-side logic
-    // onSuccess: async ({ createProject }) => {
-    //   await Promise.all([
-    //     ...DEFAULT_COLUMNS.map((column) =>
-    //       createColumn({
-    //         input: {
-    //           column: {
-    //             title: column.title,
-    //             index: column.index,
-    //             projectId: createProject?.project?.rowId!,
-    //             icon: `emoji:${column.emoji}`,
-    //           },
-    //         },
-    //       }),
-    //     ),
-    //     createUserPreference({
-    //       input: {
-    //         userPreference: {
-    //           projectId: createProject?.project?.rowId!,
-    //           userId: session?.user?.rowId!,
-    //         },
-    //       },
-    //     }),
-    //   ]);
-    // },
   });
 
   const isProjectNameAvailable = async (name: string) => {

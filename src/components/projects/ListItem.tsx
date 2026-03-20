@@ -97,7 +97,7 @@ const ListItem = ({ task, index, displayId }: Props) => {
               }
             }}
             className={cn(
-              "grou flex cursor-pointer flex-col gap-2 bg-background px-4 py-3 last:rounded-b-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+              "group flex cursor-pointer flex-col gap-2 bg-background px-4 py-3 last:rounded-b-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
               snapshot.isDragging ? "z-10 rounded-md border" : "",
             )}
           >

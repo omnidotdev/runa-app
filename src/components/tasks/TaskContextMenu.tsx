@@ -15,6 +15,7 @@ import {
   useProjectQuery,
   useTasksQuery,
 } from "@/generated/graphql";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
@@ -93,17 +94,17 @@ const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
 
             <MenuItem value="assignees" onSelect={handleOpenAssigneesDialog}>
               Update Assignees
-              <Shortcut>A</Shortcut>
+              <Shortcut>{Hotkeys.UpdateAssignees}</Shortcut>
             </MenuItem>
 
             <MenuItem value="date" onSelect={handleOpenDueDateDialog}>
               Update Date
-              <Shortcut>D</Shortcut>
+              <Shortcut>{Hotkeys.UpdateDueDate}</Shortcut>
             </MenuItem>
 
             <MenuItem value="labels" onSelect={handleOpenTaskLabelsDialog}>
               Update Labels
-              <Shortcut>L</Shortcut>
+              <Shortcut>{Hotkeys.UpdateTaskLabels}</Shortcut>
             </MenuItem>
 
             <MenuItem

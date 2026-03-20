@@ -1,8 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Link,
-  notFound,
-  useLoaderData,
   useLocation,
   useParams,
   useRouteContext,
@@ -49,9 +47,8 @@ interface Props {
 }
 
 const AppSidebarProjectItem = ({ project }: Props) => {
-  const { organizationId } = useLoaderData({ from: "/_app" });
+  const { organizationId, session } = useRouteContext({ from: "/_app" });
   const { workspaceSlug } = useParams({ strict: false });
-  const { session } = useRouteContext({ from: "/_app" });
 
   const queryClient = useQueryClient();
   const { pathname } = useLocation();
@@ -62,7 +59,7 @@ const AppSidebarProjectItem = ({ project }: Props) => {
   const { rowId, pinned, viewMode } = userPref ?? {};
 
   const isPinned = pinned ?? false;
-  const isBoardView = viewMode === "board";
+  const isBoardView = viewMode !== "list";
   const isActive =
     pathname === `/workspaces/${workspaceSlug}/projects/${project.slug}`;
 
@@ -111,10 +108,10 @@ const AppSidebarProjectItem = ({ project }: Props) => {
     },
   });
 
-  if (!workspaceSlug) throw notFound();
+  if (!workspaceSlug) return null;
 
   return (
-    <div key={project?.rowId} className="group/menu-item relative">
+    <div className="group/menu-item relative">
       <Link
         to="/workspaces/$workspaceSlug/projects/$projectSlug"
         params={{
