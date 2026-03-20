@@ -188,7 +188,9 @@ const AppSidebarProjectList = () => {
                 : "Create Project"
             }
             shortcut={
-              isMember || maxProjectsReached ? undefined : Hotkeys.CreateProject
+              isMember || maxProjectsReached
+                ? undefined
+                : Hotkeys.CreateProject.toUpperCase()
             }
             trigger={
               <SidebarGroupAction

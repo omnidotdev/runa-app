@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dialog";
 import signIn from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useAutoScrollOnDrag from "@/lib/hooks/useAutoScrollOnDrag";
 import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import { cn } from "@/lib/utils";
@@ -110,9 +111,9 @@ const DemoBoard = () => {
         return;
       }
 
-      if (e.key === "v") {
+      if (e.key === Hotkeys.ToggleViewMode) {
         toggleViewMode();
-      } else if (e.key === "t") {
+      } else if (e.key === Hotkeys.ToggleTheme) {
         toggleTheme();
       }
     };
@@ -214,7 +215,7 @@ const DemoBoard = () => {
         <Tooltip
           positioning={{ placement: "bottom" }}
           tooltip={theme === "dark" ? "Light Mode" : "Dark Mode"}
-          shortcut="T"
+          shortcut={Hotkeys.ToggleTheme.toUpperCase()}
           trigger={
             <Button
               variant="ghost"
@@ -227,14 +228,14 @@ const DemoBoard = () => {
               ) : (
                 <SunIcon className="size-4" />
               )}
-              <Shortcut>T</Shortcut>
+              <Shortcut>{Hotkeys.ToggleTheme.toUpperCase()}</Shortcut>
             </Button>
           }
         />
         <Tooltip
           positioning={{ placement: "bottom" }}
           tooltip={viewMode === "list" ? "Board View" : "List View"}
-          shortcut="V"
+          shortcut={Hotkeys.ToggleViewMode.toUpperCase()}
           trigger={
             <Button
               variant="ghost"
@@ -253,7 +254,7 @@ const DemoBoard = () => {
                   List View
                 </>
               )}
-              <Shortcut>V</Shortcut>
+              <Shortcut>{Hotkeys.ToggleViewMode.toUpperCase()}</Shortcut>
             </Button>
           }
         />

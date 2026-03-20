@@ -28,6 +28,7 @@ import {
   useProjectsQuery,
   useProjectsSidebarQuery,
 } from "@/generated/graphql";
+import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
@@ -124,7 +125,7 @@ const Projects = () => {
           <Tooltip
             positioning={{ placement: "left" }}
             tooltip="Create Project"
-            shortcut="P"
+            shortcut={Hotkeys.CreateProject.toUpperCase()}
             trigger={
               <Button
                 variant="ghost"

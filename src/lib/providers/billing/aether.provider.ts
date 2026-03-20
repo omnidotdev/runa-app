@@ -28,7 +28,7 @@ class AetherBillingProvider implements BillingProvider {
 
     try {
       const url = new URL(
-        `${BILLING_BASE_URL}/entitlements/${entityType}/${entityId}`,
+        `${BILLING_BASE_URL}/entitlements/runa/${entityType}/${entityId}`,
       );
       if (productId) {
         url.searchParams.set("productId", productId);
@@ -213,7 +213,7 @@ class AetherBillingProvider implements BillingProvider {
 
     try {
       const response = await fetch(
-        `${BILLING_BASE_URL}/billing-portal/subscription/${entityType}/${entityId}`,
+        `${BILLING_BASE_URL}/billing-portal/subscription/runa/${entityType}/${entityId}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -245,7 +245,7 @@ class AetherBillingProvider implements BillingProvider {
     }
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/${entityType}/${entityId}`,
+      `${BILLING_BASE_URL}/billing-portal/runa/${entityType}/${entityId}`,
       {
         method: "POST",
         headers: {
@@ -278,7 +278,7 @@ class AetherBillingProvider implements BillingProvider {
     }
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/${entityType}/${entityId}/cancel`,
+      `${BILLING_BASE_URL}/billing-portal/subscription/runa/${entityType}/${entityId}/cancel`,
       {
         method: "POST",
         headers: {
@@ -306,7 +306,7 @@ class AetherBillingProvider implements BillingProvider {
     }
 
     const response = await fetch(
-      `${BILLING_BASE_URL}/billing-portal/subscription/${entityType}/${entityId}/renew`,
+      `${BILLING_BASE_URL}/billing-portal/subscription/runa/${entityType}/${entityId}/renew`,
       {
         method: "POST",
         headers: {
