@@ -5225,6 +5225,8 @@ export enum ProjectOrderBy {
   UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
   UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
   UserPreferencesDistinctCountHiddenColumnIdsDesc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_DESC',
+  UserPreferencesDistinctCountPinnedAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PINNED_ASC',
+  UserPreferencesDistinctCountPinnedDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PINNED_DESC',
   UserPreferencesDistinctCountProjectIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_ASC',
   UserPreferencesDistinctCountProjectIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_DESC',
   UserPreferencesDistinctCountRowIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_ASC',
@@ -8518,6 +8520,8 @@ export enum UserOrderBy {
   UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
   UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
   UserPreferencesDistinctCountHiddenColumnIdsDesc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_DESC',
+  UserPreferencesDistinctCountPinnedAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PINNED_ASC',
+  UserPreferencesDistinctCountPinnedDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PINNED_DESC',
   UserPreferencesDistinctCountProjectIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_ASC',
   UserPreferencesDistinctCountProjectIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_DESC',
   UserPreferencesDistinctCountRowIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_ASC',
@@ -8547,6 +8551,7 @@ export type UserPreference = Node & {
   hiddenColumnIds: Array<Maybe<Scalars['String']['output']>>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+  pinned: Scalars['Boolean']['output'];
   /** Reads a single `Project` that is related to this `UserPreference`. */
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
@@ -8580,6 +8585,8 @@ export type UserPreferenceAggregatesFilter = {
 export type UserPreferenceCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `pinned` field. */
+  pinned?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -8619,6 +8626,7 @@ export type UserPreferenceConnectionGroupedAggregatesArgs = {
 export type UserPreferenceDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   hiddenColumnIds?: InputMaybe<BigIntFilter>;
+  pinned?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
@@ -8632,6 +8640,8 @@ export type UserPreferenceDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of hiddenColumnIds across the matching connection */
   hiddenColumnIds?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of pinned across the matching connection */
+  pinned?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -8665,6 +8675,8 @@ export type UserPreferenceFilter = {
   not?: InputMaybe<UserPreferenceFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<UserPreferenceFilter>>;
+  /** Filter by the object’s `pinned` field. */
+  pinned?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `project` relation. */
   project?: InputMaybe<ProjectFilter>;
   /** Filter by the object’s `projectId` field. */
@@ -8687,6 +8699,7 @@ export enum UserPreferenceGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   HiddenColumnIds = 'HIDDEN_COLUMN_IDS',
+  Pinned = 'PINNED',
   ProjectId = 'PROJECT_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -8759,6 +8772,7 @@ export type UserPreferenceHavingVarianceSampleInput = {
 export type UserPreferenceInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  pinned?: InputMaybe<Scalars['Boolean']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -8771,6 +8785,8 @@ export enum UserPreferenceOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   Natural = 'NATURAL',
+  PinnedAsc = 'PINNED_ASC',
+  PinnedDesc = 'PINNED_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   ProjectIdAsc = 'PROJECT_ID_ASC',
@@ -8789,6 +8805,7 @@ export enum UserPreferenceOrderBy {
 export type UserPreferencePatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  pinned?: InputMaybe<Scalars['Boolean']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -9168,7 +9185,7 @@ export type ProjectsSidebarQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsSidebarQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string }> } }> } | null };
+export type ProjectsSidebarQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string, pinned: boolean }> } }> } | null };
 
 export type SettingByOrganizationIdQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -9753,6 +9770,7 @@ export const ProjectsSidebarDocument = gql`
         nodes {
           rowId
           viewMode
+          pinned
         }
       }
     }

@@ -1,9 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-  useLoaderData,
-  useParams,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { useLoaderData, useParams } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
@@ -20,9 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
-  useCreateColumnMutation,
   useCreateProjectMutation,
-  useCreateUserPreferenceMutation,
   useProjectColumnsQuery,
   useProjectsQuery,
   useProjectsSidebarQuery,
@@ -41,22 +35,7 @@ import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
-const DEFAULT_PROJECT_COLUMNS = [
-  { title: "Planned", index: 0, icon: "emoji:🌑" },
-  { title: "In Progress", index: 1, icon: "emoji:🌓" },
-  { title: "Completed", index: 2, icon: "emoji:🌕" },
-];
-
-const DEFAULT_COLUMNS = [
-  { title: "Backlog", index: 0, emoji: "📚" },
-  { title: "To Do", index: 1, emoji: "📝" },
-  { title: "In Progress", index: 2, emoji: "🚧" },
-  { title: "Awaiting Review", index: 3, emoji: "🔍" },
-  { title: "Done", index: 4, emoji: "✅" },
-];
-
 const CreateProjectDialog = () => {
-  const { session } = useRouteContext({ from: "/_app" });
   const { organizationId } = useLoaderData({ from: "/_app" });
 
   const { workspaceSlug } = useParams({ strict: false });
@@ -113,10 +92,6 @@ const CreateProjectDialog = () => {
     [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug],
   );
 
-  const { mutateAsync: createColumn } = useCreateColumnMutation();
-  const { mutateAsync: createUserPreference } =
-    useCreateUserPreferenceMutation();
-
   const { mutateAsync: createNewProject } = useCreateProjectMutation({
     meta: {
       invalidates: [
@@ -127,30 +102,30 @@ const CreateProjectDialog = () => {
     },
     // Default columns and user preference are created server-side
     // TODO: Fix server-side side effect and remove this client-side logic
-    onSuccess: async ({ createProject }) => {
-      await Promise.all([
-        ...DEFAULT_COLUMNS.map((column) =>
-          createColumn({
-            input: {
-              column: {
-                title: column.title,
-                index: column.index,
-                projectId: createProject?.project?.rowId!,
-                icon: `emoji:${column.emoji}`,
-              },
-            },
-          }),
-        ),
-        createUserPreference({
-          input: {
-            userPreference: {
-              projectId: createProject?.project?.rowId!,
-              userId: session?.user?.rowId!,
-            },
-          },
-        }),
-      ]);
-    },
+    // onSuccess: async ({ createProject }) => {
+    //   await Promise.all([
+    //     ...DEFAULT_COLUMNS.map((column) =>
+    //       createColumn({
+    //         input: {
+    //           column: {
+    //             title: column.title,
+    //             index: column.index,
+    //             projectId: createProject?.project?.rowId!,
+    //             icon: `emoji:${column.emoji}`,
+    //           },
+    //         },
+    //       }),
+    //     ),
+    //     createUserPreference({
+    //       input: {
+    //         userPreference: {
+    //           projectId: createProject?.project?.rowId!,
+    //           userId: session?.user?.rowId!,
+    //         },
+    //       },
+    //     }),
+    //   ]);
+    // },
   });
 
   const isProjectNameAvailable = async (name: string) => {
@@ -217,66 +192,6 @@ const CreateProjectDialog = () => {
       setProjectColumnId(null);
       formApi.reset();
     },
-    // onSubmit: async ({ value, formApi }) => {
-    //   toast.promise(
-    //     (async () => {
-    //       let projectColumnId: string | null | undefined =
-    //         value.projectColumnId;
-
-    //       // If no project columns exist, create default ones first
-    //       if (!projectColumnId) {
-    //         const { columns } = await all({
-    //           async columns() {
-    //             return Promise.all(
-    //               DEFAULT_PROJECT_COLUMNS.map((col) =>
-    //                 createProjectColumn({
-    //                   input: {
-    //                     projectColumn: {
-    //                       organizationId: organizationId!,
-    //                       title: col.title,
-    //                       index: col.index,
-    //                       icon: col.icon,
-    //                     },
-    //                   },
-    //                 }),
-    //               ),
-    //             );
-    //           },
-    //         });
-    //         // Use the first column (Planned) as the default
-    //         projectColumnId =
-    //           columns[0]?.createProjectColumn?.projectColumn?.rowId;
-    //       }
-
-    //       if (!projectColumnId) {
-    //         throw new Error("Failed to create project columns");
-    //       }
-
-    //       return createNewProject({
-    //         input: {
-    //           project: {
-    //             organizationId: organizationId!,
-    //             name: value.name,
-    //             slug: generateSlug(value.name),
-    //             prefix: generatePrefix(value.name),
-    //             description: value.description,
-    //             projectColumnId,
-    //             columnIndex: value.columnIndex,
-    //           },
-    //         },
-    //       });
-    //     })(),
-    //     {
-    //       loading: "Creating Project...",
-    //       success: "Project created successfully!",
-    //       error: "Something went wrong! Please try again.",
-    //     },
-    //   );
-
-    //   setIsCreateProjectOpen(false);
-    //   setProjectColumnId(null);
-    //   formApi.reset();
-    // },
   });
 
   if (!workspaceSlug || isMember || maxProjectsReached) return null;

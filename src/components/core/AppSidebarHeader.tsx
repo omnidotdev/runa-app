@@ -124,7 +124,7 @@ const AppSidebarHeader = () => {
               {AUTH_BASE_URL && (
                 <MenuItem
                   asChild
-                  className="cursor-pointer gap-2 px-2 py-1"
+                  className="mt-1 cursor-pointer gap-2 px-2 py-1"
                   value="manage-organizations"
                 >
                   <a href={CONSOLE_URL || AUTH_BASE_URL}>
