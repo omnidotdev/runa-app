@@ -23,8 +23,14 @@ import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
 export const Route = createFileRoute("/_public/")({
-  beforeLoad: ({ context: { session } }) => {
-    if (session?.user) throw redirect({ to: "/workspaces" });
+  beforeLoad: async ({ context: { session } }) => {
+    // Clear zombie session (OAuth session exists but user not provisioned in DB)
+    if (session?.user && !session.user.rowId) {
+      const { signOutAndRedirect } = await import("@/server/functions/auth");
+      await signOutAndRedirect();
+    }
+
+    if (session?.user?.rowId) throw redirect({ to: "/workspaces" });
   },
   component: HomePage,
 });
