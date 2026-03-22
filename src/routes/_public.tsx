@@ -137,7 +137,7 @@ function PublicLayout() {
 
                 <ThemeToggle />
 
-                {session ? (
+                {session?.user?.rowId ? (
                   <Button variant="outline" onClick={signOut}>
                     Sign Out
                   </Button>
@@ -208,7 +208,7 @@ function PublicLayout() {
               </a>
 
               <div className="pt-2">
-                {session ? (
+                {session?.user?.rowId ? (
                   <Button
                     variant="outline"
                     onClick={signOut}
