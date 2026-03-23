@@ -73,9 +73,12 @@ const AppSidebarProjectList = () => {
       const nodes = data.projects?.nodes;
       if (!nodes) return undefined;
       return [...nodes].sort((a, b) => {
-        const aPinned = a.userPreferences?.nodes?.[0]?.pinned ?? false;
-        const bPinned = b.userPreferences?.nodes?.[0]?.pinned ?? false;
+        const aPin = a.userPreferences?.nodes?.[0]?.pinOrder;
+        const bPin = b.userPreferences?.nodes?.[0]?.pinOrder;
+        const aPinned = aPin != null;
+        const bPinned = bPin != null;
         if (aPinned !== bPinned) return aPinned ? -1 : 1;
+        if (aPinned && bPinned) return (aPin ?? 0) - (bPin ?? 0);
         return a.name.localeCompare(b.name, undefined, {
           sensitivity: "base",
         });
@@ -151,7 +154,7 @@ const AppSidebarProjectList = () => {
                     )}
                     <span className="truncate">{project?.name}</span>
 
-                    {userPreferences?.pinned && (
+                    {userPreferences?.pinOrder != null && (
                       <PinIcon className="ml-auto size-3 text-base-400" />
                     )}
 

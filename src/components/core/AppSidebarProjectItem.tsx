@@ -56,9 +56,9 @@ const AppSidebarProjectItem = ({ project }: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const userPref = project.userPreferences?.nodes?.[0];
-  const { rowId, pinned, viewMode } = userPref ?? {};
+  const { rowId, pinOrder, viewMode } = userPref ?? {};
 
-  const isPinned = pinned ?? false;
+  const isPinned = pinOrder != null;
   const isBoardView = viewMode !== "list";
   const isActive =
     pathname === `/workspaces/${workspaceSlug}/projects/${project.slug}`;
@@ -166,7 +166,7 @@ const AppSidebarProjectItem = ({ project }: Props) => {
                   setMenuOpen(false);
                   updateUserPreference({
                     rowId: rowId!,
-                    patch: { pinned: !isPinned },
+                    patch: { pinOrder: isPinned ? null : 0 },
                   });
                 }}
               >

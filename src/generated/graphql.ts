@@ -15,10 +15,25 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** A floating point number that requires more precision than IEEE 754 binary 64 */
   BigFloat: { input: any; output: any; }
+  /**
+   * A signed eight-byte integer. The upper big integer values are greater than the
+   * max value for a JavaScript number. Therefore all big integers will be output as
+   * strings and not numbers.
+   */
   BigInt: { input: string; output: string; }
+  /** A location in a connection that can be used for resuming pagination. */
   Cursor: { input: string; output: string; }
+  /**
+   * A point in time as described by the [ISO
+   * 8601](https://en.wikipedia.org/wiki/ISO_8601) and, if it has a timezone, [RFC
+   * 3339](https://datatracker.ietf.org/doc/html/rfc3339) standards. Input values
+   * that do not conform to both ISO 8601 and RFC 3339 may be coerced, which may lead
+   * to unexpected results.
+   */
   Datetime: { input: Date; output: Date; }
+  /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: { input: string; output: string; }
 };
 
@@ -5218,14 +5233,16 @@ export enum ProjectOrderBy {
   TasksVarianceSampleNumberDesc = 'TASKS_VARIANCE_SAMPLE_NUMBER_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserPreferencesAveragePinOrderAsc = 'USER_PREFERENCES_AVERAGE_PIN_ORDER_ASC',
+  UserPreferencesAveragePinOrderDesc = 'USER_PREFERENCES_AVERAGE_PIN_ORDER_DESC',
   UserPreferencesCountAsc = 'USER_PREFERENCES_COUNT_ASC',
   UserPreferencesCountDesc = 'USER_PREFERENCES_COUNT_DESC',
   UserPreferencesDistinctCountCreatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_ASC',
   UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
   UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
   UserPreferencesDistinctCountHiddenColumnIdsDesc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_DESC',
-  UserPreferencesDistinctCountPinnedAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PINNED_ASC',
-  UserPreferencesDistinctCountPinnedDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PINNED_DESC',
+  UserPreferencesDistinctCountPinOrderAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PIN_ORDER_ASC',
+  UserPreferencesDistinctCountPinOrderDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PIN_ORDER_DESC',
   UserPreferencesDistinctCountProjectIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_ASC',
   UserPreferencesDistinctCountProjectIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_DESC',
   UserPreferencesDistinctCountRowIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_ASC',
@@ -5235,7 +5252,21 @@ export enum ProjectOrderBy {
   UserPreferencesDistinctCountUserIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_ASC',
   UserPreferencesDistinctCountUserIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_DESC',
   UserPreferencesDistinctCountViewModeAsc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_ASC',
-  UserPreferencesDistinctCountViewModeDesc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_DESC'
+  UserPreferencesDistinctCountViewModeDesc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_DESC',
+  UserPreferencesMaxPinOrderAsc = 'USER_PREFERENCES_MAX_PIN_ORDER_ASC',
+  UserPreferencesMaxPinOrderDesc = 'USER_PREFERENCES_MAX_PIN_ORDER_DESC',
+  UserPreferencesMinPinOrderAsc = 'USER_PREFERENCES_MIN_PIN_ORDER_ASC',
+  UserPreferencesMinPinOrderDesc = 'USER_PREFERENCES_MIN_PIN_ORDER_DESC',
+  UserPreferencesStddevPopulationPinOrderAsc = 'USER_PREFERENCES_STDDEV_POPULATION_PIN_ORDER_ASC',
+  UserPreferencesStddevPopulationPinOrderDesc = 'USER_PREFERENCES_STDDEV_POPULATION_PIN_ORDER_DESC',
+  UserPreferencesStddevSamplePinOrderAsc = 'USER_PREFERENCES_STDDEV_SAMPLE_PIN_ORDER_ASC',
+  UserPreferencesStddevSamplePinOrderDesc = 'USER_PREFERENCES_STDDEV_SAMPLE_PIN_ORDER_DESC',
+  UserPreferencesSumPinOrderAsc = 'USER_PREFERENCES_SUM_PIN_ORDER_ASC',
+  UserPreferencesSumPinOrderDesc = 'USER_PREFERENCES_SUM_PIN_ORDER_DESC',
+  UserPreferencesVariancePopulationPinOrderAsc = 'USER_PREFERENCES_VARIANCE_POPULATION_PIN_ORDER_ASC',
+  UserPreferencesVariancePopulationPinOrderDesc = 'USER_PREFERENCES_VARIANCE_POPULATION_PIN_ORDER_DESC',
+  UserPreferencesVarianceSamplePinOrderAsc = 'USER_PREFERENCES_VARIANCE_SAMPLE_PIN_ORDER_ASC',
+  UserPreferencesVarianceSamplePinOrderDesc = 'USER_PREFERENCES_VARIANCE_SAMPLE_PIN_ORDER_DESC'
 }
 
 /** Represents an update to a `Project`. Fields that are set will be updated. */
@@ -8513,14 +8544,16 @@ export enum UserOrderBy {
   RowIdDesc = 'ROW_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserPreferencesAveragePinOrderAsc = 'USER_PREFERENCES_AVERAGE_PIN_ORDER_ASC',
+  UserPreferencesAveragePinOrderDesc = 'USER_PREFERENCES_AVERAGE_PIN_ORDER_DESC',
   UserPreferencesCountAsc = 'USER_PREFERENCES_COUNT_ASC',
   UserPreferencesCountDesc = 'USER_PREFERENCES_COUNT_DESC',
   UserPreferencesDistinctCountCreatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_ASC',
   UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
   UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
   UserPreferencesDistinctCountHiddenColumnIdsDesc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_DESC',
-  UserPreferencesDistinctCountPinnedAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PINNED_ASC',
-  UserPreferencesDistinctCountPinnedDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PINNED_DESC',
+  UserPreferencesDistinctCountPinOrderAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PIN_ORDER_ASC',
+  UserPreferencesDistinctCountPinOrderDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PIN_ORDER_DESC',
   UserPreferencesDistinctCountProjectIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_ASC',
   UserPreferencesDistinctCountProjectIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_DESC',
   UserPreferencesDistinctCountRowIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_ASC',
@@ -8530,7 +8563,21 @@ export enum UserOrderBy {
   UserPreferencesDistinctCountUserIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_ASC',
   UserPreferencesDistinctCountUserIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_DESC',
   UserPreferencesDistinctCountViewModeAsc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_ASC',
-  UserPreferencesDistinctCountViewModeDesc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_DESC'
+  UserPreferencesDistinctCountViewModeDesc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_DESC',
+  UserPreferencesMaxPinOrderAsc = 'USER_PREFERENCES_MAX_PIN_ORDER_ASC',
+  UserPreferencesMaxPinOrderDesc = 'USER_PREFERENCES_MAX_PIN_ORDER_DESC',
+  UserPreferencesMinPinOrderAsc = 'USER_PREFERENCES_MIN_PIN_ORDER_ASC',
+  UserPreferencesMinPinOrderDesc = 'USER_PREFERENCES_MIN_PIN_ORDER_DESC',
+  UserPreferencesStddevPopulationPinOrderAsc = 'USER_PREFERENCES_STDDEV_POPULATION_PIN_ORDER_ASC',
+  UserPreferencesStddevPopulationPinOrderDesc = 'USER_PREFERENCES_STDDEV_POPULATION_PIN_ORDER_DESC',
+  UserPreferencesStddevSamplePinOrderAsc = 'USER_PREFERENCES_STDDEV_SAMPLE_PIN_ORDER_ASC',
+  UserPreferencesStddevSamplePinOrderDesc = 'USER_PREFERENCES_STDDEV_SAMPLE_PIN_ORDER_DESC',
+  UserPreferencesSumPinOrderAsc = 'USER_PREFERENCES_SUM_PIN_ORDER_ASC',
+  UserPreferencesSumPinOrderDesc = 'USER_PREFERENCES_SUM_PIN_ORDER_DESC',
+  UserPreferencesVariancePopulationPinOrderAsc = 'USER_PREFERENCES_VARIANCE_POPULATION_PIN_ORDER_ASC',
+  UserPreferencesVariancePopulationPinOrderDesc = 'USER_PREFERENCES_VARIANCE_POPULATION_PIN_ORDER_DESC',
+  UserPreferencesVarianceSamplePinOrderAsc = 'USER_PREFERENCES_VARIANCE_SAMPLE_PIN_ORDER_ASC',
+  UserPreferencesVarianceSamplePinOrderDesc = 'USER_PREFERENCES_VARIANCE_SAMPLE_PIN_ORDER_DESC'
 }
 
 /** Represents an update to a `User`. Fields that are set will be updated. */
@@ -8550,7 +8597,7 @@ export type UserPreference = Node & {
   hiddenColumnIds: Array<Maybe<Scalars['String']['output']>>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
-  pinned: Scalars['Boolean']['output'];
+  pinOrder?: Maybe<Scalars['Int']['output']>;
   /** Reads a single `Project` that is related to this `UserPreference`. */
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
@@ -8564,17 +8611,59 @@ export type UserPreference = Node & {
 
 export type UserPreferenceAggregates = {
   __typename?: 'UserPreferenceAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<UserPreferenceAverageAggregates>;
   /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
   distinctCount?: Maybe<UserPreferenceDistinctCountAggregates>;
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<UserPreferenceMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<UserPreferenceMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<UserPreferenceStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<UserPreferenceStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<UserPreferenceSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<UserPreferenceVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<UserPreferenceVarianceSampleAggregates>;
 };
 
 /** A filter to be used against aggregates of `UserPreference` object types. */
 export type UserPreferenceAggregatesFilter = {
+  /** Mean average aggregate over matching `UserPreference` objects. */
+  average?: InputMaybe<UserPreferenceAverageAggregateFilter>;
   /** Distinct count aggregate over matching `UserPreference` objects. */
   distinctCount?: InputMaybe<UserPreferenceDistinctCountAggregateFilter>;
   /** A filter that must pass for the relevant `UserPreference` object to be included within the aggregate. */
   filter?: InputMaybe<UserPreferenceFilter>;
+  /** Maximum aggregate over matching `UserPreference` objects. */
+  max?: InputMaybe<UserPreferenceMaxAggregateFilter>;
+  /** Minimum aggregate over matching `UserPreference` objects. */
+  min?: InputMaybe<UserPreferenceMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `UserPreference` objects. */
+  stddevPopulation?: InputMaybe<UserPreferenceStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `UserPreference` objects. */
+  stddevSample?: InputMaybe<UserPreferenceStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `UserPreference` objects. */
+  sum?: InputMaybe<UserPreferenceSumAggregateFilter>;
+  /** Population variance aggregate over matching `UserPreference` objects. */
+  variancePopulation?: InputMaybe<UserPreferenceVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `UserPreference` objects. */
+  varianceSample?: InputMaybe<UserPreferenceVarianceSampleAggregateFilter>;
+};
+
+export type UserPreferenceAverageAggregateFilter = {
+  pinOrder?: InputMaybe<BigFloatFilter>;
+};
+
+export type UserPreferenceAverageAggregates = {
+  __typename?: 'UserPreferenceAverageAggregates';
+  /** Mean average of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /**
@@ -8584,8 +8673,8 @@ export type UserPreferenceAggregatesFilter = {
 export type UserPreferenceCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
-  /** Checks for equality with the object’s `pinned` field. */
-  pinned?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `pinOrder` field. */
+  pinOrder?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -8625,7 +8714,7 @@ export type UserPreferenceConnectionGroupedAggregatesArgs = {
 export type UserPreferenceDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   hiddenColumnIds?: InputMaybe<BigIntFilter>;
-  pinned?: InputMaybe<BigIntFilter>;
+  pinOrder?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
@@ -8639,8 +8728,8 @@ export type UserPreferenceDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of hiddenColumnIds across the matching connection */
   hiddenColumnIds?: Maybe<Scalars['BigInt']['output']>;
-  /** Distinct count of pinned across the matching connection */
-  pinned?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -8674,8 +8763,8 @@ export type UserPreferenceFilter = {
   not?: InputMaybe<UserPreferenceFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<UserPreferenceFilter>>;
-  /** Filter by the object’s `pinned` field. */
-  pinned?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `pinOrder` field. */
+  pinOrder?: InputMaybe<IntFilter>;
   /** Filter by the object’s `project` relation. */
   project?: InputMaybe<ProjectFilter>;
   /** Filter by the object’s `projectId` field. */
@@ -8698,7 +8787,7 @@ export enum UserPreferenceGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   HiddenColumnIds = 'HIDDEN_COLUMN_IDS',
-  Pinned = 'PINNED',
+  PinOrder = 'PIN_ORDER',
   ProjectId = 'PROJECT_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -8709,11 +8798,13 @@ export enum UserPreferenceGroupBy {
 
 export type UserPreferenceHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -8734,36 +8825,43 @@ export type UserPreferenceHavingInput = {
 
 export type UserPreferenceHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -8771,7 +8869,7 @@ export type UserPreferenceHavingVarianceSampleInput = {
 export type UserPreferenceInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  pinned?: InputMaybe<Scalars['Boolean']['input']>;
+  pinOrder?: InputMaybe<Scalars['Int']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -8779,13 +8877,33 @@ export type UserPreferenceInput = {
   viewMode?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UserPreferenceMaxAggregateFilter = {
+  pinOrder?: InputMaybe<IntFilter>;
+};
+
+export type UserPreferenceMaxAggregates = {
+  __typename?: 'UserPreferenceMaxAggregates';
+  /** Maximum of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['Int']['output']>;
+};
+
+export type UserPreferenceMinAggregateFilter = {
+  pinOrder?: InputMaybe<IntFilter>;
+};
+
+export type UserPreferenceMinAggregates = {
+  __typename?: 'UserPreferenceMinAggregates';
+  /** Minimum of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['Int']['output']>;
+};
+
 /** Methods to use when ordering `UserPreference`. */
 export enum UserPreferenceOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   Natural = 'NATURAL',
-  PinnedAsc = 'PINNED_ASC',
-  PinnedDesc = 'PINNED_DESC',
+  PinOrderAsc = 'PIN_ORDER_ASC',
+  PinOrderDesc = 'PIN_ORDER_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   ProjectIdAsc = 'PROJECT_ID_ASC',
@@ -8804,12 +8922,62 @@ export enum UserPreferenceOrderBy {
 export type UserPreferencePatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  pinned?: InputMaybe<Scalars['Boolean']['input']>;
+  pinOrder?: InputMaybe<Scalars['Int']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UserPreferenceStddevPopulationAggregateFilter = {
+  pinOrder?: InputMaybe<BigFloatFilter>;
+};
+
+export type UserPreferenceStddevPopulationAggregates = {
+  __typename?: 'UserPreferenceStddevPopulationAggregates';
+  /** Population standard deviation of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type UserPreferenceStddevSampleAggregateFilter = {
+  pinOrder?: InputMaybe<BigFloatFilter>;
+};
+
+export type UserPreferenceStddevSampleAggregates = {
+  __typename?: 'UserPreferenceStddevSampleAggregates';
+  /** Sample standard deviation of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type UserPreferenceSumAggregateFilter = {
+  pinOrder?: InputMaybe<BigIntFilter>;
+};
+
+export type UserPreferenceSumAggregates = {
+  __typename?: 'UserPreferenceSumAggregates';
+  /** Sum of pinOrder across the matching connection */
+  pinOrder: Scalars['BigInt']['output'];
+};
+
+export type UserPreferenceVariancePopulationAggregateFilter = {
+  pinOrder?: InputMaybe<BigFloatFilter>;
+};
+
+export type UserPreferenceVariancePopulationAggregates = {
+  __typename?: 'UserPreferenceVariancePopulationAggregates';
+  /** Population variance of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type UserPreferenceVarianceSampleAggregateFilter = {
+  pinOrder?: InputMaybe<BigFloatFilter>;
+};
+
+export type UserPreferenceVarianceSampleAggregates = {
+  __typename?: 'UserPreferenceVarianceSampleAggregates';
+  /** Sample variance of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** A filter to be used against many `Assignee` object types. All fields are combined with a logical ‘and.’ */
@@ -9184,7 +9352,7 @@ export type ProjectsSidebarQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsSidebarQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string, pinned: boolean }> } }> } | null };
+export type ProjectsSidebarQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string, pinOrder?: number | null }> } }> } | null };
 
 export type SettingByOrganizationIdQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -10268,13 +10436,13 @@ export const useSuspenseColumnsQuery = <
     
     return useSuspenseQuery<ColumnsQuery, TError, TData>(
       {
-    queryKey: ['Columns', variables],
+    queryKey: ['ColumnsSuspense', variables],
     queryFn: graphqlFetch<ColumnsQuery, ColumnsQueryVariables>(ColumnsDocument, variables),
     ...options
   }
     )};
 
-useSuspenseColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['Columns', variables];
+useSuspenseColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['ColumnsSuspense', variables];
 
 export const useInfiniteColumnsQuery = <
       TData = InfiniteData<ColumnsQuery>,
@@ -10309,14 +10477,14 @@ export const useSuspenseInfiniteColumnsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Columns.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Columns.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<ColumnsQuery, ColumnsQueryVariables>(ColumnsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['Columns.infinite', variables];
+useSuspenseInfiniteColumnsQuery.getKey = (variables: ColumnsQueryVariables) => ['Columns.infiniteSuspense', variables];
 
 
 useColumnsQuery.fetcher = (variables: ColumnsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ColumnsQuery, ColumnsQueryVariables>(ColumnsDocument, variables, options);
@@ -10374,13 +10542,13 @@ export const useSuspensePostEmojisQuery = <
     
     return useSuspenseQuery<PostEmojisQuery, TError, TData>(
       {
-    queryKey: ['PostEmojis', variables],
+    queryKey: ['PostEmojisSuspense', variables],
     queryFn: graphqlFetch<PostEmojisQuery, PostEmojisQueryVariables>(PostEmojisDocument, variables),
     ...options
   }
     )};
 
-useSuspensePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojis', variables];
+useSuspensePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojisSuspense', variables];
 
 export const useInfinitePostEmojisQuery = <
       TData = InfiniteData<PostEmojisQuery>,
@@ -10415,14 +10583,14 @@ export const useSuspenseInfinitePostEmojisQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['PostEmojis.infinite', variables],
+      queryKey: optionsQueryKey ?? ['PostEmojis.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<PostEmojisQuery, PostEmojisQueryVariables>(PostEmojisDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfinitePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojis.infinite', variables];
+useSuspenseInfinitePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables) => ['PostEmojis.infiniteSuspense', variables];
 
 
 usePostEmojisQuery.fetcher = (variables: PostEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<PostEmojisQuery, PostEmojisQueryVariables>(PostEmojisDocument, variables, options);
@@ -10465,13 +10633,13 @@ export const useSuspenseUserEmojisQuery = <
     
     return useSuspenseQuery<UserEmojisQuery, TError, TData>(
       {
-    queryKey: ['UserEmojis', variables],
+    queryKey: ['UserEmojisSuspense', variables],
     queryFn: graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, variables),
     ...options
   }
     )};
 
-useSuspenseUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojis', variables];
+useSuspenseUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojisSuspense', variables];
 
 export const useInfiniteUserEmojisQuery = <
       TData = InfiniteData<UserEmojisQuery>,
@@ -10506,14 +10674,14 @@ export const useSuspenseInfiniteUserEmojisQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['UserEmojis.infinite', variables],
+      queryKey: optionsQueryKey ?? ['UserEmojis.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojis.infinite', variables];
+useSuspenseInfiniteUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables) => ['UserEmojis.infiniteSuspense', variables];
 
 
 useUserEmojisQuery.fetcher = (variables: UserEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, variables, options);
@@ -10556,13 +10724,13 @@ export const useSuspenseLabelsQuery = <
     
     return useSuspenseQuery<LabelsQuery, TError, TData>(
       {
-    queryKey: ['Labels', variables],
+    queryKey: ['LabelsSuspense', variables],
     queryFn: graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, variables),
     ...options
   }
     )};
 
-useSuspenseLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['Labels', variables];
+useSuspenseLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['LabelsSuspense', variables];
 
 export const useInfiniteLabelsQuery = <
       TData = InfiniteData<LabelsQuery>,
@@ -10597,14 +10765,14 @@ export const useSuspenseInfiniteLabelsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Labels.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Labels.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['Labels.infinite', variables];
+useSuspenseInfiniteLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['Labels.infiniteSuspense', variables];
 
 
 useLabelsQuery.fetcher = (variables: LabelsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, variables, options);
@@ -10653,13 +10821,13 @@ export const useSuspenseProjectColumnsQuery = <
     
     return useSuspenseQuery<ProjectColumnsQuery, TError, TData>(
       {
-    queryKey: ['ProjectColumns', variables],
+    queryKey: ['ProjectColumnsSuspense', variables],
     queryFn: graphqlFetch<ProjectColumnsQuery, ProjectColumnsQueryVariables>(ProjectColumnsDocument, variables),
     ...options
   }
     )};
 
-useSuspenseProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumns', variables];
+useSuspenseProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumnsSuspense', variables];
 
 export const useInfiniteProjectColumnsQuery = <
       TData = InfiniteData<ProjectColumnsQuery>,
@@ -10694,14 +10862,14 @@ export const useSuspenseInfiniteProjectColumnsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['ProjectColumns.infinite', variables],
+      queryKey: optionsQueryKey ?? ['ProjectColumns.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<ProjectColumnsQuery, ProjectColumnsQueryVariables>(ProjectColumnsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumns.infinite', variables];
+useSuspenseInfiniteProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryVariables) => ['ProjectColumns.infiniteSuspense', variables];
 
 
 useProjectColumnsQuery.fetcher = (variables: ProjectColumnsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectColumnsQuery, ProjectColumnsQueryVariables>(ProjectColumnsDocument, variables, options);
@@ -10772,13 +10940,13 @@ export const useSuspenseProjectQuery = <
     
     return useSuspenseQuery<ProjectQuery, TError, TData>(
       {
-    queryKey: ['Project', variables],
+    queryKey: ['ProjectSuspense', variables],
     queryFn: graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables),
     ...options
   }
     )};
 
-useSuspenseProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project', variables];
+useSuspenseProjectQuery.getKey = (variables: ProjectQueryVariables) => ['ProjectSuspense', variables];
 
 export const useInfiniteProjectQuery = <
       TData = InfiniteData<ProjectQuery>,
@@ -10813,14 +10981,14 @@ export const useSuspenseInfiniteProjectQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Project.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Project.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infinite', variables];
+useSuspenseInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => ['Project.infiniteSuspense', variables];
 
 
 useProjectQuery.fetcher = (variables: ProjectQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables, options);
@@ -10865,13 +11033,13 @@ export const useSuspenseProjectBySlugQuery = <
     
     return useSuspenseQuery<ProjectBySlugQuery, TError, TData>(
       {
-    queryKey: ['ProjectBySlug', variables],
+    queryKey: ['ProjectBySlugSuspense', variables],
     queryFn: graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables),
     ...options
   }
     )};
 
-useSuspenseProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug', variables];
+useSuspenseProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlugSuspense', variables];
 
 export const useInfiniteProjectBySlugQuery = <
       TData = InfiniteData<ProjectBySlugQuery>,
@@ -10906,14 +11074,14 @@ export const useSuspenseInfiniteProjectBySlugQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['ProjectBySlug.infinite', variables],
+      queryKey: optionsQueryKey ?? ['ProjectBySlug.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug.infinite', variables];
+useSuspenseInfiniteProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVariables) => ['ProjectBySlug.infiniteSuspense', variables];
 
 
 useProjectBySlugQuery.fetcher = (variables: ProjectBySlugQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables, options);
@@ -10966,13 +11134,13 @@ export const useSuspenseProjectsQuery = <
     
     return useSuspenseQuery<ProjectsQuery, TError, TData>(
       {
-    queryKey: ['Projects', variables],
+    queryKey: ['ProjectsSuspense', variables],
     queryFn: graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables),
     ...options
   }
     )};
 
-useSuspenseProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects', variables];
+useSuspenseProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['ProjectsSuspense', variables];
 
 export const useInfiniteProjectsQuery = <
       TData = InfiniteData<ProjectsQuery>,
@@ -11007,14 +11175,14 @@ export const useSuspenseInfiniteProjectsQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Projects.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Projects.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects.infinite', variables];
+useSuspenseInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) => ['Projects.infiniteSuspense', variables];
 
 
 useProjectsQuery.fetcher = (variables: ProjectsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables, options);
@@ -11034,7 +11202,7 @@ export const ProjectsSidebarDocument = `
         nodes {
           rowId
           viewMode
-          pinned
+          pinOrder
         }
       }
     }
@@ -11070,13 +11238,13 @@ export const useSuspenseProjectsSidebarQuery = <
     
     return useSuspenseQuery<ProjectsSidebarQuery, TError, TData>(
       {
-    queryKey: ['ProjectsSidebar', variables],
+    queryKey: ['ProjectsSidebarSuspense', variables],
     queryFn: graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, variables),
     ...options
   }
     )};
 
-useSuspenseProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebar', variables];
+useSuspenseProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebarSuspense', variables];
 
 export const useInfiniteProjectsSidebarQuery = <
       TData = InfiniteData<ProjectsSidebarQuery>,
@@ -11111,14 +11279,14 @@ export const useSuspenseInfiniteProjectsSidebarQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['ProjectsSidebar.infinite', variables],
+      queryKey: optionsQueryKey ?? ['ProjectsSidebar.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebar.infinite', variables];
+useSuspenseInfiniteProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQueryVariables) => ['ProjectsSidebar.infiniteSuspense', variables];
 
 
 useProjectsSidebarQuery.fetcher = (variables: ProjectsSidebarQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, variables, options);
@@ -11163,13 +11331,13 @@ export const useSuspenseSettingByOrganizationIdQuery = <
     
     return useSuspenseQuery<SettingByOrganizationIdQuery, TError, TData>(
       {
-    queryKey: ['SettingByOrganizationId', variables],
+    queryKey: ['SettingByOrganizationIdSuspense', variables],
     queryFn: graphqlFetch<SettingByOrganizationIdQuery, SettingByOrganizationIdQueryVariables>(SettingByOrganizationIdDocument, variables),
     ...options
   }
     )};
 
-useSuspenseSettingByOrganizationIdQuery.getKey = (variables: SettingByOrganizationIdQueryVariables) => ['SettingByOrganizationId', variables];
+useSuspenseSettingByOrganizationIdQuery.getKey = (variables: SettingByOrganizationIdQueryVariables) => ['SettingByOrganizationIdSuspense', variables];
 
 export const useInfiniteSettingByOrganizationIdQuery = <
       TData = InfiniteData<SettingByOrganizationIdQuery>,
@@ -11204,14 +11372,14 @@ export const useSuspenseInfiniteSettingByOrganizationIdQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['SettingByOrganizationId.infinite', variables],
+      queryKey: optionsQueryKey ?? ['SettingByOrganizationId.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<SettingByOrganizationIdQuery, SettingByOrganizationIdQueryVariables>(SettingByOrganizationIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteSettingByOrganizationIdQuery.getKey = (variables: SettingByOrganizationIdQueryVariables) => ['SettingByOrganizationId.infinite', variables];
+useSuspenseInfiniteSettingByOrganizationIdQuery.getKey = (variables: SettingByOrganizationIdQueryVariables) => ['SettingByOrganizationId.infiniteSuspense', variables];
 
 
 useSettingByOrganizationIdQuery.fetcher = (variables: SettingByOrganizationIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<SettingByOrganizationIdQuery, SettingByOrganizationIdQueryVariables>(SettingByOrganizationIdDocument, variables, options);
@@ -11308,13 +11476,13 @@ export const useSuspenseTaskQuery = <
     
     return useSuspenseQuery<TaskQuery, TError, TData>(
       {
-    queryKey: ['Task', variables],
+    queryKey: ['TaskSuspense', variables],
     queryFn: graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, variables),
     ...options
   }
     )};
 
-useSuspenseTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task', variables];
+useSuspenseTaskQuery.getKey = (variables: TaskQueryVariables) => ['TaskSuspense', variables];
 
 export const useInfiniteTaskQuery = <
       TData = InfiniteData<TaskQuery>,
@@ -11349,14 +11517,14 @@ export const useSuspenseInfiniteTaskQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Task.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Task.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task.infinite', variables];
+useSuspenseInfiniteTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task.infiniteSuspense', variables];
 
 
 useTaskQuery.fetcher = (variables: TaskQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, variables, options);
@@ -11402,13 +11570,13 @@ export const useSuspenseTasksQuery = <
     
     return useSuspenseQuery<TasksQuery, TError, TData>(
       {
-    queryKey: ['Tasks', variables],
+    queryKey: ['TasksSuspense', variables],
     queryFn: graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables),
     ...options
   }
     )};
 
-useSuspenseTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks', variables];
+useSuspenseTasksQuery.getKey = (variables: TasksQueryVariables) => ['TasksSuspense', variables];
 
 export const useInfiniteTasksQuery = <
       TData = InfiniteData<TasksQuery>,
@@ -11443,14 +11611,14 @@ export const useSuspenseInfiniteTasksQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['Tasks.infinite', variables],
+      queryKey: optionsQueryKey ?? ['Tasks.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks.infinite', variables];
+useSuspenseInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tasks.infiniteSuspense', variables];
 
 
 useTasksQuery.fetcher = (variables: TasksQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables, options);
@@ -11493,13 +11661,13 @@ export const useSuspenseUserPreferencesQuery = <
     
     return useSuspenseQuery<UserPreferencesQuery, TError, TData>(
       {
-    queryKey: ['UserPreferences', variables],
+    queryKey: ['UserPreferencesSuspense', variables],
     queryFn: graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, variables),
     ...options
   }
     )};
 
-useSuspenseUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferences', variables];
+useSuspenseUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferencesSuspense', variables];
 
 export const useInfiniteUserPreferencesQuery = <
       TData = InfiniteData<UserPreferencesQuery>,
@@ -11534,14 +11702,14 @@ export const useSuspenseInfiniteUserPreferencesQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['UserPreferences.infinite', variables],
+      queryKey: optionsQueryKey ?? ['UserPreferences.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferences.infinite', variables];
+useSuspenseInfiniteUserPreferencesQuery.getKey = (variables: UserPreferencesQueryVariables) => ['UserPreferences.infiniteSuspense', variables];
 
 
 useUserPreferencesQuery.fetcher = (variables: UserPreferencesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, variables, options);
@@ -11584,13 +11752,13 @@ export const useSuspenseUserQuery = <
     
     return useSuspenseQuery<UserQuery, TError, TData>(
       {
-    queryKey: ['User', variables],
+    queryKey: ['UserSuspense', variables],
     queryFn: graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables),
     ...options
   }
     )};
 
-useSuspenseUserQuery.getKey = (variables: UserQueryVariables) => ['User', variables];
+useSuspenseUserQuery.getKey = (variables: UserQueryVariables) => ['UserSuspense', variables];
 
 export const useInfiniteUserQuery = <
       TData = InfiniteData<UserQuery>,
@@ -11625,14 +11793,14 @@ export const useSuspenseInfiniteUserQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['User.infinite', variables],
+      queryKey: optionsQueryKey ?? ['User.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infinite', variables];
+useSuspenseInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.infiniteSuspense', variables];
 
 
 useUserQuery.fetcher = (variables: UserQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables, options);
@@ -11673,13 +11841,13 @@ export const useSuspenseUserByIdentityProviderIdQuery = <
     
     return useSuspenseQuery<UserByIdentityProviderIdQuery, TError, TData>(
       {
-    queryKey: ['UserByIdentityProviderId', variables],
+    queryKey: ['UserByIdentityProviderIdSuspense', variables],
     queryFn: graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, variables),
     ...options
   }
     )};
 
-useSuspenseUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderId', variables];
+useSuspenseUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderIdSuspense', variables];
 
 export const useInfiniteUserByIdentityProviderIdQuery = <
       TData = InfiniteData<UserByIdentityProviderIdQuery>,
@@ -11714,14 +11882,14 @@ export const useSuspenseInfiniteUserByIdentityProviderIdQuery = <
       (() => {
     const { queryKey: optionsQueryKey, ...restOptions } = options;
     return {
-      queryKey: optionsQueryKey ?? ['UserByIdentityProviderId.infinite', variables],
+      queryKey: optionsQueryKey ?? ['UserByIdentityProviderId.infiniteSuspense', variables],
       queryFn: (metaData) => graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, {...variables, ...(metaData.pageParam ?? {})})(),
       ...restOptions
     }
   })()
     )};
 
-useSuspenseInfiniteUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderId.infinite', variables];
+useSuspenseInfiniteUserByIdentityProviderIdQuery.getKey = (variables: UserByIdentityProviderIdQueryVariables) => ['UserByIdentityProviderId.infiniteSuspense', variables];
 
 
 useUserByIdentityProviderIdQuery.fetcher = (variables: UserByIdentityProviderIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, variables, options);

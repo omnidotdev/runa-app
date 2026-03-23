@@ -14,7 +14,7 @@ query ProjectsSidebar($organizationId: String!, $userId: UUID) {
         nodes {
           rowId
           viewMode
-          pinned
+          pinOrder
         }
       }
     }
