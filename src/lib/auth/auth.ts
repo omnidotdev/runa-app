@@ -8,6 +8,7 @@ import {
   AUTH_BASE_URL,
   AUTH_CLIENT_ID,
   AUTH_CLIENT_SECRET,
+  AUTH_INTERNAL_URL,
   BASE_URL,
 } from "@/lib/config/env.config";
 
@@ -24,7 +25,7 @@ if (AUTH_CLIENT_ID && AUTH_CLIENT_SECRET && AUTH_BASE_URL) {
     providerId: "omni",
     clientId: AUTH_CLIENT_ID,
     clientSecret: AUTH_CLIENT_SECRET,
-    discoveryUrl: `${AUTH_BASE_URL}/.well-known/openid-configuration`,
+    discoveryUrl: `${AUTH_INTERNAL_URL}/.well-known/openid-configuration`,
     scopes: ["openid", "profile", "email", "offline_access", "organization"],
     accessType: "offline",
     pkce: true,

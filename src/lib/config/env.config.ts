@@ -22,6 +22,13 @@ export const AUTH_BASE_URL = env.AUTH_BASE_URL || env.VITE_AUTH_BASE_URL;
 export const AUTH_CLIENT_ID = env.AUTH_CLIENT_ID;
 export const AUTH_CLIENT_SECRET = env.AUTH_CLIENT_SECRET;
 
+// Internal auth URL for server-to-server communication (Docker service name)
+// Falls back to AUTH_BASE_URL for non-Docker environments
+export const AUTH_INTERNAL_URL =
+  typeof window === "undefined"
+    ? process.env.AUTH_INTERNAL_URL || AUTH_BASE_URL
+    : AUTH_BASE_URL;
+
 // Feature flags
 export const FLAGS_API_HOST = env.FLAGS_API_HOST || env.VITE_FLAGS_API_HOST;
 export const FLAGS_CLIENT_KEY =
