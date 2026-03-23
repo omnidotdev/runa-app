@@ -43,6 +43,7 @@ import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
 import { Role } from "@/lib/permissions";
+import sortProjects from "@/lib/util/sortProjects";
 import AppSidebarProjectItem from "./AppSidebarProjectItem";
 import Tooltip from "./Tooltip";
 
@@ -72,17 +73,7 @@ const AppSidebarProjectList = () => {
     select: (data) => {
       const nodes = data.projects?.nodes;
       if (!nodes) return undefined;
-      return [...nodes].sort((a, b) => {
-        const aPin = a.userPreferences?.nodes?.[0]?.pinOrder;
-        const bPin = b.userPreferences?.nodes?.[0]?.pinOrder;
-        const aPinned = aPin != null;
-        const bPinned = bPin != null;
-        if (aPinned !== bPinned) return aPinned ? -1 : 1;
-        if (aPinned && bPinned) return (aPin ?? 0) - (bPin ?? 0);
-        return a.name.localeCompare(b.name, undefined, {
-          sensitivity: "base",
-        });
-      }) as Array<(typeof nodes)[0] & { id: string }>;
+      return sortProjects(nodes) as Array<(typeof nodes)[0] & { id: string }>;
     },
   });
 
