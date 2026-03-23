@@ -31,7 +31,7 @@
     "@lexical/list": "^0.39.0",
     "@lexical/react": "^0.39.0",
     "@lexical/rich-text": "^0.39.0",
-    "@omnidotdev/providers": "github:omnidotdev/providers#c82b8ad",
+    "@omnidotdev/providers": "github:omnidotdev/providers#5ed775e",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@tanstack/react-form": "^1.28.5",
