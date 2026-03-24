@@ -47,7 +47,7 @@ import {
 } from "@/components/ui/sidebar";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
-import { CONSOLE_URL, isSelfHosted } from "@/lib/config/env.config";
+import { CONSOLE_URL, hasBilling } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { getSidebarCookies } from "@/providers/SidebarProvider";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -150,7 +150,7 @@ const AppSidebarFooter = () => {
                 }
               />
 
-              {!isSelfHosted && (
+              {hasBilling && (
                 <Tooltip
                   positioning={{ placement: "right" }}
                   tooltip="Pricing"

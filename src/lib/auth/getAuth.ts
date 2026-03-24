@@ -70,16 +70,41 @@ export async function getAuth(request: Request) {
     // Get tokens from Gatekeeper via Better Auth
     try {
       const tokenResult = await ensureFreshAccessToken({
-        getAccessToken: () =>
-          auth.api.getAccessToken({
-            body: { providerId: "omni" },
-            headers: request.headers,
-          }),
-        refreshToken: () =>
-          auth.api.refreshToken({
-            body: { providerId: "omni" },
-            headers: request.headers,
-          }),
+        getAccessToken: async () => {
+          try {
+            return await auth.api.getAccessToken({
+              body: { providerId: "omni" },
+              headers: request.headers,
+            });
+          } catch (err) {
+            const body =
+              err && typeof err === "object" && "body" in err
+                ? (err as { body: unknown }).body
+                : undefined;
+            console.error("[getAuth] getAccessToken failed:", {
+              code:
+                body && typeof body === "object" && "code" in body
+                  ? (body as { code: string }).code
+                  : "unknown",
+              message: err instanceof Error ? err.message : String(err),
+            });
+            throw err;
+          }
+        },
+        refreshToken: async () => {
+          try {
+            return await auth.api.refreshToken({
+              body: { providerId: "omni" },
+              headers: request.headers,
+            });
+          } catch (err) {
+            console.error(
+              "[getAuth] refreshToken failed:",
+              err instanceof Error ? err.message : String(err),
+            );
+            throw err;
+          }
+        },
       });
       accessToken = tokenResult?.accessToken;
 
@@ -127,7 +152,9 @@ export async function getAuth(request: Request) {
       console.error("[getAuth] Token fetch error:", err);
 
       if (isInvalidGrant(err)) {
-        console.warn("[getAuth] Invalid refresh token, clearing session");
+        console.warn(
+          "[getAuth] Stale OAuth tokens, clearing session for re-auth",
+        );
         try {
           await auth.api.signOut({ headers: request.headers });
         } catch {

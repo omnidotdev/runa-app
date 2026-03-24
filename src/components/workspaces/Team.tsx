@@ -37,7 +37,7 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { isSelfHosted } from "@/lib/config/env.config";
+import { hasBilling } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import {
   canModifyMember,
@@ -142,13 +142,13 @@ const Team = () => {
     subscription?.priceId,
   );
 
-  const _maxNumberOfMembersReached = isSelfHosted
+  const _maxNumberOfMembersReached = !hasBilling
     ? false
     : match(tier)
         .with(Tier.Pro, Tier.Team, Tier.Enterprise, () => false)
         .otherwise(() => members.length >= 5);
 
-  const maxNumberofAdminsReached = isSelfHosted
+  const maxNumberofAdminsReached = !hasBilling
     ? false
     : match(tier)
         .with(Tier.Pro, Tier.Team, Tier.Enterprise, () => false)

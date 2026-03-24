@@ -30,7 +30,7 @@ import {
   TagsInputLabel,
   TagsInputRoot,
 } from "@/components/ui/tags-input";
-import { isSelfHosted } from "@/lib/config/env.config";
+import { hasBilling } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useForm from "@/lib/hooks/useForm";
 import { useInviteMember } from "@/lib/hooks/useOrganizationMembers";
@@ -96,7 +96,7 @@ const InviteMemberDialog = ({ triggerRef }: Props) => {
     prices,
     subscription?.priceId,
   );
-  const maxMembers = isSelfHosted
+  const maxMembers = !hasBilling
     ? Infinity
     : tier === Tier.Enterprise
       ? Infinity
