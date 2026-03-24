@@ -13,7 +13,8 @@
     "graphql:generate:watch": "bun graphql:generate -w",
     "knip": "knip-bun",
     "test": "bun test",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "sed -i 's/} catch (_error) {/} catch (_error) { console.error(\"[BA:getAccessToken] inner error:\", _error);/' node_modules/better-auth/dist/api/routes/account.mjs || true"
   },
   "dependencies": {
     "@ark-ui/react": "^5.30.0",
