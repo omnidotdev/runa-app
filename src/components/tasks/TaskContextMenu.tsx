@@ -97,7 +97,6 @@ const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
             <MenuItem
               value="delete"
               variant="destructive"
-              // onSelect={() => deleteTask({ rowId: taskRowId })}
               onSelect={handleOpenDeleteTaskDialog}
             >
               <Trash2Icon /> <span>Delete</span>

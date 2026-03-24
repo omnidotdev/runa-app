@@ -44,8 +44,7 @@ export default function AssigneeList({
                   isSelected
                     ? "border border-primary bg-primary/10 hover:bg-primary/15"
                     : "hover:border-input hover:bg-muted",
-                  isDisabled &&
-                    "pointer-events-none cursor-not-allowed opacity-40",
+                  isDisabled && "cursor-not-allowed opacity-40",
                 )}
               >
                 <AvatarRoot
@@ -106,8 +105,7 @@ export default function AssigneeList({
                 isSelected
                   ? "bg-primary/10 hover:bg-primary/15"
                   : "hover:bg-muted",
-                isDisabled &&
-                  "pointer-events-none cursor-not-allowed opacity-40",
+                isDisabled && "cursor-not-allowed opacity-40",
               )}
             >
               <AvatarRoot

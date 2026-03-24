@@ -78,11 +78,6 @@ const Projects = () => {
     select: (data) => data?.projectColumns?.nodes ?? [],
   });
 
-  // Resolve org name from JWT claims
-  const orgName = organizationId
-    ? orgContext?.getOrganizationById(organizationId)?.name
-    : undefined;
-
   // Get role from IDP organization claims
   const currentUserRole = useCurrentUserRole(organizationId);
   const canManageProjects = currentUserRole && isAdminOrOwner(currentUserRole);

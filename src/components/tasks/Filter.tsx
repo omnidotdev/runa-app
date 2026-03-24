@@ -51,7 +51,7 @@ const Filter = () => {
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
-  const { assignees, labels, priorities, search } = useSearch({
+  const { assignees, labels, priorities } = useSearch({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
