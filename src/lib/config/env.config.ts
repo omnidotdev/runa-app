@@ -39,12 +39,11 @@ export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 // Internal GraphQL URL for server-side requests
 export const API_INTERNAL_GRAPHQL_URL = `${API_INTERNAL_URL}/graphql`;
 
-// Self-hosted mode
-export const SELF_HOSTED = env.SELF_HOSTED || env.VITE_SELF_HOSTED;
-
 // Environment helpers
 /** @knipignore */
 export const isDevEnv = import.meta.env.DEV;
 /** @knipignore */
 export const isProdEnv = import.meta.env.PROD;
-export const isSelfHosted = SELF_HOSTED === "true";
+
+/** Whether billing (Aether) is available */
+export const hasBilling = !!BILLING_BASE_URL;

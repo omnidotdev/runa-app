@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
-import { BASE_URL, isSelfHosted } from "@/lib/config/env.config";
+import { BASE_URL, hasBilling } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_public")({
@@ -119,7 +119,7 @@ function PublicLayout() {
                   Demo
                 </Link>
 
-                {!isSelfHosted && (
+                {hasBilling && (
                   <Link
                     to="/pricing"
                     variant="ghost"
@@ -190,7 +190,7 @@ function PublicLayout() {
                 Demo
               </Link>
 
-              {!isSelfHosted && (
+              {hasBilling && (
                 <Link
                   to="/pricing"
                   variant="ghost"
