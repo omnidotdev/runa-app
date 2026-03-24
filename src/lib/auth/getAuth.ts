@@ -70,16 +70,41 @@ export async function getAuth(request: Request) {
     // Get tokens from Gatekeeper via Better Auth
     try {
       const tokenResult = await ensureFreshAccessToken({
-        getAccessToken: () =>
-          auth.api.getAccessToken({
-            body: { providerId: "omni" },
-            headers: request.headers,
-          }),
-        refreshToken: () =>
-          auth.api.refreshToken({
-            body: { providerId: "omni" },
-            headers: request.headers,
-          }),
+        getAccessToken: async () => {
+          try {
+            return await auth.api.getAccessToken({
+              body: { providerId: "omni" },
+              headers: request.headers,
+            });
+          } catch (err) {
+            const body =
+              err && typeof err === "object" && "body" in err
+                ? (err as { body: unknown }).body
+                : undefined;
+            console.error("[getAuth] getAccessToken failed:", {
+              code:
+                body && typeof body === "object" && "code" in body
+                  ? (body as { code: string }).code
+                  : "unknown",
+              message: err instanceof Error ? err.message : String(err),
+            });
+            throw err;
+          }
+        },
+        refreshToken: async () => {
+          try {
+            return await auth.api.refreshToken({
+              body: { providerId: "omni" },
+              headers: request.headers,
+            });
+          } catch (err) {
+            console.error(
+              "[getAuth] refreshToken failed:",
+              err instanceof Error ? err.message : String(err),
+            );
+            throw err;
+          }
+        },
       });
       accessToken = tokenResult?.accessToken;
 
@@ -124,7 +149,10 @@ export async function getAuth(request: Request) {
         }
       }
     } catch (err) {
-      console.error("[getAuth] Token fetch error:", err);
+      // Log the underlying cause for diagnosis (BA wraps errors in APIError)
+      const cause =
+        err instanceof Error && "cause" in err ? err.cause : undefined;
+      console.error("[getAuth] Token fetch error:", err, "cause:", cause);
 
       if (isInvalidGrant(err)) {
         console.warn("[getAuth] Invalid refresh token, clearing session");
