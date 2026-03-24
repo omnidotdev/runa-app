@@ -149,13 +149,24 @@ export async function getAuth(request: Request) {
         }
       }
     } catch (err) {
-      // Log the underlying cause for diagnosis (BA wraps errors in APIError)
-      const cause =
-        err instanceof Error && "cause" in err ? err.cause : undefined;
-      console.error("[getAuth] Token fetch error:", err, "cause:", cause);
+      console.error("[getAuth] Token fetch error:", err);
 
-      if (isInvalidGrant(err)) {
-        console.warn("[getAuth] Invalid refresh token, clearing session");
+      // BA wraps inner errors (e.g. invalid_grant) in a generic
+      // FAILED_TO_GET_ACCESS_TOKEN APIError, so isInvalidGrant may
+      // not match. Detect both the standard grant error and the BA
+      // wrapper to force re-auth when tokens are permanently stale.
+      const isBATokenError =
+        err &&
+        typeof err === "object" &&
+        "body" in err &&
+        typeof (err as { body: { code?: string } }).body?.code === "string" &&
+        (err as { body: { code: string } }).body.code ===
+          "FAILED_TO_GET_ACCESS_TOKEN";
+
+      if (isInvalidGrant(err) || isBATokenError) {
+        console.warn(
+          "[getAuth] Stale OAuth tokens, clearing session for re-auth",
+        );
         try {
           await auth.api.signOut({ headers: request.headers });
         } catch {
