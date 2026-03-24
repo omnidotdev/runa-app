@@ -10,29 +10,21 @@ import {
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { useOrganization } from "@/providers/OrganizationProvider";
-import {
-  getLastWorkspaceCookie,
-  setLastWorkspaceCookie,
-} from "@/server/functions/lastWorkspace";
+import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 
 export const Route = createFileRoute("/_app/workspaces/")({
-  beforeLoad: async ({ context: { session }, search }) => {
-    // Skip auto-redirect when user explicitly navigated here
-    if ((search as { explicit?: boolean }).explicit) return;
-
+  beforeLoad: async ({ context: { session } }) => {
     const organizations = session?.organizations ?? [];
-    if (!organizations.length) return;
+    if (!organizations.length || organizations.length > 1) return;
 
-    // Only auto-redirect if user has multiple workspaces
-    if (organizations.length === 1) return;
+    // Single workspace — skip the picker and go straight to it
+    const org = organizations[0];
+    const slug = org.slug ?? org.id;
 
-    const lastSlug = await getLastWorkspaceCookie();
-    if (lastSlug && organizations.some((org) => org.slug === lastSlug)) {
-      throw redirect({
-        to: "/workspaces/$workspaceSlug/projects",
-        params: { workspaceSlug: lastSlug },
-      });
-    }
+    throw redirect({
+      to: "/workspaces/$workspaceSlug/projects",
+      params: { workspaceSlug: slug },
+    });
   },
   head: () => ({
     meta: [

@@ -1,12 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getCookie, setCookie } from "@tanstack/react-start/server";
+import { setCookie } from "@tanstack/react-start/server";
 
 const COOKIE_NAME = "runa:lastWorkspaceSlug";
 const COOKIE_TTL = 60 * 60 * 24 * 7; // 7 days
-
-export const getLastWorkspaceCookie = createServerFn({ method: "GET" }).handler(
-  async () => getCookie(COOKIE_NAME) ?? null,
-);
 
 export const setLastWorkspaceCookie = createServerFn({ method: "POST" })
   .inputValidator((data: string) => data)
