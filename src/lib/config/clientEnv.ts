@@ -23,15 +23,16 @@ declare global {
  * Falls back to build-time VITE_* values if runtime values aren't set.
  */
 const getClientEnv = (): Required<ClientEnv> => {
-  // Server-side: read from process.env
+  // Server-side: read from process.env (runtime wins over build-time VITE_*)
   if (typeof window === "undefined") {
     return {
       BASE_URL: process.env.BASE_URL || import.meta.env.VITE_BASE_URL || "",
       API_BASE_URL:
         process.env.API_BASE_URL || import.meta.env.VITE_API_BASE_URL || "",
       BILLING_BASE_URL:
-        process.env.BILLING_BASE_URL ||
-        import.meta.env.VITE_BILLING_BASE_URL ||
+        process.env.BILLING_BASE_URL ??
+        process.env.VITE_BILLING_BASE_URL ??
+        import.meta.env.VITE_BILLING_BASE_URL ??
         "",
     };
   }
