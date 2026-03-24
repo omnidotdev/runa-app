@@ -1,9 +1,9 @@
 import { CheckCircle2Icon } from "lucide-react";
 
-interface Props {
+type Props = {
   progressPercentage: number;
   color?: string;
-}
+};
 
 const CircularProgress = ({ progressPercentage, color }: Props) => {
   return progressPercentage === 100 ? (

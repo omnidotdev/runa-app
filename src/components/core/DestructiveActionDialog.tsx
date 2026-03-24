@@ -17,14 +17,14 @@ import useDialogStore from "@/lib/hooks/store/useDialogStore";
 import type { ComponentProps, ReactNode } from "react";
 import type { DialogType } from "@/lib/hooks/store/useDialogStore";
 
-interface Props extends ComponentProps<typeof DialogRoot> {
+type Props = ComponentProps<typeof DialogRoot> & {
   title: string;
   description: string | ReactNode;
   onConfirm: () => void;
   dialogType: DialogType;
-  /** When provided, the user must type this string to enable the delete button. */
+  /** When provided, the user must type this string to enable the delete button */
   confirmation?: string;
-}
+};
 
 const DestructiveActionDialog = ({
   title,

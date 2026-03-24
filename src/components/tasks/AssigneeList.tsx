@@ -9,14 +9,14 @@ import { cn } from "@/lib/utils";
 
 import type { WorkspaceUser } from "./UpdateAssignees";
 
-interface AssigneeListProps {
+type AssigneeListProps = {
   viewMode: "grid" | "list";
   items: WorkspaceUser[];
   selected: string[];
   atLimit: boolean;
   maxAssignees: number;
   onToggle: (value: string) => void;
-}
+};
 
 export default function AssigneeList({
   viewMode,

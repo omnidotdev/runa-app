@@ -42,9 +42,9 @@ import type { ProjectsSidebarQuery } from "@/generated/graphql";
 type ProjectWithPreferences = NonNullable<
   ProjectsSidebarQuery["projects"]
 >["nodes"][number];
-interface Props {
+type Props = {
   project: ProjectWithPreferences;
-}
+};
 
 const AppSidebarProjectItem = ({ project }: Props) => {
   const { organizationId, session } = useRouteContext({ from: "/_app" });
@@ -156,7 +156,6 @@ const AppSidebarProjectItem = ({ project }: Props) => {
           </SidebarMenuAction>
         </MenuTrigger>
 
-        {/* TODO: Further look into this as it shouldn't be necessary */}
         {menuOpen && (
           <MenuPositioner>
             <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">

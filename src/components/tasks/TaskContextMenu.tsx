@@ -16,9 +16,9 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 
 import type { PropsWithChildren } from "react";
 
-interface Props {
+type Props = {
   taskRowId: string;
-}
+};
 
 const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
   const navigate = useNavigate();
