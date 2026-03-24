@@ -37,14 +37,15 @@ const getClientEnv = (): Required<ClientEnv> => {
     };
   }
 
-  // Client-side: read from injected window.__ENV__, fall back to build-time vars
+  // Client-side: read from injected window.__ENV__, fall back to build-time vars.
+  // Use ?? for BILLING_BASE_URL so empty string override is respected.
   return {
     BASE_URL: window.__ENV__?.BASE_URL || import.meta.env.VITE_BASE_URL || "",
     API_BASE_URL:
       window.__ENV__?.API_BASE_URL || import.meta.env.VITE_API_BASE_URL || "",
     BILLING_BASE_URL:
-      window.__ENV__?.BILLING_BASE_URL ||
-      import.meta.env.VITE_BILLING_BASE_URL ||
+      window.__ENV__?.BILLING_BASE_URL ??
+      import.meta.env.VITE_BILLING_BASE_URL ??
       "",
   };
 };
