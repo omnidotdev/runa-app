@@ -9,6 +9,7 @@
 type ClientEnv = {
   BASE_URL?: string;
   API_BASE_URL?: string;
+  BILLING_BASE_URL?: string;
 };
 
 declare global {
@@ -28,6 +29,10 @@ const getClientEnv = (): Required<ClientEnv> => {
       BASE_URL: process.env.BASE_URL || import.meta.env.VITE_BASE_URL || "",
       API_BASE_URL:
         process.env.API_BASE_URL || import.meta.env.VITE_API_BASE_URL || "",
+      BILLING_BASE_URL:
+        process.env.BILLING_BASE_URL ||
+        import.meta.env.VITE_BILLING_BASE_URL ||
+        "",
     };
   }
 
@@ -36,6 +41,10 @@ const getClientEnv = (): Required<ClientEnv> => {
     BASE_URL: window.__ENV__?.BASE_URL || import.meta.env.VITE_BASE_URL || "",
     API_BASE_URL:
       window.__ENV__?.API_BASE_URL || import.meta.env.VITE_API_BASE_URL || "",
+    BILLING_BASE_URL:
+      window.__ENV__?.BILLING_BASE_URL ||
+      import.meta.env.VITE_BILLING_BASE_URL ||
+      "",
   };
 };
 

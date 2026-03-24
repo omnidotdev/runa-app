@@ -13,8 +13,7 @@ export const API_INTERNAL_URL =
   typeof window === "undefined"
     ? process.env.API_INTERNAL_URL || clientEnv.API_BASE_URL
     : clientEnv.API_BASE_URL;
-export const BILLING_BASE_URL =
-  env.BILLING_BASE_URL || env.VITE_BILLING_BASE_URL;
+export const BILLING_BASE_URL = clientEnv.BILLING_BASE_URL;
 export const CONSOLE_URL = env.CONSOLE_URL || env.VITE_CONSOLE_URL;
 
 // Auth: Omni/Gatekeeper
