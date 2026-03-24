@@ -113,7 +113,7 @@ const AppSidebarHeader = () => {
               <MenuItem
                 onClick={() => {
                   closeMobileSidebar();
-                  navigate({ to: "/workspaces" });
+                  navigate({ to: "/workspaces", search: { explicit: true } });
                 }}
                 className="cursor-pointer gap-2 px-2 py-1"
                 value="view-all-workspaces"

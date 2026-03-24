@@ -16,7 +16,10 @@ import {
 } from "@/server/functions/lastWorkspace";
 
 export const Route = createFileRoute("/_app/workspaces/")({
-  beforeLoad: async ({ context: { session } }) => {
+  beforeLoad: async ({ context: { session }, search }) => {
+    // Skip auto-redirect when user explicitly navigated here
+    if ((search as { explicit?: boolean }).explicit) return;
+
     const organizations = session?.organizations ?? [];
     if (!organizations.length) return;
 
