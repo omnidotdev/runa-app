@@ -151,19 +151,7 @@ export async function getAuth(request: Request) {
     } catch (err) {
       console.error("[getAuth] Token fetch error:", err);
 
-      // BA wraps inner errors (e.g. invalid_grant) in a generic
-      // FAILED_TO_GET_ACCESS_TOKEN APIError, so isInvalidGrant may
-      // not match. Detect both the standard grant error and the BA
-      // wrapper to force re-auth when tokens are permanently stale.
-      const isBATokenError =
-        err &&
-        typeof err === "object" &&
-        "body" in err &&
-        typeof (err as { body: { code?: string } }).body?.code === "string" &&
-        (err as { body: { code: string } }).body.code ===
-          "FAILED_TO_GET_ACCESS_TOKEN";
-
-      if (isInvalidGrant(err) || isBATokenError) {
+      if (isInvalidGrant(err)) {
         console.warn(
           "[getAuth] Stale OAuth tokens, clearing session for re-auth",
         );
