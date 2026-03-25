@@ -1,5 +1,5 @@
 import { AlertTriangle } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,46 +13,47 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import useDialogStore from "@/lib/hooks/store/useDialogStore";
-import useForm from "@/lib/hooks/useForm";
 
 import type { ComponentProps, ReactNode } from "react";
 import type { DialogType } from "@/lib/hooks/store/useDialogStore";
 
-interface DestructiveActionDialogProps
-  extends ComponentProps<typeof DialogRoot> {
+type Props = ComponentProps<typeof DialogRoot> & {
   title: string;
   description: string | ReactNode;
   onConfirm: () => void;
   dialogType: DialogType;
+  /** When provided, the user must type this string to enable the delete button */
   confirmation?: string;
-}
+};
 
 const DestructiveActionDialog = ({
   title,
   description,
   onConfirm,
   dialogType,
-  confirmation = "",
+  confirmation,
   onOpenChange,
   ...rest
-}: DestructiveActionDialogProps) => {
+}: Props) => {
   const { isOpen, setIsOpen } = useDialogStore({ type: dialogType });
+  const [confirmationInput, setConfirmationInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
 
-  const form = useForm({
-    defaultValues: {
-      confirmationInput: "",
-    },
-    validators: {
-      onChangeAsync: async ({ value }) =>
-        value.confirmationInput !== confirmation,
-    },
-    onSubmit: async ({ formApi }) => {
-      onConfirm();
-      formApi.reset();
-      setIsOpen(false);
-    },
-  });
+  const requiresTextConfirmation = !!confirmation;
+  const isConfirmed =
+    !requiresTextConfirmation || confirmationInput === confirmation;
+
+  const handleClose = () => {
+    setConfirmationInput("");
+  };
+
+  const handleConfirm = () => {
+    if (!isConfirmed) return;
+    onConfirm();
+    setConfirmationInput("");
+    setIsOpen(false);
+  };
 
   return (
     <DialogRoot
@@ -60,9 +61,14 @@ const DestructiveActionDialog = ({
       onOpenChange={(details) => {
         setIsOpen(details.open);
         onOpenChange?.(details);
-        form.reset();
+
+        if (!details.open) {
+          handleClose();
+        }
       }}
-      initialFocusEl={() => inputRef.current}
+      initialFocusEl={() =>
+        requiresTextConfirmation ? inputRef.current : cancelRef.current
+      }
       {...rest}
     >
       <DialogBackdrop />
@@ -78,67 +84,52 @@ const DestructiveActionDialog = ({
             <DialogDescription>{description}</DialogDescription>
           </div>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
-            }}
-            className="flex flex-col gap-2"
-          >
-            <form.Field name="confirmationInput">
-              {(field) => (
-                <div className="flex flex-col gap-2">
-                  <label
-                    className="text-foreground text-sm"
-                    htmlFor={`confirmationInput-${confirmation}`}
-                  >
-                    Type{" "}
-                    <strong className="text-destructive">{confirmation}</strong>{" "}
-                    to confirm deletion
-                  </label>
-
-                  <Input
-                    ref={inputRef}
-                    id={`confirmationInput-${confirmation}`}
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Enter confirmation text..."
-                    autoComplete="off"
-                    autoCorrect="off"
-                    spellCheck="false"
-                    className="focus-visible:ring-red-500"
-                  />
-                </div>
-              )}
-            </form.Field>
-
-            <div className="mt-4 flex justify-end gap-2">
-              <DialogCloseTrigger asChild>
-                <Button variant="outline" onClick={() => form.reset()}>
-                  Cancel
-                </Button>
-              </DialogCloseTrigger>
-
-              <form.Subscribe
-                selector={(state) => [
-                  state.canSubmit,
-                  state.isSubmitting,
-                  state.isDefaultValue,
-                ]}
+          {requiresTextConfirmation && (
+            <div className="mb-4 flex flex-col gap-2">
+              <label
+                className="text-foreground text-sm"
+                htmlFor="destructive-confirmation-input"
               >
-                {([canSubmit, isSubmitting, isDefaultValue]) => (
-                  <Button
-                    type="submit"
-                    variant="destructive"
-                    disabled={!canSubmit || isSubmitting || isDefaultValue}
-                  >
-                    Delete
-                  </Button>
-                )}
-              </form.Subscribe>
+                Type{" "}
+                <strong className="text-destructive">{confirmation}</strong> to
+                confirm deletion
+              </label>
+
+              <Input
+                ref={inputRef}
+                id="destructive-confirmation-input"
+                value={confirmationInput}
+                onChange={(e) => setConfirmationInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && isConfirmed) {
+                    e.preventDefault();
+                    handleConfirm();
+                  }
+                }}
+                placeholder="Enter confirmation text..."
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck="false"
+                className="focus-visible:ring-red-500"
+              />
             </div>
-          </form>
+          )}
+
+          <div className="flex justify-end gap-2">
+            <DialogCloseTrigger asChild>
+              <Button ref={cancelRef} variant="outline">
+                Cancel
+              </Button>
+            </DialogCloseTrigger>
+
+            <Button
+              variant="destructive"
+              disabled={!isConfirmed}
+              onClick={handleConfirm}
+            >
+              Delete
+            </Button>
+          </div>
         </DialogContent>
       </DialogPositioner>
     </DialogRoot>

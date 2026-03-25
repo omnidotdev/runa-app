@@ -24,7 +24,7 @@ import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import { Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
-import BoardItem from "./OverviewBoardItem";
+import OverviewBoardItem from "./OverviewBoardItem";
 
 import type { ProjectsQuery } from "@/generated/graphql";
 
@@ -36,7 +36,7 @@ interface Props {
   projects: ProjectWithPreferences[];
 }
 
-const Board = ({ projects }: Props) => {
+const OverviewBoard = ({ projects }: Props) => {
   const navigate = useNavigate();
   const { isDragging } = useDragStore();
 
@@ -107,10 +107,6 @@ const Board = ({ projects }: Props) => {
                   setProjectColumnId(column.rowId);
                   setIsCreateProjectDialogOpen(true);
                 }}
-                className={cn(
-                  "hidden disabled:pointer-events-auto disabled:cursor-not-allowed disabled:hover:bg-transparent dark:disabled:hover:bg-transparent",
-                  !isMember && "inline-flex",
-                )}
                 disabled={maxProjectsReached}
               />
 
@@ -149,7 +145,7 @@ const Board = ({ projects }: Props) => {
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
-                                  className="rounded-lg outline-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                                  className="h-auto shrink-0 cursor-pointer overflow-hidden rounded-lg border bg-background p-3 outline-hidden hover:border-input hover:shadow-sm focus-visible:border-primary"
                                   onKeyDown={(evt) => {
                                     if (evt.key === "Enter") {
                                       navigate({
@@ -162,7 +158,7 @@ const Board = ({ projects }: Props) => {
                                     }
                                   }}
                                 >
-                                  <BoardItem project={project} />
+                                  <OverviewBoardItem project={project} />
                                 </div>
                               )}
                             </Draggable>
@@ -182,4 +178,4 @@ const Board = ({ projects }: Props) => {
   );
 };
 
-export default Board;
+export default OverviewBoard;

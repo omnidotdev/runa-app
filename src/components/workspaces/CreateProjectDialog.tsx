@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useNavigate, useParams } from "@tanstack/react-router";
-import { all } from "better-all";
+import { useLoaderData, useParams } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
@@ -17,10 +16,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
-  useCreateProjectColumnMutation,
   useCreateProjectMutation,
   useProjectColumnsQuery,
   useProjectsQuery,
+  useProjectsSidebarQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -36,17 +35,11 @@ import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
-const DEFAULT_PROJECT_COLUMNS = [
-  { title: "Planned", index: 0, icon: "emoji:🌑" },
-  { title: "In Progress", index: 1, icon: "emoji:🌓" },
-  { title: "Completed", index: 2, icon: "emoji:🌕" },
-];
-
 const CreateProjectDialog = () => {
   const { organizationId } = useLoaderData({ from: "/_app" });
-  const { workspaceSlug, projectSlug } = useParams({ strict: false });
 
-  const navigate = useNavigate();
+  const { workspaceSlug } = useParams({ strict: false });
+
   const nameRef = useRef<HTMLInputElement>(null);
   const orgContext = useOrganization();
 
@@ -95,33 +88,19 @@ const CreateProjectDialog = () => {
   useHotkeys(
     Hotkeys.CreateProject,
     () => setIsCreateProjectOpen(!isCreateProjectOpen),
-    { enabled: !!workspaceSlug && !projectSlug },
-    [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug, projectSlug],
+    { enabled: !!workspaceSlug },
+    [setIsCreateProjectOpen, isCreateProjectOpen, workspaceSlug],
   );
-
-  const { mutateAsync: createProjectColumn } = useCreateProjectColumnMutation({
-    meta: {
-      invalidates: [getQueryKeyPrefix(useProjectColumnsQuery)],
-    },
-  });
 
   const { mutateAsync: createNewProject } = useCreateProjectMutation({
     meta: {
       invalidates: [
         getQueryKeyPrefix(useProjectsQuery),
         getQueryKeyPrefix(useProjectColumnsQuery),
+        getQueryKeyPrefix(useProjectsSidebarQuery),
       ],
     },
     // Default columns and user preference are created server-side
-    onSuccess: ({ createProject }) => {
-      navigate({
-        to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-        params: {
-          workspaceSlug: workspaceSlug!,
-          projectSlug: createProject?.project?.slug!,
-        },
-      });
-    },
   });
 
   const isProjectNameAvailable = async (name: string) => {
@@ -164,53 +143,19 @@ const CreateProjectDialog = () => {
     },
     onSubmit: async ({ value, formApi }) => {
       toast.promise(
-        (async () => {
-          let projectColumnId: string | null | undefined =
-            value.projectColumnId;
-
-          // If no project columns exist, create default ones first
-          if (!projectColumnId) {
-            const { columns } = await all({
-              async columns() {
-                return Promise.all(
-                  DEFAULT_PROJECT_COLUMNS.map((col) =>
-                    createProjectColumn({
-                      input: {
-                        projectColumn: {
-                          organizationId: organizationId!,
-                          title: col.title,
-                          index: col.index,
-                          icon: col.icon,
-                        },
-                      },
-                    }),
-                  ),
-                );
-              },
-            });
-            // Use the first column (Planned) as the default
-            projectColumnId =
-              columns[0]?.createProjectColumn?.projectColumn?.rowId;
-          }
-
-          if (!projectColumnId) {
-            throw new Error("Failed to create project columns");
-          }
-
-          return createNewProject({
-            input: {
-              project: {
-                organizationId: organizationId!,
-                name: value.name,
-                slug: generateSlug(value.name),
-                prefix: generatePrefix(value.name),
-                description: value.description,
-                projectColumnId,
-                columnIndex: value.columnIndex,
-              },
+        createNewProject({
+          input: {
+            project: {
+              organizationId: organizationId!,
+              name: value.name,
+              slug: generateSlug(value.name),
+              prefix: generatePrefix(value.name),
+              description: value.description,
+              projectColumnId: value.projectColumnId!,
+              columnIndex: value.columnIndex,
             },
-          });
-        })(),
+          },
+        }),
         {
           loading: "Creating Project...",
           success: "Project created successfully!",

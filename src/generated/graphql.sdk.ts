@@ -16,10 +16,25 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** A floating point number that requires more precision than IEEE 754 binary 64 */
   BigFloat: { input: any; output: any; }
+  /**
+   * A signed eight-byte integer. The upper big integer values are greater than the
+   * max value for a JavaScript number. Therefore all big integers will be output as
+   * strings and not numbers.
+   */
   BigInt: { input: string; output: string; }
+  /** A location in a connection that can be used for resuming pagination. */
   Cursor: { input: string; output: string; }
+  /**
+   * A point in time as described by the [ISO
+   * 8601](https://en.wikipedia.org/wiki/ISO_8601) and, if it has a timezone, [RFC
+   * 3339](https://datatracker.ietf.org/doc/html/rfc3339) standards. Input values
+   * that do not conform to both ISO 8601 and RFC 3339 may be coerced, which may lead
+   * to unexpected results.
+   */
   Datetime: { input: Date; output: Date; }
+  /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: { input: string; output: string; }
 };
 
@@ -5219,12 +5234,16 @@ export enum ProjectOrderBy {
   TasksVarianceSampleNumberDesc = 'TASKS_VARIANCE_SAMPLE_NUMBER_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserPreferencesAveragePinOrderAsc = 'USER_PREFERENCES_AVERAGE_PIN_ORDER_ASC',
+  UserPreferencesAveragePinOrderDesc = 'USER_PREFERENCES_AVERAGE_PIN_ORDER_DESC',
   UserPreferencesCountAsc = 'USER_PREFERENCES_COUNT_ASC',
   UserPreferencesCountDesc = 'USER_PREFERENCES_COUNT_DESC',
   UserPreferencesDistinctCountCreatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_ASC',
   UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
   UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
   UserPreferencesDistinctCountHiddenColumnIdsDesc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_DESC',
+  UserPreferencesDistinctCountPinOrderAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PIN_ORDER_ASC',
+  UserPreferencesDistinctCountPinOrderDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PIN_ORDER_DESC',
   UserPreferencesDistinctCountProjectIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_ASC',
   UserPreferencesDistinctCountProjectIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_DESC',
   UserPreferencesDistinctCountRowIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_ASC',
@@ -5234,7 +5253,21 @@ export enum ProjectOrderBy {
   UserPreferencesDistinctCountUserIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_ASC',
   UserPreferencesDistinctCountUserIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_DESC',
   UserPreferencesDistinctCountViewModeAsc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_ASC',
-  UserPreferencesDistinctCountViewModeDesc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_DESC'
+  UserPreferencesDistinctCountViewModeDesc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_DESC',
+  UserPreferencesMaxPinOrderAsc = 'USER_PREFERENCES_MAX_PIN_ORDER_ASC',
+  UserPreferencesMaxPinOrderDesc = 'USER_PREFERENCES_MAX_PIN_ORDER_DESC',
+  UserPreferencesMinPinOrderAsc = 'USER_PREFERENCES_MIN_PIN_ORDER_ASC',
+  UserPreferencesMinPinOrderDesc = 'USER_PREFERENCES_MIN_PIN_ORDER_DESC',
+  UserPreferencesStddevPopulationPinOrderAsc = 'USER_PREFERENCES_STDDEV_POPULATION_PIN_ORDER_ASC',
+  UserPreferencesStddevPopulationPinOrderDesc = 'USER_PREFERENCES_STDDEV_POPULATION_PIN_ORDER_DESC',
+  UserPreferencesStddevSamplePinOrderAsc = 'USER_PREFERENCES_STDDEV_SAMPLE_PIN_ORDER_ASC',
+  UserPreferencesStddevSamplePinOrderDesc = 'USER_PREFERENCES_STDDEV_SAMPLE_PIN_ORDER_DESC',
+  UserPreferencesSumPinOrderAsc = 'USER_PREFERENCES_SUM_PIN_ORDER_ASC',
+  UserPreferencesSumPinOrderDesc = 'USER_PREFERENCES_SUM_PIN_ORDER_DESC',
+  UserPreferencesVariancePopulationPinOrderAsc = 'USER_PREFERENCES_VARIANCE_POPULATION_PIN_ORDER_ASC',
+  UserPreferencesVariancePopulationPinOrderDesc = 'USER_PREFERENCES_VARIANCE_POPULATION_PIN_ORDER_DESC',
+  UserPreferencesVarianceSamplePinOrderAsc = 'USER_PREFERENCES_VARIANCE_SAMPLE_PIN_ORDER_ASC',
+  UserPreferencesVarianceSamplePinOrderDesc = 'USER_PREFERENCES_VARIANCE_SAMPLE_PIN_ORDER_DESC'
 }
 
 /** Represents an update to a `Project`. Fields that are set will be updated. */
@@ -8512,12 +8545,16 @@ export enum UserOrderBy {
   RowIdDesc = 'ROW_ID_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UserPreferencesAveragePinOrderAsc = 'USER_PREFERENCES_AVERAGE_PIN_ORDER_ASC',
+  UserPreferencesAveragePinOrderDesc = 'USER_PREFERENCES_AVERAGE_PIN_ORDER_DESC',
   UserPreferencesCountAsc = 'USER_PREFERENCES_COUNT_ASC',
   UserPreferencesCountDesc = 'USER_PREFERENCES_COUNT_DESC',
   UserPreferencesDistinctCountCreatedAtAsc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_ASC',
   UserPreferencesDistinctCountCreatedAtDesc = 'USER_PREFERENCES_DISTINCT_COUNT_CREATED_AT_DESC',
   UserPreferencesDistinctCountHiddenColumnIdsAsc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_ASC',
   UserPreferencesDistinctCountHiddenColumnIdsDesc = 'USER_PREFERENCES_DISTINCT_COUNT_HIDDEN_COLUMN_IDS_DESC',
+  UserPreferencesDistinctCountPinOrderAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PIN_ORDER_ASC',
+  UserPreferencesDistinctCountPinOrderDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PIN_ORDER_DESC',
   UserPreferencesDistinctCountProjectIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_ASC',
   UserPreferencesDistinctCountProjectIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_PROJECT_ID_DESC',
   UserPreferencesDistinctCountRowIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_ROW_ID_ASC',
@@ -8527,7 +8564,21 @@ export enum UserOrderBy {
   UserPreferencesDistinctCountUserIdAsc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_ASC',
   UserPreferencesDistinctCountUserIdDesc = 'USER_PREFERENCES_DISTINCT_COUNT_USER_ID_DESC',
   UserPreferencesDistinctCountViewModeAsc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_ASC',
-  UserPreferencesDistinctCountViewModeDesc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_DESC'
+  UserPreferencesDistinctCountViewModeDesc = 'USER_PREFERENCES_DISTINCT_COUNT_VIEW_MODE_DESC',
+  UserPreferencesMaxPinOrderAsc = 'USER_PREFERENCES_MAX_PIN_ORDER_ASC',
+  UserPreferencesMaxPinOrderDesc = 'USER_PREFERENCES_MAX_PIN_ORDER_DESC',
+  UserPreferencesMinPinOrderAsc = 'USER_PREFERENCES_MIN_PIN_ORDER_ASC',
+  UserPreferencesMinPinOrderDesc = 'USER_PREFERENCES_MIN_PIN_ORDER_DESC',
+  UserPreferencesStddevPopulationPinOrderAsc = 'USER_PREFERENCES_STDDEV_POPULATION_PIN_ORDER_ASC',
+  UserPreferencesStddevPopulationPinOrderDesc = 'USER_PREFERENCES_STDDEV_POPULATION_PIN_ORDER_DESC',
+  UserPreferencesStddevSamplePinOrderAsc = 'USER_PREFERENCES_STDDEV_SAMPLE_PIN_ORDER_ASC',
+  UserPreferencesStddevSamplePinOrderDesc = 'USER_PREFERENCES_STDDEV_SAMPLE_PIN_ORDER_DESC',
+  UserPreferencesSumPinOrderAsc = 'USER_PREFERENCES_SUM_PIN_ORDER_ASC',
+  UserPreferencesSumPinOrderDesc = 'USER_PREFERENCES_SUM_PIN_ORDER_DESC',
+  UserPreferencesVariancePopulationPinOrderAsc = 'USER_PREFERENCES_VARIANCE_POPULATION_PIN_ORDER_ASC',
+  UserPreferencesVariancePopulationPinOrderDesc = 'USER_PREFERENCES_VARIANCE_POPULATION_PIN_ORDER_DESC',
+  UserPreferencesVarianceSamplePinOrderAsc = 'USER_PREFERENCES_VARIANCE_SAMPLE_PIN_ORDER_ASC',
+  UserPreferencesVarianceSamplePinOrderDesc = 'USER_PREFERENCES_VARIANCE_SAMPLE_PIN_ORDER_DESC'
 }
 
 /** Represents an update to a `User`. Fields that are set will be updated. */
@@ -8547,6 +8598,7 @@ export type UserPreference = Node & {
   hiddenColumnIds: Array<Maybe<Scalars['String']['output']>>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+  pinOrder?: Maybe<Scalars['Int']['output']>;
   /** Reads a single `Project` that is related to this `UserPreference`. */
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
@@ -8560,17 +8612,59 @@ export type UserPreference = Node & {
 
 export type UserPreferenceAggregates = {
   __typename?: 'UserPreferenceAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<UserPreferenceAverageAggregates>;
   /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
   distinctCount?: Maybe<UserPreferenceDistinctCountAggregates>;
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<UserPreferenceMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<UserPreferenceMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<UserPreferenceStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<UserPreferenceStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<UserPreferenceSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<UserPreferenceVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<UserPreferenceVarianceSampleAggregates>;
 };
 
 /** A filter to be used against aggregates of `UserPreference` object types. */
 export type UserPreferenceAggregatesFilter = {
+  /** Mean average aggregate over matching `UserPreference` objects. */
+  average?: InputMaybe<UserPreferenceAverageAggregateFilter>;
   /** Distinct count aggregate over matching `UserPreference` objects. */
   distinctCount?: InputMaybe<UserPreferenceDistinctCountAggregateFilter>;
   /** A filter that must pass for the relevant `UserPreference` object to be included within the aggregate. */
   filter?: InputMaybe<UserPreferenceFilter>;
+  /** Maximum aggregate over matching `UserPreference` objects. */
+  max?: InputMaybe<UserPreferenceMaxAggregateFilter>;
+  /** Minimum aggregate over matching `UserPreference` objects. */
+  min?: InputMaybe<UserPreferenceMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `UserPreference` objects. */
+  stddevPopulation?: InputMaybe<UserPreferenceStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `UserPreference` objects. */
+  stddevSample?: InputMaybe<UserPreferenceStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `UserPreference` objects. */
+  sum?: InputMaybe<UserPreferenceSumAggregateFilter>;
+  /** Population variance aggregate over matching `UserPreference` objects. */
+  variancePopulation?: InputMaybe<UserPreferenceVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `UserPreference` objects. */
+  varianceSample?: InputMaybe<UserPreferenceVarianceSampleAggregateFilter>;
+};
+
+export type UserPreferenceAverageAggregateFilter = {
+  pinOrder?: InputMaybe<BigFloatFilter>;
+};
+
+export type UserPreferenceAverageAggregates = {
+  __typename?: 'UserPreferenceAverageAggregates';
+  /** Mean average of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /**
@@ -8580,6 +8674,8 @@ export type UserPreferenceAggregatesFilter = {
 export type UserPreferenceCondition = {
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `pinOrder` field. */
+  pinOrder?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -8619,6 +8715,7 @@ export type UserPreferenceConnectionGroupedAggregatesArgs = {
 export type UserPreferenceDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   hiddenColumnIds?: InputMaybe<BigIntFilter>;
+  pinOrder?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
@@ -8632,6 +8729,8 @@ export type UserPreferenceDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of hiddenColumnIds across the matching connection */
   hiddenColumnIds?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -8665,6 +8764,8 @@ export type UserPreferenceFilter = {
   not?: InputMaybe<UserPreferenceFilter>;
   /** Checks for any expressions in this list. */
   or?: InputMaybe<Array<UserPreferenceFilter>>;
+  /** Filter by the object’s `pinOrder` field. */
+  pinOrder?: InputMaybe<IntFilter>;
   /** Filter by the object’s `project` relation. */
   project?: InputMaybe<ProjectFilter>;
   /** Filter by the object’s `projectId` field. */
@@ -8687,6 +8788,7 @@ export enum UserPreferenceGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   HiddenColumnIds = 'HIDDEN_COLUMN_IDS',
+  PinOrder = 'PIN_ORDER',
   ProjectId = 'PROJECT_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -8697,11 +8799,13 @@ export enum UserPreferenceGroupBy {
 
 export type UserPreferenceHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -8722,36 +8826,43 @@ export type UserPreferenceHavingInput = {
 
 export type UserPreferenceHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type UserPreferenceHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
+  pinOrder?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -8759,6 +8870,7 @@ export type UserPreferenceHavingVarianceSampleInput = {
 export type UserPreferenceInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  pinOrder?: InputMaybe<Scalars['Int']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -8766,11 +8878,33 @@ export type UserPreferenceInput = {
   viewMode?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UserPreferenceMaxAggregateFilter = {
+  pinOrder?: InputMaybe<IntFilter>;
+};
+
+export type UserPreferenceMaxAggregates = {
+  __typename?: 'UserPreferenceMaxAggregates';
+  /** Maximum of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['Int']['output']>;
+};
+
+export type UserPreferenceMinAggregateFilter = {
+  pinOrder?: InputMaybe<IntFilter>;
+};
+
+export type UserPreferenceMinAggregates = {
+  __typename?: 'UserPreferenceMinAggregates';
+  /** Minimum of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['Int']['output']>;
+};
+
 /** Methods to use when ordering `UserPreference`. */
 export enum UserPreferenceOrderBy {
   CreatedAtAsc = 'CREATED_AT_ASC',
   CreatedAtDesc = 'CREATED_AT_DESC',
   Natural = 'NATURAL',
+  PinOrderAsc = 'PIN_ORDER_ASC',
+  PinOrderDesc = 'PIN_ORDER_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   ProjectIdAsc = 'PROJECT_ID_ASC',
@@ -8789,11 +8923,62 @@ export enum UserPreferenceOrderBy {
 export type UserPreferencePatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   hiddenColumnIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  pinOrder?: InputMaybe<Scalars['Int']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
   viewMode?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UserPreferenceStddevPopulationAggregateFilter = {
+  pinOrder?: InputMaybe<BigFloatFilter>;
+};
+
+export type UserPreferenceStddevPopulationAggregates = {
+  __typename?: 'UserPreferenceStddevPopulationAggregates';
+  /** Population standard deviation of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type UserPreferenceStddevSampleAggregateFilter = {
+  pinOrder?: InputMaybe<BigFloatFilter>;
+};
+
+export type UserPreferenceStddevSampleAggregates = {
+  __typename?: 'UserPreferenceStddevSampleAggregates';
+  /** Sample standard deviation of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type UserPreferenceSumAggregateFilter = {
+  pinOrder?: InputMaybe<BigIntFilter>;
+};
+
+export type UserPreferenceSumAggregates = {
+  __typename?: 'UserPreferenceSumAggregates';
+  /** Sum of pinOrder across the matching connection */
+  pinOrder: Scalars['BigInt']['output'];
+};
+
+export type UserPreferenceVariancePopulationAggregateFilter = {
+  pinOrder?: InputMaybe<BigFloatFilter>;
+};
+
+export type UserPreferenceVariancePopulationAggregates = {
+  __typename?: 'UserPreferenceVariancePopulationAggregates';
+  /** Population variance of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type UserPreferenceVarianceSampleAggregateFilter = {
+  pinOrder?: InputMaybe<BigFloatFilter>;
+};
+
+export type UserPreferenceVarianceSampleAggregates = {
+  __typename?: 'UserPreferenceVarianceSampleAggregates';
+  /** Sample variance of pinOrder across the matching connection */
+  pinOrder?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** A filter to be used against many `Assignee` object types. All fields are combined with a logical ‘and.’ */
@@ -8862,7 +9047,7 @@ export type LabelFragment = { __typename?: 'Label', color: string, icon?: string
 
 export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: string, index: number, rowId: string, icon?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, updatedAt: Date, createdAt: Date, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } };
 
 export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: number, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number } };
 
@@ -9160,7 +9345,7 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string }> }, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } }> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, updatedAt: Date, createdAt: Date, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string }> }, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } }> } | null };
 
 export type ProjectsSidebarQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -9168,7 +9353,7 @@ export type ProjectsSidebarQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsSidebarQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string }> } }> } | null };
+export type ProjectsSidebarQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, color?: string | null, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string, pinOrder?: number | null }> } }> } | null };
 
 export type SettingByOrganizationIdQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -9250,6 +9435,8 @@ export const ProjectFragmentDoc = gql`
   projectColumnId
   columnIndex
   color
+  updatedAt
+  createdAt
   allTasks: tasks {
     totalCount
   }
@@ -9751,6 +9938,7 @@ export const ProjectsSidebarDocument = gql`
         nodes {
           rowId
           viewMode
+          pinOrder
         }
       }
     }

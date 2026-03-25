@@ -371,17 +371,14 @@ function ProjectsOverviewPage() {
     <div className="flex size-full">
       <div className="flex size-full flex-col">
         <div className="border-b px-6 py-4">
-          <div className="flex flex-col gap-4">
-            <div>
-              <h2 className="mb-1 font-bold text-2xl text-base-800 sm:mb-2 sm:text-3xl dark:text-base-100">
-                Projects
-              </h2>
-              <p className="text-base-600 text-sm sm:text-base dark:text-base-300">
-                Manage and track all your projects in one place
-              </p>
-            </div>
+          <div className="flex flex-col gap-2">
+            <h1 className="font-semibold text-2xl">Projects</h1>
 
-            <div className="flex flex-wrap gap-2 sm:flex-nowrap">
+            <p className="text-base-600 text-sm dark:text-base-400">
+              Manage and track all your projects in one place
+            </p>
+
+            <div className="mt-2 flex flex-wrap gap-2 sm:flex-nowrap">
               <div className="relative flex-1 sm:flex-none">
                 <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-base-400" />
                 <Input

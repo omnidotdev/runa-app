@@ -13,7 +13,6 @@ import { useDebounceCallback } from "usehooks-ts";
 
 import {
   ColumnSelector,
-  DestructiveActionDialog,
   Link,
   PrioritySelector,
   RichTextEditor,
@@ -29,14 +28,11 @@ import {
   UpdateDueDateDialog,
   UpdateTaskLabelsDialog,
 } from "@/components/tasks";
+import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
 import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
-import {
-  useDeleteTaskMutation,
-  useProjectQuery,
-  useTasksQuery,
-  useUpdateTaskMutation,
-} from "@/generated/graphql";
+import { useSidebar } from "@/components/ui/sidebar";
+import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -174,7 +170,6 @@ function PublicTaskView() {
 }
 
 function AuthenticatedTaskPage() {
-  const navigate = Route.useNavigate();
   const { projectId, organizationId } = Route.useLoaderData();
   const { session } = Route.useRouteContext();
   const { workspaceSlug, projectSlug, taskId } = Route.useParams();
@@ -236,22 +231,6 @@ function AuthenticatedTaskPage() {
     },
   });
 
-  const { mutate: deleteTask } = useDeleteTaskMutation({
-    meta: {
-      invalidates: [
-        getQueryKeyPrefix(useTasksQuery),
-        getQueryKeyPrefix(useProjectQuery),
-      ],
-    },
-    onSuccess: () => {
-      navigate({
-        to: "/workspaces/$workspaceSlug/projects/$projectSlug",
-        params: { workspaceSlug, projectSlug },
-        replace: true,
-      });
-    },
-  });
-
   const handleTaskUpdate = useDebounceCallback(updateTask, 300);
 
   const { setIsOpen: setIsUpdateDueDateDialogOpen } = useDialogStore({
@@ -261,6 +240,8 @@ function AuthenticatedTaskPage() {
   const { setIsOpen: setIsDeleteTaskDialogOpen } = useDialogStore({
     type: DialogType.DeleteTask,
   });
+
+  const { isMobile } = useSidebar();
 
   useEffect(() => {
     if (matches && isTaskSidebarOpen) {
@@ -289,7 +270,7 @@ function AuthenticatedTaskPage() {
         <div className="flex flex-col gap-2">
           <RichTextEditor
             defaultContent={task?.content}
-            className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
+            className="min-h-0 border-0 bg-transparent p-0 text-2xl outline-none hover:outline-none dark:bg-transparent"
             skeletonClassName="h-8 min-w-40"
             editable={isAuthor || !isMember}
             onUpdate={({ getHTML, isEmpty }) =>
@@ -366,8 +347,10 @@ function AuthenticatedTaskPage() {
                     <CalendarIcon className="size-3" />
                     {dayjs(task.dueDate).format("MMM D, YYYY")}
                   </div>
+                ) : !isMobile ? (
+                  "Set due date"
                 ) : (
-                  <p className="text-sm">Set due date</p>
+                  <CalendarIcon className="size-4" />
                 )}
               </Button>
             }
@@ -416,14 +399,7 @@ function AuthenticatedTaskPage() {
       <UpdateAssigneesDialog />
       <UpdateDueDateDialog />
       <UpdateTaskLabelsDialog />
-      <DestructiveActionDialog
-        title="Delete Task"
-        description="This will permanently delete this task.
-        This action cannot be undone."
-        onConfirm={() => deleteTask({ rowId: taskId })}
-        dialogType={DialogType.DeleteTask}
-        confirmation="permanently delete this task"
-      />
+      <DeleteTaskDialog />
     </div>
   );
 }

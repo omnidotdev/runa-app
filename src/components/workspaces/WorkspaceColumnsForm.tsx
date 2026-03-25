@@ -20,12 +20,14 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { DestructiveActionDialog, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import {
   useDeleteProjectColumnMutation,
   useProjectColumnsQuery,
+  useProjectsSidebarQuery,
   useUpdateProjectColumnMutation,
 } from "@/generated/graphql";
 import { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -68,9 +70,12 @@ const ProjectColumnsForm = () => {
         invalidates: [getQueryKeyPrefix(useProjectColumnsQuery)],
       },
     }),
-    { mutate: deleteProjectColumn } = useDeleteProjectColumnMutation({
+    { mutateAsync: deleteProjectColumn } = useDeleteProjectColumnMutation({
       meta: {
-        invalidates: [getQueryKeyPrefix(useProjectColumnsQuery)],
+        invalidates: [
+          getQueryKeyPrefix(useProjectColumnsQuery),
+          getQueryKeyPrefix(useProjectsSidebarQuery),
+        ],
       },
       onSuccess: (_data, variables) =>
         setLocalColumns((prev) =>
@@ -125,6 +130,35 @@ const ProjectColumnsForm = () => {
   const hasActiveColumn = localColumns?.some(
     (label) => label.rowId === activeColumnId,
   );
+
+  const handleDeleteColumn = () => {
+    if (!columnToDelete) return;
+
+    const currentColumns = localColumns.filter(
+      (c) => c.rowId !== columnToDelete.rowId,
+    );
+
+    const projectCount = columnToDelete.projects?.totalCount ?? 0;
+    const promise = deleteProjectColumn({ rowId: columnToDelete.rowId });
+
+    for (const c of currentColumns) {
+      updateProjectColumn({
+        rowId: c.rowId,
+        patch: {
+          index: currentColumns.findIndex((col) => col.rowId === c.rowId),
+        },
+      });
+    }
+
+    toast.promise(promise, {
+      loading: "Deleting column and projects...",
+      success:
+        projectCount > 0
+          ? `Workspace column "${columnToDelete.title}" and ${projectCount} ${projectCount === 1 ? "project" : "projects"} deleted`
+          : `Workspace column "${columnToDelete.title}" deleted`,
+      error: "Failed to delete column",
+    });
+  };
 
   return (
     <>
@@ -206,42 +240,27 @@ const ProjectColumnsForm = () => {
       </div>
 
       <DestructiveActionDialog
-        title="Danger Zone"
+        title="Delete workspace column"
         description={
           <span>
-            This will delete the project column{" "}
+            This will permanently delete the{" "}
             <strong className="font-medium text-base-900 dark:text-base-100">
               {columnToDelete?.title}
             </strong>{" "}
-            including{" "}
+            column and all{" "}
             <strong className="font-medium text-base-900 dark:text-base-100">
-              {columnToDelete?.projects?.totalCount ?? 0} tasks
-            </strong>
-            . This action cannot be undone.
+              {columnToDelete?.projects?.totalCount}{" "}
+              {columnToDelete?.projects?.totalCount === 1
+                ? "project"
+                : "projects"}
+            </strong>{" "}
+            within it, including their columns, tasks, labels, and member
+            assignments. This action cannot be undone.
           </span>
         }
-        onConfirm={() => {
-          if (!columnToDelete) return;
-
-          const currentColumns = localColumns.filter(
-            (c) => c.rowId !== columnToDelete?.rowId,
-          );
-
-          deleteProjectColumn({
-            rowId: columnToDelete.rowId,
-          });
-
-          for (const c of currentColumns) {
-            updateProjectColumn({
-              rowId: c.rowId,
-              patch: {
-                index: currentColumns.findIndex((col) => col.rowId === c.rowId),
-              },
-            });
-          }
-        }}
+        onConfirm={handleDeleteColumn}
         dialogType={DialogType.DeleteProjectColumn}
-        confirmation={`Delete ${columnToDelete?.title}`}
+        confirmation={columnToDelete?.title}
       />
     </>
   );

@@ -69,12 +69,19 @@ const toIconName = (name: string): keyof typeof icons => {
 
 interface Props {
   value: string | null | undefined;
-  onChange: (icon: string | null) => void;
+  onChange: (icon: string) => void;
   triggerProps?: ComponentProps<typeof Button>;
   disabled?: boolean;
+  isActive?: boolean;
 }
 
-const IconSelector = ({ value, onChange, triggerProps, disabled }: Props) => {
+const IconSelector = ({
+  value,
+  onChange,
+  triggerProps,
+  disabled,
+  isActive,
+}: Props) => {
   const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -111,7 +118,7 @@ const IconSelector = ({ value, onChange, triggerProps, disabled }: Props) => {
   };
 
   const handleClear = () => {
-    onChange(null);
+    onChange("");
     setIsOpen(false);
   };
 
@@ -126,15 +133,13 @@ const IconSelector = ({ value, onChange, triggerProps, disabled }: Props) => {
           variant="ghost"
           disabled={disabled}
           className={cn(
-            "size-7 border border-transparent p-0 text-md transition-colors",
-            !disabled &&
-              "hover:border-border hover:bg-accent hover:text-base-600 dark:hover:text-base-300",
-            disabled &&
-              "cursor-default hover:border-transparent hover:bg-transparent",
+            "size-9 rounded border-0 shadow-none focus-visible:border-2 focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-default disabled:opacity-100",
+            isActive &&
+              "border border-primary bg-background focus-visible:ring-0",
           )}
           {...triggerProps}
         >
-          <LabelIcon icon={value} className="size-4 text-base-400" />
+          <LabelIcon icon={value} className="size-5 text-lg" />
         </Button>
       </PopoverTrigger>
       <PopoverPositioner>

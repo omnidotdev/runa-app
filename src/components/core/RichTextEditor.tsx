@@ -200,18 +200,16 @@ const RichTextEditor = ({
         <LexicalComposer initialConfig={initialConfig}>
           <div
             className={cn(
-              "lexical-editor-container pointer-events-auto relative min-h-30 flex-1 rounded-md border border-base-300 border-dashed bg-transparent p-3 text-base-600 dark:border-base-600 dark:text-base-300",
-              isFocused
-                ? "border-2 border-primary-500/20 dark:border-primary-500/10"
-                : "hover:border-base-400 dark:hover:border-base-500",
+              "lexical-editor-container pointer-events-auto relative flex h-full min-h-30 flex-1 rounded-md border-base-300 border-dashed bg-transparent p-3",
+              isFocused ? "outline outline-dashed outline-primary" : "",
               className,
             )}
           >
             <RichTextPlugin
               contentEditable={
-                <div className="block min-h-full flex-1">
+                <div className="flex min-h-full flex-1 flex-col">
                   <ContentEditable
-                    className="prose-sm min-h-full flex-1 focus:outline-none"
+                    className="prose-sm flex-1 focus:outline-none"
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
                     spellCheck={false}

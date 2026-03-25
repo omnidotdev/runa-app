@@ -90,7 +90,7 @@ const CardSkeleton = () => (
           </div>
           {/* Content area - matches py-4 */}
           <div className="py-4">
-            <Skeleton className="h-4 w-full max-w-[200px]" />
+            <Skeleton className="h-4 w-full max-w-50" />
           </div>
         </div>
         {/* Avatar */}

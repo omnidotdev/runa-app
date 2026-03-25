@@ -5,18 +5,24 @@ import { SidebarProvider as DefaultSidebarProvider } from "@/components/ui/sideb
 
 import type { PropsWithChildren } from "react";
 
-const getSidebarCookies = createIsomorphicFn()
+export const getSidebarCookies = createIsomorphicFn()
   .server(() => {
     const sidebarState = getCookie("sidebar:state");
     const sidebarWidth = getCookie("sidebar:width");
+    const sidebarOptions = getCookie("sidebar:options");
 
     let defaultOpen = true;
+    let defaultSidebarOptions = true;
 
     if (sidebarState) {
       defaultOpen = sidebarState === "true";
     }
 
-    return { defaultOpen, sidebarWidth };
+    if (sidebarOptions) {
+      defaultSidebarOptions = sidebarOptions === "true";
+    }
+
+    return { defaultOpen, sidebarWidth, defaultSidebarOptions };
   })
   .client(() => {
     const cookies = document.cookie.split(";").map((cookie) => cookie.trim());
@@ -28,13 +34,22 @@ const getSidebarCookies = createIsomorphicFn()
       .find((cookie) => cookie.startsWith("sidebar:width="))
       ?.split("=")[1];
 
+    const sidebarOptions = cookies
+      .find((cookie) => cookie.startsWith("sidebar:options="))
+      ?.split("=")[1];
+
     let defaultOpen = true;
+    let defaultSidebarOptions = true;
 
     if (sidebarState) {
       defaultOpen = sidebarState === "true";
     }
 
-    return { defaultOpen, sidebarWidth };
+    if (sidebarOptions) {
+      defaultSidebarOptions = sidebarOptions === "true";
+    }
+
+    return { defaultOpen, sidebarWidth, defaultSidebarOptions };
   });
 
 const SidebarProvider = ({ children }: PropsWithChildren) => {

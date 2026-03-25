@@ -8,6 +8,8 @@ fragment Project on Project {
   projectColumnId
   columnIndex
   color
+  updatedAt
+  createdAt
   allTasks: tasks {
     totalCount
   }

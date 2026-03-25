@@ -1,8 +1,13 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
-import { cn } from "@/lib/utils";
+import CircularProgress from "../core/CircularProgress";
+import { Badge } from "../ui/badge";
 
 import type { ProjectsQuery } from "@/generated/graphql";
+
+dayjs.extend(relativeTime);
 
 type ProjectWithPreferences = NonNullable<
   ProjectsQuery["projects"]
@@ -12,7 +17,7 @@ interface Props {
   project: ProjectWithPreferences;
 }
 
-const BoardItem = ({ project }: Props) => {
+const OverviewBoardItem = ({ project }: Props) => {
   const { workspaceSlug } = useParams({
     from: "/_app/workspaces/$workspaceSlug/projects/",
   });
@@ -21,7 +26,6 @@ const BoardItem = ({ project }: Props) => {
 
   const completedTasks = project.completedTasks?.totalCount ?? 0;
   const totalTasks = project.allTasks?.totalCount ?? 0;
-
   const progressPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
@@ -36,45 +40,39 @@ const BoardItem = ({ project }: Props) => {
           },
         })
       }
-      className="h-35 cursor-pointer rounded-lg border bg-background p-3 outline-hidden hover:shadow-sm dark:border-border dark:shadow-gray-400/10"
     >
-      <div className="flex h-full flex-col">
-        <div className="flex flex-col gap-1">
-          <p className="text-base-600 text-xs dark:text-base-400">
-            #{project.prefix ?? "PROJ"}
-          </p>
+      <div className="flex h-full flex-col gap-3 overflow-hidden">
+        <div className="min-w-0">
+          <span className="shrink-0 font-mono text-base-400 text-xs dark:text-base-400">
+            {project.prefix ?? "PROJ"}
+          </span>
 
-          <p className="truncate font-medium text-md">{project.name}</p>
+          <p className="truncate py-1 font-semibold text-sm">{project.name}</p>
 
-          <p className="line-clamp-2 text-muted-foreground text-sm">
+          <p className="line-clamp-2 text-muted-foreground text-xs leading-relaxed">
             {project.description}
           </p>
         </div>
 
-        <div className="mt-auto">
-          <div className="mb-1 flex justify-end text-xs">
-            <span className="text-base-900 dark:text-base-100">
-              {completedTasks}/{totalTasks}{" "}
-              {totalTasks === 1 ? "task" : "tasks"}
-            </span>
-          </div>
-
-          <div className="h-2 w-full rounded-full bg-base-200 dark:bg-base-700">
-            <div
-              className={cn(
-                "h-2 rounded-full bg-primary transition-all",
-                !project?.color && "bg-transparent",
-              )}
-              style={{
-                width: `${progressPercentage}%`,
-                backgroundColor: project?.color ?? undefined,
-              }}
+        <div className="mt-auto flex flex-wrap items-center justify-end gap-1.5">
+          <Badge variant="outline" className="group/progress">
+            <CircularProgress
+              progressPercentage={progressPercentage}
+              color={project?.color ?? "var(--primary-400)"}
             />
-          </div>
+            <span className="hidden text-muted-foreground tabular-nums group-hover/progress:inline">
+              {completedTasks}/{totalTasks} tasks
+            </span>
+            <span className="text-muted-foreground tabular-nums group-hover/progress:hidden">
+              {progressPercentage === 100
+                ? "Complete"
+                : `${progressPercentage}%`}
+            </span>
+          </Badge>
         </div>
       </div>
     </div>
   );
 };
 
-export default BoardItem;
+export default OverviewBoardItem;

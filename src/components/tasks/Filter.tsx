@@ -56,7 +56,7 @@ const Filter = () => {
   });
 
   const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects/$projectSlug",
+    from: "/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -241,20 +241,16 @@ const Filter = () => {
                         }}
                       >
                         <MenuItemText className="ml-0 flex items-center gap-2">
-                          <div className="flex h-6 items-center">
-                            <AvatarRoot className="size-4 rounded-full">
-                              <AvatarImage
-                                src={member.user.image ?? undefined}
-                                alt={member.user.name}
-                              />
-                              <AvatarFallback>
-                                {member.user.name?.charAt(0)}
-                              </AvatarFallback>
-                            </AvatarRoot>
-                          </div>
-                          <p className="-ml-2 font-light text-sm">
-                            {member.user.name}
-                          </p>
+                          <AvatarRoot className="size-6 rounded-full border p-0 shadow">
+                            <AvatarImage
+                              src={member.user.image ?? undefined}
+                              alt={member.user.name}
+                            />
+                            <AvatarFallback className="bg-background text-xs">
+                              {member.user.name?.charAt(0)}
+                            </AvatarFallback>
+                          </AvatarRoot>
+                          <span className="text-xs"> {member.user.name}</span>
                         </MenuItemText>
                         <MenuItemIndicator />
                       </MenuCheckboxItem>

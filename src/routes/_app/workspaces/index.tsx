@@ -81,11 +81,8 @@ function WorkspacesOverviewPage() {
                   >
                     <AvatarRoot size="lg">
                       <AvatarImage src={undefined} alt={orgName} />
-                      <AvatarFallback>
-                        {" "}
-                        <div className="flex size-full items-center justify-center border font-semibold uppercase">
-                          {orgName?.charAt(0)}
-                        </div>
+                      <AvatarFallback className="border font-semibold uppercase">
+                        {orgName?.charAt(0)}
                       </AvatarFallback>
                     </AvatarRoot>
 

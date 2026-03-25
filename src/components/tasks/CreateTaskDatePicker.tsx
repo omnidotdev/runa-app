@@ -25,6 +25,7 @@ import {
   DatePickerViewControl,
   DatePickerViewTrigger,
 } from "@/components/ui/date-picker";
+import { useSidebar } from "@/components/ui/sidebar";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 
@@ -32,6 +33,7 @@ const CreateTaskDatePicker = withForm({
   defaultValues: taskFormDefaults,
   render: ({ form }) => {
     const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+    const { isMobile } = useSidebar();
 
     return (
       <form.Field name="dueDate">
@@ -59,12 +61,10 @@ const CreateTaskDatePicker = withForm({
               <DatePickerTrigger asChild>
                 <Button variant="outline">
                   <CalendarIcon className="size-4" />
-                  <p className="">
-                    {field.state.value.length
-                      ? // TODO: timezone handling
-                        dayjs(field.state.value).format("MMM D, YYYY")
-                      : "Set due date"}
-                  </p>
+                  {field.state.value.length
+                    ? // TODO: timezone handling
+                      dayjs(field.state.value).format("MMM D, YYYY")
+                    : !isMobile && "Set due date"}
                 </Button>
               </DatePickerTrigger>
             </DatePickerControl>

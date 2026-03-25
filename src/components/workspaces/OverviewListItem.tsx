@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
 
-import { cn } from "@/lib/utils";
+import CircularProgress from "../core/CircularProgress";
+import { Badge } from "../ui/badge";
 
 import type { ProjectsQuery } from "@/generated/graphql";
 
@@ -26,7 +27,7 @@ const ListItem = ({ project }: Props) => {
 
   return (
     <div
-      className="cursor-pointer border-base-200 border-b p-4 last:border-b-0 dark:border-base-700"
+      className="cursor-pointer border-b p-4 last:border-b-0"
       onClick={() =>
         navigate({
           to: "/workspaces/$workspaceSlug/projects/$projectSlug",
@@ -37,45 +38,34 @@ const ListItem = ({ project }: Props) => {
         })
       }
     >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="mb-3 flex items-center gap-2">
-            {/* {getStatusIcon(status)} */}
-            <p className="text-base-600 text-sm dark:text-base-400">
-              #{project.prefix ?? "PROJ"}
-            </p>
-          </div>
+      <div className="flex h-full flex-col gap-3 overflow-hidden">
+        <div className="min-w-0">
+          <span className="shrink-0 font-mono text-base-400 text-xs dark:text-base-400">
+            {project.prefix ?? "PROJ"}
+          </span>
 
-          <p className="mb-1 font-medium text-sm">{project.name}</p>
+          <p className="truncate py-1 font-semibold text-sm">{project.name}</p>
 
-          <p className="mb-2 text-muted-foreground text-sm">
+          <p className="line-clamp-2 text-muted-foreground text-xs leading-relaxed">
             {project.description}
           </p>
+        </div>
 
-          <div className="flex items-center justify-end">
-            <div className="w-32">
-              <div className="mb-1 flex justify-between text-sm">
-                <span className="text-base-600 dark:text-base-400">
-                  {completedTasks}/{totalTasks} tasks
-                </span>
-                <span className="text-base-900 dark:text-base-100">
-                  {progressPercentage}%
-                </span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-base-200 dark:bg-base-700">
-                <div
-                  className={cn(
-                    "h-2 rounded-full bg-primary transition-all",
-                    !project?.color && "bg-transparent",
-                  )}
-                  style={{
-                    width: `${progressPercentage}%`,
-                    backgroundColor: project?.color ?? undefined,
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+        <div className="mt-auto flex flex-wrap items-center justify-end gap-1.5">
+          <Badge variant="outline" className="group/progress">
+            <CircularProgress
+              progressPercentage={progressPercentage}
+              color={project?.color ?? "var(--primary-400)"}
+            />
+            <span className="hidden text-muted-foreground tabular-nums group-hover/progress:inline">
+              {completedTasks}/{totalTasks} tasks
+            </span>
+            <span className="text-muted-foreground tabular-nums group-hover/progress:hidden">
+              {progressPercentage === 100
+                ? "Complete"
+                : `${progressPercentage}%`}
+            </span>
+          </Badge>
         </div>
       </div>
     </div>

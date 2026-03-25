@@ -1,55 +1,44 @@
 import { useFilter, useListCollection } from "@ark-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { TrashIcon } from "lucide-react";
+import { LayoutGridIcon, ListIcon, SearchIcon } from "lucide-react";
 
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  ComboboxContent,
-  ComboboxControl,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxItemIndicator,
-  ComboboxItemText,
-  ComboboxPositioner,
-  ComboboxRoot,
-  ComboboxTrigger,
-} from "@/components/ui/combobox";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
+import useCookieState from "@/lib/hooks/useCookieState";
 import { withForm } from "@/lib/hooks/useForm";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
+import { cn } from "@/lib/utils";
+import Tooltip from "../core/Tooltip";
+import { Input } from "../ui/input";
+import AssigneeList from "./AssigneeList";
 
-import type { ComponentProps } from "react";
-
-type AdditionalProps = {
-  comboboxInputProps?: ComponentProps<typeof ComboboxInput>;
-};
-
-interface WorkspaceUser {
+export interface WorkspaceUser {
   label: string;
   value: string;
   user: {
     name: string;
     avatarUrl?: string | null;
-    rowId: string;
   };
 }
 
+type ViewMode = "grid" | "list";
+
 const UpdateAssignees = withForm({
   defaultValues: taskFormDefaults,
-  props: {} as AdditionalProps,
-  render: ({ form, comboboxInputProps }) => {
+  props: {
+    maxAssignees: 1 as number,
+    initialAssignees: [] as string[] | undefined,
+  },
+  render: ({ form, maxAssignees, initialAssignees }) => {
     const { organizationId } = useLoaderData({ from: "/_app" });
     const { session } = useRouteContext({ from: "/_app" });
-
     const { contains } = useFilter({ sensitivity: "base" });
 
-    // Fetch organization members from IDP
+    const [viewMode, setViewMode] = useCookieState<ViewMode>(
+      "assignee-view-mode",
+      "grid",
+    );
+
     const { data: membersData } = useQuery({
       ...organizationMembersOptions({
         organizationId: organizationId!,
@@ -68,86 +57,109 @@ const UpdateAssignees = withForm({
           user: {
             name: member.user.name,
             avatarUrl: member.user.image,
-            rowId: member.userId,
           },
         })),
         filter: contains,
       });
 
     return (
-      <form.Field name="assignees" mode="array">
+      <form.Field name="assignees">
         {(field) => {
+          const selected: string[] = field.state.value ?? [];
+          const atLimit = selected.length >= maxAssignees;
+
+          const initialSet = new Set(initialAssignees);
+
+          const sortedItems = [...usersCollection.items].sort((a, b) => {
+            const aAssigned = initialSet.has(a.value) ? 0 : 1;
+            const bAssigned = initialSet.has(b.value) ? 0 : 1;
+            if (aAssigned !== bAssigned) return aAssigned - bAssigned;
+            return a.label.localeCompare(b.label);
+          });
+
+          const handleToggle = (userId: string) => {
+            const isSelected = selected.includes(userId);
+
+            if (isSelected) {
+              field.setValue(selected.filter((id) => id !== userId));
+            } else if (maxAssignees === 1) {
+              field.setValue([userId]);
+            } else if (!atLimit) {
+              field.pushValue(userId);
+            }
+          };
+
           return (
-            <div className="flex flex-col">
-              <ComboboxRoot
-                collection={usersCollection}
-                value={field.state.value}
-                onInputValueChange={({ inputValue }) => filter(inputValue)}
-                onValueChange={({ value }) => field.setValue(value)}
-                multiple
-              >
-                <ComboboxControl>
-                  <ComboboxInput
-                    className="rounded-none border-x-0 border-t-0 focus-visible:ring-0"
-                    placeholder="Search for a user..."
-                    {...comboboxInputProps}
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  <SearchIcon className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder="Filter members…"
+                    className="h-8 pl-8 text-sm shadow-none"
+                    onChange={(e) => filter(e.currentTarget.value)}
                   />
-                  <ComboboxTrigger />
-                </ComboboxControl>
+                </div>
 
-                <ComboboxPositioner>
-                  <ComboboxContent>
-                    {usersCollection.items.map((user) => (
-                      <ComboboxItem key={user.value} item={user}>
-                        <ComboboxItemText>{user.label}</ComboboxItemText>
-                        <ComboboxItemIndicator />
-                      </ComboboxItem>
-                    ))}
-                  </ComboboxContent>
-                </ComboboxPositioner>
-              </ComboboxRoot>
-
-              <div className="flex flex-col gap-1 p-1">
-                {field.state.value.length ? (
-                  field.state.value.map((assignee, index) => {
-                    const workspaceUser = usersCollection.items.find(
-                      (u) => u.user?.rowId === assignee,
-                    );
-
-                    return (
-                      <div
-                        key={assignee}
-                        className="mt-2 flex items-center justify-between"
+                <div className="flex items-center gap-1 rounded-md border border-input p-0.5">
+                  <Tooltip
+                    tooltip="Grid view"
+                    trigger={
+                      <button
+                        type="button"
+                        onClick={() => setViewMode("grid")}
+                        className={cn(
+                          "rounded-md p-1.5",
+                          viewMode === "grid"
+                            ? "bg-accent"
+                            : "text-muted-foreground hover:text-foreground",
+                        )}
                       >
-                        <div className="flex items-center gap-2">
-                          <AvatarRoot className="size-6 rounded-full border-2 bg-base-200 font-medium text-base-900 text-xs dark:bg-base-600 dark:text-base-100">
-                            <AvatarImage
-                              src={workspaceUser?.user?.avatarUrl ?? undefined}
-                              alt={workspaceUser?.user?.name}
-                            />
-                            <AvatarFallback>
-                              {workspaceUser?.user?.name?.charAt(0) ?? "U"}
-                            </AvatarFallback>
-                          </AvatarRoot>
+                        <LayoutGridIcon className="size-3.5" />
+                      </button>
+                    }
+                  />
 
-                          <p className="text-xs">{workspaceUser?.user?.name}</p>
-                        </div>
-
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="size-6 justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20"
-                          onClick={() => field.removeValue(index)}
-                        >
-                          <TrashIcon className="size-3" />
-                        </Button>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p className="place-self-center p-2 text-sm">No Assignees</p>
-                )}
+                  <Tooltip
+                    tooltip="List view"
+                    trigger={
+                      <button
+                        type="button"
+                        onClick={() => setViewMode("list")}
+                        className={cn(
+                          "rounded-md p-1.5",
+                          viewMode === "list"
+                            ? "bg-accent"
+                            : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        <ListIcon className="size-3.5" />
+                      </button>
+                    }
+                  />
+                </div>
               </div>
+
+              {sortedItems.length === 0 ? (
+                <p className="py-6 text-center text-xs">No members found</p>
+              ) : (
+                <AssigneeList
+                  viewMode={viewMode}
+                  items={sortedItems}
+                  selected={selected}
+                  atLimit={atLimit}
+                  maxAssignees={maxAssignees}
+                  onToggle={handleToggle}
+                />
+              )}
+
+              {/* Show a hint when at limit on multi-assignee tiers */}
+              {atLimit && maxAssignees > 1 && maxAssignees < Infinity && (
+                <p className="text-muted-foreground text-xs">
+                  Max {maxAssignees} assignees reached — deselect someone to
+                  swap.
+                </p>
+              )}
             </div>
           );
         }}
