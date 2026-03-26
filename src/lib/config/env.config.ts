@@ -49,7 +49,7 @@ export const hasBilling = !!BILLING_BASE_URL;
 
 // Startup warnings for optional integrations
 if (!BILLING_BASE_URL)
-  console.warn("BILLING_BASE_URL not set — billing disabled");
+  console.warn("BILLING_BASE_URL not set, billing disabled");
 if (!FLAGS_API_HOST)
-  console.warn("FLAGS_API_HOST not set — feature flags disabled");
-if (!CONSOLE_URL) console.warn("CONSOLE_URL not set — console link disabled");
+  console.warn("FLAGS_API_HOST not set, feature flags disabled");
+if (!CONSOLE_URL) console.warn("CONSOLE_URL not set, console link disabled");
