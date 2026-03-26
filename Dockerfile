@@ -18,8 +18,10 @@ FROM oven/bun:1-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Nitro bundles production deps into .output/server/node_modules.
+# Nitro bundles most deps but externalizes some (react-dom/server, srvx).
+# Copy both .output and node_modules to ensure all SSR deps are available.
 COPY --from=builder /app/.output ./.output
+COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE 3000
 CMD ["bun", ".output/server/index.mjs"]
