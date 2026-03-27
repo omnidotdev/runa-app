@@ -1,3 +1,4 @@
+import { useSessionRefresh } from "@omnidotdev/providers/react";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import {
@@ -145,6 +146,9 @@ function MaintenancePage() {
 }
 
 function RootComponent() {
+  // Keep the OAuth access token fresh while the user is idle
+  useSessionRefresh(fetchSession);
+
   const { isMaintenanceMode } = useRouteContext({ from: "__root__" });
 
   // Show maintenance page when flag is enabled
