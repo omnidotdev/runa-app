@@ -1,5 +1,6 @@
 {
   "name": "@omnidotdev/runa-app",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "concurrently --kill-others --names \"GRAPHQL-CODEGEN,CLIENT\" -c \"bgBlue.bold,bgMagenta.bold\" \"bun run graphql:generate:watch\" \"bun dev:vite\"",
