@@ -1,184 +1,19 @@
-import {
-  ensureFreshAccessToken,
-  extractOrgClaims,
-  isInvalidGrant,
-} from "@omnidotdev/providers/auth";
+import { createGetAuth } from "@omnidotdev/providers/auth";
 import { setCookie } from "@tanstack/react-start/server";
-import { GraphQLClient } from "graphql-request";
 
-import { getSdk } from "@/generated/graphql.sdk";
 import auth from "@/lib/auth/auth";
 import { authCache, oidc } from "@/lib/auth/authCache";
-import { API_INTERNAL_GRAPHQL_URL } from "@/lib/config/env.config";
 
-import type { OrganizationClaim } from "@omnidotdev/providers/auth";
+export type {
+  GetAuthSession,
+  OrganizationClaim,
+} from "@omnidotdev/providers/auth";
 
-export type { OrganizationClaim } from "@omnidotdev/providers/auth";
+const getAuth = createGetAuth({
+  authApi: auth.api,
+  oidc,
+  authCache,
+  setCookie,
+});
 
-/**
- * Fetch rowId from GraphQL API by identity provider ID.
- */
-async function fetchRowIdFromApi(
-  accessToken: string,
-  identityProviderId: string,
-): Promise<string | null> {
-  try {
-    const graphqlClient = new GraphQLClient(API_INTERNAL_GRAPHQL_URL!, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    const sdk = getSdk(graphqlClient);
-    const { userByIdentityProviderId } = await sdk.UserByIdentityProviderId({
-      identityProviderId,
-    });
-
-    return userByIdentityProviderId?.rowId ?? null;
-  } catch (error) {
-    console.error("[getAuth] Failed to fetch rowId:", error);
-    return null;
-  }
-}
-
-export async function getAuth(request: Request) {
-  try {
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    });
-
-    if (!session) return null;
-
-    let accessToken: string | undefined;
-    let organizations: OrganizationClaim[] = [];
-
-    // Cast to access custom session properties added by customSession plugin
-    const customUser = session.user as typeof session.user & {
-      identityProviderId?: string | null;
-      rowId?: string | null;
-      organizations?: OrganizationClaim[];
-    };
-    let identityProviderId = customUser.identityProviderId;
-    let rowId = customUser.rowId;
-    const cachedOrganizations = customUser.organizations;
-
-    // Check if we have complete cached data (avoids API call on every request)
-    const hasCachedData =
-      rowId && identityProviderId && cachedOrganizations?.length;
-
-    if (hasCachedData) {
-      organizations = cachedOrganizations;
-    }
-
-    // Get tokens from Gatekeeper via Better Auth
-    try {
-      const tokenResult = await ensureFreshAccessToken({
-        getAccessToken: async () => {
-          try {
-            return await auth.api.getAccessToken({
-              body: { providerId: "omni" },
-              headers: request.headers,
-            });
-          } catch (err) {
-            const body =
-              err && typeof err === "object" && "body" in err
-                ? (err as { body: unknown }).body
-                : undefined;
-            console.error("[getAuth] getAccessToken failed:", {
-              code:
-                body && typeof body === "object" && "code" in body
-                  ? (body as { code: string }).code
-                  : "unknown",
-              message: err instanceof Error ? err.message : String(err),
-            });
-            throw err;
-          }
-        },
-        refreshToken: async () => {
-          try {
-            return await auth.api.refreshToken({
-              body: { providerId: "omni" },
-              headers: request.headers,
-            });
-          } catch (err) {
-            console.error(
-              "[getAuth] refreshToken failed:",
-              err instanceof Error ? err.message : String(err),
-            );
-            throw err;
-          }
-        },
-      });
-      accessToken = tokenResult?.accessToken;
-
-      if (!accessToken) {
-        console.warn("[getAuth] No access token after refresh attempt");
-      }
-
-      // Extract claims from ID token (verified via OIDC discovery + JWKS)
-      if (tokenResult?.idToken) {
-        try {
-          const payload = await oidc.verifyIdToken(tokenResult.idToken);
-
-          if (!identityProviderId) {
-            identityProviderId = payload.sub ?? null;
-          }
-
-          if (!hasCachedData) {
-            organizations = extractOrgClaims(payload);
-          }
-        } catch (jwtError) {
-          console.error("[getAuth] JWT verification failed:", jwtError);
-        }
-      }
-
-      // Handle rowId cache miss — fetch from API and cache
-      if (!rowId && accessToken && identityProviderId) {
-        rowId = await fetchRowIdFromApi(accessToken, identityProviderId);
-
-        if (rowId) {
-          const encrypted = await authCache.encrypt({
-            rowId,
-            identityProviderId,
-            organizations,
-          });
-          setCookie(authCache.cookieName, encrypted, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
-            maxAge: authCache.cookieTtlSeconds,
-          });
-        }
-      }
-    } catch (err) {
-      console.error("[getAuth] Token fetch error:", err);
-
-      if (isInvalidGrant(err)) {
-        console.warn(
-          "[getAuth] Stale OAuth tokens, clearing session for re-auth",
-        );
-        try {
-          await auth.api.signOut({ headers: request.headers });
-        } catch {
-          // Sign-out may fail if session is already corrupt
-        }
-        // Clear the auth cache cookie so stale rowId doesn't persist
-        setCookie(authCache.cookieName, "", { maxAge: 0, path: "/" });
-        return null;
-      }
-    }
-
-    return {
-      ...session,
-      accessToken,
-      organizations,
-      user: {
-        ...session.user,
-        rowId,
-        identityProviderId,
-        username: session.user.name || session.user.email,
-      },
-    };
-  } catch (error) {
-    console.error("Failed to get auth session:", error);
-    return null;
-  }
-}
+export { getAuth };
