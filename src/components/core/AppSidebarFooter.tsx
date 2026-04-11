@@ -260,16 +260,16 @@ const AppSidebarFooter = () => {
                 <AvatarRoot className="size-4">
                   <AvatarImage
                     src={session?.user.image ?? undefined}
-                    alt={session?.user.username}
+                    alt={session?.user.name}
                   />
 
                   <AvatarFallback className="font-semibold text-xs">
-                    {session?.user.username?.charAt(0).toUpperCase()}
+                    {session?.user.name?.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </AvatarRoot>
 
                 <span className="text-primary-500">
-                  {session?.user.username}
+                  {session?.user.name || session?.user.email}
                 </span>
               </SidebarMenuButton>
 

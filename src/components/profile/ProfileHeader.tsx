@@ -9,7 +9,6 @@ interface Props {
   session: {
     user: {
       image?: string | null;
-      username: string;
       name: string;
       email: string;
     };
@@ -25,10 +24,10 @@ const ProfileHeader = ({ session, isOmniTeamMember }: Props) => (
     <AvatarRoot className="size-28 ring-4 ring-primary/10">
       <AvatarImage
         src={session?.user.image ?? undefined}
-        alt={session?.user.username}
+        alt={session?.user.name}
       />
       <AvatarFallback className="font-semibold text-2xl">
-        {session?.user.username?.slice(0, 2).toUpperCase()}
+        {session?.user.name?.slice(0, 2).toUpperCase()}
       </AvatarFallback>
     </AvatarRoot>
 

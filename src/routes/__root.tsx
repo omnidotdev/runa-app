@@ -33,7 +33,6 @@ interface ExtendedUser {
   image?: string;
   rowId?: string;
   identityProviderId?: string;
-  username?: string;
 }
 
 import type { OrganizationClaim } from "@omnidotdev/providers/auth";
