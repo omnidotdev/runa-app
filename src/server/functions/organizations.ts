@@ -2,7 +2,6 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import gatekeeperOrg from "@/lib/config/gatekeeper";
-import { validateInvitation } from "@/lib/validation/invitation";
 import { authMiddleware } from "@/server/middleware";
 
 export type { GatekeeperOrganization as Organization } from "@omnidotdev/providers/auth";
@@ -41,7 +40,8 @@ const inviteOrganizationMemberSchema = z.object({
 
 /**
  * Invite a member to an organization via Gatekeeper.
- * Runs server-side to avoid CORS issues with the IDP's Better Auth endpoint
+ * Runs server-side to avoid CORS issues with the IDP's Better Auth endpoint.
+ * Dedup/membership validation is handled by Gatekeeper (cancelPendingInvitationsOnReInvite)
  */
 export const inviteOrganizationMember = createServerFn({ method: "POST" })
   .inputValidator((data) => inviteOrganizationMemberSchema.parse(data))
@@ -51,22 +51,6 @@ export const inviteOrganizationMember = createServerFn({ method: "POST" })
 
     if (!accessToken) {
       throw new Error("No access token available");
-    }
-
-    // Check for duplicate pending invitations and existing members
-    const [invitations, membersResponse] = await Promise.all([
-      gatekeeperOrg.listInvitations(data.organizationId, accessToken),
-      gatekeeperOrg.listMembers(data.organizationId, accessToken),
-    ]);
-
-    const result = validateInvitation({
-      email: data.email,
-      pendingInvitations: invitations,
-      memberEmails: membersResponse.data.map((m) => m.user.email),
-    });
-
-    if (!result.valid) {
-      throw new Error(result.reason);
     }
 
     return gatekeeperOrg.inviteMember(data, accessToken);
@@ -80,8 +64,7 @@ const resendOrganizationInvitationSchema = z.object({
 
 /**
  * Resend an invitation (active or expired).
- * Skips the active-pending check since Gatekeeper's
- * `cancelPendingInvitationsOnReInvite` auto-cancels the old one
+ * Gatekeeper's `cancelPendingInvitationsOnReInvite` auto-cancels the old one
  * @knipignore
  */
 export const resendOrganizationInvitation = createServerFn({ method: "POST" })
@@ -92,20 +75,6 @@ export const resendOrganizationInvitation = createServerFn({ method: "POST" })
 
     if (!accessToken) {
       throw new Error("No access token available");
-    }
-
-    // Only check that the email isn't already a member
-    const membersResponse = await gatekeeperOrg.listMembers(
-      data.organizationId,
-      accessToken,
-    );
-
-    const isExistingMember = membersResponse.data.some(
-      (m) => m.user.email.toLowerCase() === data.email.toLowerCase(),
-    );
-
-    if (isExistingMember) {
-      throw new Error("This email is already a member of the organization");
     }
 
     return gatekeeperOrg.inviteMember(data, accessToken);
