@@ -106,7 +106,7 @@ export default function ProjectGeneralForm() {
 
       const prefixSchema = z
         .string()
-        .min(3, { error: "Prefix must be at least 3 characters." });
+        .min(1, { error: "Prefix must be at least 1 character." });
 
       const nameResult = await editNameSchema.safeParseAsync({
         name: value.name.trim(),

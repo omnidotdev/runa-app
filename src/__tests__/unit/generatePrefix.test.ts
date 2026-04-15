@@ -4,21 +4,33 @@ import generatePrefix from "@/lib/util/generatePrefix";
 
 describe("generatePrefix", () => {
   describe("multi-word names", () => {
-    it("extends 2-letter acronym from first word", () => {
-      // "PM" is only 2 chars (< 3 min), so it extends from first word
-      expect(generatePrefix("Project Management")).toBe("PRO");
+    it("takes first letter of two words", () => {
+      expect(generatePrefix("Project Management")).toBe("PM");
     });
 
     it("takes first letter of three words", () => {
       expect(generatePrefix("My Cool Project")).toBe("MCP");
     });
 
-    it("extends short acronyms from first word when possible", () => {
-      // Two-letter acronym "AB" < 3 chars, first word "Alpha" >= 3 chars
-      expect(generatePrefix("Alpha Beta")).toBe("ALP");
+    it("takes first letter of each word for short acronyms", () => {
+      expect(generatePrefix("Alpha Beta")).toBe("AB");
     });
 
-    it("keeps short acronym when first word is too short", () => {
+    it("handles two-letter acronyms from short words", () => {
+      expect(generatePrefix("Go Do")).toBe("GD");
+    });
+  });
+
+  describe("short prefixes", () => {
+    it("allows single-character prefix from single-char word", () => {
+      expect(generatePrefix("X")).toBe("X");
+    });
+
+    it("allows two-character prefix from two-char word", () => {
+      expect(generatePrefix("S1")).toBe("S1");
+    });
+
+    it("allows two-character prefix from two-word name", () => {
       expect(generatePrefix("Go Do")).toBe("GD");
     });
   });
@@ -39,8 +51,7 @@ describe("generatePrefix", () => {
 
   describe("casing", () => {
     it("always returns uppercase", () => {
-      // "HW" is only 2 chars, extended from first word
-      expect(generatePrefix("hello world")).toBe("HEL");
+      expect(generatePrefix("hello world")).toBe("HW");
     });
 
     it("uppercases single words", () => {
