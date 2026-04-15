@@ -53,7 +53,14 @@ export const inviteOrganizationMember = createServerFn({ method: "POST" })
       throw new Error("No access token available");
     }
 
-    return gatekeeperOrg.inviteMember(data, accessToken);
+    try {
+      return await gatekeeperOrg.inviteMember(data, accessToken);
+    } catch (err) {
+      // Re-throw as plain Error so h3-v2 doesn't sanitize the message
+      throw new Error(
+        err instanceof Error ? err.message : "Failed to invite member",
+      );
+    }
   });
 
 const resendOrganizationInvitationSchema = z.object({
@@ -77,7 +84,13 @@ export const resendOrganizationInvitation = createServerFn({ method: "POST" })
       throw new Error("No access token available");
     }
 
-    return gatekeeperOrg.inviteMember(data, accessToken);
+    try {
+      return await gatekeeperOrg.inviteMember(data, accessToken);
+    } catch (err) {
+      throw new Error(
+        err instanceof Error ? err.message : "Failed to resend invitation",
+      );
+    }
   });
 
 const listOrganizationInvitationsSchema = z.object({
