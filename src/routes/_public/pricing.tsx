@@ -16,30 +16,12 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { BASE_URL } from "@/lib/config/env.config";
+import { FREE_PRICE as FREE_PRICE_FALLBACK } from "@/lib/constants/tiers";
 import pricesOptions from "@/lib/options/prices.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { getSubscription } from "@/server/functions/subscriptions";
 
-import type { Price, Subscription } from "@/lib/providers/billing";
-
-export const FREE_PRICE: Price = {
-  id: "free",
-  active: true,
-  currency: "usd",
-  unit_amount: 0,
-  recurring: null,
-  metadata: { tier: "free" },
-  product: {
-    id: "free-product",
-    name: "Free",
-    description: "Project management to get started",
-    marketing_features: [
-      { name: "5 projects" },
-      { name: "1,500 total tasks" },
-      { name: "5 members" },
-    ],
-  },
-};
+import type { Subscription } from "@/lib/providers/billing";
 
 const faqItems = [
   {
@@ -93,14 +75,17 @@ export const Route = createFileRoute("/_public/pricing")({
       }
     }
 
-    return { prices, orgSubscriptions };
+    // Use free tier from Stripe/Aether if available, otherwise fall back
+    const freePrice =
+      prices.find((p) => p.metadata?.tier === "free") ?? FREE_PRICE_FALLBACK;
+
+    return { prices, freePrice, orgSubscriptions };
   },
   component: PricingPage,
 });
 
 function PricingPage() {
-  const { prices, orgSubscriptions } = Route.useLoaderData();
-  const { session: _session } = Route.useRouteContext();
+  const { prices, freePrice, orgSubscriptions } = Route.useLoaderData();
 
   return (
     <div className="size-full pt-8">
@@ -137,7 +122,7 @@ function PricingPage() {
                 className="flex flex-wrap gap-4"
               >
                 <PriceCard
-                  price={FREE_PRICE}
+                  price={freePrice}
                   orgSubscriptions={orgSubscriptions}
                 />
 

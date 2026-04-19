@@ -18,11 +18,11 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import { BASE_URL, hasBilling } from "@/lib/config/env.config";
+import { FREE_PRICE } from "@/lib/constants/tiers";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import { isOwner } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
-import { FREE_PRICE } from "@/routes/_public/pricing";
 import {
   getBillingPortalUrl,
   getCreateSubscriptionUrl,
