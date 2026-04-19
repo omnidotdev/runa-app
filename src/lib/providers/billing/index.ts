@@ -1,6 +1,12 @@
-import AetherBillingProvider from "./aether.provider";
+/**
+ * Billing provider for Runa.
+ *
+ * Thin wrapper around @omnidotdev/providers.
+ */
 
-import type { BillingProvider } from "./interface";
+import { createBillingProvider } from "@omnidotdev/providers/billing";
+
+import { BILLING_BASE_URL } from "@/lib/config/env.config";
 
 export type {
   BillingProvider,
@@ -9,11 +15,12 @@ export type {
   EntitlementsResponse,
   Price,
   Subscription,
-} from "./interface";
+} from "@omnidotdev/providers/billing";
 
-/**
- * Singleton billing provider instance.
- */
-const billing: BillingProvider = new AetherBillingProvider();
+const billing = createBillingProvider(
+  BILLING_BASE_URL
+    ? { provider: "aether", baseUrl: BILLING_BASE_URL, appId: "runa" }
+    : { provider: "noop" },
+);
 
 export default billing;

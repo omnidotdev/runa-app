@@ -32,7 +32,7 @@
     "@lexical/list": "^0.39.0",
     "@lexical/react": "^0.39.0",
     "@lexical/rich-text": "^0.39.0",
-    "@omnidotdev/providers": "github:omnidotdev/providers#605a1c1",
+    "@omnidotdev/providers": "file:../../../providers",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@tanstack/react-form": "^1.27.7",
@@ -61,7 +61,7 @@
     "satori": "^0.25.0",
     "sharp": "^0.34.5",
     "sonner": "^2.0.7",
-    "stripe": "^20.1.2",
+
     "tailwind-merge": "^3.4.0",
     "three": "^0.182.0",
     "ts-pattern": "^5.9.0",
