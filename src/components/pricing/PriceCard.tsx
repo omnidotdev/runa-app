@@ -208,7 +208,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
               <span className="ml-1 font-medium text-lg text-muted-foreground">
                 {price.recurring &&
                   !isFreeTier &&
-                  `/seat/${price.recurring.interval}`}
+                  `/${price.recurring.interval}`}
               </span>
             </div>
           </div>
