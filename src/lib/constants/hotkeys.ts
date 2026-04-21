@@ -11,6 +11,6 @@ export enum Hotkeys {
   UpdateTaskStatus = "s",
   UpdateTaskPriority = "shift+p",
   ToggleSidebarOptions = "shift+o",
-  // TODO: enable once per-seat pricing implemented
+  // TODO: enable once team billing implemented
   // InviteMember = "i",
 }

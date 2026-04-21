@@ -34,3 +34,4 @@ tsconfig.tsbuildinfo
 !.env.production
 !.env.test
 !.env.local.template
+# rebuild with providers rowId fix
