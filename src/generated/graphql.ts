@@ -10635,6 +10635,11 @@ export type UserPreferencesQueryVariables = Exact<{
 
 export type UserPreferencesQuery = { __typename?: 'Query', userPreferenceByUserIdAndProjectId?: { __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string } | null };
 
+export type ObserverQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ObserverQuery = { __typename?: 'Query', observer?: { __typename?: 'Observer', rowId: string } | null };
+
 export type UserQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
@@ -12961,6 +12966,95 @@ useSuspenseInfiniteUserPreferencesQuery.getKey = (variables: UserPreferencesQuer
 
 
 useUserPreferencesQuery.fetcher = (variables: UserPreferencesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, variables, options);
+
+export const ObserverDocument = `
+    query Observer {
+  observer {
+    rowId
+  }
+}
+    `;
+
+export const useObserverQuery = <
+      TData = ObserverQuery,
+      TError = unknown
+    >(
+      variables?: ObserverQueryVariables,
+      options?: Omit<UseQueryOptions<ObserverQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ObserverQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ObserverQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['Observer'] : ['Observer', variables],
+    queryFn: graphqlFetch<ObserverQuery, ObserverQueryVariables>(ObserverDocument, variables),
+    ...options
+  }
+    )};
+
+useObserverQuery.getKey = (variables?: ObserverQueryVariables) => variables === undefined ? ['Observer'] : ['Observer', variables];
+
+export const useSuspenseObserverQuery = <
+      TData = ObserverQuery,
+      TError = unknown
+    >(
+      variables?: ObserverQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<ObserverQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<ObserverQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<ObserverQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['Observer'] : ['Observer', variables],
+    queryFn: graphqlFetch<ObserverQuery, ObserverQueryVariables>(ObserverDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseObserverQuery.getKey = (variables?: ObserverQueryVariables) => variables === undefined ? ['Observer'] : ['Observer', variables];
+
+export const useInfiniteObserverQuery = <
+      TData = InfiniteData<ObserverQuery>,
+      TError = unknown
+    >(
+      variables: ObserverQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ObserverQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ObserverQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ObserverQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Observer.infinite'] : ['Observer.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<ObserverQuery, ObserverQueryVariables>(ObserverDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteObserverQuery.getKey = (variables?: ObserverQueryVariables) => variables === undefined ? ['Observer.infinite'] : ['Observer.infinite', variables];
+
+export const useSuspenseInfiniteObserverQuery = <
+      TData = InfiniteData<ObserverQuery>,
+      TError = unknown
+    >(
+      variables: ObserverQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<ObserverQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<ObserverQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<ObserverQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? variables === undefined ? ['Observer.infinite'] : ['Observer.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<ObserverQuery, ObserverQueryVariables>(ObserverDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteObserverQuery.getKey = (variables?: ObserverQueryVariables) => variables === undefined ? ['Observer.infinite'] : ['Observer.infinite', variables];
+
+
+useObserverQuery.fetcher = (variables?: ObserverQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ObserverQuery, ObserverQueryVariables>(ObserverDocument, variables, options);
 
 export const UserDocument = `
     query User($userId: UUID!) {
