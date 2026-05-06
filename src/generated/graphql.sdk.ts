@@ -16,25 +16,10 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** A floating point number that requires more precision than IEEE 754 binary 64 */
   BigFloat: { input: any; output: any; }
-  /**
-   * A signed eight-byte integer. The upper big integer values are greater than the
-   * max value for a JavaScript number. Therefore all big integers will be output as
-   * strings and not numbers.
-   */
   BigInt: { input: string; output: string; }
-  /** A location in a connection that can be used for resuming pagination. */
   Cursor: { input: string; output: string; }
-  /**
-   * A point in time as described by the [ISO
-   * 8601](https://en.wikipedia.org/wiki/ISO_8601) and, if it has a timezone, [RFC
-   * 3339](https://datatracker.ietf.org/doc/html/rfc3339) standards. Input values
-   * that do not conform to both ISO 8601 and RFC 3339 may be coerced, which may lead
-   * to unexpected results.
-   */
   Datetime: { input: Date; output: Date; }
-  /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: { input: string; output: string; }
 };
 
@@ -1152,6 +1137,39 @@ export type CreateProjectProjectLabelPayloadProjectProjectLabelEdgeArgs = {
   orderBy?: Array<ProjectProjectLabelOrderBy>;
 };
 
+/** All input for the create `RepoExecution` mutation. */
+export type CreateRepoExecutionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `RepoExecution` to be created by this mutation. */
+  repoExecution: RepoExecutionInput;
+};
+
+/** The output of our create `RepoExecution` mutation. */
+export type CreateRepoExecutionPayload = {
+  __typename?: 'CreateRepoExecutionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `RepoExecution` that was created by this mutation. */
+  repoExecution?: Maybe<RepoExecution>;
+  /** An edge for our `RepoExecution`. May be used by Relay 1. */
+  repoExecutionEdge?: Maybe<RepoExecutionEdge>;
+};
+
+
+/** The output of our create `RepoExecution` mutation. */
+export type CreateRepoExecutionPayloadRepoExecutionEdgeArgs = {
+  orderBy?: Array<RepoExecutionOrderBy>;
+};
+
 /** All input for the create `Setting` mutation. */
 export type CreateSettingInput = {
   /**
@@ -1183,6 +1201,39 @@ export type CreateSettingPayload = {
 /** The output of our create `Setting` mutation. */
 export type CreateSettingPayloadSettingEdgeArgs = {
   orderBy?: Array<SettingOrderBy>;
+};
+
+/** All input for the create `TaskExecution` mutation. */
+export type CreateTaskExecutionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `TaskExecution` to be created by this mutation. */
+  taskExecution: TaskExecutionInput;
+};
+
+/** The output of our create `TaskExecution` mutation. */
+export type CreateTaskExecutionPayload = {
+  __typename?: 'CreateTaskExecutionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `TaskExecution` that was created by this mutation. */
+  taskExecution?: Maybe<TaskExecution>;
+  /** An edge for our `TaskExecution`. May be used by Relay 1. */
+  taskExecutionEdge?: Maybe<TaskExecutionEdge>;
+};
+
+
+/** The output of our create `TaskExecution` mutation. */
+export type CreateTaskExecutionPayloadTaskExecutionEdgeArgs = {
+  orderBy?: Array<TaskExecutionOrderBy>;
 };
 
 /** All input for the create `Task` mutation. */
@@ -1785,6 +1836,50 @@ export type DeleteProjectProjectLabelPayloadProjectProjectLabelEdgeArgs = {
   orderBy?: Array<ProjectProjectLabelOrderBy>;
 };
 
+/** All input for the `deleteRepoExecutionById` mutation. */
+export type DeleteRepoExecutionByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `RepoExecution` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteRepoExecution` mutation. */
+export type DeleteRepoExecutionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `RepoExecution` mutation. */
+export type DeleteRepoExecutionPayload = {
+  __typename?: 'DeleteRepoExecutionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedRepoExecutionId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `RepoExecution` that was deleted by this mutation. */
+  repoExecution?: Maybe<RepoExecution>;
+  /** An edge for our `RepoExecution`. May be used by Relay 1. */
+  repoExecutionEdge?: Maybe<RepoExecutionEdge>;
+};
+
+
+/** The output of our delete `RepoExecution` mutation. */
+export type DeleteRepoExecutionPayloadRepoExecutionEdgeArgs = {
+  orderBy?: Array<RepoExecutionOrderBy>;
+};
+
 /** All input for the `deleteSettingById` mutation. */
 export type DeleteSettingByIdInput = {
   /**
@@ -1838,6 +1933,50 @@ export type DeleteTaskByIdInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** The globally unique `ID` which will identify a single `Task` to be deleted. */
   id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteTaskExecutionById` mutation. */
+export type DeleteTaskExecutionByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `TaskExecution` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteTaskExecution` mutation. */
+export type DeleteTaskExecutionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `TaskExecution` mutation. */
+export type DeleteTaskExecutionPayload = {
+  __typename?: 'DeleteTaskExecutionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedTaskExecutionId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `TaskExecution` that was deleted by this mutation. */
+  taskExecution?: Maybe<TaskExecution>;
+  /** An edge for our `TaskExecution`. May be used by Relay 1. */
+  taskExecutionEdge?: Maybe<TaskExecutionEdge>;
+};
+
+
+/** The output of our delete `TaskExecution` mutation. */
+export type DeleteTaskExecutionPayloadTaskExecutionEdgeArgs = {
+  orderBy?: Array<TaskExecutionOrderBy>;
 };
 
 /** All input for the `deleteTask` mutation. */
@@ -2623,10 +2762,14 @@ export type Mutation = {
   createProjectLink?: Maybe<CreateProjectLinkPayload>;
   /** Creates a single `ProjectProjectLabel`. */
   createProjectProjectLabel?: Maybe<CreateProjectProjectLabelPayload>;
+  /** Creates a single `RepoExecution`. */
+  createRepoExecution?: Maybe<CreateRepoExecutionPayload>;
   /** Creates a single `Setting`. */
   createSetting?: Maybe<CreateSettingPayload>;
   /** Creates a single `Task`. */
   createTask?: Maybe<CreateTaskPayload>;
+  /** Creates a single `TaskExecution`. */
+  createTaskExecution?: Maybe<CreateTaskExecutionPayload>;
   /** Creates a single `TaskLabel`. */
   createTaskLabel?: Maybe<CreateTaskLabelPayload>;
   /** Creates a single `User`. */
@@ -2673,6 +2816,10 @@ export type Mutation = {
   deleteProjectProjectLabel?: Maybe<DeleteProjectProjectLabelPayload>;
   /** Deletes a single `ProjectProjectLabel` using its globally unique id. */
   deleteProjectProjectLabelById?: Maybe<DeleteProjectProjectLabelPayload>;
+  /** Deletes a single `RepoExecution` using a unique key. */
+  deleteRepoExecution?: Maybe<DeleteRepoExecutionPayload>;
+  /** Deletes a single `RepoExecution` using its globally unique id. */
+  deleteRepoExecutionById?: Maybe<DeleteRepoExecutionPayload>;
   /** Deletes a single `Setting` using a unique key. */
   deleteSetting?: Maybe<DeleteSettingPayload>;
   /** Deletes a single `Setting` using its globally unique id. */
@@ -2681,6 +2828,10 @@ export type Mutation = {
   deleteTask?: Maybe<DeleteTaskPayload>;
   /** Deletes a single `Task` using its globally unique id. */
   deleteTaskById?: Maybe<DeleteTaskPayload>;
+  /** Deletes a single `TaskExecution` using a unique key. */
+  deleteTaskExecution?: Maybe<DeleteTaskExecutionPayload>;
+  /** Deletes a single `TaskExecution` using its globally unique id. */
+  deleteTaskExecutionById?: Maybe<DeleteTaskExecutionPayload>;
   /** Deletes a single `TaskLabel` using a unique key. */
   deleteTaskLabel?: Maybe<DeleteTaskLabelPayload>;
   /** Deletes a single `TaskLabel` using its globally unique id. */
@@ -2733,6 +2884,10 @@ export type Mutation = {
   updateProjectProjectLabel?: Maybe<UpdateProjectProjectLabelPayload>;
   /** Updates a single `ProjectProjectLabel` using its globally unique id and a patch. */
   updateProjectProjectLabelById?: Maybe<UpdateProjectProjectLabelPayload>;
+  /** Updates a single `RepoExecution` using a unique key and a patch. */
+  updateRepoExecution?: Maybe<UpdateRepoExecutionPayload>;
+  /** Updates a single `RepoExecution` using its globally unique id and a patch. */
+  updateRepoExecutionById?: Maybe<UpdateRepoExecutionPayload>;
   /** Updates a single `Setting` using a unique key and a patch. */
   updateSetting?: Maybe<UpdateSettingPayload>;
   /** Updates a single `Setting` using its globally unique id and a patch. */
@@ -2741,6 +2896,10 @@ export type Mutation = {
   updateTask?: Maybe<UpdateTaskPayload>;
   /** Updates a single `Task` using its globally unique id and a patch. */
   updateTaskById?: Maybe<UpdateTaskPayload>;
+  /** Updates a single `TaskExecution` using a unique key and a patch. */
+  updateTaskExecution?: Maybe<UpdateTaskExecutionPayload>;
+  /** Updates a single `TaskExecution` using its globally unique id and a patch. */
+  updateTaskExecutionById?: Maybe<UpdateTaskExecutionPayload>;
   /** Updates a single `TaskLabel` using a unique key and a patch. */
   updateTaskLabel?: Maybe<UpdateTaskLabelPayload>;
   /** Updates a single `TaskLabel` using its globally unique id and a patch. */
@@ -2817,6 +2976,12 @@ export type MutationCreateProjectProjectLabelArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateRepoExecutionArgs = {
+  input: CreateRepoExecutionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateSettingArgs = {
   input: CreateSettingInput;
 };
@@ -2825,6 +2990,12 @@ export type MutationCreateSettingArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateTaskArgs = {
   input: CreateTaskInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateTaskExecutionArgs = {
+  input: CreateTaskExecutionInput;
 };
 
 
@@ -2967,6 +3138,18 @@ export type MutationDeleteProjectProjectLabelByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteRepoExecutionArgs = {
+  input: DeleteRepoExecutionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteRepoExecutionByIdArgs = {
+  input: DeleteRepoExecutionByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteSettingArgs = {
   input: DeleteSettingInput;
 };
@@ -2987,6 +3170,18 @@ export type MutationDeleteTaskArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteTaskByIdArgs = {
   input: DeleteTaskByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTaskExecutionArgs = {
+  input: DeleteTaskExecutionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteTaskExecutionByIdArgs = {
+  input: DeleteTaskExecutionByIdInput;
 };
 
 
@@ -3147,6 +3342,18 @@ export type MutationUpdateProjectProjectLabelByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateRepoExecutionArgs = {
+  input: UpdateRepoExecutionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateRepoExecutionByIdArgs = {
+  input: UpdateRepoExecutionByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateSettingArgs = {
   input: UpdateSettingInput;
 };
@@ -3167,6 +3374,18 @@ export type MutationUpdateTaskArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateTaskByIdArgs = {
   input: UpdateTaskByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTaskExecutionArgs = {
+  input: UpdateTaskExecutionInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateTaskExecutionByIdArgs = {
+  input: UpdateTaskExecutionByIdInput;
 };
 
 
@@ -5702,6 +5921,12 @@ export type Query = Node & {
    * which can only query top level fields if they are in a particular form.
    */
   query: Query;
+  /** Get a single `RepoExecution`. */
+  repoExecution?: Maybe<RepoExecution>;
+  /** Reads a single `RepoExecution` using its globally unique `ID`. */
+  repoExecutionById?: Maybe<RepoExecution>;
+  /** Reads and enables pagination through a set of `RepoExecution`. */
+  repoExecutions?: Maybe<RepoExecutionConnection>;
   /** Get a single `Setting`. */
   setting?: Maybe<Setting>;
   /** Reads a single `Setting` using its globally unique `ID`. */
@@ -5716,6 +5941,12 @@ export type Query = Node & {
   taskById?: Maybe<Task>;
   /** Get a single `Task`. */
   taskByProjectIdAndNumber?: Maybe<Task>;
+  /** Get a single `TaskExecution`. */
+  taskExecution?: Maybe<TaskExecution>;
+  /** Reads a single `TaskExecution` using its globally unique `ID`. */
+  taskExecutionById?: Maybe<TaskExecution>;
+  /** Reads and enables pagination through a set of `TaskExecution`. */
+  taskExecutions?: Maybe<TaskExecutionConnection>;
   /** Get a single `TaskLabel`. */
   taskLabel?: Maybe<TaskLabel>;
   /** Reads a single `TaskLabel` using its globally unique `ID`. */
@@ -6020,6 +6251,31 @@ export type QueryProjectsArgs = {
 
 
 /** The root query type which gives access points into the data universe. */
+export type QueryRepoExecutionArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryRepoExecutionByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryRepoExecutionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<RepoExecutionCondition>;
+  filter?: InputMaybe<RepoExecutionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<RepoExecutionOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
 export type QuerySettingArgs = {
   rowId: Scalars['UUID']['input'];
 };
@@ -6066,6 +6322,31 @@ export type QueryTaskByIdArgs = {
 export type QueryTaskByProjectIdAndNumberArgs = {
   number: Scalars['Int']['input'];
   projectId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTaskExecutionArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTaskExecutionByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryTaskExecutionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskExecutionCondition>;
+  filter?: InputMaybe<TaskExecutionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskExecutionOrderBy>>;
 };
 
 
@@ -6181,6 +6462,469 @@ export type QueryUsersArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<UserOrderBy>>;
+};
+
+export type RepoExecution = Node & {
+  __typename?: 'RepoExecution';
+  branch?: Maybe<Scalars['String']['output']>;
+  completedAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
+  errorLog?: Maybe<Scalars['String']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  order: Scalars['Int']['output'];
+  prUrl?: Maybe<Scalars['String']['output']>;
+  repo: Scalars['String']['output'];
+  rowId: Scalars['UUID']['output'];
+  startedAt?: Maybe<Scalars['Datetime']['output']>;
+  status: Scalars['String']['output'];
+  /** Reads a single `TaskExecution` that is related to this `RepoExecution`. */
+  taskExecution?: Maybe<TaskExecution>;
+  taskExecutionId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+export type RepoExecutionAggregates = {
+  __typename?: 'RepoExecutionAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<RepoExecutionAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<RepoExecutionDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<RepoExecutionMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<RepoExecutionMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<RepoExecutionStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<RepoExecutionStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<RepoExecutionSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<RepoExecutionVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<RepoExecutionVarianceSampleAggregates>;
+};
+
+/** A filter to be used against aggregates of `RepoExecution` object types. */
+export type RepoExecutionAggregatesFilter = {
+  /** Mean average aggregate over matching `RepoExecution` objects. */
+  average?: InputMaybe<RepoExecutionAverageAggregateFilter>;
+  /** Distinct count aggregate over matching `RepoExecution` objects. */
+  distinctCount?: InputMaybe<RepoExecutionDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `RepoExecution` object to be included within the aggregate. */
+  filter?: InputMaybe<RepoExecutionFilter>;
+  /** Maximum aggregate over matching `RepoExecution` objects. */
+  max?: InputMaybe<RepoExecutionMaxAggregateFilter>;
+  /** Minimum aggregate over matching `RepoExecution` objects. */
+  min?: InputMaybe<RepoExecutionMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `RepoExecution` objects. */
+  stddevPopulation?: InputMaybe<RepoExecutionStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `RepoExecution` objects. */
+  stddevSample?: InputMaybe<RepoExecutionStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `RepoExecution` objects. */
+  sum?: InputMaybe<RepoExecutionSumAggregateFilter>;
+  /** Population variance aggregate over matching `RepoExecution` objects. */
+  variancePopulation?: InputMaybe<RepoExecutionVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `RepoExecution` objects. */
+  varianceSample?: InputMaybe<RepoExecutionVarianceSampleAggregateFilter>;
+};
+
+export type RepoExecutionAverageAggregateFilter = {
+  order?: InputMaybe<BigFloatFilter>;
+};
+
+export type RepoExecutionAverageAggregates = {
+  __typename?: 'RepoExecutionAverageAggregates';
+  /** Mean average of order across the matching connection */
+  order?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+/**
+ * A condition to be used against `RepoExecution` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type RepoExecutionCondition = {
+  /** Checks for equality with the object’s `branch` field. */
+  branch?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `completedAt` field. */
+  completedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `errorLog` field. */
+  errorLog?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `order` field. */
+  order?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `prUrl` field. */
+  prUrl?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `repo` field. */
+  repo?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `startedAt` field. */
+  startedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `taskExecutionId` field. */
+  taskExecutionId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `RepoExecution` values. */
+export type RepoExecutionConnection = {
+  __typename?: 'RepoExecutionConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<RepoExecutionAggregates>;
+  /** A list of edges which contains the `RepoExecution` and cursor to aid in pagination. */
+  edges: Array<RepoExecutionEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<RepoExecutionAggregates>>;
+  /** A list of `RepoExecution` objects. */
+  nodes: Array<RepoExecution>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `RepoExecution` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `RepoExecution` values. */
+export type RepoExecutionConnectionGroupedAggregatesArgs = {
+  groupBy: Array<RepoExecutionGroupBy>;
+  having?: InputMaybe<RepoExecutionHavingInput>;
+};
+
+export type RepoExecutionDistinctCountAggregateFilter = {
+  branch?: InputMaybe<BigIntFilter>;
+  completedAt?: InputMaybe<BigIntFilter>;
+  createdAt?: InputMaybe<BigIntFilter>;
+  errorLog?: InputMaybe<BigIntFilter>;
+  order?: InputMaybe<BigIntFilter>;
+  prUrl?: InputMaybe<BigIntFilter>;
+  repo?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  startedAt?: InputMaybe<BigIntFilter>;
+  status?: InputMaybe<BigIntFilter>;
+  taskExecutionId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type RepoExecutionDistinctCountAggregates = {
+  __typename?: 'RepoExecutionDistinctCountAggregates';
+  /** Distinct count of branch across the matching connection */
+  branch?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of completedAt across the matching connection */
+  completedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of errorLog across the matching connection */
+  errorLog?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of order across the matching connection */
+  order?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of prUrl across the matching connection */
+  prUrl?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of repo across the matching connection */
+  repo?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of startedAt across the matching connection */
+  startedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of status across the matching connection */
+  status?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of taskExecutionId across the matching connection */
+  taskExecutionId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `RepoExecution` edge in the connection. */
+export type RepoExecutionEdge = {
+  __typename?: 'RepoExecutionEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `RepoExecution` at the end of the edge. */
+  node: RepoExecution;
+};
+
+/** A filter to be used against `RepoExecution` object types. All fields are combined with a logical ‘and.’ */
+export type RepoExecutionFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<RepoExecutionFilter>>;
+  /** Filter by the object’s `branch` field. */
+  branch?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `completedAt` field. */
+  completedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `errorLog` field. */
+  errorLog?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<RepoExecutionFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<RepoExecutionFilter>>;
+  /** Filter by the object’s `order` field. */
+  order?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `prUrl` field. */
+  prUrl?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `repo` field. */
+  repo?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `startedAt` field. */
+  startedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `status` field. */
+  status?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `taskExecution` relation. */
+  taskExecution?: InputMaybe<TaskExecutionFilter>;
+  /** Filter by the object’s `taskExecutionId` field. */
+  taskExecutionId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `RepoExecution` for usage during aggregation. */
+export enum RepoExecutionGroupBy {
+  Branch = 'BRANCH',
+  CompletedAt = 'COMPLETED_AT',
+  CompletedAtTruncatedToDay = 'COMPLETED_AT_TRUNCATED_TO_DAY',
+  CompletedAtTruncatedToHour = 'COMPLETED_AT_TRUNCATED_TO_HOUR',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  ErrorLog = 'ERROR_LOG',
+  Order = 'ORDER',
+  PrUrl = 'PR_URL',
+  Repo = 'REPO',
+  StartedAt = 'STARTED_AT',
+  StartedAtTruncatedToDay = 'STARTED_AT_TRUNCATED_TO_DAY',
+  StartedAtTruncatedToHour = 'STARTED_AT_TRUNCATED_TO_HOUR',
+  Status = 'STATUS',
+  TaskExecutionId = 'TASK_EXECUTION_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type RepoExecutionHavingAverageInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type RepoExecutionHavingDistinctCountInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `RepoExecution` aggregates. */
+export type RepoExecutionHavingInput = {
+  AND?: InputMaybe<Array<RepoExecutionHavingInput>>;
+  OR?: InputMaybe<Array<RepoExecutionHavingInput>>;
+  average?: InputMaybe<RepoExecutionHavingAverageInput>;
+  distinctCount?: InputMaybe<RepoExecutionHavingDistinctCountInput>;
+  max?: InputMaybe<RepoExecutionHavingMaxInput>;
+  min?: InputMaybe<RepoExecutionHavingMinInput>;
+  stddevPopulation?: InputMaybe<RepoExecutionHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<RepoExecutionHavingStddevSampleInput>;
+  sum?: InputMaybe<RepoExecutionHavingSumInput>;
+  variancePopulation?: InputMaybe<RepoExecutionHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<RepoExecutionHavingVarianceSampleInput>;
+};
+
+export type RepoExecutionHavingMaxInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type RepoExecutionHavingMinInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type RepoExecutionHavingStddevPopulationInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type RepoExecutionHavingStddevSampleInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type RepoExecutionHavingSumInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type RepoExecutionHavingVariancePopulationInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type RepoExecutionHavingVarianceSampleInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  order?: InputMaybe<HavingIntFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `RepoExecution` */
+export type RepoExecutionInput = {
+  branch?: InputMaybe<Scalars['String']['input']>;
+  completedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  errorLog?: InputMaybe<Scalars['String']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
+  prUrl?: InputMaybe<Scalars['String']['input']>;
+  repo: Scalars['String']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  startedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  taskExecutionId: Scalars['UUID']['input'];
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type RepoExecutionMaxAggregateFilter = {
+  order?: InputMaybe<IntFilter>;
+};
+
+export type RepoExecutionMaxAggregates = {
+  __typename?: 'RepoExecutionMaxAggregates';
+  /** Maximum of order across the matching connection */
+  order?: Maybe<Scalars['Int']['output']>;
+};
+
+export type RepoExecutionMinAggregateFilter = {
+  order?: InputMaybe<IntFilter>;
+};
+
+export type RepoExecutionMinAggregates = {
+  __typename?: 'RepoExecutionMinAggregates';
+  /** Minimum of order across the matching connection */
+  order?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Methods to use when ordering `RepoExecution`. */
+export enum RepoExecutionOrderBy {
+  BranchAsc = 'BRANCH_ASC',
+  BranchDesc = 'BRANCH_DESC',
+  CompletedAtAsc = 'COMPLETED_AT_ASC',
+  CompletedAtDesc = 'COMPLETED_AT_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  ErrorLogAsc = 'ERROR_LOG_ASC',
+  ErrorLogDesc = 'ERROR_LOG_DESC',
+  Natural = 'NATURAL',
+  OrderAsc = 'ORDER_ASC',
+  OrderDesc = 'ORDER_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  PrUrlAsc = 'PR_URL_ASC',
+  PrUrlDesc = 'PR_URL_DESC',
+  RepoAsc = 'REPO_ASC',
+  RepoDesc = 'REPO_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  StartedAtAsc = 'STARTED_AT_ASC',
+  StartedAtDesc = 'STARTED_AT_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  TaskExecutionIdAsc = 'TASK_EXECUTION_ID_ASC',
+  TaskExecutionIdDesc = 'TASK_EXECUTION_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `RepoExecution`. Fields that are set will be updated. */
+export type RepoExecutionPatch = {
+  branch?: InputMaybe<Scalars['String']['input']>;
+  completedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  errorLog?: InputMaybe<Scalars['String']['input']>;
+  order?: InputMaybe<Scalars['Int']['input']>;
+  prUrl?: InputMaybe<Scalars['String']['input']>;
+  repo?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  startedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  taskExecutionId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type RepoExecutionStddevPopulationAggregateFilter = {
+  order?: InputMaybe<BigFloatFilter>;
+};
+
+export type RepoExecutionStddevPopulationAggregates = {
+  __typename?: 'RepoExecutionStddevPopulationAggregates';
+  /** Population standard deviation of order across the matching connection */
+  order?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type RepoExecutionStddevSampleAggregateFilter = {
+  order?: InputMaybe<BigFloatFilter>;
+};
+
+export type RepoExecutionStddevSampleAggregates = {
+  __typename?: 'RepoExecutionStddevSampleAggregates';
+  /** Sample standard deviation of order across the matching connection */
+  order?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type RepoExecutionSumAggregateFilter = {
+  order?: InputMaybe<BigIntFilter>;
+};
+
+export type RepoExecutionSumAggregates = {
+  __typename?: 'RepoExecutionSumAggregates';
+  /** Sum of order across the matching connection */
+  order: Scalars['BigInt']['output'];
+};
+
+export type RepoExecutionVariancePopulationAggregateFilter = {
+  order?: InputMaybe<BigFloatFilter>;
+};
+
+export type RepoExecutionVariancePopulationAggregates = {
+  __typename?: 'RepoExecutionVariancePopulationAggregates';
+  /** Population variance of order across the matching connection */
+  order?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type RepoExecutionVarianceSampleAggregateFilter = {
+  order?: InputMaybe<BigFloatFilter>;
+};
+
+export type RepoExecutionVarianceSampleAggregates = {
+  __typename?: 'RepoExecutionVarianceSampleAggregates';
+  /** Sample variance of order across the matching connection */
+  order?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type Setting = Node & {
@@ -6590,6 +7334,8 @@ export type Task = Node & {
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
   rowId: Scalars['UUID']['output'];
+  /** Reads and enables pagination through a set of `TaskExecution`. */
+  taskExecutions: TaskExecutionConnection;
   /** Reads and enables pagination through a set of `TaskLabel`. */
   taskLabels: TaskLabelConnection;
   updatedAt: Scalars['Datetime']['output'];
@@ -6617,6 +7363,18 @@ export type TaskPostsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<PostOrderBy>>;
+};
+
+
+export type TaskTaskExecutionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskExecutionCondition>;
+  filter?: InputMaybe<TaskExecutionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskExecutionOrderBy>>;
 };
 
 
@@ -6795,6 +7553,368 @@ export type TaskEdge = {
   node: Task;
 };
 
+export type TaskExecution = Node & {
+  __typename?: 'TaskExecution';
+  completedAt?: Maybe<Scalars['Datetime']['output']>;
+  createdAt: Scalars['Datetime']['output'];
+  errorLog?: Maybe<Scalars['String']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  /** Reads and enables pagination through a set of `RepoExecution`. */
+  repoExecutions: RepoExecutionConnection;
+  rowId: Scalars['UUID']['output'];
+  startedAt?: Maybe<Scalars['Datetime']['output']>;
+  status: Scalars['String']['output'];
+  /** Reads a single `Task` that is related to this `TaskExecution`. */
+  task?: Maybe<Task>;
+  taskId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+
+export type TaskExecutionRepoExecutionsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<RepoExecutionCondition>;
+  filter?: InputMaybe<RepoExecutionFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<RepoExecutionOrderBy>>;
+};
+
+export type TaskExecutionAggregates = {
+  __typename?: 'TaskExecutionAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<TaskExecutionDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `TaskExecution` object types. */
+export type TaskExecutionAggregatesFilter = {
+  /** Distinct count aggregate over matching `TaskExecution` objects. */
+  distinctCount?: InputMaybe<TaskExecutionDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `TaskExecution` object to be included within the aggregate. */
+  filter?: InputMaybe<TaskExecutionFilter>;
+};
+
+/**
+ * A condition to be used against `TaskExecution` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type TaskExecutionCondition = {
+  /** Checks for equality with the object’s `completedAt` field. */
+  completedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `errorLog` field. */
+  errorLog?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `startedAt` field. */
+  startedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `status` field. */
+  status?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `taskId` field. */
+  taskId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `TaskExecution` values. */
+export type TaskExecutionConnection = {
+  __typename?: 'TaskExecutionConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<TaskExecutionAggregates>;
+  /** A list of edges which contains the `TaskExecution` and cursor to aid in pagination. */
+  edges: Array<TaskExecutionEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<TaskExecutionAggregates>>;
+  /** A list of `TaskExecution` objects. */
+  nodes: Array<TaskExecution>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `TaskExecution` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `TaskExecution` values. */
+export type TaskExecutionConnectionGroupedAggregatesArgs = {
+  groupBy: Array<TaskExecutionGroupBy>;
+  having?: InputMaybe<TaskExecutionHavingInput>;
+};
+
+export type TaskExecutionDistinctCountAggregateFilter = {
+  completedAt?: InputMaybe<BigIntFilter>;
+  createdAt?: InputMaybe<BigIntFilter>;
+  errorLog?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  startedAt?: InputMaybe<BigIntFilter>;
+  status?: InputMaybe<BigIntFilter>;
+  taskId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type TaskExecutionDistinctCountAggregates = {
+  __typename?: 'TaskExecutionDistinctCountAggregates';
+  /** Distinct count of completedAt across the matching connection */
+  completedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of errorLog across the matching connection */
+  errorLog?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of startedAt across the matching connection */
+  startedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of status across the matching connection */
+  status?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of taskId across the matching connection */
+  taskId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `TaskExecution` edge in the connection. */
+export type TaskExecutionEdge = {
+  __typename?: 'TaskExecutionEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `TaskExecution` at the end of the edge. */
+  node: TaskExecution;
+};
+
+/** A filter to be used against `TaskExecution` object types. All fields are combined with a logical ‘and.’ */
+export type TaskExecutionFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<TaskExecutionFilter>>;
+  /** Filter by the object’s `completedAt` field. */
+  completedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `errorLog` field. */
+  errorLog?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<TaskExecutionFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<TaskExecutionFilter>>;
+  /** Filter by the object’s `repoExecutions` relation. */
+  repoExecutions?: InputMaybe<TaskExecutionToManyRepoExecutionFilter>;
+  /** Some related `repoExecutions` exist. */
+  repoExecutionsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `startedAt` field. */
+  startedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `status` field. */
+  status?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `task` relation. */
+  task?: InputMaybe<TaskFilter>;
+  /** Filter by the object’s `taskId` field. */
+  taskId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `TaskExecution` for usage during aggregation. */
+export enum TaskExecutionGroupBy {
+  CompletedAt = 'COMPLETED_AT',
+  CompletedAtTruncatedToDay = 'COMPLETED_AT_TRUNCATED_TO_DAY',
+  CompletedAtTruncatedToHour = 'COMPLETED_AT_TRUNCATED_TO_HOUR',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  ErrorLog = 'ERROR_LOG',
+  StartedAt = 'STARTED_AT',
+  StartedAtTruncatedToDay = 'STARTED_AT_TRUNCATED_TO_DAY',
+  StartedAtTruncatedToHour = 'STARTED_AT_TRUNCATED_TO_HOUR',
+  Status = 'STATUS',
+  TaskId = 'TASK_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type TaskExecutionHavingAverageInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingDistinctCountInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `TaskExecution` aggregates. */
+export type TaskExecutionHavingInput = {
+  AND?: InputMaybe<Array<TaskExecutionHavingInput>>;
+  OR?: InputMaybe<Array<TaskExecutionHavingInput>>;
+  average?: InputMaybe<TaskExecutionHavingAverageInput>;
+  distinctCount?: InputMaybe<TaskExecutionHavingDistinctCountInput>;
+  max?: InputMaybe<TaskExecutionHavingMaxInput>;
+  min?: InputMaybe<TaskExecutionHavingMinInput>;
+  stddevPopulation?: InputMaybe<TaskExecutionHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<TaskExecutionHavingStddevSampleInput>;
+  sum?: InputMaybe<TaskExecutionHavingSumInput>;
+  variancePopulation?: InputMaybe<TaskExecutionHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<TaskExecutionHavingVarianceSampleInput>;
+};
+
+export type TaskExecutionHavingMaxInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingMinInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingStddevPopulationInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingStddevSampleInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingSumInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingVariancePopulationInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type TaskExecutionHavingVarianceSampleInput = {
+  completedAt?: InputMaybe<HavingDatetimeFilter>;
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  startedAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `TaskExecution` */
+export type TaskExecutionInput = {
+  completedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  errorLog?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  startedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  taskId: Scalars['UUID']['input'];
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** Methods to use when ordering `TaskExecution`. */
+export enum TaskExecutionOrderBy {
+  CompletedAtAsc = 'COMPLETED_AT_ASC',
+  CompletedAtDesc = 'COMPLETED_AT_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  ErrorLogAsc = 'ERROR_LOG_ASC',
+  ErrorLogDesc = 'ERROR_LOG_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RepoExecutionsAverageOrderAsc = 'REPO_EXECUTIONS_AVERAGE_ORDER_ASC',
+  RepoExecutionsAverageOrderDesc = 'REPO_EXECUTIONS_AVERAGE_ORDER_DESC',
+  RepoExecutionsCountAsc = 'REPO_EXECUTIONS_COUNT_ASC',
+  RepoExecutionsCountDesc = 'REPO_EXECUTIONS_COUNT_DESC',
+  RepoExecutionsDistinctCountBranchAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_BRANCH_ASC',
+  RepoExecutionsDistinctCountBranchDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_BRANCH_DESC',
+  RepoExecutionsDistinctCountCompletedAtAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_COMPLETED_AT_ASC',
+  RepoExecutionsDistinctCountCompletedAtDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_COMPLETED_AT_DESC',
+  RepoExecutionsDistinctCountCreatedAtAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  RepoExecutionsDistinctCountCreatedAtDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  RepoExecutionsDistinctCountErrorLogAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_ERROR_LOG_ASC',
+  RepoExecutionsDistinctCountErrorLogDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_ERROR_LOG_DESC',
+  RepoExecutionsDistinctCountOrderAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_ORDER_ASC',
+  RepoExecutionsDistinctCountOrderDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_ORDER_DESC',
+  RepoExecutionsDistinctCountPrUrlAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_PR_URL_ASC',
+  RepoExecutionsDistinctCountPrUrlDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_PR_URL_DESC',
+  RepoExecutionsDistinctCountRepoAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_REPO_ASC',
+  RepoExecutionsDistinctCountRepoDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_REPO_DESC',
+  RepoExecutionsDistinctCountRowIdAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  RepoExecutionsDistinctCountRowIdDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  RepoExecutionsDistinctCountStartedAtAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_STARTED_AT_ASC',
+  RepoExecutionsDistinctCountStartedAtDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_STARTED_AT_DESC',
+  RepoExecutionsDistinctCountStatusAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_STATUS_ASC',
+  RepoExecutionsDistinctCountStatusDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_STATUS_DESC',
+  RepoExecutionsDistinctCountTaskExecutionIdAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_TASK_EXECUTION_ID_ASC',
+  RepoExecutionsDistinctCountTaskExecutionIdDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_TASK_EXECUTION_ID_DESC',
+  RepoExecutionsDistinctCountUpdatedAtAsc = 'REPO_EXECUTIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  RepoExecutionsDistinctCountUpdatedAtDesc = 'REPO_EXECUTIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  RepoExecutionsMaxOrderAsc = 'REPO_EXECUTIONS_MAX_ORDER_ASC',
+  RepoExecutionsMaxOrderDesc = 'REPO_EXECUTIONS_MAX_ORDER_DESC',
+  RepoExecutionsMinOrderAsc = 'REPO_EXECUTIONS_MIN_ORDER_ASC',
+  RepoExecutionsMinOrderDesc = 'REPO_EXECUTIONS_MIN_ORDER_DESC',
+  RepoExecutionsStddevPopulationOrderAsc = 'REPO_EXECUTIONS_STDDEV_POPULATION_ORDER_ASC',
+  RepoExecutionsStddevPopulationOrderDesc = 'REPO_EXECUTIONS_STDDEV_POPULATION_ORDER_DESC',
+  RepoExecutionsStddevSampleOrderAsc = 'REPO_EXECUTIONS_STDDEV_SAMPLE_ORDER_ASC',
+  RepoExecutionsStddevSampleOrderDesc = 'REPO_EXECUTIONS_STDDEV_SAMPLE_ORDER_DESC',
+  RepoExecutionsSumOrderAsc = 'REPO_EXECUTIONS_SUM_ORDER_ASC',
+  RepoExecutionsSumOrderDesc = 'REPO_EXECUTIONS_SUM_ORDER_DESC',
+  RepoExecutionsVariancePopulationOrderAsc = 'REPO_EXECUTIONS_VARIANCE_POPULATION_ORDER_ASC',
+  RepoExecutionsVariancePopulationOrderDesc = 'REPO_EXECUTIONS_VARIANCE_POPULATION_ORDER_DESC',
+  RepoExecutionsVarianceSampleOrderAsc = 'REPO_EXECUTIONS_VARIANCE_SAMPLE_ORDER_ASC',
+  RepoExecutionsVarianceSampleOrderDesc = 'REPO_EXECUTIONS_VARIANCE_SAMPLE_ORDER_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  StartedAtAsc = 'STARTED_AT_ASC',
+  StartedAtDesc = 'STARTED_AT_DESC',
+  StatusAsc = 'STATUS_ASC',
+  StatusDesc = 'STATUS_DESC',
+  TaskIdAsc = 'TASK_ID_ASC',
+  TaskIdDesc = 'TASK_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `TaskExecution`. Fields that are set will be updated. */
+export type TaskExecutionPatch = {
+  completedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  errorLog?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  startedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  taskId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A filter to be used against many `RepoExecution` object types. All fields are combined with a logical ‘and.’ */
+export type TaskExecutionToManyRepoExecutionFilter = {
+  /** Aggregates across related `RepoExecution` match the filter criteria. */
+  aggregates?: InputMaybe<RepoExecutionAggregatesFilter>;
+  /** Every related `RepoExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<RepoExecutionFilter>;
+  /** No related `RepoExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<RepoExecutionFilter>;
+  /** Some related `RepoExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<RepoExecutionFilter>;
+};
+
 /** A filter to be used against `Task` object types. All fields are combined with a logical ‘and.’ */
 export type TaskFilter = {
   /** Checks for all expressions in this list. */
@@ -6841,6 +7961,10 @@ export type TaskFilter = {
   projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `taskExecutions` relation. */
+  taskExecutions?: InputMaybe<TaskToManyTaskExecutionFilter>;
+  /** Some related `taskExecutions` exist. */
+  taskExecutionsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `taskLabels` relation. */
   taskLabels?: InputMaybe<TaskToManyTaskLabelFilter>;
   /** Some related `taskLabels` exist. */
@@ -7275,6 +8399,24 @@ export enum TaskOrderBy {
   ProjectIdDesc = 'PROJECT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  TaskExecutionsCountAsc = 'TASK_EXECUTIONS_COUNT_ASC',
+  TaskExecutionsCountDesc = 'TASK_EXECUTIONS_COUNT_DESC',
+  TaskExecutionsDistinctCountCompletedAtAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_COMPLETED_AT_ASC',
+  TaskExecutionsDistinctCountCompletedAtDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_COMPLETED_AT_DESC',
+  TaskExecutionsDistinctCountCreatedAtAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_CREATED_AT_ASC',
+  TaskExecutionsDistinctCountCreatedAtDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_CREATED_AT_DESC',
+  TaskExecutionsDistinctCountErrorLogAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ERROR_LOG_ASC',
+  TaskExecutionsDistinctCountErrorLogDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ERROR_LOG_DESC',
+  TaskExecutionsDistinctCountRowIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ROW_ID_ASC',
+  TaskExecutionsDistinctCountRowIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_ROW_ID_DESC',
+  TaskExecutionsDistinctCountStartedAtAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_STARTED_AT_ASC',
+  TaskExecutionsDistinctCountStartedAtDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_STARTED_AT_DESC',
+  TaskExecutionsDistinctCountStatusAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_STATUS_ASC',
+  TaskExecutionsDistinctCountStatusDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_STATUS_DESC',
+  TaskExecutionsDistinctCountTaskIdAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_TASK_ID_ASC',
+  TaskExecutionsDistinctCountTaskIdDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_TASK_ID_DESC',
+  TaskExecutionsDistinctCountUpdatedAtAsc = 'TASK_EXECUTIONS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  TaskExecutionsDistinctCountUpdatedAtDesc = 'TASK_EXECUTIONS_DISTINCT_COUNT_UPDATED_AT_DESC',
   TaskLabelsCountAsc = 'TASK_LABELS_COUNT_ASC',
   TaskLabelsCountDesc = 'TASK_LABELS_COUNT_DESC',
   TaskLabelsDistinctCountCreatedAtAsc = 'TASK_LABELS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -7366,6 +8508,18 @@ export type TaskToManyPostFilter = {
   none?: InputMaybe<PostFilter>;
   /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<PostFilter>;
+};
+
+/** A filter to be used against many `TaskExecution` object types. All fields are combined with a logical ‘and.’ */
+export type TaskToManyTaskExecutionFilter = {
+  /** Aggregates across related `TaskExecution` match the filter criteria. */
+  aggregates?: InputMaybe<TaskExecutionAggregatesFilter>;
+  /** Every related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<TaskExecutionFilter>;
+  /** No related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<TaskExecutionFilter>;
+  /** Some related `TaskExecution` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<TaskExecutionFilter>;
 };
 
 /** A filter to be used against many `TaskLabel` object types. All fields are combined with a logical ‘and.’ */
@@ -7904,6 +9058,53 @@ export type UpdateProjectProjectLabelPayloadProjectProjectLabelEdgeArgs = {
   orderBy?: Array<ProjectProjectLabelOrderBy>;
 };
 
+/** All input for the `updateRepoExecutionById` mutation. */
+export type UpdateRepoExecutionByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `RepoExecution` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `RepoExecution` being updated. */
+  patch: RepoExecutionPatch;
+};
+
+/** All input for the `updateRepoExecution` mutation. */
+export type UpdateRepoExecutionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `RepoExecution` being updated. */
+  patch: RepoExecutionPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `RepoExecution` mutation. */
+export type UpdateRepoExecutionPayload = {
+  __typename?: 'UpdateRepoExecutionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `RepoExecution` that was updated by this mutation. */
+  repoExecution?: Maybe<RepoExecution>;
+  /** An edge for our `RepoExecution`. May be used by Relay 1. */
+  repoExecutionEdge?: Maybe<RepoExecutionEdge>;
+};
+
+
+/** The output of our update `RepoExecution` mutation. */
+export type UpdateRepoExecutionPayloadRepoExecutionEdgeArgs = {
+  orderBy?: Array<RepoExecutionOrderBy>;
+};
+
 /** All input for the `updateSettingById` mutation. */
 export type UpdateSettingByIdInput = {
   /**
@@ -7962,6 +9163,53 @@ export type UpdateTaskByIdInput = {
   id: Scalars['ID']['input'];
   /** An object where the defined keys will be set on the `Task` being updated. */
   patch: TaskPatch;
+};
+
+/** All input for the `updateTaskExecutionById` mutation. */
+export type UpdateTaskExecutionByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `TaskExecution` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `TaskExecution` being updated. */
+  patch: TaskExecutionPatch;
+};
+
+/** All input for the `updateTaskExecution` mutation. */
+export type UpdateTaskExecutionInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `TaskExecution` being updated. */
+  patch: TaskExecutionPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `TaskExecution` mutation. */
+export type UpdateTaskExecutionPayload = {
+  __typename?: 'UpdateTaskExecutionPayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+  /** The `TaskExecution` that was updated by this mutation. */
+  taskExecution?: Maybe<TaskExecution>;
+  /** An edge for our `TaskExecution`. May be used by Relay 1. */
+  taskExecutionEdge?: Maybe<TaskExecutionEdge>;
+};
+
+
+/** The output of our update `TaskExecution` mutation. */
+export type UpdateTaskExecutionPayloadTaskExecutionEdgeArgs = {
+  orderBy?: Array<TaskExecutionOrderBy>;
 };
 
 /** All input for the `updateTask` mutation. */
