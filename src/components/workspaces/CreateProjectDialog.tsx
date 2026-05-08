@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useParams } from "@tanstack/react-router";
+import { useParams } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
@@ -37,19 +37,18 @@ import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
 const CreateProjectDialog = () => {
-  const { organizationId } = useLoaderData({ from: "/_app" });
-
   const { workspaceSlug } = useParams({ strict: false });
 
   const nameRef = useRef<HTMLInputElement>(null);
   const orgContext = useOrganization();
 
-  const { projectColumnId, setProjectColumnId } = useProjectStore();
-
-  // Resolve org name from JWT claims
-  const orgName = organizationId
-    ? orgContext?.getOrganizationById(organizationId)?.name
+  const currentOrg = workspaceSlug
+    ? orgContext?.organizations.find((org) => org.slug === workspaceSlug)
     : undefined;
+  const organizationId = currentOrg?.id;
+  const orgName = currentOrg?.name;
+
+  const { projectColumnId, setProjectColumnId } = useProjectStore();
 
   // Get role from IDP organization claims
   const currentUserRole = useCurrentUserRole(organizationId);
