@@ -16,25 +16,10 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** A floating point number that requires more precision than IEEE 754 binary 64 */
   BigFloat: { input: any; output: any; }
-  /**
-   * A signed eight-byte integer. The upper big integer values are greater than the
-   * max value for a JavaScript number. Therefore all big integers will be output as
-   * strings and not numbers.
-   */
   BigInt: { input: string; output: string; }
-  /** A location in a connection that can be used for resuming pagination. */
   Cursor: { input: string; output: string; }
-  /**
-   * A point in time as described by the [ISO
-   * 8601](https://en.wikipedia.org/wiki/ISO_8601) and, if it has a timezone, [RFC
-   * 3339](https://datatracker.ietf.org/doc/html/rfc3339) standards. Input values
-   * that do not conform to both ISO 8601 and RFC 3339 may be coerced, which may lead
-   * to unexpected results.
-   */
   Datetime: { input: Date; output: Date; }
-  /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: { input: string; output: string; }
 };
 
@@ -9388,6 +9373,11 @@ export type UserPreferencesQueryVariables = Exact<{
 
 export type UserPreferencesQuery = { __typename?: 'Query', userPreferenceByUserIdAndProjectId?: { __typename?: 'UserPreference', hiddenColumnIds: Array<string | null>, viewMode: string, rowId: string } | null };
 
+export type ObserverQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ObserverQuery = { __typename?: 'Query', observer?: { __typename?: 'Observer', rowId: string } | null };
+
 export type UserQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
@@ -10040,6 +10030,13 @@ export const UserPreferencesDocument = gql`
   }
 }
     `;
+export const ObserverDocument = gql`
+    query Observer {
+  observer {
+    rowId
+  }
+}
+    `;
 export const UserDocument = gql`
     query User($userId: UUID!) {
   user(rowId: $userId) {
@@ -10198,6 +10195,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     UserPreferences(variables: UserPreferencesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserPreferencesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserPreferencesQuery>({ document: UserPreferencesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UserPreferences', 'query', variables);
+    },
+    Observer(variables?: ObserverQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ObserverQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ObserverQuery>({ document: ObserverDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Observer', 'query', variables);
     },
     User(variables: UserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserQuery>({ document: UserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'User', 'query', variables);
