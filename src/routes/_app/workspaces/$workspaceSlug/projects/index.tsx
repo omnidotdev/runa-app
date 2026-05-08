@@ -36,7 +36,7 @@ import projectsOptions from "@/lib/options/projects.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
-import { reorderKey } from "@/lib/util/fractionalKey";
+import { compareKeys, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
@@ -251,11 +251,13 @@ function ProjectsOverviewPage() {
         );
 
         applyOptimisticUpdate((prev) =>
-          prev.map((project) =>
-            project.rowId === currentProject.rowId
-              ? { ...project, columnIndex: newKey }
-              : project,
-          ),
+          prev
+            .map((project) =>
+              project.rowId === currentProject.rowId
+                ? { ...project, columnIndex: newKey }
+                : project,
+            )
+            .sort((a, b) => compareKeys(a.columnIndex, b.columnIndex)),
         );
 
         await updateProject({
@@ -272,15 +274,17 @@ function ProjectsOverviewPage() {
         );
 
         applyOptimisticUpdate((prev) =>
-          prev.map((project) =>
-            project.rowId === currentProject.rowId
-              ? {
-                  ...project,
-                  columnIndex: newKey,
-                  projectColumnId: destination.droppableId,
-                }
-              : project,
-          ),
+          prev
+            .map((project) =>
+              project.rowId === currentProject.rowId
+                ? {
+                    ...project,
+                    columnIndex: newKey,
+                    projectColumnId: destination.droppableId,
+                  }
+                : project,
+            )
+            .sort((a, b) => compareKeys(a.columnIndex, b.columnIndex)),
         );
 
         await updateProject({

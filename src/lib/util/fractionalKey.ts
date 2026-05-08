@@ -24,6 +24,19 @@ export const keysBetween = (
 ): string[] => generateNKeysBetween(prev, next, n);
 
 /**
+ * Byte-order comparator for fractional-indexing keys. Use with `Array.sort`
+ * to match server-side ORDER BY under `COLLATE "C"`. JavaScript string
+ * comparison is byte-wise by default; this helper exists so call sites do
+ * not accidentally reach for `localeCompare`, which returns the wrong order
+ * (uppercase Z would sort after lowercase a in en_US.UTF-8).
+ * @param a - First key.
+ * @param b - Second key.
+ * @returns -1, 0, or 1.
+ */
+export const compareKeys = (a: string, b: string): number =>
+  a < b ? -1 : a > b ? 1 : 0;
+
+/**
  * Compute a key for an item being inserted at `toIndex` in `siblings`.
  * `siblings` must be the destination list ordered by key, EXCLUDING the moved item.
  * @param siblings - Destination list (without the moved item) ordered by key.

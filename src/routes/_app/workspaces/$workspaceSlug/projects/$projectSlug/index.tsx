@@ -58,7 +58,7 @@ import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationI
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import createMetaTags from "@/lib/util/createMetaTags";
-import { reorderKey } from "@/lib/util/fractionalKey";
+import { compareKeys, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
@@ -416,11 +416,13 @@ function AuthenticatedProjectPage() {
         );
 
         applyOptimisticUpdate((prev) =>
-          prev.map((task) =>
-            task.rowId === currentTask.rowId
-              ? { ...task, columnIndex: newKey }
-              : task,
-          ),
+          prev
+            .map((task) =>
+              task.rowId === currentTask.rowId
+                ? { ...task, columnIndex: newKey }
+                : task,
+            )
+            .sort((a, b) => compareKeys(a.columnIndex, b.columnIndex)),
         );
 
         await updateTask({
@@ -437,15 +439,17 @@ function AuthenticatedProjectPage() {
         );
 
         applyOptimisticUpdate((prev) =>
-          prev.map((task) =>
-            task.rowId === currentTask.rowId
-              ? {
-                  ...task,
-                  columnIndex: newKey,
-                  columnId: destination.droppableId,
-                }
-              : task,
-          ),
+          prev
+            .map((task) =>
+              task.rowId === currentTask.rowId
+                ? {
+                    ...task,
+                    columnIndex: newKey,
+                    columnId: destination.droppableId,
+                  }
+                : task,
+            )
+            .sort((a, b) => compareKeys(a.columnIndex, b.columnIndex)),
         );
 
         await updateTask({
