@@ -36,6 +36,7 @@ import projectsOptions from "@/lib/options/projects.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
+import { reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
@@ -238,121 +239,55 @@ function ProjectsOverviewPage() {
       };
 
       if (source.droppableId === destination.droppableId) {
-        // Same column reorder
-        const reorderedColumnProjects = [...destinationColumnProjects];
-        const [projectToMove] = reorderedColumnProjects.splice(
-          currentProject.columnIndex,
-          1,
+        // Same-column reorder: compute the new key from neighbors and update
+        // only the moved project.
+        const siblings = destinationColumnProjects.filter(
+          (project) => project.rowId !== currentProject.rowId,
         );
-        reorderedColumnProjects.splice(destination.index, 0, projectToMove);
+        const newKey = reorderKey(
+          siblings,
+          destination.index,
+          (project) => project.columnIndex,
+        );
 
-        // Optimistic update
-        applyOptimisticUpdate((prev) => {
-          const unTouchedProjects = prev.filter(
-            (project) => project.projectColumnId !== destination.droppableId,
-          );
-          return [
-            ...unTouchedProjects,
-            ...reorderedColumnProjects.map((project, index) => ({
-              ...project,
-              columnIndex: index,
-            })),
-          ];
-        });
+        applyOptimisticUpdate((prev) =>
+          prev.map((project) =>
+            project.rowId === currentProject.rowId
+              ? { ...project, columnIndex: newKey }
+              : project,
+          ),
+        );
 
-        // Persist to server
-        await all({
-          async reorder() {
-            return Promise.all(
-              reorderedColumnProjects.map((project, index) =>
-                updateProject({
-                  rowId: project.rowId,
-                  patch: {
-                    columnIndex: index,
-                  },
-                }),
-              ),
-            );
-          },
+        await updateProject({
+          rowId: currentProject.rowId,
+          patch: { columnIndex: newKey },
         });
       } else {
-        // Cross-column move
-        const sourceColumnProjectsExcludingMovedProject =
-          currentProjects.filter(
-            (project) =>
-              project.projectColumnId === source.droppableId &&
-              project.rowId !== draggableId,
-          );
-
-        const projectsWithMovedInDestination = [...destinationColumnProjects];
-        projectsWithMovedInDestination.splice(
+        // Cross-column move: destinationColumnProjects already excludes the
+        // moved project (it is in the source project column).
+        const newKey = reorderKey(
+          destinationColumnProjects,
           destination.index,
-          0,
-          currentProject,
+          (project) => project.columnIndex,
         );
 
-        const sourceProjectIds = sourceColumnProjectsExcludingMovedProject.map(
-          (project) => project.rowId,
-        );
-        const destinationProjectIds = projectsWithMovedInDestination.map(
-          (project) => project.rowId,
+        applyOptimisticUpdate((prev) =>
+          prev.map((project) =>
+            project.rowId === currentProject.rowId
+              ? {
+                  ...project,
+                  columnIndex: newKey,
+                  projectColumnId: destination.droppableId,
+                }
+              : project,
+          ),
         );
 
-        // Optimistic update
-        applyOptimisticUpdate((prev) => {
-          const unTouchedProjects = prev.filter(
-            (project) =>
-              !sourceProjectIds.includes(project.rowId) &&
-              !destinationProjectIds.includes(project.rowId),
-          );
-          return [
-            ...unTouchedProjects,
-            ...sourceColumnProjectsExcludingMovedProject.map(
-              (project, index) => ({
-                ...project,
-                columnIndex: index,
-              }),
-            ),
-            ...projectsWithMovedInDestination.map((project, index) => ({
-              ...project,
-              columnIndex: index,
-              projectColumnId:
-                project.rowId === currentProject.rowId
-                  ? destination.droppableId
-                  : project.projectColumnId,
-            })),
-          ];
-        });
-
-        // Persist to server
-        await all({
-          async updateSourceColumn() {
-            return Promise.all(
-              sourceColumnProjectsExcludingMovedProject.map((project, index) =>
-                updateProject({
-                  rowId: project.rowId,
-                  patch: {
-                    columnIndex: index,
-                  },
-                }),
-              ),
-            );
-          },
-          async updateDestinationColumn() {
-            return Promise.all(
-              projectsWithMovedInDestination.map((project, index) =>
-                updateProject({
-                  rowId: project.rowId,
-                  patch: {
-                    columnIndex: index,
-                    projectColumnId:
-                      project.rowId === currentProject.rowId
-                        ? destination.droppableId
-                        : project.projectColumnId,
-                  },
-                }),
-              ),
-            );
+        await updateProject({
+          rowId: currentProject.rowId,
+          patch: {
+            columnIndex: newKey,
+            projectColumnId: destination.droppableId,
           },
         });
       }
