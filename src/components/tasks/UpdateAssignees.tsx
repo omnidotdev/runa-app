@@ -30,7 +30,9 @@ const UpdateAssignees = withForm({
     initialAssignees: [] as string[] | undefined,
   },
   render: ({ form, maxAssignees, initialAssignees }) => {
-    const { organizationId } = useLoaderData({ from: "/_app" });
+    const { organizationId } = useLoaderData({
+      from: "/_app/workspaces/$workspaceSlug",
+    });
     const { session } = useRouteContext({ from: "/_app" });
     const { contains } = useFilter({ sensitivity: "base" });
 
