@@ -30,6 +30,7 @@ import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import { Role } from "@/lib/permissions";
+import { keyBetween } from "@/lib/util/fractionalKey";
 import generatePrefix from "@/lib/util/generatePrefix";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
@@ -70,15 +71,6 @@ const CreateProjectDialog = () => {
   const newProjectColumnId =
     projectColumnId ?? projectColumns?.[0]?.rowId ?? null;
 
-  const { data: projectColumnIndex } = useQuery({
-    ...projectColumnsOptions({ organizationId: organizationId! }),
-    enabled: !!organizationId,
-    select: (data) =>
-      data?.projectColumns?.nodes?.find(
-        (col) => col.rowId === newProjectColumnId,
-      )?.projects?.totalCount,
-  });
-
   const { isOpen: isCreateProjectOpen, setIsOpen: setIsCreateProjectOpen } =
     useDialogStore({
       type: DialogType.CreateProject,
@@ -115,7 +107,6 @@ const CreateProjectDialog = () => {
       name: "",
       description: "",
       projectColumnId: newProjectColumnId,
-      columnIndex: projectColumnIndex ?? 0,
     },
     validators: {
       onSubmitAsync: async ({ value }) => {
@@ -141,6 +132,12 @@ const CreateProjectDialog = () => {
       },
     },
     onSubmit: async ({ value, formApi }) => {
+      // Append the new project after the last one in the target project column.
+      // `projects` is returned `COLUMN_INDEX_ASC`.
+      const lastProjectInColumn = (projects ?? [])
+        .filter((p) => p.projectColumnId === value.projectColumnId)
+        .at(-1);
+
       toast.promise(
         createNewProject({
           input: {
@@ -151,7 +148,10 @@ const CreateProjectDialog = () => {
               prefix: generatePrefix(value.name),
               description: value.description,
               projectColumnId: value.projectColumnId!,
-              columnIndex: value.columnIndex,
+              columnIndex: keyBetween(
+                lastProjectInColumn?.columnIndex ?? null,
+                null,
+              ),
             },
           },
         }),

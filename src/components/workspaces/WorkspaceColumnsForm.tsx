@@ -34,6 +34,7 @@ import { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import { Role } from "@/lib/permissions";
+import { keyBetween, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 import ColumnForm from "./WorkspaceColumnForm";
@@ -94,16 +95,20 @@ const ProjectColumnsForm = () => {
 
     const oldIndex = dataIds.indexOf(active.id);
     const newIndex = dataIds.indexOf(over.id);
-    const reordered = arrayMove(localColumns, oldIndex, newIndex);
+    const moved = localColumns[oldIndex]!;
 
-    // Optimistically update the local state
-    setLocalColumns(reordered);
+    const siblings = localColumns.filter((c) => c.rowId !== moved.rowId);
+    const newKey = reorderKey(siblings, newIndex, (c) => c.index);
 
-    reordered.forEach((column, index) => {
-      updateProjectColumn({
-        rowId: column.rowId,
-        patch: { index: index },
-      });
+    setLocalColumns((prev) =>
+      arrayMove(prev, oldIndex, newIndex).map((column) =>
+        column.rowId === moved.rowId ? { ...column, index: newKey } : column,
+      ),
+    );
+
+    updateProjectColumn({
+      rowId: moved.rowId,
+      patch: { index: newKey },
     });
   };
 
@@ -134,21 +139,8 @@ const ProjectColumnsForm = () => {
   const handleDeleteColumn = () => {
     if (!columnToDelete) return;
 
-    const currentColumns = localColumns.filter(
-      (c) => c.rowId !== columnToDelete.rowId,
-    );
-
     const projectCount = columnToDelete.projects?.totalCount ?? 0;
     const promise = deleteProjectColumn({ rowId: columnToDelete.rowId });
-
-    for (const c of currentColumns) {
-      updateProjectColumn({
-        rowId: c.rowId,
-        patch: {
-          index: currentColumns.findIndex((col) => col.rowId === c.rowId),
-        },
-      });
-    }
 
     toast.promise(promise, {
       loading: "Deleting column and projects...",
@@ -192,7 +184,7 @@ const ProjectColumnsForm = () => {
               rowId: "pending",
               title: "",
               icon: "emoji:😀",
-              index: localColumns.length,
+              index: keyBetween(localColumns.at(-1)?.index ?? null, null),
               projects: { totalCount: 0 },
             }}
             isActive={true}

@@ -31,6 +31,8 @@ import useForm from "@/lib/hooks/useForm";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
+import tasksOptions from "@/lib/options/tasks.options";
+import { keyBetween } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import CreateTaskAssignees from "./CreateTaskAssignees";
 import CreateTaskDatePicker from "./CreateTaskDatePicker";
@@ -57,6 +59,14 @@ const CreateTaskDialog = () => {
   const { data: labels } = useQuery({
     ...labelsOptions({ projectId }),
     select: (data) => data?.labels?.nodes ?? [],
+    enabled: !!projectId,
+  });
+
+  // Unfiltered task list used to compute the next fractional key for a new
+  // task in the target column. Server returns these `COLUMN_INDEX_ASC`.
+  const { data: allTasks } = useQuery({
+    ...tasksOptions({ projectId }),
+    select: (data) => data?.tasks?.nodes ?? [],
     enabled: !!projectId,
   });
 
@@ -130,6 +140,11 @@ const CreateTaskDialog = () => {
             );
           },
           async task() {
+            const targetColumnTasks = (allTasks ?? []).filter(
+              (task) => task.columnId === value.columnId,
+            );
+            const lastTaskInColumn = targetColumnTasks.at(-1);
+
             return addNewTask({
               input: {
                 task: {
@@ -142,7 +157,10 @@ const CreateTaskDialog = () => {
                     ? new Date(value.dueDate)
                     : undefined,
                   priority: value.priority,
-                  columnIndex: project?.tasks?.totalCount ?? 0,
+                  columnIndex: keyBetween(
+                    lastTaskInColumn?.columnIndex ?? null,
+                    null,
+                  ),
                 },
               },
             });
