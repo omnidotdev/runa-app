@@ -27,6 +27,7 @@ import useForm from "@/lib/hooks/useForm";
 import labelsOptions from "@/lib/options/labels.options";
 import taskOptions from "@/lib/options/task.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { parseTaskParam } from "@/lib/util/taskUrl";
 import TaskLabelsForm from "./TaskLabelsForm";
 
 const UpdateTaskLabelsDialog = () => {
@@ -38,7 +39,12 @@ const UpdateTaskLabelsDialog = () => {
 
   const { taskId: storeTaskId, setTaskId } = useTaskStore();
 
-  const taskId = paramsTaskId ?? storeTaskId;
+  // on the detail route the URL param is a vanity key, so fall back to the
+  // store (set to the resolved rowId); only a legacy UUID param is a rowId
+  const taskId =
+    paramsTaskId && parseTaskParam(paramsTaskId).type === "uuid"
+      ? paramsTaskId
+      : storeTaskId;
   const taskQueryKey = taskOptions({ rowId: taskId! }).queryKey;
 
   const { isOpen, setIsOpen } = useDialogStore({

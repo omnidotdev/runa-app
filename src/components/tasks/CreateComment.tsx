@@ -1,4 +1,4 @@
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { SendIcon } from "lucide-react";
 import { useRef } from "react";
 
@@ -12,7 +12,7 @@ import type { EditorApi } from "@/components/core";
 
 const CreateComment = () => {
   const editorApi = useRef<EditorApi | null>(null);
-  const { taskId } = useParams({
+  const { taskId } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 

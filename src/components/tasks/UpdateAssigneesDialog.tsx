@@ -28,6 +28,7 @@ import subscriptionOptions from "@/lib/options/subscription.options";
 import taskOptions from "@/lib/options/task.options";
 import { Tier, getTierFromSubscription } from "@/lib/types/tier";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { parseTaskParam } from "@/lib/util/taskUrl";
 import UpdateAssignees from "./UpdateAssignees";
 
 export default function UpdateAssigneesDialog() {
@@ -37,7 +38,12 @@ export default function UpdateAssigneesDialog() {
   });
 
   const { taskId: storeTaskId, setTaskId } = useTaskStore();
-  const taskId = paramsTaskId ?? storeTaskId;
+  // on the detail route the URL param is a vanity key, so fall back to the
+  // store (set to the resolved rowId); only a legacy UUID param is a rowId
+  const taskId =
+    paramsTaskId && parseTaskParam(paramsTaskId).type === "uuid"
+      ? paramsTaskId
+      : storeTaskId;
 
   const { isOpen, setIsOpen } = useDialogStore({
     type: DialogType.UpdateAssignees,

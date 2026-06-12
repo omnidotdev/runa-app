@@ -24,6 +24,7 @@ import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { parseTaskParam } from "@/lib/util/taskUrl";
 import CreateTaskDatePicker from "./CreateTaskDatePicker";
 
 import type { TaskQuery } from "@/generated/graphql";
@@ -41,7 +42,12 @@ const UpdateDueDateDialog = () => {
     type: DialogType.UpdateDueDate,
   });
 
-  const taskId = paramsTaskId ?? storeTaskId;
+  // on the detail route the URL param is a vanity key, so fall back to the
+  // store (set to the resolved rowId); only a legacy UUID param is a rowId
+  const taskId =
+    paramsTaskId && parseTaskParam(paramsTaskId).type === "uuid"
+      ? paramsTaskId
+      : storeTaskId;
 
   const queryClient = useQueryClient();
   const taskQueryKey = taskOptions({ rowId: taskId! }).queryKey;

@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
 import { RichTextEditor } from "@/components/core";
@@ -24,7 +24,7 @@ interface Props {
 const UpdateCommentForm = ({ post, isActive, onSetActive }: Props) => {
   const editorApi = useRef<EditorApi | null>(null);
 
-  const { taskId } = useParams({
+  const { taskId } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 

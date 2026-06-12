@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useLoaderData, useParams } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import { useDebounceCallback } from "usehooks-ts";
 
 import { RichTextEditor } from "@/components/core";
@@ -21,11 +21,7 @@ interface Props {
 }
 
 const TaskDescription = ({ task }: Props) => {
-  const { taskId } = useParams({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
-  });
-
-  const { organizationId } = useLoaderData({
+  const { taskId, organizationId } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 

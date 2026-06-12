@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
+import { useLoaderData } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { CalendarIcon } from "lucide-react";
 
@@ -19,7 +19,7 @@ import taskOptions from "@/lib/options/task.options";
 import type { LabelFragment } from "@/generated/graphql";
 
 const TaskSidebar = () => {
-  const { taskId } = useParams({
+  const { taskId } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 

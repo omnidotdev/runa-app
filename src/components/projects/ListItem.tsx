@@ -9,6 +9,7 @@ import { PriorityIcon } from "@/components/tasks";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import { buildTaskKey } from "@/lib/util/taskUrl";
 import { cn } from "@/lib/utils";
 import TaskContextMenu from "../tasks/TaskContextMenu";
 
@@ -91,7 +92,10 @@ const ListItem = ({ task, index, displayId }: Props) => {
                   params: {
                     workspaceSlug,
                     projectSlug,
-                    taskId: task.rowId,
+                    taskId: buildTaskKey({
+                      number: task.number!,
+                      content: task.content,
+                    }),
                   },
                 });
               }

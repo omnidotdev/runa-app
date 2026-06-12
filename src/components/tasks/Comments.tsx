@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { MoreHorizontalIcon, PenLineIcon, Trash2Icon } from "lucide-react";
 import { Suspense, useEffect, useRef, useState } from "react";
@@ -37,7 +37,7 @@ import PostEmojis from "./PostEmojis";
 import UpdateCommentForm from "./UpdateCommentForm";
 
 const Comments = () => {
-  const { taskId } = useParams({
+  const { taskId } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
 
