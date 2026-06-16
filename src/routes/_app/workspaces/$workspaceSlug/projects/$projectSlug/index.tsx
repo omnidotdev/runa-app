@@ -58,6 +58,7 @@ import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationI
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import createMetaTags from "@/lib/util/createMetaTags";
+import { compareKeys, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
@@ -403,113 +404,59 @@ function AuthenticatedProjectPage() {
       };
 
       if (source.droppableId === destination.droppableId) {
-        // Same column reorder
-        const reorderedColumnTasks = [...destinationColumnTasks];
-        const [taskToMove] = reorderedColumnTasks.splice(
-          currentTask.columnIndex,
-          1,
+        // Same-column reorder: compute the new key from neighbors and update
+        // only the moved task. Siblings keep their existing keys.
+        const siblings = destinationColumnTasks.filter(
+          (task) => task.rowId !== currentTask.rowId,
         );
-        reorderedColumnTasks.splice(destination.index, 0, taskToMove);
+        const newKey = reorderKey(
+          siblings,
+          destination.index,
+          (task) => task.columnIndex,
+        );
 
-        // Optimistic update
-        applyOptimisticUpdate((prev) => {
-          const unTouchedTasks = prev.filter(
-            (task) => task.columnId !== destination.droppableId,
-          );
-          return [
-            ...unTouchedTasks,
-            ...reorderedColumnTasks.filter(Boolean).map((task, index) => ({
-              ...task,
-              columnIndex: index,
-            })),
-          ];
-        });
+        applyOptimisticUpdate((prev) =>
+          prev
+            .map((task) =>
+              task.rowId === currentTask.rowId
+                ? { ...task, columnIndex: newKey }
+                : task,
+            )
+            .sort((a, b) => compareKeys(a.columnIndex, b.columnIndex)),
+        );
 
-        // Persist to server
-        await all({
-          async reorder() {
-            return Promise.all(
-              reorderedColumnTasks.filter(Boolean).map((task, index) =>
-                updateTask({
-                  rowId: task.rowId,
-                  patch: {
-                    columnIndex: index,
-                  },
-                }),
-              ),
-            );
-          },
+        await updateTask({
+          rowId: currentTask.rowId,
+          patch: { columnIndex: newKey },
         });
       } else {
-        // Cross-column move
-        const sourceColumnTasksExcludingMovedTask = currentTasks.filter(
-          (task) =>
-            task.columnId === source.droppableId && task.rowId !== draggableId,
+        // Cross-column move: destinationColumnTasks already excludes the
+        // moved task (it is in the source column).
+        const newKey = reorderKey(
+          destinationColumnTasks,
+          destination.index,
+          (task) => task.columnIndex,
         );
 
-        const tasksWithMovedInDestination = [...destinationColumnTasks];
-        tasksWithMovedInDestination.splice(destination.index, 0, currentTask);
-
-        const sourceTaskIds = sourceColumnTasksExcludingMovedTask.map(
-          (task) => task.rowId,
+        applyOptimisticUpdate((prev) =>
+          prev
+            .map((task) =>
+              task.rowId === currentTask.rowId
+                ? {
+                    ...task,
+                    columnIndex: newKey,
+                    columnId: destination.droppableId,
+                  }
+                : task,
+            )
+            .sort((a, b) => compareKeys(a.columnIndex, b.columnIndex)),
         );
-        const destinationTaskIds = tasksWithMovedInDestination.map(
-          (task) => task.rowId,
-        );
 
-        // Optimistic update
-        applyOptimisticUpdate((prev) => {
-          const unTouchedTasks = prev.filter(
-            (task) =>
-              !sourceTaskIds.includes(task.rowId) &&
-              !destinationTaskIds.includes(task.rowId),
-          );
-          return [
-            ...unTouchedTasks,
-            ...sourceColumnTasksExcludingMovedTask.map((task, index) => ({
-              ...task,
-              columnIndex: index,
-            })),
-            ...tasksWithMovedInDestination.map((task, index) => ({
-              ...task,
-              columnIndex: index,
-              columnId:
-                task.rowId === currentTask.rowId
-                  ? destination.droppableId
-                  : task.columnId,
-            })),
-          ];
-        });
-
-        // Persist to server
-        await all({
-          async updateSourceColumn() {
-            return Promise.all(
-              sourceColumnTasksExcludingMovedTask.map((task, index) =>
-                updateTask({
-                  rowId: task.rowId,
-                  patch: {
-                    columnIndex: index,
-                  },
-                }),
-              ),
-            );
-          },
-          async updateDestinationColumn() {
-            return Promise.all(
-              tasksWithMovedInDestination.map((task, index) =>
-                updateTask({
-                  rowId: task.rowId,
-                  patch: {
-                    columnIndex: index,
-                    columnId:
-                      task.rowId === currentTask.rowId
-                        ? destination.droppableId
-                        : task.columnId,
-                  },
-                }),
-              ),
-            );
+        await updateTask({
+          rowId: currentTask.rowId,
+          patch: {
+            columnIndex: newKey,
+            columnId: destination.droppableId,
           },
         });
       }

@@ -24,7 +24,9 @@ const Assignees = ({
   maxVisible = 3,
   ...rest
 }: Props) => {
-  const { organizationId } = useLoaderData({ from: "/_app" });
+  const { organizationId } = useLoaderData({
+    from: "/_app/workspaces/$workspaceSlug",
+  });
   const { session } = useRouteContext({ from: "/_app" });
 
   // Fetch organization members from IDP

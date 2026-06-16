@@ -351,7 +351,7 @@ export type Column = Node & {
   icon?: Maybe<Scalars['String']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
-  index: Scalars['Int']['output'];
+  index: Scalars['String']['output'];
   /** Reads a single `Project` that is related to this `Column`. */
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
@@ -376,59 +376,17 @@ export type ColumnTasksArgs = {
 
 export type ColumnAggregates = {
   __typename?: 'ColumnAggregates';
-  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  average?: Maybe<ColumnAverageAggregates>;
   /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
   distinctCount?: Maybe<ColumnDistinctCountAggregates>;
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  max?: Maybe<ColumnMaxAggregates>;
-  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  min?: Maybe<ColumnMinAggregates>;
-  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  stddevPopulation?: Maybe<ColumnStddevPopulationAggregates>;
-  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  stddevSample?: Maybe<ColumnStddevSampleAggregates>;
-  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  sum?: Maybe<ColumnSumAggregates>;
-  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  variancePopulation?: Maybe<ColumnVariancePopulationAggregates>;
-  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  varianceSample?: Maybe<ColumnVarianceSampleAggregates>;
 };
 
 /** A filter to be used against aggregates of `Column` object types. */
 export type ColumnAggregatesFilter = {
-  /** Mean average aggregate over matching `Column` objects. */
-  average?: InputMaybe<ColumnAverageAggregateFilter>;
   /** Distinct count aggregate over matching `Column` objects. */
   distinctCount?: InputMaybe<ColumnDistinctCountAggregateFilter>;
   /** A filter that must pass for the relevant `Column` object to be included within the aggregate. */
   filter?: InputMaybe<ColumnFilter>;
-  /** Maximum aggregate over matching `Column` objects. */
-  max?: InputMaybe<ColumnMaxAggregateFilter>;
-  /** Minimum aggregate over matching `Column` objects. */
-  min?: InputMaybe<ColumnMinAggregateFilter>;
-  /** Population standard deviation aggregate over matching `Column` objects. */
-  stddevPopulation?: InputMaybe<ColumnStddevPopulationAggregateFilter>;
-  /** Sample standard deviation aggregate over matching `Column` objects. */
-  stddevSample?: InputMaybe<ColumnStddevSampleAggregateFilter>;
-  /** Sum aggregate over matching `Column` objects. */
-  sum?: InputMaybe<ColumnSumAggregateFilter>;
-  /** Population variance aggregate over matching `Column` objects. */
-  variancePopulation?: InputMaybe<ColumnVariancePopulationAggregateFilter>;
-  /** Sample variance aggregate over matching `Column` objects. */
-  varianceSample?: InputMaybe<ColumnVarianceSampleAggregateFilter>;
-};
-
-export type ColumnAverageAggregateFilter = {
-  index?: InputMaybe<BigFloatFilter>;
-};
-
-export type ColumnAverageAggregates = {
-  __typename?: 'ColumnAverageAggregates';
-  /** Mean average of index across the matching connection */
-  index?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** A condition to be used against `Column` object types. All fields are tested for equality and combined with a logical ‘and.’ */
@@ -438,7 +396,7 @@ export type ColumnCondition = {
   /** Checks for equality with the object’s `icon` field. */
   icon?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `index` field. */
-  index?: InputMaybe<Scalars['Int']['input']>;
+  index?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -519,7 +477,7 @@ export type ColumnFilter = {
   /** Filter by the object’s `icon` field. */
   icon?: InputMaybe<StringFilter>;
   /** Filter by the object’s `index` field. */
-  index?: InputMaybe<IntFilter>;
+  index?: InputMaybe<StringFilter>;
   /** Negates the expression. */
   not?: InputMaybe<ColumnFilter>;
   /** Checks for any expressions in this list. */
@@ -556,13 +514,11 @@ export enum ColumnGroupBy {
 
 export type ColumnHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -583,43 +539,36 @@ export type ColumnHavingInput = {
 
 export type ColumnHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ColumnHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -627,31 +576,11 @@ export type ColumnHavingVarianceSampleInput = {
 export type ColumnInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   icon?: InputMaybe<Scalars['String']['input']>;
-  index?: InputMaybe<Scalars['Int']['input']>;
+  index: Scalars['String']['input'];
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-export type ColumnMaxAggregateFilter = {
-  index?: InputMaybe<IntFilter>;
-};
-
-export type ColumnMaxAggregates = {
-  __typename?: 'ColumnMaxAggregates';
-  /** Maximum of index across the matching connection */
-  index?: Maybe<Scalars['Int']['output']>;
-};
-
-export type ColumnMinAggregateFilter = {
-  index?: InputMaybe<IntFilter>;
-};
-
-export type ColumnMinAggregates = {
-  __typename?: 'ColumnMinAggregates';
-  /** Minimum of index across the matching connection */
-  index?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Methods to use when ordering `Column`. */
@@ -669,8 +598,6 @@ export enum ColumnOrderBy {
   ProjectIdDesc = 'PROJECT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
-  TasksAverageColumnIndexAsc = 'TASKS_AVERAGE_COLUMN_INDEX_ASC',
-  TasksAverageColumnIndexDesc = 'TASKS_AVERAGE_COLUMN_INDEX_DESC',
   TasksAverageNumberAsc = 'TASKS_AVERAGE_NUMBER_ASC',
   TasksAverageNumberDesc = 'TASKS_AVERAGE_NUMBER_DESC',
   TasksCountAsc = 'TASKS_COUNT_ASC',
@@ -699,32 +626,18 @@ export enum ColumnOrderBy {
   TasksDistinctCountRowIdDesc = 'TASKS_DISTINCT_COUNT_ROW_ID_DESC',
   TasksDistinctCountUpdatedAtAsc = 'TASKS_DISTINCT_COUNT_UPDATED_AT_ASC',
   TasksDistinctCountUpdatedAtDesc = 'TASKS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  TasksMaxColumnIndexAsc = 'TASKS_MAX_COLUMN_INDEX_ASC',
-  TasksMaxColumnIndexDesc = 'TASKS_MAX_COLUMN_INDEX_DESC',
   TasksMaxNumberAsc = 'TASKS_MAX_NUMBER_ASC',
   TasksMaxNumberDesc = 'TASKS_MAX_NUMBER_DESC',
-  TasksMinColumnIndexAsc = 'TASKS_MIN_COLUMN_INDEX_ASC',
-  TasksMinColumnIndexDesc = 'TASKS_MIN_COLUMN_INDEX_DESC',
   TasksMinNumberAsc = 'TASKS_MIN_NUMBER_ASC',
   TasksMinNumberDesc = 'TASKS_MIN_NUMBER_DESC',
-  TasksStddevPopulationColumnIndexAsc = 'TASKS_STDDEV_POPULATION_COLUMN_INDEX_ASC',
-  TasksStddevPopulationColumnIndexDesc = 'TASKS_STDDEV_POPULATION_COLUMN_INDEX_DESC',
   TasksStddevPopulationNumberAsc = 'TASKS_STDDEV_POPULATION_NUMBER_ASC',
   TasksStddevPopulationNumberDesc = 'TASKS_STDDEV_POPULATION_NUMBER_DESC',
-  TasksStddevSampleColumnIndexAsc = 'TASKS_STDDEV_SAMPLE_COLUMN_INDEX_ASC',
-  TasksStddevSampleColumnIndexDesc = 'TASKS_STDDEV_SAMPLE_COLUMN_INDEX_DESC',
   TasksStddevSampleNumberAsc = 'TASKS_STDDEV_SAMPLE_NUMBER_ASC',
   TasksStddevSampleNumberDesc = 'TASKS_STDDEV_SAMPLE_NUMBER_DESC',
-  TasksSumColumnIndexAsc = 'TASKS_SUM_COLUMN_INDEX_ASC',
-  TasksSumColumnIndexDesc = 'TASKS_SUM_COLUMN_INDEX_DESC',
   TasksSumNumberAsc = 'TASKS_SUM_NUMBER_ASC',
   TasksSumNumberDesc = 'TASKS_SUM_NUMBER_DESC',
-  TasksVariancePopulationColumnIndexAsc = 'TASKS_VARIANCE_POPULATION_COLUMN_INDEX_ASC',
-  TasksVariancePopulationColumnIndexDesc = 'TASKS_VARIANCE_POPULATION_COLUMN_INDEX_DESC',
   TasksVariancePopulationNumberAsc = 'TASKS_VARIANCE_POPULATION_NUMBER_ASC',
   TasksVariancePopulationNumberDesc = 'TASKS_VARIANCE_POPULATION_NUMBER_DESC',
-  TasksVarianceSampleColumnIndexAsc = 'TASKS_VARIANCE_SAMPLE_COLUMN_INDEX_ASC',
-  TasksVarianceSampleColumnIndexDesc = 'TASKS_VARIANCE_SAMPLE_COLUMN_INDEX_DESC',
   TasksVarianceSampleNumberAsc = 'TASKS_VARIANCE_SAMPLE_NUMBER_ASC',
   TasksVarianceSampleNumberDesc = 'TASKS_VARIANCE_SAMPLE_NUMBER_DESC',
   TitleAsc = 'TITLE_ASC',
@@ -737,41 +650,11 @@ export enum ColumnOrderBy {
 export type ColumnPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   icon?: InputMaybe<Scalars['String']['input']>;
-  index?: InputMaybe<Scalars['Int']['input']>;
+  index?: InputMaybe<Scalars['String']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-export type ColumnStddevPopulationAggregateFilter = {
-  index?: InputMaybe<BigFloatFilter>;
-};
-
-export type ColumnStddevPopulationAggregates = {
-  __typename?: 'ColumnStddevPopulationAggregates';
-  /** Population standard deviation of index across the matching connection */
-  index?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type ColumnStddevSampleAggregateFilter = {
-  index?: InputMaybe<BigFloatFilter>;
-};
-
-export type ColumnStddevSampleAggregates = {
-  __typename?: 'ColumnStddevSampleAggregates';
-  /** Sample standard deviation of index across the matching connection */
-  index?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type ColumnSumAggregateFilter = {
-  index?: InputMaybe<BigIntFilter>;
-};
-
-export type ColumnSumAggregates = {
-  __typename?: 'ColumnSumAggregates';
-  /** Sum of index across the matching connection */
-  index: Scalars['BigInt']['output'];
 };
 
 /** A filter to be used against many `Task` object types. All fields are combined with a logical ‘and.’ */
@@ -784,26 +667,6 @@ export type ColumnToManyTaskFilter = {
   none?: InputMaybe<TaskFilter>;
   /** Some related `Task` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<TaskFilter>;
-};
-
-export type ColumnVariancePopulationAggregateFilter = {
-  index?: InputMaybe<BigFloatFilter>;
-};
-
-export type ColumnVariancePopulationAggregates = {
-  __typename?: 'ColumnVariancePopulationAggregates';
-  /** Population variance of index across the matching connection */
-  index?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type ColumnVarianceSampleAggregateFilter = {
-  index?: InputMaybe<BigFloatFilter>;
-};
-
-export type ColumnVarianceSampleAggregates = {
-  __typename?: 'ColumnVarianceSampleAggregates';
-  /** Sample variance of index across the matching connection */
-  index?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** All input for the create `Assignee` mutation. */
@@ -3756,7 +3619,7 @@ export type PostToManyEmojiFilter = {
 export type Project = Node & {
   __typename?: 'Project';
   color?: Maybe<Scalars['String']['output']>;
-  columnIndex: Scalars['Int']['output'];
+  columnIndex: Scalars['String']['output'];
   /** Reads and enables pagination through a set of `Column`. */
   columns: ColumnConnection;
   createdAt: Scalars['Datetime']['output'];
@@ -3906,14 +3769,11 @@ export type ProjectAggregatesFilter = {
 };
 
 export type ProjectAverageAggregateFilter = {
-  columnIndex?: InputMaybe<BigFloatFilter>;
   nextTaskNumber?: InputMaybe<BigFloatFilter>;
 };
 
 export type ProjectAverageAggregates = {
   __typename?: 'ProjectAverageAggregates';
-  /** Mean average of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
   /** Mean average of nextTaskNumber across the matching connection */
   nextTaskNumber?: Maybe<Scalars['BigFloat']['output']>;
 };
@@ -3924,7 +3784,7 @@ export type ProjectColumn = Node & {
   icon?: Maybe<Scalars['String']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
-  index: Scalars['Int']['output'];
+  index: Scalars['String']['output'];
   organizationId: Scalars['String']['output'];
   /** Reads and enables pagination through a set of `Project`. */
   projects: ProjectConnection;
@@ -3947,31 +3807,9 @@ export type ProjectColumnProjectsArgs = {
 
 export type ProjectColumnAggregates = {
   __typename?: 'ProjectColumnAggregates';
-  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  average?: Maybe<ProjectColumnAverageAggregates>;
   /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
   distinctCount?: Maybe<ProjectColumnDistinctCountAggregates>;
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  max?: Maybe<ProjectColumnMaxAggregates>;
-  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  min?: Maybe<ProjectColumnMinAggregates>;
-  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  stddevPopulation?: Maybe<ProjectColumnStddevPopulationAggregates>;
-  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  stddevSample?: Maybe<ProjectColumnStddevSampleAggregates>;
-  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  sum?: Maybe<ProjectColumnSumAggregates>;
-  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  variancePopulation?: Maybe<ProjectColumnVariancePopulationAggregates>;
-  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
-  varianceSample?: Maybe<ProjectColumnVarianceSampleAggregates>;
-};
-
-export type ProjectColumnAverageAggregates = {
-  __typename?: 'ProjectColumnAverageAggregates';
-  /** Mean average of index across the matching connection */
-  index?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /**
@@ -3984,7 +3822,7 @@ export type ProjectColumnCondition = {
   /** Checks for equality with the object’s `icon` field. */
   icon?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `index` field. */
-  index?: InputMaybe<Scalars['Int']['input']>;
+  index?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `organizationId` field. */
   organizationId?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -4055,7 +3893,7 @@ export type ProjectColumnFilter = {
   /** Filter by the object’s `icon` field. */
   icon?: InputMaybe<StringFilter>;
   /** Filter by the object’s `index` field. */
-  index?: InputMaybe<IntFilter>;
+  index?: InputMaybe<StringFilter>;
   /** Negates the expression. */
   not?: InputMaybe<ProjectColumnFilter>;
   /** Checks for any expressions in this list. */
@@ -4090,13 +3928,11 @@ export enum ProjectColumnGroupBy {
 
 export type ProjectColumnHavingAverageInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectColumnHavingDistinctCountInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -4117,43 +3953,36 @@ export type ProjectColumnHavingInput = {
 
 export type ProjectColumnHavingMaxInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectColumnHavingMinInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectColumnHavingStddevPopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectColumnHavingStddevSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectColumnHavingSumInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectColumnHavingVariancePopulationInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectColumnHavingVarianceSampleInput = {
   createdAt?: InputMaybe<HavingDatetimeFilter>;
-  index?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
@@ -4161,23 +3990,11 @@ export type ProjectColumnHavingVarianceSampleInput = {
 export type ProjectColumnInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   icon?: InputMaybe<Scalars['String']['input']>;
-  index?: InputMaybe<Scalars['Int']['input']>;
+  index: Scalars['String']['input'];
   organizationId: Scalars['String']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title: Scalars['String']['input'];
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-export type ProjectColumnMaxAggregates = {
-  __typename?: 'ProjectColumnMaxAggregates';
-  /** Maximum of index across the matching connection */
-  index?: Maybe<Scalars['Int']['output']>;
-};
-
-export type ProjectColumnMinAggregates = {
-  __typename?: 'ProjectColumnMinAggregates';
-  /** Minimum of index across the matching connection */
-  index?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Methods to use when ordering `ProjectColumn`. */
@@ -4193,8 +4010,6 @@ export enum ProjectColumnOrderBy {
   OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
-  ProjectsAverageColumnIndexAsc = 'PROJECTS_AVERAGE_COLUMN_INDEX_ASC',
-  ProjectsAverageColumnIndexDesc = 'PROJECTS_AVERAGE_COLUMN_INDEX_DESC',
   ProjectsAverageNextTaskNumberAsc = 'PROJECTS_AVERAGE_NEXT_TASK_NUMBER_ASC',
   ProjectsAverageNextTaskNumberDesc = 'PROJECTS_AVERAGE_NEXT_TASK_NUMBER_DESC',
   ProjectsCountAsc = 'PROJECTS_COUNT_ASC',
@@ -4225,32 +4040,18 @@ export enum ProjectColumnOrderBy {
   ProjectsDistinctCountSlugDesc = 'PROJECTS_DISTINCT_COUNT_SLUG_DESC',
   ProjectsDistinctCountUpdatedAtAsc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_ASC',
   ProjectsDistinctCountUpdatedAtDesc = 'PROJECTS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  ProjectsMaxColumnIndexAsc = 'PROJECTS_MAX_COLUMN_INDEX_ASC',
-  ProjectsMaxColumnIndexDesc = 'PROJECTS_MAX_COLUMN_INDEX_DESC',
   ProjectsMaxNextTaskNumberAsc = 'PROJECTS_MAX_NEXT_TASK_NUMBER_ASC',
   ProjectsMaxNextTaskNumberDesc = 'PROJECTS_MAX_NEXT_TASK_NUMBER_DESC',
-  ProjectsMinColumnIndexAsc = 'PROJECTS_MIN_COLUMN_INDEX_ASC',
-  ProjectsMinColumnIndexDesc = 'PROJECTS_MIN_COLUMN_INDEX_DESC',
   ProjectsMinNextTaskNumberAsc = 'PROJECTS_MIN_NEXT_TASK_NUMBER_ASC',
   ProjectsMinNextTaskNumberDesc = 'PROJECTS_MIN_NEXT_TASK_NUMBER_DESC',
-  ProjectsStddevPopulationColumnIndexAsc = 'PROJECTS_STDDEV_POPULATION_COLUMN_INDEX_ASC',
-  ProjectsStddevPopulationColumnIndexDesc = 'PROJECTS_STDDEV_POPULATION_COLUMN_INDEX_DESC',
   ProjectsStddevPopulationNextTaskNumberAsc = 'PROJECTS_STDDEV_POPULATION_NEXT_TASK_NUMBER_ASC',
   ProjectsStddevPopulationNextTaskNumberDesc = 'PROJECTS_STDDEV_POPULATION_NEXT_TASK_NUMBER_DESC',
-  ProjectsStddevSampleColumnIndexAsc = 'PROJECTS_STDDEV_SAMPLE_COLUMN_INDEX_ASC',
-  ProjectsStddevSampleColumnIndexDesc = 'PROJECTS_STDDEV_SAMPLE_COLUMN_INDEX_DESC',
   ProjectsStddevSampleNextTaskNumberAsc = 'PROJECTS_STDDEV_SAMPLE_NEXT_TASK_NUMBER_ASC',
   ProjectsStddevSampleNextTaskNumberDesc = 'PROJECTS_STDDEV_SAMPLE_NEXT_TASK_NUMBER_DESC',
-  ProjectsSumColumnIndexAsc = 'PROJECTS_SUM_COLUMN_INDEX_ASC',
-  ProjectsSumColumnIndexDesc = 'PROJECTS_SUM_COLUMN_INDEX_DESC',
   ProjectsSumNextTaskNumberAsc = 'PROJECTS_SUM_NEXT_TASK_NUMBER_ASC',
   ProjectsSumNextTaskNumberDesc = 'PROJECTS_SUM_NEXT_TASK_NUMBER_DESC',
-  ProjectsVariancePopulationColumnIndexAsc = 'PROJECTS_VARIANCE_POPULATION_COLUMN_INDEX_ASC',
-  ProjectsVariancePopulationColumnIndexDesc = 'PROJECTS_VARIANCE_POPULATION_COLUMN_INDEX_DESC',
   ProjectsVariancePopulationNextTaskNumberAsc = 'PROJECTS_VARIANCE_POPULATION_NEXT_TASK_NUMBER_ASC',
   ProjectsVariancePopulationNextTaskNumberDesc = 'PROJECTS_VARIANCE_POPULATION_NEXT_TASK_NUMBER_DESC',
-  ProjectsVarianceSampleColumnIndexAsc = 'PROJECTS_VARIANCE_SAMPLE_COLUMN_INDEX_ASC',
-  ProjectsVarianceSampleColumnIndexDesc = 'PROJECTS_VARIANCE_SAMPLE_COLUMN_INDEX_DESC',
   ProjectsVarianceSampleNextTaskNumberAsc = 'PROJECTS_VARIANCE_SAMPLE_NEXT_TASK_NUMBER_ASC',
   ProjectsVarianceSampleNextTaskNumberDesc = 'PROJECTS_VARIANCE_SAMPLE_NEXT_TASK_NUMBER_DESC',
   RowIdAsc = 'ROW_ID_ASC',
@@ -4265,29 +4066,11 @@ export enum ProjectColumnOrderBy {
 export type ProjectColumnPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   icon?: InputMaybe<Scalars['String']['input']>;
-  index?: InputMaybe<Scalars['Int']['input']>;
+  index?: InputMaybe<Scalars['String']['input']>;
   organizationId?: InputMaybe<Scalars['String']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
-};
-
-export type ProjectColumnStddevPopulationAggregates = {
-  __typename?: 'ProjectColumnStddevPopulationAggregates';
-  /** Population standard deviation of index across the matching connection */
-  index?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type ProjectColumnStddevSampleAggregates = {
-  __typename?: 'ProjectColumnStddevSampleAggregates';
-  /** Sample standard deviation of index across the matching connection */
-  index?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type ProjectColumnSumAggregates = {
-  __typename?: 'ProjectColumnSumAggregates';
-  /** Sum of index across the matching connection */
-  index: Scalars['BigInt']['output'];
 };
 
 /** A filter to be used against many `Project` object types. All fields are combined with a logical ‘and.’ */
@@ -4302,24 +4085,12 @@ export type ProjectColumnToManyProjectFilter = {
   some?: InputMaybe<ProjectFilter>;
 };
 
-export type ProjectColumnVariancePopulationAggregates = {
-  __typename?: 'ProjectColumnVariancePopulationAggregates';
-  /** Population variance of index across the matching connection */
-  index?: Maybe<Scalars['BigFloat']['output']>;
-};
-
-export type ProjectColumnVarianceSampleAggregates = {
-  __typename?: 'ProjectColumnVarianceSampleAggregates';
-  /** Sample variance of index across the matching connection */
-  index?: Maybe<Scalars['BigFloat']['output']>;
-};
-
 /** A condition to be used against `Project` object types. All fields are tested for equality and combined with a logical ‘and.’ */
 export type ProjectCondition = {
   /** Checks for equality with the object’s `color` field. */
   color?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `columnIndex` field. */
-  columnIndex?: InputMaybe<Scalars['Int']['input']>;
+  columnIndex?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `description` field. */
@@ -4430,7 +4201,7 @@ export type ProjectFilter = {
   /** Filter by the object’s `color` field. */
   color?: InputMaybe<StringFilter>;
   /** Filter by the object’s `columnIndex` field. */
-  columnIndex?: InputMaybe<IntFilter>;
+  columnIndex?: InputMaybe<StringFilter>;
   /** Filter by the object’s `columns` relation. */
   columns?: InputMaybe<ProjectToManyColumnFilter>;
   /** Some related `columns` exist. */
@@ -4506,14 +4277,12 @@ export enum ProjectGroupBy {
 }
 
 export type ProjectHavingAverageInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   nextTaskNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingDistinctCountInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   nextTaskNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
@@ -4535,49 +4304,42 @@ export type ProjectHavingInput = {
 };
 
 export type ProjectHavingMaxInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   nextTaskNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingMinInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   nextTaskNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingStddevPopulationInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   nextTaskNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingStddevSampleInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   nextTaskNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingSumInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   nextTaskNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingVariancePopulationInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   nextTaskNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
 };
 
 export type ProjectHavingVarianceSampleInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   nextTaskNumber?: InputMaybe<HavingIntFilter>;
   updatedAt?: InputMaybe<HavingDatetimeFilter>;
@@ -4586,7 +4348,7 @@ export type ProjectHavingVarianceSampleInput = {
 /** An input for mutations affecting `Project` */
 export type ProjectInput = {
   color?: InputMaybe<Scalars['String']['input']>;
-  columnIndex?: InputMaybe<Scalars['Int']['input']>;
+  columnIndex: Scalars['String']['input'];
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   isPublic?: InputMaybe<Scalars['Boolean']['input']>;
@@ -5248,27 +5010,21 @@ export type ProjectLinkVarianceSampleAggregates = {
 };
 
 export type ProjectMaxAggregateFilter = {
-  columnIndex?: InputMaybe<IntFilter>;
   nextTaskNumber?: InputMaybe<IntFilter>;
 };
 
 export type ProjectMaxAggregates = {
   __typename?: 'ProjectMaxAggregates';
-  /** Maximum of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['Int']['output']>;
   /** Maximum of nextTaskNumber across the matching connection */
   nextTaskNumber?: Maybe<Scalars['Int']['output']>;
 };
 
 export type ProjectMinAggregateFilter = {
-  columnIndex?: InputMaybe<IntFilter>;
   nextTaskNumber?: InputMaybe<IntFilter>;
 };
 
 export type ProjectMinAggregates = {
   __typename?: 'ProjectMinAggregates';
-  /** Minimum of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['Int']['output']>;
   /** Minimum of nextTaskNumber across the matching connection */
   nextTaskNumber?: Maybe<Scalars['Int']['output']>;
 };
@@ -5277,8 +5033,6 @@ export type ProjectMinAggregates = {
 export enum ProjectOrderBy {
   ColorAsc = 'COLOR_ASC',
   ColorDesc = 'COLOR_DESC',
-  ColumnsAverageIndexAsc = 'COLUMNS_AVERAGE_INDEX_ASC',
-  ColumnsAverageIndexDesc = 'COLUMNS_AVERAGE_INDEX_DESC',
   ColumnsCountAsc = 'COLUMNS_COUNT_ASC',
   ColumnsCountDesc = 'COLUMNS_COUNT_DESC',
   ColumnsDistinctCountCreatedAtAsc = 'COLUMNS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -5295,20 +5049,6 @@ export enum ProjectOrderBy {
   ColumnsDistinctCountTitleDesc = 'COLUMNS_DISTINCT_COUNT_TITLE_DESC',
   ColumnsDistinctCountUpdatedAtAsc = 'COLUMNS_DISTINCT_COUNT_UPDATED_AT_ASC',
   ColumnsDistinctCountUpdatedAtDesc = 'COLUMNS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  ColumnsMaxIndexAsc = 'COLUMNS_MAX_INDEX_ASC',
-  ColumnsMaxIndexDesc = 'COLUMNS_MAX_INDEX_DESC',
-  ColumnsMinIndexAsc = 'COLUMNS_MIN_INDEX_ASC',
-  ColumnsMinIndexDesc = 'COLUMNS_MIN_INDEX_DESC',
-  ColumnsStddevPopulationIndexAsc = 'COLUMNS_STDDEV_POPULATION_INDEX_ASC',
-  ColumnsStddevPopulationIndexDesc = 'COLUMNS_STDDEV_POPULATION_INDEX_DESC',
-  ColumnsStddevSampleIndexAsc = 'COLUMNS_STDDEV_SAMPLE_INDEX_ASC',
-  ColumnsStddevSampleIndexDesc = 'COLUMNS_STDDEV_SAMPLE_INDEX_DESC',
-  ColumnsSumIndexAsc = 'COLUMNS_SUM_INDEX_ASC',
-  ColumnsSumIndexDesc = 'COLUMNS_SUM_INDEX_DESC',
-  ColumnsVariancePopulationIndexAsc = 'COLUMNS_VARIANCE_POPULATION_INDEX_ASC',
-  ColumnsVariancePopulationIndexDesc = 'COLUMNS_VARIANCE_POPULATION_INDEX_DESC',
-  ColumnsVarianceSampleIndexAsc = 'COLUMNS_VARIANCE_SAMPLE_INDEX_ASC',
-  ColumnsVarianceSampleIndexDesc = 'COLUMNS_VARIANCE_SAMPLE_INDEX_DESC',
   ColumnIndexAsc = 'COLUMN_INDEX_ASC',
   ColumnIndexDesc = 'COLUMN_INDEX_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
@@ -5392,8 +5132,6 @@ export enum ProjectOrderBy {
   RowIdDesc = 'ROW_ID_DESC',
   SlugAsc = 'SLUG_ASC',
   SlugDesc = 'SLUG_DESC',
-  TasksAverageColumnIndexAsc = 'TASKS_AVERAGE_COLUMN_INDEX_ASC',
-  TasksAverageColumnIndexDesc = 'TASKS_AVERAGE_COLUMN_INDEX_DESC',
   TasksAverageNumberAsc = 'TASKS_AVERAGE_NUMBER_ASC',
   TasksAverageNumberDesc = 'TASKS_AVERAGE_NUMBER_DESC',
   TasksCountAsc = 'TASKS_COUNT_ASC',
@@ -5422,32 +5160,18 @@ export enum ProjectOrderBy {
   TasksDistinctCountRowIdDesc = 'TASKS_DISTINCT_COUNT_ROW_ID_DESC',
   TasksDistinctCountUpdatedAtAsc = 'TASKS_DISTINCT_COUNT_UPDATED_AT_ASC',
   TasksDistinctCountUpdatedAtDesc = 'TASKS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  TasksMaxColumnIndexAsc = 'TASKS_MAX_COLUMN_INDEX_ASC',
-  TasksMaxColumnIndexDesc = 'TASKS_MAX_COLUMN_INDEX_DESC',
   TasksMaxNumberAsc = 'TASKS_MAX_NUMBER_ASC',
   TasksMaxNumberDesc = 'TASKS_MAX_NUMBER_DESC',
-  TasksMinColumnIndexAsc = 'TASKS_MIN_COLUMN_INDEX_ASC',
-  TasksMinColumnIndexDesc = 'TASKS_MIN_COLUMN_INDEX_DESC',
   TasksMinNumberAsc = 'TASKS_MIN_NUMBER_ASC',
   TasksMinNumberDesc = 'TASKS_MIN_NUMBER_DESC',
-  TasksStddevPopulationColumnIndexAsc = 'TASKS_STDDEV_POPULATION_COLUMN_INDEX_ASC',
-  TasksStddevPopulationColumnIndexDesc = 'TASKS_STDDEV_POPULATION_COLUMN_INDEX_DESC',
   TasksStddevPopulationNumberAsc = 'TASKS_STDDEV_POPULATION_NUMBER_ASC',
   TasksStddevPopulationNumberDesc = 'TASKS_STDDEV_POPULATION_NUMBER_DESC',
-  TasksStddevSampleColumnIndexAsc = 'TASKS_STDDEV_SAMPLE_COLUMN_INDEX_ASC',
-  TasksStddevSampleColumnIndexDesc = 'TASKS_STDDEV_SAMPLE_COLUMN_INDEX_DESC',
   TasksStddevSampleNumberAsc = 'TASKS_STDDEV_SAMPLE_NUMBER_ASC',
   TasksStddevSampleNumberDesc = 'TASKS_STDDEV_SAMPLE_NUMBER_DESC',
-  TasksSumColumnIndexAsc = 'TASKS_SUM_COLUMN_INDEX_ASC',
-  TasksSumColumnIndexDesc = 'TASKS_SUM_COLUMN_INDEX_DESC',
   TasksSumNumberAsc = 'TASKS_SUM_NUMBER_ASC',
   TasksSumNumberDesc = 'TASKS_SUM_NUMBER_DESC',
-  TasksVariancePopulationColumnIndexAsc = 'TASKS_VARIANCE_POPULATION_COLUMN_INDEX_ASC',
-  TasksVariancePopulationColumnIndexDesc = 'TASKS_VARIANCE_POPULATION_COLUMN_INDEX_DESC',
   TasksVariancePopulationNumberAsc = 'TASKS_VARIANCE_POPULATION_NUMBER_ASC',
   TasksVariancePopulationNumberDesc = 'TASKS_VARIANCE_POPULATION_NUMBER_DESC',
-  TasksVarianceSampleColumnIndexAsc = 'TASKS_VARIANCE_SAMPLE_COLUMN_INDEX_ASC',
-  TasksVarianceSampleColumnIndexDesc = 'TASKS_VARIANCE_SAMPLE_COLUMN_INDEX_DESC',
   TasksVarianceSampleNumberAsc = 'TASKS_VARIANCE_SAMPLE_NUMBER_ASC',
   TasksVarianceSampleNumberDesc = 'TASKS_VARIANCE_SAMPLE_NUMBER_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
@@ -5491,7 +5215,7 @@ export enum ProjectOrderBy {
 /** Represents an update to a `Project`. Fields that are set will be updated. */
 export type ProjectPatch = {
   color?: InputMaybe<Scalars['String']['input']>;
-  columnIndex?: InputMaybe<Scalars['Int']['input']>;
+  columnIndex?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   isPublic?: InputMaybe<Scalars['Boolean']['input']>;
@@ -5703,40 +5427,31 @@ export type ProjectProjectLabelPatch = {
 };
 
 export type ProjectStddevPopulationAggregateFilter = {
-  columnIndex?: InputMaybe<BigFloatFilter>;
   nextTaskNumber?: InputMaybe<BigFloatFilter>;
 };
 
 export type ProjectStddevPopulationAggregates = {
   __typename?: 'ProjectStddevPopulationAggregates';
-  /** Population standard deviation of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
   /** Population standard deviation of nextTaskNumber across the matching connection */
   nextTaskNumber?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type ProjectStddevSampleAggregateFilter = {
-  columnIndex?: InputMaybe<BigFloatFilter>;
   nextTaskNumber?: InputMaybe<BigFloatFilter>;
 };
 
 export type ProjectStddevSampleAggregates = {
   __typename?: 'ProjectStddevSampleAggregates';
-  /** Sample standard deviation of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
   /** Sample standard deviation of nextTaskNumber across the matching connection */
   nextTaskNumber?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type ProjectSumAggregateFilter = {
-  columnIndex?: InputMaybe<BigIntFilter>;
   nextTaskNumber?: InputMaybe<BigIntFilter>;
 };
 
 export type ProjectSumAggregates = {
   __typename?: 'ProjectSumAggregates';
-  /** Sum of columnIndex across the matching connection */
-  columnIndex: Scalars['BigInt']['output'];
   /** Sum of nextTaskNumber across the matching connection */
   nextTaskNumber: Scalars['BigInt']['output'];
 };
@@ -5814,27 +5529,21 @@ export type ProjectToManyUserPreferenceFilter = {
 };
 
 export type ProjectVariancePopulationAggregateFilter = {
-  columnIndex?: InputMaybe<BigFloatFilter>;
   nextTaskNumber?: InputMaybe<BigFloatFilter>;
 };
 
 export type ProjectVariancePopulationAggregates = {
   __typename?: 'ProjectVariancePopulationAggregates';
-  /** Population variance of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
   /** Population variance of nextTaskNumber across the matching connection */
   nextTaskNumber?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type ProjectVarianceSampleAggregateFilter = {
-  columnIndex?: InputMaybe<BigFloatFilter>;
   nextTaskNumber?: InputMaybe<BigFloatFilter>;
 };
 
 export type ProjectVarianceSampleAggregates = {
   __typename?: 'ProjectVarianceSampleAggregates';
-  /** Sample variance of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
   /** Sample variance of nextTaskNumber across the matching connection */
   nextTaskNumber?: Maybe<Scalars['BigFloat']['output']>;
 };
@@ -7318,7 +7027,7 @@ export type Task = Node & {
   /** Reads a single `Column` that is related to this `Task`. */
   column?: Maybe<Column>;
   columnId: Scalars['UUID']['output'];
-  columnIndex: Scalars['Int']['output'];
+  columnIndex: Scalars['String']['output'];
   content: Scalars['String']['output'];
   createdAt: Scalars['Datetime']['output'];
   description: Scalars['String']['output'];
@@ -7436,14 +7145,11 @@ export type TaskAggregatesFilter = {
 };
 
 export type TaskAverageAggregateFilter = {
-  columnIndex?: InputMaybe<BigFloatFilter>;
   number?: InputMaybe<BigFloatFilter>;
 };
 
 export type TaskAverageAggregates = {
   __typename?: 'TaskAverageAggregates';
-  /** Mean average of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
   /** Mean average of number across the matching connection */
   number?: Maybe<Scalars['BigFloat']['output']>;
 };
@@ -7455,7 +7161,7 @@ export type TaskCondition = {
   /** Checks for equality with the object’s `columnId` field. */
   columnId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `columnIndex` field. */
-  columnIndex?: InputMaybe<Scalars['Int']['input']>;
+  columnIndex?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `content` field. */
   content?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `createdAt` field. */
@@ -7933,7 +7639,7 @@ export type TaskFilter = {
   /** Filter by the object’s `columnId` field. */
   columnId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `columnIndex` field. */
-  columnIndex?: InputMaybe<IntFilter>;
+  columnIndex?: InputMaybe<StringFilter>;
   /** Filter by the object’s `content` field. */
   content?: InputMaybe<StringFilter>;
   /** Filter by the object’s `createdAt` field. */
@@ -7994,7 +7700,6 @@ export enum TaskGroupBy {
 }
 
 export type TaskHavingAverageInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   dueDate?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
@@ -8002,7 +7707,6 @@ export type TaskHavingAverageInput = {
 };
 
 export type TaskHavingDistinctCountInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   dueDate?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
@@ -8025,7 +7729,6 @@ export type TaskHavingInput = {
 };
 
 export type TaskHavingMaxInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   dueDate?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
@@ -8033,7 +7736,6 @@ export type TaskHavingMaxInput = {
 };
 
 export type TaskHavingMinInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   dueDate?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
@@ -8041,7 +7743,6 @@ export type TaskHavingMinInput = {
 };
 
 export type TaskHavingStddevPopulationInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   dueDate?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
@@ -8049,7 +7750,6 @@ export type TaskHavingStddevPopulationInput = {
 };
 
 export type TaskHavingStddevSampleInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   dueDate?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
@@ -8057,7 +7757,6 @@ export type TaskHavingStddevSampleInput = {
 };
 
 export type TaskHavingSumInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   dueDate?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
@@ -8065,7 +7764,6 @@ export type TaskHavingSumInput = {
 };
 
 export type TaskHavingVariancePopulationInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   dueDate?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
@@ -8073,7 +7771,6 @@ export type TaskHavingVariancePopulationInput = {
 };
 
 export type TaskHavingVarianceSampleInput = {
-  columnIndex?: InputMaybe<HavingIntFilter>;
   createdAt?: InputMaybe<HavingDatetimeFilter>;
   dueDate?: InputMaybe<HavingDatetimeFilter>;
   number?: InputMaybe<HavingIntFilter>;
@@ -8084,7 +7781,7 @@ export type TaskHavingVarianceSampleInput = {
 export type TaskInput = {
   authorId?: InputMaybe<Scalars['UUID']['input']>;
   columnId: Scalars['UUID']['input'];
-  columnIndex?: InputMaybe<Scalars['Int']['input']>;
+  columnIndex: Scalars['String']['input'];
   content: Scalars['String']['input'];
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description: Scalars['String']['input'];
@@ -8318,27 +8015,21 @@ export type TaskLabelPatch = {
 };
 
 export type TaskMaxAggregateFilter = {
-  columnIndex?: InputMaybe<IntFilter>;
   number?: InputMaybe<IntFilter>;
 };
 
 export type TaskMaxAggregates = {
   __typename?: 'TaskMaxAggregates';
-  /** Maximum of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['Int']['output']>;
   /** Maximum of number across the matching connection */
   number?: Maybe<Scalars['Int']['output']>;
 };
 
 export type TaskMinAggregateFilter = {
-  columnIndex?: InputMaybe<IntFilter>;
   number?: InputMaybe<IntFilter>;
 };
 
 export type TaskMinAggregates = {
   __typename?: 'TaskMinAggregates';
-  /** Minimum of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['Int']['output']>;
   /** Minimum of number across the matching connection */
   number?: Maybe<Scalars['Int']['output']>;
 };
@@ -8434,7 +8125,7 @@ export enum TaskOrderBy {
 export type TaskPatch = {
   authorId?: InputMaybe<Scalars['UUID']['input']>;
   columnId?: InputMaybe<Scalars['UUID']['input']>;
-  columnIndex?: InputMaybe<Scalars['Int']['input']>;
+  columnIndex?: InputMaybe<Scalars['String']['input']>;
   content?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
@@ -8447,40 +8138,31 @@ export type TaskPatch = {
 };
 
 export type TaskStddevPopulationAggregateFilter = {
-  columnIndex?: InputMaybe<BigFloatFilter>;
   number?: InputMaybe<BigFloatFilter>;
 };
 
 export type TaskStddevPopulationAggregates = {
   __typename?: 'TaskStddevPopulationAggregates';
-  /** Population standard deviation of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
   /** Population standard deviation of number across the matching connection */
   number?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type TaskStddevSampleAggregateFilter = {
-  columnIndex?: InputMaybe<BigFloatFilter>;
   number?: InputMaybe<BigFloatFilter>;
 };
 
 export type TaskStddevSampleAggregates = {
   __typename?: 'TaskStddevSampleAggregates';
-  /** Sample standard deviation of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
   /** Sample standard deviation of number across the matching connection */
   number?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type TaskSumAggregateFilter = {
-  columnIndex?: InputMaybe<BigIntFilter>;
   number?: InputMaybe<BigIntFilter>;
 };
 
 export type TaskSumAggregates = {
   __typename?: 'TaskSumAggregates';
-  /** Sum of columnIndex across the matching connection */
-  columnIndex: Scalars['BigInt']['output'];
   /** Sum of number across the matching connection */
   number: Scalars['BigInt']['output'];
 };
@@ -8534,27 +8216,21 @@ export type TaskToManyTaskLabelFilter = {
 };
 
 export type TaskVariancePopulationAggregateFilter = {
-  columnIndex?: InputMaybe<BigFloatFilter>;
   number?: InputMaybe<BigFloatFilter>;
 };
 
 export type TaskVariancePopulationAggregates = {
   __typename?: 'TaskVariancePopulationAggregates';
-  /** Population variance of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
   /** Population variance of number across the matching connection */
   number?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 export type TaskVarianceSampleAggregateFilter = {
-  columnIndex?: InputMaybe<BigFloatFilter>;
   number?: InputMaybe<BigFloatFilter>;
 };
 
 export type TaskVarianceSampleAggregates = {
   __typename?: 'TaskVarianceSampleAggregates';
-  /** Sample variance of columnIndex across the matching connection */
-  columnIndex?: Maybe<Scalars['BigFloat']['output']>;
   /** Sample variance of number across the matching connection */
   number?: Maybe<Scalars['BigFloat']['output']>;
 };
@@ -9703,8 +9379,6 @@ export enum UserOrderBy {
   AuthoredPostsDistinctCountTitleDesc = 'AUTHORED_POSTS_DISTINCT_COUNT_TITLE_DESC',
   AuthoredPostsDistinctCountUpdatedAtAsc = 'AUTHORED_POSTS_DISTINCT_COUNT_UPDATED_AT_ASC',
   AuthoredPostsDistinctCountUpdatedAtDesc = 'AUTHORED_POSTS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  AuthoredTasksAverageColumnIndexAsc = 'AUTHORED_TASKS_AVERAGE_COLUMN_INDEX_ASC',
-  AuthoredTasksAverageColumnIndexDesc = 'AUTHORED_TASKS_AVERAGE_COLUMN_INDEX_DESC',
   AuthoredTasksAverageNumberAsc = 'AUTHORED_TASKS_AVERAGE_NUMBER_ASC',
   AuthoredTasksAverageNumberDesc = 'AUTHORED_TASKS_AVERAGE_NUMBER_DESC',
   AuthoredTasksCountAsc = 'AUTHORED_TASKS_COUNT_ASC',
@@ -9733,32 +9407,18 @@ export enum UserOrderBy {
   AuthoredTasksDistinctCountRowIdDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_ROW_ID_DESC',
   AuthoredTasksDistinctCountUpdatedAtAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_UPDATED_AT_ASC',
   AuthoredTasksDistinctCountUpdatedAtDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_UPDATED_AT_DESC',
-  AuthoredTasksMaxColumnIndexAsc = 'AUTHORED_TASKS_MAX_COLUMN_INDEX_ASC',
-  AuthoredTasksMaxColumnIndexDesc = 'AUTHORED_TASKS_MAX_COLUMN_INDEX_DESC',
   AuthoredTasksMaxNumberAsc = 'AUTHORED_TASKS_MAX_NUMBER_ASC',
   AuthoredTasksMaxNumberDesc = 'AUTHORED_TASKS_MAX_NUMBER_DESC',
-  AuthoredTasksMinColumnIndexAsc = 'AUTHORED_TASKS_MIN_COLUMN_INDEX_ASC',
-  AuthoredTasksMinColumnIndexDesc = 'AUTHORED_TASKS_MIN_COLUMN_INDEX_DESC',
   AuthoredTasksMinNumberAsc = 'AUTHORED_TASKS_MIN_NUMBER_ASC',
   AuthoredTasksMinNumberDesc = 'AUTHORED_TASKS_MIN_NUMBER_DESC',
-  AuthoredTasksStddevPopulationColumnIndexAsc = 'AUTHORED_TASKS_STDDEV_POPULATION_COLUMN_INDEX_ASC',
-  AuthoredTasksStddevPopulationColumnIndexDesc = 'AUTHORED_TASKS_STDDEV_POPULATION_COLUMN_INDEX_DESC',
   AuthoredTasksStddevPopulationNumberAsc = 'AUTHORED_TASKS_STDDEV_POPULATION_NUMBER_ASC',
   AuthoredTasksStddevPopulationNumberDesc = 'AUTHORED_TASKS_STDDEV_POPULATION_NUMBER_DESC',
-  AuthoredTasksStddevSampleColumnIndexAsc = 'AUTHORED_TASKS_STDDEV_SAMPLE_COLUMN_INDEX_ASC',
-  AuthoredTasksStddevSampleColumnIndexDesc = 'AUTHORED_TASKS_STDDEV_SAMPLE_COLUMN_INDEX_DESC',
   AuthoredTasksStddevSampleNumberAsc = 'AUTHORED_TASKS_STDDEV_SAMPLE_NUMBER_ASC',
   AuthoredTasksStddevSampleNumberDesc = 'AUTHORED_TASKS_STDDEV_SAMPLE_NUMBER_DESC',
-  AuthoredTasksSumColumnIndexAsc = 'AUTHORED_TASKS_SUM_COLUMN_INDEX_ASC',
-  AuthoredTasksSumColumnIndexDesc = 'AUTHORED_TASKS_SUM_COLUMN_INDEX_DESC',
   AuthoredTasksSumNumberAsc = 'AUTHORED_TASKS_SUM_NUMBER_ASC',
   AuthoredTasksSumNumberDesc = 'AUTHORED_TASKS_SUM_NUMBER_DESC',
-  AuthoredTasksVariancePopulationColumnIndexAsc = 'AUTHORED_TASKS_VARIANCE_POPULATION_COLUMN_INDEX_ASC',
-  AuthoredTasksVariancePopulationColumnIndexDesc = 'AUTHORED_TASKS_VARIANCE_POPULATION_COLUMN_INDEX_DESC',
   AuthoredTasksVariancePopulationNumberAsc = 'AUTHORED_TASKS_VARIANCE_POPULATION_NUMBER_ASC',
   AuthoredTasksVariancePopulationNumberDesc = 'AUTHORED_TASKS_VARIANCE_POPULATION_NUMBER_DESC',
-  AuthoredTasksVarianceSampleColumnIndexAsc = 'AUTHORED_TASKS_VARIANCE_SAMPLE_COLUMN_INDEX_ASC',
-  AuthoredTasksVarianceSampleColumnIndexDesc = 'AUTHORED_TASKS_VARIANCE_SAMPLE_COLUMN_INDEX_DESC',
   AuthoredTasksVarianceSampleNumberAsc = 'AUTHORED_TASKS_VARIANCE_SAMPLE_NUMBER_ASC',
   AuthoredTasksVarianceSampleNumberDesc = 'AUTHORED_TASKS_VARIANCE_SAMPLE_NUMBER_DESC',
   AvatarUrlAsc = 'AVATAR_URL_ASC',
@@ -10288,15 +9948,15 @@ export type UserToManyUserPreferenceFilter = {
   some?: InputMaybe<UserPreferenceFilter>;
 };
 
-export type ColumnFragment = { __typename?: 'Column', title: string, index: number, rowId: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } };
+export type ColumnFragment = { __typename?: 'Column', title: string, index: string, rowId: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } };
 
 export type LabelFragment = { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string };
 
-export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: string, index: number, rowId: string, icon?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } };
+export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: string, index: string, rowId: string, icon?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } };
 
-export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, updatedAt: Date, createdAt: Date, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } };
+export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: string, color?: string | null, updatedAt: Date, createdAt: Date, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } };
 
-export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: number, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number } };
+export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number } };
 
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
@@ -10318,7 +9978,7 @@ export type CreateColumnMutationVariables = Exact<{
 }>;
 
 
-export type CreateColumnMutation = { __typename?: 'Mutation', createColumn?: { __typename?: 'CreateColumnPayload', column?: { __typename?: 'Column', title: string, index: number, rowId: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null } | null };
+export type CreateColumnMutation = { __typename?: 'Mutation', createColumn?: { __typename?: 'CreateColumnPayload', column?: { __typename?: 'Column', title: string, index: string, rowId: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } } | null } | null };
 
 export type DeleteColumnMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -10404,7 +10064,7 @@ export type CreateProjectColumnMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectColumnMutation = { __typename?: 'Mutation', createProjectColumn?: { __typename?: 'CreateProjectColumnPayload', projectColumn?: { __typename?: 'ProjectColumn', title: string, index: number, rowId: string, icon?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } } | null } | null };
+export type CreateProjectColumnMutation = { __typename?: 'Mutation', createProjectColumn?: { __typename?: 'CreateProjectColumnPayload', projectColumn?: { __typename?: 'ProjectColumn', title: string, index: string, rowId: string, icon?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } } | null } | null };
 
 export type DeleteProjectColumnMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -10537,7 +10197,7 @@ export type ColumnsQueryVariables = Exact<{
 }>;
 
 
-export type ColumnsQuery = { __typename?: 'Query', columns?: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', title: string, index: number, rowId: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
+export type ColumnsQuery = { __typename?: 'Query', columns?: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', title: string, index: string, rowId: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> } | null };
 
 export type PostEmojisQueryVariables = Exact<{
   postId: Scalars['UUID']['input'];
@@ -10568,14 +10228,14 @@ export type ProjectColumnsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectColumnsQuery = { __typename?: 'Query', projectColumns?: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', title: string, index: number, rowId: string, icon?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } }> } | null };
+export type ProjectColumnsQuery = { __typename?: 'Query', projectColumns?: { __typename?: 'ProjectColumnConnection', nodes: Array<{ __typename?: 'ProjectColumn', title: string, index: string, rowId: string, icon?: string | null, projects: { __typename?: 'ProjectConnection', totalCount: number } }> } | null };
 
 export type ProjectQueryVariables = Exact<{
   rowId: Scalars['UUID']['input'];
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, color?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: number, title: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, color?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: string, title: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -10592,7 +10252,7 @@ export type ProjectsQueryVariables = Exact<{
 }>;
 
 
-export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: number, color?: string | null, updatedAt: Date, createdAt: Date, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string }> }, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } }> } | null };
+export type ProjectsQuery = { __typename?: 'Query', projects?: { __typename?: 'ProjectConnection', nodes: Array<{ __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: string, color?: string | null, updatedAt: Date, createdAt: Date, userPreferences: { __typename?: 'UserPreferenceConnection', nodes: Array<{ __typename?: 'UserPreference', rowId: string, viewMode: string }> }, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } }> } | null };
 
 export type ProjectsSidebarQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -10614,7 +10274,15 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: number, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, icon?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: string, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, icon?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+
+export type TaskByNumberQueryVariables = Exact<{
+  projectId: Scalars['UUID']['input'];
+  number: Scalars['Int']['input'];
+}>;
+
+
+export type TaskByNumberQuery = { __typename?: 'Query', taskByProjectIdAndNumber?: { __typename?: 'Task', rowId: string, number?: number | null, content: string } | null };
 
 export type TasksQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -10625,7 +10293,7 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: number, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number } }> } | null };
 
 export type UserPreferencesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -12781,6 +12449,97 @@ useSuspenseInfiniteTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task.
 
 
 useTaskQuery.fetcher = (variables: TaskQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, variables, options);
+
+export const TaskByNumberDocument = `
+    query TaskByNumber($projectId: UUID!, $number: Int!) {
+  taskByProjectIdAndNumber(projectId: $projectId, number: $number) {
+    rowId
+    number
+    content
+  }
+}
+    `;
+
+export const useTaskByNumberQuery = <
+      TData = TaskByNumberQuery,
+      TError = unknown
+    >(
+      variables: TaskByNumberQueryVariables,
+      options?: Omit<UseQueryOptions<TaskByNumberQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<TaskByNumberQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<TaskByNumberQuery, TError, TData>(
+      {
+    queryKey: ['TaskByNumber', variables],
+    queryFn: graphqlFetch<TaskByNumberQuery, TaskByNumberQueryVariables>(TaskByNumberDocument, variables),
+    ...options
+  }
+    )};
+
+useTaskByNumberQuery.getKey = (variables: TaskByNumberQueryVariables) => ['TaskByNumber', variables];
+
+export const useSuspenseTaskByNumberQuery = <
+      TData = TaskByNumberQuery,
+      TError = unknown
+    >(
+      variables: TaskByNumberQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<TaskByNumberQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<TaskByNumberQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<TaskByNumberQuery, TError, TData>(
+      {
+    queryKey: ['TaskByNumber', variables],
+    queryFn: graphqlFetch<TaskByNumberQuery, TaskByNumberQueryVariables>(TaskByNumberDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseTaskByNumberQuery.getKey = (variables: TaskByNumberQueryVariables) => ['TaskByNumber', variables];
+
+export const useInfiniteTaskByNumberQuery = <
+      TData = InfiniteData<TaskByNumberQuery>,
+      TError = unknown
+    >(
+      variables: TaskByNumberQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<TaskByNumberQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<TaskByNumberQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<TaskByNumberQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['TaskByNumber.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<TaskByNumberQuery, TaskByNumberQueryVariables>(TaskByNumberDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteTaskByNumberQuery.getKey = (variables: TaskByNumberQueryVariables) => ['TaskByNumber.infinite', variables];
+
+export const useSuspenseInfiniteTaskByNumberQuery = <
+      TData = InfiniteData<TaskByNumberQuery>,
+      TError = unknown
+    >(
+      variables: TaskByNumberQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<TaskByNumberQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<TaskByNumberQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<TaskByNumberQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['TaskByNumber.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<TaskByNumberQuery, TaskByNumberQueryVariables>(TaskByNumberDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteTaskByNumberQuery.getKey = (variables: TaskByNumberQueryVariables) => ['TaskByNumber.infinite', variables];
+
+
+useTaskByNumberQuery.fetcher = (variables: TaskByNumberQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TaskByNumberQuery, TaskByNumberQueryVariables>(TaskByNumberDocument, variables, options);
 
 export const TasksDocument = `
     query Tasks($projectId: UUID!, $search: String = "", $assignees: TaskToManyAssigneeFilter, $labels: TaskToManyTaskLabelFilter, $priorities: [String!]) {

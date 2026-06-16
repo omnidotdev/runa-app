@@ -1,6 +1,5 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, notFound } from "@tanstack/react-router";
-import { all } from "better-all";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import {
   ArrowLeftIcon,
@@ -29,6 +28,7 @@ import {
   UpdateTaskLabelsDialog,
 } from "@/components/tasks";
 import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
+import TaskKey from "@/components/tasks/TaskKey";
 import { Button } from "@/components/ui/button";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar";
@@ -36,14 +36,17 @@ import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useViewportSize, { Breakpoint } from "@/lib/hooks/useViewportSize";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import taskOptions from "@/lib/options/task.options";
+import taskByNumberOptions from "@/lib/options/taskByNumber.options";
 import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { buildTaskKey, parseTaskParam, stripMarkup } from "@/lib/util/taskUrl";
 import { cn } from "@/lib/utils";
 
 import type { TaskQuery } from "@/generated/graphql";
@@ -52,50 +55,88 @@ export const Route = createFileRoute(
   "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
 )({
   loader: async ({
-    params: { taskId, projectSlug },
+    params: { taskId: taskParam, workspaceSlug, projectSlug },
     context: { queryClient, organizationId, session },
   }) => {
     if (!organizationId) throw notFound();
 
-    const { project } = await all({
-      async project() {
-        const { projectBySlugAndOrganizationId } =
-          await queryClient.ensureQueryData(
-            projectBySlugOptions({ slug: projectSlug, organizationId }),
-          );
-        if (!projectBySlugAndOrganizationId) throw notFound();
+    const { projectBySlugAndOrganizationId: project } =
+      await queryClient.ensureQueryData(
+        projectBySlugOptions({ slug: projectSlug, organizationId }),
+      );
+    if (!project) throw notFound();
 
-        // Unauth users can only access public projects
-        if (!session?.user?.rowId && !projectBySlugAndOrganizationId.isPublic) {
-          throw notFound();
-        }
+    // Unauth users can only access public projects
+    if (!session?.user?.rowId && !project.isPublic) throw notFound();
 
-        return projectBySlugAndOrganizationId;
-      },
-      async task() {
-        const { task } = await queryClient.ensureQueryData(
-          taskOptions({ rowId: taskId }),
+    const parsed = parseTaskParam(taskParam);
+    if (parsed.type === "invalid") throw notFound();
+
+    // resolve the task rowId from either the legacy UUID permalink or the
+    // vanity {number}-{slug} key
+    let resolved: { rowId: string; number: number; content?: string | null };
+    if (parsed.type === "uuid") {
+      const { task } = await queryClient.ensureQueryData(
+        taskOptions({ rowId: parsed.rowId }),
+      );
+      if (!task) throw notFound();
+      resolved = {
+        rowId: task.rowId,
+        number: task.number!,
+        content: task.content,
+      };
+    } else {
+      const { taskByProjectIdAndNumber: task } =
+        await queryClient.ensureQueryData(
+          taskByNumberOptions({
+            projectId: project.rowId,
+            number: parsed.number,
+          }),
         );
-        if (!task) throw notFound();
-        return task;
-      },
+      if (!task) throw notFound();
+      resolved = {
+        rowId: task.rowId,
+        number: task.number!,
+        content: task.content,
+      };
+    }
+
+    // redirect legacy UUID permalinks and stale title slugs to the canonical key
+    const canonicalKey = buildTaskKey({
+      number: resolved.number,
+      content: resolved.content,
     });
+    if (taskParam !== canonicalKey) {
+      throw redirect({
+        to: "/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+        params: { workspaceSlug, projectSlug, taskId: canonicalKey },
+        replace: true,
+      });
+    }
+
+    // ensure the full task (keyed by rowId) is cached for the page components
+    await queryClient.ensureQueryData(taskOptions({ rowId: resolved.rowId }));
+
+    const title = resolved.content ? stripMarkup(resolved.content) : "";
 
     return {
       organizationId,
       projectId: project.rowId,
       projectName: project.name,
+      taskId: resolved.rowId,
+      taskTitle: title || undefined,
+      ogImageUrl: `${BASE_URL}/api/og/task/${workspaceSlug}/${projectSlug}/${resolved.number}`,
       isPublicAccess: !session?.user?.rowId || undefined,
     };
   },
-  head: ({ loaderData, params }) => ({
-    meta: [
-      ...createMetaTags({
-        title: "Task",
-        description: `View and manage a task for ${loaderData?.projectName}.`,
-        url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}/${params.taskId}`,
-      }),
-    ],
+  head: ({ loaderData }) => ({
+    meta: createMetaTags({
+      title: loaderData?.taskTitle ?? "Task",
+      description: loaderData?.projectName
+        ? `View and manage a task for ${loaderData.projectName}.`
+        : undefined,
+      image: loaderData?.ogImageUrl,
+    }),
   }),
   notFoundComponent: () => <NotFound>Task Not Found</NotFound>,
   component: TaskPage,
@@ -115,8 +156,8 @@ function TaskPage() {
 }
 
 function PublicTaskView() {
-  const { projectId } = Route.useLoaderData();
-  const { workspaceSlug, projectSlug, taskId } = Route.useParams();
+  const { projectId, taskId } = Route.useLoaderData();
+  const { workspaceSlug, projectSlug } = Route.useParams();
 
   const { data: task } = useSuspenseQuery({
     ...taskOptions({ rowId: taskId }),
@@ -150,9 +191,11 @@ function PublicTaskView() {
             editable={false}
           />
 
-          <div className="flex items-center gap-2 font-mono text-base-500 text-sm dark:text-base-400">
-            {`${project?.prefix ? project.prefix : "PROJ"}-${task?.number}`}
-          </div>
+          <TaskKey
+            prefix={project?.prefix}
+            number={task?.number}
+            className="text-base-500 text-sm dark:text-base-400"
+          />
         </div>
       </div>
 
@@ -170,9 +213,16 @@ function PublicTaskView() {
 }
 
 function AuthenticatedTaskPage() {
-  const { projectId, organizationId } = Route.useLoaderData();
+  const { projectId, organizationId, taskId } = Route.useLoaderData();
   const { session } = Route.useRouteContext();
-  const { workspaceSlug, projectSlug, taskId } = Route.useParams();
+  const { workspaceSlug, projectSlug } = Route.useParams();
+
+  // keep the shared task store pointed at the resolved rowId so dialogs opened
+  // from the detail route (where the URL param is a vanity key) target it
+  const { setTaskId } = useTaskStore();
+  useEffect(() => {
+    setTaskId(taskId);
+  }, [taskId, setTaskId]);
 
   const matches = useViewportSize({ breakpoint: Breakpoint.Large });
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
@@ -284,9 +334,11 @@ function AuthenticatedTaskPage() {
             }
           />
 
-          <div className="flex items-center gap-2 font-mono text-base-500 text-sm dark:text-base-400">
-            {`${project?.prefix ? project.prefix : "PROJ"}-${task?.number}`}
-          </div>
+          <TaskKey
+            prefix={project?.prefix}
+            number={task?.number}
+            className="text-base-500 text-sm dark:text-base-400"
+          />
         </div>
       </div>
 

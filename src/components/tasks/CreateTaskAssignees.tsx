@@ -33,7 +33,9 @@ import { cn } from "@/lib/utils";
 const CreateTaskAssignees = withForm({
   defaultValues: taskFormDefaults,
   render: ({ form }) => {
-    const { organizationId } = useLoaderData({ from: "/_app" });
+    const { organizationId } = useLoaderData({
+      from: "/_app/workspaces/$workspaceSlug",
+    });
     const { session } = useRouteContext({ from: "/_app" });
 
     // Fetch organization members from IDP

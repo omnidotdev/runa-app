@@ -1,0 +1,7 @@
+query TaskByNumber($projectId: UUID!, $number: Int!) {
+  taskByProjectIdAndNumber(projectId: $projectId, number: $number) {
+    rowId
+    number
+    content
+  }
+}

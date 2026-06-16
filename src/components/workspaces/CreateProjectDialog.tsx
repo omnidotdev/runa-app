@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useParams } from "@tanstack/react-router";
+import { useParams } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
@@ -30,25 +30,25 @@ import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import { Role } from "@/lib/permissions";
+import { keyBetween } from "@/lib/util/fractionalKey";
 import generatePrefix from "@/lib/util/generatePrefix";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
 const CreateProjectDialog = () => {
-  const { organizationId } = useLoaderData({ from: "/_app" });
-
   const { workspaceSlug } = useParams({ strict: false });
 
   const nameRef = useRef<HTMLInputElement>(null);
   const orgContext = useOrganization();
 
-  const { projectColumnId, setProjectColumnId } = useProjectStore();
-
-  // Resolve org name from JWT claims
-  const orgName = organizationId
-    ? orgContext?.getOrganizationById(organizationId)?.name
+  const currentOrg = workspaceSlug
+    ? orgContext?.organizations.find((org) => org.slug === workspaceSlug)
     : undefined;
+  const organizationId = currentOrg?.id;
+  const orgName = currentOrg?.name;
+
+  const { projectColumnId, setProjectColumnId } = useProjectStore();
 
   // Get role from IDP organization claims
   const currentUserRole = useCurrentUserRole(organizationId);
@@ -70,15 +70,6 @@ const CreateProjectDialog = () => {
 
   const newProjectColumnId =
     projectColumnId ?? projectColumns?.[0]?.rowId ?? null;
-
-  const { data: projectColumnIndex } = useQuery({
-    ...projectColumnsOptions({ organizationId: organizationId! }),
-    enabled: !!organizationId,
-    select: (data) =>
-      data?.projectColumns?.nodes?.find(
-        (col) => col.rowId === newProjectColumnId,
-      )?.projects?.totalCount,
-  });
 
   const { isOpen: isCreateProjectOpen, setIsOpen: setIsCreateProjectOpen } =
     useDialogStore({
@@ -116,7 +107,6 @@ const CreateProjectDialog = () => {
       name: "",
       description: "",
       projectColumnId: newProjectColumnId,
-      columnIndex: projectColumnIndex ?? 0,
     },
     validators: {
       onSubmitAsync: async ({ value }) => {
@@ -142,6 +132,12 @@ const CreateProjectDialog = () => {
       },
     },
     onSubmit: async ({ value, formApi }) => {
+      // Append the new project after the last one in the target project column.
+      // `projects` is returned `COLUMN_INDEX_ASC`.
+      const lastProjectInColumn = (projects ?? [])
+        .filter((p) => p.projectColumnId === value.projectColumnId)
+        .at(-1);
+
       toast.promise(
         createNewProject({
           input: {
@@ -152,7 +148,10 @@ const CreateProjectDialog = () => {
               prefix: generatePrefix(value.name),
               description: value.description,
               projectColumnId: value.projectColumnId!,
-              columnIndex: value.columnIndex,
+              columnIndex: keyBetween(
+                lastProjectInColumn?.columnIndex ?? null,
+                null,
+              ),
             },
           },
         }),

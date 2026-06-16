@@ -51,6 +51,7 @@ import columnsOptions from "@/lib/options/columns.options";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { Role } from "@/lib/permissions";
+import { keyBetween, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 import ColumnForm from "./ProjectColumnForm";
@@ -136,16 +137,20 @@ const ProjectColumnsForm = () => {
 
     const oldIndex = dataIds.indexOf(active.id);
     const newIndex = dataIds.indexOf(over.id);
-    const reordered = arrayMove(localColumns, oldIndex, newIndex);
+    const moved = localColumns[oldIndex]!;
 
-    // Optimistically update the local state
-    setLocalColumns(reordered);
+    const siblings = localColumns.filter((c) => c.rowId !== moved.rowId);
+    const newKey = reorderKey(siblings, newIndex, (c) => c.index);
 
-    reordered.forEach((column, index) => {
-      updateColumn({
-        rowId: column.rowId,
-        patch: { index: index },
-      });
+    setLocalColumns((prev) =>
+      arrayMove(prev, oldIndex, newIndex).map((column) =>
+        column.rowId === moved.rowId ? { ...column, index: newKey } : column,
+      ),
+    );
+
+    updateColumn({
+      rowId: moved.rowId,
+      patch: { index: newKey },
     });
   };
 
@@ -190,21 +195,8 @@ const ProjectColumnsForm = () => {
   };
 
   const handleDeleteColumn = (column: Column) => {
-    const remainingColumns = localColumns.filter(
-      (c) => c.rowId !== column.rowId,
-    );
-
     const taskCount = column.tasks?.totalCount ?? 0;
     const promise = deleteColumn({ rowId: column.rowId });
-
-    for (const c of remainingColumns) {
-      updateColumn({
-        rowId: c.rowId,
-        patch: {
-          index: remainingColumns.findIndex((col) => col.rowId === c.rowId),
-        },
-      });
-    }
 
     toast.promise(promise, {
       loading: "Deleting column and tasks...",
@@ -351,7 +343,7 @@ const ProjectColumnsForm = () => {
               rowId: "pending",
               title: "",
               icon: "emoji:😀",
-              index: localColumns.length,
+              index: keyBetween(localColumns.at(-1)?.index ?? null, null),
               tasks: { totalCount: 0 },
             }}
             isActive={true}

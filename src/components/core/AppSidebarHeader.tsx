@@ -1,8 +1,8 @@
 import {
-  Link,
-  useLoaderData,
   useLocation,
   useNavigate,
+  useParams,
+  useRouter,
 } from "@tanstack/react-router";
 import {
   CheckIcon,
@@ -32,18 +32,21 @@ import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 import { Badge } from "../ui/badge";
 
 const AppSidebarHeader = () => {
-  const { organizationId } = useLoaderData({ from: "/_app" });
-  const navigate = useNavigate();
+  const { workspaceSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
+  const router = useRouter();
+  const navigate = useNavigate();
   const { toggleSidebar, closeMobileSidebar } = useSidebar();
   const orgContext = useOrganization();
 
   // Get user's organizations from context
   const organizations = orgContext?.organizations ?? [];
 
-  // Resolve current organization details from JWT claims
-  const currentOrgName = organizationId
-    ? orgContext?.getOrganizationById(organizationId)?.name
+  // Resolve current org from URL slug. Sidebar is rendered by `_app.tsx`
+  // (above `$workspaceSlug.tsx` in the chain), so we cannot read the
+  // resolved organizationId from the workspace layout's context here.
+  const currentOrgName = workspaceSlug
+    ? organizations.find((org) => org.slug === workspaceSlug)?.name
     : undefined;
 
   return (
@@ -86,11 +89,26 @@ const AppSidebarHeader = () => {
                 const orgSlug = org?.slug ?? org.id;
                 const isWorkspaceSelected = orgSlug === pathname.split("/")[2];
 
+                // Preload programmatically rather than wrapping the item in
+                // `<Link preload="intent">`. Link's per-item render cost
+                // (`useLinkProps` + `buildLocation` + store subscriptions)
+                // multiplied across menu items caused visible jank during
+                // the open/close animation. The destination resolves
+                // correctly because `$workspaceSlug.tsx` owns the segment
+                const preloadWorkspace = () => {
+                  void router.preloadRoute({
+                    to: "/workspaces/$workspaceSlug/projects",
+                    params: { workspaceSlug: orgSlug },
+                  });
+                };
+
                 return (
                   <MenuItem
                     key={`${org?.id}-${index}`}
                     value={`${org?.name}-${index}`}
-                    onClick={() => {
+                    onMouseEnter={preloadWorkspace}
+                    onFocus={preloadWorkspace}
+                    onSelect={() => {
                       closeMobileSidebar();
                       setLastWorkspaceCookie({ data: orgSlug });
                       navigate({
@@ -109,17 +127,22 @@ const AppSidebarHeader = () => {
 
               <MenuSeparator />
 
-              <Link to="/workspaces" preload="intent" className="w-full">
-                <MenuItem
-                  value="view-all-workspaces"
-                  onClick={() => {
-                    closeMobileSidebar();
-                  }}
-                >
-                  <LayoutGridIcon className="size-4" />
-                  All Workspaces
-                </MenuItem>
-              </Link>
+              <MenuItem
+                value="view-all-workspaces"
+                onMouseEnter={() => {
+                  void router.preloadRoute({ to: "/workspaces" });
+                }}
+                onFocus={() => {
+                  void router.preloadRoute({ to: "/workspaces" });
+                }}
+                onSelect={() => {
+                  closeMobileSidebar();
+                  navigate({ to: "/workspaces" });
+                }}
+              >
+                <LayoutGridIcon className="size-4" />
+                All Workspaces
+              </MenuItem>
 
               {AUTH_BASE_URL && (
                 <MenuItem

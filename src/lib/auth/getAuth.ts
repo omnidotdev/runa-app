@@ -23,6 +23,7 @@ const resolveRowId: ResolveRowIdFn = async ({ accessToken }) => {
   const sdk = getGeneratedSdk(getGraphQLClient(), async (action) =>
     action({ Authorization: `Bearer ${accessToken}` }),
   );
+
   const { observer } = await sdk.Observer();
 
   return observer?.rowId ?? null;
