@@ -20,13 +20,15 @@ import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import Shortcut from "./Shortcut";
 import Tooltip from "./Tooltip";
 
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 interface Props extends Omit<ComponentProps<typeof Select>, "collection"> {
   triggerValue?: string;
+  /** Override the default outline-button trigger (e.g. a borderless sidebar row) */
+  trigger?: ReactNode;
 }
 
-const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
+const PrioritySelector = ({ triggerValue, trigger, ...rest }: Props) => {
   const priorityCollection = createListCollection({
     items: [
       { label: "Low", value: "low" },
@@ -51,24 +53,32 @@ const PrioritySelector = ({ triggerValue, ...rest }: Props) => {
       loopFocus
       {...rest}
     >
-      <Tooltip
-        positioning={{ placement: "top" }}
-        tooltip="Adjust Priority"
-        shortcut={Hotkeys.UpdateTaskPriority}
-        trigger={
-          <SelectControl>
-            <SelectTrigger aria-label="Select Priority" asChild>
-              <Button variant="outline" className="w-fit">
-                <PriorityIcon priority={triggerValue} />
+      {trigger ? (
+        <SelectControl>
+          <SelectTrigger aria-label="Select Priority" asChild>
+            {trigger}
+          </SelectTrigger>
+        </SelectControl>
+      ) : (
+        <Tooltip
+          positioning={{ placement: "top" }}
+          tooltip="Adjust Priority"
+          shortcut={Hotkeys.UpdateTaskPriority}
+          trigger={
+            <SelectControl>
+              <SelectTrigger aria-label="Select Priority" asChild>
+                <Button variant="outline" className="w-fit">
+                  <PriorityIcon priority={triggerValue} />
 
-                <p className="hidden text-sm md:flex">
-                  {capitalizeFirstLetter(triggerValue!)}
-                </p>
-              </Button>
-            </SelectTrigger>
-          </SelectControl>
-        }
-      />
+                  <p className="hidden text-sm md:flex">
+                    {capitalizeFirstLetter(triggerValue!)}
+                  </p>
+                </Button>
+              </SelectTrigger>
+            </SelectControl>
+          }
+        />
+      )}
 
       <SelectPositioner>
         <SelectContent className="w-48 p-0">

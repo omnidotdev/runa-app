@@ -21,19 +21,22 @@ import LabelIcon from "./LabelIcon";
 import Shortcut from "./Shortcut";
 import Tooltip from "./Tooltip";
 
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 interface Props extends Omit<ComponentProps<typeof Select>, "collection"> {
   // TODO: remove in favor of route loader or similar
   projectId: string;
   triggerLabel?: string;
   triggerIcon?: string | null;
+  /** Override the default outline-button trigger (e.g. a borderless sidebar row) */
+  trigger?: ReactNode;
 }
 
 const ColumnSelector = ({
   projectId,
   triggerLabel,
   triggerIcon,
+  trigger,
   ...rest
 }: Props) => {
   const { data: project } = useQuery({
@@ -67,25 +70,31 @@ const ColumnSelector = ({
       aria-label="Select Column"
       {...rest}
     >
-      <Tooltip
-        positioning={{ placement: "top" }}
-        tooltip="Adjust status"
-        shortcut={Hotkeys.UpdateTaskStatus}
-        trigger={
-          <SelectControl>
-            <SelectTrigger asChild>
-              <Button variant="outline" className="w-fit">
-                <LabelIcon
-                  icon={triggerIcon ?? "lucide:smile-plus"}
-                  className="size-4"
-                />
+      {trigger ? (
+        <SelectControl>
+          <SelectTrigger asChild>{trigger}</SelectTrigger>
+        </SelectControl>
+      ) : (
+        <Tooltip
+          positioning={{ placement: "top" }}
+          tooltip="Adjust status"
+          shortcut={Hotkeys.UpdateTaskStatus}
+          trigger={
+            <SelectControl>
+              <SelectTrigger asChild>
+                <Button variant="outline" className="w-fit">
+                  <LabelIcon
+                    icon={triggerIcon ?? "lucide:smile-plus"}
+                    className="size-4"
+                  />
 
-                <p className="hidden text-sm md:flex">{triggerLabel}</p>
-              </Button>
-            </SelectTrigger>
-          </SelectControl>
-        }
-      />
+                  <p className="hidden text-sm md:flex">{triggerLabel}</p>
+                </Button>
+              </SelectTrigger>
+            </SelectControl>
+          }
+        />
+      )}
 
       <SelectPositioner>
         <SelectContent className="w-48 p-0">

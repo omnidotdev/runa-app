@@ -1,41 +1,37 @@
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
-import dayjs from "dayjs";
 import {
   ArrowLeftIcon,
-  CalendarIcon,
+  LinkIcon,
   MoreHorizontalIcon,
+  SlidersHorizontalIcon,
   Trash2Icon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { useDebounceCallback } from "usehooks-ts";
 
-import {
-  ColumnSelector,
-  Link,
-  PrioritySelector,
-  RichTextEditor,
-  Tooltip,
-} from "@/components/core";
+import { Link, RichTextEditor } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import {
   AttachmentsSection,
   Comments,
   CreateComment,
-  TaskDescription,
-  TaskSidebar,
-  UpdateAssigneesDialog,
-  UpdateDueDateDialog,
-  UpdateTaskLabelsDialog,
 } from "@/components/tasks";
 import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
 import TaskKey from "@/components/tasks/TaskKey";
+import TaskProperties from "@/components/tasks/TaskProperties";
 import { Button } from "@/components/ui/button";
+import {
+  MenuContent,
+  MenuItem,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@/components/ui/menu";
 import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
-import { useSidebar } from "@/components/ui/sidebar";
 import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
-import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
@@ -48,7 +44,6 @@ import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { buildTaskKey, parseTaskParam, stripMarkup } from "@/lib/util/taskUrl";
-import { cn } from "@/lib/utils";
 
 import type { TaskQuery } from "@/generated/graphql";
 
@@ -171,44 +166,58 @@ function PublicTaskView() {
   });
 
   return (
-    <div className="custom-scrollbar flex flex-col overflow-y-auto px-6 py-12">
-      <div className="mb-4 flex items-start gap-3">
+    <div className="custom-scrollbar mx-auto flex w-full max-w-5xl flex-col overflow-y-auto px-6 py-10">
+      <div className="mb-6 flex items-center gap-1">
         <Link
           to="/workspaces/$workspaceSlug/projects/$projectSlug"
           params={{ workspaceSlug, projectSlug }}
           variant="ghost"
           size="icon"
-          className="ml-1"
           aria-label="Go back"
         >
           <ArrowLeftIcon className="size-4" />
         </Link>
 
-        <div className="flex flex-col gap-2">
+        <TaskKey
+          prefix={project?.prefix}
+          number={task?.number}
+          className="text-muted-foreground text-sm"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <div className="flex min-w-0 flex-col gap-6">
           <RichTextEditor
             defaultContent={task?.content}
-            className="min-h-0 border-0 bg-transparent p-0 text-2xl dark:bg-transparent"
+            className="min-h-0 border-0 bg-transparent p-0 font-semibold text-2xl dark:bg-transparent"
             skeletonClassName="h-8 min-w-40"
             editable={false}
           />
 
-          <TaskKey
-            prefix={project?.prefix}
-            number={task?.number}
-            className="text-base-500 text-sm dark:text-base-400"
-          />
+          {task?.description && (
+            <div className="prose dark:prose-invert max-w-none">
+              <RichTextEditor
+                defaultContent={task.description}
+                className="min-h-0 border-0 bg-transparent p-0 dark:bg-transparent"
+                editable={false}
+              />
+            </div>
+          )}
         </div>
-      </div>
 
-      {task?.description && (
-        <div className="prose dark:prose-invert max-w-none">
-          <RichTextEditor
-            defaultContent={task.description}
-            className="min-h-0 border-0 bg-transparent p-0 dark:bg-transparent"
-            editable={false}
-          />
-        </div>
-      )}
+        <aside className="hidden lg:block">
+          <div className="sticky top-0">
+            {task && (
+              <TaskProperties
+                task={task}
+                projectId={projectId}
+                editable={false}
+                onPatch={() => {}}
+              />
+            )}
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }
@@ -282,17 +291,12 @@ function AuthenticatedTaskPage() {
     },
   });
 
-  const handleTaskUpdate = useDebounceCallback(updateTask, 300);
-
-  const { setIsOpen: setIsUpdateDueDateDialogOpen } = useDialogStore({
-    type: DialogType.UpdateDueDate,
-  });
+  const handleContentUpdate = useDebounceCallback(updateTask, 300);
+  const handleDescriptionUpdate = useDebounceCallback(updateTask, 300);
 
   const { setIsOpen: setIsDeleteTaskDialogOpen } = useDialogStore({
     type: DialogType.DeleteTask,
   });
-
-  const { isMobile } = useSidebar();
 
   useEffect(() => {
     if (matches && isTaskSidebarOpen) {
@@ -300,163 +304,145 @@ function AuthenticatedTaskPage() {
     }
   }, [matches, isTaskSidebarOpen]);
 
-  return (
-    <div className="custom-scrollbar flex flex-col overflow-y-auto px-6 py-12">
-      {/* Header */}
-      <div className="mb-4 flex items-start gap-3">
-        <Link
-          to="/workspaces/$workspaceSlug/projects/$projectSlug"
-          params={{
-            workspaceSlug,
-            projectSlug,
-          }}
-          variant="ghost"
-          size="icon"
-          className="ml-1"
-          aria-label="Go back"
-        >
-          <ArrowLeftIcon className="size-4" />
-        </Link>
+  const canEdit = isAuthor || !isMember;
 
-        <div className="flex flex-col gap-2">
-          <RichTextEditor
-            defaultContent={task?.content}
-            className="min-h-0 border-0 bg-transparent p-0 text-2xl outline-none hover:outline-none dark:bg-transparent"
-            skeletonClassName="h-8 min-w-40"
-            editable={isAuthor || !isMember}
-            hideToolbar
-            onUpdate={({ getHTML, isEmpty }) =>
-              !isEmpty &&
-              handleTaskUpdate({
-                rowId: taskId,
-                patch: {
-                  content: getHTML(),
-                },
-              })
-            }
-          />
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success("Link copied to clipboard");
+    } catch {
+      // clipboard unavailable (e.g. insecure context); ignore silently
+    }
+  };
+
+  return (
+    <div className="custom-scrollbar mx-auto flex w-full max-w-5xl flex-col overflow-y-auto px-6 py-10">
+      {/* Top bar */}
+      <div className="mb-6 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-1">
+          <Link
+            to="/workspaces/$workspaceSlug/projects/$projectSlug"
+            params={{ workspaceSlug, projectSlug }}
+            variant="ghost"
+            size="icon"
+            aria-label="Go back"
+          >
+            <ArrowLeftIcon className="size-4" />
+          </Link>
 
           <TaskKey
             prefix={project?.prefix}
             number={task?.number}
-            className="text-base-500 text-sm dark:text-base-400"
+            className="text-muted-foreground text-sm"
           />
         </div>
-      </div>
 
-      {/* Task Controls */}
-      <div className="mb-12 w-full">
-        <div className="flex flex-wrap items-center gap-2 p-1">
-          <Button
-            variant="outline"
-            className={cn(
-              "justify-self-end text-red-500 hover:bg-destructive/10 hover:text-red-500/80 focus-visible:ring-red-500 dark:hover:bg-destructive/20",
-              !isAuthor && isMember && "hidden",
-            )}
-            onClick={() => setIsDeleteTaskDialogOpen(true)}
-            aria-label="Delete Task"
-          >
-            <Trash2Icon className="size-4" />
-          </Button>
-
-          <ColumnSelector
-            projectId={projectId}
-            defaultValue={[task?.columnId!]}
-            triggerLabel={task?.column?.title}
-            triggerIcon={task?.column?.icon ?? undefined}
-            onValueChange={({ value }) =>
-              updateTask({
-                rowId: taskId,
-                patch: {
-                  columnId: value[0],
-                },
-              })
-            }
-          />
-
-          <PrioritySelector
-            defaultValue={[task?.priority!]}
-            triggerValue={task?.priority}
-            onValueChange={({ value }) =>
-              updateTask({
-                rowId: taskId,
-                patch: {
-                  priority: value[0],
-                },
-              })
-            }
-          />
-
-          <Tooltip
-            positioning={{ placement: "top" }}
-            tooltip="Update Due Date"
-            shortcut={Hotkeys.UpdateDueDate.toUpperCase()}
-            trigger={
-              <Button
-                onClick={() => setIsUpdateDueDateDialogOpen(true)}
-                variant="outline"
-              >
-                {task?.dueDate ? (
-                  <div className="flex items-center gap-1 text-base-900 dark:text-base-100">
-                    <CalendarIcon className="size-3" />
-                    {dayjs(task.dueDate).format("MMM D, YYYY")}
-                  </div>
-                ) : !isMobile ? (
-                  "Set due date"
-                ) : (
-                  <CalendarIcon className="size-4" />
-                )}
-              </Button>
-            }
-          />
-
-          {/* TODO: Better position this for actual mobile */}
+        <div className="flex items-center gap-1">
+          {/* Properties live in a slide-over on smaller screens */}
           <div className="lg:hidden">
             <SheetRoot
               open={isTaskSidebarOpen}
               onOpenChange={({ open }) => setIsTaskSidebarOpen(open)}
             >
-              <SheetTrigger asChild className="">
-                <Button variant="outline" size="icon">
-                  <MoreHorizontalIcon className="size-4" />
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" aria-label="Properties">
+                  <SlidersHorizontalIcon className="size-4" />
                 </Button>
               </SheetTrigger>
-              <SheetContent className="w-2/3 p-3" side="right">
-                <TaskSidebar />
+              <SheetContent className="w-3/4 overflow-y-auto p-4" side="right">
+                {task && (
+                  <TaskProperties
+                    task={task}
+                    projectId={projectId}
+                    editable={canEdit}
+                    onPatch={(patch) => updateTask({ rowId: taskId, patch })}
+                  />
+                )}
               </SheetContent>
             </SheetRoot>
           </div>
+
+          <MenuRoot positioning={{ placement: "bottom-end" }}>
+            <MenuTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Task actions">
+                <MoreHorizontalIcon className="size-4" />
+              </Button>
+            </MenuTrigger>
+
+            <MenuPositioner>
+              <MenuContent>
+                <MenuItem value="copy" onClick={copyLink}>
+                  <LinkIcon />
+                  <span>Copy link</span>
+                </MenuItem>
+
+                {canEdit && (
+                  <MenuItem
+                    value="delete"
+                    variant="destructive"
+                    onClick={() => setIsDeleteTaskDialogOpen(true)}
+                  >
+                    <Trash2Icon />
+                    <span>Delete task</span>
+                  </MenuItem>
+                )}
+              </MenuContent>
+            </MenuPositioner>
+          </MenuRoot>
         </div>
       </div>
 
-      {/* Main content */}
-      <div className="grid h-full grid-cols-1 gap-4 lg:grid-cols-[5fr_3fr]">
-        <div className="flex h-full flex-1 flex-col gap-8">
-          {/* Task Details */}
-          <TaskDescription
-            task={{
-              rowId: taskId,
-              isAuthor,
-              description: task?.description,
-            }}
+      {/* Body */}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <div className="flex min-w-0 flex-col gap-6">
+          <RichTextEditor
+            defaultContent={task?.content}
+            className="min-h-0 border-0 bg-transparent p-0 font-semibold text-2xl outline-none hover:outline-none dark:bg-transparent"
+            skeletonClassName="h-8 min-w-40"
+            editable={canEdit}
+            hideToolbar
+            onUpdate={({ getHTML, isEmpty }) =>
+              !isEmpty &&
+              handleContentUpdate({
+                rowId: taskId,
+                patch: { content: getHTML() },
+              })
+            }
           />
-          <AttachmentsSection
-            taskId={taskId}
-            editable={isAuthor || !isMember}
+
+          <RichTextEditor
+            defaultContent={task?.description}
+            editable={canEdit}
+            imageUpload={{ taskId }}
+            className="min-h-[120px] border-0 bg-transparent p-0 dark:bg-transparent"
+            skeletonClassName="h-[120px]"
+            onUpdate={({ getHTML, isEmpty }) =>
+              handleDescriptionUpdate({
+                rowId: taskId,
+                patch: { description: isEmpty ? "" : getHTML() },
+              })
+            }
           />
+
+          <AttachmentsSection taskId={taskId} editable={canEdit} />
           <Comments />
           <CreateComment />
         </div>
 
-        {/* Sidebar (Sticky, hidden on mobile) */}
-        <div className="hidden lg:flex">
-          <TaskSidebar />
-        </div>
+        <aside className="hidden lg:block">
+          <div className="sticky top-0">
+            {task && (
+              <TaskProperties
+                task={task}
+                projectId={projectId}
+                editable={canEdit}
+                onPatch={(patch) => updateTask({ rowId: taskId, patch })}
+              />
+            )}
+          </div>
+        </aside>
       </div>
 
-      <UpdateAssigneesDialog />
-      <UpdateDueDateDialog />
-      <UpdateTaskLabelsDialog />
       <DeleteTaskDialog />
     </div>
   );
