@@ -1,0 +1,23 @@
+query TaskAttachments($taskId: UUID!) {
+  attachments(condition: { taskId: $taskId }, orderBy: CREATED_AT_ASC) {
+    nodes {
+      rowId
+      taskId
+      postId
+      kind
+      filename
+      mimeType
+      fileSize
+      url
+      width
+      height
+      metadata
+      createdAt
+      author {
+        rowId
+        name
+        avatarUrl
+      }
+    }
+  }
+}

@@ -19,6 +19,7 @@ import {
 } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import {
+  AttachmentsSection,
   Comments,
   CreateComment,
   TaskDescription,
@@ -437,6 +438,10 @@ function AuthenticatedTaskPage() {
               isAuthor,
               description: task?.description,
             }}
+          />
+          <AttachmentsSection
+            taskId={taskId}
+            editable={isAuthor || !isMember}
           />
           <Comments />
           <CreateComment />

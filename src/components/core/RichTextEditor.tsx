@@ -26,7 +26,9 @@ import {
 } from "@/lib/lexical/html";
 import { cn } from "@/lib/utils";
 import CodeBlockPlugin from "./CodeBlockPlugin";
+import ImagePastePlugin from "./ImagePastePlugin";
 import theme from "./lexical-theme";
+import { ImageNode } from "./nodes/ImageNode";
 
 import type { EditorState, LexicalEditor } from "lexical";
 import type { ComponentProps, RefObject } from "react";
@@ -48,6 +50,8 @@ interface Props extends Omit<ComponentProps<"div">, "placeholder"> {
   editable?: boolean;
   placeholder?: string;
   skeletonClassName?: string;
+  /** When set, pasted/dropped images upload to this task (and optional comment) and embed inline */
+  imageUpload?: { taskId: string; postId?: string };
 }
 
 // Plugin to register code highlighting
@@ -149,6 +153,7 @@ const RichTextEditor = ({
   editable = true,
   placeholder,
   skeletonClassName,
+  imageUpload,
   ...rest
 }: Props) => {
   const editorContainerRef = useRef<HTMLDivElement>(null);
@@ -171,6 +176,7 @@ const RichTextEditor = ({
       CodeHighlightNode,
       LinkNode,
       AutoLinkNode,
+      ...(imageUpload ? [ImageNode] : []),
     ],
   };
 
@@ -230,6 +236,12 @@ const RichTextEditor = ({
               editorApi={editorApi}
               defaultContent={defaultContent}
             />
+            {imageUpload && (
+              <ImagePastePlugin
+                taskId={imageUpload.taskId}
+                postId={imageUpload.postId}
+              />
+            )}
           </div>
         </LexicalComposer>
       </ClientOnly>

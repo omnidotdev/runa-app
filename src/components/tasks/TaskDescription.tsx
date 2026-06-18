@@ -70,6 +70,7 @@ const TaskDescription = ({ task }: Props) => {
         <RichTextEditor
           defaultContent={task?.description}
           editable={task.isAuthor || !isMember}
+          imageUpload={{ taskId: task.rowId }}
           className="border-0 outline-none hover:outline-none"
           skeletonClassName="h-[120px] rounded-t-none"
           onUpdate={({ getHTML, isEmpty }) => {

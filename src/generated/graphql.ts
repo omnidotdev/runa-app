@@ -33,6 +33,8 @@ export type Scalars = {
    * to unexpected results.
    */
   Datetime: { input: Date; output: Date; }
+  /** Represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSON: { input: any; output: any; }
   /** A universally unique identifier as defined by [RFC 4122](https://tools.ietf.org/html/rfc4122). */
   UUID: { input: string; output: string; }
 };
@@ -280,6 +282,531 @@ export type AssigneePatch = {
   taskId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type Attachment = Node & {
+  __typename?: 'Attachment';
+  /** Reads a single `User` that is related to this `Attachment`. */
+  author?: Maybe<User>;
+  authorId?: Maybe<Scalars['UUID']['output']>;
+  createdAt: Scalars['Datetime']['output'];
+  fileSize: Scalars['Int']['output'];
+  filename: Scalars['String']['output'];
+  height?: Maybe<Scalars['Int']['output']>;
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  kind: Scalars['String']['output'];
+  metadata?: Maybe<Scalars['JSON']['output']>;
+  mimeType: Scalars['String']['output'];
+  organizationId: Scalars['String']['output'];
+  /** Reads a single `Post` that is related to this `Attachment`. */
+  post?: Maybe<Post>;
+  postId?: Maybe<Scalars['UUID']['output']>;
+  rowId: Scalars['UUID']['output'];
+  storageKey: Scalars['String']['output'];
+  /** Reads a single `Task` that is related to this `Attachment`. */
+  task?: Maybe<Task>;
+  taskId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+  url: Scalars['String']['output'];
+  width?: Maybe<Scalars['Int']['output']>;
+};
+
+export type AttachmentAggregates = {
+  __typename?: 'AttachmentAggregates';
+  /** Mean average aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  average?: Maybe<AttachmentAverageAggregates>;
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<AttachmentDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  /** Maximum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  max?: Maybe<AttachmentMaxAggregates>;
+  /** Minimum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  min?: Maybe<AttachmentMinAggregates>;
+  /** Population standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevPopulation?: Maybe<AttachmentStddevPopulationAggregates>;
+  /** Sample standard deviation aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  stddevSample?: Maybe<AttachmentStddevSampleAggregates>;
+  /** Sum aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  sum?: Maybe<AttachmentSumAggregates>;
+  /** Population variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  variancePopulation?: Maybe<AttachmentVariancePopulationAggregates>;
+  /** Sample variance aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  varianceSample?: Maybe<AttachmentVarianceSampleAggregates>;
+};
+
+/** A filter to be used against aggregates of `Attachment` object types. */
+export type AttachmentAggregatesFilter = {
+  /** Mean average aggregate over matching `Attachment` objects. */
+  average?: InputMaybe<AttachmentAverageAggregateFilter>;
+  /** Distinct count aggregate over matching `Attachment` objects. */
+  distinctCount?: InputMaybe<AttachmentDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Attachment` object to be included within the aggregate. */
+  filter?: InputMaybe<AttachmentFilter>;
+  /** Maximum aggregate over matching `Attachment` objects. */
+  max?: InputMaybe<AttachmentMaxAggregateFilter>;
+  /** Minimum aggregate over matching `Attachment` objects. */
+  min?: InputMaybe<AttachmentMinAggregateFilter>;
+  /** Population standard deviation aggregate over matching `Attachment` objects. */
+  stddevPopulation?: InputMaybe<AttachmentStddevPopulationAggregateFilter>;
+  /** Sample standard deviation aggregate over matching `Attachment` objects. */
+  stddevSample?: InputMaybe<AttachmentStddevSampleAggregateFilter>;
+  /** Sum aggregate over matching `Attachment` objects. */
+  sum?: InputMaybe<AttachmentSumAggregateFilter>;
+  /** Population variance aggregate over matching `Attachment` objects. */
+  variancePopulation?: InputMaybe<AttachmentVariancePopulationAggregateFilter>;
+  /** Sample variance aggregate over matching `Attachment` objects. */
+  varianceSample?: InputMaybe<AttachmentVarianceSampleAggregateFilter>;
+};
+
+export type AttachmentAverageAggregateFilter = {
+  fileSize?: InputMaybe<BigFloatFilter>;
+  height?: InputMaybe<BigFloatFilter>;
+  width?: InputMaybe<BigFloatFilter>;
+};
+
+export type AttachmentAverageAggregates = {
+  __typename?: 'AttachmentAverageAggregates';
+  /** Mean average of fileSize across the matching connection */
+  fileSize?: Maybe<Scalars['BigFloat']['output']>;
+  /** Mean average of height across the matching connection */
+  height?: Maybe<Scalars['BigFloat']['output']>;
+  /** Mean average of width across the matching connection */
+  width?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+/**
+ * A condition to be used against `Attachment` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type AttachmentCondition = {
+  /** Checks for equality with the object’s `authorId` field. */
+  authorId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `fileSize` field. */
+  fileSize?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `filename` field. */
+  filename?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `height` field. */
+  height?: InputMaybe<Scalars['Int']['input']>;
+  /** Checks for equality with the object’s `kind` field. */
+  kind?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `mimeType` field. */
+  mimeType?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `organizationId` field. */
+  organizationId?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `postId` field. */
+  postId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `storageKey` field. */
+  storageKey?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `taskId` field. */
+  taskId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `url` field. */
+  url?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `width` field. */
+  width?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** A connection to a list of `Attachment` values. */
+export type AttachmentConnection = {
+  __typename?: 'AttachmentConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<AttachmentAggregates>;
+  /** A list of edges which contains the `Attachment` and cursor to aid in pagination. */
+  edges: Array<AttachmentEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<AttachmentAggregates>>;
+  /** A list of `Attachment` objects. */
+  nodes: Array<Attachment>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Attachment` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Attachment` values. */
+export type AttachmentConnectionGroupedAggregatesArgs = {
+  groupBy: Array<AttachmentGroupBy>;
+  having?: InputMaybe<AttachmentHavingInput>;
+};
+
+export type AttachmentDistinctCountAggregateFilter = {
+  authorId?: InputMaybe<BigIntFilter>;
+  createdAt?: InputMaybe<BigIntFilter>;
+  fileSize?: InputMaybe<BigIntFilter>;
+  filename?: InputMaybe<BigIntFilter>;
+  height?: InputMaybe<BigIntFilter>;
+  kind?: InputMaybe<BigIntFilter>;
+  metadata?: InputMaybe<BigIntFilter>;
+  mimeType?: InputMaybe<BigIntFilter>;
+  organizationId?: InputMaybe<BigIntFilter>;
+  postId?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  storageKey?: InputMaybe<BigIntFilter>;
+  taskId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+  url?: InputMaybe<BigIntFilter>;
+  width?: InputMaybe<BigIntFilter>;
+};
+
+export type AttachmentDistinctCountAggregates = {
+  __typename?: 'AttachmentDistinctCountAggregates';
+  /** Distinct count of authorId across the matching connection */
+  authorId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of fileSize across the matching connection */
+  fileSize?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of filename across the matching connection */
+  filename?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of height across the matching connection */
+  height?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of kind across the matching connection */
+  kind?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of metadata across the matching connection */
+  metadata?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of mimeType across the matching connection */
+  mimeType?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of organizationId across the matching connection */
+  organizationId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of postId across the matching connection */
+  postId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of storageKey across the matching connection */
+  storageKey?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of taskId across the matching connection */
+  taskId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of url across the matching connection */
+  url?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of width across the matching connection */
+  width?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Attachment` edge in the connection. */
+export type AttachmentEdge = {
+  __typename?: 'AttachmentEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Attachment` at the end of the edge. */
+  node: Attachment;
+};
+
+/** A filter to be used against `Attachment` object types. All fields are combined with a logical ‘and.’ */
+export type AttachmentFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<AttachmentFilter>>;
+  /** Filter by the object’s `author` relation. */
+  author?: InputMaybe<UserFilter>;
+  /** A related `author` exists. */
+  authorExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `authorId` field. */
+  authorId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `fileSize` field. */
+  fileSize?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `filename` field. */
+  filename?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `height` field. */
+  height?: InputMaybe<IntFilter>;
+  /** Filter by the object’s `kind` field. */
+  kind?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `mimeType` field. */
+  mimeType?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<AttachmentFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<AttachmentFilter>>;
+  /** Filter by the object’s `organizationId` field. */
+  organizationId?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `post` relation. */
+  post?: InputMaybe<PostFilter>;
+  /** A related `post` exists. */
+  postExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `postId` field. */
+  postId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `storageKey` field. */
+  storageKey?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `task` relation. */
+  task?: InputMaybe<TaskFilter>;
+  /** Filter by the object’s `taskId` field. */
+  taskId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `url` field. */
+  url?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `width` field. */
+  width?: InputMaybe<IntFilter>;
+};
+
+/** Grouping methods for `Attachment` for usage during aggregation. */
+export enum AttachmentGroupBy {
+  AuthorId = 'AUTHOR_ID',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Filename = 'FILENAME',
+  FileSize = 'FILE_SIZE',
+  Height = 'HEIGHT',
+  Kind = 'KIND',
+  Metadata = 'METADATA',
+  MimeType = 'MIME_TYPE',
+  OrganizationId = 'ORGANIZATION_ID',
+  PostId = 'POST_ID',
+  StorageKey = 'STORAGE_KEY',
+  TaskId = 'TASK_ID',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR',
+  Url = 'URL',
+  Width = 'WIDTH'
+}
+
+export type AttachmentHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  fileSize?: InputMaybe<HavingIntFilter>;
+  height?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  width?: InputMaybe<HavingIntFilter>;
+};
+
+export type AttachmentHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  fileSize?: InputMaybe<HavingIntFilter>;
+  height?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  width?: InputMaybe<HavingIntFilter>;
+};
+
+/** Conditions for `Attachment` aggregates. */
+export type AttachmentHavingInput = {
+  AND?: InputMaybe<Array<AttachmentHavingInput>>;
+  OR?: InputMaybe<Array<AttachmentHavingInput>>;
+  average?: InputMaybe<AttachmentHavingAverageInput>;
+  distinctCount?: InputMaybe<AttachmentHavingDistinctCountInput>;
+  max?: InputMaybe<AttachmentHavingMaxInput>;
+  min?: InputMaybe<AttachmentHavingMinInput>;
+  stddevPopulation?: InputMaybe<AttachmentHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<AttachmentHavingStddevSampleInput>;
+  sum?: InputMaybe<AttachmentHavingSumInput>;
+  variancePopulation?: InputMaybe<AttachmentHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<AttachmentHavingVarianceSampleInput>;
+};
+
+export type AttachmentHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  fileSize?: InputMaybe<HavingIntFilter>;
+  height?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  width?: InputMaybe<HavingIntFilter>;
+};
+
+export type AttachmentHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  fileSize?: InputMaybe<HavingIntFilter>;
+  height?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  width?: InputMaybe<HavingIntFilter>;
+};
+
+export type AttachmentHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  fileSize?: InputMaybe<HavingIntFilter>;
+  height?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  width?: InputMaybe<HavingIntFilter>;
+};
+
+export type AttachmentHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  fileSize?: InputMaybe<HavingIntFilter>;
+  height?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  width?: InputMaybe<HavingIntFilter>;
+};
+
+export type AttachmentHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  fileSize?: InputMaybe<HavingIntFilter>;
+  height?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  width?: InputMaybe<HavingIntFilter>;
+};
+
+export type AttachmentHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  fileSize?: InputMaybe<HavingIntFilter>;
+  height?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  width?: InputMaybe<HavingIntFilter>;
+};
+
+export type AttachmentHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  fileSize?: InputMaybe<HavingIntFilter>;
+  height?: InputMaybe<HavingIntFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+  width?: InputMaybe<HavingIntFilter>;
+};
+
+export type AttachmentMaxAggregateFilter = {
+  fileSize?: InputMaybe<IntFilter>;
+  height?: InputMaybe<IntFilter>;
+  width?: InputMaybe<IntFilter>;
+};
+
+export type AttachmentMaxAggregates = {
+  __typename?: 'AttachmentMaxAggregates';
+  /** Maximum of fileSize across the matching connection */
+  fileSize?: Maybe<Scalars['Int']['output']>;
+  /** Maximum of height across the matching connection */
+  height?: Maybe<Scalars['Int']['output']>;
+  /** Maximum of width across the matching connection */
+  width?: Maybe<Scalars['Int']['output']>;
+};
+
+export type AttachmentMinAggregateFilter = {
+  fileSize?: InputMaybe<IntFilter>;
+  height?: InputMaybe<IntFilter>;
+  width?: InputMaybe<IntFilter>;
+};
+
+export type AttachmentMinAggregates = {
+  __typename?: 'AttachmentMinAggregates';
+  /** Minimum of fileSize across the matching connection */
+  fileSize?: Maybe<Scalars['Int']['output']>;
+  /** Minimum of height across the matching connection */
+  height?: Maybe<Scalars['Int']['output']>;
+  /** Minimum of width across the matching connection */
+  width?: Maybe<Scalars['Int']['output']>;
+};
+
+/** Methods to use when ordering `Attachment`. */
+export enum AttachmentOrderBy {
+  AuthorIdAsc = 'AUTHOR_ID_ASC',
+  AuthorIdDesc = 'AUTHOR_ID_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  FilenameAsc = 'FILENAME_ASC',
+  FilenameDesc = 'FILENAME_DESC',
+  FileSizeAsc = 'FILE_SIZE_ASC',
+  FileSizeDesc = 'FILE_SIZE_DESC',
+  HeightAsc = 'HEIGHT_ASC',
+  HeightDesc = 'HEIGHT_DESC',
+  KindAsc = 'KIND_ASC',
+  KindDesc = 'KIND_DESC',
+  MimeTypeAsc = 'MIME_TYPE_ASC',
+  MimeTypeDesc = 'MIME_TYPE_DESC',
+  Natural = 'NATURAL',
+  OrganizationIdAsc = 'ORGANIZATION_ID_ASC',
+  OrganizationIdDesc = 'ORGANIZATION_ID_DESC',
+  PostIdAsc = 'POST_ID_ASC',
+  PostIdDesc = 'POST_ID_DESC',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  StorageKeyAsc = 'STORAGE_KEY_ASC',
+  StorageKeyDesc = 'STORAGE_KEY_DESC',
+  TaskIdAsc = 'TASK_ID_ASC',
+  TaskIdDesc = 'TASK_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC',
+  UrlAsc = 'URL_ASC',
+  UrlDesc = 'URL_DESC',
+  WidthAsc = 'WIDTH_ASC',
+  WidthDesc = 'WIDTH_DESC'
+}
+
+export type AttachmentStddevPopulationAggregateFilter = {
+  fileSize?: InputMaybe<BigFloatFilter>;
+  height?: InputMaybe<BigFloatFilter>;
+  width?: InputMaybe<BigFloatFilter>;
+};
+
+export type AttachmentStddevPopulationAggregates = {
+  __typename?: 'AttachmentStddevPopulationAggregates';
+  /** Population standard deviation of fileSize across the matching connection */
+  fileSize?: Maybe<Scalars['BigFloat']['output']>;
+  /** Population standard deviation of height across the matching connection */
+  height?: Maybe<Scalars['BigFloat']['output']>;
+  /** Population standard deviation of width across the matching connection */
+  width?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AttachmentStddevSampleAggregateFilter = {
+  fileSize?: InputMaybe<BigFloatFilter>;
+  height?: InputMaybe<BigFloatFilter>;
+  width?: InputMaybe<BigFloatFilter>;
+};
+
+export type AttachmentStddevSampleAggregates = {
+  __typename?: 'AttachmentStddevSampleAggregates';
+  /** Sample standard deviation of fileSize across the matching connection */
+  fileSize?: Maybe<Scalars['BigFloat']['output']>;
+  /** Sample standard deviation of height across the matching connection */
+  height?: Maybe<Scalars['BigFloat']['output']>;
+  /** Sample standard deviation of width across the matching connection */
+  width?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AttachmentSumAggregateFilter = {
+  fileSize?: InputMaybe<BigIntFilter>;
+  height?: InputMaybe<BigIntFilter>;
+  width?: InputMaybe<BigIntFilter>;
+};
+
+export type AttachmentSumAggregates = {
+  __typename?: 'AttachmentSumAggregates';
+  /** Sum of fileSize across the matching connection */
+  fileSize: Scalars['BigInt']['output'];
+  /** Sum of height across the matching connection */
+  height: Scalars['BigInt']['output'];
+  /** Sum of width across the matching connection */
+  width: Scalars['BigInt']['output'];
+};
+
+export type AttachmentVariancePopulationAggregateFilter = {
+  fileSize?: InputMaybe<BigFloatFilter>;
+  height?: InputMaybe<BigFloatFilter>;
+  width?: InputMaybe<BigFloatFilter>;
+};
+
+export type AttachmentVariancePopulationAggregates = {
+  __typename?: 'AttachmentVariancePopulationAggregates';
+  /** Population variance of fileSize across the matching connection */
+  fileSize?: Maybe<Scalars['BigFloat']['output']>;
+  /** Population variance of height across the matching connection */
+  height?: Maybe<Scalars['BigFloat']['output']>;
+  /** Population variance of width across the matching connection */
+  width?: Maybe<Scalars['BigFloat']['output']>;
+};
+
+export type AttachmentVarianceSampleAggregateFilter = {
+  fileSize?: InputMaybe<BigFloatFilter>;
+  height?: InputMaybe<BigFloatFilter>;
+  width?: InputMaybe<BigFloatFilter>;
+};
+
+export type AttachmentVarianceSampleAggregates = {
+  __typename?: 'AttachmentVarianceSampleAggregates';
+  /** Sample variance of fileSize across the matching connection */
+  fileSize?: Maybe<Scalars['BigFloat']['output']>;
+  /** Sample variance of height across the matching connection */
+  height?: Maybe<Scalars['BigFloat']['output']>;
+  /** Sample variance of width across the matching connection */
+  width?: Maybe<Scalars['BigFloat']['output']>;
 };
 
 /** A filter to be used against BigFloat fields. All fields are combined with a logical ‘and.’ */
@@ -3097,6 +3624,8 @@ export type PageInfo = {
 
 export type Post = Node & {
   __typename?: 'Post';
+  /** Reads and enables pagination through a set of `Attachment`. */
+  attachments: AttachmentConnection;
   /** Reads a single `User` that is related to this `Post`. */
   author?: Maybe<User>;
   authorId?: Maybe<Scalars['UUID']['output']>;
@@ -3112,6 +3641,18 @@ export type Post = Node & {
   taskId: Scalars['UUID']['output'];
   title?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['Datetime']['output'];
+};
+
+
+export type PostAttachmentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AttachmentCondition>;
+  filter?: InputMaybe<AttachmentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AttachmentOrderBy>>;
 };
 
 
@@ -3224,6 +3765,10 @@ export type PostEdge = {
 export type PostFilter = {
   /** Checks for all expressions in this list. */
   and?: InputMaybe<Array<PostFilter>>;
+  /** Filter by the object’s `attachments` relation. */
+  attachments?: InputMaybe<PostToManyAttachmentFilter>;
+  /** Some related `attachments` exist. */
+  attachmentsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `author` relation. */
   author?: InputMaybe<UserFilter>;
   /** A related `author` exists. */
@@ -3341,6 +3886,88 @@ export type PostInput = {
 
 /** Methods to use when ordering `Post`. */
 export enum PostOrderBy {
+  AttachmentsAverageFileSizeAsc = 'ATTACHMENTS_AVERAGE_FILE_SIZE_ASC',
+  AttachmentsAverageFileSizeDesc = 'ATTACHMENTS_AVERAGE_FILE_SIZE_DESC',
+  AttachmentsAverageHeightAsc = 'ATTACHMENTS_AVERAGE_HEIGHT_ASC',
+  AttachmentsAverageHeightDesc = 'ATTACHMENTS_AVERAGE_HEIGHT_DESC',
+  AttachmentsAverageWidthAsc = 'ATTACHMENTS_AVERAGE_WIDTH_ASC',
+  AttachmentsAverageWidthDesc = 'ATTACHMENTS_AVERAGE_WIDTH_DESC',
+  AttachmentsCountAsc = 'ATTACHMENTS_COUNT_ASC',
+  AttachmentsCountDesc = 'ATTACHMENTS_COUNT_DESC',
+  AttachmentsDistinctCountAuthorIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_AUTHOR_ID_ASC',
+  AttachmentsDistinctCountAuthorIdDesc = 'ATTACHMENTS_DISTINCT_COUNT_AUTHOR_ID_DESC',
+  AttachmentsDistinctCountCreatedAtAsc = 'ATTACHMENTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  AttachmentsDistinctCountCreatedAtDesc = 'ATTACHMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  AttachmentsDistinctCountFilenameAsc = 'ATTACHMENTS_DISTINCT_COUNT_FILENAME_ASC',
+  AttachmentsDistinctCountFilenameDesc = 'ATTACHMENTS_DISTINCT_COUNT_FILENAME_DESC',
+  AttachmentsDistinctCountFileSizeAsc = 'ATTACHMENTS_DISTINCT_COUNT_FILE_SIZE_ASC',
+  AttachmentsDistinctCountFileSizeDesc = 'ATTACHMENTS_DISTINCT_COUNT_FILE_SIZE_DESC',
+  AttachmentsDistinctCountHeightAsc = 'ATTACHMENTS_DISTINCT_COUNT_HEIGHT_ASC',
+  AttachmentsDistinctCountHeightDesc = 'ATTACHMENTS_DISTINCT_COUNT_HEIGHT_DESC',
+  AttachmentsDistinctCountKindAsc = 'ATTACHMENTS_DISTINCT_COUNT_KIND_ASC',
+  AttachmentsDistinctCountKindDesc = 'ATTACHMENTS_DISTINCT_COUNT_KIND_DESC',
+  AttachmentsDistinctCountMetadataAsc = 'ATTACHMENTS_DISTINCT_COUNT_METADATA_ASC',
+  AttachmentsDistinctCountMetadataDesc = 'ATTACHMENTS_DISTINCT_COUNT_METADATA_DESC',
+  AttachmentsDistinctCountMimeTypeAsc = 'ATTACHMENTS_DISTINCT_COUNT_MIME_TYPE_ASC',
+  AttachmentsDistinctCountMimeTypeDesc = 'ATTACHMENTS_DISTINCT_COUNT_MIME_TYPE_DESC',
+  AttachmentsDistinctCountOrganizationIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AttachmentsDistinctCountOrganizationIdDesc = 'ATTACHMENTS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AttachmentsDistinctCountPostIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_POST_ID_ASC',
+  AttachmentsDistinctCountPostIdDesc = 'ATTACHMENTS_DISTINCT_COUNT_POST_ID_DESC',
+  AttachmentsDistinctCountRowIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_ROW_ID_ASC',
+  AttachmentsDistinctCountRowIdDesc = 'ATTACHMENTS_DISTINCT_COUNT_ROW_ID_DESC',
+  AttachmentsDistinctCountStorageKeyAsc = 'ATTACHMENTS_DISTINCT_COUNT_STORAGE_KEY_ASC',
+  AttachmentsDistinctCountStorageKeyDesc = 'ATTACHMENTS_DISTINCT_COUNT_STORAGE_KEY_DESC',
+  AttachmentsDistinctCountTaskIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_TASK_ID_ASC',
+  AttachmentsDistinctCountTaskIdDesc = 'ATTACHMENTS_DISTINCT_COUNT_TASK_ID_DESC',
+  AttachmentsDistinctCountUpdatedAtAsc = 'ATTACHMENTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  AttachmentsDistinctCountUpdatedAtDesc = 'ATTACHMENTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  AttachmentsDistinctCountUrlAsc = 'ATTACHMENTS_DISTINCT_COUNT_URL_ASC',
+  AttachmentsDistinctCountUrlDesc = 'ATTACHMENTS_DISTINCT_COUNT_URL_DESC',
+  AttachmentsDistinctCountWidthAsc = 'ATTACHMENTS_DISTINCT_COUNT_WIDTH_ASC',
+  AttachmentsDistinctCountWidthDesc = 'ATTACHMENTS_DISTINCT_COUNT_WIDTH_DESC',
+  AttachmentsMaxFileSizeAsc = 'ATTACHMENTS_MAX_FILE_SIZE_ASC',
+  AttachmentsMaxFileSizeDesc = 'ATTACHMENTS_MAX_FILE_SIZE_DESC',
+  AttachmentsMaxHeightAsc = 'ATTACHMENTS_MAX_HEIGHT_ASC',
+  AttachmentsMaxHeightDesc = 'ATTACHMENTS_MAX_HEIGHT_DESC',
+  AttachmentsMaxWidthAsc = 'ATTACHMENTS_MAX_WIDTH_ASC',
+  AttachmentsMaxWidthDesc = 'ATTACHMENTS_MAX_WIDTH_DESC',
+  AttachmentsMinFileSizeAsc = 'ATTACHMENTS_MIN_FILE_SIZE_ASC',
+  AttachmentsMinFileSizeDesc = 'ATTACHMENTS_MIN_FILE_SIZE_DESC',
+  AttachmentsMinHeightAsc = 'ATTACHMENTS_MIN_HEIGHT_ASC',
+  AttachmentsMinHeightDesc = 'ATTACHMENTS_MIN_HEIGHT_DESC',
+  AttachmentsMinWidthAsc = 'ATTACHMENTS_MIN_WIDTH_ASC',
+  AttachmentsMinWidthDesc = 'ATTACHMENTS_MIN_WIDTH_DESC',
+  AttachmentsStddevPopulationFileSizeAsc = 'ATTACHMENTS_STDDEV_POPULATION_FILE_SIZE_ASC',
+  AttachmentsStddevPopulationFileSizeDesc = 'ATTACHMENTS_STDDEV_POPULATION_FILE_SIZE_DESC',
+  AttachmentsStddevPopulationHeightAsc = 'ATTACHMENTS_STDDEV_POPULATION_HEIGHT_ASC',
+  AttachmentsStddevPopulationHeightDesc = 'ATTACHMENTS_STDDEV_POPULATION_HEIGHT_DESC',
+  AttachmentsStddevPopulationWidthAsc = 'ATTACHMENTS_STDDEV_POPULATION_WIDTH_ASC',
+  AttachmentsStddevPopulationWidthDesc = 'ATTACHMENTS_STDDEV_POPULATION_WIDTH_DESC',
+  AttachmentsStddevSampleFileSizeAsc = 'ATTACHMENTS_STDDEV_SAMPLE_FILE_SIZE_ASC',
+  AttachmentsStddevSampleFileSizeDesc = 'ATTACHMENTS_STDDEV_SAMPLE_FILE_SIZE_DESC',
+  AttachmentsStddevSampleHeightAsc = 'ATTACHMENTS_STDDEV_SAMPLE_HEIGHT_ASC',
+  AttachmentsStddevSampleHeightDesc = 'ATTACHMENTS_STDDEV_SAMPLE_HEIGHT_DESC',
+  AttachmentsStddevSampleWidthAsc = 'ATTACHMENTS_STDDEV_SAMPLE_WIDTH_ASC',
+  AttachmentsStddevSampleWidthDesc = 'ATTACHMENTS_STDDEV_SAMPLE_WIDTH_DESC',
+  AttachmentsSumFileSizeAsc = 'ATTACHMENTS_SUM_FILE_SIZE_ASC',
+  AttachmentsSumFileSizeDesc = 'ATTACHMENTS_SUM_FILE_SIZE_DESC',
+  AttachmentsSumHeightAsc = 'ATTACHMENTS_SUM_HEIGHT_ASC',
+  AttachmentsSumHeightDesc = 'ATTACHMENTS_SUM_HEIGHT_DESC',
+  AttachmentsSumWidthAsc = 'ATTACHMENTS_SUM_WIDTH_ASC',
+  AttachmentsSumWidthDesc = 'ATTACHMENTS_SUM_WIDTH_DESC',
+  AttachmentsVariancePopulationFileSizeAsc = 'ATTACHMENTS_VARIANCE_POPULATION_FILE_SIZE_ASC',
+  AttachmentsVariancePopulationFileSizeDesc = 'ATTACHMENTS_VARIANCE_POPULATION_FILE_SIZE_DESC',
+  AttachmentsVariancePopulationHeightAsc = 'ATTACHMENTS_VARIANCE_POPULATION_HEIGHT_ASC',
+  AttachmentsVariancePopulationHeightDesc = 'ATTACHMENTS_VARIANCE_POPULATION_HEIGHT_DESC',
+  AttachmentsVariancePopulationWidthAsc = 'ATTACHMENTS_VARIANCE_POPULATION_WIDTH_ASC',
+  AttachmentsVariancePopulationWidthDesc = 'ATTACHMENTS_VARIANCE_POPULATION_WIDTH_DESC',
+  AttachmentsVarianceSampleFileSizeAsc = 'ATTACHMENTS_VARIANCE_SAMPLE_FILE_SIZE_ASC',
+  AttachmentsVarianceSampleFileSizeDesc = 'ATTACHMENTS_VARIANCE_SAMPLE_FILE_SIZE_DESC',
+  AttachmentsVarianceSampleHeightAsc = 'ATTACHMENTS_VARIANCE_SAMPLE_HEIGHT_ASC',
+  AttachmentsVarianceSampleHeightDesc = 'ATTACHMENTS_VARIANCE_SAMPLE_HEIGHT_DESC',
+  AttachmentsVarianceSampleWidthAsc = 'ATTACHMENTS_VARIANCE_SAMPLE_WIDTH_ASC',
+  AttachmentsVarianceSampleWidthDesc = 'ATTACHMENTS_VARIANCE_SAMPLE_WIDTH_DESC',
   AuthorIdAsc = 'AUTHOR_ID_ASC',
   AuthorIdDesc = 'AUTHOR_ID_DESC',
   CreatedAtAsc = 'CREATED_AT_ASC',
@@ -3383,6 +4010,18 @@ export type PostPatch = {
   taskId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A filter to be used against many `Attachment` object types. All fields are combined with a logical ‘and.’ */
+export type PostToManyAttachmentFilter = {
+  /** Aggregates across related `Attachment` match the filter criteria. */
+  aggregates?: InputMaybe<AttachmentAggregatesFilter>;
+  /** Every related `Attachment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AttachmentFilter>;
+  /** No related `Attachment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AttachmentFilter>;
+  /** Some related `Attachment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AttachmentFilter>;
 };
 
 /** A filter to be used against many `Emoji` object types. All fields are combined with a logical ‘and.’ */
@@ -5340,6 +5979,12 @@ export type Query = Node & {
   assigneeByTaskIdAndUserId?: Maybe<Assignee>;
   /** Reads and enables pagination through a set of `Assignee`. */
   assignees?: Maybe<AssigneeConnection>;
+  /** Get a single `Attachment`. */
+  attachment?: Maybe<Attachment>;
+  /** Reads a single `Attachment` using its globally unique `ID`. */
+  attachmentById?: Maybe<Attachment>;
+  /** Reads and enables pagination through a set of `Attachment`. */
+  attachments?: Maybe<AttachmentConnection>;
   /** Get a single `Column`. */
   column?: Maybe<Column>;
   /** Reads a single `Column` using its globally unique `ID`. */
@@ -5485,6 +6130,31 @@ export type QueryAssigneesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<AssigneeOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAttachmentArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAttachmentByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryAttachmentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AttachmentCondition>;
+  filter?: InputMaybe<AttachmentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AttachmentOrderBy>>;
 };
 
 
@@ -6277,6 +6947,8 @@ export type Task = Node & {
   __typename?: 'Task';
   /** Reads and enables pagination through a set of `Assignee`. */
   assignees: AssigneeConnection;
+  /** Reads and enables pagination through a set of `Attachment`. */
+  attachments: AttachmentConnection;
   /** Reads a single `User` that is related to this `Task`. */
   author?: Maybe<User>;
   authorId?: Maybe<Scalars['UUID']['output']>;
@@ -6313,6 +6985,18 @@ export type TaskAssigneesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<AssigneeOrderBy>>;
+};
+
+
+export type TaskAttachmentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AttachmentCondition>;
+  filter?: InputMaybe<AttachmentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AttachmentOrderBy>>;
 };
 
 
@@ -6508,6 +7192,10 @@ export type TaskFilter = {
   assignees?: InputMaybe<TaskToManyAssigneeFilter>;
   /** Some related `assignees` exist. */
   assigneesExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `attachments` relation. */
+  attachments?: InputMaybe<TaskToManyAttachmentFilter>;
+  /** Some related `attachments` exist. */
+  attachmentsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `author` relation. */
   author?: InputMaybe<UserFilter>;
   /** A related `author` exists. */
@@ -6924,6 +7612,88 @@ export enum TaskOrderBy {
   AssigneesDistinctCountUpdatedAtDesc = 'ASSIGNEES_DISTINCT_COUNT_UPDATED_AT_DESC',
   AssigneesDistinctCountUserIdAsc = 'ASSIGNEES_DISTINCT_COUNT_USER_ID_ASC',
   AssigneesDistinctCountUserIdDesc = 'ASSIGNEES_DISTINCT_COUNT_USER_ID_DESC',
+  AttachmentsAverageFileSizeAsc = 'ATTACHMENTS_AVERAGE_FILE_SIZE_ASC',
+  AttachmentsAverageFileSizeDesc = 'ATTACHMENTS_AVERAGE_FILE_SIZE_DESC',
+  AttachmentsAverageHeightAsc = 'ATTACHMENTS_AVERAGE_HEIGHT_ASC',
+  AttachmentsAverageHeightDesc = 'ATTACHMENTS_AVERAGE_HEIGHT_DESC',
+  AttachmentsAverageWidthAsc = 'ATTACHMENTS_AVERAGE_WIDTH_ASC',
+  AttachmentsAverageWidthDesc = 'ATTACHMENTS_AVERAGE_WIDTH_DESC',
+  AttachmentsCountAsc = 'ATTACHMENTS_COUNT_ASC',
+  AttachmentsCountDesc = 'ATTACHMENTS_COUNT_DESC',
+  AttachmentsDistinctCountAuthorIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_AUTHOR_ID_ASC',
+  AttachmentsDistinctCountAuthorIdDesc = 'ATTACHMENTS_DISTINCT_COUNT_AUTHOR_ID_DESC',
+  AttachmentsDistinctCountCreatedAtAsc = 'ATTACHMENTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  AttachmentsDistinctCountCreatedAtDesc = 'ATTACHMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  AttachmentsDistinctCountFilenameAsc = 'ATTACHMENTS_DISTINCT_COUNT_FILENAME_ASC',
+  AttachmentsDistinctCountFilenameDesc = 'ATTACHMENTS_DISTINCT_COUNT_FILENAME_DESC',
+  AttachmentsDistinctCountFileSizeAsc = 'ATTACHMENTS_DISTINCT_COUNT_FILE_SIZE_ASC',
+  AttachmentsDistinctCountFileSizeDesc = 'ATTACHMENTS_DISTINCT_COUNT_FILE_SIZE_DESC',
+  AttachmentsDistinctCountHeightAsc = 'ATTACHMENTS_DISTINCT_COUNT_HEIGHT_ASC',
+  AttachmentsDistinctCountHeightDesc = 'ATTACHMENTS_DISTINCT_COUNT_HEIGHT_DESC',
+  AttachmentsDistinctCountKindAsc = 'ATTACHMENTS_DISTINCT_COUNT_KIND_ASC',
+  AttachmentsDistinctCountKindDesc = 'ATTACHMENTS_DISTINCT_COUNT_KIND_DESC',
+  AttachmentsDistinctCountMetadataAsc = 'ATTACHMENTS_DISTINCT_COUNT_METADATA_ASC',
+  AttachmentsDistinctCountMetadataDesc = 'ATTACHMENTS_DISTINCT_COUNT_METADATA_DESC',
+  AttachmentsDistinctCountMimeTypeAsc = 'ATTACHMENTS_DISTINCT_COUNT_MIME_TYPE_ASC',
+  AttachmentsDistinctCountMimeTypeDesc = 'ATTACHMENTS_DISTINCT_COUNT_MIME_TYPE_DESC',
+  AttachmentsDistinctCountOrganizationIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AttachmentsDistinctCountOrganizationIdDesc = 'ATTACHMENTS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AttachmentsDistinctCountPostIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_POST_ID_ASC',
+  AttachmentsDistinctCountPostIdDesc = 'ATTACHMENTS_DISTINCT_COUNT_POST_ID_DESC',
+  AttachmentsDistinctCountRowIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_ROW_ID_ASC',
+  AttachmentsDistinctCountRowIdDesc = 'ATTACHMENTS_DISTINCT_COUNT_ROW_ID_DESC',
+  AttachmentsDistinctCountStorageKeyAsc = 'ATTACHMENTS_DISTINCT_COUNT_STORAGE_KEY_ASC',
+  AttachmentsDistinctCountStorageKeyDesc = 'ATTACHMENTS_DISTINCT_COUNT_STORAGE_KEY_DESC',
+  AttachmentsDistinctCountTaskIdAsc = 'ATTACHMENTS_DISTINCT_COUNT_TASK_ID_ASC',
+  AttachmentsDistinctCountTaskIdDesc = 'ATTACHMENTS_DISTINCT_COUNT_TASK_ID_DESC',
+  AttachmentsDistinctCountUpdatedAtAsc = 'ATTACHMENTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  AttachmentsDistinctCountUpdatedAtDesc = 'ATTACHMENTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  AttachmentsDistinctCountUrlAsc = 'ATTACHMENTS_DISTINCT_COUNT_URL_ASC',
+  AttachmentsDistinctCountUrlDesc = 'ATTACHMENTS_DISTINCT_COUNT_URL_DESC',
+  AttachmentsDistinctCountWidthAsc = 'ATTACHMENTS_DISTINCT_COUNT_WIDTH_ASC',
+  AttachmentsDistinctCountWidthDesc = 'ATTACHMENTS_DISTINCT_COUNT_WIDTH_DESC',
+  AttachmentsMaxFileSizeAsc = 'ATTACHMENTS_MAX_FILE_SIZE_ASC',
+  AttachmentsMaxFileSizeDesc = 'ATTACHMENTS_MAX_FILE_SIZE_DESC',
+  AttachmentsMaxHeightAsc = 'ATTACHMENTS_MAX_HEIGHT_ASC',
+  AttachmentsMaxHeightDesc = 'ATTACHMENTS_MAX_HEIGHT_DESC',
+  AttachmentsMaxWidthAsc = 'ATTACHMENTS_MAX_WIDTH_ASC',
+  AttachmentsMaxWidthDesc = 'ATTACHMENTS_MAX_WIDTH_DESC',
+  AttachmentsMinFileSizeAsc = 'ATTACHMENTS_MIN_FILE_SIZE_ASC',
+  AttachmentsMinFileSizeDesc = 'ATTACHMENTS_MIN_FILE_SIZE_DESC',
+  AttachmentsMinHeightAsc = 'ATTACHMENTS_MIN_HEIGHT_ASC',
+  AttachmentsMinHeightDesc = 'ATTACHMENTS_MIN_HEIGHT_DESC',
+  AttachmentsMinWidthAsc = 'ATTACHMENTS_MIN_WIDTH_ASC',
+  AttachmentsMinWidthDesc = 'ATTACHMENTS_MIN_WIDTH_DESC',
+  AttachmentsStddevPopulationFileSizeAsc = 'ATTACHMENTS_STDDEV_POPULATION_FILE_SIZE_ASC',
+  AttachmentsStddevPopulationFileSizeDesc = 'ATTACHMENTS_STDDEV_POPULATION_FILE_SIZE_DESC',
+  AttachmentsStddevPopulationHeightAsc = 'ATTACHMENTS_STDDEV_POPULATION_HEIGHT_ASC',
+  AttachmentsStddevPopulationHeightDesc = 'ATTACHMENTS_STDDEV_POPULATION_HEIGHT_DESC',
+  AttachmentsStddevPopulationWidthAsc = 'ATTACHMENTS_STDDEV_POPULATION_WIDTH_ASC',
+  AttachmentsStddevPopulationWidthDesc = 'ATTACHMENTS_STDDEV_POPULATION_WIDTH_DESC',
+  AttachmentsStddevSampleFileSizeAsc = 'ATTACHMENTS_STDDEV_SAMPLE_FILE_SIZE_ASC',
+  AttachmentsStddevSampleFileSizeDesc = 'ATTACHMENTS_STDDEV_SAMPLE_FILE_SIZE_DESC',
+  AttachmentsStddevSampleHeightAsc = 'ATTACHMENTS_STDDEV_SAMPLE_HEIGHT_ASC',
+  AttachmentsStddevSampleHeightDesc = 'ATTACHMENTS_STDDEV_SAMPLE_HEIGHT_DESC',
+  AttachmentsStddevSampleWidthAsc = 'ATTACHMENTS_STDDEV_SAMPLE_WIDTH_ASC',
+  AttachmentsStddevSampleWidthDesc = 'ATTACHMENTS_STDDEV_SAMPLE_WIDTH_DESC',
+  AttachmentsSumFileSizeAsc = 'ATTACHMENTS_SUM_FILE_SIZE_ASC',
+  AttachmentsSumFileSizeDesc = 'ATTACHMENTS_SUM_FILE_SIZE_DESC',
+  AttachmentsSumHeightAsc = 'ATTACHMENTS_SUM_HEIGHT_ASC',
+  AttachmentsSumHeightDesc = 'ATTACHMENTS_SUM_HEIGHT_DESC',
+  AttachmentsSumWidthAsc = 'ATTACHMENTS_SUM_WIDTH_ASC',
+  AttachmentsSumWidthDesc = 'ATTACHMENTS_SUM_WIDTH_DESC',
+  AttachmentsVariancePopulationFileSizeAsc = 'ATTACHMENTS_VARIANCE_POPULATION_FILE_SIZE_ASC',
+  AttachmentsVariancePopulationFileSizeDesc = 'ATTACHMENTS_VARIANCE_POPULATION_FILE_SIZE_DESC',
+  AttachmentsVariancePopulationHeightAsc = 'ATTACHMENTS_VARIANCE_POPULATION_HEIGHT_ASC',
+  AttachmentsVariancePopulationHeightDesc = 'ATTACHMENTS_VARIANCE_POPULATION_HEIGHT_DESC',
+  AttachmentsVariancePopulationWidthAsc = 'ATTACHMENTS_VARIANCE_POPULATION_WIDTH_ASC',
+  AttachmentsVariancePopulationWidthDesc = 'ATTACHMENTS_VARIANCE_POPULATION_WIDTH_DESC',
+  AttachmentsVarianceSampleFileSizeAsc = 'ATTACHMENTS_VARIANCE_SAMPLE_FILE_SIZE_ASC',
+  AttachmentsVarianceSampleFileSizeDesc = 'ATTACHMENTS_VARIANCE_SAMPLE_FILE_SIZE_DESC',
+  AttachmentsVarianceSampleHeightAsc = 'ATTACHMENTS_VARIANCE_SAMPLE_HEIGHT_ASC',
+  AttachmentsVarianceSampleHeightDesc = 'ATTACHMENTS_VARIANCE_SAMPLE_HEIGHT_DESC',
+  AttachmentsVarianceSampleWidthAsc = 'ATTACHMENTS_VARIANCE_SAMPLE_WIDTH_ASC',
+  AttachmentsVarianceSampleWidthDesc = 'ATTACHMENTS_VARIANCE_SAMPLE_WIDTH_DESC',
   AuthorIdAsc = 'AUTHOR_ID_ASC',
   AuthorIdDesc = 'AUTHOR_ID_DESC',
   ColumnIdAsc = 'COLUMN_ID_ASC',
@@ -7035,6 +7805,18 @@ export type TaskToManyAssigneeFilter = {
   none?: InputMaybe<AssigneeFilter>;
   /** Some related `Assignee` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<AssigneeFilter>;
+};
+
+/** A filter to be used against many `Attachment` object types. All fields are combined with a logical ‘and.’ */
+export type TaskToManyAttachmentFilter = {
+  /** Aggregates across related `Attachment` match the filter criteria. */
+  aggregates?: InputMaybe<AttachmentAggregatesFilter>;
+  /** Every related `Attachment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AttachmentFilter>;
+  /** No related `Attachment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AttachmentFilter>;
+  /** Some related `Attachment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AttachmentFilter>;
 };
 
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
@@ -7819,6 +8601,8 @@ export type User = Node & {
   __typename?: 'User';
   /** Reads and enables pagination through a set of `Assignee`. */
   assignees: AssigneeConnection;
+  /** Reads and enables pagination through a set of `Attachment`. */
+  authoredAttachments: AttachmentConnection;
   /** Reads and enables pagination through a set of `Post`. */
   authoredPosts: PostConnection;
   /** Reads and enables pagination through a set of `Task`. */
@@ -7848,6 +8632,18 @@ export type UserAssigneesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<AssigneeOrderBy>>;
+};
+
+
+export type UserAuthoredAttachmentsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<AttachmentCondition>;
+  filter?: InputMaybe<AttachmentFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AttachmentOrderBy>>;
 };
 
 
@@ -7982,6 +8778,10 @@ export type UserFilter = {
   assignees?: InputMaybe<UserToManyAssigneeFilter>;
   /** Some related `assignees` exist. */
   assigneesExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `authoredAttachments` relation. */
+  authoredAttachments?: InputMaybe<UserToManyAttachmentFilter>;
+  /** Some related `authoredAttachments` exist. */
+  authoredAttachmentsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `authoredPosts` relation. */
   authoredPosts?: InputMaybe<UserToManyPostFilter>;
   /** Some related `authoredPosts` exist. */
@@ -8115,6 +8915,88 @@ export enum UserOrderBy {
   AssigneesDistinctCountUpdatedAtDesc = 'ASSIGNEES_DISTINCT_COUNT_UPDATED_AT_DESC',
   AssigneesDistinctCountUserIdAsc = 'ASSIGNEES_DISTINCT_COUNT_USER_ID_ASC',
   AssigneesDistinctCountUserIdDesc = 'ASSIGNEES_DISTINCT_COUNT_USER_ID_DESC',
+  AuthoredAttachmentsAverageFileSizeAsc = 'AUTHORED_ATTACHMENTS_AVERAGE_FILE_SIZE_ASC',
+  AuthoredAttachmentsAverageFileSizeDesc = 'AUTHORED_ATTACHMENTS_AVERAGE_FILE_SIZE_DESC',
+  AuthoredAttachmentsAverageHeightAsc = 'AUTHORED_ATTACHMENTS_AVERAGE_HEIGHT_ASC',
+  AuthoredAttachmentsAverageHeightDesc = 'AUTHORED_ATTACHMENTS_AVERAGE_HEIGHT_DESC',
+  AuthoredAttachmentsAverageWidthAsc = 'AUTHORED_ATTACHMENTS_AVERAGE_WIDTH_ASC',
+  AuthoredAttachmentsAverageWidthDesc = 'AUTHORED_ATTACHMENTS_AVERAGE_WIDTH_DESC',
+  AuthoredAttachmentsCountAsc = 'AUTHORED_ATTACHMENTS_COUNT_ASC',
+  AuthoredAttachmentsCountDesc = 'AUTHORED_ATTACHMENTS_COUNT_DESC',
+  AuthoredAttachmentsDistinctCountAuthorIdAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_AUTHOR_ID_ASC',
+  AuthoredAttachmentsDistinctCountAuthorIdDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_AUTHOR_ID_DESC',
+  AuthoredAttachmentsDistinctCountCreatedAtAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  AuthoredAttachmentsDistinctCountCreatedAtDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  AuthoredAttachmentsDistinctCountFilenameAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_FILENAME_ASC',
+  AuthoredAttachmentsDistinctCountFilenameDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_FILENAME_DESC',
+  AuthoredAttachmentsDistinctCountFileSizeAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_FILE_SIZE_ASC',
+  AuthoredAttachmentsDistinctCountFileSizeDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_FILE_SIZE_DESC',
+  AuthoredAttachmentsDistinctCountHeightAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_HEIGHT_ASC',
+  AuthoredAttachmentsDistinctCountHeightDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_HEIGHT_DESC',
+  AuthoredAttachmentsDistinctCountKindAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_KIND_ASC',
+  AuthoredAttachmentsDistinctCountKindDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_KIND_DESC',
+  AuthoredAttachmentsDistinctCountMetadataAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_METADATA_ASC',
+  AuthoredAttachmentsDistinctCountMetadataDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_METADATA_DESC',
+  AuthoredAttachmentsDistinctCountMimeTypeAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_MIME_TYPE_ASC',
+  AuthoredAttachmentsDistinctCountMimeTypeDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_MIME_TYPE_DESC',
+  AuthoredAttachmentsDistinctCountOrganizationIdAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_ORGANIZATION_ID_ASC',
+  AuthoredAttachmentsDistinctCountOrganizationIdDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_ORGANIZATION_ID_DESC',
+  AuthoredAttachmentsDistinctCountPostIdAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_POST_ID_ASC',
+  AuthoredAttachmentsDistinctCountPostIdDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_POST_ID_DESC',
+  AuthoredAttachmentsDistinctCountRowIdAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_ROW_ID_ASC',
+  AuthoredAttachmentsDistinctCountRowIdDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_ROW_ID_DESC',
+  AuthoredAttachmentsDistinctCountStorageKeyAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_STORAGE_KEY_ASC',
+  AuthoredAttachmentsDistinctCountStorageKeyDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_STORAGE_KEY_DESC',
+  AuthoredAttachmentsDistinctCountTaskIdAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_TASK_ID_ASC',
+  AuthoredAttachmentsDistinctCountTaskIdDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_TASK_ID_DESC',
+  AuthoredAttachmentsDistinctCountUpdatedAtAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  AuthoredAttachmentsDistinctCountUpdatedAtDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  AuthoredAttachmentsDistinctCountUrlAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_URL_ASC',
+  AuthoredAttachmentsDistinctCountUrlDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_URL_DESC',
+  AuthoredAttachmentsDistinctCountWidthAsc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_WIDTH_ASC',
+  AuthoredAttachmentsDistinctCountWidthDesc = 'AUTHORED_ATTACHMENTS_DISTINCT_COUNT_WIDTH_DESC',
+  AuthoredAttachmentsMaxFileSizeAsc = 'AUTHORED_ATTACHMENTS_MAX_FILE_SIZE_ASC',
+  AuthoredAttachmentsMaxFileSizeDesc = 'AUTHORED_ATTACHMENTS_MAX_FILE_SIZE_DESC',
+  AuthoredAttachmentsMaxHeightAsc = 'AUTHORED_ATTACHMENTS_MAX_HEIGHT_ASC',
+  AuthoredAttachmentsMaxHeightDesc = 'AUTHORED_ATTACHMENTS_MAX_HEIGHT_DESC',
+  AuthoredAttachmentsMaxWidthAsc = 'AUTHORED_ATTACHMENTS_MAX_WIDTH_ASC',
+  AuthoredAttachmentsMaxWidthDesc = 'AUTHORED_ATTACHMENTS_MAX_WIDTH_DESC',
+  AuthoredAttachmentsMinFileSizeAsc = 'AUTHORED_ATTACHMENTS_MIN_FILE_SIZE_ASC',
+  AuthoredAttachmentsMinFileSizeDesc = 'AUTHORED_ATTACHMENTS_MIN_FILE_SIZE_DESC',
+  AuthoredAttachmentsMinHeightAsc = 'AUTHORED_ATTACHMENTS_MIN_HEIGHT_ASC',
+  AuthoredAttachmentsMinHeightDesc = 'AUTHORED_ATTACHMENTS_MIN_HEIGHT_DESC',
+  AuthoredAttachmentsMinWidthAsc = 'AUTHORED_ATTACHMENTS_MIN_WIDTH_ASC',
+  AuthoredAttachmentsMinWidthDesc = 'AUTHORED_ATTACHMENTS_MIN_WIDTH_DESC',
+  AuthoredAttachmentsStddevPopulationFileSizeAsc = 'AUTHORED_ATTACHMENTS_STDDEV_POPULATION_FILE_SIZE_ASC',
+  AuthoredAttachmentsStddevPopulationFileSizeDesc = 'AUTHORED_ATTACHMENTS_STDDEV_POPULATION_FILE_SIZE_DESC',
+  AuthoredAttachmentsStddevPopulationHeightAsc = 'AUTHORED_ATTACHMENTS_STDDEV_POPULATION_HEIGHT_ASC',
+  AuthoredAttachmentsStddevPopulationHeightDesc = 'AUTHORED_ATTACHMENTS_STDDEV_POPULATION_HEIGHT_DESC',
+  AuthoredAttachmentsStddevPopulationWidthAsc = 'AUTHORED_ATTACHMENTS_STDDEV_POPULATION_WIDTH_ASC',
+  AuthoredAttachmentsStddevPopulationWidthDesc = 'AUTHORED_ATTACHMENTS_STDDEV_POPULATION_WIDTH_DESC',
+  AuthoredAttachmentsStddevSampleFileSizeAsc = 'AUTHORED_ATTACHMENTS_STDDEV_SAMPLE_FILE_SIZE_ASC',
+  AuthoredAttachmentsStddevSampleFileSizeDesc = 'AUTHORED_ATTACHMENTS_STDDEV_SAMPLE_FILE_SIZE_DESC',
+  AuthoredAttachmentsStddevSampleHeightAsc = 'AUTHORED_ATTACHMENTS_STDDEV_SAMPLE_HEIGHT_ASC',
+  AuthoredAttachmentsStddevSampleHeightDesc = 'AUTHORED_ATTACHMENTS_STDDEV_SAMPLE_HEIGHT_DESC',
+  AuthoredAttachmentsStddevSampleWidthAsc = 'AUTHORED_ATTACHMENTS_STDDEV_SAMPLE_WIDTH_ASC',
+  AuthoredAttachmentsStddevSampleWidthDesc = 'AUTHORED_ATTACHMENTS_STDDEV_SAMPLE_WIDTH_DESC',
+  AuthoredAttachmentsSumFileSizeAsc = 'AUTHORED_ATTACHMENTS_SUM_FILE_SIZE_ASC',
+  AuthoredAttachmentsSumFileSizeDesc = 'AUTHORED_ATTACHMENTS_SUM_FILE_SIZE_DESC',
+  AuthoredAttachmentsSumHeightAsc = 'AUTHORED_ATTACHMENTS_SUM_HEIGHT_ASC',
+  AuthoredAttachmentsSumHeightDesc = 'AUTHORED_ATTACHMENTS_SUM_HEIGHT_DESC',
+  AuthoredAttachmentsSumWidthAsc = 'AUTHORED_ATTACHMENTS_SUM_WIDTH_ASC',
+  AuthoredAttachmentsSumWidthDesc = 'AUTHORED_ATTACHMENTS_SUM_WIDTH_DESC',
+  AuthoredAttachmentsVariancePopulationFileSizeAsc = 'AUTHORED_ATTACHMENTS_VARIANCE_POPULATION_FILE_SIZE_ASC',
+  AuthoredAttachmentsVariancePopulationFileSizeDesc = 'AUTHORED_ATTACHMENTS_VARIANCE_POPULATION_FILE_SIZE_DESC',
+  AuthoredAttachmentsVariancePopulationHeightAsc = 'AUTHORED_ATTACHMENTS_VARIANCE_POPULATION_HEIGHT_ASC',
+  AuthoredAttachmentsVariancePopulationHeightDesc = 'AUTHORED_ATTACHMENTS_VARIANCE_POPULATION_HEIGHT_DESC',
+  AuthoredAttachmentsVariancePopulationWidthAsc = 'AUTHORED_ATTACHMENTS_VARIANCE_POPULATION_WIDTH_ASC',
+  AuthoredAttachmentsVariancePopulationWidthDesc = 'AUTHORED_ATTACHMENTS_VARIANCE_POPULATION_WIDTH_DESC',
+  AuthoredAttachmentsVarianceSampleFileSizeAsc = 'AUTHORED_ATTACHMENTS_VARIANCE_SAMPLE_FILE_SIZE_ASC',
+  AuthoredAttachmentsVarianceSampleFileSizeDesc = 'AUTHORED_ATTACHMENTS_VARIANCE_SAMPLE_FILE_SIZE_DESC',
+  AuthoredAttachmentsVarianceSampleHeightAsc = 'AUTHORED_ATTACHMENTS_VARIANCE_SAMPLE_HEIGHT_ASC',
+  AuthoredAttachmentsVarianceSampleHeightDesc = 'AUTHORED_ATTACHMENTS_VARIANCE_SAMPLE_HEIGHT_DESC',
+  AuthoredAttachmentsVarianceSampleWidthAsc = 'AUTHORED_ATTACHMENTS_VARIANCE_SAMPLE_WIDTH_ASC',
+  AuthoredAttachmentsVarianceSampleWidthDesc = 'AUTHORED_ATTACHMENTS_VARIANCE_SAMPLE_WIDTH_DESC',
   AuthoredPostsCountAsc = 'AUTHORED_POSTS_COUNT_ASC',
   AuthoredPostsCountDesc = 'AUTHORED_POSTS_COUNT_DESC',
   AuthoredPostsDistinctCountAuthorIdAsc = 'AUTHORED_POSTS_DISTINCT_COUNT_AUTHOR_ID_ASC',
@@ -8652,6 +9534,18 @@ export type UserToManyAssigneeFilter = {
   some?: InputMaybe<AssigneeFilter>;
 };
 
+/** A filter to be used against many `Attachment` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyAttachmentFilter = {
+  /** Aggregates across related `Attachment` match the filter criteria. */
+  aggregates?: InputMaybe<AttachmentAggregatesFilter>;
+  /** Every related `Attachment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<AttachmentFilter>;
+  /** No related `Attachment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<AttachmentFilter>;
+  /** Some related `Attachment` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<AttachmentFilter>;
+};
+
 /** A filter to be used against many `Emoji` object types. All fields are combined with a logical ‘and.’ */
 export type UserToManyEmojiFilter = {
   /** Aggregates across related `Emoji` match the filter criteria. */
@@ -8943,6 +9837,13 @@ export type DeleteUserMutationVariables = Exact<{
 
 
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser?: { __typename?: 'DeleteUserPayload', clientMutationId?: string | null } | null };
+
+export type TaskAttachmentsQueryVariables = Exact<{
+  taskId: Scalars['UUID']['input'];
+}>;
+
+
+export type TaskAttachmentsQuery = { __typename?: 'Query', attachments?: { __typename?: 'AttachmentConnection', nodes: Array<{ __typename?: 'Attachment', rowId: string, taskId: string, postId?: string | null, kind: string, filename: string, mimeType: string, fileSize: number, url: string, width?: number | null, height?: number | null, metadata?: any | null, createdAt: Date, author?: { __typename?: 'User', rowId: string, name: string, avatarUrl?: string | null } | null }> } | null };
 
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -10070,6 +10971,113 @@ useDeleteUserMutation.getKey = () => ['DeleteUser'];
 
 
 useDeleteUserMutation.fetcher = (variables: DeleteUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, variables, options);
+
+export const TaskAttachmentsDocument = `
+    query TaskAttachments($taskId: UUID!) {
+  attachments(condition: {taskId: $taskId}, orderBy: CREATED_AT_ASC) {
+    nodes {
+      rowId
+      taskId
+      postId
+      kind
+      filename
+      mimeType
+      fileSize
+      url
+      width
+      height
+      metadata
+      createdAt
+      author {
+        rowId
+        name
+        avatarUrl
+      }
+    }
+  }
+}
+    `;
+
+export const useTaskAttachmentsQuery = <
+      TData = TaskAttachmentsQuery,
+      TError = unknown
+    >(
+      variables: TaskAttachmentsQueryVariables,
+      options?: Omit<UseQueryOptions<TaskAttachmentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<TaskAttachmentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<TaskAttachmentsQuery, TError, TData>(
+      {
+    queryKey: ['TaskAttachments', variables],
+    queryFn: graphqlFetch<TaskAttachmentsQuery, TaskAttachmentsQueryVariables>(TaskAttachmentsDocument, variables),
+    ...options
+  }
+    )};
+
+useTaskAttachmentsQuery.getKey = (variables: TaskAttachmentsQueryVariables) => ['TaskAttachments', variables];
+
+export const useSuspenseTaskAttachmentsQuery = <
+      TData = TaskAttachmentsQuery,
+      TError = unknown
+    >(
+      variables: TaskAttachmentsQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<TaskAttachmentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<TaskAttachmentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<TaskAttachmentsQuery, TError, TData>(
+      {
+    queryKey: ['TaskAttachments', variables],
+    queryFn: graphqlFetch<TaskAttachmentsQuery, TaskAttachmentsQueryVariables>(TaskAttachmentsDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseTaskAttachmentsQuery.getKey = (variables: TaskAttachmentsQueryVariables) => ['TaskAttachments', variables];
+
+export const useInfiniteTaskAttachmentsQuery = <
+      TData = InfiniteData<TaskAttachmentsQuery>,
+      TError = unknown
+    >(
+      variables: TaskAttachmentsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<TaskAttachmentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<TaskAttachmentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<TaskAttachmentsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['TaskAttachments.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<TaskAttachmentsQuery, TaskAttachmentsQueryVariables>(TaskAttachmentsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteTaskAttachmentsQuery.getKey = (variables: TaskAttachmentsQueryVariables) => ['TaskAttachments.infinite', variables];
+
+export const useSuspenseInfiniteTaskAttachmentsQuery = <
+      TData = InfiniteData<TaskAttachmentsQuery>,
+      TError = unknown
+    >(
+      variables: TaskAttachmentsQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<TaskAttachmentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<TaskAttachmentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<TaskAttachmentsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['TaskAttachments.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<TaskAttachmentsQuery, TaskAttachmentsQueryVariables>(TaskAttachmentsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteTaskAttachmentsQuery.getKey = (variables: TaskAttachmentsQueryVariables) => ['TaskAttachments.infinite', variables];
+
+
+useTaskAttachmentsQuery.fetcher = (variables: TaskAttachmentsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TaskAttachmentsQuery, TaskAttachmentsQueryVariables>(TaskAttachmentsDocument, variables, options);
 
 export const ColumnsDocument = `
     query Columns($projectId: UUID!) {
