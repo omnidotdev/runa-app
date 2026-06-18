@@ -68,6 +68,9 @@ function WorkspacesOverviewPage() {
               {organizations.map((org) => {
                 const orgName = org.name;
                 const orgSlug = org.slug;
+                // logo is present in the org claim at runtime but not yet on the
+                // shared OrganizationClaim type (TODO: add it in @omnidotdev/providers)
+                const orgLogo = (org as { logo?: string | null }).logo;
 
                 return (
                   <Link
@@ -80,7 +83,7 @@ function WorkspacesOverviewPage() {
                     onClick={() => setLastWorkspaceCookie({ data: orgSlug! })}
                   >
                     <AvatarRoot size="lg">
-                      <AvatarImage src={undefined} alt={orgName} />
+                      <AvatarImage src={orgLogo ?? undefined} alt={orgName} />
                       <AvatarFallback className="border font-semibold uppercase">
                         {orgName?.charAt(0)}
                       </AvatarFallback>
