@@ -147,6 +147,7 @@ const CommandShortcut = ({ className, ...rest }: ComponentProps<"span">) => (
   />
 );
 
+/** @knipignore */
 export {
   Command,
   CommandDialog,
