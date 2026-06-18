@@ -37,6 +37,15 @@ export const parseTaskParam = (param: string): ParsedTaskParam => {
   return { type: "invalid" };
 };
 
+/**
+ * Whether a value is a canonical task `rowId` (a UUID) rather than a vanity
+ * `{number}-{slug}` key. Guards mutations that require the `rowId`, since the
+ * detail route's `$taskId` param is a vanity key, not the `rowId`.
+ */
+export const isTaskRowId = (
+  value: string | null | undefined,
+): value is string => !!value && UUID_PATTERN.test(value);
+
 /** Strip HTML tags and collapse whitespace from rich-text task content. */
 export const stripMarkup = (html: string): string =>
   html

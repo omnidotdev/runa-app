@@ -3,6 +3,7 @@ import { describe, expect, it } from "bun:test";
 import {
   buildTaskDisplayKey,
   buildTaskKey,
+  isTaskRowId,
   parseTaskParam,
 } from "@/lib/util/taskUrl";
 
@@ -38,6 +39,28 @@ describe("parseTaskParam", () => {
 
   it("returns invalid for an empty param", () => {
     expect(parseTaskParam("")).toEqual({ type: "invalid" });
+  });
+});
+
+describe("isTaskRowId", () => {
+  it("accepts a UUID rowId", () => {
+    expect(isTaskRowId("3f9a1b2c-4d5e-6f7a-8b9c-0d1e2f3a4b5c")).toBe(true);
+  });
+
+  it("rejects a vanity {number}-{slug} key", () => {
+    expect(
+      isTaskRowId("4-client-follow-ups-for-faq-handouts-blocked-on-alisha"),
+    ).toBe(false);
+  });
+
+  it("rejects a bare number key", () => {
+    expect(isTaskRowId("42")).toBe(false);
+  });
+
+  it("rejects null, undefined, and empty values", () => {
+    expect(isTaskRowId(null)).toBe(false);
+    expect(isTaskRowId(undefined)).toBe(false);
+    expect(isTaskRowId("")).toBe(false);
   });
 });
 

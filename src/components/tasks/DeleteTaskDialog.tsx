@@ -1,4 +1,5 @@
 import { useMatch, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 import {
   DialogBackdrop,
@@ -17,6 +18,7 @@ import {
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { isTaskRowId } from "@/lib/util/taskUrl";
 import { Button } from "../ui/button";
 
 const DeleteTaskDialog = () => {
@@ -56,6 +58,10 @@ const DeleteTaskDialog = () => {
         });
       }
     },
+
+    onError: () => {
+      toast.error("Failed to delete task. Please try again.");
+    },
   });
 
   return (
@@ -81,11 +87,15 @@ const DeleteTaskDialog = () => {
             type="submit"
             variant="destructive"
             onClick={() => {
-              deleteTask({
-                rowId: taskDetailMatch
-                  ? taskDetailMatch.params.taskId
-                  : taskId!,
-              });
+              // the detail route param is a vanity key, so always use the
+              // resolved rowId the page keeps in the task store, and guard
+              // against ever sending a non-rowId to the UUID-typed mutation
+              if (!isTaskRowId(taskId)) {
+                toast.error("Failed to delete task. Please try again.");
+                return;
+              }
+
+              deleteTask({ rowId: taskId });
               setIsDeleteTaskDialogOpen(false);
             }}
           >
