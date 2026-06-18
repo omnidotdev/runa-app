@@ -6,6 +6,7 @@ import type {
   ComponentProps,
   MouseEvent as ReactMouseEvent,
   ReactNode,
+  RefObject,
 } from "react";
 
 /**
@@ -30,12 +31,17 @@ interface UseInertialScrollOptions {
  * with smooth deceleration after release. Skips dragging when the pointer starts
  * on a draggable card, so it composes with card drag-and-drop.
  */
-const useInertialScroll = ({
-  friction = 0.87,
-  velocityMultiplier = 1.3,
-  minVelocity = 0.5,
-}: UseInertialScrollOptions = {}) => {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+const useInertialScroll = (
+  externalRef?: RefObject<HTMLDivElement | null>,
+  {
+    friction = 0.87,
+    velocityMultiplier = 1.3,
+    minVelocity = 0.5,
+  }: UseInertialScrollOptions = {},
+) => {
+  const internalRef = useRef<HTMLDivElement>(null);
+  // let a consumer share the scroll container (e.g. for drag auto-scroll)
+  const scrollContainerRef = externalRef ?? internalRef;
   const [isMouseDragging, setIsMouseDragging] = useState(false);
 
   const startXRef = useRef(0);
@@ -140,16 +146,19 @@ const boardSurface =
 interface BoardProps extends ComponentProps<"div"> {
   /** Enable momentum drag-to-scroll on the horizontal surface (default true). */
   enableDragScroll?: boolean;
+  /** Share the scroll container ref (e.g. to drive drag auto-scroll). */
+  containerRef?: RefObject<HTMLDivElement | null>;
 }
 
 /** Horizontal board surface: columns scroll sideways on desktop, stack on mobile. */
-const Board = ({ className, enableDragScroll = true, ...rest }: BoardProps) => {
-  const {
-    scrollContainerRef,
-    handleMouseDown,
-    handleMouseUp,
-    handleMouseMove,
-  } = useInertialScroll();
+const Board = ({
+  className,
+  enableDragScroll = true,
+  containerRef,
+  ...rest
+}: BoardProps) => {
+  const { scrollContainerRef, handleMouseDown, handleMouseUp, handleMouseMove } =
+    useInertialScroll(containerRef);
 
   if (!enableDragScroll) {
     return <div className={cn(boardSurface, className)} {...rest} />;

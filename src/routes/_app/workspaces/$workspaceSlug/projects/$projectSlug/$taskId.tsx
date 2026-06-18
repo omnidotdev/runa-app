@@ -172,7 +172,7 @@ function PublicTaskView() {
 
   return (
     <div className="custom-scrollbar flex flex-col overflow-y-auto px-6 py-12">
-      <div className="mb-4 flex items-center gap-3">
+      <div className="mb-4 flex items-start gap-3">
         <Link
           to="/workspaces/$workspaceSlug/projects/$projectSlug"
           params={{ workspaceSlug, projectSlug }}
@@ -303,7 +303,7 @@ function AuthenticatedTaskPage() {
   return (
     <div className="custom-scrollbar flex flex-col overflow-y-auto px-6 py-12">
       {/* Header */}
-      <div className="mb-4 flex items-center gap-3">
+      <div className="mb-4 flex items-start gap-3">
         <Link
           to="/workspaces/$workspaceSlug/projects/$projectSlug"
           params={{

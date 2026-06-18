@@ -39,12 +39,12 @@ const TaskKey = ({ prefix, number, className }: Props) => {
       onClick={copy}
       title={`Copy ${key}`}
       className={cn(
-        "inline-flex items-center gap-1 font-mono transition-colors hover:text-base-900 dark:hover:text-base-100",
+        "inline-flex w-fit items-center gap-1 font-mono transition-colors hover:text-base-900 dark:hover:text-base-100",
         className,
       )}
     >
-      {key}
       <CopyIcon className="size-3" />
+      {key}
     </button>
   );
 };
