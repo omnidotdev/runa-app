@@ -1,4 +1,5 @@
 export enum Hotkeys {
+  CommandPalette = "mod+k",
   ToggleSidebar = "b",
   ToggleTheme = "t",
   ToggleViewMode = "v",
