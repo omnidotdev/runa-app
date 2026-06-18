@@ -676,4 +676,3 @@ const RichTextContent = ({
 };
 
 export { RichTextEditor, RichTextContent };
-export default RichTextEditor;
