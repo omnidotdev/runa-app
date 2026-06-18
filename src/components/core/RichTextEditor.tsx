@@ -30,6 +30,8 @@ interface Props extends Omit<ComponentProps<"div">, "placeholder"> {
   editable?: boolean;
   placeholder?: string;
   skeletonClassName?: string;
+  /** Hide the formatting toolbar (e.g. for single-line title fields). */
+  hideToolbar?: boolean;
   /** When set, pasted/dropped images upload to this task (and optional comment) and embed inline. */
   imageUpload?: { taskId: string; postId?: string };
 }

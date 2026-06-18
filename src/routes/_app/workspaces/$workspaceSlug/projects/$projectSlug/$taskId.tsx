@@ -324,6 +324,7 @@ function AuthenticatedTaskPage() {
             className="min-h-0 border-0 bg-transparent p-0 text-2xl outline-none hover:outline-none dark:bg-transparent"
             skeletonClassName="h-8 min-w-40"
             editable={isAuthor || !isMember}
+            hideToolbar
             onUpdate={({ getHTML, isEmpty }) =>
               !isEmpty &&
               handleTaskUpdate({
