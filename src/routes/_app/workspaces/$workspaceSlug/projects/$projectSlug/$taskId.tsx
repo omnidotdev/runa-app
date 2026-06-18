@@ -414,8 +414,9 @@ function AuthenticatedTaskPage() {
             defaultContent={task?.description}
             editable={canEdit}
             imageUpload={{ taskId }}
-            className="min-h-[120px] border-0 bg-transparent p-0 dark:bg-transparent"
-            skeletonClassName="h-[120px]"
+            placeholder={canEdit ? "Add a description…" : undefined}
+            className="min-h-[160px] overflow-hidden rounded-xl border"
+            skeletonClassName="h-[160px]"
             onUpdate={({ getHTML, isEmpty }) =>
               handleDescriptionUpdate({
                 rowId: taskId,

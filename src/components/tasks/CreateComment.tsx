@@ -64,7 +64,7 @@ const CreateComment = () => {
             onUpdate={({ getHTML }) => field.handleChange(getHTML())}
             imageUpload={{ taskId }}
             placeholder="Add a comment..."
-            className="flex min-h-32 w-full rounded-xl border text-sm shadow-xs outline-none transition-[color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40"
+            className="flex min-h-32 w-full flex-col overflow-hidden rounded-xl border text-sm shadow-xs transition-[color,box-shadow] focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background"
             skeletonClassName="h-[128px] w-full"
           />
         )}

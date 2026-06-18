@@ -214,7 +214,7 @@ const Toolbar = ({ enableChecklist }: { enableChecklist?: boolean }) => {
   };
 
   return (
-    <div className="flex items-center gap-0.5 border-input border-b px-1 py-1">
+    <div className="flex items-center gap-0.5 border-input border-b bg-muted/40 px-1 py-1">
       <ToolbarButton label="Bold" onClick={() => format("bold")}>
         <Bold />
       </ToolbarButton>
