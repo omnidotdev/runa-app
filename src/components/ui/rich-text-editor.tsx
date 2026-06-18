@@ -12,6 +12,22 @@ import {
   ListItemNode,
   ListNode,
 } from "@lexical/list";
+import {
+  BOLD_ITALIC_STAR,
+  BOLD_ITALIC_UNDERSCORE,
+  BOLD_STAR,
+  BOLD_UNDERSCORE,
+  CHECK_LIST,
+  HEADING,
+  INLINE_CODE,
+  ITALIC_STAR,
+  ITALIC_UNDERSCORE,
+  LINK as LINK_TRANSFORMER,
+  ORDERED_LIST,
+  QUOTE,
+  STRIKETHROUGH,
+  UNORDERED_LIST,
+} from "@lexical/markdown";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -20,8 +36,10 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import {
   LexicalTypeaheadMenuPlugin,
   MenuOption,
@@ -75,6 +93,7 @@ const defaultTheme: EditorThemeClasses = {
   heading: {
     h1: "mt-4 mb-2 font-bold text-xl first:mt-0",
     h2: "mt-3 mb-2 font-bold text-lg first:mt-0",
+    h3: "mt-3 mb-1 font-semibold text-base first:mt-0",
   },
   text: {
     bold: "font-semibold",
@@ -91,6 +110,29 @@ const defaultTheme: EditorThemeClasses = {
   link: "text-primary underline underline-offset-2 hover:opacity-80",
   quote: "my-2 border-border border-l-2 pl-3 text-muted-foreground italic",
 };
+
+/**
+ * Markdown shortcuts the editor understands as you type (e.g. `- ` for a
+ * bullet, `1. ` for a numbered list, `# ` for a heading, `> ` for a quote,
+ * `**bold**`, `` `code` ``). Code blocks are intentionally excluded (the
+ * editor does not register a code-block node by default).
+ */
+const MARKDOWN_TRANSFORMERS = [
+  HEADING,
+  QUOTE,
+  UNORDERED_LIST,
+  ORDERED_LIST,
+  CHECK_LIST,
+  BOLD_ITALIC_STAR,
+  BOLD_ITALIC_UNDERSCORE,
+  BOLD_STAR,
+  BOLD_UNDERSCORE,
+  ITALIC_STAR,
+  ITALIC_UNDERSCORE,
+  STRIKETHROUGH,
+  INLINE_CODE,
+  LINK_TRANSFORMER,
+];
 
 /** Read the editor's content as an HTML string. */
 const exportToHtml = (editor: LexicalEditor): string => {
@@ -599,6 +641,10 @@ const RichTextEditor = ({
           <HistoryPlugin />
           <ListPlugin />
           {enableChecklist && <CheckListPlugin />}
+          {/* Tab / Shift+Tab to indent + nest list items */}
+          <TabIndentationPlugin />
+          {/* markdown-style input: `- `, `1. `, `# `, `> `, `**bold**`, etc. */}
+          <MarkdownShortcutPlugin transformers={MARKDOWN_TRANSFORMERS} />
           <LinkPlugin />
           {mentionItems?.length ? (
             <MentionTypeahead items={mentionItems} />
@@ -656,6 +702,10 @@ const RichTextContent = ({
       "a",
       "h1",
       "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
       "blockquote",
       "span",
     ],
@@ -665,7 +715,7 @@ const RichTextContent = ({
   return (
     <div
       className={cn(
-        "[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_blockquote]:my-2 [&_blockquote]:border-border [&_blockquote]:border-l-2 [&_blockquote]:pl-3 [&_blockquote]:text-muted-foreground [&_blockquote]:italic [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.85em] [&_h1]:font-bold [&_h1]:text-xl [&_h2]:font-bold [&_h2]:text-lg [&_ol]:ml-5 [&_ol]:list-decimal [&_p:last-child]:mb-0 [&_p]:mb-2 [&_ul]:ml-5 [&_ul]:list-disc",
+        "[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_blockquote]:my-2 [&_blockquote]:border-border [&_blockquote]:border-l-2 [&_blockquote]:pl-3 [&_blockquote]:text-muted-foreground [&_blockquote]:italic [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.85em] [&_h1]:font-bold [&_h1]:text-xl [&_h2]:font-bold [&_h2]:text-lg [&_h3]:font-semibold [&_h3]:text-base [&_ol]:ml-5 [&_ol]:list-decimal [&_ol_ol]:list-[lower-alpha] [&_p:last-child]:mb-0 [&_p]:mb-2 [&_ul]:ml-5 [&_ul]:list-disc [&_ul_ul]:list-[circle]",
         className,
       )}
       // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized above with DOMPurify
@@ -676,3 +726,4 @@ const RichTextContent = ({
 };
 
 export { RichTextEditor, RichTextContent };
+export default RichTextEditor;
