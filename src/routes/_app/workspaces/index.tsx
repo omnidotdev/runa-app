@@ -68,9 +68,7 @@ function WorkspacesOverviewPage() {
               {organizations.map((org) => {
                 const orgName = org.name;
                 const orgSlug = org.slug;
-                // logo is present in the org claim at runtime but not yet on the
-                // shared OrganizationClaim type (TODO: add it in @omnidotdev/providers)
-                const orgLogo = (org as { logo?: string | null }).logo;
+                const orgLogo = org.logo;
 
                 return (
                   <Link
