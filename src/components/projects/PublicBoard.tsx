@@ -1,10 +1,10 @@
-import { ColumnHeader } from "@/components/core";
+import LabelIcon from "@/components/core/LabelIcon";
 import {
-  boardColumnStyles,
-  boardContainerStyles,
-  boardLayoutStyles,
-} from "@/lib/board/styles";
-import useInertialScroll from "@/lib/hooks/useInertialScroll";
+  Board,
+  BoardColumn,
+  BoardColumnBody,
+  BoardColumnHeader,
+} from "@/components/ui/board";
 import { useTheme } from "@/providers/ThemeProvider";
 import PublicBoardItem from "./PublicBoardItem";
 
@@ -15,63 +15,52 @@ interface Props {
   tasks: NonNullable<TasksQuery["tasks"]>["nodes"];
 }
 
+/**
+ * Read-only public project board, rendered with the shared board primitives
+ * (columns by status, momentum drag-to-scroll). The same shell powers Backfeed's
+ * roadmap; here it is fed Runa tasks grouped by column.
+ */
 const PublicBoard = ({ project, tasks }: Props) => {
-  const {
-    scrollContainerRef,
-    handleMouseDown,
-    handleMouseUp,
-    handleMouseMove,
-    handleMouseLeave,
-  } = useInertialScroll();
-
   const { theme } = useTheme();
 
   return (
-    <div
-      ref={scrollContainerRef}
-      className={`${boardContainerStyles.base} ${boardContainerStyles.background}`}
+    <Board
+      className="h-full px-4"
       style={{
         backgroundColor: project?.color
           ? theme === "dark"
-            ? `${project?.color}12`
-            : `${project?.color}0D`
+            ? `${project.color}12`
+            : `${project.color}0D`
           : undefined,
       }}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
-      <div className={boardLayoutStyles.innerPadding}>
-        <div className={boardLayoutStyles.columnsGap}>
-          {project.columns?.nodes?.map((column) => (
-            <div key={column.rowId} className={boardColumnStyles.wrapper}>
-              <ColumnHeader
-                title={column.title}
-                count={column.tasks?.totalCount ?? 0}
+      {project.columns?.nodes?.map((column) => (
+        <BoardColumn key={column.rowId}>
+          <BoardColumnHeader
+            title={column.title}
+            count={column.tasks?.totalCount ?? 0}
+            icon={
+              <LabelIcon
                 icon={column.icon}
+                className="size-4 shrink-0 text-muted-foreground"
               />
+            }
+          />
 
-              <div className="flex h-full overflow-hidden">
-                <div className={boardColumnStyles.droppable}>
-                  <div className={boardColumnStyles.itemsContainer}>
-                    {tasks
-                      .filter((task) => task.columnId === column.rowId)
-                      .map((task) => (
-                        <PublicBoardItem
-                          key={task.rowId}
-                          task={task}
-                          displayId={`${project.prefix ?? "PROJ"}-${task.number}`}
-                        />
-                      ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+          <BoardColumnBody>
+            {tasks
+              .filter((task) => task.columnId === column.rowId)
+              .map((task) => (
+                <PublicBoardItem
+                  key={task.rowId}
+                  task={task}
+                  displayId={`${project.prefix ?? "PROJ"}-${task.number}`}
+                />
+              ))}
+          </BoardColumnBody>
+        </BoardColumn>
+      ))}
+    </Board>
   );
 };
 
