@@ -166,7 +166,7 @@ function PublicTaskView() {
   });
 
   return (
-    <div className="custom-scrollbar mx-auto flex w-full max-w-5xl flex-col overflow-y-auto px-6 py-10">
+    <div className="custom-scrollbar flex w-full flex-col overflow-y-auto px-6 py-10">
       <div className="mb-6 flex items-center gap-1">
         <Link
           to="/workspaces/$workspaceSlug/projects/$projectSlug"
@@ -316,7 +316,7 @@ function AuthenticatedTaskPage() {
   };
 
   return (
-    <div className="custom-scrollbar mx-auto flex w-full max-w-5xl flex-col overflow-y-auto px-6 py-10">
+    <div className="custom-scrollbar flex w-full flex-col overflow-y-auto px-6 py-10">
       {/* Top bar */}
       <div className="mb-6 flex items-center justify-between gap-3">
         <div className="flex items-center gap-1">

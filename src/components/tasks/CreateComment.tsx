@@ -55,7 +55,7 @@ const CreateComment = () => {
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="relative mb-8 flex w-full flex-col gap-2 px-1"
+      className="mb-8 flex w-full flex-col gap-2 px-1"
     >
       <form.Field name="comment">
         {(field) => (
@@ -70,7 +70,7 @@ const CreateComment = () => {
         )}
       </form.Field>
 
-      <div className="absolute right-2 bottom-0 mt-4 flex justify-end gap-2 p-2">
+      <div className="flex justify-end gap-2">
         <form.Subscribe
           selector={(state) => [
             state.canSubmit,
