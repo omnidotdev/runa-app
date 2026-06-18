@@ -11,6 +11,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 
+import CommandPalette from "@/components/core/CommandPalette";
 import { DefaultCatchBoundary } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
@@ -189,6 +190,8 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <body>
         <ThemeProvider theme={theme}>
           {children}
+
+          <CommandPalette />
 
           <Toaster position="top-center" richColors />
         </ThemeProvider>
