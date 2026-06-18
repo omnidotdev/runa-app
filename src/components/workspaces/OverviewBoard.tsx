@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-router";
 
 import { ColumnHeader } from "@/components/core";
+import { useInertialScroll } from "@/components/ui/board";
 import {
   boardColumnStyles,
   boardContainerStyles,
@@ -19,7 +20,6 @@ import useDragStore from "@/lib/hooks/store/useDragStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
 import useAutoScrollOnDrag from "@/lib/hooks/useAutoScrollOnDrag";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
-import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import useMaxProjectsReached from "@/lib/hooks/useMaxProjectsReached";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import { Role } from "@/lib/permissions";

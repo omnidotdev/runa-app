@@ -14,6 +14,7 @@ import { LabelIcon, Shortcut, Tooltip } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
 import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useInertialScroll } from "@/components/ui/board";
 import { Button } from "@/components/ui/button";
 import {
   CollapsibleContent,
@@ -32,7 +33,6 @@ import signIn from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useAutoScrollOnDrag from "@/lib/hooks/useAutoScrollOnDrag";
-import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
 import DemoBoardItem from "./DemoBoardItem";

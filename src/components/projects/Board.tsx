@@ -4,6 +4,7 @@ import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { useMemo } from "react";
 
 import { ColumnHeader } from "@/components/core";
+import { useInertialScroll } from "@/components/ui/board";
 import {
   boardColumnStyles,
   boardContainerStyles,
@@ -13,7 +14,6 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useAutoScrollOnDrag from "@/lib/hooks/useAutoScrollOnDrag";
-import useInertialScroll from "@/lib/hooks/useInertialScroll";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
