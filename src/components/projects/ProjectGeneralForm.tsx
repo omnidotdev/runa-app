@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { Tooltip } from "@/components/core";
-import { ProjectColorPicker } from "@/components/projects";
+import { ProjectAvatar, ProjectColorPicker } from "@/components/projects";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -250,6 +250,15 @@ export default function ProjectGeneralForm() {
               </form.Subscribe>
             </div>
           )}
+        </div>
+
+        <div className="flex w-full items-center py-3">
+          <ProjectAvatar
+            projectId={projectId}
+            name={project?.name ?? ""}
+            image={project?.image}
+            disabled={!canEdit}
+          />
         </div>
 
         <div
