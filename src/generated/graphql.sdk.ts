@@ -4047,6 +4047,7 @@ export type Project = Node & {
   description?: Maybe<Scalars['String']['output']>;
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
+  image?: Maybe<Scalars['String']['output']>;
   isPublic: Scalars['Boolean']['output'];
   /** Reads and enables pagination through a set of `Label`. */
   labels: LabelConnection;
@@ -4443,6 +4444,8 @@ export enum ProjectColumnOrderBy {
   ProjectsDistinctCountCreatedAtDesc = 'PROJECTS_DISTINCT_COUNT_CREATED_AT_DESC',
   ProjectsDistinctCountDescriptionAsc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_ASC',
   ProjectsDistinctCountDescriptionDesc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_DESC',
+  ProjectsDistinctCountImageAsc = 'PROJECTS_DISTINCT_COUNT_IMAGE_ASC',
+  ProjectsDistinctCountImageDesc = 'PROJECTS_DISTINCT_COUNT_IMAGE_DESC',
   ProjectsDistinctCountIsPublicAsc = 'PROJECTS_DISTINCT_COUNT_IS_PUBLIC_ASC',
   ProjectsDistinctCountIsPublicDesc = 'PROJECTS_DISTINCT_COUNT_IS_PUBLIC_DESC',
   ProjectsDistinctCountNameAsc = 'PROJECTS_DISTINCT_COUNT_NAME_ASC',
@@ -4516,6 +4519,8 @@ export type ProjectCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `description` field. */
   description?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `image` field. */
+  image?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `isPublic` field. */
   isPublic?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `name` field. */
@@ -4565,6 +4570,7 @@ export type ProjectDistinctCountAggregateFilter = {
   columnIndex?: InputMaybe<BigIntFilter>;
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
+  image?: InputMaybe<BigIntFilter>;
   isPublic?: InputMaybe<BigIntFilter>;
   name?: InputMaybe<BigIntFilter>;
   nextTaskNumber?: InputMaybe<BigIntFilter>;
@@ -4586,6 +4592,8 @@ export type ProjectDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of description across the matching connection */
   description?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of image across the matching connection */
+  image?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of isPublic across the matching connection */
   isPublic?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
@@ -4631,6 +4639,8 @@ export type ProjectFilter = {
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `description` field. */
   description?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `image` field. */
+  image?: InputMaybe<StringFilter>;
   /** Filter by the object’s `isPublic` field. */
   isPublic?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `labels` relation. */
@@ -4685,6 +4695,7 @@ export enum ProjectGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
+  Image = 'IMAGE',
   IsPublic = 'IS_PUBLIC',
   Name = 'NAME',
   NextTaskNumber = 'NEXT_TASK_NUMBER',
@@ -4772,6 +4783,7 @@ export type ProjectInput = {
   columnIndex: Scalars['String']['input'];
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
   isPublic?: InputMaybe<Scalars['Boolean']['input']>;
   name: Scalars['String']['input'];
   nextTaskNumber?: InputMaybe<Scalars['Int']['input']>;
@@ -5476,6 +5488,8 @@ export enum ProjectOrderBy {
   CreatedAtDesc = 'CREATED_AT_DESC',
   DescriptionAsc = 'DESCRIPTION_ASC',
   DescriptionDesc = 'DESCRIPTION_DESC',
+  ImageAsc = 'IMAGE_ASC',
+  ImageDesc = 'IMAGE_DESC',
   IsPublicAsc = 'IS_PUBLIC_ASC',
   IsPublicDesc = 'IS_PUBLIC_DESC',
   LabelsCountAsc = 'LABELS_COUNT_ASC',
@@ -5639,6 +5653,7 @@ export type ProjectPatch = {
   columnIndex?: InputMaybe<Scalars['String']['input']>;
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
   isPublic?: InputMaybe<Scalars['Boolean']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   nextTaskNumber?: InputMaybe<Scalars['Int']['input']>;
@@ -9889,7 +9904,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, color?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: string, title: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, color?: string | null, image?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: string, title: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -10467,6 +10482,7 @@ export const ProjectDocument = gql`
     projectColumnId
     nextTaskNumber
     color
+    image
     tasks {
       totalCount
     }

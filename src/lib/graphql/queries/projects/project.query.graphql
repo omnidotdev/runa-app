@@ -9,6 +9,7 @@ query Project($rowId: UUID!) {
     projectColumnId
     nextTaskNumber
     color
+    image
     tasks {
       totalCount
     }
