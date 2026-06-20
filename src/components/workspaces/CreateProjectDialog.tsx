@@ -132,10 +132,22 @@ const CreateProjectDialog = () => {
       },
     },
     onSubmit: async ({ value, formApi }) => {
+      // Resolve the target column, falling back to the first available one.
+      // A workspace always has default columns provisioned, but guard against
+      // the empty case rather than sending a null column id (which the API
+      // rejects with an opaque error).
+      const targetColumnId =
+        value.projectColumnId ?? projectColumns?.[0]?.rowId;
+
+      if (!targetColumnId) {
+        toast.error("This workspace is still being set up. Please try again.");
+        return;
+      }
+
       // Append the new project after the last one in the target project column.
       // `projects` is returned `COLUMN_INDEX_ASC`.
       const lastProjectInColumn = (projects ?? [])
-        .filter((p) => p.projectColumnId === value.projectColumnId)
+        .filter((p) => p.projectColumnId === targetColumnId)
         .at(-1);
 
       toast.promise(
@@ -147,7 +159,7 @@ const CreateProjectDialog = () => {
               slug: generateSlug(value.name),
               prefix: generatePrefix(value.name),
               description: value.description,
-              projectColumnId: value.projectColumnId!,
+              projectColumnId: targetColumnId,
               columnIndex: keyBetween(
                 lastProjectInColumn?.columnIndex ?? null,
                 null,
