@@ -58,7 +58,6 @@ export const Route = createFileRoute(
         return queryClient.ensureQueryData(
           organizationMembersOptions({
             organizationId: organizationId!,
-            accessToken: session?.accessToken!,
           }),
         );
       },

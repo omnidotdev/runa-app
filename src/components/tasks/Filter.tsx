@@ -72,7 +72,6 @@ const Filter = () => {
   const { data: membersData } = useQuery({
     ...organizationMembersOptions({
       organizationId: organizationId!,
-      accessToken: session?.accessToken!,
     }),
     enabled: !!organizationId && !!session?.accessToken,
   });

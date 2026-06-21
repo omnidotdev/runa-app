@@ -1,17 +1,18 @@
 /**
  * Query options for organization members from IDP.
  *
- * This replaces the local database member queries with IDP API calls.
- * The IDP is the single source of truth for organization membership.
+ * The IDP is the single source of truth for organization membership. The fetch
+ * runs through a server function (getOrganizationMembers) because Gatekeeper's
+ * members endpoint is gated on a server-to-server service token that must never
+ * reach the browser.
  */
 
 import { queryOptions } from "@tanstack/react-query";
 
-import { fetchOrganizationMembers } from "@/lib/idp";
+import { getOrganizationMembers } from "@/server/functions/organizationMembers";
 
 export interface OrganizationMembersVariables {
   organizationId: string;
-  accessToken: string;
 }
 
 /**
@@ -19,12 +20,11 @@ export interface OrganizationMembersVariables {
  */
 const organizationMembersOptions = ({
   organizationId,
-  accessToken,
 }: OrganizationMembersVariables) =>
   queryOptions({
     queryKey: ["organizationMembers", organizationId],
-    queryFn: () => fetchOrganizationMembers(organizationId, accessToken),
-    enabled: !!organizationId && !!accessToken,
+    queryFn: () => getOrganizationMembers({ data: { organizationId } }),
+    enabled: !!organizationId,
   });
 
 export default organizationMembersOptions;

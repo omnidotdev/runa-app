@@ -28,6 +28,14 @@ export const AUTH_INTERNAL_URL =
     ? process.env.AUTH_INTERNAL_URL || AUTH_BASE_URL
     : AUTH_BASE_URL;
 
+// Service token for server-to-server org-membership reads (Gatekeeper's
+// org-sync members endpoint). Server-only: guarded so the secret is never
+// read client-side and never bundled into the browser.
+export const ORG_SYNC_SERVICE_TOKEN =
+  typeof window === "undefined"
+    ? process.env.ORG_SYNC_SERVICE_TOKEN
+    : undefined;
+
 // Feature flags
 export const FLAGS_API_HOST = env.FLAGS_API_HOST || env.VITE_FLAGS_API_HOST;
 export const FLAGS_CLIENT_KEY =
@@ -53,3 +61,7 @@ if (!BILLING_BASE_URL)
 if (!FLAGS_API_HOST)
   console.warn("FLAGS_API_HOST not set, feature flags disabled");
 if (!CONSOLE_URL) console.warn("CONSOLE_URL not set, console link disabled");
+if (typeof window === "undefined" && !ORG_SYNC_SERVICE_TOKEN)
+  console.warn(
+    "ORG_SYNC_SERVICE_TOKEN not set, organization member list disabled",
+  );

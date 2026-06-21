@@ -25,16 +25,6 @@ export type RemoveMemberParams = {
 };
 
 /**
- * Fetch organization members from Gatekeeper
- */
-export async function fetchOrganizationMembers(
-  organizationId: string,
-  accessToken: string,
-): Promise<IdpMembersResponse> {
-  return gatekeeperOrg.listMembers(organizationId, accessToken);
-}
-
-/**
  * Update a member's role in the organization via Gatekeeper
  */
 export async function updateMemberRole({
