@@ -34,6 +34,7 @@ import { keyBetween } from "@/lib/util/fractionalKey";
 import generatePrefix from "@/lib/util/generatePrefix";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import resolveProjectColumnId from "@/lib/util/resolveProjectColumnId";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
 const CreateProjectDialog = () => {
@@ -136,8 +137,10 @@ const CreateProjectDialog = () => {
       // A workspace always has default columns provisioned, but guard against
       // the empty case rather than sending a null column id (which the API
       // rejects with an opaque error).
-      const targetColumnId =
-        value.projectColumnId ?? projectColumns?.[0]?.rowId;
+      const targetColumnId = resolveProjectColumnId(
+        value.projectColumnId,
+        projectColumns,
+      );
 
       if (!targetColumnId) {
         toast.error("This workspace is still being set up. Please try again.");
