@@ -9,7 +9,6 @@ import type { GatekeeperMember } from "@omnidotdev/providers/auth";
 
 // Backwards-compatible type aliases
 export type IdpMember = GatekeeperMember;
-export type IdpMembersResponse = { data: IdpMember[] };
 
 export type UpdateMemberRoleParams = {
   organizationId: string;
@@ -23,16 +22,6 @@ export type RemoveMemberParams = {
   memberId: string;
   accessToken: string;
 };
-
-/**
- * Fetch organization members from Gatekeeper
- */
-export async function fetchOrganizationMembers(
-  organizationId: string,
-  accessToken: string,
-): Promise<IdpMembersResponse> {
-  return gatekeeperOrg.listMembers(organizationId, accessToken);
-}
 
 /**
  * Update a member's role in the organization via Gatekeeper

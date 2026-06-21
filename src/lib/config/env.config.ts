@@ -28,6 +28,10 @@ export const AUTH_INTERNAL_URL =
     ? process.env.AUTH_INTERNAL_URL || AUTH_BASE_URL
     : AUTH_BASE_URL;
 
+// Service token for Gatekeeper's server-to-server org-member endpoint.
+// Server-only secret; used to fetch the member list (never sent from the client)
+export const ORG_SYNC_SERVICE_TOKEN = env.ORG_SYNC_SERVICE_TOKEN;
+
 // Feature flags
 export const FLAGS_API_HOST = env.FLAGS_API_HOST || env.VITE_FLAGS_API_HOST;
 export const FLAGS_CLIENT_KEY =

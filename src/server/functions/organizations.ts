@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+import { ORG_SYNC_SERVICE_TOKEN } from "@/lib/config/env.config";
 import gatekeeperOrg from "@/lib/config/gatekeeper";
 import { authMiddleware } from "@/server/middleware";
 
@@ -169,18 +170,34 @@ export const fetchOrganizationBySlug = createServerFn()
 
 const listOrganizationMembersSchema = z.object({
   organizationId: z.string(),
-  accessToken: z.string(),
 });
 
 /**
  * List members of an organization via Gatekeeper.
- * Takes `accessToken` in data to support contexts without auth middleware
- * @knipignore
+ *
+ * Gatekeeper's member endpoint is server-to-server (authenticated by the
+ * org-sync service token, not a user token), so this runs server-side. Only
+ * members of the organization may list it, enforced from the session claims.
  */
 export const listOrganizationMembers = createServerFn({ method: "GET" })
   .inputValidator((data) => listOrganizationMembersSchema.parse(data))
-  .handler(async ({ data }) => {
-    return gatekeeperOrg.listMembers(data.organizationId, data.accessToken);
+  .middleware([authMiddleware])
+  .handler(async ({ data, context }) => {
+    if (!ORG_SYNC_SERVICE_TOKEN) {
+      throw new Error("Organization member sync is not configured");
+    }
+
+    const isMember = context.session.organizations?.some(
+      (org) => org.id === data.organizationId,
+    );
+    if (!isMember) {
+      throw new Error("Unauthorized");
+    }
+
+    return gatekeeperOrg.listMembers(
+      data.organizationId,
+      ORG_SYNC_SERVICE_TOKEN,
+    );
   });
 
 const updateOrganizationMemberRoleSchema = z.object({
