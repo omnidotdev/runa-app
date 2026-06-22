@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
 import BoardItem from "./BoardItem";
 import ColumnMenu from "./ColumnMenu";
+import QuickAddTask from "./QuickAddTask";
 
 import type { TaskFragment } from "@/generated/graphql";
 
@@ -64,7 +65,8 @@ const Board = ({ tasks }: Props) => {
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
-  const { setColumnId } = useTaskStore();
+  const { setColumnId, setHoveredColumnId, setFocusedColumnId } =
+    useTaskStore();
 
   const { setIsOpen: setIsCreateTaskOpen } = useDialogStore({
     type: DialogType.CreateTask,
@@ -114,7 +116,16 @@ const Board = ({ tasks }: Props) => {
       <div className={boardLayoutStyles.innerPadding}>
         <div className={boardLayoutStyles.columnsGap}>
           {project?.columns?.nodes?.map((column) => (
-            <div key={column?.rowId} className={boardColumnStyles.wrapper}>
+            <div
+              key={column?.rowId}
+              className={cn(boardColumnStyles.wrapper, "outline-none")}
+              // biome-ignore lint/a11y/noNoninteractiveTabindex: focusable wrapper drives keyboard column tracking for quick-add
+              tabIndex={0}
+              onMouseEnter={() => setHoveredColumnId(column.rowId)}
+              onMouseLeave={() => setHoveredColumnId(null)}
+              onFocus={() => setFocusedColumnId(column.rowId)}
+              onBlur={() => setFocusedColumnId(null)}
+            >
               <ColumnHeader
                 title={column.title}
                 count={column.tasks?.totalCount ?? 0}
@@ -166,6 +177,17 @@ const Board = ({ tasks }: Props) => {
                             />
                           ))}
                         {provided.placeholder}
+                        <QuickAddTask
+                          columnId={column.rowId}
+                          projectId={projectId}
+                          authorId={session?.user?.rowId!}
+                          prefix={project?.prefix ?? "PROJ"}
+                          nextTaskNumber={project?.nextTaskNumber ?? 1}
+                          columnTasks={tasks.filter(
+                            (task) => task.columnId === column.rowId,
+                          )}
+                          disabled={maxTasksReached}
+                        />
                       </div>
                     </div>
                   )}

@@ -2,7 +2,6 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { all } from "better-all";
 import { useRef } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
 
 import { RichTextEditor } from "@/components/core";
@@ -23,7 +22,6 @@ import {
   useProjectQuery,
   useTasksQuery,
 } from "@/generated/graphql";
-import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
@@ -72,7 +70,8 @@ const CreateTaskDialog = () => {
 
   const defaultColumnId = project?.columns?.nodes?.[0]?.rowId! ?? null;
 
-  const { columnId, setColumnId } = useTaskStore();
+  const { columnId, setColumnId, pendingTitle, setPendingTitle } =
+    useTaskStore();
 
   const maxTasksReached = useMaxTasksReached();
 
@@ -80,16 +79,6 @@ const CreateTaskDialog = () => {
     useDialogStore({
       type: DialogType.CreateTask,
     });
-
-  useHotkeys(
-    Hotkeys.CreateTask,
-    () => setIsCreateTaskOpen(true),
-    {
-      enabled: !maxTasksReached,
-      description: "Create New Task",
-    },
-    [maxTasksReached],
-  );
 
   const nextTaskNumber = project?.nextTaskNumber ?? 1;
 
@@ -112,6 +101,7 @@ const CreateTaskDialog = () => {
   const form = useForm({
     defaultValues: {
       ...taskFormDefaults,
+      title: pendingTitle ?? taskFormDefaults.title,
       labels: projectLabels,
       columnId: columnId ?? defaultColumnId,
     },
@@ -223,6 +213,7 @@ const CreateTaskDialog = () => {
       });
 
       formApi.reset();
+      setPendingTitle(null);
       setTimeout(() => setColumnId(null), 350);
 
       setIsCreateTaskOpen(false);
@@ -239,6 +230,7 @@ const CreateTaskDialog = () => {
         form.reset();
 
         if (!open) {
+          setPendingTitle(null);
           // Allow for dialog close animation to finish
           setTimeout(() => setColumnId(null), 350);
         }
