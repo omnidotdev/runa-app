@@ -1,3 +1,4 @@
+import { ManageTeamLink } from "@omnidotdev/providers/react";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import {
@@ -9,7 +10,7 @@ import {
   Trash2Icon,
   XIcon,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { match } from "ts-pattern";
 
@@ -20,7 +21,7 @@ import {
   AvatarRoot,
 } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
@@ -37,7 +38,7 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { hasBilling } from "@/lib/config/env.config";
+import { AUTH_BASE_URL, hasBilling } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import {
   canModifyMember,
@@ -55,13 +56,10 @@ import { Tier, getTierFromSubscription } from "@/lib/types/tier";
 import { cn } from "@/lib/utils";
 import { getInviteTimeInfo } from "@/lib/validation/invitation";
 import { useOrganization } from "@/providers/OrganizationProvider";
-import InviteMemberDialog from "./InviteMemberDialog";
 
 import type { Role } from "@/lib/permissions";
 
 const Team = () => {
-  const inviteRef = useRef<HTMLButtonElement>(null);
-
   const { organizationId, subscription, prices } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/settings",
   });
@@ -78,10 +76,12 @@ const Team = () => {
 
   const orgContext = useOrganization();
 
-  // Resolve org name from JWT claims
-  const orgName = organizationId
-    ? orgContext?.getOrganizationById(organizationId)?.name
+  // Resolve org name + slug from JWT claims
+  const org = organizationId
+    ? orgContext?.getOrganizationById(organizationId)
     : undefined;
+  const orgName = org?.name;
+  const orgSlug = org?.slug;
 
   // Fetch members from Gatekeeper (IDP is source of truth)
   const { data: membersData } = useQuery({
@@ -126,9 +126,6 @@ const Team = () => {
   const { setIsOpen: setIsDeleteTeamMemberOpen } = useDialogStore({
       type: DialogType.DeleteTeamMember,
     }),
-    { setIsOpen: setIsInviteTeamMemberOpen } = useDialogStore({
-      type: DialogType.InviteTeamMember,
-    }),
     { isOpen: isCancelInvitationOpen, setIsOpen: setIsCancelInvitationOpen } =
       useDialogStore({
         type: DialogType.CancelInvitation,
@@ -164,30 +161,21 @@ const Team = () => {
             Team Members
           </h2>
 
-          <Tooltip
-            positioning={{ placement: "left" }}
-            tooltip={
-              _maxNumberOfMembersReached
-                ? "Upgrade to invite more members"
-                : "Invite Member"
-            }
-            trigger={
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Invite team member"
-                className={cn(
-                  "mr-2 hidden size-7 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:hover:bg-transparent dark:disabled:hover:bg-transparent",
-                  canInvite && "inline-flex",
-                )}
-                onClick={() => setIsInviteTeamMemberOpen(true)}
-                disabled={_maxNumberOfMembersReached}
-                ref={inviteRef}
-              >
-                <PlusIcon />
-              </Button>
-            }
-          />
+          {/* Team membership is managed centrally at Gatekeeper (the shared
+              IDP); invite/role/remove happen there, not re-implemented per app */}
+          {canInvite && orgSlug && AUTH_BASE_URL && (
+            <ManageTeamLink
+              identityBaseUrl={AUTH_BASE_URL}
+              orgSlug={orgSlug}
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "mr-2 gap-1.5",
+              )}
+            >
+              <PlusIcon className="size-4" />
+              Manage team
+            </ManageTeamLink>
+          )}
         </div>
 
         {members.length ? (
@@ -563,8 +551,6 @@ const Team = () => {
           </DialogContent>
         </DialogPositioner>
       </DialogRoot>
-
-      <InviteMemberDialog triggerRef={inviteRef} />
     </>
   );
 };
