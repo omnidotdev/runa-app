@@ -133,7 +133,7 @@ const QuickAddTask = ({
         type="button"
         disabled={disabled}
         onClick={() => setQuickAddColumnId(columnId)}
-        className="w-full rounded-lg border border-border border-dashed py-2 text-base-500 text-xs hover:bg-base-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-base-400 dark:hover:bg-base-900"
+        className="w-full cursor-pointer rounded-lg border border-border border-dashed py-2 text-base-500 text-xs opacity-0 transition-opacity hover:bg-base-50 disabled:cursor-not-allowed disabled:opacity-50 group-focus-within:opacity-100 group-hover:opacity-100 dark:text-base-400 dark:hover:bg-base-900"
       >
         + Add task
       </button>

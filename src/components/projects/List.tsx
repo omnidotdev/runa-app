@@ -108,7 +108,7 @@ const List = ({
         return (
           <CollapsibleRoot
             key={column?.rowId}
-            className="mb-4 rounded-lg border bg-background last:mb-0"
+            className="group mb-4 rounded-lg border bg-background last:mb-0"
             onMouseEnter={() => setHoveredColumnId(column.rowId)}
             onMouseLeave={() => setHoveredColumnId(null)}
             onFocus={() => setFocusedColumnId(column.rowId)}

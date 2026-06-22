@@ -118,7 +118,7 @@ const Board = ({ tasks }: Props) => {
           {project?.columns?.nodes?.map((column) => (
             <div
               key={column?.rowId}
-              className={cn(boardColumnStyles.wrapper, "outline-none")}
+              className={cn(boardColumnStyles.wrapper, "group outline-none")}
               // biome-ignore lint/a11y/noNoninteractiveTabindex: focusable wrapper drives keyboard column tracking for quick-add
               tabIndex={0}
               onMouseEnter={() => setHoveredColumnId(column.rowId)}
