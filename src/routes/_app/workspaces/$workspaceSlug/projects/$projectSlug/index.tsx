@@ -502,12 +502,29 @@ function AuthenticatedProjectPage() {
   useHotkeys(
     Hotkeys.CreateTask,
     () => {
+      const columns = project?.columns?.nodes;
       const target = resolveActiveColumnId(
         focusedColumnId,
         hoveredColumnId,
-        project?.columns?.nodes,
+        columns,
       );
-      if (target) setQuickAddColumnId(target);
+      if (!target) return;
+
+      // Expand the target column in list view so its quick-add row is visible
+      // and focusable instead of hidden inside a collapsed column (no-op in
+      // board view, where the open states are unused)
+      const index = columns?.findIndex((column) => column.rowId === target);
+      if (index !== undefined && index >= 0) {
+        setProjectColumnOpenStates((prev) => {
+          if (prev[index]) return prev;
+
+          const next = [...prev];
+          next[index] = true;
+          return next;
+        });
+      }
+
+      setQuickAddColumnId(target);
     },
     { enabled: !maxTasksReached },
     [focusedColumnId, hoveredColumnId, project, maxTasksReached],
