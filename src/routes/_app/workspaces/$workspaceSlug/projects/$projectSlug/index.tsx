@@ -52,6 +52,8 @@ import {
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDragStore from "@/lib/hooks/store/useDragStore";
+import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
@@ -60,6 +62,7 @@ import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { compareKeys, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import resolveActiveColumnId from "@/lib/util/resolveActiveColumnId";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
@@ -489,6 +492,25 @@ function AuthenticatedProjectPage() {
         },
       }),
     [updateViewMode, userPreferences?.viewMode, projectId],
+  );
+
+  const { focusedColumnId, hoveredColumnId, setQuickAddColumnId } =
+    useTaskStore();
+
+  const maxTasksReached = useMaxTasksReached();
+
+  useHotkeys(
+    Hotkeys.CreateTask,
+    () => {
+      const target = resolveActiveColumnId(
+        focusedColumnId,
+        hoveredColumnId,
+        project?.columns?.nodes,
+      );
+      if (target) setQuickAddColumnId(target);
+    },
+    { enabled: !maxTasksReached },
+    [focusedColumnId, hoveredColumnId, project, maxTasksReached],
   );
 
   return (
