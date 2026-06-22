@@ -3,6 +3,7 @@ import {
   Board,
   BoardColumn,
   BoardColumnBody,
+  BoardColumnEmpty,
   BoardColumnHeader,
 } from "@/components/ui/board";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -34,32 +35,40 @@ const PublicBoard = ({ project, tasks }: Props) => {
           : undefined,
       }}
     >
-      {project.columns?.nodes?.map((column) => (
-        <BoardColumn key={column.rowId}>
-          <BoardColumnHeader
-            title={column.title}
-            count={column.tasks?.totalCount ?? 0}
-            icon={
-              <LabelIcon
-                icon={column.icon}
-                className="size-4 shrink-0 text-muted-foreground"
-              />
-            }
-          />
+      {project.columns?.nodes?.map((column) => {
+        const columnTasks = tasks.filter(
+          (task) => task.columnId === column.rowId,
+        );
 
-          <BoardColumnBody>
-            {tasks
-              .filter((task) => task.columnId === column.rowId)
-              .map((task) => (
-                <PublicBoardItem
-                  key={task.rowId}
-                  task={task}
-                  displayId={`${project.prefix ?? "PROJ"}-${task.number}`}
+        return (
+          <BoardColumn key={column.rowId}>
+            <BoardColumnHeader
+              title={column.title}
+              count={column.tasks?.totalCount ?? 0}
+              icon={
+                <LabelIcon
+                  icon={column.icon}
+                  className="size-4 shrink-0 text-muted-foreground"
                 />
-              ))}
-          </BoardColumnBody>
-        </BoardColumn>
-      ))}
+              }
+            />
+
+            <BoardColumnBody>
+              {columnTasks.length ? (
+                columnTasks.map((task) => (
+                  <PublicBoardItem
+                    key={task.rowId}
+                    task={task}
+                    displayId={`${project.prefix ?? "PROJ"}-${task.number}`}
+                  />
+                ))
+              ) : (
+                <BoardColumnEmpty>No tasks</BoardColumnEmpty>
+              )}
+            </BoardColumnBody>
+          </BoardColumn>
+        );
+      })}
     </Board>
   );
 };

@@ -236,10 +236,22 @@ const BoardColumnBody = ({ className, ...rest }: ComponentProps<"div">) => (
   <div className={cn("flex flex-col gap-2 px-2 pb-2", className)} {...rest} />
 );
 
+/** Empty-state placeholder for a column with no items. */
+const BoardColumnEmpty = ({ className, ...rest }: ComponentProps<"p">) => (
+  <p
+    className={cn(
+      "rounded-lg border border-dashed px-3 py-8 text-center text-muted-foreground text-xs",
+      className,
+    )}
+    {...rest}
+  />
+);
+
 export {
   Board,
   BoardColumn,
   BoardColumnHeader,
   BoardColumnBody,
+  BoardColumnEmpty,
   useInertialScroll,
 };
