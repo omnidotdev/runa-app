@@ -8,6 +8,7 @@ import {
   useProjectQuery,
   useTasksQuery,
 } from "@/generated/graphql";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import { keyBetween } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
@@ -35,7 +36,16 @@ const QuickAddTask = ({
   columnTasks,
   disabled,
 }: Props) => {
-  const { quickAddColumnId, setQuickAddColumnId, setColumnId } = useTaskStore();
+  const {
+    quickAddColumnId,
+    setQuickAddColumnId,
+    setColumnId,
+    setPendingTitle,
+  } = useTaskStore();
+
+  const { setIsOpen: setIsCreateTaskOpen } = useDialogStore({
+    type: DialogType.CreateTask,
+  });
 
   const { queryClient } = useRouteContext({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
@@ -78,9 +88,13 @@ const QuickAddTask = ({
 
   const onKeyDown = (evt: KeyboardEvent<HTMLInputElement>) => {
     if (evt.key === "Enter" && (evt.metaKey || evt.ctrlKey)) {
-      // Escape hatch to the full dialog seeded with this column
-      // TODO: seed the dialog title from the typed value in a later task
+      // Promote the typed title into the full dialog for rich fields
+      if (!title.trim()) return;
+
       setColumnId(columnId);
+      setPendingTitle(title.trim());
+      setIsCreateTaskOpen(true);
+      setTitle("");
       setQuickAddColumnId(null);
       return;
     }

@@ -13,6 +13,8 @@ interface TaskStoreState {
   setHoveredColumnId: (columnId: string | null) => void;
   quickAddColumnId: string | null;
   setQuickAddColumnId: (columnId: string | null) => void;
+  pendingTitle: string | null;
+  setPendingTitle: (pendingTitle: string | null) => void;
 }
 
 const useTaskStore = createWithEqualityFn<TaskStoreState>(
@@ -30,6 +32,8 @@ const useTaskStore = createWithEqualityFn<TaskStoreState>(
     quickAddColumnId: null,
     setQuickAddColumnId: (quickAddColumnId: string | null) =>
       set({ quickAddColumnId }),
+    pendingTitle: null,
+    setPendingTitle: (pendingTitle: string | null) => set({ pendingTitle }),
   }),
   shallow,
 );

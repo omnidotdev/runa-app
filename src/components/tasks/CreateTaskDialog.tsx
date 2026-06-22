@@ -70,7 +70,8 @@ const CreateTaskDialog = () => {
 
   const defaultColumnId = project?.columns?.nodes?.[0]?.rowId! ?? null;
 
-  const { columnId, setColumnId } = useTaskStore();
+  const { columnId, setColumnId, pendingTitle, setPendingTitle } =
+    useTaskStore();
 
   const maxTasksReached = useMaxTasksReached();
 
@@ -100,6 +101,7 @@ const CreateTaskDialog = () => {
   const form = useForm({
     defaultValues: {
       ...taskFormDefaults,
+      title: pendingTitle ?? taskFormDefaults.title,
       labels: projectLabels,
       columnId: columnId ?? defaultColumnId,
     },
@@ -211,6 +213,7 @@ const CreateTaskDialog = () => {
       });
 
       formApi.reset();
+      setPendingTitle(null);
       setTimeout(() => setColumnId(null), 350);
 
       setIsCreateTaskOpen(false);
@@ -227,6 +230,7 @@ const CreateTaskDialog = () => {
         form.reset();
 
         if (!open) {
+          setPendingTitle(null);
           // Allow for dialog close animation to finish
           setTimeout(() => setColumnId(null), 350);
         }
