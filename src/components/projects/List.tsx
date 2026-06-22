@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
 import ColumnMenu from "./ColumnMenu";
 import ListItem from "./ListItem";
+import QuickAddTask from "./QuickAddTask";
 
 import type { Dispatch, SetStateAction } from "react";
 import type { TaskFragment } from "@/generated/graphql";
@@ -56,7 +57,8 @@ const List = ({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
-  const { setColumnId } = useTaskStore();
+  const { setColumnId, setHoveredColumnId, setFocusedColumnId } =
+    useTaskStore();
 
   const { setIsOpen: setIsCreateTaskOpen } = useDialogStore({
     type: DialogType.CreateTask,
@@ -107,6 +109,10 @@ const List = ({
           <CollapsibleRoot
             key={column?.rowId}
             className="mb-4 rounded-lg border bg-background last:mb-0"
+            onMouseEnter={() => setHoveredColumnId(column.rowId)}
+            onMouseLeave={() => setHoveredColumnId(null)}
+            onFocus={() => setFocusedColumnId(column.rowId)}
+            onBlur={() => setFocusedColumnId(null)}
             open={openStates[index]}
             onOpenChange={({ open }) => {
               setOpenStates((prev) => {
@@ -190,6 +196,18 @@ const List = ({
                   </div>
                 )}
               </Droppable>
+
+              <div className="p-2">
+                <QuickAddTask
+                  columnId={column.rowId}
+                  projectId={projectId}
+                  authorId={session?.user?.rowId!}
+                  prefix={project?.prefix ?? "PROJ"}
+                  nextTaskNumber={project?.nextTaskNumber ?? 1}
+                  columnTasks={columnTasks}
+                  disabled={maxTasksReached}
+                />
+              </div>
             </CollapsibleContent>
           </CollapsibleRoot>
         );
