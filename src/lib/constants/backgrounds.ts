@@ -37,8 +37,10 @@ const tint = (color: string, amount: number) =>
   `color-mix(in oklch, ${color} ${amount}%, var(--color-background))`;
 
 /**
- * Curated solid + gradient presets. Kept low-saturation so columns and cards
- * remain readable without frosting (frosting arrives with image backgrounds).
+ * Curated presets: solids, gradients, and CSS patterns. Kept low-saturation so
+ * columns and cards remain readable without frosting (frosting arrives with
+ * image backgrounds). Patterns layer a faint motif over the themed surface, so
+ * they stay theme-aware like the tints and need no bundled assets.
  */
 export const backgroundPresets: BackgroundPreset[] = [
   {
@@ -82,6 +84,24 @@ export const backgroundPresets: BackgroundPreset[] = [
     label: "Mist",
     kind: "gradient",
     css: `linear-gradient(160deg, ${tint("var(--base-300)", 14)}, ${tint("var(--base-600)", 12)})`,
+  },
+  {
+    id: "dots",
+    label: "Dots",
+    kind: "gradient",
+    css: `radial-gradient(${tint("var(--base-600)", 45)} 1.2px, transparent 1.3px) 0 0 / 18px 18px, var(--color-background)`,
+  },
+  {
+    id: "grid",
+    label: "Grid",
+    kind: "gradient",
+    css: `linear-gradient(${tint("var(--base-600)", 35)} 1px, transparent 1px) 0 0 / 22px 22px, linear-gradient(90deg, ${tint("var(--base-600)", 35)} 1px, transparent 1px) 0 0 / 22px 22px, var(--color-background)`,
+  },
+  {
+    id: "twill",
+    label: "Twill",
+    kind: "gradient",
+    css: `repeating-linear-gradient(45deg, ${tint("var(--primary-400)", 30)} 0 1px, transparent 1px 13px), var(--color-background)`,
   },
 ];
 
