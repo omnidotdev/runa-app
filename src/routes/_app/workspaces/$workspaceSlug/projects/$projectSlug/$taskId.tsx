@@ -425,7 +425,11 @@ function AuthenticatedTaskPage() {
             }
           />
 
-          <AttachmentsSection taskId={taskId} editable={canEdit} />
+          <AttachmentsSection
+            taskId={taskId}
+            organizationId={organizationId}
+            editable={canEdit}
+          />
           <Comments />
           <CreateComment />
         </div>

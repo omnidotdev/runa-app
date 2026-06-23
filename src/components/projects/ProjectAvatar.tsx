@@ -15,7 +15,7 @@ import {
 } from "@/generated/graphql";
 import {
   IMAGE_MIME_TYPES,
-  MAX_BYTES,
+  MAX_PROJECT_IMAGE_BYTES,
   kindFromMimeType,
   validateFile,
 } from "@/lib/media/mediaConfig";
@@ -55,7 +55,7 @@ const ProjectAvatar = ({ projectId, name, image, disabled }: Props) => {
     updateProject({ rowId: projectId, patch: { image: nextImage } });
 
   const onSelectFile = async (file: File) => {
-    const error = validateFile(file);
+    const error = validateFile(file, MAX_PROJECT_IMAGE_BYTES);
     if (error) {
       toast.error(error);
       return;
@@ -127,7 +127,7 @@ const ProjectAvatar = ({ projectId, name, image, disabled }: Props) => {
 
         <p className="text-base-500 text-xs">
           PNG, JPG, WebP, GIF or AVIF, up to{" "}
-          {Math.round(MAX_BYTES.image / (1024 * 1024))}MB.
+          {Math.round(MAX_PROJECT_IMAGE_BYTES / (1024 * 1024))}MB.
         </p>
       </div>
 

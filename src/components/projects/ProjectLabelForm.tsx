@@ -1,4 +1,4 @@
-import { useLoaderData } from "@tanstack/react-router";
+import { useLoaderData, useNavigate } from "@tanstack/react-router";
 import {
   CheckIcon,
   MoreHorizontalIcon,
@@ -8,6 +8,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { IconSelector, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
@@ -55,6 +56,7 @@ import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import useForm from "@/lib/hooks/useForm";
 import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { handlePlanLimitError } from "@/lib/util/planLimitError";
 import { cn } from "@/lib/utils";
 
 import type { Dispatch, SetStateAction } from "react";
@@ -80,6 +82,8 @@ const ProjectLabelForm = ({
   const { projectId, organizationId } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
+
+  const navigate = useNavigate();
 
   // Get role from IDP organization claims
   const role = useCurrentUserRole(organizationId);
@@ -120,7 +124,13 @@ const ProjectLabelForm = ({
           getQueryKeyPrefix(useProjectQuery),
         ],
       },
-      onError: (error) => console.error(error),
+      onError: (error) => {
+        const handled = handlePlanLimitError(error, {
+          message: "You've reached your plan's label limit for this project.",
+          onUpgrade: () => navigate({ to: "/pricing" }),
+        });
+        if (!handled) toast.error("Could not create label. Please try again.");
+      },
       onSuccess: (data) => {
         const newLabel = data?.createLabel?.label;
 

@@ -3,7 +3,13 @@
  *
  * Mirrors the server-authoritative limits in runa-api's `lib/media/mediaConfig`.
  * These checks only improve UX; the server is the source of truth.
+ *
+ * The per-file size cap is tier-aware (`max_attachment_bytes` in the omni-api
+ * catalog SSOT: free 25MB, pro 100MB, team 250MB) and resolved via
+ * `getMaxAttachmentBytes` in `@/lib/types/tier`.
  */
+
+import { Tier, getMaxAttachmentBytes } from "@/lib/types/tier";
 
 const MB = 1024 * 1024;
 
@@ -23,12 +29,11 @@ export const VIDEO_MIME_TYPES = new Set([
   "video/quicktime",
 ]);
 
-/** Per-kind size limits, matching the server */
-export const MAX_BYTES = {
-  image: 20 * MB,
-  video: 50 * MB,
-  file: 25 * MB,
-} as const;
+/**
+ * Per-file cap for project images (avatars). Not a tier attachment limit;
+ * project images are not counted against `max_attachment_bytes`.
+ */
+export const MAX_PROJECT_IMAGE_BYTES = 20 * MB;
 
 export type MediaKind = "image" | "video" | "file";
 
@@ -38,12 +43,19 @@ export const kindFromMimeType = (mimeType: string): MediaKind => {
   return "file";
 };
 
-/** Advisory pre-flight check before uploading; returns an error string or null */
-export const validateFile = (file: File): string | null => {
+/**
+ * Advisory pre-flight check before uploading; returns an error string or null.
+ *
+ * `maxBytes` is the tier-aware per-file cap; defaults to the free-tier
+ * attachment limit so callers without tier context stay conservative.
+ */
+export const validateFile = (
+  file: File,
+  maxBytes: number = getMaxAttachmentBytes(Tier.Free),
+): string | null => {
   if (file.size <= 0) return "File is empty";
-  const kind = kindFromMimeType(file.type);
-  if (file.size > MAX_BYTES[kind]) {
-    return `${kind} exceeds the ${Math.round(MAX_BYTES[kind] / MB)}MB limit`;
+  if (Number.isFinite(maxBytes) && file.size > maxBytes) {
+    return `File exceeds the ${Math.round(maxBytes / MB)}MB limit`;
   }
   return null;
 };

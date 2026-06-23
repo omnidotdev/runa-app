@@ -1,15 +1,18 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { DownloadIcon, FileIcon, Trash2Icon, UploadIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
+import useTier from "@/lib/hooks/useTier";
 import { formatFileSize, validateFile } from "@/lib/media/mediaConfig";
 import {
   deleteAttachment,
   uploadAttachment,
 } from "@/lib/media/uploadAttachment";
 import taskAttachmentsOptions from "@/lib/options/taskAttachments.options";
+import { getMaxAttachmentBytes } from "@/lib/types/tier";
 import { cn } from "@/lib/utils";
 
 interface AttachmentMetadata {
@@ -19,15 +22,25 @@ interface AttachmentMetadata {
 
 interface Props {
   taskId: string;
+  /** Workspace that owns the task, used to resolve the tier attachment cap */
+  organizationId?: string;
   /** When false, the uploader and delete actions are hidden */
   editable?: boolean;
 }
 
-const AttachmentsSection = ({ taskId, editable = true }: Props) => {
+const AttachmentsSection = ({
+  taskId,
+  organizationId,
+  editable = true,
+}: Props) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+
+  const tier = useTier(organizationId);
+  const maxAttachmentBytes = getMaxAttachmentBytes(tier);
 
   const options = taskAttachmentsOptions({ taskId });
   const { data } = useQuery({
@@ -46,9 +59,19 @@ const AttachmentsSection = ({ taskId, editable = true }: Props) => {
     setIsUploading(true);
     try {
       for (const file of list) {
-        const advisory = validateFile(file);
+        const advisory = validateFile(file, maxAttachmentBytes);
         if (advisory) {
-          toast.error(`${file.name}: ${advisory}`);
+          // A size rejection is a plan limit; offer an upgrade path. An empty
+          // file is not, so keep that as a plain error.
+          const isSizeLimit = file.size > 0;
+          toast.error(`${file.name}: ${advisory}`, {
+            action: isSizeLimit
+              ? {
+                  label: "Upgrade",
+                  onClick: () => navigate({ to: "/pricing" }),
+                }
+              : undefined,
+          });
           continue;
         }
         try {

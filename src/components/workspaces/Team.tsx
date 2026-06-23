@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { match } from "ts-pattern";
 
 import { DestructiveActionDialog, Tooltip } from "@/components/core";
 import {
@@ -52,7 +51,7 @@ import {
 } from "@/lib/hooks/useOrganizationMembers";
 import organizationInvitationsOptions from "@/lib/options/organizationInvitations.options";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
-import { Tier, getTierFromSubscription } from "@/lib/types/tier";
+import { getMaxAdmins, getTierFromSubscription } from "@/lib/types/tier";
 import { cn } from "@/lib/utils";
 import { getInviteTimeInfo } from "@/lib/validation/invitation";
 import { useOrganization } from "@/providers/OrganizationProvider";
@@ -138,20 +137,14 @@ const Team = () => {
     subscription?.priceId,
   );
 
-  const _maxNumberOfMembersReached = !hasBilling
-    ? false
-    : match(tier)
-        .with(Tier.Pro, Tier.Team, Tier.Enterprise, () => false)
-        .otherwise(() => members.length >= 5);
-
-  const maxNumberofAdminsReached = !hasBilling
-    ? false
-    : match(tier)
-        .with(Tier.Pro, Tier.Team, Tier.Enterprise, () => false)
-        .otherwise(
-          () =>
-            members.filter((member) => member.role !== "member").length >= 1,
-        );
+  // Admin-promotion gating. Member counts mirror the omni-api catalog SSOT via
+  // the centralized tier helpers; membership itself is managed at Gatekeeper.
+  const maxAdmins = getMaxAdmins(tier);
+  const adminCount = members.filter(
+    (member) => member.role !== "member",
+  ).length;
+  const maxNumberofAdminsReached =
+    hasBilling && Number.isFinite(maxAdmins) && adminCount >= maxAdmins;
 
   return (
     <>

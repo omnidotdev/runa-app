@@ -1,7 +1,11 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+import {
+  useLoaderData,
+  useNavigate,
+  useRouteContext,
+} from "@tanstack/react-router";
 import {
   CheckIcon,
   EyeClosedIcon,
@@ -39,6 +43,7 @@ import useForm from "@/lib/hooks/useForm";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { Role } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { handlePlanLimitError } from "@/lib/util/planLimitError";
 import { cn } from "@/lib/utils";
 
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
@@ -72,6 +77,8 @@ const ColumnForm = ({
   const { session } = useRouteContext({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
   });
+
+  const navigate = useNavigate();
 
   // Get role from IDP organization claims
   const role = useCurrentUserRole(organizationId);
@@ -134,7 +141,13 @@ const ColumnForm = ({
         getQueryKeyPrefix(useProjectQuery),
       ],
     },
-    onError: (error) => console.error(error),
+    onError: (error) => {
+      const handled = handlePlanLimitError(error, {
+        message: "You've reached your plan's column limit for this project.",
+        onUpgrade: () => navigate({ to: "/pricing" }),
+      });
+      if (!handled) toast.error("Could not create column. Please try again.");
+    },
     onSuccess: (data) => {
       const newColumn = data?.createColumn?.column;
 
