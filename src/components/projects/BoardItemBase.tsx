@@ -73,8 +73,8 @@ const BoardItemBase = ({
         )}
       >
         <div className="flex h-full flex-col overflow-hidden">
-          <div className="flex items-start gap-2">
-            <div className="mt-0.5 min-w-0 flex-1">
+          <div className="flex min-h-0 flex-1 items-start gap-2 overflow-hidden">
+            <div className="mt-0.5 min-w-0 flex-1 overflow-hidden">
               <div className="flex items-center gap-1.5">
                 {priority && (
                   <PriorityIcon
@@ -95,7 +95,7 @@ const BoardItemBase = ({
             {assignees}
           </div>
 
-          <div className="mt-auto flex items-end justify-between gap-2">
+          <div className="flex shrink-0 items-end justify-between gap-2">
             {labels}
             {footer}
           </div>
