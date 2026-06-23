@@ -73,6 +73,12 @@ const BoardItemBase = ({
         )}
       >
         <div className="flex h-full flex-col overflow-hidden">
+          {/* The card height is fixed and the content is a client-only rich
+              text editor that mounts taller than its skeleton. Keep the content
+              row `min-h-0 flex-1 overflow-hidden` so the editor is clipped, and
+              the labels/footer row `shrink-0` so it stays pinned and visible.
+              Do not swap these for `mt-auto`: that lets tall content push the
+              labels below the clip line and they vanish */}
           <div className="flex min-h-0 flex-1 items-start gap-2 overflow-hidden">
             <div className="mt-0.5 min-w-0 flex-1 overflow-hidden">
               <div className="flex items-center gap-1.5">
