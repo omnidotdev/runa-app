@@ -12,7 +12,11 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { Tooltip } from "@/components/core";
-import { ProjectAvatar, ProjectColorPicker } from "@/components/projects";
+import {
+  ProjectAvatar,
+  ProjectBackgroundPicker,
+  ProjectColorPicker,
+} from "@/components/projects";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -412,6 +416,22 @@ export default function ProjectGeneralForm() {
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Board background — outside form since it takes immediate effect */}
+      <div className="mt-6 flex flex-col">
+        <h2 className="mb-1 ml-2 flex h-10 items-center font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+          Background
+        </h2>
+
+        <div className="flex flex-col gap-2 border-y py-3">
+          <p className="px-2 text-base-500 text-xs lg:px-0">
+            A neutral surface, or a curated tint for the board.
+          </p>
+          <div className="px-2 lg:px-0">
+            <ProjectBackgroundPicker disabled={!canEdit} />
+          </div>
         </div>
       </div>
     </div>

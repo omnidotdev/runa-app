@@ -10,6 +10,7 @@ import {
   boardContainerStyles,
   boardLayoutStyles,
 } from "@/lib/board/styles";
+import { resolveBackgroundStyle } from "@/lib/constants/backgrounds";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
@@ -99,6 +100,7 @@ const Board = ({ tasks }: Props) => {
     <div
       ref={scrollContainerRef}
       className={cn(boardContainerStyles.base, boardContainerStyles.background)}
+      style={resolveBackgroundStyle(project?.background)}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}

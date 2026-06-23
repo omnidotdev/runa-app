@@ -6,6 +6,7 @@ import {
   BoardColumnEmpty,
   BoardColumnHeader,
 } from "@/components/ui/board";
+import { resolveBackgroundStyle } from "@/lib/constants/backgrounds";
 import PublicBoardItem from "./PublicBoardItem";
 
 import type { ProjectQuery, TasksQuery } from "@/generated/graphql";
@@ -22,7 +23,10 @@ interface Props {
  */
 const PublicBoard = ({ project, tasks }: Props) => {
   return (
-    <Board className="h-full px-4">
+    <Board
+      className="h-full px-4"
+      style={resolveBackgroundStyle(project?.background)}
+    >
       {project.columns?.nodes?.map((column) => {
         const columnTasks = tasks.filter(
           (task) => task.columnId === column.rowId,
