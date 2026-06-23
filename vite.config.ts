@@ -26,10 +26,8 @@ const viteConfig = defineConfig(({ command }) => ({
     tanstackStart(),
     nitroV2Plugin({
       preset: "node-server",
-      // Inline modules to avoid resolution issues with Bun runtime.
-      // @lexical/html ships a Node-conditional export the externalized server
-      // bundle can't resolve, so inline it (used by the rich text editor).
-      externals: { inline: ["srvx", "react-dom", "@lexical/html"] },
+      // Inline modules to avoid resolution issues with Bun runtime
+      externals: { inline: ["srvx", "react-dom"] },
     }),
     react(),
   ],
