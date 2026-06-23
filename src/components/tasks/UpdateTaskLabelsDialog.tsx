@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { all } from "better-all";
+import { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
@@ -154,6 +155,16 @@ const UpdateTaskLabelsDialog = () => {
     },
   });
 
+  // Re-sync the form to the current task whenever the dialog opens or the target
+  // task changes. The hotkey toggles `isOpen` directly, so `onOpenChange` never
+  // fires on open; without this, a previously-hovered card's selection leaks in.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset is keyed on the resolved task/labels, not the derived defaultLabels
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({ ...taskFormDefaults, labels: defaultLabels });
+    }
+  }, [isOpen, taskId, task, labels]);
+
   if (!taskId) return null;
 
   return (
@@ -161,7 +172,6 @@ const UpdateTaskLabelsDialog = () => {
       open={isOpen}
       onOpenChange={({ open }) => {
         setIsOpen(open);
-        form.reset({ ...taskFormDefaults, labels: defaultLabels });
 
         if (!open) {
           setTaskId(null);

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useParams } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Button } from "@/components/ui/button";
@@ -149,6 +150,16 @@ export default function UpdateAssigneesDialog() {
     [isOpen],
   );
 
+  // Re-sync the form to the current task whenever the dialog opens or the target
+  // task changes. The hotkey toggles `isOpen` directly, so `onOpenChange` never
+  // fires on open; without this, a previously-hovered card's assignees leak in.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset is keyed on the resolved task, not the derived defaultAssignees
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({ ...taskFormDefaults, assignees: defaultAssignees ?? [] });
+    }
+  }, [isOpen, taskId, task]);
+
   if (!taskId) return null;
 
   return (
@@ -157,7 +168,6 @@ export default function UpdateAssigneesDialog() {
       onOpenChange={({ open }) => {
         setIsOpen(open);
         if (!open) {
-          form.reset();
           setTaskId(null);
         }
       }}
