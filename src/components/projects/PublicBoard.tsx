@@ -6,7 +6,9 @@ import {
   BoardColumnEmpty,
   BoardColumnHeader,
 } from "@/components/ui/board";
+import { API_BASE_URL } from "@/lib/config/env.config";
 import { resolveBackgroundStyle } from "@/lib/constants/backgrounds";
+import { cn } from "@/lib/utils";
 import PublicBoardItem from "./PublicBoardItem";
 
 import type { ProjectQuery, TasksQuery } from "@/generated/graphql";
@@ -22,18 +24,23 @@ interface Props {
  * roadmap; here it is fed Runa tasks grouped by column.
  */
 const PublicBoard = ({ project, tasks }: Props) => {
+  const boardBackground = resolveBackgroundStyle(project?.background, {
+    assetBaseUrl: API_BASE_URL,
+  });
+  const hasBackground = Boolean(boardBackground);
+
   return (
-    <Board
-      className="h-full px-4"
-      style={resolveBackgroundStyle(project?.background)}
-    >
+    <Board className="h-full px-4" style={boardBackground}>
       {project.columns?.nodes?.map((column) => {
         const columnTasks = tasks.filter(
           (task) => task.columnId === column.rowId,
         );
 
         return (
-          <BoardColumn key={column.rowId}>
+          <BoardColumn
+            key={column.rowId}
+            className={cn(hasBackground && "bg-background/65 backdrop-blur-md")}
+          >
             <BoardColumnHeader
               title={column.title}
               count={column.tasks?.totalCount ?? 0}

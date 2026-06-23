@@ -10,6 +10,7 @@ import {
   boardContainerStyles,
   boardLayoutStyles,
 } from "@/lib/board/styles";
+import { API_BASE_URL } from "@/lib/config/env.config";
 import { resolveBackgroundStyle } from "@/lib/constants/backgrounds";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
@@ -96,11 +97,18 @@ const Board = ({ tasks }: Props) => {
 
   const maxTasksReached = useMaxTasksReached(organizationId);
 
+  const boardBackground = resolveBackgroundStyle(project?.background, {
+    assetBaseUrl: API_BASE_URL,
+  });
+  // Frost columns over any non-neutral background so headers and cards stay
+  // legible; the neutral default is left untouched.
+  const hasBackground = Boolean(boardBackground);
+
   return (
     <div
       ref={scrollContainerRef}
       className={cn(boardContainerStyles.base, boardContainerStyles.background)}
-      style={resolveBackgroundStyle(project?.background)}
+      style={boardBackground}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
@@ -111,7 +119,12 @@ const Board = ({ tasks }: Props) => {
           {project?.columns?.nodes?.map((column) => (
             <div
               key={column?.rowId}
-              className={cn(boardColumnStyles.wrapper, "group outline-none")}
+              className={cn(
+                boardColumnStyles.wrapper,
+                "group outline-none",
+                hasBackground &&
+                  "rounded-xl bg-background/65 p-2 backdrop-blur-md",
+              )}
               // biome-ignore lint/a11y/noNoninteractiveTabindex: focusable wrapper drives keyboard column tracking for quick-add
               tabIndex={0}
               onMouseEnter={() => setHoveredColumnId(column.rowId)}

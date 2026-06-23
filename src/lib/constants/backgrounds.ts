@@ -109,13 +109,31 @@ const presetsById = new Map(
   backgroundPresets.map((preset) => [preset.id, preset]),
 );
 
+/** Longest edge requested from the serve route; snaps to a supported width. */
+const IMAGE_RENDER_WIDTH = 1920;
+
+/**
+ * Build the optimized serve URL for an uploaded background. Asks the
+ * transform-capable serve route for a downscaled WebP so full-screen
+ * backgrounds stay light.
+ */
+const imageAssetUrl = (assetBaseUrl: string, assetId: string) =>
+  `${assetBaseUrl.replace(/\/$/, "")}/api/attachments/file/${encodeURIComponent(
+    assetId,
+  )}?w=${IMAGE_RENDER_WIDTH}&q=82&fm=webp`;
+
 /**
  * Resolve a stored background to an inline style. Returns `undefined` for the
  * neutral default (null background) or an unknown/unsupported token, so the
  * board falls back to its neutral surface class.
+ *
+ * Image backgrounds require `assetBaseUrl` (the API origin) to build the serve
+ * URL; without it they resolve to `undefined` so the resolver stays a pure,
+ * environment-free function for callers that only use presets (and for tests).
  */
 export const resolveBackgroundStyle = (
   background: ProjectBackground | null | undefined,
+  options?: { assetBaseUrl?: string },
 ): CSSProperties | undefined => {
   if (!background) return undefined;
 
@@ -124,6 +142,25 @@ export const resolveBackgroundStyle = (
     return preset ? { background: preset.css } : undefined;
   }
 
-  // image backgrounds resolve in a later phase
+  if (background.kind === "image") {
+    const { assetBaseUrl } = options ?? {};
+    if (!assetBaseUrl) return undefined;
+
+    // Soften the photo toward the themed surface so frosted columns and chrome
+    // stay legible over any image.
+    const scrim =
+      "color-mix(in oklch, var(--color-background) 22%, transparent)";
+
+    return {
+      backgroundImage: `linear-gradient(${scrim}, ${scrim}), url("${imageAssetUrl(
+        assetBaseUrl,
+        background.assetId,
+      )}")`,
+      backgroundSize: "cover",
+      backgroundPosition: background.position ?? "center",
+      backgroundRepeat: "no-repeat",
+    };
+  }
+
   return undefined;
 };

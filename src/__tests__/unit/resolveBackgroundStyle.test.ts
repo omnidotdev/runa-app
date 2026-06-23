@@ -31,9 +31,24 @@ describe("resolveBackgroundStyle", () => {
     ).toBeUndefined();
   });
 
-  it("does not yet resolve image backgrounds", () => {
+  it("leaves image backgrounds unresolved without a base URL", () => {
     expect(
       resolveBackgroundStyle({ kind: "image", assetId: "abc" }),
     ).toBeUndefined();
+  });
+
+  it("resolves an image background to an optimized serve URL", () => {
+    const style = resolveBackgroundStyle(
+      { kind: "image", assetId: "runa/org/backgrounds/x.jpg", position: "top" },
+      { assetBaseUrl: "https://api.example.com/" },
+    );
+
+    expect(style?.backgroundSize).toBe("cover");
+    expect(style?.backgroundPosition).toBe("top");
+    // trailing slash on the base is normalized, the key is encoded, and a
+    // downscaled webp derivative is requested
+    expect(style?.backgroundImage).toContain(
+      'url("https://api.example.com/api/attachments/file/runa%2Forg%2Fbackgrounds%2Fx.jpg?w=1920&q=82&fm=webp")',
+    );
   });
 });
