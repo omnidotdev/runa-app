@@ -6,7 +6,6 @@ import {
   BoardColumnEmpty,
   BoardColumnHeader,
 } from "@/components/ui/board";
-import { useTheme } from "@/providers/ThemeProvider";
 import PublicBoardItem from "./PublicBoardItem";
 
 import type { ProjectQuery, TasksQuery } from "@/generated/graphql";
@@ -22,19 +21,8 @@ interface Props {
  * roadmap; here it is fed Runa tasks grouped by column.
  */
 const PublicBoard = ({ project, tasks }: Props) => {
-  const { theme } = useTheme();
-
   return (
-    <Board
-      className="h-full px-4"
-      style={{
-        backgroundColor: project?.color
-          ? theme === "dark"
-            ? `${project.color}12`
-            : `${project.color}0D`
-          : undefined,
-      }}
-    >
+    <Board className="h-full px-4">
       {project.columns?.nodes?.map((column) => {
         const columnTasks = tasks.filter(
           (task) => task.columnId === column.rowId,

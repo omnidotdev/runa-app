@@ -18,7 +18,6 @@ import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import projectOptions from "@/lib/options/project.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/providers/ThemeProvider";
 import BoardItem from "./BoardItem";
 import ColumnMenu from "./ColumnMenu";
 import QuickAddTask from "./QuickAddTask";
@@ -30,7 +29,6 @@ interface Props {
 }
 
 const Board = ({ tasks }: Props) => {
-  const { theme } = useTheme();
   const { isDragging } = useDragStore();
 
   // Compute task IDs by column to pass to ColumnMenu (avoids N+1 Column queries)
@@ -101,13 +99,6 @@ const Board = ({ tasks }: Props) => {
     <div
       ref={scrollContainerRef}
       className={cn(boardContainerStyles.base, boardContainerStyles.background)}
-      style={{
-        backgroundColor: project?.color
-          ? theme === "dark"
-            ? `${project?.color}12`
-            : `${project?.color}0D`
-          : undefined,
-      }}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
@@ -158,12 +149,6 @@ const Board = ({ tasks }: Props) => {
                         snapshot.isDraggingOver &&
                           boardColumnStyles.droppableActive,
                       )}
-                      style={{
-                        backgroundColor:
-                          project?.color && snapshot.isDraggingOver
-                            ? `${project?.color}0D`
-                            : undefined,
-                      }}
                     >
                       <div className={boardColumnStyles.itemsContainer}>
                         {tasks
