@@ -106,6 +106,13 @@ export const Route = createRootRouteWithContext<{
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      // Scalable SVG favicon (preferred by modern browsers); the PNG/ICO
+      // entries below remain as fallbacks for clients without SVG icon support
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/runa-mark.svg",
+      },
       {
         rel: "icon",
         type: "image/png",

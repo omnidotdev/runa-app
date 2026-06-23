@@ -5,7 +5,7 @@ import { FaLinkedin as LinkedinIcon } from "react-icons/fa";
 import { LuGithub as GithubIcon } from "react-icons/lu";
 import { SiDiscord as DiscordIcon, SiX as XIcon } from "react-icons/si";
 
-import { Link, ThemeToggle } from "@/components/core";
+import { Link, Logo, ThemeToggle } from "@/components/core";
 import { ShootingStars } from "@/components/landing";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -96,8 +96,7 @@ function PublicLayout() {
                 variant="ghost"
                 className="gap-2 hover:bg-transparent dark:hover:bg-transparent"
               >
-                {/* TODO: Replace with real logo */}
-                <span className="text-2xl">🌙</span>
+                <Logo className="size-7 text-primary-500" />
                 <span className="font-bold text-xl tracking-tight">
                   {app.name}
                 </span>
@@ -242,8 +241,7 @@ function PublicLayout() {
             <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
               {/* Brand */}
               <div className="flex items-center gap-2">
-                {/* TODO: Replace with real logo */}
-                <span className="text-xl opacity-60">🌙</span>
+                <Logo className="size-6 text-primary-500 opacity-60" />
                 <span className="text-base-500 text-sm">
                   Made with 🌙 by{" "}
                   <a

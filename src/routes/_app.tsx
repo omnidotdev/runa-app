@@ -1,7 +1,7 @@
 import { Outlet, createFileRoute, useSearch } from "@tanstack/react-router";
 import { useMemo } from "react";
 
-import { AppSidebar, Link, ThemeToggle } from "@/components/core";
+import { AppSidebar, Link, Logo, ThemeToggle } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { SidebarInset } from "@/components/ui/sidebar";
@@ -79,7 +79,7 @@ function AppLayout() {
               variant="ghost"
               className="-ml-4 gap-2 hover:bg-transparent dark:hover:bg-transparent"
             >
-              <span className="text-xl">🌙</span>
+              <Logo className="size-6 text-primary-500" />
               <span className="font-bold text-lg tracking-tight">
                 {app.name}
               </span>
