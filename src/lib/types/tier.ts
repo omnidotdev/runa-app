@@ -46,3 +46,22 @@ export function getTierFromSubscription(
   // Default to pro if subscription exists but tier can't be determined
   return Tier.Pro;
 }
+
+/**
+ * Maximum assignees allowed per task for a tier.
+ *
+ * Mirrors the omni-api catalog SSOT (planConfigs.ts `runa`: free
+ * `max_assignees` 2, pro 5, team -1/unlimited) and the server-side enforcement
+ * in runa-api's Assignee.plugin.ts. Keep in sync with the catalog.
+ */
+export function getMaxAssignees(tier: Tier): number {
+  switch (tier) {
+    case Tier.Team:
+    case Tier.Enterprise:
+      return Number.POSITIVE_INFINITY;
+    case Tier.Pro:
+      return 5;
+    default:
+      return 2;
+  }
+}

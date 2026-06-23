@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useParams } from "@tanstack/react-router";
 import { useHotkeys } from "react-hotkeys-hook";
-import { match } from "ts-pattern";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,9 +25,10 @@ import useForm from "@/lib/hooks/useForm";
 import pricesOptions from "@/lib/options/prices.options";
 import subscriptionOptions from "@/lib/options/subscription.options";
 import taskOptions from "@/lib/options/task.options";
-import { Tier, getTierFromSubscription } from "@/lib/types/tier";
+import { getMaxAssignees, getTierFromSubscription } from "@/lib/types/tier";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { parseTaskParam } from "@/lib/util/taskUrl";
+import AssigneeLimitNotice from "./AssigneeLimitNotice";
 import UpdateAssignees from "./UpdateAssignees";
 
 export default function UpdateAssigneesDialog() {
@@ -73,11 +73,7 @@ export default function UpdateAssigneesDialog() {
     subscription?.priceId,
   );
 
-  // TODO: get from subscription instead of hardcoding based on tier
-  const maxAssignees = match(tier)
-    .with(Tier.Team, Tier.Enterprise, () => Infinity)
-    .with(Tier.Pro, () => 5)
-    .otherwise(() => 1);
+  const maxAssignees = getMaxAssignees(tier);
 
   const defaultAssignees = task?.assignees?.nodes?.map(
     (assignee) => assignee?.user?.identityProviderId!,
@@ -176,11 +172,6 @@ export default function UpdateAssigneesDialog() {
 
           <DialogDescription>
             Update the users assigned to this task.
-            {maxAssignees < Infinity && (
-              <span className="ml-1 text-base-400 text-xs">
-                (max {maxAssignees} on {tier} tier)
-              </span>
-            )}
           </DialogDescription>
 
           <form
@@ -197,6 +188,8 @@ export default function UpdateAssigneesDialog() {
               // pass default assignees instead of relying on form values
               initialAssignees={defaultAssignees}
             />
+
+            <AssigneeLimitNotice tier={tier} maxAssignees={maxAssignees} />
 
             <div className="mt-4 flex justify-end gap-2">
               <DialogCloseTrigger asChild>

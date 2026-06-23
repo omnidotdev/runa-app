@@ -28,7 +28,11 @@ import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
+import pricesOptions from "@/lib/options/prices.options";
+import subscriptionOptions from "@/lib/options/subscription.options";
+import { getMaxAssignees, getTierFromSubscription } from "@/lib/types/tier";
 import { cn } from "@/lib/utils";
+import AssigneeLimitNotice from "./AssigneeLimitNotice";
 
 const CreateTaskAssignees = withForm({
   defaultValues: taskFormDefaults,
@@ -47,6 +51,18 @@ const CreateTaskAssignees = withForm({
     });
 
     const users = membersData?.data ?? [];
+
+    const { data: subscription } = useQuery({
+      ...subscriptionOptions(organizationId!),
+      enabled: !!organizationId,
+    });
+    const { data: prices } = useQuery({ ...pricesOptions() });
+    const tier = getTierFromSubscription(
+      subscription,
+      prices,
+      subscription?.priceId,
+    );
+    const maxAssignees = getMaxAssignees(tier);
 
     const field = useField({ form, name: "assignees" });
 
@@ -70,18 +86,23 @@ const CreateTaskAssignees = withForm({
       multiple: true,
       value: field.state.value.length ? field.state.value : ["none"],
       onValueChange: ({ value }) => {
+        if (!value.length) {
+          field.clearValues();
+          return;
+        }
+
         const noneIndex = value.indexOf("none");
         const lastIndex = value.length - 1;
 
-        value.length
-          ? field.setValue(
-              noneIndex !== -1 && noneIndex === lastIndex
-                ? ["none"]
-                : noneIndex !== -1
-                  ? value.filter((v) => v !== "none")
-                  : value,
-            )
-          : field.clearValues();
+        // Selecting "No Assignees" last clears; otherwise drop the sentinel.
+        const next =
+          noneIndex !== -1 && noneIndex === lastIndex
+            ? ["none"]
+            : value.filter((v) => v !== "none");
+
+        // Enforce the tier's per-task assignee cap (also enforced server-side);
+        // selections beyond the limit are ignored.
+        field.setValue(next[0] === "none" ? next : next.slice(0, maxAssignees));
       },
       loopFocus: true,
     });
@@ -159,6 +180,13 @@ const CreateTaskAssignees = withForm({
                     );
                   })}
                 </SelectItemGroup>
+
+                <div className="border-t p-2">
+                  <AssigneeLimitNotice
+                    tier={tier}
+                    maxAssignees={maxAssignees}
+                  />
+                </div>
               </SelectContent>
             </SelectPositioner>
           </SelectRootProvider>

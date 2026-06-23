@@ -2,7 +2,6 @@ import { useFilter, useListCollection } from "@ark-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { SearchIcon } from "lucide-react";
-import { match } from "ts-pattern";
 
 import {
   AvatarFallback,
@@ -25,8 +24,9 @@ import organizationMembersOptions from "@/lib/options/organizationMembers.option
 import pricesOptions from "@/lib/options/prices.options";
 import subscriptionOptions from "@/lib/options/subscription.options";
 import taskOptions from "@/lib/options/task.options";
-import { Tier, getTierFromSubscription } from "@/lib/types/tier";
+import { getMaxAssignees, getTierFromSubscription } from "@/lib/types/tier";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import AssigneeLimitNotice from "./AssigneeLimitNotice";
 import AssigneeList from "./AssigneeList";
 import { PropertyTrigger, PropertyValue } from "./propertyRow";
 
@@ -116,10 +116,7 @@ const AssigneesEditor = ({
     subscription?.priceId,
   );
 
-  const maxAssignees = match(tier)
-    .with(Tier.Team, Tier.Enterprise, () => Number.POSITIVE_INFINITY)
-    .with(Tier.Pro, () => 5)
-    .otherwise(() => 1);
+  const maxAssignees = getMaxAssignees(tier);
 
   const members = membersData?.data ?? [];
 
@@ -211,6 +208,8 @@ const AssigneesEditor = ({
                 onToggle={handleToggle}
               />
             )}
+
+            <AssigneeLimitNotice tier={tier} maxAssignees={maxAssignees} />
           </div>
         </PopoverContent>
       </PopoverPositioner>

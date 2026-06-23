@@ -26,7 +26,7 @@ type ViewMode = "grid" | "list";
 const UpdateAssignees = withForm({
   defaultValues: taskFormDefaults,
   props: {
-    maxAssignees: 1 as number,
+    maxAssignees: 2 as number,
     initialAssignees: [] as string[] | undefined,
   },
   render: ({ form, maxAssignees, initialAssignees }) => {
