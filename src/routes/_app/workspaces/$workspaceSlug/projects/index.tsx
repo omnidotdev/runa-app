@@ -113,7 +113,7 @@ function ProjectsOverviewPage() {
   const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
-  const maxProjectsReached = useMaxProjectsReached();
+  const maxProjectsReached = useMaxProjectsReached(organizationId);
 
   const projectsVariables = useMemo(
     () => ({ organizationId, search, userId: session?.user?.rowId }),

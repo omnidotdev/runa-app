@@ -64,7 +64,7 @@ const AppSidebarProjectList = () => {
     type: DialogType.CreateProject,
   });
 
-  const maxProjectsReached = useMaxProjectsReached();
+  const maxProjectsReached = useMaxProjectsReached(organizationId);
   // Get role from IDP organization claims
   const role = useCurrentUserRole(organizationId);
   const isMember = organizationId == null || role === Role.Member;

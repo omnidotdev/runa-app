@@ -40,7 +40,7 @@ const List = ({ projects }: Props) => {
   const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
-  const maxProjectsReached = useMaxProjectsReached();
+  const maxProjectsReached = useMaxProjectsReached(organizationId);
 
   const { data: projectColumns } = useQuery({
     ...projectColumnsOptions({ organizationId, search }),

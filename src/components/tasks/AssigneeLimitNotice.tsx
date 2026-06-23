@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { PlanLimitNotice } from "@/components/core";
 
 import type { Tier } from "@/lib/types/tier";
 
@@ -16,16 +16,11 @@ const AssigneeLimitNotice = ({ tier, maxAssignees }: Props) => {
   if (!Number.isFinite(maxAssignees)) return null;
 
   return (
-    <p className="px-1 text-base-500 text-xs">
-      Your {tier} plan allows {maxAssignees} assignee
-      {maxAssignees === 1 ? "" : "s"} per task.{" "}
-      <Link
-        to="/pricing"
-        className="text-primary underline-offset-2 hover:underline"
-      >
-        Upgrade for more
-      </Link>
-    </p>
+    <PlanLimitNotice
+      message={`Your ${tier} plan allows ${maxAssignees} assignee${
+        maxAssignees === 1 ? "" : "s"
+      } per task.`}
+    />
   );
 };
 

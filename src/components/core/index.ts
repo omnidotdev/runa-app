@@ -14,6 +14,7 @@ export { default as IconSelector } from "./IconSelector";
 export { default as Label } from "./Label";
 export { default as LabelIcon } from "./LabelIcon";
 export { default as Link } from "./Link";
+export { default as PlanLimitNotice } from "./PlanLimitNotice";
 export { default as PrioritySelector } from "./PrioritySelector";
 export { type EditorApi, default as RichTextEditor } from "./RichTextEditor";
 export { default as Shortcut } from "./Shortcut";

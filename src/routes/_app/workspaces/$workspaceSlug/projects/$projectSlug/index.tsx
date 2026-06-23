@@ -501,7 +501,7 @@ function AuthenticatedProjectPage() {
     type: DialogType.CreateTask,
   });
 
-  const maxTasksReached = useMaxTasksReached();
+  const maxTasksReached = useMaxTasksReached(organizationId);
 
   useHotkeys(
     Hotkeys.CreateTask,

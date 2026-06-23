@@ -82,7 +82,7 @@ const Projects = () => {
   const currentUserRole = useCurrentUserRole(organizationId);
   const canManageProjects = currentUserRole && isAdminOrOwner(currentUserRole);
 
-  const maxProjectsReached = useMaxProjectsReached();
+  const maxProjectsReached = useMaxProjectsReached(organizationId);
 
   const { mutateAsync: deleteProject } = useDeleteProjectMutation({
     meta: {

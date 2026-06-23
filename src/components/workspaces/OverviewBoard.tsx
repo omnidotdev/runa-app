@@ -66,7 +66,7 @@ const OverviewBoard = ({ projects }: Props) => {
   const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
 
-  const maxProjectsReached = useMaxProjectsReached();
+  const maxProjectsReached = useMaxProjectsReached(organizationId);
 
   const { data: projectColumns } = useSuspenseQuery({
     ...projectColumnsOptions({ organizationId, search }),

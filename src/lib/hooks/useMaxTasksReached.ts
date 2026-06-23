@@ -1,14 +1,39 @@
+import { useQuery } from "@tanstack/react-query";
+
+import { hasBilling } from "@/lib/config/env.config";
+import useTier from "@/lib/hooks/useTier";
+import projectsOptions from "@/lib/options/projects.options";
+import { getMaxTasks } from "@/lib/types/tier";
+
 /**
- * Hook to check if maximum tasks limit is reached.
+ * Whether a workspace has reached its plan's task limit.
  *
- * Limit enforcement is handled server-side via Aether entitlements.
- * This hook is kept for API compatibility but always returns false.
- * The server will return an error if the limit is exceeded.
+ * The task limit is workspace-wide (summed across every project), so the count
+ * is derived from the workspace project list rather than a single project. The
+ * server (runa-api) is authoritative and rejects mutations that exceed the
+ * limit; this hook drives the in-app upgrade affordances (disabled create
+ * buttons, tooltips). The limit mirrors the omni-api catalog SSOT via
+ * `getMaxTasks`. Gating is a no-op when billing is not configured.
  */
-const useMaxTasksReached = () => {
-  // Limits are enforced server-side via Aether entitlements
-  // The server will reject mutations that exceed limits
-  return false;
+const useMaxTasksReached = (organizationId?: string): boolean => {
+  const tier = useTier(organizationId);
+
+  const { data: taskCount } = useQuery({
+    ...projectsOptions({ organizationId: organizationId! }),
+    enabled: !!organizationId,
+    select: (data) =>
+      (data?.projects?.nodes ?? []).reduce(
+        (total, project) => total + (project.allTasks.totalCount ?? 0),
+        0,
+      ),
+  });
+
+  if (!hasBilling || !organizationId) return false;
+
+  const maxTasks = getMaxTasks(tier);
+  if (!Number.isFinite(maxTasks)) return false;
+
+  return (taskCount ?? 0) >= maxTasks;
 };
 
 export default useMaxTasksReached;

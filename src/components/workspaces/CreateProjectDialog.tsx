@@ -55,7 +55,7 @@ const CreateProjectDialog = () => {
   const currentUserRole = useCurrentUserRole(organizationId);
   const isMember = !organizationId || currentUserRole === Role.Member;
 
-  const maxProjectsReached = useMaxProjectsReached();
+  const maxProjectsReached = useMaxProjectsReached(organizationId);
 
   const { data: projects } = useQuery({
     ...projectsOptions({ organizationId: organizationId! }),

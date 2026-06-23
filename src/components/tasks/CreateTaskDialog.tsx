@@ -39,7 +39,7 @@ import CreateTaskPriority from "./CreateTaskPriority";
 import TaskColumnForm from "./TaskColumnForm";
 
 const CreateTaskDialog = () => {
-  const { projectId } = useLoaderData({
+  const { projectId, organizationId } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
@@ -73,7 +73,7 @@ const CreateTaskDialog = () => {
   const { columnId, setColumnId, pendingTitle, setPendingTitle } =
     useTaskStore();
 
-  const maxTasksReached = useMaxTasksReached();
+  const maxTasksReached = useMaxTasksReached(organizationId);
 
   const { isOpen: isCreateTaskOpen, setIsOpen: setIsCreateTaskOpen } =
     useDialogStore({

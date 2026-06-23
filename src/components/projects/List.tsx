@@ -49,7 +49,7 @@ const List = ({
     );
   }, [tasks]);
 
-  const { projectId } = useLoaderData({
+  const { projectId, organizationId } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
   });
 
@@ -87,7 +87,7 @@ const List = ({
     }),
   });
 
-  const maxTasksReached = useMaxTasksReached();
+  const maxTasksReached = useMaxTasksReached(organizationId);
 
   return (
     <div
