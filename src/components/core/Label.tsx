@@ -1,5 +1,3 @@
-import { useColorPicker } from "@ark-ui/react/color-picker";
-
 import LabelIcon from "@/components/core/LabelIcon";
 import { Badge } from "@/components/ui/badge";
 import { parseColor } from "@/components/ui/color-picker";
@@ -16,12 +14,14 @@ const Label = ({ label }: Props) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  const colorPicker = useColorPicker({
-    value: parseColor(label.color),
-  });
+  // Parse the stored color directly rather than through Ark's `useColorPicker`
+  // machine. As a controlled value with no `onValueChange`, the machine reset
+  // to its default (white) once it started after hydration, so labels rendered
+  // white-on-white (invisible) the moment the loading state cleared
+  const color = parseColor(label.color);
 
   const { backgroundColor, textColor } = getLabelColors(
-    colorPicker.value.toString("rgb"),
+    color.toString("rgb"),
     isDark,
   );
 
@@ -40,7 +40,7 @@ const Label = ({ label }: Props) => {
           icon={label.icon}
           className="size-2.5!"
           style={{
-            color: isDark ? textColor : colorPicker.value.toString("css"),
+            color: isDark ? textColor : color.toString("css"),
           }}
         />
         <span className="font-medium text-[10px]">{label.name}</span>
