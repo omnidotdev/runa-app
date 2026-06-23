@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 import { Badge } from "../ui/badge";
+import Logo from "./Logo";
 
 const AppSidebarHeader = () => {
   const { workspaceSlug } = useParams({ strict: false });
@@ -58,7 +59,7 @@ const AppSidebarHeader = () => {
             className="cursor-pointer border border-transparent focus-visible:border focus-visible:border-primary focus-visible:ring-0! focus-visible:ring-offset-0"
             aria-label="Toggle sidebar"
           >
-            <span>🌙</span>
+            <Logo aria-hidden className="size-5 text-primary-500" />
           </SidebarMenuButton>
 
           <span className="font-semibold group-data-[collapsible=icon]:hidden">
