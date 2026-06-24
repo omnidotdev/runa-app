@@ -32,6 +32,7 @@ import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import { keyBetween } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { submitOnEnter, submitOnModEnter } from "@/lib/util/submitOnEnter";
 import CreateTaskAssignees from "./CreateTaskAssignees";
 import CreateTaskDatePicker from "./CreateTaskDatePicker";
 import CreateTaskLabels from "./CreateTaskLabels";
@@ -255,6 +256,7 @@ const CreateTaskDialog = () => {
               e.stopPropagation();
               form.handleSubmit();
             }}
+            onKeyDown={submitOnModEnter(() => form.handleSubmit())}
             className="flex w-full flex-1 flex-col gap-2"
           >
             {/* Tasks properties */}
@@ -279,6 +281,7 @@ const CreateTaskDialog = () => {
                   placeholder="Task title..."
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
+                  onKeyDown={submitOnEnter(() => form.handleSubmit())}
                 />
               )}
             </form.Field>

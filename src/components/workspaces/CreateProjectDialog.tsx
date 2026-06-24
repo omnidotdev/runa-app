@@ -35,6 +35,7 @@ import generatePrefix from "@/lib/util/generatePrefix";
 import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import resolveProjectColumnId from "@/lib/util/resolveProjectColumnId";
+import { submitOnEnter, submitOnModEnter } from "@/lib/util/submitOnEnter";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
 const CreateProjectDialog = () => {
@@ -215,6 +216,7 @@ const CreateProjectDialog = () => {
               e.stopPropagation();
               await form.handleSubmit();
             }}
+            onKeyDown={submitOnModEnter(() => form.handleSubmit())}
             className="flex flex-col gap-2"
           >
             <form.Field name="name">
@@ -226,6 +228,7 @@ const CreateProjectDialog = () => {
                     type="text"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
+                    onKeyDown={submitOnEnter(() => form.handleSubmit())}
                     placeholder="Project Name"
                     autoComplete="off"
                   />
