@@ -7,7 +7,7 @@ import {
   SlidersHorizontalIcon,
   Trash2Icon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useDebounceCallback } from "usehooks-ts";
 
@@ -45,6 +45,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { buildTaskKey, parseTaskParam, stripMarkup } from "@/lib/util/taskUrl";
 
+import type { EditorApi } from "@/components/core";
 import type { TaskQuery } from "@/generated/graphql";
 
 export const Route = createFileRoute(
@@ -236,6 +237,9 @@ function AuthenticatedTaskPage() {
 
   const matches = useViewportSize({ breakpoint: Breakpoint.Large });
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
+
+  // shared handle so the empty-state prompt can focus the comment composer
+  const commentEditorApi = useRef<EditorApi | null>(null);
 
   // Get role from IDP organization claims
   const role = useCurrentUserRole(organizationId);
@@ -430,8 +434,8 @@ function AuthenticatedTaskPage() {
             organizationId={organizationId}
             editable={canEdit}
           />
-          <Comments />
-          <CreateComment />
+          <Comments onAddComment={() => commentEditorApi.current?.focus()} />
+          <CreateComment editorApi={commentEditorApi} />
         </div>
 
         <aside className="hidden lg:block">
