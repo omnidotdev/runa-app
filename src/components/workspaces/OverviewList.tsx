@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useSearch } from "@tanstack/react-router";
 
 import { ColumnTrigger } from "@/components/core";
+import { Button } from "@/components/ui/button";
 import {
   CollapsibleContent,
   CollapsibleRoot,
@@ -102,14 +103,31 @@ const List = ({ projects }: Props) => {
                   )}
                 >
                   {columnProjects(column.rowId).length === 0 ? (
-                    <p
-                      className={cn(
-                        "ml-2 p-2 text-muted-foreground text-xs",
-                        snapshot.isDraggingOver && "hidden",
-                      )}
-                    >
-                      No projects
-                    </p>
+                    isMember ? (
+                      <p
+                        className={cn(
+                          "ml-2 p-2 text-muted-foreground text-xs",
+                          snapshot.isDraggingOver && "hidden",
+                        )}
+                      >
+                        No projects
+                      </p>
+                    ) : (
+                      <Button
+                        variant="link"
+                        className={cn(
+                          "ml-2 h-auto justify-start p-2 text-xs",
+                          snapshot.isDraggingOver && "hidden",
+                        )}
+                        disabled={maxProjectsReached}
+                        onClick={() => {
+                          setProjectColumnId(column.rowId);
+                          setIsCreateProjectDialogOpen(true);
+                        }}
+                      >
+                        Create a project
+                      </Button>
+                    )
                   ) : (
                     columnProjects(column.rowId).map((project, index) => (
                       <Draggable

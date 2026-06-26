@@ -385,7 +385,18 @@ const ProjectColumnsForm = () => {
           </DndContext>
         ) : showEmptyState ? (
           <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
-            No project columns
+            {isMember ? (
+              "No project columns"
+            ) : (
+              <Button
+                variant="link"
+                className="h-auto p-0 text-sm"
+                onClick={handleCreateNewColumn}
+                disabled={activeColumnId !== null}
+              >
+                Create your first column
+              </Button>
+            )}
           </div>
         ) : null}
       </div>

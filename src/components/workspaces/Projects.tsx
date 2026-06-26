@@ -248,9 +248,20 @@ const Projects = () => {
           </div>
         ) : (
           <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
-            {!projectColumns.length
-              ? "Please create workspace columns first"
-              : "No workspace projects"}
+            {!projectColumns.length ? (
+              "Please create workspace columns first"
+            ) : canManageProjects ? (
+              <Button
+                variant="link"
+                className="h-auto p-0 text-sm"
+                disabled={maxProjectsReached}
+                onClick={() => setIsCreateProjectOpen(true)}
+              >
+                Create your first project
+              </Button>
+            ) : (
+              "No workspace projects"
+            )}
           </div>
         )}
       </div>
