@@ -36,7 +36,12 @@ import CommentEmojiPicker from "./CommentEmojiPicker";
 import PostEmojis from "./PostEmojis";
 import UpdateCommentForm from "./UpdateCommentForm";
 
-const Comments = () => {
+interface CommentsProps {
+  /** Focus the comment composer rendered below the list */
+  onAddComment?: () => void;
+}
+
+const Comments = ({ onAddComment }: CommentsProps) => {
   const { taskId } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
@@ -207,7 +212,14 @@ const Comments = () => {
             </div>
           ) : (
             <p className="mx-auto flex place-self-center p-4 text-muted-foreground text-sm">
-              Add a comment to start the discussion
+              <Button
+                variant="link"
+                className="h-auto p-0 align-baseline text-sm"
+                onClick={onAddComment}
+              >
+                Add a comment
+              </Button>
+              <span className="ml-1">to start the discussion</span>
             </p>
           )}
         </CardContent>

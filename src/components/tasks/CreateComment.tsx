@@ -8,10 +8,19 @@ import { useCreatePostMutation } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
 
+import type { RefObject } from "react";
 import type { EditorApi } from "@/components/core";
 
-const CreateComment = () => {
-  const editorApi = useRef<EditorApi | null>(null);
+interface CreateCommentProps {
+  /** Shared editor handle so siblings can focus the composer */
+  editorApi?: RefObject<EditorApi | null>;
+}
+
+const CreateComment = ({
+  editorApi: externalEditorApi,
+}: CreateCommentProps) => {
+  const internalEditorApi = useRef<EditorApi | null>(null);
+  const editorApi = externalEditorApi ?? internalEditorApi;
   const { taskId } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });

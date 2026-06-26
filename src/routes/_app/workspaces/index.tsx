@@ -53,9 +53,21 @@ function WorkspacesOverviewPage() {
           <LayersIcon className="size-12 text-base-500 dark:text-base-400" />
 
           <h1 className="text-pretty text-center font-semibold text-2xl text-base-900 dark:text-base-100">
-            {organizations.length
-              ? "Select a workspace"
-              : "Create a workspace to get started"}
+            {organizations.length ? (
+              "Select a workspace"
+            ) : AUTH_BASE_URL ? (
+              <>
+                <a
+                  href={AUTH_BASE_URL}
+                  className="text-primary hover:underline"
+                >
+                  Create a workspace
+                </a>{" "}
+                to get started
+              </>
+            ) : (
+              "Create a workspace to get started"
+            )}
           </h1>
         </div>
       </div>
