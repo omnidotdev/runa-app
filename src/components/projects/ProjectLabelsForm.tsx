@@ -103,7 +103,18 @@ const ProjectLabelsForm = () => {
         </div>
       ) : showEmptyState ? (
         <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
-          No project labels
+          {isMember ? (
+            "No project labels"
+          ) : (
+            <Button
+              variant="link"
+              className="h-auto p-0 text-sm"
+              onClick={handleCreateNewLabel}
+              disabled={activeLabelId !== null}
+            >
+              Create your first label
+            </Button>
+          )}
         </div>
       ) : null}
     </div>

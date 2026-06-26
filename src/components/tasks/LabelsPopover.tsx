@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData } from "@tanstack/react-router";
 import { CheckIcon, PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { ColorSelector, Label } from "@/components/core";
 import { Button } from "@/components/ui/button";
@@ -75,6 +75,7 @@ const LabelsEditor = ({
   const role = useCurrentUserRole(organizationId);
   const canCreate = role !== Role.Member;
 
+  const inputRef = useRef<HTMLInputElement>(null);
   const [newLabel, setNewLabel] = useState({ name: "", color: "blue" });
 
   const { data: labels = [] } = useQuery({
@@ -150,6 +151,7 @@ const LabelsEditor = ({
                 />
 
                 <Input
+                  ref={inputRef}
                   autoComplete="off"
                   className="h-8 border-0 px-2 text-sm shadow-none"
                   placeholder="Create a label…"
@@ -214,6 +216,14 @@ const LabelsEditor = ({
                   );
                 })}
               </div>
+            ) : canCreate ? (
+              <Button
+                variant="link"
+                className="h-auto justify-center py-4 text-xs"
+                onClick={() => inputRef.current?.focus()}
+              >
+                Create your first label
+              </Button>
             ) : (
               <p className="py-4 text-center text-muted-foreground text-xs">
                 No labels yet

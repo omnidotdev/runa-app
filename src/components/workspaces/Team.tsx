@@ -323,7 +323,20 @@ const Team = () => {
           </div>
         ) : (
           <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
-            No team members
+            {canInvite && orgSlug && AUTH_BASE_URL ? (
+              <ManageTeamLink
+                identityBaseUrl={AUTH_BASE_URL}
+                orgSlug={orgSlug}
+                className={cn(
+                  buttonVariants({ variant: "link" }),
+                  "h-auto p-0 text-sm",
+                )}
+              >
+                Invite your first team member
+              </ManageTeamLink>
+            ) : (
+              "No team members"
+            )}
           </div>
         )}
       </div>
