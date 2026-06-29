@@ -57,7 +57,7 @@ const List = ({ projects }: Props) => {
   });
 
   return (
-    <div className="custom-scrollbar h-full overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/20">
+    <div className="custom-scrollbar h-full overflow-y-auto bg-base-100/50 p-4 dark:bg-base-900/20">
       {projectColumns?.map((column) => (
         <CollapsibleRoot
           key={column.rowId}

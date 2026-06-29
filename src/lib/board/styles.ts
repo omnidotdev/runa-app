@@ -6,7 +6,7 @@
 /** Board container styles */
 export const boardContainerStyles = {
   base: "custom-scrollbar h-full cursor-grab select-none overflow-x-auto",
-  background: "bg-primary-100/30 dark:bg-primary-950/15",
+  background: "bg-base-100/50 dark:bg-base-900/20",
 } as const;
 
 /** Board column styles */

@@ -91,7 +91,7 @@ const List = ({
 
   return (
     <div
-      className="custom-scrollbar h-full overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/20"
+      className="custom-scrollbar h-full overflow-y-auto bg-base-100/50 p-4 dark:bg-base-900/20"
       style={{
         backgroundColor: project?.color
           ? theme === "dark"

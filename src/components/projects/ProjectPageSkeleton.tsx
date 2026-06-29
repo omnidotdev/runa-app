@@ -30,7 +30,7 @@ const ProjectPageSkeleton = () => (
       </div>
 
       {/* Board area - matches bg and padding */}
-      <div className="h-full overflow-hidden bg-primary-100/30 dark:bg-primary-950/15">
+      <div className="h-full overflow-hidden bg-base-100/50 dark:bg-base-900/20">
         <div className="h-full min-w-fit p-4">
           <div className="flex h-full gap-3">
             {/* Render 4 column skeletons */}

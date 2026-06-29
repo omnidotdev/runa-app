@@ -264,7 +264,7 @@ const DemoBoard = () => {
         {viewMode === "board" ? (
           <div
             ref={scrollContainerRef}
-            className="custom-scrollbar max-w-full cursor-grab overflow-x-auto bg-primary-100/30 dark:bg-primary-950/15"
+            className="custom-scrollbar max-w-full cursor-grab overflow-x-auto bg-base-100/50 dark:bg-base-900/20"
             style={{ height: BOARD_HEIGHT }}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
@@ -326,7 +326,7 @@ const DemoBoard = () => {
           </div>
         ) : (
           <div
-            className="custom-scrollbar overflow-y-auto bg-primary-100/30 p-4 dark:bg-primary-950/15"
+            className="custom-scrollbar overflow-y-auto bg-base-100/50 p-4 dark:bg-base-900/20"
             style={{ height: BOARD_HEIGHT }}
           >
             {demoColumns.map((column, index) => {
