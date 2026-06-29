@@ -1,4 +1,5 @@
 import { Badge } from "@omnidotdev/thornberry/badge";
+import { LogoLockup } from "@omnidotdev/thornberry/logo-lockup";
 import {
   useLocation,
   useNavigate,
@@ -59,12 +60,12 @@ const AppSidebarHeader = () => {
             className="cursor-pointer border border-transparent focus-visible:border focus-visible:border-primary focus-visible:ring-0! focus-visible:ring-offset-0"
             aria-label="Toggle sidebar"
           >
-            <Logo aria-hidden className="size-5 text-primary-500" />
+            <LogoLockup
+              logo={<Logo aria-hidden className="size-5 text-primary-500" />}
+              name={app.name}
+              nameClassName="group-data-[collapsible=icon]:hidden"
+            />
           </SidebarMenuButton>
-
-          <span className="font-semibold group-data-[collapsible=icon]:hidden">
-            {app.name}
-          </span>
         </div>
 
         <Badge className="ml-auto border-primary-500/20 bg-primary-500/10 text-primary-500 text-xs group-data-[collapsible=icon]:hidden">
