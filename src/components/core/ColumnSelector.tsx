@@ -1,8 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
-
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -14,7 +9,12 @@ import {
   SelectPositioner,
   SelectTrigger,
   createListCollection,
-} from "@/components/ui/select";
+} from "@omnidotdev/thornberry/select";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+
+import { Button } from "@/components/ui/button";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectOptions from "@/lib/options/project.options";
 import LabelIcon from "./LabelIcon";

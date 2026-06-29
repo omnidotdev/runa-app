@@ -1,3 +1,4 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import {
@@ -9,7 +10,6 @@ import {
 import { useRef, useState } from "react";
 
 import { Assignees, Label, RichTextEditor, Tooltip } from "@/components/core";
-import { Badge } from "@/components/ui/badge";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";

@@ -1,10 +1,10 @@
-import { CheckIcon } from "lucide-react";
-
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
-} from "@/components/ui/avatar";
+} from "@omnidotdev/thornberry/avatar";
+import { CheckIcon } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 import type { WorkspaceUser } from "./UpdateAssignees";

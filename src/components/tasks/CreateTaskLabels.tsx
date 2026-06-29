@@ -1,3 +1,4 @@
+import { parseColor } from "@omnidotdev/thornberry/color-picker";
 import { useField, useStore } from "@tanstack/react-form";
 import { PlusIcon, TagIcon } from "lucide-react";
 import { useId, useState } from "react";
@@ -5,7 +6,6 @@ import { useHotkeys } from "react-hotkeys-hook";
 
 import { ColorSelector, Shortcut, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
-import { parseColor } from "@/components/ui/color-picker";
 import { Input } from "@/components/ui/input";
 import {
   MenuCheckboxItem,

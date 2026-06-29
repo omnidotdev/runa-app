@@ -1,8 +1,3 @@
-import { useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
-
-import { PriorityIcon } from "@/components/tasks";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -14,7 +9,12 @@ import {
   SelectPositioner,
   SelectTrigger,
   createListCollection,
-} from "@/components/ui/select";
+} from "@omnidotdev/thornberry/select";
+import { useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+
+import { PriorityIcon } from "@/components/tasks";
+import { Button } from "@/components/ui/button";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import Shortcut from "./Shortcut";

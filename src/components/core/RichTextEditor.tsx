@@ -1,7 +1,7 @@
+import { Skeleton } from "@omnidotdev/thornberry/skeleton";
 import { ClientOnly } from "@tanstack/react-router";
 import { Suspense, lazy } from "react";
 
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 import type { EditorApi, RichTextEditorProps } from "./RichTextEditorImpl";

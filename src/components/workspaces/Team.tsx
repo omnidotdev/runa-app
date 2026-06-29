@@ -1,4 +1,10 @@
 import { ManageTeamLink } from "@omnidotdev/providers/react";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@omnidotdev/thornberry/avatar";
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import {
@@ -14,12 +20,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { DestructiveActionDialog, Tooltip } from "@/components/core";
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DialogBackdrop,

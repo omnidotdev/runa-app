@@ -1,11 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
-} from "@/components/ui/avatar";
+} from "@omnidotdev/thornberry/avatar";
+import { useQuery } from "@tanstack/react-query";
+import { useLoaderData, useRouteContext } from "@tanstack/react-router";
+
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import getUserColor from "@/lib/util/getUserColor";
 import { cn } from "@/lib/utils";

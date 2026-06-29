@@ -1,11 +1,12 @@
-import LabelIcon from "@/components/core/LabelIcon";
 import {
   Board,
   BoardColumn,
   BoardColumnBody,
   BoardColumnEmpty,
   BoardColumnHeader,
-} from "@/components/ui/board";
+} from "@omnidotdev/thornberry/board";
+
+import LabelIcon from "@/components/core/LabelIcon";
 import { API_BASE_URL } from "@/lib/config/env.config";
 import { resolveBackgroundStyle } from "@/lib/constants/backgrounds";
 import { cn } from "@/lib/utils";

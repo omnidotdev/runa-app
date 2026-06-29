@@ -1,10 +1,10 @@
 import { Droppable } from "@hello-pangea/dnd";
+import { useInertialScroll } from "@omnidotdev/thornberry/board";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { useMemo } from "react";
 
 import { ColumnHeader } from "@/components/core";
-import { useInertialScroll } from "@/components/ui/board";
 import {
   boardColumnStyles,
   boardContainerStyles,

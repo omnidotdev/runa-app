@@ -1,24 +1,24 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
-import { SearchIcon, XIcon, icons } from "lucide-react";
-import { useMemo, useState } from "react";
-
-import LabelIcon from "@/components/core/LabelIcon";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   PopoverContent,
   PopoverPositioner,
   PopoverRoot,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@omnidotdev/thornberry/popover";
 import {
   TabsContent,
   TabsIndicator,
   TabsList,
   TabsRoot,
   TabsTrigger,
-} from "@/components/ui/tabs";
+} from "@omnidotdev/thornberry/tabs";
+import { SearchIcon, XIcon, icons } from "lucide-react";
+import { useMemo, useState } from "react";
+
+import LabelIcon from "@/components/core/LabelIcon";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import parseIcon from "@/lib/util/parseIcon";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";

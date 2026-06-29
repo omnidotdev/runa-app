@@ -1,12 +1,12 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { ExternalLinkIcon, InfoIcon, LayersIcon } from "lucide-react";
-
-import { Link } from "@/components/core";
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
-} from "@/components/ui/avatar";
+} from "@omnidotdev/thornberry/avatar";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { ExternalLinkIcon, InfoIcon, LayersIcon } from "lucide-react";
+
+import { Link } from "@/components/core";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { useOrganization } from "@/providers/OrganizationProvider";

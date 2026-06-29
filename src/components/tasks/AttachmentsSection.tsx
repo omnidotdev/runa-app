@@ -1,10 +1,10 @@
+import { CardContent, CardHeader, CardRoot } from "@omnidotdev/thornberry/card";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { DownloadIcon, FileIcon, Trash2Icon, UploadIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import useTier from "@/lib/hooks/useTier";
 import { formatFileSize, validateFile } from "@/lib/media/mediaConfig";
 import {

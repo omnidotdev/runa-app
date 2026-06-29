@@ -1,6 +1,5 @@
+import { CardContent, CardRoot } from "@omnidotdev/thornberry/card";
 import { Settings } from "lucide-react";
-
-import { CardContent, CardRoot } from "@/components/ui/card";
 
 const CustomizationTab = () => {
   return (

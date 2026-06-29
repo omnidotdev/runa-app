@@ -1,3 +1,9 @@
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@omnidotdev/thornberry/avatar";
+import { CardContent, CardHeader, CardRoot } from "@omnidotdev/thornberry/card";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import dayjs from "dayjs";
@@ -5,13 +11,7 @@ import { MoreHorizontalIcon, PenLineIcon, Trash2Icon } from "lucide-react";
 import { Suspense, useEffect, useRef, useState } from "react";
 
 import { RichTextEditor } from "@/components/core";
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardHeader, CardRoot } from "@/components/ui/card";
 import {
   DialogBackdrop,
   DialogCloseTrigger,

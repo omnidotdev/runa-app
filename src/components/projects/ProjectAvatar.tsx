@@ -1,12 +1,12 @@
-import { ImagePlus, Trash2 } from "lucide-react";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
-
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
-} from "@/components/ui/avatar";
+} from "@omnidotdev/thornberry/avatar";
+import { ImagePlus, Trash2 } from "lucide-react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import {
   useProjectQuery,

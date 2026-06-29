@@ -1,5 +1,3 @@
-import { PipetteIcon } from "lucide-react";
-
 import {
   ColorPickerArea,
   ColorPickerAreaBackground,
@@ -22,7 +20,9 @@ import {
   ColorPickerTrigger,
   ColorPickerValueSwatch,
   ColorPickerView,
-} from "@/components/ui/color-picker";
+} from "@omnidotdev/thornberry/color-picker";
+import { PipetteIcon } from "lucide-react";
+
 import { Input } from "@/components/ui/input";
 import { colors } from "@/lib/constants/colors";
 

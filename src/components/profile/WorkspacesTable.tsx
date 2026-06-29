@@ -1,8 +1,4 @@
-import { Building2 } from "lucide-react";
-
-import { Link } from "@/components/core";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@omnidotdev/thornberry/badge";
 import {
   Table,
   TableBody,
@@ -10,7 +6,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@omnidotdev/thornberry/table";
+import { Building2 } from "lucide-react";
+
+import { Link } from "@/components/core";
+import { Button } from "@/components/ui/button";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { Role } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";

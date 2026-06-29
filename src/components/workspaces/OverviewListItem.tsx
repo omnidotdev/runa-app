@@ -1,7 +1,7 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { useNavigate, useParams } from "@tanstack/react-router";
 
 import CircularProgress from "../core/CircularProgress";
-import { Badge } from "../ui/badge";
 
 import type { ProjectsQuery } from "@/generated/graphql";
 

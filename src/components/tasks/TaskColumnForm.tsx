@@ -1,9 +1,9 @@
+import { createListCollection } from "@omnidotdev/thornberry/select";
 import { useStore } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData } from "@tanstack/react-router";
 
 import { ColumnSelector } from "@/components/core";
-import { createListCollection } from "@/components/ui/select";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
 import projectOptions from "@/lib/options/project.options";

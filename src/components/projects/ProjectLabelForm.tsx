@@ -1,17 +1,3 @@
-import { useLoaderData, useNavigate } from "@tanstack/react-router";
-import {
-  CheckIcon,
-  MoreHorizontalIcon,
-  PenLineIcon,
-  PipetteIcon,
-  Trash2Icon,
-  XIcon,
-} from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
-
-import { IconSelector, Tooltip } from "@/components/core";
-import { Button } from "@/components/ui/button";
 import {
   ColorPickerArea,
   ColorPickerAreaBackground,
@@ -35,7 +21,21 @@ import {
   ColorPickerValueSwatch,
   ColorPickerView,
   parseColor,
-} from "@/components/ui/color-picker";
+} from "@omnidotdev/thornberry/color-picker";
+import { useLoaderData, useNavigate } from "@tanstack/react-router";
+import {
+  CheckIcon,
+  MoreHorizontalIcon,
+  PenLineIcon,
+  PipetteIcon,
+  Trash2Icon,
+  XIcon,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+
+import { IconSelector, Tooltip } from "@/components/core";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   MenuContent,

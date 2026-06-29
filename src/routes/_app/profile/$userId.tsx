@@ -1,3 +1,9 @@
+import {
+  TabsContent,
+  TabsList,
+  TabsRoot,
+  TabsTrigger,
+} from "@omnidotdev/thornberry/tabs";
 import { createFileRoute } from "@tanstack/react-router";
 import { LogOut } from "lucide-react";
 
@@ -7,12 +13,6 @@ import {
   WorkspacesTable,
 } from "@/components/profile";
 import { Button } from "@/components/ui/button";
-import {
-  TabsContent,
-  TabsList,
-  TabsRoot,
-  TabsTrigger,
-} from "@/components/ui/tabs";
 import signOut from "@/lib/auth/signOut";
 import { BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";

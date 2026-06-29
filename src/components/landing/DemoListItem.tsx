@@ -1,8 +1,8 @@
 import { Draggable } from "@hello-pangea/dnd";
+import { AvatarFallback, AvatarRoot } from "@omnidotdev/thornberry/avatar";
+import { Badge } from "@omnidotdev/thornberry/badge";
 
 import { PriorityIcon } from "@/components/tasks";
-import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 import type { DemoTask } from "./demoBoardData";

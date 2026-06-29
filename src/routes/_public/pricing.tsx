@@ -1,3 +1,10 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
+import {
+  TabsContent,
+  TabsList,
+  TabsRoot,
+  TabsTrigger,
+} from "@omnidotdev/thornberry/tabs";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
@@ -8,13 +15,6 @@ import {
   AccordionItemTrigger,
   AccordionRoot,
 } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import {
-  TabsContent,
-  TabsList,
-  TabsRoot,
-  TabsTrigger,
-} from "@/components/ui/tabs";
 import { BASE_URL } from "@/lib/config/env.config";
 import { FREE_PRICE as FREE_PRICE_FALLBACK } from "@/lib/constants/tiers";
 import pricesOptions from "@/lib/options/prices.options";

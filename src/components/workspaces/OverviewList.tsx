@@ -1,13 +1,13 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+} from "@omnidotdev/thornberry/collapsible";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useSearch } from "@tanstack/react-router";
 
 import { ColumnTrigger } from "@/components/core";
 import { Button } from "@/components/ui/button";
-import {
-  CollapsibleContent,
-  CollapsibleRoot,
-} from "@/components/ui/collapsible";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";

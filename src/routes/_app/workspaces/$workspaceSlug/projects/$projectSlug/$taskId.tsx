@@ -1,3 +1,8 @@
+import {
+  SheetContent,
+  SheetRoot,
+  SheetTrigger,
+} from "@omnidotdev/thornberry/sheet";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import {
@@ -29,7 +34,6 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { SheetContent, SheetRoot, SheetTrigger } from "@/components/ui/sheet";
 import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";

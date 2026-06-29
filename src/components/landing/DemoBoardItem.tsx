@@ -1,6 +1,7 @@
+import { AvatarFallback, AvatarRoot } from "@omnidotdev/thornberry/avatar";
+import { Badge } from "@omnidotdev/thornberry/badge";
+
 import BoardItemBase from "@/components/projects/BoardItemBase";
-import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 
 import type { DemoTask } from "./demoBoardData";
 

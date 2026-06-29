@@ -1,5 +1,12 @@
 import { ark } from "@ark-ui/react/factory";
 import { TooltipContext } from "@ark-ui/react/tooltip";
+import {
+  SheetContent,
+  SheetDescription,
+  SheetRoot,
+  SheetTitle,
+  SheetTrigger,
+} from "@omnidotdev/thornberry/sheet";
 import { PanelLeftIcon } from "lucide-react";
 import {
   createContext,
@@ -12,13 +19,6 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  SheetContent,
-  SheetDescription,
-  SheetRoot,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import {
   TooltipContent,
   TooltipPositioner,

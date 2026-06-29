@@ -1,4 +1,12 @@
 import { Format } from "@ark-ui/react";
+import {
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardRoot,
+  CardTitle,
+} from "@omnidotdev/thornberry/card";
 import { useMutation } from "@tanstack/react-query";
 import {
   useNavigate,
@@ -10,14 +18,6 @@ import { useState } from "react";
 
 import CreateWorkspaceModal from "@/components/pricing/CreateWorkspaceModal";
 import { Button } from "@/components/ui/button";
-import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardRoot,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   MenuContent,
   MenuItem,

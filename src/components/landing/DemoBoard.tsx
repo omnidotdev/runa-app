@@ -1,4 +1,11 @@
 import { DragDropContext, Droppable } from "@hello-pangea/dnd";
+import { AvatarFallback, AvatarRoot } from "@omnidotdev/thornberry/avatar";
+import { Badge } from "@omnidotdev/thornberry/badge";
+import { useInertialScroll } from "@omnidotdev/thornberry/board";
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+} from "@omnidotdev/thornberry/collapsible";
 import {
   CalendarIcon,
   Grid2X2Icon,
@@ -12,14 +19,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { LabelIcon, Shortcut, Tooltip } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
-import { AvatarFallback, AvatarRoot } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { useInertialScroll } from "@/components/ui/board";
 import { Button } from "@/components/ui/button";
-import {
-  CollapsibleContent,
-  CollapsibleRoot,
-} from "@/components/ui/collapsible";
 import {
   DialogBackdrop,
   DialogCloseTrigger,

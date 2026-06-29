@@ -1,4 +1,6 @@
 // import { useNavigate, useParams } from "@tanstack/react-router";
+
+import { Badge } from "@omnidotdev/thornberry/badge";
 import dayjs from "dayjs";
 import {
   AlignLeftIcon,
@@ -9,7 +11,6 @@ import {
 
 import { Label, RichTextEditor } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
-import { Badge } from "@/components/ui/badge";
 
 import type { LabelFragment, TaskFragment } from "@/generated/graphql";
 

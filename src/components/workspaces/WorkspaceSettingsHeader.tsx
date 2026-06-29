@@ -1,7 +1,7 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { getRouteApi, useCanGoBack, useRouter } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { hasBilling } from "@/lib/config/env.config";
 import { getTierFromSubscription } from "@/lib/types/tier";

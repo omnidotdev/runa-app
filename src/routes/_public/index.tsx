@@ -1,3 +1,4 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import {
   ArrowRightIcon,
@@ -13,7 +14,6 @@ import {
 import { LuGithub as GithubIcon } from "react-icons/lu";
 
 import { Link, TiltCard } from "@/components/core";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";

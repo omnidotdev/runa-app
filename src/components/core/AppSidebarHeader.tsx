@@ -1,3 +1,4 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
 import {
   useLocation,
   useNavigate,
@@ -29,7 +30,6 @@ import { AUTH_BASE_URL, CONSOLE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
-import { Badge } from "../ui/badge";
 import Logo from "./Logo";
 
 const AppSidebarHeader = () => {

@@ -1,3 +1,8 @@
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+  CollapsibleTrigger,
+} from "@omnidotdev/thornberry/collapsible";
 import { useQuery } from "@tanstack/react-query";
 import {
   Link,
@@ -16,11 +21,6 @@ import {
 } from "lucide-react";
 import { useId, useState } from "react";
 
-import {
-  CollapsibleContent,
-  CollapsibleRoot,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import {
   MenuContent,
   MenuItem,

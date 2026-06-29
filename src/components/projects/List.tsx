@@ -1,13 +1,13 @@
 import { Droppable } from "@hello-pangea/dnd";
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+} from "@omnidotdev/thornberry/collapsible";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { useMemo } from "react";
 
 import { ColumnTrigger } from "@/components/core";
-import {
-  CollapsibleContent,
-  CollapsibleRoot,
-} from "@/components/ui/collapsible";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";

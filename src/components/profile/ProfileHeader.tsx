@@ -2,8 +2,8 @@ import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
-} from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+} from "@omnidotdev/thornberry/avatar";
+import { Badge } from "@omnidotdev/thornberry/badge";
 
 interface Props {
   session: {

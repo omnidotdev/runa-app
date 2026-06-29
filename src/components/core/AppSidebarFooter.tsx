@@ -1,4 +1,14 @@
 import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@omnidotdev/thornberry/avatar";
+import {
+  CollapsibleContent,
+  CollapsibleRoot,
+  CollapsibleTrigger,
+} from "@omnidotdev/thornberry/collapsible";
+import {
   Link,
   useLocation,
   useNavigate,
@@ -20,16 +30,6 @@ import { useCallback, useId, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { RiDiscordLine as DiscordIcon } from "react-icons/ri";
 
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@/components/ui/avatar";
-import {
-  CollapsibleContent,
-  CollapsibleRoot,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import {
   MenuContent,
   MenuItem,

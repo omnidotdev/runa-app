@@ -1,7 +1,7 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { DemoBoard } from "@/components/landing";
-import { Badge } from "@/components/ui/badge";
 import app from "@/lib/config/app.config";
 
 export const Route = createFileRoute("/_public/demo")({

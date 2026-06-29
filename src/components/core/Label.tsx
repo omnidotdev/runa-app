@@ -1,6 +1,7 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
+import { parseColor } from "@omnidotdev/thornberry/color-picker";
+
 import LabelIcon from "@/components/core/LabelIcon";
-import { Badge } from "@/components/ui/badge";
-import { parseColor } from "@/components/ui/color-picker";
 import getLabelColors from "@/lib/util/getLabelColors";
 import { useTheme } from "@/providers/ThemeProvider";
 

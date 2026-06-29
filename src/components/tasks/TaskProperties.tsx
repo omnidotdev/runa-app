@@ -1,12 +1,12 @@
-import dayjs from "dayjs";
-
-import { ColumnSelector, PrioritySelector } from "@/components/core";
-import LabelIcon from "@/components/core/LabelIcon";
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
-} from "@/components/ui/avatar";
+} from "@omnidotdev/thornberry/avatar";
+import dayjs from "dayjs";
+
+import { ColumnSelector, PrioritySelector } from "@/components/core";
+import LabelIcon from "@/components/core/LabelIcon";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import AssigneesPopover from "./AssigneesPopover";
 import DueDatePopover from "./DueDatePopover";

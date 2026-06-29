@@ -10,6 +10,7 @@ const app = {
     discord: "https://discord.gg/omnidotdev",
     x: "https://x.com/omnidotdev",
     linkedin: "https://www.linkedin.com/company/omnidotdev",
+    threads: "https://www.threads.com/@omnidotdev",
   },
   links: {
     docs: "https://docs.omni.dev/core/runa",

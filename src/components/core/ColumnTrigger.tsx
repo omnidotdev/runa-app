@@ -1,7 +1,7 @@
+import { CollapsibleTrigger } from "@omnidotdev/thornberry/collapsible";
 import { ChevronRightIcon, PlusIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import LabelIcon from "./LabelIcon";
 import Tooltip from "./Tooltip";

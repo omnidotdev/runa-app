@@ -1,11 +1,11 @@
-import { Link, useLocation, useParams } from "@tanstack/react-router";
-import { ChevronRightIcon, LayersIcon, Settings2Icon } from "lucide-react";
-
 import {
   CollapsibleContent,
   CollapsibleRoot,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+} from "@omnidotdev/thornberry/collapsible";
+import { Link, useLocation, useParams } from "@tanstack/react-router";
+import { ChevronRightIcon, LayersIcon, Settings2Icon } from "lucide-react";
+
 import {
   SidebarContent,
   SidebarGroup,

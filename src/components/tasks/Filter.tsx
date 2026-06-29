@@ -1,4 +1,9 @@
 import { useMenu } from "@ark-ui/react";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@omnidotdev/thornberry/avatar";
 import { useQuery } from "@tanstack/react-query";
 import {
   useLoaderData,
@@ -17,11 +22,6 @@ import { useId, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Shortcut, Tooltip } from "@/components/core";
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   MenuCheckboxItem,

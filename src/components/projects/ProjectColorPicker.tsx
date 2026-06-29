@@ -1,9 +1,3 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useLoaderData } from "@tanstack/react-router";
-import { PipetteIcon } from "lucide-react";
-import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
 import {
   ColorPickerArea,
   ColorPickerAreaBackground,
@@ -27,7 +21,13 @@ import {
   ColorPickerValueSwatch,
   ColorPickerView,
   parseColor,
-} from "@/components/ui/color-picker";
+} from "@omnidotdev/thornberry/color-picker";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useLoaderData } from "@tanstack/react-router";
+import { PipetteIcon } from "lucide-react";
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
 import {
   useProjectQuery,
   useProjectsQuery,

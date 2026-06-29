@@ -1,17 +1,17 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import {
+  PopoverContent,
+  PopoverPositioner,
+  PopoverRoot,
+  PopoverTrigger,
+} from "@omnidotdev/thornberry/popover";
 import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { SmilePlusIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  PopoverContent,
-  PopoverPositioner,
-  PopoverRoot,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   useCreatePostEmojiMutation,
   usePostEmojisQuery,

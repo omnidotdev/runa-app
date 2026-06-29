@@ -1,3 +1,4 @@
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { XIcon as CloseIcon, MenuIcon } from "lucide-react";
 import { useState } from "react";
@@ -7,7 +8,6 @@ import { SiDiscord as DiscordIcon, SiX as XIcon } from "react-icons/si";
 
 import { Link, Logo, ThemeToggle } from "@/components/core";
 import { ShootingStars } from "@/components/landing";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import signOut from "@/lib/auth/signOut";

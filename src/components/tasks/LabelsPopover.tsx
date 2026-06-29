@@ -1,3 +1,10 @@
+import { parseColor } from "@omnidotdev/thornberry/color-picker";
+import {
+  PopoverContent,
+  PopoverPositioner,
+  PopoverRoot,
+  PopoverTrigger,
+} from "@omnidotdev/thornberry/popover";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData } from "@tanstack/react-router";
 import { CheckIcon, PlusIcon } from "lucide-react";
@@ -5,14 +12,7 @@ import { useRef, useState } from "react";
 
 import { ColorSelector, Label } from "@/components/core";
 import { Button } from "@/components/ui/button";
-import { parseColor } from "@/components/ui/color-picker";
 import { Input } from "@/components/ui/input";
-import {
-  PopoverContent,
-  PopoverPositioner,
-  PopoverRoot,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   useCreateLabelMutation,
   useCreateTaskLabelMutation,

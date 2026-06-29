@@ -1,4 +1,5 @@
 import { DragDropContext } from "@hello-pangea/dnd";
+import { Badge } from "@omnidotdev/thornberry/badge";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
@@ -38,7 +39,6 @@ import {
   UpdateTaskLabelsDialog,
 } from "@/components/tasks";
 import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
