@@ -1,6 +1,11 @@
 // import { useNavigate, useParams } from "@tanstack/react-router";
 import dayjs from "dayjs";
-import { AlignLeftIcon, CalendarIcon, MessageCircleIcon } from "lucide-react";
+import {
+  AlignLeftIcon,
+  CalendarIcon,
+  MessageCircleIcon,
+  PaperclipIcon,
+} from "lucide-react";
 
 import { Label, RichTextEditor } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
@@ -91,6 +96,13 @@ const PublicBoardItem = ({ task, displayId }: Props) => {
               <div className="flex items-center gap-0.5">
                 <MessageCircleIcon className="size-3" />
                 <span>{task.posts.totalCount}</span>
+              </div>
+            )}
+
+            {task.attachments.totalCount > 0 && (
+              <div className="flex items-center gap-0.5">
+                <PaperclipIcon className="size-3" />
+                <span>{task.attachments.totalCount}</span>
               </div>
             )}
 

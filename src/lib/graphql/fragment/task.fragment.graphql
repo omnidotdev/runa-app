@@ -29,4 +29,7 @@ fragment Task on Task {
   posts {
     totalCount
   }
+  attachments {
+    totalCount
+  }
 }

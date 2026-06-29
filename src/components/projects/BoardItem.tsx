@@ -1,6 +1,11 @@
 import { useNavigate, useParams } from "@tanstack/react-router";
 import dayjs from "dayjs";
-import { AlignLeftIcon, CalendarIcon, MessageCircleIcon } from "lucide-react";
+import {
+  AlignLeftIcon,
+  CalendarIcon,
+  MessageCircleIcon,
+  PaperclipIcon,
+} from "lucide-react";
 import { useRef, useState } from "react";
 
 import { Assignees, Label, RichTextEditor, Tooltip } from "@/components/core";
@@ -169,6 +174,19 @@ const BoardItem = ({ task, index, displayId }: Props) => {
                   <div className="flex items-center gap-0.5">
                     <MessageCircleIcon className="size-3" />
                     <span>{task.posts.totalCount}</span>
+                  </div>
+                }
+              />
+            )}
+
+            {task.attachments.totalCount > 0 && (
+              <Tooltip
+                positioning={{ placement: "top" }}
+                tooltip={`${task.attachments.totalCount} attachment${task.attachments.totalCount === 1 ? "" : "s"}`}
+                trigger={
+                  <div className="flex items-center gap-0.5">
+                    <PaperclipIcon className="size-3" />
+                    <span>{task.attachments.totalCount}</span>
                   </div>
                 }
               />
