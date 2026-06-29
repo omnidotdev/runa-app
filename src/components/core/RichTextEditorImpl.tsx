@@ -4,17 +4,17 @@ import {
   registerCodeHighlighting,
 } from "@lexical/code";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { RichTextEditor as BaseRichTextEditor } from "@omnidotdev/thornberry/rich-text-editor";
 import { useEffect } from "react";
 
-import { RichTextEditor as BaseRichTextEditor } from "@/components/ui/rich-text-editor";
 import CodeBlockPlugin from "./CodeBlockPlugin";
 import ImagePastePlugin from "./ImagePastePlugin";
 import theme from "./lexical-theme";
 import { ImageNode } from "./nodes/ImageNode";
 
+import type { EditorApi } from "@omnidotdev/thornberry/rich-text-editor";
 import type { LexicalEditor } from "lexical";
 import type { ComponentProps, RefObject } from "react";
-import type { EditorApi } from "@/components/ui/rich-text-editor";
 
 export type { EditorApi };
 
@@ -64,6 +64,7 @@ const RichTextEditorImpl = ({
     {...rest}
     theme={theme}
     enableChecklist
+    toolbarClassName="bg-muted/40"
     extraNodes={[
       CodeNode,
       CodeHighlightNode,
