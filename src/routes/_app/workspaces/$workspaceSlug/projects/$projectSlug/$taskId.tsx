@@ -58,6 +58,7 @@ export const Route = createFileRoute(
   loader: async ({
     params: { taskId: taskParam, workspaceSlug, projectSlug },
     context: { queryClient, organizationId, session },
+    preload,
   }) => {
     if (!organizationId) throw notFound();
 
@@ -107,7 +108,8 @@ export const Route = createFileRoute(
       number: resolved.number,
       content: resolved.content,
     });
-    if (taskParam !== canonicalKey) {
+    // Guard against preload so hovering a legacy/stale task link does not navigate
+    if (!preload && taskParam !== canonicalKey) {
       throw redirect({
         to: "/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
         params: { workspaceSlug, projectSlug, taskId: canonicalKey },

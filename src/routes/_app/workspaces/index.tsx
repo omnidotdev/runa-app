@@ -13,11 +13,14 @@ import { useOrganization } from "@/providers/OrganizationProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 
 export const Route = createFileRoute("/_app/workspaces/")({
-  beforeLoad: async ({ context: { session } }) => {
+  beforeLoad: async ({ context: { session }, preload }) => {
     const organizations = session?.organizations ?? [];
     if (!organizations.length || organizations.length > 1) return;
 
     // Single workspace — skip the picker and go straight to it
+    // Guard against preload so hovering the picker link does not navigate
+    if (preload) return;
+
     const org = organizations[0];
     const slug = org.slug ?? org.id;
 
