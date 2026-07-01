@@ -16,6 +16,7 @@ import { DefaultCatchBoundary } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
 import getClientEnv from "@/lib/config/clientEnv";
+import { BASE_URL } from "@/lib/config/env.config";
 import { fetchMaintenanceMode } from "@/lib/providers";
 import appCss from "@/lib/styles/globals.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
@@ -89,6 +90,16 @@ export const Route = createRootRouteWithContext<{
         // Inject runtime env vars for client-side access
         children: `window.__ENV__=${JSON.stringify(loaderData?.clientEnv ?? {})};`,
       },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: app.name,
+          url: BASE_URL,
+          description: app.description,
+        }),
+      },
     ],
     meta: [
       {
@@ -105,6 +116,7 @@ export const Route = createRootRouteWithContext<{
       ...createMetaTags(),
     ],
     links: [
+      { rel: "canonical", href: BASE_URL },
       { rel: "stylesheet", href: appCss },
       // Scalable SVG favicon (preferred by modern browsers); the PNG/ICO
       // entries below remain as fallbacks for clients without SVG icon support
