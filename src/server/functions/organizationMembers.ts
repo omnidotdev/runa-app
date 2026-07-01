@@ -37,5 +37,8 @@ export const getOrganizationMembers = createServerFn()
       throw new Error("ORG_SYNC_SERVICE_TOKEN not configured");
     }
 
-    return gatekeeperOrg.listMembers(organizationId, ORG_SYNC_SERVICE_TOKEN);
+    return gatekeeperOrg.listMembersViaService(
+      organizationId,
+      ORG_SYNC_SERVICE_TOKEN,
+    );
   });
