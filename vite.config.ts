@@ -28,6 +28,14 @@ const viteConfig = defineConfig(({ command }) => ({
       preset: "node-server",
       // Inline modules to avoid resolution issues with Bun runtime
       externals: { inline: ["srvx", "react-dom"] },
+      routeRules: {
+        "/**": {
+          headers: {
+            "Permissions-Policy": "geolocation=(), camera=(), microphone=()",
+            "Cache-Control": "public, max-age=0, must-revalidate",
+          },
+        },
+      },
     }),
     react(),
   ],

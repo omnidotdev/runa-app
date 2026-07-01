@@ -21,6 +21,7 @@ const app = {
   legal: {
     privacy: "https://omni.dev/legal/privacy",
     terms: "https://omni.dev/legal/terms",
+    cookies: "https://omni.dev/legal/cookies",
   },
 };
 

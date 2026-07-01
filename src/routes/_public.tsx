@@ -272,6 +272,14 @@ function PublicLayout() {
                 >
                   Terms
                 </a>
+                <a
+                  href={app.legal.cookies}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base-500 transition-colors hover:text-foreground"
+                >
+                  Cookies
+                </a>
               </div>
 
               <div className="flex items-center gap-6">
