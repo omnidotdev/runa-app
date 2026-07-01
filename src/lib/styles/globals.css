@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@omnidotdev/thornberry/base.css";
 @import "tw-animate-css";
 
 /* scan the Thornberry component library (a package) so its class strings emit */
