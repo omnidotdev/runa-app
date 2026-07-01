@@ -255,6 +255,25 @@ function PublicLayout() {
                 </span>
               </div>
 
+              <div className="flex items-center gap-6 text-sm">
+                <a
+                  href={app.legal.privacy}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base-500 transition-colors hover:text-foreground"
+                >
+                  Privacy
+                </a>
+                <a
+                  href={app.legal.terms}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base-500 transition-colors hover:text-foreground"
+                >
+                  Terms
+                </a>
+              </div>
+
               <div className="flex items-center gap-6">
                 <a
                   href={app.links.github}

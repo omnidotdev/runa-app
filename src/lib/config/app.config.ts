@@ -17,6 +17,11 @@ const app = {
     github: "https://github.com/omnidotdev/runa-stack",
     feedback: "https://backfeed.omni.dev/workspaces/omni/projects/runa",
   },
+  // Legal links mirror the omni-api catalog SSOT
+  legal: {
+    privacy: "https://omni.dev/legal/privacy",
+    terms: "https://omni.dev/legal/terms",
+  },
 };
 
 export default app;
