@@ -5,6 +5,7 @@ import { DownloadIcon, FileIcon, Trash2Icon, UploadIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
+import { Image } from "@/components/core/Image";
 import useTier from "@/lib/hooks/useTier";
 import { formatFileSize, validateFile } from "@/lib/media/mediaConfig";
 import {
@@ -126,19 +127,12 @@ const AttachmentsSection = ({
                 >
                   {attachment?.kind === "image" ? (
                     <a href={attachment.url} target="_blank" rel="noreferrer">
-                      <img
-                        src={metadata.thumbnailUrl ?? attachment.url}
+                      <Image
+                        src={attachment.url}
                         alt={filename}
-                        loading="lazy"
-                        style={
-                          metadata.lqip
-                            ? {
-                                backgroundImage: `url(${metadata.lqip})`,
-                                backgroundSize: "cover",
-                              }
-                            : undefined
-                        }
-                        className="aspect-video w-full object-cover"
+                        lqip={metadata.lqip}
+                        sizes="(min-width: 640px) 33vw, 50vw"
+                        className="aspect-video w-full"
                       />
                     </a>
                   ) : attachment?.kind === "video" ? (
