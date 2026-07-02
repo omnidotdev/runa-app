@@ -22,9 +22,11 @@ type ImageProps = {
 /**
  * Responsive, blur-up image for runa-api attachments. The browser downloads a
  * right-sized derivative via `srcset`; until it decodes, a smoothly blurred LQIP
- * sits behind the image. The placeholder is a static CSS layer (no opacity state
- * or load handler), so a cached image shows instantly and a loading one reveals
- * cleanly over the blur, with no flash.
+ * sits behind the image and the real bytes cross-fade in over it. The fade is
+ * driven by real per-image load state, not a hydration flip: a cached image (or
+ * one decoded before hydration) shows instantly with the transition suppressed,
+ * so a page of cached images never mass-fades at once; only a genuinely-loading
+ * image cross-fades smoothly over its blur.
  */
 export function Image({
   src,
@@ -49,12 +51,24 @@ export function Image({
             backgroundImage: `url(${lqip})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            filter: "blur(16px)",
+            filter: "blur(20px)",
             transform: "scale(1.1)",
           }}
         />
       ) : null}
       <img
+        ref={(img) => {
+          // Cached / already-decoded images show instantly with no fade (so a
+          // page of cached images never mass-fades = the "epileptic" flash);
+          // only genuinely-loading images keep the transition and cross-fade in.
+          if (img?.complete && img.naturalWidth > 0) {
+            img.style.transition = "none";
+            img.style.opacity = "1";
+          }
+        }}
+        onLoad={(event) => {
+          event.currentTarget.style.opacity = "1";
+        }}
         src={buildFallbackUrl(src)}
         srcSet={buildSrcset(src)}
         sizes={sizes}
@@ -67,6 +81,10 @@ export function Image({
           width: "100%",
           height: "100%",
           objectFit: "cover",
+          // Cross-fade in over the blurred LQIP as the bytes decode; start
+          // hidden only when there is an LQIP to reveal over
+          opacity: lqip ? 0 : 1,
+          transition: "opacity 500ms ease",
         }}
       />
     </div>
