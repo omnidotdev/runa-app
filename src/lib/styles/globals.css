@@ -206,6 +206,10 @@
 }
 
 @layer base {
+  html {
+    /* Persistent scrollbar; avoids blank gutter whitespace + layout shift. */
+    overflow-y: scroll;
+  }
   * {
     @apply border-border outline-ring/50;
   }
