@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
 import { useMutation, useQuery, useSuspenseQuery, useInfiniteQuery, useSuspenseInfiniteQuery, UseMutationOptions, UseQueryOptions, UseSuspenseQueryOptions, UseInfiniteQueryOptions, InfiniteData, UseSuspenseInfiniteQueryOptions } from '@tanstack/react-query';
 import { graphqlFetch } from '@/lib/graphql/graphqlFetch';
 export type Maybe<T> = T | null;
@@ -10000,7 +10001,25 @@ export type UserByIdentityProviderIdQueryVariables = Exact<{
 export type UserByIdentityProviderIdQuery = { __typename?: 'Query', userByIdentityProviderId?: { __typename?: 'User', rowId: string } | null };
 
 
-export const ColumnFragmentDoc = `
+export class TypedDocumentString<TResult, TVariables>
+  extends String
+  implements DocumentTypeDecoration<TResult, TVariables>
+{
+  __apiType?: NonNullable<DocumentTypeDecoration<TResult, TVariables>['__apiType']>;
+  private value: string;
+  public __meta__?: Record<string, any> | undefined;
+
+  constructor(value: string, __meta__?: Record<string, any> | undefined) {
+    super(value);
+    this.value = value;
+    this.__meta__ = __meta__;
+  }
+
+  override toString(): string & DocumentTypeDecoration<TResult, TVariables> {
+    return this.value;
+  }
+}
+export const ColumnFragmentDoc = new TypedDocumentString(`
     fragment Column on Column {
   title
   index
@@ -10010,8 +10029,8 @@ export const ColumnFragmentDoc = `
     totalCount
   }
 }
-    `;
-export const ProjectColumnFragmentDoc = `
+    `, {"fragmentName":"Column"});
+export const ProjectColumnFragmentDoc = new TypedDocumentString(`
     fragment ProjectColumn on ProjectColumn {
   title
   index
@@ -10021,8 +10040,8 @@ export const ProjectColumnFragmentDoc = `
     totalCount
   }
 }
-    `;
-export const ProjectFragmentDoc = `
+    `, {"fragmentName":"ProjectColumn"});
+export const ProjectFragmentDoc = new TypedDocumentString(`
     fragment Project on Project {
   rowId
   name
@@ -10051,16 +10070,16 @@ export const ProjectFragmentDoc = `
     }
   }
 }
-    `;
-export const LabelFragmentDoc = `
+    `, {"fragmentName":"Project"});
+export const LabelFragmentDoc = new TypedDocumentString(`
     fragment Label on Label {
   color
   icon
   name
   rowId
 }
-    `;
-export const TaskFragmentDoc = `
+    `, {"fragmentName":"Label"});
+export const TaskFragmentDoc = new TypedDocumentString(`
     fragment Task on Task {
   rowId
   number
@@ -10096,8 +10115,13 @@ export const TaskFragmentDoc = `
     totalCount
   }
 }
-    ${LabelFragmentDoc}`;
-export const CreateAssigneeDocument = `
+    fragment Label on Label {
+  color
+  icon
+  name
+  rowId
+}`, {"fragmentName":"Task"});
+export const CreateAssigneeDocument = new TypedDocumentString(`
     mutation CreateAssignee($input: CreateAssigneeInput!) {
   createAssignee(input: $input) {
     assignee {
@@ -10106,7 +10130,7 @@ export const CreateAssigneeDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateAssigneeMutation = <
       TError = unknown,
@@ -10126,7 +10150,7 @@ useCreateAssigneeMutation.getKey = () => ['CreateAssignee'];
 
 useCreateAssigneeMutation.fetcher = (variables: CreateAssigneeMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateAssigneeMutation, CreateAssigneeMutationVariables>(CreateAssigneeDocument, variables, options);
 
-export const DeleteAssigneeDocument = `
+export const DeleteAssigneeDocument = new TypedDocumentString(`
     mutation DeleteAssignee($taskId: UUID!, $userId: UUID!) {
   deleteAssignee(input: {taskId: $taskId, userId: $userId}) {
     assignee {
@@ -10135,7 +10159,7 @@ export const DeleteAssigneeDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useDeleteAssigneeMutation = <
       TError = unknown,
@@ -10155,7 +10179,7 @@ useDeleteAssigneeMutation.getKey = () => ['DeleteAssignee'];
 
 useDeleteAssigneeMutation.fetcher = (variables: DeleteAssigneeMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteAssigneeMutation, DeleteAssigneeMutationVariables>(DeleteAssigneeDocument, variables, options);
 
-export const CreateColumnDocument = `
+export const CreateColumnDocument = new TypedDocumentString(`
     mutation CreateColumn($input: CreateColumnInput!) {
   createColumn(input: $input) {
     column {
@@ -10163,7 +10187,15 @@ export const CreateColumnDocument = `
     }
   }
 }
-    ${ColumnFragmentDoc}`;
+    fragment Column on Column {
+  title
+  index
+  rowId
+  icon
+  tasks {
+    totalCount
+  }
+}`);
 
 export const useCreateColumnMutation = <
       TError = unknown,
@@ -10183,13 +10215,13 @@ useCreateColumnMutation.getKey = () => ['CreateColumn'];
 
 useCreateColumnMutation.fetcher = (variables: CreateColumnMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateColumnMutation, CreateColumnMutationVariables>(CreateColumnDocument, variables, options);
 
-export const DeleteColumnDocument = `
+export const DeleteColumnDocument = new TypedDocumentString(`
     mutation DeleteColumn($rowId: UUID!) {
   deleteColumn(input: {rowId: $rowId}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeleteColumnMutation = <
       TError = unknown,
@@ -10209,7 +10241,7 @@ useDeleteColumnMutation.getKey = () => ['DeleteColumn'];
 
 useDeleteColumnMutation.fetcher = (variables: DeleteColumnMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteColumnMutation, DeleteColumnMutationVariables>(DeleteColumnDocument, variables, options);
 
-export const UpdateColumnDocument = `
+export const UpdateColumnDocument = new TypedDocumentString(`
     mutation UpdateColumn($rowId: UUID!, $patch: ColumnPatch!) {
   updateColumn(input: {rowId: $rowId, patch: $patch}) {
     column {
@@ -10217,7 +10249,7 @@ export const UpdateColumnDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateColumnMutation = <
       TError = unknown,
@@ -10237,7 +10269,7 @@ useUpdateColumnMutation.getKey = () => ['UpdateColumn'];
 
 useUpdateColumnMutation.fetcher = (variables: UpdateColumnMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateColumnMutation, UpdateColumnMutationVariables>(UpdateColumnDocument, variables, options);
 
-export const CreatePostEmojiDocument = `
+export const CreatePostEmojiDocument = new TypedDocumentString(`
     mutation CreatePostEmoji($input: CreateEmojiInput!) {
   createEmoji(input: $input) {
     emoji {
@@ -10245,7 +10277,7 @@ export const CreatePostEmojiDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreatePostEmojiMutation = <
       TError = unknown,
@@ -10265,7 +10297,7 @@ useCreatePostEmojiMutation.getKey = () => ['CreatePostEmoji'];
 
 useCreatePostEmojiMutation.fetcher = (variables: CreatePostEmojiMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreatePostEmojiMutation, CreatePostEmojiMutationVariables>(CreatePostEmojiDocument, variables, options);
 
-export const DeletePostEmojiDocument = `
+export const DeletePostEmojiDocument = new TypedDocumentString(`
     mutation DeletePostEmoji($rowId: UUID!) {
   deleteEmoji(input: {rowId: $rowId}) {
     emoji {
@@ -10273,7 +10305,7 @@ export const DeletePostEmojiDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useDeletePostEmojiMutation = <
       TError = unknown,
@@ -10293,7 +10325,7 @@ useDeletePostEmojiMutation.getKey = () => ['DeletePostEmoji'];
 
 useDeletePostEmojiMutation.fetcher = (variables: DeletePostEmojiMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeletePostEmojiMutation, DeletePostEmojiMutationVariables>(DeletePostEmojiDocument, variables, options);
 
-export const UpdatePostEmojiDocument = `
+export const UpdatePostEmojiDocument = new TypedDocumentString(`
     mutation UpdatePostEmoji($input: UpdateEmojiInput!) {
   updateEmoji(input: $input) {
     emoji {
@@ -10301,7 +10333,7 @@ export const UpdatePostEmojiDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdatePostEmojiMutation = <
       TError = unknown,
@@ -10321,7 +10353,7 @@ useUpdatePostEmojiMutation.getKey = () => ['UpdatePostEmoji'];
 
 useUpdatePostEmojiMutation.fetcher = (variables: UpdatePostEmojiMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdatePostEmojiMutation, UpdatePostEmojiMutationVariables>(UpdatePostEmojiDocument, variables, options);
 
-export const CreateLabelDocument = `
+export const CreateLabelDocument = new TypedDocumentString(`
     mutation CreateLabel($input: CreateLabelInput!) {
   createLabel(input: $input) {
     label {
@@ -10332,7 +10364,7 @@ export const CreateLabelDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateLabelMutation = <
       TError = unknown,
@@ -10352,7 +10384,7 @@ useCreateLabelMutation.getKey = () => ['CreateLabel'];
 
 useCreateLabelMutation.fetcher = (variables: CreateLabelMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateLabelMutation, CreateLabelMutationVariables>(CreateLabelDocument, variables, options);
 
-export const DeleteLabelDocument = `
+export const DeleteLabelDocument = new TypedDocumentString(`
     mutation DeleteLabel($rowId: UUID!) {
   deleteLabel(input: {rowId: $rowId}) {
     label {
@@ -10362,7 +10394,7 @@ export const DeleteLabelDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useDeleteLabelMutation = <
       TError = unknown,
@@ -10382,7 +10414,7 @@ useDeleteLabelMutation.getKey = () => ['DeleteLabel'];
 
 useDeleteLabelMutation.fetcher = (variables: DeleteLabelMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteLabelMutation, DeleteLabelMutationVariables>(DeleteLabelDocument, variables, options);
 
-export const UpdateLabelDocument = `
+export const UpdateLabelDocument = new TypedDocumentString(`
     mutation UpdateLabel($rowId: UUID!, $patch: LabelPatch!) {
   updateLabel(input: {rowId: $rowId, patch: $patch}) {
     label {
@@ -10390,7 +10422,7 @@ export const UpdateLabelDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateLabelMutation = <
       TError = unknown,
@@ -10410,7 +10442,7 @@ useUpdateLabelMutation.getKey = () => ['UpdateLabel'];
 
 useUpdateLabelMutation.fetcher = (variables: UpdateLabelMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateLabelMutation, UpdateLabelMutationVariables>(UpdateLabelDocument, variables, options);
 
-export const CreatePostDocument = `
+export const CreatePostDocument = new TypedDocumentString(`
     mutation CreatePost($input: CreatePostInput!) {
   createPost(input: $input) {
     post {
@@ -10418,7 +10450,7 @@ export const CreatePostDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreatePostMutation = <
       TError = unknown,
@@ -10438,7 +10470,7 @@ useCreatePostMutation.getKey = () => ['CreatePost'];
 
 useCreatePostMutation.fetcher = (variables: CreatePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument, variables, options);
 
-export const DeletePostDocument = `
+export const DeletePostDocument = new TypedDocumentString(`
     mutation DeletePost($rowId: UUID!) {
   deletePost(input: {rowId: $rowId}) {
     post {
@@ -10446,7 +10478,7 @@ export const DeletePostDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useDeletePostMutation = <
       TError = unknown,
@@ -10466,7 +10498,7 @@ useDeletePostMutation.getKey = () => ['DeletePost'];
 
 useDeletePostMutation.fetcher = (variables: DeletePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument, variables, options);
 
-export const UpdatePostDocument = `
+export const UpdatePostDocument = new TypedDocumentString(`
     mutation UpdatePost($input: UpdatePostInput!) {
   updatePost(input: $input) {
     post {
@@ -10474,7 +10506,7 @@ export const UpdatePostDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdatePostMutation = <
       TError = unknown,
@@ -10494,7 +10526,7 @@ useUpdatePostMutation.getKey = () => ['UpdatePost'];
 
 useUpdatePostMutation.fetcher = (variables: UpdatePostMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, variables, options);
 
-export const CreateProjectColumnDocument = `
+export const CreateProjectColumnDocument = new TypedDocumentString(`
     mutation CreateProjectColumn($input: CreateProjectColumnInput!) {
   createProjectColumn(input: $input) {
     projectColumn {
@@ -10502,7 +10534,15 @@ export const CreateProjectColumnDocument = `
     }
   }
 }
-    ${ProjectColumnFragmentDoc}`;
+    fragment ProjectColumn on ProjectColumn {
+  title
+  index
+  rowId
+  icon
+  projects {
+    totalCount
+  }
+}`);
 
 export const useCreateProjectColumnMutation = <
       TError = unknown,
@@ -10522,13 +10562,13 @@ useCreateProjectColumnMutation.getKey = () => ['CreateProjectColumn'];
 
 useCreateProjectColumnMutation.fetcher = (variables: CreateProjectColumnMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectColumnMutation, CreateProjectColumnMutationVariables>(CreateProjectColumnDocument, variables, options);
 
-export const DeleteProjectColumnDocument = `
+export const DeleteProjectColumnDocument = new TypedDocumentString(`
     mutation DeleteProjectColumn($rowId: UUID!) {
   deleteProjectColumn(input: {rowId: $rowId}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeleteProjectColumnMutation = <
       TError = unknown,
@@ -10548,7 +10588,7 @@ useDeleteProjectColumnMutation.getKey = () => ['DeleteProjectColumn'];
 
 useDeleteProjectColumnMutation.fetcher = (variables: DeleteProjectColumnMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectColumnMutation, DeleteProjectColumnMutationVariables>(DeleteProjectColumnDocument, variables, options);
 
-export const UpdateProjectColumnDocument = `
+export const UpdateProjectColumnDocument = new TypedDocumentString(`
     mutation UpdateProjectColumn($rowId: UUID!, $patch: ProjectColumnPatch!) {
   updateProjectColumn(input: {rowId: $rowId, patch: $patch}) {
     projectColumn {
@@ -10556,7 +10596,7 @@ export const UpdateProjectColumnDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateProjectColumnMutation = <
       TError = unknown,
@@ -10576,7 +10616,7 @@ useUpdateProjectColumnMutation.getKey = () => ['UpdateProjectColumn'];
 
 useUpdateProjectColumnMutation.fetcher = (variables: UpdateProjectColumnMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectColumnMutation, UpdateProjectColumnMutationVariables>(UpdateProjectColumnDocument, variables, options);
 
-export const CreateProjectLinkDocument = `
+export const CreateProjectLinkDocument = new TypedDocumentString(`
     mutation CreateProjectLink($projectLink: ProjectLinkInput!) {
   createProjectLink(input: {projectLink: $projectLink}) {
     projectLink {
@@ -10587,7 +10627,7 @@ export const CreateProjectLinkDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateProjectLinkMutation = <
       TError = unknown,
@@ -10607,7 +10647,7 @@ useCreateProjectLinkMutation.getKey = () => ['CreateProjectLink'];
 
 useCreateProjectLinkMutation.fetcher = (variables: CreateProjectLinkMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectLinkMutation, CreateProjectLinkMutationVariables>(CreateProjectLinkDocument, variables, options);
 
-export const DeleteProjectLinkDocument = `
+export const DeleteProjectLinkDocument = new TypedDocumentString(`
     mutation DeleteProjectLink($rowId: UUID!) {
   deleteProjectLink(input: {rowId: $rowId}) {
     projectLink {
@@ -10615,7 +10655,7 @@ export const DeleteProjectLinkDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useDeleteProjectLinkMutation = <
       TError = unknown,
@@ -10635,7 +10675,7 @@ useDeleteProjectLinkMutation.getKey = () => ['DeleteProjectLink'];
 
 useDeleteProjectLinkMutation.fetcher = (variables: DeleteProjectLinkMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectLinkMutation, DeleteProjectLinkMutationVariables>(DeleteProjectLinkDocument, variables, options);
 
-export const UpdateProjectLinkDocument = `
+export const UpdateProjectLinkDocument = new TypedDocumentString(`
     mutation UpdateProjectLink($rowId: UUID!, $patch: ProjectLinkPatch!) {
   updateProjectLink(input: {rowId: $rowId, patch: $patch}) {
     projectLink {
@@ -10646,7 +10686,7 @@ export const UpdateProjectLinkDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateProjectLinkMutation = <
       TError = unknown,
@@ -10666,7 +10706,7 @@ useUpdateProjectLinkMutation.getKey = () => ['UpdateProjectLink'];
 
 useUpdateProjectLinkMutation.fetcher = (variables: UpdateProjectLinkMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectLinkMutation, UpdateProjectLinkMutationVariables>(UpdateProjectLinkDocument, variables, options);
 
-export const CreateProjectDocument = `
+export const CreateProjectDocument = new TypedDocumentString(`
     mutation CreateProject($input: CreateProjectInput!) {
   createProject(input: $input) {
     project {
@@ -10675,7 +10715,7 @@ export const CreateProjectDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateProjectMutation = <
       TError = unknown,
@@ -10695,13 +10735,13 @@ useCreateProjectMutation.getKey = () => ['CreateProject'];
 
 useCreateProjectMutation.fetcher = (variables: CreateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, variables, options);
 
-export const DeleteProjectDocument = `
+export const DeleteProjectDocument = new TypedDocumentString(`
     mutation DeleteProject($rowId: UUID!) {
   deleteProject(input: {rowId: $rowId}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeleteProjectMutation = <
       TError = unknown,
@@ -10721,7 +10761,7 @@ useDeleteProjectMutation.getKey = () => ['DeleteProject'];
 
 useDeleteProjectMutation.fetcher = (variables: DeleteProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, variables, options);
 
-export const UpdateProjectDocument = `
+export const UpdateProjectDocument = new TypedDocumentString(`
     mutation UpdateProject($rowId: UUID!, $patch: ProjectPatch!) {
   updateProject(input: {rowId: $rowId, patch: $patch}) {
     project {
@@ -10729,7 +10769,7 @@ export const UpdateProjectDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateProjectMutation = <
       TError = unknown,
@@ -10749,7 +10789,7 @@ useUpdateProjectMutation.getKey = () => ['UpdateProject'];
 
 useUpdateProjectMutation.fetcher = (variables: UpdateProjectMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, variables, options);
 
-export const UpdateSettingDocument = `
+export const UpdateSettingDocument = new TypedDocumentString(`
     mutation UpdateSetting($rowId: UUID!, $patch: SettingPatch!) {
   updateSetting(input: {rowId: $rowId, patch: $patch}) {
     setting {
@@ -10759,7 +10799,7 @@ export const UpdateSettingDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateSettingMutation = <
       TError = unknown,
@@ -10779,7 +10819,7 @@ useUpdateSettingMutation.getKey = () => ['UpdateSetting'];
 
 useUpdateSettingMutation.fetcher = (variables: UpdateSettingMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateSettingMutation, UpdateSettingMutationVariables>(UpdateSettingDocument, variables, options);
 
-export const CreateTaskLabelDocument = `
+export const CreateTaskLabelDocument = new TypedDocumentString(`
     mutation CreateTaskLabel($input: CreateTaskLabelInput!) {
   createTaskLabel(input: $input) {
     taskLabel {
@@ -10788,7 +10828,7 @@ export const CreateTaskLabelDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateTaskLabelMutation = <
       TError = unknown,
@@ -10808,13 +10848,13 @@ useCreateTaskLabelMutation.getKey = () => ['CreateTaskLabel'];
 
 useCreateTaskLabelMutation.fetcher = (variables: CreateTaskLabelMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateTaskLabelMutation, CreateTaskLabelMutationVariables>(CreateTaskLabelDocument, variables, options);
 
-export const DeleteTaskLabelDocument = `
+export const DeleteTaskLabelDocument = new TypedDocumentString(`
     mutation DeleteTaskLabel($taskId: UUID!, $labelId: UUID!) {
   deleteTaskLabel(input: {taskId: $taskId, labelId: $labelId}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeleteTaskLabelMutation = <
       TError = unknown,
@@ -10834,7 +10874,7 @@ useDeleteTaskLabelMutation.getKey = () => ['DeleteTaskLabel'];
 
 useDeleteTaskLabelMutation.fetcher = (variables: DeleteTaskLabelMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteTaskLabelMutation, DeleteTaskLabelMutationVariables>(DeleteTaskLabelDocument, variables, options);
 
-export const CreateTaskDocument = `
+export const CreateTaskDocument = new TypedDocumentString(`
     mutation CreateTask($input: CreateTaskInput!) {
   createTask(input: $input) {
     task {
@@ -10842,7 +10882,7 @@ export const CreateTaskDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateTaskMutation = <
       TError = unknown,
@@ -10862,7 +10902,7 @@ useCreateTaskMutation.getKey = () => ['CreateTask'];
 
 useCreateTaskMutation.fetcher = (variables: CreateTaskMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateTaskMutation, CreateTaskMutationVariables>(CreateTaskDocument, variables, options);
 
-export const DeleteTaskDocument = `
+export const DeleteTaskDocument = new TypedDocumentString(`
     mutation DeleteTask($rowId: UUID!) {
   deleteTask(input: {rowId: $rowId}) {
     task {
@@ -10870,7 +10910,7 @@ export const DeleteTaskDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useDeleteTaskMutation = <
       TError = unknown,
@@ -10890,7 +10930,7 @@ useDeleteTaskMutation.getKey = () => ['DeleteTask'];
 
 useDeleteTaskMutation.fetcher = (variables: DeleteTaskMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteTaskMutation, DeleteTaskMutationVariables>(DeleteTaskDocument, variables, options);
 
-export const UpdateTaskDocument = `
+export const UpdateTaskDocument = new TypedDocumentString(`
     mutation UpdateTask($rowId: UUID!, $patch: TaskPatch!) {
   updateTask(input: {rowId: $rowId, patch: $patch}) {
     task {
@@ -10898,7 +10938,7 @@ export const UpdateTaskDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateTaskMutation = <
       TError = unknown,
@@ -10918,7 +10958,7 @@ useUpdateTaskMutation.getKey = () => ['UpdateTask'];
 
 useUpdateTaskMutation.fetcher = (variables: UpdateTaskMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateTaskMutation, UpdateTaskMutationVariables>(UpdateTaskDocument, variables, options);
 
-export const CreateUserPreferenceDocument = `
+export const CreateUserPreferenceDocument = new TypedDocumentString(`
     mutation CreateUserPreference($input: CreateUserPreferenceInput!) {
   createUserPreference(input: $input) {
     userPreference {
@@ -10926,7 +10966,7 @@ export const CreateUserPreferenceDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useCreateUserPreferenceMutation = <
       TError = unknown,
@@ -10946,7 +10986,7 @@ useCreateUserPreferenceMutation.getKey = () => ['CreateUserPreference'];
 
 useCreateUserPreferenceMutation.fetcher = (variables: CreateUserPreferenceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateUserPreferenceMutation, CreateUserPreferenceMutationVariables>(CreateUserPreferenceDocument, variables, options);
 
-export const UpdateUserPreferenceDocument = `
+export const UpdateUserPreferenceDocument = new TypedDocumentString(`
     mutation UpdateUserPreference($rowId: UUID!, $patch: UserPreferencePatch!) {
   updateUserPreference(input: {rowId: $rowId, patch: $patch}) {
     userPreference {
@@ -10954,7 +10994,7 @@ export const UpdateUserPreferenceDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUpdateUserPreferenceMutation = <
       TError = unknown,
@@ -10974,13 +11014,13 @@ useUpdateUserPreferenceMutation.getKey = () => ['UpdateUserPreference'];
 
 useUpdateUserPreferenceMutation.fetcher = (variables: UpdateUserPreferenceMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateUserPreferenceMutation, UpdateUserPreferenceMutationVariables>(UpdateUserPreferenceDocument, variables, options);
 
-export const DeleteUserDocument = `
+export const DeleteUserDocument = new TypedDocumentString(`
     mutation DeleteUser($id: UUID!) {
   deleteUser(input: {rowId: $id}) {
     clientMutationId
   }
 }
-    `;
+    `);
 
 export const useDeleteUserMutation = <
       TError = unknown,
@@ -11000,7 +11040,7 @@ useDeleteUserMutation.getKey = () => ['DeleteUser'];
 
 useDeleteUserMutation.fetcher = (variables: DeleteUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, variables, options);
 
-export const TaskAttachmentsDocument = `
+export const TaskAttachmentsDocument = new TypedDocumentString(`
     query TaskAttachments($taskId: UUID!) {
   attachments(condition: {taskId: $taskId}, orderBy: CREATED_AT_ASC) {
     nodes {
@@ -11024,7 +11064,7 @@ export const TaskAttachmentsDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useTaskAttachmentsQuery = <
       TData = TaskAttachmentsQuery,
@@ -11107,7 +11147,7 @@ useSuspenseInfiniteTaskAttachmentsQuery.getKey = (variables: TaskAttachmentsQuer
 
 useTaskAttachmentsQuery.fetcher = (variables: TaskAttachmentsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TaskAttachmentsQuery, TaskAttachmentsQueryVariables>(TaskAttachmentsDocument, variables, options);
 
-export const ColumnsDocument = `
+export const ColumnsDocument = new TypedDocumentString(`
     query Columns($projectId: UUID!) {
   columns(condition: {projectId: $projectId}, orderBy: INDEX_ASC) {
     nodes {
@@ -11115,7 +11155,15 @@ export const ColumnsDocument = `
     }
   }
 }
-    ${ColumnFragmentDoc}`;
+    fragment Column on Column {
+  title
+  index
+  rowId
+  icon
+  tasks {
+    totalCount
+  }
+}`);
 
 export const useColumnsQuery = <
       TData = ColumnsQuery,
@@ -11198,7 +11246,7 @@ useSuspenseInfiniteColumnsQuery.getKey = (variables: ColumnsQueryVariables) => [
 
 useColumnsQuery.fetcher = (variables: ColumnsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ColumnsQuery, ColumnsQueryVariables>(ColumnsDocument, variables, options);
 
-export const PostEmojisDocument = `
+export const PostEmojisDocument = new TypedDocumentString(`
     query PostEmojis($postId: UUID!, $userId: UUID!) {
   emojis(condition: {postId: $postId}, orderBy: CREATED_AT_ASC) {
     groupedAggregates(groupBy: EMOJI) {
@@ -11221,7 +11269,7 @@ export const PostEmojisDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const usePostEmojisQuery = <
       TData = PostEmojisQuery,
@@ -11304,7 +11352,7 @@ useSuspenseInfinitePostEmojisQuery.getKey = (variables: PostEmojisQueryVariables
 
 usePostEmojisQuery.fetcher = (variables: PostEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<PostEmojisQuery, PostEmojisQueryVariables>(PostEmojisDocument, variables, options);
 
-export const UserEmojisDocument = `
+export const UserEmojisDocument = new TypedDocumentString(`
     query UserEmojis($postId: UUID!, $userId: UUID!) {
   emojis(condition: {userId: $userId, postId: $postId}) {
     nodes {
@@ -11312,7 +11360,7 @@ export const UserEmojisDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useUserEmojisQuery = <
       TData = UserEmojisQuery,
@@ -11395,7 +11443,7 @@ useSuspenseInfiniteUserEmojisQuery.getKey = (variables: UserEmojisQueryVariables
 
 useUserEmojisQuery.fetcher = (variables: UserEmojisQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserEmojisQuery, UserEmojisQueryVariables>(UserEmojisDocument, variables, options);
 
-export const LabelsDocument = `
+export const LabelsDocument = new TypedDocumentString(`
     query Labels($projectId: UUID!) {
   labels(condition: {projectId: $projectId}, orderBy: NAME_ASC) {
     nodes {
@@ -11403,7 +11451,12 @@ export const LabelsDocument = `
     }
   }
 }
-    ${LabelFragmentDoc}`;
+    fragment Label on Label {
+  color
+  icon
+  name
+  rowId
+}`);
 
 export const useLabelsQuery = <
       TData = LabelsQuery,
@@ -11486,7 +11539,7 @@ useSuspenseInfiniteLabelsQuery.getKey = (variables: LabelsQueryVariables) => ['L
 
 useLabelsQuery.fetcher = (variables: LabelsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<LabelsQuery, LabelsQueryVariables>(LabelsDocument, variables, options);
 
-export const ProjectColumnsDocument = `
+export const ProjectColumnsDocument = new TypedDocumentString(`
     query ProjectColumns($organizationId: String!, $search: String = "") {
   projectColumns(condition: {organizationId: $organizationId}, orderBy: INDEX_ASC) {
     nodes {
@@ -11500,7 +11553,7 @@ export const ProjectColumnsDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useProjectColumnsQuery = <
       TData = ProjectColumnsQuery,
@@ -11583,7 +11636,7 @@ useSuspenseInfiniteProjectColumnsQuery.getKey = (variables: ProjectColumnsQueryV
 
 useProjectColumnsQuery.fetcher = (variables: ProjectColumnsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectColumnsQuery, ProjectColumnsQueryVariables>(ProjectColumnsDocument, variables, options);
 
-export const ProjectDocument = `
+export const ProjectDocument = new TypedDocumentString(`
     query Project($rowId: UUID!) {
   project(rowId: $rowId) {
     rowId
@@ -11621,7 +11674,7 @@ export const ProjectDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useProjectQuery = <
       TData = ProjectQuery,
@@ -11704,7 +11757,7 @@ useSuspenseInfiniteProjectQuery.getKey = (variables: ProjectQueryVariables) => [
 
 useProjectQuery.fetcher = (variables: ProjectQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectQuery, ProjectQueryVariables>(ProjectDocument, variables, options);
 
-export const ProjectBySlugDocument = `
+export const ProjectBySlugDocument = new TypedDocumentString(`
     query ProjectBySlug($slug: String!, $organizationId: String!) {
   projectBySlugAndOrganizationId(slug: $slug, organizationId: $organizationId) {
     rowId
@@ -11714,7 +11767,7 @@ export const ProjectBySlugDocument = `
     description
   }
 }
-    `;
+    `);
 
 export const useProjectBySlugQuery = <
       TData = ProjectBySlugQuery,
@@ -11797,7 +11850,7 @@ useSuspenseInfiniteProjectBySlugQuery.getKey = (variables: ProjectBySlugQueryVar
 
 useProjectBySlugQuery.fetcher = (variables: ProjectBySlugQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectBySlugQuery, ProjectBySlugQueryVariables>(ProjectBySlugDocument, variables, options);
 
-export const ProjectsDocument = `
+export const ProjectsDocument = new TypedDocumentString(`
     query Projects($organizationId: String!, $search: String = "", $userId: UUID) {
   projects(
     condition: {organizationId: $organizationId}
@@ -11815,7 +11868,34 @@ export const ProjectsDocument = `
     }
   }
 }
-    ${ProjectFragmentDoc}`;
+    fragment Project on Project {
+  rowId
+  name
+  slug
+  description
+  prefix
+  isPublic
+  projectColumnId
+  columnIndex
+  color
+  background
+  updatedAt
+  createdAt
+  allTasks: tasks {
+    totalCount
+  }
+  completedTasks: tasks(filter: {column: {title: {equalTo: "Done"}}}) {
+    totalCount
+  }
+  projectLinks(orderBy: ORDER_ASC) {
+    nodes {
+      rowId
+      url
+      title
+      order
+    }
+  }
+}`);
 
 export const useProjectsQuery = <
       TData = ProjectsQuery,
@@ -11898,7 +11978,7 @@ useSuspenseInfiniteProjectsQuery.getKey = (variables: ProjectsQueryVariables) =>
 
 useProjectsQuery.fetcher = (variables: ProjectsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, variables, options);
 
-export const ProjectsSidebarDocument = `
+export const ProjectsSidebarDocument = new TypedDocumentString(`
     query ProjectsSidebar($organizationId: String!, $userId: UUID) {
   projects(
     condition: {organizationId: $organizationId}
@@ -11919,7 +11999,7 @@ export const ProjectsSidebarDocument = `
     }
   }
 }
-    `;
+    `);
 
 export const useProjectsSidebarQuery = <
       TData = ProjectsSidebarQuery,
@@ -12002,7 +12082,7 @@ useSuspenseInfiniteProjectsSidebarQuery.getKey = (variables: ProjectsSidebarQuer
 
 useProjectsSidebarQuery.fetcher = (variables: ProjectsSidebarQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ProjectsSidebarQuery, ProjectsSidebarQueryVariables>(ProjectsSidebarDocument, variables, options);
 
-export const SettingByOrganizationIdDocument = `
+export const SettingByOrganizationIdDocument = new TypedDocumentString(`
     query SettingByOrganizationId($organizationId: String!) {
   settingByOrganizationId(organizationId: $organizationId) {
     rowId
@@ -12012,7 +12092,7 @@ export const SettingByOrganizationIdDocument = `
     billingAccountId
   }
 }
-    `;
+    `);
 
 export const useSettingByOrganizationIdQuery = <
       TData = SettingByOrganizationIdQuery,
@@ -12095,7 +12175,7 @@ useSuspenseInfiniteSettingByOrganizationIdQuery.getKey = (variables: SettingByOr
 
 useSettingByOrganizationIdQuery.fetcher = (variables: SettingByOrganizationIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<SettingByOrganizationIdQuery, SettingByOrganizationIdQueryVariables>(SettingByOrganizationIdDocument, variables, options);
 
-export const TaskDocument = `
+export const TaskDocument = new TypedDocumentString(`
     query Task($rowId: UUID!) {
   task(rowId: $rowId) {
     rowId
@@ -12157,7 +12237,12 @@ export const TaskDocument = `
     }
   }
 }
-    ${LabelFragmentDoc}`;
+    fragment Label on Label {
+  color
+  icon
+  name
+  rowId
+}`);
 
 export const useTaskQuery = <
       TData = TaskQuery,
@@ -12240,7 +12325,7 @@ useSuspenseInfiniteTaskQuery.getKey = (variables: TaskQueryVariables) => ['Task.
 
 useTaskQuery.fetcher = (variables: TaskQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TaskQuery, TaskQueryVariables>(TaskDocument, variables, options);
 
-export const TaskByNumberDocument = `
+export const TaskByNumberDocument = new TypedDocumentString(`
     query TaskByNumber($projectId: UUID!, $number: Int!) {
   taskByProjectIdAndNumber(projectId: $projectId, number: $number) {
     rowId
@@ -12248,7 +12333,7 @@ export const TaskByNumberDocument = `
     content
   }
 }
-    `;
+    `);
 
 export const useTaskByNumberQuery = <
       TData = TaskByNumberQuery,
@@ -12331,7 +12416,7 @@ useSuspenseInfiniteTaskByNumberQuery.getKey = (variables: TaskByNumberQueryVaria
 
 useTaskByNumberQuery.fetcher = (variables: TaskByNumberQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TaskByNumberQuery, TaskByNumberQueryVariables>(TaskByNumberDocument, variables, options);
 
-export const TasksDocument = `
+export const TasksDocument = new TypedDocumentString(`
     query Tasks($projectId: UUID!, $search: String = "", $assignees: TaskToManyAssigneeFilter, $labels: TaskToManyTaskLabelFilter, $priorities: [String!]) {
   tasks(
     filter: {projectId: {equalTo: $projectId}, content: {includesInsensitive: $search}, assignees: $assignees, taskLabels: $labels, priority: {in: $priorities}}
@@ -12342,7 +12427,47 @@ export const TasksDocument = `
     }
   }
 }
-    ${TaskFragmentDoc}`;
+    fragment Label on Label {
+  color
+  icon
+  name
+  rowId
+}
+fragment Task on Task {
+  rowId
+  number
+  columnId
+  columnIndex
+  content
+  description
+  priority
+  dueDate
+  taskLabels {
+    nodes {
+      label {
+        ...Label
+      }
+    }
+  }
+  assignees {
+    nodes {
+      taskId
+      userId
+      user {
+        rowId
+        identityProviderId
+        name
+        avatarUrl
+      }
+    }
+  }
+  posts {
+    totalCount
+  }
+  attachments {
+    totalCount
+  }
+}`);
 
 export const useTasksQuery = <
       TData = TasksQuery,
@@ -12425,7 +12550,7 @@ useSuspenseInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tas
 
 useTasksQuery.fetcher = (variables: TasksQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables, options);
 
-export const UserPreferencesDocument = `
+export const UserPreferencesDocument = new TypedDocumentString(`
     query UserPreferences($userId: UUID!, $projectId: UUID!) {
   userPreferenceByUserIdAndProjectId(userId: $userId, projectId: $projectId) {
     hiddenColumnIds
@@ -12433,7 +12558,7 @@ export const UserPreferencesDocument = `
     rowId
   }
 }
-    `;
+    `);
 
 export const useUserPreferencesQuery = <
       TData = UserPreferencesQuery,
@@ -12516,13 +12641,13 @@ useSuspenseInfiniteUserPreferencesQuery.getKey = (variables: UserPreferencesQuer
 
 useUserPreferencesQuery.fetcher = (variables: UserPreferencesQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserPreferencesQuery, UserPreferencesQueryVariables>(UserPreferencesDocument, variables, options);
 
-export const ObserverDocument = `
+export const ObserverDocument = new TypedDocumentString(`
     query Observer {
   observer {
     rowId
   }
 }
-    `;
+    `);
 
 export const useObserverQuery = <
       TData = ObserverQuery,
@@ -12605,7 +12730,7 @@ useSuspenseInfiniteObserverQuery.getKey = (variables?: ObserverQueryVariables) =
 
 useObserverQuery.fetcher = (variables?: ObserverQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ObserverQuery, ObserverQueryVariables>(ObserverDocument, variables, options);
 
-export const UserDocument = `
+export const UserDocument = new TypedDocumentString(`
     query User($userId: UUID!) {
   user(rowId: $userId) {
     rowId
@@ -12613,7 +12738,7 @@ export const UserDocument = `
     email
   }
 }
-    `;
+    `);
 
 export const useUserQuery = <
       TData = UserQuery,
@@ -12696,13 +12821,13 @@ useSuspenseInfiniteUserQuery.getKey = (variables: UserQueryVariables) => ['User.
 
 useUserQuery.fetcher = (variables: UserQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserQuery, UserQueryVariables>(UserDocument, variables, options);
 
-export const UserByIdentityProviderIdDocument = `
+export const UserByIdentityProviderIdDocument = new TypedDocumentString(`
     query UserByIdentityProviderId($identityProviderId: UUID!) {
   userByIdentityProviderId(identityProviderId: $identityProviderId) {
     rowId
   }
 }
-    `;
+    `);
 
 export const useUserByIdentityProviderIdQuery = <
       TData = UserByIdentityProviderIdQuery,
