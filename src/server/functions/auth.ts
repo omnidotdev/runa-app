@@ -1,3 +1,4 @@
+import { buildIdpLogoutUrl } from "@omnidotdev/providers/auth";
 import { redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest, setCookie } from "@tanstack/react-start/server";
@@ -5,7 +6,6 @@ import { getRequest, setCookie } from "@tanstack/react-start/server";
 import auth from "@/lib/auth/auth";
 import { authCache } from "@/lib/auth/authCache";
 import { getAuth } from "@/lib/auth/getAuth";
-import { buildIdpLogoutUrl } from "@/lib/auth/idpLogout";
 import {
   AUTH_BASE_URL,
   AUTH_CLIENT_ID,
