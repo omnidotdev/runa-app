@@ -23,6 +23,7 @@ import {
   useTasksQuery,
 } from "@/generated/graphql";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
+import { getMutationErrorMessage } from "@/lib/graphql/getMutationErrorMessage";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
@@ -210,7 +211,11 @@ const CreateTaskDialog = () => {
       toast.promise(createTaskOperation(), {
         loading: "Creating task...",
         success: "Task created successfully!",
-        error: "Failed to create task. Please try again.",
+        error: (error) =>
+          getMutationErrorMessage(
+            error,
+            "Failed to create task. Please try again.",
+          ),
       });
 
       formApi.reset();

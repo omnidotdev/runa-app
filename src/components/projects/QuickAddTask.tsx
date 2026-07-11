@@ -8,6 +8,7 @@ import {
   useProjectQuery,
   useTasksQuery,
 } from "@/generated/graphql";
+import { getMutationErrorMessage } from "@/lib/graphql/getMutationErrorMessage";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import { keyBetween } from "@/lib/util/fractionalKey";
@@ -106,7 +107,11 @@ const QuickAddTask = ({
       toast.promise(create(), {
         loading: "Creating task...",
         success: "Task created successfully!",
-        error: "Failed to create task. Please try again.",
+        error: (error) =>
+          getMutationErrorMessage(
+            error,
+            "Failed to create task. Please try again.",
+          ),
       });
 
       // Clear optimistically so the row is immediately ready for the next entry
