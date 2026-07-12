@@ -20,10 +20,14 @@ const theme: EditorThemeClasses = {
     nested: {
       listitem: "list-none",
     },
+    // The checkbox ::before must sit at the list item's left edge, inside its
+    // box, with a real width: Lexical toggles a checklist item only when the
+    // click lands in [li.left, li.left + ::before width]. A negative-offset
+    // ::before renders the checkmark outside that region, making it unclickable.
     listitemChecked:
-      "relative ml-2 list-none line-through text-base-500 dark:text-base-400 before:absolute before:-left-6 before:content-['✓'] before:text-primary-500",
+      "relative list-none pl-6 line-through text-base-500 dark:text-base-400 before:absolute before:top-1 before:left-0 before:h-4 before:w-4 before:cursor-pointer before:text-center before:leading-4 before:content-['✓'] before:text-primary-500",
     listitemUnchecked:
-      "relative ml-2 list-none before:absolute before:-left-6 before:content-['○'] before:text-base-400",
+      "relative list-none pl-6 before:absolute before:top-1 before:left-0 before:h-4 before:w-4 before:cursor-pointer before:text-center before:leading-4 before:content-['○'] before:text-base-400",
   },
   link: "text-primary-500 hover:underline cursor-pointer",
   code: "block bg-base-50 dark:bg-base-950 border-x border-b rounded-b-lg p-4 text-sm font-mono overflow-x-auto",
