@@ -154,9 +154,17 @@ const UpdateAssignees = withForm({
                 />
               )}
 
-              {/* Show a hint when at limit on multi-assignee tiers */}
-              {atLimit && maxAssignees > 1 && maxAssignees < Infinity && (
-                <p className="text-muted-foreground text-xs">
+              {/* On capped multi-assignee tiers, always reserve the hint's
+                  space so toggling it at the limit doesn't shift the layout;
+                  only its visibility changes. */}
+              {maxAssignees > 1 && maxAssignees < Infinity && (
+                <p
+                  aria-hidden={!atLimit}
+                  className={cn(
+                    "text-muted-foreground text-xs",
+                    !atLimit && "invisible",
+                  )}
+                >
                   Max {maxAssignees} assignees reached — deselect someone to
                   swap.
                 </p>
