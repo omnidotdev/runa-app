@@ -113,11 +113,14 @@ const UpdateCommentForm = ({ post, isActive, onSetActive }: Props) => {
               field.handleChange(getHTML());
             }}
             className={cn(
-              "field-sizing-content mt-1 flex h-auto min-h-9 w-full rounded-xl px-3 py-2 text-sm outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40",
-              !isActive
-                ? "pointer-events-none resize-none border-0 shadow-none transition-none focus-visible:ring-0"
-                : "bg-background",
+              "mt-1 w-full text-foreground text-sm transition-[color,box-shadow]",
+              isActive
+                ? "rounded-lg bg-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-1 focus-within:ring-offset-background"
+                : "pointer-events-none min-h-0 border-0 p-0 shadow-none",
             )}
+            editorClassName={
+              isActive ? "max-h-64 min-h-[44px] overflow-y-auto" : "min-h-0"
+            }
             skeletonClassName="mt-1 h-9 w-full"
             tabIndex={isActive ? 0 : -1}
             editable={isActive}

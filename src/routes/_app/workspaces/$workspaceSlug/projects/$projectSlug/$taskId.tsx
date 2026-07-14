@@ -192,6 +192,7 @@ function PublicTaskView() {
           <RichTextEditor
             defaultContent={task?.content}
             className="min-h-0 border-0 bg-transparent p-0 font-semibold text-2xl dark:bg-transparent"
+            editorClassName="min-h-0"
             skeletonClassName="h-8 min-w-40"
             editable={false}
           />
@@ -201,6 +202,7 @@ function PublicTaskView() {
               <RichTextEditor
                 defaultContent={task.description}
                 className="min-h-0 border-0 bg-transparent p-0 dark:bg-transparent"
+                editorClassName="min-h-0"
                 editable={false}
               />
             </div>
@@ -400,6 +402,7 @@ function AuthenticatedTaskPage() {
           <RichTextEditor
             defaultContent={task?.content}
             className="min-h-0 border-0 bg-transparent p-0 font-semibold text-2xl outline-none hover:outline-none dark:bg-transparent"
+            editorClassName="min-h-0"
             skeletonClassName="h-8 min-w-40"
             editable={canEdit}
             hideToolbar

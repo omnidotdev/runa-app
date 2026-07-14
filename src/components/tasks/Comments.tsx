@@ -211,6 +211,7 @@ const Comments = () => {
                         <RichTextEditor
                           defaultContent={post.description!}
                           className="min-h-0 border-0 p-0 px-3 py-2 text-foreground text-sm"
+                          editorClassName="min-h-0"
                           skeletonClassName="h-[38.75px]"
                           editable={false}
                         />
