@@ -12,17 +12,13 @@ import {
   SlidersHorizontalIcon,
   Trash2Icon,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useDebounceCallback } from "usehooks-ts";
 
 import { Link, RichTextEditor } from "@/components/core";
 import { NotFound } from "@/components/layout";
-import {
-  AttachmentsSection,
-  Comments,
-  CreateComment,
-} from "@/components/tasks";
+import { AttachmentsSection, Comments } from "@/components/tasks";
 import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
 import TaskKey from "@/components/tasks/TaskKey";
 import TaskProperties from "@/components/tasks/TaskProperties";
@@ -49,7 +45,6 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { buildTaskKey, parseTaskParam, stripMarkup } from "@/lib/util/taskUrl";
 
-import type { EditorApi } from "@/components/core";
 import type { TaskQuery } from "@/generated/graphql";
 
 export const Route = createFileRoute(
@@ -244,9 +239,6 @@ function AuthenticatedTaskPage() {
   const matches = useViewportSize({ breakpoint: Breakpoint.Large });
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
 
-  // shared handle so the empty-state prompt can focus the comment composer
-  const commentEditorApi = useRef<EditorApi | null>(null);
-
   // Get role from IDP organization claims
   const role = useCurrentUserRole(organizationId);
   const isMember = role === Role.Member;
@@ -440,8 +432,7 @@ function AuthenticatedTaskPage() {
             organizationId={organizationId}
             editable={canEdit}
           />
-          <Comments onAddComment={() => commentEditorApi.current?.focus()} />
-          <CreateComment editorApi={commentEditorApi} />
+          <Comments />
         </div>
 
         <aside className="hidden lg:block">

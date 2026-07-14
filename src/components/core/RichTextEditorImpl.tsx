@@ -31,6 +31,8 @@ export interface RichTextEditorProps
   editable?: boolean;
   placeholder?: string;
   skeletonClassName?: string;
+  /** Class applied to the editable surface (e.g. to set a compact min-height). */
+  editorClassName?: string;
   /** Hide the formatting toolbar (e.g. for single-line title fields). */
   hideToolbar?: boolean;
   /** When set, pasted/dropped images upload to this task (and optional comment) and embed inline. */

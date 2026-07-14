@@ -7,10 +7,11 @@ import { CardContent, CardHeader, CardRoot } from "@omnidotdev/thornberry/card";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { MoreHorizontalIcon, PenLineIcon, Trash2Icon } from "lucide-react";
 import { Suspense, useEffect, useRef, useState } from "react";
 
-import { RichTextEditor } from "@/components/core";
+import { RichTextEditor, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -33,15 +34,15 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import taskOptions from "@/lib/options/task.options";
 import { cn } from "@/lib/utils";
 import CommentEmojiPicker from "./CommentEmojiPicker";
+import CreateComment from "./CreateComment";
 import PostEmojis from "./PostEmojis";
 import UpdateCommentForm from "./UpdateCommentForm";
 
-interface CommentsProps {
-  /** Focus the comment composer rendered below the list */
-  onAddComment?: () => void;
-}
+import type { EditorApi } from "@/components/core";
 
-const Comments = ({ onAddComment }: CommentsProps) => {
+dayjs.extend(relativeTime);
+
+const Comments = () => {
   const { taskId } = useLoaderData({
     from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
   });
@@ -60,6 +61,11 @@ const Comments = ({ onAddComment }: CommentsProps) => {
 
   const endRef = useRef<HTMLDivElement | null>(null);
   const prevLengthRef = useRef<number>(task?.posts?.nodes?.length ?? 0);
+
+  // shared handle so the empty-state prompt can focus the composer footer
+  const commentEditorApi = useRef<EditorApi | null>(null);
+
+  const commentCount = task?.posts?.nodes?.length ?? 0;
 
   const taskQueryKey = taskOptions({ rowId: taskId }).queryKey;
 
@@ -91,14 +97,19 @@ const Comments = ({ onAddComment }: CommentsProps) => {
   return (
     <>
       <CardRoot className="p-0 shadow-none">
-        <CardHeader className="flex h-10 flex-row items-center justify-between rounded-t-xl border-b bg-base-50 px-3 dark:bg-base-800">
+        <CardHeader className="flex h-10 flex-row items-center gap-2 rounded-t-xl border-b bg-base-50 px-3 dark:bg-base-800">
           <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
             Comments
           </h3>
+          {commentCount > 0 && (
+            <span className="rounded-full bg-base-200 px-1.5 py-0.5 font-medium text-base-600 text-xs tabular-nums dark:bg-base-700 dark:text-base-300">
+              {commentCount}
+            </span>
+          )}
         </CardHeader>
 
         <CardContent className="no-scrollbar max-h-120 overflow-auto p-0">
-          {task?.posts?.nodes?.length ? (
+          {commentCount ? (
             <div className="grid gap-0">
               {task?.posts?.nodes?.map((post, index) => {
                 const isUsersPost = post.authorId === session?.user?.rowId;
@@ -128,9 +139,16 @@ const Comments = ({ onAddComment }: CommentsProps) => {
                           {post?.author?.name ?? "Anonymous"}
                         </span>
 
-                        <span className="text-base-500 text-xs dark:text-base-400">
-                          {dayjs(post.createdAt).format("MMM D, YYYY")}
-                        </span>
+                        <Tooltip
+                          tooltip={dayjs(post.createdAt).format(
+                            "MMM D, YYYY [at] h:mm A",
+                          )}
+                          trigger={
+                            <span className="cursor-default text-base-500 text-xs dark:text-base-400">
+                              {dayjs(post.createdAt).fromNow()}
+                            </span>
+                          }
+                        />
 
                         <div className="ml-auto flex items-center gap-2">
                           {isUsersPost && (
@@ -211,11 +229,11 @@ const Comments = ({ onAddComment }: CommentsProps) => {
               <div ref={endRef} />
             </div>
           ) : (
-            <p className="mx-auto flex place-self-center p-4 text-muted-foreground text-sm">
+            <p className="flex items-center justify-center p-4 text-muted-foreground text-sm">
               <Button
                 variant="link"
                 className="h-auto p-0 align-baseline text-sm"
-                onClick={onAddComment}
+                onClick={() => commentEditorApi.current?.focus()}
               >
                 Add a comment
               </Button>
@@ -223,6 +241,10 @@ const Comments = ({ onAddComment }: CommentsProps) => {
             </p>
           )}
         </CardContent>
+
+        <div className="border-t p-3">
+          <CreateComment editorApi={commentEditorApi} />
+        </div>
       </CardRoot>
 
       <DialogRoot
