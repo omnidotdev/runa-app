@@ -17,8 +17,12 @@ const theme: EditorThemeClasses = {
     ul: "list-disc ml-4 mb-2",
     ol: "list-decimal ml-4 mb-2",
     listitem: "mb-1",
+    // The wrapper <li> that holds a nested list must not draw its own marker.
+    // Lexical still applies listitemChecked/Unchecked to it in a checklist, so
+    // list-none alone leaves the checkbox ::before behind (a doubled marker on
+    // indent): suppress the pseudo-element too, matching the Lexical playground.
     nested: {
-      listitem: "list-none",
+      listitem: "list-none before:hidden after:hidden",
     },
     // The checkbox ::before must sit at the list item's left edge, inside its
     // box, with a real width: Lexical toggles a checklist item only when the
