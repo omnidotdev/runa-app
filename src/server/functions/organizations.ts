@@ -32,6 +32,24 @@ export const createOrganization = createServerFn({ method: "POST" })
     return gatekeeperOrg.createOrganization(data, accessToken);
   });
 
+const checkWorkspaceHandleSchema = z.object({
+  slug: z.string().min(1),
+});
+
+/**
+ * Check whether a workspace handle (slug) is available across the ecosystem
+ * namespace. Backs live validation in the create-workspace form. Public
+ * check, so no auth middleware
+ * @knipignore
+ */
+export const checkWorkspaceHandleAvailability = createServerFn({
+  method: "GET",
+})
+  .inputValidator((data) => checkWorkspaceHandleSchema.parse(data))
+  .handler(async ({ data }) => {
+    return gatekeeperOrg.checkNamespaceAvailability(data.slug);
+  });
+
 const resendOrganizationInvitationSchema = z.object({
   organizationId: z.string(),
   email: z.string().email(),

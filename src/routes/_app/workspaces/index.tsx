@@ -7,6 +7,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { ExternalLinkIcon, InfoIcon, LayersIcon } from "lucide-react";
 
 import { Link } from "@/components/core";
+import CreateWorkspaceButton from "@/components/workspaces/CreateWorkspaceButton";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { useOrganization } from "@/providers/OrganizationProvider";
@@ -56,22 +57,12 @@ function WorkspacesOverviewPage() {
           <LayersIcon className="size-12 text-base-500 dark:text-base-400" />
 
           <h1 className="text-pretty text-center font-semibold text-2xl text-base-900 dark:text-base-100">
-            {organizations.length ? (
-              "Select a workspace"
-            ) : AUTH_BASE_URL ? (
-              <>
-                <a
-                  href={AUTH_BASE_URL}
-                  className="text-primary hover:underline"
-                >
-                  Create a workspace
-                </a>{" "}
-                to get started
-              </>
-            ) : (
-              "Create a workspace to get started"
-            )}
+            {organizations.length
+              ? "Select a workspace"
+              : "Create a workspace to get started"}
           </h1>
+
+          {!!organizations.length && <CreateWorkspaceButton />}
         </div>
       </div>
 
@@ -117,12 +108,19 @@ function WorkspacesOverviewPage() {
             <InfoIcon className="size-6 text-base-500" />
             <div className="space-y-2">
               <p className="text-base-700 text-sm dark:text-base-300">
-                Workspaces are currently managed via Omni Organizations.
+                {organizations.length
+                  ? "Need another workspace? Create one below."
+                  : "Create your first workspace to get started."}
               </p>
               <p className="text-base-500 text-xs">
-                This experience will be improved soon.
+                A workspace is where your projects and tasks live.
               </p>
             </div>
+
+            <CreateWorkspaceButton>
+              {organizations.length ? "New workspace" : "Create workspace"}
+            </CreateWorkspaceButton>
+
             {AUTH_BASE_URL && (
               <a
                 href={AUTH_BASE_URL}
