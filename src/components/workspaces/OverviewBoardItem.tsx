@@ -31,6 +31,7 @@ const OverviewBoardItem = ({ project }: Props) => {
 
   return (
     <div
+      className="h-full"
       onClick={() =>
         navigate({
           to: "/workspaces/$workspaceSlug/projects/$projectSlug",
