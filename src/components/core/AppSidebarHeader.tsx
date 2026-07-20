@@ -27,7 +27,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import app from "@/lib/config/app.config";
-import { AUTH_BASE_URL, CONSOLE_URL } from "@/lib/config/env.config";
+import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 import { useOrganization } from "@/providers/OrganizationProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
@@ -43,6 +43,9 @@ const AppSidebarHeader = () => {
 
   // Get user's organizations from context
   const organizations = orgContext?.organizations ?? [];
+
+  // Org/workspace lifecycle lives on the Gatekeeper identity dashboard
+  const orgDashboardUrl = AUTH_BASE_URL ? `${AUTH_BASE_URL}/dashboard` : "";
 
   // Resolve current org from URL slug. Sidebar is rendered by `_app.tsx`
   // (above `$workspaceSlug.tsx` in the chain), so we cannot read the
@@ -146,13 +149,13 @@ const AppSidebarHeader = () => {
                 All Workspaces
               </MenuItem>
 
-              {AUTH_BASE_URL && (
+              {orgDashboardUrl && (
                 <MenuItem
                   asChild
                   className="mt-1 cursor-pointer gap-2 px-2 py-1"
                   value="manage-organizations"
                 >
-                  <a href={CONSOLE_URL || AUTH_BASE_URL}>
+                  <a href={orgDashboardUrl}>
                     <PlusIcon className="size-4" />
                     Manage Organizations
                   </a>
@@ -162,12 +165,12 @@ const AppSidebarHeader = () => {
           </MenuPositioner>
         </MenuRoot>
       ) : (
-        AUTH_BASE_URL && (
+        orgDashboardUrl && (
           <SidebarMenuButton
             asChild
             className="border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
           >
-            <a href={CONSOLE_URL || AUTH_BASE_URL}>
+            <a href={orgDashboardUrl}>
               <PlusIcon />
 
               <span>Manage Organizations</span>

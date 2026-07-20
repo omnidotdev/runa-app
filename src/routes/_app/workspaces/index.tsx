@@ -123,7 +123,7 @@ function WorkspacesOverviewPage() {
 
             {AUTH_BASE_URL && (
               <a
-                href={AUTH_BASE_URL}
+                href={`${AUTH_BASE_URL}/dashboard`}
                 className="inline-flex items-center gap-2 text-primary text-sm hover:underline"
               >
                 Manage Organizations

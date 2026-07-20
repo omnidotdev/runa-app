@@ -1,3 +1,4 @@
+import { ManageTeamLink } from "@omnidotdev/providers/react";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import {
   Table,
@@ -10,10 +11,11 @@ import {
 import { Building2 } from "lucide-react";
 
 import { Link } from "@/components/core";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { Role } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
+import { cn } from "@/lib/utils";
 
 import type { OrganizationClaim } from "@omnidotdev/providers/auth";
 
@@ -35,7 +37,7 @@ const WorkspacesTable = ({ organizations }: Props) => {
         <p>
           No current workspaces.{" "}
           <a
-            href={`${AUTH_BASE_URL}/profile`}
+            href={`${AUTH_BASE_URL}/dashboard`}
             className="p-0 text-md text-primary-600 underline"
           >
             Create a workspace
@@ -86,24 +88,17 @@ const WorkspacesTable = ({ organizations }: Props) => {
                   >
                     Settings
                   </Link>
-                  {userRole === Role.Owner ? (
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
+                  {AUTH_BASE_URL && org.slug && (
+                    <ManageTeamLink
+                      identityBaseUrl={AUTH_BASE_URL}
+                      orgSlug={org.slug}
+                      className={cn(
+                        buttonVariants({ variant: "outline", size: "sm" }),
+                        "hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300",
+                      )}
                     >
-                      <a href={`${AUTH_BASE_URL}/profile`}>Manage</a>
-                    </Button>
-                  ) : (
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      className="hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:hover:border-red-800 dark:hover:bg-red-950 dark:hover:text-red-300"
-                    >
-                      <a href={`${AUTH_BASE_URL}/profile`}>Leave</a>
-                    </Button>
+                      {userRole === Role.Owner ? "Manage" : "Leave"}
+                    </ManageTeamLink>
                   )}
                 </div>
               </TableCell>
