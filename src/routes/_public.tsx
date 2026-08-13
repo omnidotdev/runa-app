@@ -1,10 +1,14 @@
+import {
+  SiGithub as GithubIcon,
+  SiX as XIcon,
+} from "@icons-pack/react-simple-icons";
+import { AppFooter } from "@omnidotdev/thornberry/app-footer";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { XIcon as CloseIcon, MenuIcon } from "lucide-react";
 import { useState } from "react";
-import { FaLinkedin as LinkedinIcon } from "react-icons/fa";
-import { LuGithub as GithubIcon } from "react-icons/lu";
-import { SiDiscord as DiscordIcon, SiX as XIcon } from "react-icons/si";
+import { FaLinkedin as LinkedInIcon } from "react-icons/fa6";
+import { SiDiscord as DiscordIcon } from "react-icons/si";
 
 import { Link, Logo, ThemeToggle } from "@/components/core";
 import { ShootingStars } from "@/components/landing";
@@ -236,96 +240,46 @@ function PublicLayout() {
         </main>
 
         {/* Footer */}
-        <footer className="relative border-base-200/50 border-t bg-base-50/50 backdrop-blur-sm dark:border-base-800/50 dark:bg-base-950/50">
-          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-            <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-              {/* Brand */}
-              <div className="flex items-center gap-2">
-                <Logo className="size-6 text-primary-500 opacity-60" />
-                <span className="text-base-500 text-sm">
-                  Made with 🌙 by{" "}
-                  <a
-                    href="https://omni.dev"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-foreground transition-colors hover:text-primary-500"
-                  >
-                    {app.organization.name}
-                  </a>
-                </span>
-              </div>
+        <AppFooter
+          className="relative border-base-200/50 border-t bg-base-50/50 backdrop-blur-sm dark:border-base-800/50 dark:bg-base-950/50"
+          appLogo={<Logo className="size-4 text-primary-500" />}
+          appSymbol={app.icon}
+          docsUrl={app.links.docs}
+          orgUrl={app.organization.url}
+          socials={
+            <>
+              <a
+                href={app.links.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                className="rounded px-2 py-1 transition-colors hover:text-foreground"
+              >
+                <GithubIcon className="size-5" />
+              </a>
 
-              <div className="flex items-center gap-6 text-sm">
-                <a
-                  href={app.legal.privacy}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-base-500 transition-colors hover:text-foreground"
-                >
-                  Privacy
-                </a>
-                <a
-                  href={app.legal.terms}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-base-500 transition-colors hover:text-foreground"
-                >
-                  Terms
-                </a>
-                <a
-                  href={app.legal.cookies}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-base-500 transition-colors hover:text-foreground"
-                >
-                  Cookies
-                </a>
-              </div>
+              <a
+                href={app.organization.x}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="X"
+                className="rounded px-2 py-1 transition-colors hover:text-foreground"
+              >
+                <XIcon className="size-5" />
+              </a>
 
-              <div className="flex items-center gap-6">
-                <a
-                  href={app.links.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-base-500 transition-colors hover:text-foreground"
-                >
-                  <GithubIcon size={20} />
-                </a>
-                <a
-                  href={app.organization.x}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-base-500 transition-colors hover:text-foreground"
-                >
-                  <XIcon size={20} />
-                </a>
-                <a
-                  href={app.organization.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-base-500 transition-colors hover:text-foreground"
-                >
-                  <LinkedinIcon size={20} />
-                </a>
-              </div>
-
-              <p className="text-base-500 text-sm">
-                &copy; {new Date().getFullYear()}{" "}
-                {/* TODO improve, this is strange DX; <a> used elsewhere for simplicity */}
-                <Link
-                  variant="link"
-                  className="p-0"
-                  to={app.organization.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {app.organization.name}
-                </Link>
-                . All rights reserved.
-              </p>
-            </div>
-          </div>
-        </footer>
+              <a
+                href={app.organization.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="rounded px-2 py-1 transition-colors hover:text-foreground"
+              >
+                <LinkedInIcon className="size-5" />
+              </a>
+            </>
+          }
+        />
       </div>
     </div>
   );

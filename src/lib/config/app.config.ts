@@ -3,9 +3,12 @@
  */
 const app = {
   name: "Runa",
+  // Catalog symbol (mirrors omni-api catalog SSOT)
+  icon: "🌙",
   description: "🌙 Lunar plans, stellar execution",
   organization: {
     name: "Omni",
+    url: "https://omni.dev",
     website: "https://omni.dev",
     discord: "https://discord.gg/omnidotdev",
     x: "https://x.com/omnidotdev",
