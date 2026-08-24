@@ -49,7 +49,7 @@ const QuickAddTask = ({
   });
 
   const { queryClient } = useRouteContext({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/@$workspaceSlug/$projectSlug/",
   });
 
   const { mutateAsync: addNewTask } = useCreateTaskMutation();

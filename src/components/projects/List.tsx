@@ -50,11 +50,11 @@ const List = ({
   }, [tasks]);
 
   const { projectId, organizationId } = useLoaderData({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/@$workspaceSlug/$projectSlug/",
   });
 
   const { session } = useRouteContext({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/@$workspaceSlug/$projectSlug/",
   });
 
   const { setColumnId, setHoveredColumnId, setFocusedColumnId } =
@@ -189,6 +189,7 @@ const List = ({
                           task={task}
                           index={index}
                           displayId={`${project?.prefix ?? "PROJ"}-${task.number}`}
+                          prefix={project?.prefix}
                         />
                       ))
                     )}

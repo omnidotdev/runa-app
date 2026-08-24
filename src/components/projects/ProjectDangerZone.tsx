@@ -6,9 +6,7 @@ import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import { Role } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
-const routeApi = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-);
+const routeApi = getRouteApi("/_app/@$workspaceSlug/$projectSlug/~/settings");
 
 export default function ProjectDangerZone() {
   const { organizationId } = routeApi.useLoaderData();

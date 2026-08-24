@@ -32,16 +32,16 @@ const AppSidebarContent = () => {
 
   const workspaceMenuItems: SidebarMenuItemType[] = [
     {
-      isActive: pathname === `/workspaces/${workspaceSlug}/projects`,
+      isActive: pathname === `/@${workspaceSlug}`,
       tooltip: "Projects Overview",
-      to: "/workspaces/$workspaceSlug/projects",
+      to: "/@$workspaceSlug",
       icon: LayersIcon,
       label: "All Projects",
     },
     {
-      isActive: pathname === `/workspaces/${workspaceSlug}/settings`,
+      isActive: pathname === `/@${workspaceSlug}/~/settings`,
       tooltip: "Workspace Settings",
-      to: "/workspaces/$workspaceSlug/settings",
+      to: "/@$workspaceSlug/~/settings",
       icon: Settings2Icon,
       label: "Settings",
     },

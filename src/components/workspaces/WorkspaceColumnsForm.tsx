@@ -47,7 +47,7 @@ const ProjectColumnsForm = () => {
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
 
   const { organizationId } = useLoaderData({
-    from: "/_app/workspaces/$workspaceSlug/settings",
+    from: "/_app/@$workspaceSlug/~/settings",
   });
 
   // Get role from IDP organization claims

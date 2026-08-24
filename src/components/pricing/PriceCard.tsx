@@ -142,7 +142,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
       } else {
         const firstOrg = session.organizations[0];
         navigate({
-          to: "/workspaces/$workspaceSlug/projects",
+          to: "/@$workspaceSlug",
           params: { workspaceSlug: firstOrg.slug },
         });
       }

@@ -15,7 +15,7 @@ interface Props {
 
 const ListItem = ({ project }: Props) => {
   const { workspaceSlug } = useParams({
-    from: "/_app/workspaces/$workspaceSlug/projects/",
+    from: "/_app/@$workspaceSlug/",
   });
 
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const ListItem = ({ project }: Props) => {
       className="cursor-pointer border-b p-4 last:border-b-0"
       onClick={() =>
         navigate({
-          to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+          to: "/@$workspaceSlug/$projectSlug",
           params: {
             workspaceSlug,
             projectSlug: project.slug,

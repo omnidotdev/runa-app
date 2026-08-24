@@ -29,7 +29,7 @@ const CommentEmojiPicker = ({ postId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { session } = useRouteContext({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/@$workspaceSlug/$projectSlug/$taskId",
   });
 
   const { theme } = useTheme();

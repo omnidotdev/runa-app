@@ -48,9 +48,7 @@ const projectsSearchSchema = z.object({
   search: z.string().default(""),
 });
 
-export const Route = createFileRoute(
-  "/_app/workspaces/$workspaceSlug/projects/",
-)({
+export const Route = createFileRoute("/_app/@$workspaceSlug/")({
   validateSearch: zodValidator(projectsSearchSchema),
   search: {
     middlewares: [stripSearchParams({ search: "" })],
@@ -89,7 +87,7 @@ export const Route = createFileRoute(
       ...createMetaTags({
         title: "Projects",
         description: "Manage and track all projects for this workspace.",
-        url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects`,
+        url: `${BASE_URL}/@${params.workspaceSlug}`,
       }),
     ],
   }),

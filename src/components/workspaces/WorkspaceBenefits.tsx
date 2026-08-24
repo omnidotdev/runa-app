@@ -29,7 +29,7 @@ import {
   renewSubscription,
 } from "@/server/functions/subscriptions";
 
-const routeApi = getRouteApi("/_app/workspaces/$workspaceSlug/settings");
+const routeApi = getRouteApi("/_app/@$workspaceSlug/~/settings");
 
 export default function WorkspaceBenefits() {
   const { organizationId, subscription, prices } = routeApi.useLoaderData();
@@ -50,7 +50,7 @@ export default function WorkspaceBenefits() {
       await getBillingPortalUrl({
         data: {
           organizationId,
-          returnUrl: `${BASE_URL}/workspaces/${orgSlug}/settings`,
+          returnUrl: `${BASE_URL}/@${orgSlug}/~/settings`,
         },
       }),
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
@@ -62,7 +62,7 @@ export default function WorkspaceBenefits() {
         data: {
           organizationId,
           priceId,
-          successUrl: `${BASE_URL}/workspaces/${orgSlug}/settings`,
+          successUrl: `${BASE_URL}/@${orgSlug}/~/settings`,
         },
       }),
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),

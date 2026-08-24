@@ -25,11 +25,11 @@ const UpdateCommentForm = ({ post, isActive, onSetActive }: Props) => {
   const editorApi = useRef<EditorApi | null>(null);
 
   const { taskId } = useLoaderData({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/@$workspaceSlug/$projectSlug/$taskId",
   });
 
   const { session } = useRouteContext({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/@$workspaceSlug/$projectSlug/$taskId",
   });
 
   const queryClient = useQueryClient();

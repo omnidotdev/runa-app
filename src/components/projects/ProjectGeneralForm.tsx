@@ -35,9 +35,7 @@ import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
-const routeApi = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-);
+const routeApi = getRouteApi("/_app/@$workspaceSlug/$projectSlug/~/settings");
 
 export default function ProjectGeneralForm() {
   const { workspaceSlug, projectSlug } = routeApi.useParams();
@@ -68,7 +66,7 @@ export default function ProjectGeneralForm() {
     onSuccess: (_data, variables) => {
       if (variables.patch.slug && variables.patch.slug !== projectSlug) {
         navigate({
-          to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+          to: "/@$workspaceSlug/$projectSlug/~/settings",
           params: { workspaceSlug, projectSlug: variables.patch.slug },
           replace: true,
         });
@@ -406,7 +404,7 @@ export default function ProjectGeneralForm() {
                   className="size-7"
                   onClick={() => {
                     navigator.clipboard.writeText(
-                      `${BASE_URL}/workspaces/${workspaceSlug}/projects/${projectSlug}?mode=public`,
+                      `${BASE_URL}/@${workspaceSlug}/${projectSlug}?mode=public`,
                     );
                     toast.success("Link copied to clipboard");
                   }}

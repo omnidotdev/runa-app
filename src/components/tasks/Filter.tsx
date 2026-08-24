@@ -44,19 +44,19 @@ import { cn } from "@/lib/utils";
 
 const Filter = () => {
   const { organizationId, projectId } = useLoaderData({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/@$workspaceSlug/$projectSlug/",
   });
 
   const { session } = useRouteContext({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/@$workspaceSlug/$projectSlug/",
   });
 
   const { assignees, labels, priorities } = useSearch({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/@$workspaceSlug/$projectSlug/",
   });
 
   const navigate = useNavigate({
-    from: "/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/@$workspaceSlug/$projectSlug/",
   });
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);

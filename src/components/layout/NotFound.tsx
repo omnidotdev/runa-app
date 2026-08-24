@@ -1,33 +1,23 @@
+import { NotFoundPage } from "@omnidotdev/thornberry/not-found";
+
+import { Logo } from "@/components/core";
+import app from "@/lib/config/app.config";
+
 import type { PropsWithChildren } from "react";
 
 /**
- * 404 not found.
+ * 404 not found. Renders the shared Omni `<NotFoundPage>` (in-shell,
+ * theme-aware, prominent "404"), branded with Runa's wordmark and gear-moon
+ * logomark. Route-level callers pass a label as `children`, surfaced as the
+ * page description (e.g. "Workspace Not Found"); the default copy shows when
+ * none is provided. Home points at the app root.
  */
 const NotFound = ({ children }: PropsWithChildren) => (
-  <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4 p-2">
-    <div className="text-6xl">🌙</div>
-
-    <div className="text-muted-foreground">
-      {children || <p>Page Not Found</p>}
-    </div>
-
-    <p className="flex flex-wrap items-center gap-2">
-      <button
-        type="button"
-        onClick={() => window.history.back()}
-        className="rounded-lg border border-border bg-card px-4 py-2 font-medium text-foreground text-sm transition-colors hover:bg-accent"
-      >
-        Go back
-      </button>
-
-      <a
-        href="/"
-        className="rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90"
-      >
-        Go Home
-      </a>
-    </p>
-  </div>
+  <NotFoundPage
+    appName={app.name}
+    appLogo={<Logo className="size-8 text-primary-500" />}
+    description={children}
+  />
 );
 
 export default NotFound;

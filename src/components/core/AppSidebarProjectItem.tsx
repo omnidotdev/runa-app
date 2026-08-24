@@ -65,8 +65,7 @@ const AppSidebarProjectItem = ({ project }: Props) => {
 
   const isPinned = pinOrder != null;
   const isBoardView = viewMode !== "list";
-  const isActive =
-    pathname === `/workspaces/${workspaceSlug}/projects/${project.slug}`;
+  const isActive = pathname === `/@${workspaceSlug}/${project.slug}`;
 
   const { mutate: updateUserPreference } = useUpdateUserPreferenceMutation({
     meta: {
@@ -118,7 +117,7 @@ const AppSidebarProjectItem = ({ project }: Props) => {
   return (
     <div className="group/menu-item relative">
       <Link
-        to="/workspaces/$workspaceSlug/projects/$projectSlug"
+        to="/@$workspaceSlug/$projectSlug"
         params={{
           workspaceSlug,
           projectSlug: project.slug,
@@ -198,7 +197,7 @@ const AppSidebarProjectItem = ({ project }: Props) => {
 
               <MenuItem value="settings" asChild>
                 <Link
-                  to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
+                  to="/@$workspaceSlug/$projectSlug/~/settings"
                   params={{
                     workspaceSlug,
                     projectSlug: project.slug,

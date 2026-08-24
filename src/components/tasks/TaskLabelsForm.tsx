@@ -22,7 +22,7 @@ const TaskLabelsForm = withForm({
     });
 
     const { organizationId } = useLoaderData({
-      from: "/_app/workspaces/$workspaceSlug",
+      from: "/_app/@$workspaceSlug",
     });
 
     const role = useCurrentUserRole(organizationId);

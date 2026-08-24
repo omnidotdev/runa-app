@@ -78,9 +78,7 @@ const projectSearchParamsSchema = z.object({
   mode: z.enum(["public"]).optional(),
 });
 
-export const Route = createFileRoute(
-  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
-)({
+export const Route = createFileRoute("/_app/@$workspaceSlug/$projectSlug/")({
   pendingComponent: ProjectPageSkeleton,
   pendingMinMs: 500,
   loaderDeps: ({ search: { search, assignees, labels, priorities } }) => ({
@@ -198,7 +196,7 @@ export const Route = createFileRoute(
           ...createMetaTags({
             title: loaderData.name,
             description: `View and manage tasks for ${loaderData.name}.`,
-            url: `${BASE_URL}/workspaces/${params.workspaceSlug}/projects/${params.projectSlug}`,
+            url: `${BASE_URL}/@${params.workspaceSlug}/${params.projectSlug}`,
             image: `${BASE_URL}/api/og/project/${params.workspaceSlug}/${params.projectSlug}`,
           }),
         ]
@@ -530,7 +528,7 @@ function AuthenticatedProjectPage() {
               <h1 className="font-semibold text-2xl">{project?.name}</h1>
               {project?.isPublic && (
                 <Link
-                  to="/workspaces/$workspaceSlug/projects/$projectSlug"
+                  to="/@$workspaceSlug/$projectSlug"
                   params={{ workspaceSlug, projectSlug }}
                   search={{ mode: "public" }}
                   target="_blank"
@@ -606,7 +604,7 @@ function AuthenticatedProjectPage() {
                 tooltip="Project Settings"
                 trigger={
                   <Link
-                    to="/workspaces/$workspaceSlug/projects/$projectSlug/settings"
+                    to="/@$workspaceSlug/$projectSlug/~/settings"
                     params={{
                       workspaceSlug,
                       projectSlug,

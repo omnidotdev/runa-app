@@ -70,7 +70,7 @@ const LabelsEditor = ({
 }) => {
   const queryClient = useQueryClient();
   const { organizationId } = useLoaderData({
-    from: "/_app/workspaces/$workspaceSlug",
+    from: "/_app/@$workspaceSlug",
   });
   const role = useCurrentUserRole(organizationId);
   const canCreate = role !== Role.Member;

@@ -18,9 +18,7 @@ import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationI
 import subscriptionOptions from "@/lib/options/subscription.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 
-export const Route = createFileRoute(
-  "/_app/workspaces/$workspaceSlug/settings",
-)({
+export const Route = createFileRoute("/_app/@$workspaceSlug/~/settings")({
   loader: async ({ context: { session, queryClient, organizationId } }) => {
     if (!organizationId) throw notFound();
 
@@ -75,7 +73,7 @@ export const Route = createFileRoute(
       ...createMetaTags({
         title: "Workspace Settings",
         description: "Settings for this workspace.",
-        url: `${BASE_URL}/workspaces/${params.workspaceSlug}/settings`,
+        url: `${BASE_URL}/@${params.workspaceSlug}/~/settings`,
       }),
     ],
   }),

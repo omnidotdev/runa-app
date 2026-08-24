@@ -19,7 +19,7 @@ interface Props {
 
 const OverviewBoardItem = ({ project }: Props) => {
   const { workspaceSlug } = useParams({
-    from: "/_app/workspaces/$workspaceSlug/projects/",
+    from: "/_app/@$workspaceSlug/",
   });
 
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const OverviewBoardItem = ({ project }: Props) => {
       className="h-full"
       onClick={() =>
         navigate({
-          to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+          to: "/@$workspaceSlug/$projectSlug",
           params: {
             workspaceSlug,
             projectSlug: project.slug,
