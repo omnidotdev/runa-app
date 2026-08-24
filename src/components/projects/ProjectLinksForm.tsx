@@ -23,7 +23,7 @@ const MAX_LINKS = 10;
 
 const ProjectLinksForm = () => {
   const { projectId, organizationId } = useLoaderData({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+    from: "/_app/@$workspaceSlug/$projectSlug/~/settings",
   });
 
   const role = useCurrentUserRole(organizationId);

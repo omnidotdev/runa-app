@@ -41,15 +41,15 @@ import { useOrganization } from "@/providers/OrganizationProvider";
 
 const Projects = () => {
   const { workspaceSlug } = useParams({
-    from: "/_app/workspaces/$workspaceSlug/settings",
+    from: "/_app/@$workspaceSlug/~/settings",
   });
 
   const { organizationId } = useLoaderData({
-    from: "/_app/workspaces/$workspaceSlug/settings",
+    from: "/_app/@$workspaceSlug/~/settings",
   });
 
   const { session } = useRouteContext({
-    from: "/_app/workspaces/$workspaceSlug/settings",
+    from: "/_app/@$workspaceSlug/~/settings",
   });
 
   const [selectedProject, setSelectedProject] = useState<{
@@ -152,7 +152,7 @@ const Projects = () => {
                   className="group flex h-10 w-full cursor-pointer items-center hover:bg-accent"
                   onClick={() =>
                     navigate({
-                      to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+                      to: "/@$workspaceSlug/$projectSlug",
                       params: {
                         workspaceSlug,
                         projectSlug: project.slug,
@@ -207,7 +207,7 @@ const Projects = () => {
                             onClick={(evt) => {
                               evt.stopPropagation();
                               navigate({
-                                to: "/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+                                to: "/@$workspaceSlug/$projectSlug/~/settings",
                                 params: {
                                   workspaceSlug,
                                   projectSlug: project.slug,

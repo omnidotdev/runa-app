@@ -16,7 +16,7 @@ const app = {
     threads: "https://www.threads.com/@omnidotdev",
   },
   links: {
-    docs: "https://docs.omni.dev/core/runa",
+    docs: "https://docs.omni.dev/products/runa",
     github: "https://github.com/omnidotdev/runa-stack",
     feedback: "https://backfeed.omni.dev/workspaces/omni/projects/runa",
   },

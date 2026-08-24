@@ -3,9 +3,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-const routeApi = getRouteApi(
-  "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
-);
+const routeApi = getRouteApi("/_app/@$workspaceSlug/$projectSlug/~/settings");
 
 export default function ProjectSettingsHeader() {
   const { workspaceSlug, projectSlug } = routeApi.useParams();
@@ -24,7 +22,7 @@ export default function ProjectSettingsHeader() {
           canGoBack
             ? router.history.back()
             : navigate({
-                to: "/workspaces/$workspaceSlug/projects/$projectSlug",
+                to: "/@$workspaceSlug/$projectSlug",
                 params: { workspaceSlug, projectSlug },
               })
         }

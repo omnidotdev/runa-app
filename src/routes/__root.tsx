@@ -12,7 +12,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 
 import CommandPalette from "@/components/core/CommandPalette";
-import { DefaultCatchBoundary } from "@/components/layout";
+import { DefaultCatchBoundary, NotFound } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
 import getClientEnv from "@/lib/config/clientEnv";
@@ -159,6 +159,10 @@ export const Route = createRootRouteWithContext<{
     ],
   }),
   errorComponent: DefaultCatchBoundary,
+  // Render 404s in-shell: a thrown `notFound()` renders here inside RootDocument
+  // (globals + layout), not as a bare unstyled page. Pairs with the router's
+  // `defaultNotFoundComponent` for unmatched routes.
+  notFoundComponent: () => <NotFound />,
   component: RootComponent,
 });
 

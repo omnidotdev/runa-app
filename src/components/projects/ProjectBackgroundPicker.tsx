@@ -41,7 +41,7 @@ interface Props {
  */
 const ProjectBackgroundPicker = ({ disabled }: Props) => {
   const { projectId } = useLoaderData({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+    from: "/_app/@$workspaceSlug/$projectSlug/~/settings",
   });
 
   const inputRef = useRef<HTMLInputElement>(null);

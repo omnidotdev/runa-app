@@ -35,7 +35,7 @@ import UpdateAssignees from "./UpdateAssignees";
 export default function UpdateAssigneesDialog() {
   const { taskId: paramsTaskId } = useParams({ strict: false });
   const { organizationId } = useLoaderData({
-    from: "/_app/workspaces/$workspaceSlug",
+    from: "/_app/@$workspaceSlug",
   });
 
   const { taskId: storeTaskId, setTaskId } = useTaskStore();

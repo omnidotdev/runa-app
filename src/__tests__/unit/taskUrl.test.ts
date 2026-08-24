@@ -33,6 +33,24 @@ describe("parseTaskParam", () => {
     });
   });
 
+  it("parses a prefixed key with number and slug", () => {
+    expect(parseTaskParam("API-42-fix-the-login-bug")).toEqual({
+      type: "number",
+      prefix: "API",
+      number: 42,
+      slug: "fix-the-login-bug",
+    });
+  });
+
+  it("parses a prefixed key without a slug", () => {
+    expect(parseTaskParam("API-42")).toEqual({
+      type: "number",
+      prefix: "API",
+      number: 42,
+      slug: undefined,
+    });
+  });
+
   it("returns invalid for a non-numeric, non-uuid param", () => {
     expect(parseTaskParam("fix-the-login-bug")).toEqual({ type: "invalid" });
   });
@@ -74,6 +92,22 @@ describe("buildTaskKey", () => {
   it("returns the bare number when content is empty or markup-only", () => {
     expect(buildTaskKey({ number: 42, content: "<p></p>" })).toBe("42");
     expect(buildTaskKey({ number: 42, content: undefined })).toBe("42");
+  });
+
+  it("prepends the project prefix when present", () => {
+    expect(
+      buildTaskKey({
+        prefix: "API",
+        number: 42,
+        content: "<p>Fix the login bug</p>",
+      }),
+    ).toBe("API-42-fix-the-login-bug");
+  });
+
+  it("uses prefix and bare number when content is empty", () => {
+    expect(
+      buildTaskKey({ prefix: "API", number: 42, content: "<p></p>" }),
+    ).toBe("API-42");
   });
 });
 

@@ -50,11 +50,11 @@ const CreateComment = ({
   const isExpanded = isFocused || !isEmpty;
 
   const { taskId } = useLoaderData({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/@$workspaceSlug/$projectSlug/$taskId",
   });
 
   const { session } = useRouteContext({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+    from: "/_app/@$workspaceSlug/$projectSlug/$taskId",
   });
 
   const { mutate: addComment } = useCreatePostMutation({

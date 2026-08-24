@@ -112,7 +112,7 @@ const CreateWorkspaceButton = ({ children, className }: Props) => {
 
       await router.invalidate();
       navigate({
-        to: "/workspaces/$workspaceSlug/projects",
+        to: "/@$workspaceSlug",
         params: { workspaceSlug: org.slug },
       });
     } catch (err) {

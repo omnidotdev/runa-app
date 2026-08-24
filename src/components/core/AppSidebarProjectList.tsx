@@ -119,8 +119,7 @@ const AppSidebarProjectList = () => {
             {sortedProjects?.map((project) => {
               const userPreferences = project?.userPreferences?.nodes?.[0];
               const isActive =
-                pathname ===
-                `/workspaces/${workspaceSlug}/projects/${project.slug}`;
+                pathname === `/@${workspaceSlug}/${project.slug}`;
 
               return (
                 <MenuItem
@@ -130,7 +129,7 @@ const AppSidebarProjectList = () => {
                   asChild
                 >
                   <Link
-                    to="/workspaces/$workspaceSlug/projects/$projectSlug"
+                    to="/@$workspaceSlug/$projectSlug"
                     params={{
                       workspaceSlug,
                       projectSlug: project.slug,

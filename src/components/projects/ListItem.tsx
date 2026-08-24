@@ -19,12 +19,14 @@ interface Props {
   task: TaskFragment;
   index: number;
   displayId: string;
+  /** Project prefix, so the task link lands on the canonical `PREFIX-number` key. */
+  prefix?: string | null;
 }
 
-const ListItem = ({ task, index, displayId }: Props) => {
+const ListItem = ({ task, index, displayId, prefix }: Props) => {
   const navigate = useNavigate();
   const { workspaceSlug, projectSlug } = useParams({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/",
+    from: "/_app/@$workspaceSlug/$projectSlug/",
   });
 
   const [isHovered, setIsHovered] = useState(false);
@@ -88,11 +90,12 @@ const ListItem = ({ task, index, displayId }: Props) => {
             onClick={() => {
               if (!snapshot.isDragging) {
                 navigate({
-                  to: "/workspaces/$workspaceSlug/projects/$projectSlug/$taskId",
+                  to: "/@$workspaceSlug/$projectSlug/$taskId",
                   params: {
                     workspaceSlug,
                     projectSlug,
                     taskId: buildTaskKey({
+                      prefix,
                       number: task.number!,
                       content: task.content,
                     }),

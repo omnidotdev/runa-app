@@ -71,11 +71,11 @@ const ColumnForm = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { projectId, organizationId } = useLoaderData({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+    from: "/_app/@$workspaceSlug/$projectSlug/~/settings",
   });
 
   const { session } = useRouteContext({
-    from: "/_app/workspaces/$workspaceSlug/projects/$projectSlug/settings",
+    from: "/_app/@$workspaceSlug/$projectSlug/~/settings",
   });
 
   const navigate = useNavigate();
