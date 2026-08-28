@@ -20,7 +20,7 @@ interface Props {
 
 const PostEmojis = ({ postId }: Props) => {
   const { session } = useRouteContext({
-    from: "/_app/@$workspaceSlug/$projectSlug/$taskId",
+    from: "/_app/@{$workspaceSlug}/$projectSlug/$taskId",
   });
 
   const { data: postEmojis } = useSuspenseQuery({

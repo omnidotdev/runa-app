@@ -26,7 +26,7 @@ interface Props {
 const ListItem = ({ task, index, displayId, prefix }: Props) => {
   const navigate = useNavigate();
   const { workspaceSlug, projectSlug } = useParams({
-    from: "/_app/@$workspaceSlug/$projectSlug/",
+    from: "/_app/@{$workspaceSlug}/$projectSlug/",
   });
 
   const [isHovered, setIsHovered] = useState(false);
@@ -90,7 +90,7 @@ const ListItem = ({ task, index, displayId, prefix }: Props) => {
             onClick={() => {
               if (!snapshot.isDragging) {
                 navigate({
-                  to: "/@$workspaceSlug/$projectSlug/$taskId",
+                  to: "/@{$workspaceSlug}/$projectSlug/$taskId",
                   params: {
                     workspaceSlug,
                     projectSlug,

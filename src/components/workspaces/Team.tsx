@@ -60,11 +60,11 @@ import type { Role } from "@/lib/permissions";
 
 const Team = () => {
   const { organizationId, subscription, prices } = useLoaderData({
-    from: "/_app/@$workspaceSlug/~/settings",
+    from: "/_app/@{$workspaceSlug}/~/settings",
   });
 
   const { session } = useRouteContext({
-    from: "/_app/@$workspaceSlug/~/settings",
+    from: "/_app/@{$workspaceSlug}/~/settings",
   });
 
   const [selectedMember, setSelectedMember] = useState<{

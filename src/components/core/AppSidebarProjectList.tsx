@@ -129,7 +129,7 @@ const AppSidebarProjectList = () => {
                   asChild
                 >
                   <Link
-                    to="/@$workspaceSlug/$projectSlug"
+                    to="/@{$workspaceSlug}/$projectSlug"
                     params={{
                       workspaceSlug,
                       projectSlug: project.slug,

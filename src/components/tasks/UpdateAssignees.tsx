@@ -31,7 +31,7 @@ const UpdateAssignees = withForm({
   },
   render: ({ form, maxAssignees, initialAssignees }) => {
     const { organizationId } = useLoaderData({
-      from: "/_app/@$workspaceSlug",
+      from: "/_app/@{$workspaceSlug}",
     });
     const { session } = useRouteContext({ from: "/_app" });
     const { contains } = useFilter({ sensitivity: "base" });

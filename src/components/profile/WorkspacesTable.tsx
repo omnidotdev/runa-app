@@ -80,7 +80,7 @@ const WorkspacesTable = ({ organizations }: Props) => {
               <TableCell className="py-4 pr-3 text-right">
                 <div className="flex justify-end gap-2">
                   <Link
-                    to="/@$workspaceSlug/~/settings"
+                    to="/@{$workspaceSlug}/~/settings"
                     params={{ workspaceSlug: org.slug! }}
                     variant="outline"
                     size="sm"

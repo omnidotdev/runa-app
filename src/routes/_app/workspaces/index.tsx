@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_app/workspaces/")({
     const slug = org.slug ?? org.id;
 
     throw redirect({
-      to: "/@$workspaceSlug",
+      to: "/@{$workspaceSlug}",
       params: { workspaceSlug: slug },
     });
   },
@@ -79,7 +79,7 @@ function WorkspacesOverviewPage() {
                 return (
                   <Link
                     key={org.id}
-                    to="/@$workspaceSlug"
+                    to="/@{$workspaceSlug}"
                     params={{ workspaceSlug: orgSlug! }}
                     preload="intent"
                     variant="outline"

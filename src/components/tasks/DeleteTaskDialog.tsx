@@ -27,7 +27,7 @@ const DeleteTaskDialog = () => {
   const { taskId } = useTaskStore();
 
   const taskDetailMatch = useMatch({
-    from: "/_app/@$workspaceSlug/$projectSlug/$taskId",
+    from: "/_app/@{$workspaceSlug}/$projectSlug/$taskId",
     shouldThrow: false,
   });
 
@@ -49,7 +49,7 @@ const DeleteTaskDialog = () => {
     onSuccess: () => {
       if (taskDetailMatch) {
         navigate({
-          to: "/@$workspaceSlug/$projectSlug",
+          to: "/@{$workspaceSlug}/$projectSlug",
           params: {
             workspaceSlug: taskDetailMatch.params.workspaceSlug,
             projectSlug: taskDetailMatch.params.projectSlug,

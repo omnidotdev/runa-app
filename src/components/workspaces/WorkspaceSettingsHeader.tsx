@@ -8,7 +8,7 @@ import { getTierFromSubscription } from "@/lib/types/tier";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { useOrganization } from "@/providers/OrganizationProvider";
 
-const routeApi = getRouteApi("/_app/@$workspaceSlug/~/settings");
+const routeApi = getRouteApi("/_app/@{$workspaceSlug}/~/settings");
 
 export default function WorkspaceSettingsHeader() {
   const { organizationId, subscription, prices } = routeApi.useLoaderData();
@@ -40,7 +40,7 @@ export default function WorkspaceSettingsHeader() {
             canGoBack
               ? router.history.back()
               : navigate({
-                  to: "/@$workspaceSlug",
+                  to: "/@{$workspaceSlug}",
                   params: { workspaceSlug },
                 })
           }

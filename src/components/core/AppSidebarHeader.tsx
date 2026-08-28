@@ -102,7 +102,7 @@ const AppSidebarHeader = () => {
                 // correctly because `$workspaceSlug.tsx` owns the segment
                 const preloadWorkspace = () => {
                   void router.preloadRoute({
-                    to: "/@$workspaceSlug",
+                    to: "/@{$workspaceSlug}",
                     params: { workspaceSlug: orgSlug },
                   });
                 };
@@ -117,7 +117,7 @@ const AppSidebarHeader = () => {
                       closeMobileSidebar();
                       setLastWorkspaceCookie({ data: orgSlug });
                       navigate({
-                        to: "/@$workspaceSlug",
+                        to: "/@{$workspaceSlug}",
                         params: { workspaceSlug: orgSlug },
                       });
                     }}
