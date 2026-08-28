@@ -52,14 +52,14 @@ const OverviewBoard = ({ projects }: Props) => {
   // Auto-scroll during card drag
   useAutoScrollOnDrag({ isDragging, scrollContainerRef });
   const { workspaceSlug } = useParams({
-    from: "/_app/@$workspaceSlug/",
+    from: "/_app/@{$workspaceSlug}/",
   });
 
   const { organizationId } = useLoaderData({
-    from: "/_app/@$workspaceSlug/",
+    from: "/_app/@{$workspaceSlug}/",
   });
   const { search } = useSearch({
-    from: "/_app/@$workspaceSlug/",
+    from: "/_app/@{$workspaceSlug}/",
   });
 
   // Get role from IDP organization claims
@@ -149,7 +149,7 @@ const OverviewBoard = ({ projects }: Props) => {
                                   onKeyDown={(evt) => {
                                     if (evt.key === "Enter") {
                                       navigate({
-                                        to: "/@$workspaceSlug/$projectSlug",
+                                        to: "/@{$workspaceSlug}/$projectSlug",
                                         params: {
                                           workspaceSlug,
                                           projectSlug: project.slug,

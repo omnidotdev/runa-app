@@ -18,7 +18,7 @@ import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationI
 import subscriptionOptions from "@/lib/options/subscription.options";
 import createMetaTags from "@/lib/util/createMetaTags";
 
-export const Route = createFileRoute("/_app/@$workspaceSlug/~/settings")({
+export const Route = createFileRoute("/_app/@{$workspaceSlug}/~/settings")({
   loader: async ({ context: { session, queryClient, organizationId } }) => {
     if (!organizationId) throw notFound();
 

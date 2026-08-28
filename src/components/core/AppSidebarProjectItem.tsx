@@ -117,7 +117,7 @@ const AppSidebarProjectItem = ({ project }: Props) => {
   return (
     <div className="group/menu-item relative">
       <Link
-        to="/@$workspaceSlug/$projectSlug"
+        to="/@{$workspaceSlug}/$projectSlug"
         params={{
           workspaceSlug,
           projectSlug: project.slug,
@@ -197,7 +197,7 @@ const AppSidebarProjectItem = ({ project }: Props) => {
 
               <MenuItem value="settings" asChild>
                 <Link
-                  to="/@$workspaceSlug/$projectSlug/~/settings"
+                  to="/@{$workspaceSlug}/$projectSlug/~/settings"
                   params={{
                     workspaceSlug,
                     projectSlug: project.slug,

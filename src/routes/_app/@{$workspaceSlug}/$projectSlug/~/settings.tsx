@@ -28,7 +28,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 export const Route = createFileRoute(
-  "/_app/@$workspaceSlug/$projectSlug/~/settings",
+  "/_app/@{$workspaceSlug}/$projectSlug/~/settings",
 )({
   loader: async ({
     params: { projectSlug },
@@ -99,7 +99,7 @@ function ProjectSettingsPage() {
     },
     onSuccess: (_data) => {
       navigate({
-        to: "/@$workspaceSlug",
+        to: "/@{$workspaceSlug}",
       });
     },
   });

@@ -34,14 +34,14 @@ const AppSidebarContent = () => {
     {
       isActive: pathname === `/@${workspaceSlug}`,
       tooltip: "Projects Overview",
-      to: "/@$workspaceSlug",
+      to: "/@{$workspaceSlug}",
       icon: LayersIcon,
       label: "All Projects",
     },
     {
       isActive: pathname === `/@${workspaceSlug}/~/settings`,
       tooltip: "Workspace Settings",
-      to: "/@$workspaceSlug/~/settings",
+      to: "/@{$workspaceSlug}/~/settings",
       icon: Settings2Icon,
       label: "Settings",
     },

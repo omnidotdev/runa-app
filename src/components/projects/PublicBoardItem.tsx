@@ -23,7 +23,7 @@ const PublicBoardItem = ({ task, displayId }: Props) => {
   // TODO: enable card click-through to read-only task detail
   // const navigate = useNavigate();
   // const { workspaceSlug, projectSlug } = useParams({
-  //   from: "/_app/@$workspaceSlug/$projectSlug/",
+  //   from: "/_app/@{$workspaceSlug}/$projectSlug/",
   // });
 
   return (
@@ -31,14 +31,14 @@ const PublicBoardItem = ({ task, displayId }: Props) => {
       {/* TODO: re-enable click-through to task detail
       onClick={() =>
         navigate({
-          to: "/@$workspaceSlug/$projectSlug/$taskId",
+          to: "/@{$workspaceSlug}/$projectSlug/$taskId",
           params: { workspaceSlug, projectSlug, taskId: task.rowId },
         })
       }
       onKeyDown={(e) => {
         if (e.key === "Enter") {
           navigate({
-            to: "/@$workspaceSlug/$projectSlug/$taskId",
+            to: "/@{$workspaceSlug}/$projectSlug/$taskId",
             params: { workspaceSlug, projectSlug, taskId: task.rowId },
           });
         }

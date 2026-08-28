@@ -35,7 +35,7 @@ import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
-const routeApi = getRouteApi("/_app/@$workspaceSlug/$projectSlug/~/settings");
+const routeApi = getRouteApi("/_app/@{$workspaceSlug}/$projectSlug/~/settings");
 
 export default function ProjectGeneralForm() {
   const { workspaceSlug, projectSlug } = routeApi.useParams();
@@ -66,7 +66,7 @@ export default function ProjectGeneralForm() {
     onSuccess: (_data, variables) => {
       if (variables.patch.slug && variables.patch.slug !== projectSlug) {
         navigate({
-          to: "/@$workspaceSlug/$projectSlug/~/settings",
+          to: "/@{$workspaceSlug}/$projectSlug/~/settings",
           params: { workspaceSlug, projectSlug: variables.patch.slug },
           replace: true,
         });

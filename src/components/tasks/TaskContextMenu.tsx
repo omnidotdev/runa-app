@@ -23,7 +23,7 @@ type Props = {
 const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
   const navigate = useNavigate();
   const { workspaceSlug, projectSlug } = useParams({
-    from: "/_app/@$workspaceSlug/$projectSlug/",
+    from: "/_app/@{$workspaceSlug}/$projectSlug/",
   });
 
   const { setTaskId } = useTaskStore();
@@ -43,7 +43,7 @@ const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
 
   const navigateToTask = () => {
     navigate({
-      to: "/@$workspaceSlug/$projectSlug/$taskId",
+      to: "/@{$workspaceSlug}/$projectSlug/$taskId",
       params: { workspaceSlug, projectSlug, taskId: taskRowId },
     });
   };

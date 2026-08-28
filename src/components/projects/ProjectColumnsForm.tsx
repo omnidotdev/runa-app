@@ -64,11 +64,11 @@ const ProjectColumnsForm = () => {
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null);
 
   const { projectId, organizationId } = useLoaderData({
-    from: "/_app/@$workspaceSlug/$projectSlug/~/settings",
+    from: "/_app/@{$workspaceSlug}/$projectSlug/~/settings",
   });
 
   const { session } = useRouteContext({
-    from: "/_app/@$workspaceSlug/$projectSlug/~/settings",
+    from: "/_app/@{$workspaceSlug}/$projectSlug/~/settings",
   });
 
   // Get role from IDP organization claims

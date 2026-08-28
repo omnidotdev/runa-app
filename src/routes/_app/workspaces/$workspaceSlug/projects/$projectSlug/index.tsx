@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 /**
  * Legacy project path. Permanently redirects to the flat, handle-based project
- * route (`/@$workspaceSlug/$projectSlug`) per golden/URL-GRAMMAR.md. Carries the
+ * route (`/@{$workspaceSlug}/$projectSlug`) per golden/URL-GRAMMAR.md. Carries the
  * `mode=public` search param through for shared public-board links.
  */
 export const Route = createFileRoute(
@@ -13,7 +13,7 @@ export const Route = createFileRoute(
   }),
   beforeLoad: ({ params, search }) => {
     throw redirect({
-      to: "/@$workspaceSlug/$projectSlug",
+      to: "/@{$workspaceSlug}/$projectSlug",
       params: {
         workspaceSlug: params.workspaceSlug,
         projectSlug: params.projectSlug,

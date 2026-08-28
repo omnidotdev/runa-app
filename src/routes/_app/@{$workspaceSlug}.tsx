@@ -17,7 +17,7 @@ import {
  * active workspace. Owning the segment here ensures `beforeLoad`/`loader`
  * run with the destination workspace's params.
  */
-export const Route = createFileRoute("/_app/@$workspaceSlug")({
+export const Route = createFileRoute("/_app/@{$workspaceSlug}")({
   beforeLoad: async ({
     params: { workspaceSlug },
     context: { session, isPublicAccess },

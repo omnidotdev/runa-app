@@ -78,7 +78,7 @@ const projectSearchParamsSchema = z.object({
   mode: z.enum(["public"]).optional(),
 });
 
-export const Route = createFileRoute("/_app/@$workspaceSlug/$projectSlug/")({
+export const Route = createFileRoute("/_app/@{$workspaceSlug}/$projectSlug/")({
   pendingComponent: ProjectPageSkeleton,
   pendingMinMs: 500,
   loaderDeps: ({ search: { search, assignees, labels, priorities } }) => ({
@@ -528,7 +528,7 @@ function AuthenticatedProjectPage() {
               <h1 className="font-semibold text-2xl">{project?.name}</h1>
               {project?.isPublic && (
                 <Link
-                  to="/@$workspaceSlug/$projectSlug"
+                  to="/@{$workspaceSlug}/$projectSlug"
                   params={{ workspaceSlug, projectSlug }}
                   search={{ mode: "public" }}
                   target="_blank"
@@ -604,7 +604,7 @@ function AuthenticatedProjectPage() {
                 tooltip="Project Settings"
                 trigger={
                   <Link
-                    to="/@$workspaceSlug/$projectSlug/~/settings"
+                    to="/@{$workspaceSlug}/$projectSlug/~/settings"
                     params={{
                       workspaceSlug,
                       projectSlug,

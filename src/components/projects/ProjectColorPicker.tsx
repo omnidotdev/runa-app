@@ -43,7 +43,7 @@ import type { ComponentProps } from "react";
 
 const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
   const { projectId } = useLoaderData({
-    from: "/_app/@$workspaceSlug/$projectSlug/~/settings",
+    from: "/_app/@{$workspaceSlug}/$projectSlug/~/settings",
   });
 
   const [isUpdatingColorPreferences, setIsUpdatingColorPreferences] =
