@@ -1,3 +1,4 @@
+import { accountUrl } from "@omnidotdev/providers/react";
 import {
   AvatarFallback,
   AvatarImage,
@@ -47,7 +48,7 @@ import {
 } from "@/components/ui/sidebar";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
-import { CONSOLE_URL, hasBilling } from "@/lib/config/env.config";
+import { ACCOUNT_URL, hasBilling } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { getSidebarCookies } from "@/providers/SidebarProvider";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -297,10 +298,10 @@ const AppSidebarFooter = () => {
 
                 <MenuPositioner>
                   <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
-                    {CONSOLE_URL && (
+                    {ACCOUNT_URL && (
                       <MenuItem asChild value="manage-account">
                         <a
-                          href={CONSOLE_URL}
+                          href={accountUrl(ACCOUNT_URL)}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
