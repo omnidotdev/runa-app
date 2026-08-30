@@ -14,7 +14,7 @@ export const API_INTERNAL_URL =
     ? process.env.API_INTERNAL_URL || clientEnv.API_BASE_URL
     : clientEnv.API_BASE_URL;
 export const BILLING_BASE_URL = clientEnv.BILLING_BASE_URL;
-export const CONSOLE_URL = env.CONSOLE_URL || env.VITE_CONSOLE_URL;
+export const ACCOUNT_URL = env.ACCOUNT_URL || env.VITE_ACCOUNT_URL;
 
 // Auth: Omni/Gatekeeper
 export const AUTH_BASE_URL = env.AUTH_BASE_URL || env.VITE_AUTH_BASE_URL;
@@ -60,7 +60,8 @@ if (!BILLING_BASE_URL)
   console.warn("BILLING_BASE_URL not set, billing disabled");
 if (!FLAGS_API_HOST)
   console.warn("FLAGS_API_HOST not set, feature flags disabled");
-if (!CONSOLE_URL) console.warn("CONSOLE_URL not set, console link disabled");
+if (!ACCOUNT_URL)
+  console.warn("ACCOUNT_URL not set, manage-account link disabled");
 if (typeof window === "undefined" && !ORG_SYNC_SERVICE_TOKEN)
   console.warn(
     "ORG_SYNC_SERVICE_TOKEN not set, organization member list disabled",
