@@ -93,8 +93,8 @@ function WorkspacesOverviewPage() {
                       </AvatarFallback>
                     </AvatarRoot>
 
-                    <div className="flex flex-1 flex-col items-center">
-                      <h3 className="truncate font-semibold text-base-900 dark:text-base-100">
+                    <div className="flex w-full min-w-0 flex-1 flex-col items-center justify-center">
+                      <h3 className="line-clamp-2 w-full break-words text-center font-semibold text-base-900 dark:text-base-100">
                         {orgName}
                       </h3>
                     </div>
