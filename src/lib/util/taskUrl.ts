@@ -64,9 +64,9 @@ export const stripMarkup = (html: string): string =>
  * Build the canonical vanity key for a task: `{prefix}-{number}-{slug}` (e.g.
  * `API-42-fix-login`), where the slug derives from the task's rich-text content.
  * The prefix is included when the project has one so the key is self-describing
- * when pasted into a changelog, PR, or another product (golden/URL-GRAMMAR.md
- * rule 5). Falls back to dropping the prefix and/or slug, down to the bare
- * number.
+ * when pasted into a changelog, PR, or another product (the self-describing
+ * item-key rule of the platform URL grammar). Falls back to dropping the prefix
+ * and/or slug, down to the bare number.
  */
 export const buildTaskKey = ({
   prefix,
