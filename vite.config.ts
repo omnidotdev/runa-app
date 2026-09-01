@@ -1,8 +1,6 @@
 import tailwindcss from "@tailwindcss/vite";
-import { devtools } from "@tanstack/devtools-vite";
 import { nitroV2Plugin } from "@tanstack/nitro-v2-vite-plugin";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import tsConfigPaths from "vite-tsconfig-paths";
@@ -18,7 +16,6 @@ const viteConfig = defineConfig(({ command }) => ({
     host: "0.0.0.0",
   },
   plugins: [
-    devtools(),
     // NB: command is `serve` in development, `build` in production
     command === "serve" && mkcert(),
     tailwindcss(),
@@ -27,7 +24,9 @@ const viteConfig = defineConfig(({ command }) => ({
     nitroV2Plugin({
       preset: "node-server",
       // Inline modules to avoid resolution issues with Bun runtime
-      externals: { inline: ["srvx", "react-dom"] },
+      externals: {
+        inline: ["srvx", "react-dom", "better-auth", "@better-auth"],
+      },
       routeRules: {
         "/**": {
           headers: {
@@ -37,7 +36,6 @@ const viteConfig = defineConfig(({ command }) => ({
         },
       },
     }),
-    react(),
   ],
 }));
 
