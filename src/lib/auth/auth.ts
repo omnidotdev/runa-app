@@ -32,11 +32,16 @@ if (AUTH_CLIENT_ID && AUTH_CLIENT_SECRET && AUTH_BASE_URL) {
     scopes: ["openid", "profile", "email", "offline_access", "organization"],
     accessType: "offline",
     pkce: true,
+    // better-auth 1.7 tightened the mapped-user return type; the IDP's custom
+    // `email_verified`/`picture` claims arrive untyped, so coerce them
     mapProfileToUser: (profile) => ({
       name: profile.name,
       email: profile.email,
-      emailVerified: profile.email_verified,
-      image: profile.picture,
+      emailVerified:
+        typeof profile.email_verified === "boolean"
+          ? profile.email_verified
+          : undefined,
+      image: typeof profile.picture === "string" ? profile.picture : undefined,
     }),
   });
 }
