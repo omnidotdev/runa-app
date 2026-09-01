@@ -22,6 +22,7 @@ import { FREE_PRICE } from "@/lib/constants/tiers";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import { isOwner } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
+import getTierFromEntitlements from "@/lib/util/getTierFromEntitlements";
 import { cn } from "@/lib/utils";
 import {
   getBillingPortalUrl,
@@ -32,7 +33,8 @@ import {
 const routeApi = getRouteApi("/_app/@{$workspaceSlug}/~/settings");
 
 export default function WorkspaceBenefits() {
-  const { organizationId, subscription, prices } = routeApi.useLoaderData();
+  const { organizationId, subscription, entitlements, prices } =
+    routeApi.useLoaderData();
   const queryClient = useQueryClient();
   const router = useRouter();
   const navigate = routeApi.useNavigate();
@@ -85,6 +87,18 @@ export default function WorkspaceBenefits() {
 
   if (!hasBilling) return null;
 
+  // Prefer the live subscription's features. When an entitlement grants a tier
+  // without a Stripe subscription (comped or manually granted plan), show that
+  // tier's features. Fall back to the free feature list otherwise.
+  const entitlementTier = getTierFromEntitlements(entitlements);
+  const features =
+    subscription?.product?.marketing_features ??
+    (entitlementTier
+      ? prices.find((price) => price.metadata.tier === entitlementTier)?.product
+          .marketing_features
+      : undefined) ??
+    FREE_PRICE.product.marketing_features;
+
   return (
     <div
       className={cn(
@@ -109,10 +123,7 @@ export default function WorkspaceBenefits() {
 
         <div className="border-t">
           <ul className="divide-y border-b">
-            {(
-              subscription?.product?.marketing_features ??
-              FREE_PRICE.product.marketing_features
-            ).map((feature) => (
+            {features.map((feature) => (
               <li
                 key={feature.name}
                 className="flex h-10 items-center gap-2 pl-2"

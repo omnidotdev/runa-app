@@ -10,6 +10,7 @@ import {
   WorkspaceSettingsHeader,
 } from "@/components/workspaces";
 import { BASE_URL } from "@/lib/config/env.config";
+import entitlementsOptions from "@/lib/options/entitlements.options";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import pricesOptions from "@/lib/options/prices.options";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/~/settings")({
   loader: async ({ context: { session, queryClient, organizationId } }) => {
     if (!organizationId) throw notFound();
 
-    const { setting, subscription, prices } = await all({
+    const { setting, subscription, entitlements, prices } = await all({
       async setting() {
         const { settingByOrganizationId } = await queryClient.ensureQueryData(
           settingByOrganizationIdOptions({ organizationId }),
@@ -48,9 +49,14 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/~/settings")({
       },
       async subscription() {
         const setting = await this.$.setting;
-        return queryClient.ensureQueryData(
-          subscriptionOptions(setting.organizationId),
-        );
+        return queryClient
+          .ensureQueryData(subscriptionOptions(setting.organizationId))
+          .catch(() => null);
+      },
+      async entitlements() {
+        return queryClient
+          .ensureQueryData(entitlementsOptions(organizationId))
+          .catch(() => null);
       },
       async members() {
         return queryClient.ensureQueryData(
@@ -65,6 +71,7 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/~/settings")({
       organizationId,
       setting,
       subscription,
+      entitlements,
       prices,
     };
   },

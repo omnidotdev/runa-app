@@ -64,6 +64,25 @@ export const getSubscription = createServerFn()
   });
 
 /**
+ * Get entitlements for an organization.
+ *
+ * Entitlements are the source of truth for a workspace's granted tier, including
+ * comped or manually granted plans that have no Stripe subscription. Mirrors the
+ * shape of `getSubscription`.
+ */
+export const getEntitlements = createServerFn()
+  .middleware([authMiddleware])
+  .inputValidator((data) => organizationSchema.parse(data))
+  .handler(async ({ data, context }) => {
+    return billing.getEntitlements(
+      "organization",
+      data.organizationId,
+      undefined,
+      requireAccessToken(context.session.accessToken),
+    );
+  });
+
+/**
  * Cancel a subscription for an organization.
  * @knipignore
  */
