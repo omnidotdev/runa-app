@@ -15,7 +15,7 @@ import { Building2 } from "lucide-react";
 
 import { Link } from "@/components/core";
 import { buttonVariants } from "@/components/ui/button";
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { ACCOUNT_URL, AUTH_BASE_URL } from "@/lib/config/env.config";
 import { Role } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
@@ -93,9 +93,9 @@ const WorkspacesTable = ({ organizations }: Props) => {
                   >
                     Settings
                   </Link>
-                  {AUTH_BASE_URL && org.slug && (
+                  {ACCOUNT_URL && org.slug && (
                     <ManageTeamLink
-                      identityBaseUrl={AUTH_BASE_URL}
+                      accountBaseUrl={ACCOUNT_URL}
                       orgSlug={org.slug}
                       className={cn(
                         buttonVariants({ variant: "outline", size: "sm" }),

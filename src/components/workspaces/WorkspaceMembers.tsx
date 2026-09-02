@@ -3,7 +3,7 @@ import { useParams } from "@tanstack/react-router";
 import { ExternalLinkIcon } from "lucide-react";
 
 import { buttonVariants } from "@/components/ui/button";
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { ACCOUNT_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 
 /**
@@ -16,8 +16,8 @@ const WorkspaceMembers = () => {
     from: "/_app/@{$workspaceSlug}/~/settings",
   });
 
-  const manageUrl = AUTH_BASE_URL
-    ? gatekeeperOrgManageUrl(AUTH_BASE_URL, workspaceSlug)
+  const manageUrl = ACCOUNT_URL
+    ? gatekeeperOrgManageUrl(ACCOUNT_URL, workspaceSlug)
     : undefined;
 
   return (
