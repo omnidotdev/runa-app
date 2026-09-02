@@ -3,7 +3,6 @@ import { shallow } from "zustand/shallow";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 
 export enum DialogType {
-  DeleteTeamMember = "delete_team_member",
   DeleteSettings = "delete_settings",
   CreateProject = "create_project",
   CreateWorkspace = "create_workspace",
@@ -19,7 +18,6 @@ export enum DialogType {
   DeleteTask = "delete_task",
   DeleteComment = "delete_comment",
   CreateTask = "create_task",
-  CancelInvitation = "cancel_invitation",
 }
 
 interface DialogState {

@@ -1,3 +1,4 @@
+import { gatekeeperDashboardUrl } from "@omnidotdev/providers/react";
 import {
   AvatarFallback,
   AvatarImage,
@@ -123,7 +124,7 @@ function WorkspacesOverviewPage() {
 
             {AUTH_BASE_URL && (
               <a
-                href={`${AUTH_BASE_URL}/dashboard`}
+                href={gatekeeperDashboardUrl(AUTH_BASE_URL)}
                 className="inline-flex items-center gap-2 text-primary text-sm hover:underline"
               >
                 Manage Organizations

@@ -1,4 +1,7 @@
-import { ManageTeamLink } from "@omnidotdev/providers/react";
+import {
+  ManageTeamLink,
+  gatekeeperDashboardUrl,
+} from "@omnidotdev/providers/react";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import {
   Table,
@@ -37,7 +40,9 @@ const WorkspacesTable = ({ organizations }: Props) => {
         <p>
           No current workspaces.{" "}
           <a
-            href={`${AUTH_BASE_URL}/dashboard`}
+            href={
+              AUTH_BASE_URL ? gatekeeperDashboardUrl(AUTH_BASE_URL) : undefined
+            }
             className="p-0 text-md text-primary-600 underline"
           >
             Create a workspace

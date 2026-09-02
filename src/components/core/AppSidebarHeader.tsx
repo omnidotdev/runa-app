@@ -1,3 +1,4 @@
+import { gatekeeperDashboardUrl } from "@omnidotdev/providers/react";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import { LogoLockup } from "@omnidotdev/thornberry/logo-lockup";
 import {
@@ -45,7 +46,9 @@ const AppSidebarHeader = () => {
   const organizations = orgContext?.organizations ?? [];
 
   // Org/workspace lifecycle lives on the Gatekeeper identity dashboard
-  const orgDashboardUrl = AUTH_BASE_URL ? `${AUTH_BASE_URL}/dashboard` : "";
+  const orgDashboardUrl = AUTH_BASE_URL
+    ? gatekeeperDashboardUrl(AUTH_BASE_URL)
+    : "";
 
   // Resolve current org from URL slug. Sidebar is rendered by `_app.tsx`
   // (above `$workspaceSlug.tsx` in the chain), so we cannot read the

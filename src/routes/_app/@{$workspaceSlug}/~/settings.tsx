@@ -4,14 +4,13 @@ import { all } from "better-all";
 import { NotFound } from "@/components/layout";
 import {
   Projects,
-  Team,
   WorkspaceBenefits,
   WorkspaceColumnsForm,
+  WorkspaceMembers,
   WorkspaceSettingsHeader,
 } from "@/components/workspaces";
 import { BASE_URL } from "@/lib/config/env.config";
 import entitlementsOptions from "@/lib/options/entitlements.options";
-import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import pricesOptions from "@/lib/options/prices.options";
 import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsOptions from "@/lib/options/projects.options";
@@ -58,13 +57,6 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/~/settings")({
           .ensureQueryData(entitlementsOptions(organizationId))
           .catch(() => null);
       },
-      async members() {
-        return queryClient.ensureQueryData(
-          organizationMembersOptions({
-            organizationId: organizationId!,
-          }),
-        );
-      },
     });
 
     return {
@@ -94,7 +86,7 @@ function SettingsPage() {
       <WorkspaceSettingsHeader />
 
       <div className="ml-2 flex flex-col gap-12 lg:ml-0">
-        <Team />
+        <WorkspaceMembers />
 
         <Projects />
 
