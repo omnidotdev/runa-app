@@ -49,7 +49,7 @@ const fetchSessionAndMaintenanceMode = createServerFn({
   method: "GET",
 }).handler(async () => {
   // Fetch session first to get user email for maintenance mode bypass evaluation
-  const { session } = await fetchSession();
+  const { session, authDegraded } = await fetchSession();
 
   // Pass user context to Unleash for @omni.dev admin bypass
   const context = session?.user?.email
@@ -57,16 +57,17 @@ const fetchSessionAndMaintenanceMode = createServerFn({
     : undefined;
   const { isMaintenanceMode } = await fetchMaintenanceMode({ data: context });
 
-  return { session, isMaintenanceMode };
+  return { session, isMaintenanceMode, authDegraded };
 });
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
   session: ExtendedSession | null;
   isMaintenanceMode: boolean;
+  authDegraded: boolean;
 }>()({
   beforeLoad: async () => {
-    const { session, isMaintenanceMode } =
+    const { session, isMaintenanceMode, authDegraded } =
       await fetchSessionAndMaintenanceMode();
 
     // Admin bypass (@omni.dev) is now handled by Unleash constraints.
@@ -74,9 +75,10 @@ export const Route = createRootRouteWithContext<{
     // and determined they should see maintenance mode.
 
     // Skip auth when maintenance page is shown
-    if (isMaintenanceMode) return { session: null, isMaintenanceMode };
+    if (isMaintenanceMode)
+      return { session: null, isMaintenanceMode, authDegraded: false };
 
-    return { session, isMaintenanceMode };
+    return { session, isMaintenanceMode, authDegraded };
   },
   loader: async () => {
     const theme = await getTheme();
