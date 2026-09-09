@@ -43,6 +43,7 @@ import taskByNumberOptions from "@/lib/options/taskByNumber.options";
 import { Role } from "@/lib/permissions";
 import createMetaTags from "@/lib/util/createMetaTags";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import signInHref from "@/lib/util/signInHref";
 import { buildTaskKey, parseTaskParam, stripMarkup } from "@/lib/util/taskUrl";
 
 import type { TaskQuery } from "@/generated/graphql";
@@ -61,10 +62,18 @@ export const Route = createFileRoute(
       await queryClient.ensureQueryData(
         projectBySlugOptions({ slug: projectSlug, organizationId }),
       );
-    if (!project) throw notFound();
 
-    // Unauth users can only access public projects
-    if (!session?.user?.rowId && !project.isPublic) throw notFound();
+    // Unauth users can only view public projects. Private (or nonexistent)
+    // projects, which the visitor may be able to access once authenticated,
+    // hand off to sign-in and return here afterward rather than surfacing a 404
+    // (which would also leak whether the slug exists)
+    if (!session?.user?.rowId && !project?.isPublic) {
+      throw redirect({
+        href: signInHref(`/@${workspaceSlug}/${projectSlug}/${taskParam}`),
+      });
+    }
+
+    if (!project) throw notFound();
 
     const parsed = parseTaskParam(taskParam);
     if (parsed.type === "invalid") throw notFound();

@@ -4,6 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
   notFound,
+  redirect,
   stripSearchParams,
 } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
@@ -64,6 +65,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import { compareKeys, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import resolveActiveColumnId from "@/lib/util/resolveActiveColumnId";
+import signInHref from "@/lib/util/signInHref";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
@@ -89,33 +91,35 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/$projectSlug/")({
   }),
   loader: async ({
     deps: { search, assignees, labels, priorities },
-    params: { projectSlug },
+    params: { projectSlug, workspaceSlug },
     context: { session, queryClient, organizationId },
   }) => {
     if (!organizationId) throw notFound();
 
     // Unauthenticated public access
     if (!session?.user?.rowId) {
-      const { project } = await all({
-        async project() {
-          const { projectBySlugAndOrganizationId } =
-            await queryClient.ensureQueryData(
-              projectBySlugOptions({ slug: projectSlug, organizationId }),
-            );
+      const { projectBySlugAndOrganizationId: project } =
+        await queryClient.ensureQueryData(
+          projectBySlugOptions({ slug: projectSlug, organizationId }),
+        );
 
-          if (!projectBySlugAndOrganizationId) throw notFound();
-          if (!projectBySlugAndOrganizationId.isPublic) throw notFound();
+      // Private (or nonexistent) projects are not viewable while logged out.
+      // The visitor may still have access once authenticated, so hand off to
+      // sign-in and return them here afterward instead of surfacing a 404
+      // (which would also leak whether the slug exists)
+      if (!project?.isPublic) {
+        throw redirect({
+          href: signInHref(`/@${workspaceSlug}/${projectSlug}`),
+        });
+      }
 
-          return projectBySlugAndOrganizationId;
-        },
+      await all({
         async projectData() {
-          const project = await this.$.project;
           return queryClient.ensureQueryData(
             projectOptions({ rowId: project.rowId }),
           );
         },
         async tasks() {
-          const project = await this.$.project;
           return queryClient.ensureQueryData(
             tasksOptions({ projectId: project.rowId }),
           );
