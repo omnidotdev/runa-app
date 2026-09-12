@@ -1,6 +1,11 @@
 import { CommandPalette as CommandPaletteShell } from "@omnidotdev/thornberry/command-palette";
 import { hotkeyLabel } from "@omnidotdev/thornberry/use-hotkeys";
-import { FolderPlusIcon, PlusIcon, SunMoonIcon } from "lucide-react";
+import {
+  FolderPlusIcon,
+  KeyboardIcon,
+  PlusIcon,
+  SunMoonIcon,
+} from "lucide-react";
 
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -20,6 +25,9 @@ const CommandPalette = () => {
   });
   const { setIsOpen: setCreateProjectOpen } = useDialogStore({
     type: DialogType.CreateProject,
+  });
+  const { setIsOpen: setShortcutsOpen } = useDialogStore({
+    type: DialogType.KeyboardShortcuts,
   });
 
   const commands: CommandAction[] = [
@@ -46,6 +54,14 @@ const CommandPalette = () => {
       icon: SunMoonIcon,
       shortcut: hotkeyLabel(Hotkeys.ToggleTheme),
       onSelect: () => setTheme(theme === "dark" ? "light" : "dark"),
+    },
+    {
+      id: "keyboard-shortcuts",
+      label: "Keyboard shortcuts",
+      group: "General",
+      icon: KeyboardIcon,
+      shortcut: "?",
+      onSelect: () => setShortcutsOpen(true),
     },
   ];
 

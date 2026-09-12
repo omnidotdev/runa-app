@@ -1,5 +1,7 @@
 export enum Hotkeys {
   CommandPalette = "mod+k",
+  // NB: react-hotkeys-hook matches the physical key code, so `?` is `shift+slash`.
+  ShowShortcuts = "shift+slash",
   ToggleSidebar = "b",
   ToggleTheme = "t",
   ToggleViewMode = "v",

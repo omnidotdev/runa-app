@@ -12,6 +12,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { createServerFn } from "@tanstack/react-start";
 
 import CommandPalette from "@/components/core/CommandPalette";
+import KeyboardShortcutsDialog from "@/components/core/KeyboardShortcutsDialog";
 import { DefaultCatchBoundary, NotFound } from "@/components/layout";
 import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
@@ -217,6 +218,8 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
           {children}
 
           <CommandPalette />
+
+          <KeyboardShortcutsDialog />
 
           <Toaster position="top-center" richColors />
         </ThemeProvider>
