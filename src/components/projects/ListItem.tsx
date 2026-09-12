@@ -104,51 +104,29 @@ const ListItem = ({ task, index, displayId, prefix }: Props) => {
               }
             }}
             className={cn(
-              "group flex cursor-pointer flex-col gap-2 bg-background px-4 py-3 last:rounded-b-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+              "group flex cursor-pointer items-center gap-3 bg-background px-3 py-2 last:rounded-b-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
               snapshot.isDragging ? "z-10 rounded-md border" : "",
             )}
           >
-            <div className="relative flex items-center">
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2 text-base-400 text-xs dark:text-base-400">
-                  <span className="font-mono">{displayId}</span>
-                  <PriorityIcon
-                    priority={task.priority}
-                    className="scale-75 opacity-50"
-                  />
-                </div>
+            <PriorityIcon
+              priority={task.priority}
+              className="shrink-0 scale-75 opacity-50"
+            />
 
-                <div className="py-2">
-                  <RichTextEditor
-                    defaultContent={task?.content}
-                    className="flex min-h-0 border-0 p-0 text-left text-xs dark:bg-background"
-                    skeletonClassName="h-4 w-80"
-                    editable={false}
-                  />
-                </div>
-              </div>
+            <span className="shrink-0 font-mono text-base-400 text-xs dark:text-base-400">
+              {displayId}
+            </span>
 
-              {task.assignees.nodes.length > 0 && (
-                <Tooltip
-                  positioning={{
-                    placement: "bottom-end",
-                    gutter: -4,
-                  }}
-                  tooltip="Update Assignees"
-                  shortcut="A"
-                  trigger={
-                    <Assignees
-                      assignees={task.assignees.nodes.map(
-                        (assignee) => assignee.user?.identityProviderId!,
-                      )}
-                      className="absolute top-0 right-0 flex w-fit items-center"
-                    />
-                  }
-                />
-              )}
+            <div className="min-w-0 flex-1">
+              <RichTextEditor
+                defaultContent={task?.content}
+                className="flex min-h-0 truncate border-0 p-0 text-left text-xs dark:bg-background"
+                skeletonClassName="h-4 w-80"
+                editable={false}
+              />
             </div>
 
-            <div className="hidden items-center justify-between gap-2 sm:flex">
+            <div className="hidden shrink-0 items-center gap-2 sm:flex">
               {task.taskLabels.nodes.length > 0 && (
                 <Tooltip
                   positioning={{
@@ -170,7 +148,7 @@ const ListItem = ({ task, index, displayId, prefix }: Props) => {
                 />
               )}
 
-              <div className="ml-auto flex items-center gap-2 text-base-500 text-xs dark:text-base-400">
+              <div className="flex items-center gap-2 text-base-500 text-xs dark:text-base-400">
                 {task.description && (
                   <Tooltip
                     positioning={{ placement: "top" }}
@@ -214,6 +192,25 @@ const ListItem = ({ task, index, displayId, prefix }: Props) => {
                 )}
               </div>
             </div>
+
+            {task.assignees.nodes.length > 0 && (
+              <Tooltip
+                positioning={{
+                  placement: "bottom-end",
+                  gutter: -4,
+                }}
+                tooltip="Update Assignees"
+                shortcut="A"
+                trigger={
+                  <Assignees
+                    assignees={task.assignees.nodes.map(
+                      (assignee) => assignee.user?.identityProviderId!,
+                    )}
+                    className="flex w-fit shrink-0 items-center"
+                  />
+                }
+              />
+            )}
           </div>
         )}
       </Draggable>
