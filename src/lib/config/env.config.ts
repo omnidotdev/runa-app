@@ -1,6 +1,12 @@
 import getClientEnv from "./clientEnv";
 
-const env = { ...import.meta.env, ...process.env };
+// NB: `process` does not exist in the browser, so guard the spread. Server reads
+// unprefixed vars from `process.env`; the client falls back to build-time VITE_*
+// values already present on `import.meta.env`.
+const env = {
+  ...import.meta.env,
+  ...(typeof process === "undefined" ? {} : process.env),
+};
 const clientEnv = getClientEnv();
 
 // Core URLs (injected at runtime for client, read from process.env for server)
