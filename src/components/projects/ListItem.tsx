@@ -104,7 +104,7 @@ const ListItem = ({ task, index, displayId, prefix }: Props) => {
               }
             }}
             className={cn(
-              "group flex cursor-pointer items-center gap-3 bg-background px-3 py-2 last:rounded-b-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+              "group flex cursor-pointer items-center gap-3 bg-background px-3 py-1.5 last:rounded-b-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
               snapshot.isDragging ? "z-10 rounded-md border" : "",
             )}
           >
@@ -120,8 +120,9 @@ const ListItem = ({ task, index, displayId, prefix }: Props) => {
             <div className="min-w-0 flex-1">
               <RichTextEditor
                 defaultContent={task?.content}
-                className="flex min-h-0 truncate border-0 p-0 text-left text-xs dark:bg-background"
-                skeletonClassName="h-4 w-80"
+                className="w-full border-0 bg-transparent p-0 text-left dark:bg-transparent"
+                editorClassName="line-clamp-1 min-h-0 p-0 text-xs md:text-xs"
+                skeletonClassName="h-4 w-40"
                 editable={false}
               />
             </div>
