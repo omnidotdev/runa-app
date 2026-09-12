@@ -1,49 +1,32 @@
-import { useId } from "react";
-
 import { cn } from "@/lib/utils";
 
 import type { ComponentProps } from "react";
 
 /**
- * Runa gear-moon logomark.
+ * Runa moon logomark (crescent, sparkle, and orbit).
  *
  * Portable inline SVG (no raster or font dependency) that inherits the current
  * text color via `fill="currentColor"`, so callers theme it with text-color
- * utilities (e.g. `text-primary-500` for brand amber). The mask id is unique
- * per instance so several marks can render on the same page without colliding.
+ * utilities (e.g. `text-primary-500` for brand amber). Paths are traced from the
+ * brand mark; the `translate/scale` group maps potrace's bottom-left origin.
  */
-const Logo = ({ className, ...props }: ComponentProps<"svg">) => {
-  const maskId = useId();
-
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 512 512"
-      fill="currentColor"
-      role="img"
-      aria-label="Runa"
-      className={cn("size-5", className)}
-      {...props}
-    >
-      <defs>
-        <mask id={maskId}>
-          <rect width="512" height="512" fill="white" />
-          <circle cx="348" cy="216" r="186" fill="black" />
-        </mask>
-      </defs>
-      <g mask={`url(#${maskId})`}>
-        <circle cx="256" cy="256" r="196" />
-      </g>
-      <path d="M 340.94 432.64 L 344.51 472.62 L 311.72 483.27 L 291.11 448.83 Z" />
-      <path d="M 261.75 451.92 L 248.75 489.89 L 214.47 486.28 L 209.65 446.44 Z" />
-      <path d="M 181.56 437.32 L 154.24 466.72 L 124.39 449.48 L 136.19 411.12 Z" />
-      <path d="M 114.25 391.36 L 77.34 407.11 L 57.07 379.22 L 83.46 348.98 Z" />
-      <path d="M 71.45 322.01 L 31.32 321.38 L 24.15 287.66 L 60.56 270.76 Z" />
-      <path d="M 60.56 241.24 L 24.15 224.34 L 31.32 190.62 L 71.45 189.99 Z" />
-      <path d="M 83.46 163.02 L 57.07 132.78 L 77.34 104.89 L 114.25 120.64 Z" />
-      <path d="M 136.19 100.88 L 124.39 62.52 L 154.24 45.28 L 181.56 74.68 Z" />
-    </svg>
-  );
-};
+const Logo = ({ className, ...props }: ComponentProps<"svg">) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 1254 1254"
+    fill="currentColor"
+    role="img"
+    aria-label="Runa"
+    className={cn("size-5", className)}
+    {...props}
+  >
+    <g transform="translate(0,1254) scale(0.1,-0.1)" stroke="none">
+      <path d="M6160 9643 c-288 -14 -726 -100 -1011 -199 -723 -251 -1386 -755 -1832 -1396 -233 -334 -438 -794 -521 -1168 -56 -254 -70 -385 -70 -665 0 -270 8 -361 49 -600 61 -346 140 -592 294 -911 97 -201 199 -364 328 -526 l54 -68 117 0 c236 0 772 59 1137 125 77 14 178 32 224 40 251 46 874 194 893 213 5 5 -36 41 -94 82 -458 327 -776 704 -979 1161 -280 632 -313 1364 -90 2011 147 424 372 778 716 1123 266 268 622 535 978 734 31 18 55 37 52 42 -6 8 -95 9 -245 2z" />
+      <path d="M8637 9133 c-3 -5 -17 -69 -31 -143 -121 -622 -461 -979 -1084 -1136 -74 -18 -137 -36 -141 -39 -9 -10 21 -24 64 -30 101 -16 298 -80 412 -135 154 -74 228 -124 329 -225 175 -173 284 -396 384 -787 18 -71 37 -128 41 -128 13 0 19 16 49 140 80 324 214 569 423 766 189 179 383 277 707 359 58 15 109 30 113 34 4 4 -56 25 -135 45 -326 86 -505 176 -677 341 -205 197 -313 409 -396 779 -32 140 -46 179 -58 159z" />
+      <path d="M9650 7035 c-148 -28 -195 -59 -120 -78 210 -54 327 -113 378 -190 24 -37 27 -50 27 -132 0 -87 -2 -95 -42 -176 -81 -162 -240 -329 -518 -542 -564 -432 -1389 -862 -2320 -1207 -809 -300 -1496 -483 -2385 -634 -677 -115 -1266 -144 -1640 -81 -199 34 -337 86 -454 169 -85 61 -132 115 -174 204 -32 68 -36 84 -40 181 -6 167 20 251 168 546 91 181 120 249 120 278 0 26 -4 37 -15 37 -24 0 -188 -143 -272 -238 -322 -365 -420 -733 -267 -1009 69 -124 189 -229 346 -303 130 -61 295 -98 541 -121 146 -13 680 -7 837 10 52 6 172 18 265 26 1058 100 2358 399 3340 768 698 262 1212 521 1790 899 307 201 511 364 722 576 343 344 451 629 315 830 -32 49 -117 116 -180 143 -115 50 -294 68 -422 44z" />
+      <path d="M9080 4535 c-231 -151 -607 -300 -944 -375 -298 -66 -469 -85 -771 -84 -250 0 -362 11 -585 56 l-105 22 -130 -37 c-536 -151 -1164 -284 -1840 -391 -134 -21 -477 -63 -757 -92 -40 -4 -58 -10 -58 -20 0 -21 178 -165 330 -266 155 -103 422 -238 590 -298 210 -75 457 -131 710 -162 140 -17 647 -17 805 0 843 92 1504 350 2069 806 137 110 347 316 459 449 122 146 310 420 295 431 -2 2 -32 -16 -68 -39z" />
+    </g>
+  </svg>
+);
 
 export default Logo;
