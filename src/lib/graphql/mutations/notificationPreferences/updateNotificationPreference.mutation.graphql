@@ -1,0 +1,11 @@
+mutation UpdateNotificationPreference(
+  $rowId: UUID!
+  $patch: NotificationPreferencePatch!
+) {
+  updateNotificationPreference(input: { rowId: $rowId, patch: $patch }) {
+    notificationPreference {
+      rowId
+      emailTaskAssigned
+    }
+  }
+}

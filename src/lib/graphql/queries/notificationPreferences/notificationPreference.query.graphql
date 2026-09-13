@@ -1,0 +1,6 @@
+query NotificationPreference($userId: UUID!) {
+  notificationPreferenceByUserId(userId: $userId) {
+    rowId
+    emailTaskAssigned
+  }
+}

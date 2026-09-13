@@ -3,6 +3,7 @@ import { all } from "better-all";
 
 import { NotFound } from "@/components/layout";
 import {
+  NotificationSettings,
   Projects,
   WorkspaceBenefits,
   WorkspaceColumnsForm,
@@ -91,6 +92,8 @@ function SettingsPage() {
         <Projects />
 
         <WorkspaceColumnsForm />
+
+        <NotificationSettings />
 
         <WorkspaceBenefits />
       </div>
