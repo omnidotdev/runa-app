@@ -59,7 +59,7 @@ const AppSidebarHeader = () => {
 
   return (
     <SidebarHeader>
-      <div className="mb-4 flex items-center gap-2 overflow-auto">
+      <div className="mb-4 flex items-center gap-2 overflow-hidden">
         <div className="flex items-center gap-2">
           <SidebarMenuButton
             onClick={toggleSidebar}
@@ -67,7 +67,9 @@ const AppSidebarHeader = () => {
             aria-label="Toggle sidebar"
           >
             <LogoLockup
-              logo={<Logo aria-hidden className="size-5 text-primary-500" />}
+              logo={
+                <Logo aria-hidden className="h-5 w-auto text-primary-500" />
+              }
               name={app.name}
               nameClassName="group-data-[collapsible=icon]:hidden"
             />

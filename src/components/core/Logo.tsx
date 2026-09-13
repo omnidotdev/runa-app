@@ -8,12 +8,14 @@ import type { ComponentProps } from "react";
  * Portable inline SVG (no raster or font dependency) that inherits the current
  * text color via `fill="currentColor"`, so callers theme it with text-color
  * utilities (e.g. `text-primary-500` for brand amber). Paths are traced from the
- * brand mark; the `translate/scale` group maps potrace's bottom-left origin.
+ * brand mark; the `translate/scale` group maps potrace's bottom-left origin. The
+ * viewBox is cropped to the mark's bounding box so it fills its box with no dead
+ * padding (size the box by height, e.g. `h-5 w-auto`, to match adjacent text).
  */
 const Logo = ({ className, ...props }: ComponentProps<"svg">) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 1254 1254"
+    viewBox="202 289 829 678"
     fill="currentColor"
     role="img"
     aria-label="Runa"

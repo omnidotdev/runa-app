@@ -460,7 +460,7 @@ const SidebarContent = ({ className, ...rest }: ComponentProps<"div">) => {
       data-slot="sidebar-content"
       data-sidebar="content"
       className={cn(
-        "custom-scrollbar mb-2 flex min-h-0 flex-1 flex-col gap-4 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+        "custom-scrollbar mb-2 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overflow-x-hidden group-data-[collapsible=icon]:overflow-hidden",
         className,
       )}
       {...rest}
