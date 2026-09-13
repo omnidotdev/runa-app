@@ -1,0 +1,10 @@
+mutation CreateNotificationPreference(
+  $input: CreateNotificationPreferenceInput!
+) {
+  createNotificationPreference(input: $input) {
+    notificationPreference {
+      rowId
+      emailTaskAssigned
+    }
+  }
+}

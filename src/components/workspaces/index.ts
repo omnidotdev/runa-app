@@ -1,4 +1,5 @@
 export { default as CreateProjectDialog } from "./CreateProjectDialog";
+export { default as NotificationSettings } from "./NotificationSettings";
 export { default as OverviewBoard } from "./OverviewBoard";
 export { default as OverviewBoardItem } from "./OverviewBoardItem";
 export { default as OverviewList } from "./OverviewList";
