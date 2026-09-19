@@ -1,0 +1,7 @@
+query WorkspaceLabels($organizationId: String!) {
+  labels(condition: { organizationId: $organizationId }, orderBy: NAME_ASC) {
+    nodes {
+      ...Label
+    }
+  }
+}

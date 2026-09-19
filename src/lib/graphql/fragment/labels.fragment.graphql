@@ -3,4 +3,6 @@ fragment Label on Label {
   icon
   name
   rowId
+  projectId
+  organizationId
 }

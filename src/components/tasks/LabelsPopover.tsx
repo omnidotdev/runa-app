@@ -22,7 +22,8 @@ import {
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import labelsOptions from "@/lib/options/labels.options";
 import taskOptions from "@/lib/options/task.options";
-import { Role } from "@/lib/permissions";
+import workspaceLabelsOptions from "@/lib/options/workspaceLabels.options";
+import { Role, isAdminOrOwner } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 import { PropertyTrigger, PropertyValue } from "./propertyRow";
@@ -40,6 +41,8 @@ interface Props {
   taskLabels: TaskLabel[];
   editable: boolean;
 }
+
+type LabelScope = "project" | "workspace";
 
 const TriggerContent = ({ taskLabels }: { taskLabels: TaskLabel[] }) => {
   if (!taskLabels.length) {
@@ -74,14 +77,29 @@ const LabelsEditor = ({
   });
   const role = useCurrentUserRole(organizationId);
   const canCreate = role !== Role.Member;
+  // Workspace-shared labels require org admin (also enforced server-side)
+  const canCreateWorkspace = role ? isAdminOrOwner(role) : false;
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const [newLabel, setNewLabel] = useState({ name: "", color: "blue" });
+  const [newLabel, setNewLabel] = useState<{
+    name: string;
+    color: string;
+    scope: LabelScope;
+  }>({ name: "", color: "blue", scope: "project" });
 
-  const { data: labels = [] } = useQuery({
+  const { data: projectLabels = [] } = useQuery({
     ...labelsOptions({ projectId }),
     select: (data) => data?.labels?.nodes ?? [],
   });
+
+  const { data: workspaceLabels = [] } = useQuery({
+    ...workspaceLabelsOptions({ organizationId }),
+    select: (data) => data?.labels?.nodes ?? [],
+    enabled: !!organizationId,
+  });
+
+  // Workspace-shared labels first, then this board's own labels
+  const labels = [...workspaceLabels, ...projectLabels];
 
   const invalidate = async () => {
     await queryClient.invalidateQueries({
@@ -89,6 +107,12 @@ const LabelsEditor = ({
     });
     await queryClient.invalidateQueries({
       queryKey: getQueryKeyPrefix(useTasksQuery),
+    });
+    await queryClient.invalidateQueries({
+      queryKey: labelsOptions({ projectId }).queryKey,
+    });
+    await queryClient.invalidateQueries({
+      queryKey: workspaceLabelsOptions({ organizationId }).queryKey,
     });
   };
 
@@ -110,9 +134,14 @@ const LabelsEditor = ({
   const handleCreate = async () => {
     if (!newLabel.name) return;
 
+    // Workspace scope is admin-only; fall back to project scope defensively
+    const useWorkspaceScope =
+      newLabel.scope === "workspace" && canCreateWorkspace;
+    const scopeFields = useWorkspaceScope ? { organizationId } : { projectId };
+
     const result = await createLabel({
       input: {
-        label: { name: newLabel.name, color: newLabel.color, projectId },
+        label: { name: newLabel.name, color: newLabel.color, ...scopeFields },
       },
     });
     const created = result.createLabel?.label;
@@ -121,7 +150,7 @@ const LabelsEditor = ({
         input: { taskLabel: { taskId, labelId: created.rowId } },
       });
     }
-    setNewLabel({ name: "", color: "blue" });
+    setNewLabel((prev) => ({ name: "", color: "blue", scope: prev.scope }));
     await invalidate();
   };
 
@@ -137,49 +166,86 @@ const LabelsEditor = ({
         <PopoverContent className="w-72 p-2">
           <div className="flex flex-col gap-1">
             {canCreate && (
-              <div className="flex items-center gap-1 border-b pb-2">
-                <ColorSelector
-                  showChannelInput={false}
-                  positioning={{ strategy: "fixed", placement: "bottom" }}
-                  value={parseColor(newLabel.color)}
-                  onValueChange={(details) =>
-                    setNewLabel((prev) => ({
-                      ...prev,
-                      color: details.value.toString("hex"),
-                    }))
-                  }
-                />
+              <div className="flex flex-col gap-2 border-b pb-2">
+                {canCreateWorkspace && (
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-0.5 rounded-md bg-muted p-0.5 text-xs">
+                      {(
+                        [
+                          ["project", "This board"],
+                          ["workspace", "Workspace"],
+                        ] as const
+                      ).map(([scope, copy]) => (
+                        <button
+                          key={scope}
+                          type="button"
+                          onClick={() =>
+                            setNewLabel((prev) => ({ ...prev, scope }))
+                          }
+                          className={cn(
+                            "flex-1 rounded px-2 py-1 transition-colors",
+                            newLabel.scope === scope
+                              ? "bg-background font-medium shadow-sm"
+                              : "text-muted-foreground hover:text-foreground",
+                          )}
+                        >
+                          {copy}
+                        </button>
+                      ))}
+                    </div>
 
-                <Input
-                  ref={inputRef}
-                  autoComplete="off"
-                  className="h-8 border-0 px-2 text-sm shadow-none"
-                  placeholder="Create a label…"
-                  value={newLabel.name}
-                  onChange={(event) =>
-                    setNewLabel((prev) => ({
-                      ...prev,
-                      name: event.target.value,
-                    }))
-                  }
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" && newLabel.name) {
-                      event.preventDefault();
-                      void handleCreate();
+                    {newLabel.scope === "workspace" && (
+                      <p className="px-1 text-[11px] text-muted-foreground">
+                        Shared across all boards in this workspace
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-1">
+                  <ColorSelector
+                    showChannelInput={false}
+                    positioning={{ strategy: "fixed", placement: "bottom" }}
+                    value={parseColor(newLabel.color)}
+                    onValueChange={(details) =>
+                      setNewLabel((prev) => ({
+                        ...prev,
+                        color: details.value.toString("hex"),
+                      }))
                     }
-                  }}
-                />
+                  />
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-7"
-                  disabled={!newLabel.name}
-                  onClick={handleCreate}
-                  aria-label="Create label"
-                >
-                  <PlusIcon className="size-4" />
-                </Button>
+                  <Input
+                    ref={inputRef}
+                    autoComplete="off"
+                    className="h-8 border-0 px-2 text-sm shadow-none"
+                    placeholder="Create a label…"
+                    value={newLabel.name}
+                    onChange={(event) =>
+                      setNewLabel((prev) => ({
+                        ...prev,
+                        name: event.target.value,
+                      }))
+                    }
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" && newLabel.name) {
+                        event.preventDefault();
+                        void handleCreate();
+                      }
+                    }}
+                  />
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-7"
+                    disabled={!newLabel.name}
+                    onClick={handleCreate}
+                    aria-label="Create label"
+                  >
+                    <PlusIcon className="size-4" />
+                  </Button>
+                </div>
               </div>
             )}
 
@@ -198,17 +264,22 @@ const LabelsEditor = ({
                         !isSelected && "text-muted-foreground",
                       )}
                     >
-                      <span className="flex items-center gap-2">
+                      <span className="flex min-w-0 items-center gap-2">
                         <span
                           className="size-3 shrink-0 rounded-full"
                           style={{ backgroundColor: label.color }}
                         />
                         <span className="truncate">{label.name}</span>
+                        {label.organizationId && (
+                          <span className="shrink-0 rounded bg-muted px-1 py-0.5 text-[10px] text-muted-foreground">
+                            Workspace
+                          </span>
+                        )}
                       </span>
 
                       <CheckIcon
                         className={cn(
-                          "size-4 text-primary transition-opacity",
+                          "size-4 shrink-0 text-primary transition-opacity",
                           isSelected ? "opacity-100" : "opacity-0",
                         )}
                       />
