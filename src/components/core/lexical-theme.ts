@@ -24,9 +24,9 @@ const theme: EditorThemeClasses = {
     // click lands in [li.left, li.left + ::before width]. A negative-offset
     // ::before renders the checkmark outside that region, making it unclickable.
     listitemChecked:
-      "relative list-none pl-6 line-through text-base-500 dark:text-base-400 before:absolute before:top-1 before:left-0 before:h-4 before:w-4 before:cursor-pointer before:text-center before:leading-4 before:content-['✓'] before:text-primary-500",
+      "relative list-none pl-6 line-through text-base-500 dark:text-base-400 before:absolute before:top-1 before:left-0 before:h-4 before:w-4 before:cursor-pointer before:rounded-sm before:border before:border-primary-500 before:bg-primary-500 before:text-center before:text-xs before:leading-4 before:text-white before:content-['✓']",
     listitemUnchecked:
-      "relative list-none pl-6 before:absolute before:top-1 before:left-0 before:h-4 before:w-4 before:cursor-pointer before:text-center before:leading-4 before:content-['○'] before:text-base-400",
+      "relative list-none pl-6 before:absolute before:top-1 before:left-0 before:h-4 before:w-4 before:cursor-pointer before:rounded-sm before:border before:border-base-400 dark:before:border-base-500 before:content-['']",
   },
   link: "text-primary-500 hover:underline cursor-pointer",
   code: "block bg-base-50 dark:bg-base-950 border-x border-b rounded-b-lg p-4 text-sm font-mono overflow-x-auto",
