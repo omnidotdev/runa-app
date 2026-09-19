@@ -35,6 +35,7 @@ import type { WorkspaceUser } from "./UpdateAssignees";
 interface Assignee {
   userId: string;
   user?: {
+    identityProviderId?: string | null;
     name?: string | null;
     avatarUrl?: string | null;
   } | null;
@@ -146,7 +147,12 @@ const AssigneesEditor = ({
   const { mutateAsync: addAssignee } =
     useCreateAssigneeMutation(mutationOptions);
 
-  const selected = assignees.map((assignee) => assignee.userId);
+  // Member list values are IDP ids (Gatekeeper keys members by identityProviderId),
+  // so selection must be compared in the same namespace or the remove branch in
+  // handleToggle is never reached and every click re-runs the add mutation
+  const selected = assignees
+    .map((assignee) => assignee.user?.identityProviderId)
+    .filter((id): id is string => Boolean(id));
   const atLimit = selected.length >= maxAssignees;
 
   const handleToggle = async (userId: string) => {
