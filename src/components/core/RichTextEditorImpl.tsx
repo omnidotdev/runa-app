@@ -7,6 +7,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { RichTextEditor as BaseRichTextEditor } from "@omnidotdev/thornberry/rich-text-editor";
 import { useEffect } from "react";
 
+import useMentionItems from "@/lib/hooks/useMentionItems";
 import CodeBlockPlugin from "./CodeBlockPlugin";
 import ImagePastePlugin from "./ImagePastePlugin";
 import theme from "./lexical-theme";
@@ -61,36 +62,46 @@ const RichTextEditorImpl = ({
   imageUpload,
   onUpdate,
   ...rest
-}: RichTextEditorProps) => (
-  <BaseRichTextEditor
-    {...rest}
-    theme={theme}
-    enableChecklist
-    toolbarClassName="bg-muted/40"
-    extraNodes={[
-      CodeNode,
-      CodeHighlightNode,
-      ...(imageUpload ? [ImageNode] : []),
-    ]}
-    plugins={
-      <>
-        <CodeHighlightPlugin />
-        <CodeBlockPlugin />
-        {imageUpload && (
-          <ImagePastePlugin
-            taskId={imageUpload.taskId}
-            postId={imageUpload.postId}
-          />
-        )}
-      </>
-    }
-    onUpdate={
-      onUpdate
-        ? ({ getHTML, getText, isEmpty }) =>
-            onUpdate({ getHTML, getText, isEmpty })
-        : undefined
-    }
-  />
-);
+}: RichTextEditorProps) => {
+  const mentionItems = useMentionItems();
+  // Offer @-mentions on real editing surfaces (descriptions, comments), not on
+  // read-only views or single-line title fields (which hide the toolbar)
+  const mentionsEnabled = rest.editable !== false && !rest.hideToolbar;
+
+  return (
+    <BaseRichTextEditor
+      {...rest}
+      mentionItems={
+        mentionsEnabled && mentionItems.length ? mentionItems : undefined
+      }
+      theme={theme}
+      enableChecklist
+      toolbarClassName="bg-muted/40"
+      extraNodes={[
+        CodeNode,
+        CodeHighlightNode,
+        ...(imageUpload ? [ImageNode] : []),
+      ]}
+      plugins={
+        <>
+          <CodeHighlightPlugin />
+          <CodeBlockPlugin />
+          {imageUpload && (
+            <ImagePastePlugin
+              taskId={imageUpload.taskId}
+              postId={imageUpload.postId}
+            />
+          )}
+        </>
+      }
+      onUpdate={
+        onUpdate
+          ? ({ getHTML, getText, isEmpty }) =>
+              onUpdate({ getHTML, getText, isEmpty })
+          : undefined
+      }
+    />
+  );
+};
 
 export default RichTextEditorImpl;
