@@ -1,4 +1,9 @@
 import { gatekeeperDashboardUrl } from "@omnidotdev/providers/react";
+import {
+  AvatarFallback,
+  AvatarImage,
+  AvatarRoot,
+} from "@omnidotdev/thornberry/avatar";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import { LogoLockup } from "@omnidotdev/thornberry/logo-lockup";
 import {
@@ -34,6 +39,22 @@ import { useOrganization } from "@/providers/OrganizationProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 import Logo from "./Logo";
 
+/** Workspace logo, falling back to the first letter of the name when unset. */
+const WorkspaceLogo = ({
+  name,
+  logo,
+}: {
+  name?: string | null;
+  logo?: string | null;
+}) => (
+  <AvatarRoot size="xs" className="size-5 shrink-0 text-[10px]">
+    <AvatarImage src={logo ?? undefined} alt={name ?? undefined} />
+    <AvatarFallback className="font-semibold uppercase">
+      {name?.charAt(0)}
+    </AvatarFallback>
+  </AvatarRoot>
+);
+
 const AppSidebarHeader = () => {
   const { workspaceSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
@@ -53,9 +74,10 @@ const AppSidebarHeader = () => {
   // Resolve current org from URL slug. Sidebar is rendered by `_app.tsx`
   // (above `$workspaceSlug.tsx` in the chain), so we cannot read the
   // resolved organizationId from the workspace layout's context here.
-  const currentOrgName = workspaceSlug
-    ? organizations.find((org) => org.slug === workspaceSlug)?.name
+  const currentOrg = workspaceSlug
+    ? organizations.find((org) => org.slug === workspaceSlug)
     : undefined;
+  const currentOrgName = currentOrg?.name;
 
   return (
     <SidebarHeader>
@@ -87,8 +109,16 @@ const AppSidebarHeader = () => {
             <SidebarMenuButton className="bg-sidebar-accent focus-visible:ring-offset-background">
               <ChevronsUpDown className="rotate-none!" />
 
-              <span className="flex w-full items-center group-data-[collapsible=icon]:hidden">
-                {currentOrgName ?? "Select Workspace"}
+              <span className="flex w-full items-center gap-2 group-data-[collapsible=icon]:hidden">
+                {currentOrg && (
+                  <WorkspaceLogo
+                    name={currentOrg.name}
+                    logo={currentOrg.logo}
+                  />
+                )}
+                <span className="truncate">
+                  {currentOrgName ?? "Select Workspace"}
+                </span>
               </span>
             </SidebarMenuButton>
           </MenuTrigger>
@@ -128,9 +158,13 @@ const AppSidebarHeader = () => {
                     }}
                     className={cn(isWorkspaceSelected && "bg-sidebar-accent")}
                   >
-                    {org.name}
-
-                    {isWorkspaceSelected && <CheckIcon color="green" />}
+                    <div className="flex w-full items-center gap-2">
+                      <WorkspaceLogo name={org.name} logo={org.logo} />
+                      <span className="truncate">{org.name}</span>
+                      {isWorkspaceSelected && (
+                        <CheckIcon className="ml-auto shrink-0" color="green" />
+                      )}
+                    </div>
                   </MenuItem>
                 );
               })}
