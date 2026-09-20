@@ -6,6 +6,7 @@ mutation UpdateNotificationPreference(
     notificationPreference {
       rowId
       emailTaskAssigned
+      taskAssignedCadence
     }
   }
 }

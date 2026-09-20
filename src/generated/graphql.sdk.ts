@@ -1344,6 +1344,39 @@ export type CreateLabelPayloadLabelEdgeArgs = {
   orderBy?: Array<LabelOrderBy>;
 };
 
+/** All input for the create `NotificationDigestQueue` mutation. */
+export type CreateNotificationDigestQueueInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The `NotificationDigestQueue` to be created by this mutation. */
+  notificationDigestQueue: NotificationDigestQueueInput;
+};
+
+/** The output of our create `NotificationDigestQueue` mutation. */
+export type CreateNotificationDigestQueuePayload = {
+  __typename?: 'CreateNotificationDigestQueuePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `NotificationDigestQueue` that was created by this mutation. */
+  notificationDigestQueue?: Maybe<NotificationDigestQueue>;
+  /** An edge for our `NotificationDigestQueue`. May be used by Relay 1. */
+  notificationDigestQueueEdge?: Maybe<NotificationDigestQueueEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `NotificationDigestQueue` mutation. */
+export type CreateNotificationDigestQueuePayloadNotificationDigestQueueEdgeArgs = {
+  orderBy?: Array<NotificationDigestQueueOrderBy>;
+};
+
 /** All input for the create `NotificationPreference` mutation. */
 export type CreateNotificationPreferenceInput = {
   /**
@@ -1974,6 +2007,50 @@ export type DeleteLabelPayload = {
 /** The output of our delete `Label` mutation. */
 export type DeleteLabelPayloadLabelEdgeArgs = {
   orderBy?: Array<LabelOrderBy>;
+};
+
+/** All input for the `deleteNotificationDigestQueueById` mutation. */
+export type DeleteNotificationDigestQueueByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `NotificationDigestQueue` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteNotificationDigestQueue` mutation. */
+export type DeleteNotificationDigestQueueInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `NotificationDigestQueue` mutation. */
+export type DeleteNotificationDigestQueuePayload = {
+  __typename?: 'DeleteNotificationDigestQueuePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedNotificationDigestQueueId?: Maybe<Scalars['ID']['output']>;
+  /** The `NotificationDigestQueue` that was deleted by this mutation. */
+  notificationDigestQueue?: Maybe<NotificationDigestQueue>;
+  /** An edge for our `NotificationDigestQueue`. May be used by Relay 1. */
+  notificationDigestQueueEdge?: Maybe<NotificationDigestQueueEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `NotificationDigestQueue` mutation. */
+export type DeleteNotificationDigestQueuePayloadNotificationDigestQueueEdgeArgs = {
+  orderBy?: Array<NotificationDigestQueueOrderBy>;
 };
 
 /** All input for the `deleteNotificationPreferenceById` mutation. */
@@ -3180,6 +3257,8 @@ export type Mutation = {
   createEmoji?: Maybe<CreateEmojiPayload>;
   /** Creates a single `Label`. */
   createLabel?: Maybe<CreateLabelPayload>;
+  /** Creates a single `NotificationDigestQueue`. */
+  createNotificationDigestQueue?: Maybe<CreateNotificationDigestQueuePayload>;
   /** Creates a single `NotificationPreference`. */
   createNotificationPreference?: Maybe<CreateNotificationPreferencePayload>;
   /** Creates a single `Post`. */
@@ -3222,6 +3301,10 @@ export type Mutation = {
   deleteLabel?: Maybe<DeleteLabelPayload>;
   /** Deletes a single `Label` using its globally unique id. */
   deleteLabelById?: Maybe<DeleteLabelPayload>;
+  /** Deletes a single `NotificationDigestQueue` using a unique key. */
+  deleteNotificationDigestQueue?: Maybe<DeleteNotificationDigestQueuePayload>;
+  /** Deletes a single `NotificationDigestQueue` using its globally unique id. */
+  deleteNotificationDigestQueueById?: Maybe<DeleteNotificationDigestQueuePayload>;
   /** Deletes a single `NotificationPreference` using a unique key. */
   deleteNotificationPreference?: Maybe<DeleteNotificationPreferencePayload>;
   /** Deletes a single `NotificationPreference` using its globally unique id. */
@@ -3295,6 +3378,10 @@ export type Mutation = {
   updateLabel?: Maybe<UpdateLabelPayload>;
   /** Updates a single `Label` using its globally unique id and a patch. */
   updateLabelById?: Maybe<UpdateLabelPayload>;
+  /** Updates a single `NotificationDigestQueue` using a unique key and a patch. */
+  updateNotificationDigestQueue?: Maybe<UpdateNotificationDigestQueuePayload>;
+  /** Updates a single `NotificationDigestQueue` using its globally unique id and a patch. */
+  updateNotificationDigestQueueById?: Maybe<UpdateNotificationDigestQueuePayload>;
   /** Updates a single `NotificationPreference` using a unique key and a patch. */
   updateNotificationPreference?: Maybe<UpdateNotificationPreferencePayload>;
   /** Updates a single `NotificationPreference` using its globally unique id and a patch. */
@@ -3371,6 +3458,12 @@ export type MutationCreateEmojiArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateLabelArgs = {
   input: CreateLabelInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateNotificationDigestQueueArgs = {
+  input: CreateNotificationDigestQueueInput;
 };
 
 
@@ -3497,6 +3590,18 @@ export type MutationDeleteLabelArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteLabelByIdArgs = {
   input: DeleteLabelByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteNotificationDigestQueueArgs = {
+  input: DeleteNotificationDigestQueueInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteNotificationDigestQueueByIdArgs = {
+  input: DeleteNotificationDigestQueueByIdInput;
 };
 
 
@@ -3711,6 +3816,18 @@ export type MutationUpdateLabelByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateNotificationDigestQueueArgs = {
+  input: UpdateNotificationDigestQueueInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateNotificationDigestQueueByIdArgs = {
+  input: UpdateNotificationDigestQueueByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateNotificationPreferenceArgs = {
   input: UpdateNotificationPreferenceInput;
 };
@@ -3871,6 +3988,229 @@ export type Node = {
   id: Scalars['ID']['output'];
 };
 
+export type NotificationDigestQueue = Node & {
+  __typename?: 'NotificationDigestQueue';
+  createdAt: Scalars['Datetime']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  payload: Scalars['JSON']['output'];
+  rowId: Scalars['UUID']['output'];
+  sendAfter: Scalars['Datetime']['output'];
+  /** Reads a single `User` that is related to this `NotificationDigestQueue`. */
+  user?: Maybe<User>;
+  userId: Scalars['UUID']['output'];
+};
+
+export type NotificationDigestQueueAggregates = {
+  __typename?: 'NotificationDigestQueueAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<NotificationDigestQueueDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `NotificationDigestQueue` object types. */
+export type NotificationDigestQueueAggregatesFilter = {
+  /** Distinct count aggregate over matching `NotificationDigestQueue` objects. */
+  distinctCount?: InputMaybe<NotificationDigestQueueDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `NotificationDigestQueue` object to be included within the aggregate. */
+  filter?: InputMaybe<NotificationDigestQueueFilter>;
+};
+
+/**
+ * A condition to be used against `NotificationDigestQueue` object types. All
+ * fields are tested for equality and combined with a logical ‘and.’
+ */
+export type NotificationDigestQueueCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `sendAfter` field. */
+  sendAfter?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `userId` field. */
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+/** A connection to a list of `NotificationDigestQueue` values. */
+export type NotificationDigestQueueConnection = {
+  __typename?: 'NotificationDigestQueueConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<NotificationDigestQueueAggregates>;
+  /** A list of edges which contains the `NotificationDigestQueue` and cursor to aid in pagination. */
+  edges: Array<NotificationDigestQueueEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<NotificationDigestQueueAggregates>>;
+  /** A list of `NotificationDigestQueue` objects. */
+  nodes: Array<NotificationDigestQueue>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `NotificationDigestQueue` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `NotificationDigestQueue` values. */
+export type NotificationDigestQueueConnectionGroupedAggregatesArgs = {
+  groupBy: Array<NotificationDigestQueueGroupBy>;
+  having?: InputMaybe<NotificationDigestQueueHavingInput>;
+};
+
+export type NotificationDigestQueueDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  payload?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  sendAfter?: InputMaybe<BigIntFilter>;
+  userId?: InputMaybe<BigIntFilter>;
+};
+
+export type NotificationDigestQueueDistinctCountAggregates = {
+  __typename?: 'NotificationDigestQueueDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of payload across the matching connection */
+  payload?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of sendAfter across the matching connection */
+  sendAfter?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of userId across the matching connection */
+  userId?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `NotificationDigestQueue` edge in the connection. */
+export type NotificationDigestQueueEdge = {
+  __typename?: 'NotificationDigestQueueEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `NotificationDigestQueue` at the end of the edge. */
+  node: NotificationDigestQueue;
+};
+
+/** A filter to be used against `NotificationDigestQueue` object types. All fields are combined with a logical ‘and.’ */
+export type NotificationDigestQueueFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<NotificationDigestQueueFilter>>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<NotificationDigestQueueFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<NotificationDigestQueueFilter>>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `sendAfter` field. */
+  sendAfter?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `user` relation. */
+  user?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `userId` field. */
+  userId?: InputMaybe<UuidFilter>;
+};
+
+/** Grouping methods for `NotificationDigestQueue` for usage during aggregation. */
+export enum NotificationDigestQueueGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Payload = 'PAYLOAD',
+  SendAfter = 'SEND_AFTER',
+  SendAfterTruncatedToDay = 'SEND_AFTER_TRUNCATED_TO_DAY',
+  SendAfterTruncatedToHour = 'SEND_AFTER_TRUNCATED_TO_HOUR',
+  UserId = 'USER_ID'
+}
+
+export type NotificationDigestQueueHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  sendAfter?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type NotificationDigestQueueHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  sendAfter?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `NotificationDigestQueue` aggregates. */
+export type NotificationDigestQueueHavingInput = {
+  AND?: InputMaybe<Array<NotificationDigestQueueHavingInput>>;
+  OR?: InputMaybe<Array<NotificationDigestQueueHavingInput>>;
+  average?: InputMaybe<NotificationDigestQueueHavingAverageInput>;
+  distinctCount?: InputMaybe<NotificationDigestQueueHavingDistinctCountInput>;
+  max?: InputMaybe<NotificationDigestQueueHavingMaxInput>;
+  min?: InputMaybe<NotificationDigestQueueHavingMinInput>;
+  stddevPopulation?: InputMaybe<NotificationDigestQueueHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<NotificationDigestQueueHavingStddevSampleInput>;
+  sum?: InputMaybe<NotificationDigestQueueHavingSumInput>;
+  variancePopulation?: InputMaybe<NotificationDigestQueueHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<NotificationDigestQueueHavingVarianceSampleInput>;
+};
+
+export type NotificationDigestQueueHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  sendAfter?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type NotificationDigestQueueHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  sendAfter?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type NotificationDigestQueueHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  sendAfter?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type NotificationDigestQueueHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  sendAfter?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type NotificationDigestQueueHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  sendAfter?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type NotificationDigestQueueHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  sendAfter?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type NotificationDigestQueueHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  sendAfter?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `NotificationDigestQueue` */
+export type NotificationDigestQueueInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  payload: Scalars['JSON']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sendAfter?: InputMaybe<Scalars['Datetime']['input']>;
+  userId: Scalars['UUID']['input'];
+};
+
+/** Methods to use when ordering `NotificationDigestQueue`. */
+export enum NotificationDigestQueueOrderBy {
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  SendAfterAsc = 'SEND_AFTER_ASC',
+  SendAfterDesc = 'SEND_AFTER_DESC',
+  UserIdAsc = 'USER_ID_ASC',
+  UserIdDesc = 'USER_ID_DESC'
+}
+
+/** Represents an update to a `NotificationDigestQueue`. Fields that are set will be updated. */
+export type NotificationDigestQueuePatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  payload?: InputMaybe<Scalars['JSON']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sendAfter?: InputMaybe<Scalars['Datetime']['input']>;
+  userId?: InputMaybe<Scalars['UUID']['input']>;
+};
+
 export type NotificationPreference = Node & {
   __typename?: 'NotificationPreference';
   createdAt: Scalars['Datetime']['output'];
@@ -3878,6 +4218,7 @@ export type NotificationPreference = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   rowId: Scalars['UUID']['output'];
+  taskAssignedCadence: Scalars['String']['output'];
   updatedAt: Scalars['Datetime']['output'];
   /** Reads a single `User` that is related to this `NotificationPreference`. */
   user?: Maybe<User>;
@@ -3902,6 +4243,8 @@ export type NotificationPreferenceCondition = {
   emailTaskAssigned?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `taskAssignedCadence` field. */
+  taskAssignedCadence?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `userId` field. */
@@ -3940,6 +4283,8 @@ export type NotificationPreferenceDistinctCountAggregates = {
   emailTaskAssigned?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of taskAssignedCadence across the matching connection */
+  taskAssignedCadence?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of userId across the matching connection */
@@ -3969,6 +4314,8 @@ export type NotificationPreferenceFilter = {
   or?: InputMaybe<Array<NotificationPreferenceFilter>>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `taskAssignedCadence` field. */
+  taskAssignedCadence?: InputMaybe<StringFilter>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `user` relation. */
@@ -3983,6 +4330,7 @@ export enum NotificationPreferenceGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   EmailTaskAssigned = 'EMAIL_TASK_ASSIGNED',
+  TaskAssignedCadence = 'TASK_ASSIGNED_CADENCE',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
@@ -4053,6 +4401,7 @@ export type NotificationPreferenceInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   emailTaskAssigned?: InputMaybe<Scalars['Boolean']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  taskAssignedCadence?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId: Scalars['UUID']['input'];
 };
@@ -4068,6 +4417,8 @@ export enum NotificationPreferenceOrderBy {
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  TaskAssignedCadenceAsc = 'TASK_ASSIGNED_CADENCE_ASC',
+  TaskAssignedCadenceDesc = 'TASK_ASSIGNED_CADENCE_DESC',
   UpdatedAtAsc = 'UPDATED_AT_ASC',
   UpdatedAtDesc = 'UPDATED_AT_DESC',
   UserIdAsc = 'USER_ID_ASC',
@@ -4079,6 +4430,7 @@ export type NotificationPreferencePatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   emailTaskAssigned?: InputMaybe<Scalars['Boolean']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  taskAssignedCadence?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
   userId?: InputMaybe<Scalars['UUID']['input']>;
 };
@@ -6514,6 +6866,12 @@ export type Query = Node & {
   labels?: Maybe<LabelConnection>;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
+  /** Get a single `NotificationDigestQueue`. */
+  notificationDigestQueue?: Maybe<NotificationDigestQueue>;
+  /** Reads a single `NotificationDigestQueue` using its globally unique `ID`. */
+  notificationDigestQueueById?: Maybe<NotificationDigestQueue>;
+  /** Reads and enables pagination through a set of `NotificationDigestQueue`. */
+  notificationDigestQueues?: Maybe<NotificationDigestQueueConnection>;
   /** Get a single `NotificationPreference`. */
   notificationPreference?: Maybe<NotificationPreference>;
   /** Reads a single `NotificationPreference` using its globally unique `ID`. */
@@ -6757,6 +7115,31 @@ export type QueryLabelsArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryNodeArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryNotificationDigestQueueArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryNotificationDigestQueueByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryNotificationDigestQueuesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<NotificationDigestQueueCondition>;
+  filter?: InputMaybe<NotificationDigestQueueFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<NotificationDigestQueueOrderBy>>;
 };
 
 
@@ -8655,6 +9038,53 @@ export type UpdateLabelPayloadLabelEdgeArgs = {
   orderBy?: Array<LabelOrderBy>;
 };
 
+/** All input for the `updateNotificationDigestQueueById` mutation. */
+export type UpdateNotificationDigestQueueByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `NotificationDigestQueue` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `NotificationDigestQueue` being updated. */
+  patch: NotificationDigestQueuePatch;
+};
+
+/** All input for the `updateNotificationDigestQueue` mutation. */
+export type UpdateNotificationDigestQueueInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `NotificationDigestQueue` being updated. */
+  patch: NotificationDigestQueuePatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `NotificationDigestQueue` mutation. */
+export type UpdateNotificationDigestQueuePayload = {
+  __typename?: 'UpdateNotificationDigestQueuePayload';
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The `NotificationDigestQueue` that was updated by this mutation. */
+  notificationDigestQueue?: Maybe<NotificationDigestQueue>;
+  /** An edge for our `NotificationDigestQueue`. May be used by Relay 1. */
+  notificationDigestQueueEdge?: Maybe<NotificationDigestQueueEdge>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `NotificationDigestQueue` mutation. */
+export type UpdateNotificationDigestQueuePayloadNotificationDigestQueueEdgeArgs = {
+  orderBy?: Array<NotificationDigestQueueOrderBy>;
+};
+
 /** All input for the `updateNotificationPreferenceById` mutation. */
 export type UpdateNotificationPreferenceByIdInput = {
   /**
@@ -9287,6 +9717,8 @@ export type User = Node & {
   id: Scalars['ID']['output'];
   identityProviderId: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
+  /** Reads and enables pagination through a set of `NotificationDigestQueue`. */
+  notificationDigestQueues: NotificationDigestQueueConnection;
   /** Reads a single `NotificationPreference` that is related to this `User`. */
   notificationPreference?: Maybe<NotificationPreference>;
   rowId: Scalars['UUID']['output'];
@@ -9353,6 +9785,18 @@ export type UserEmojisArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<EmojiOrderBy>>;
+};
+
+
+export type UserNotificationDigestQueuesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<NotificationDigestQueueCondition>;
+  filter?: InputMaybe<NotificationDigestQueueFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<NotificationDigestQueueOrderBy>>;
 };
 
 
@@ -9479,6 +9923,10 @@ export type UserFilter = {
   name?: InputMaybe<StringFilter>;
   /** Negates the expression. */
   not?: InputMaybe<UserFilter>;
+  /** Filter by the object’s `notificationDigestQueues` relation. */
+  notificationDigestQueues?: InputMaybe<UserToManyNotificationDigestQueueFilter>;
+  /** Some related `notificationDigestQueues` exist. */
+  notificationDigestQueuesExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `notificationPreference` relation. */
   notificationPreference?: InputMaybe<NotificationPreferenceFilter>;
   /** A related `notificationPreference` exists. */
@@ -9757,6 +10205,18 @@ export enum UserOrderBy {
   NameAsc = 'NAME_ASC',
   NameDesc = 'NAME_DESC',
   Natural = 'NATURAL',
+  NotificationDigestQueuesCountAsc = 'NOTIFICATION_DIGEST_QUEUES_COUNT_ASC',
+  NotificationDigestQueuesCountDesc = 'NOTIFICATION_DIGEST_QUEUES_COUNT_DESC',
+  NotificationDigestQueuesDistinctCountCreatedAtAsc = 'NOTIFICATION_DIGEST_QUEUES_DISTINCT_COUNT_CREATED_AT_ASC',
+  NotificationDigestQueuesDistinctCountCreatedAtDesc = 'NOTIFICATION_DIGEST_QUEUES_DISTINCT_COUNT_CREATED_AT_DESC',
+  NotificationDigestQueuesDistinctCountPayloadAsc = 'NOTIFICATION_DIGEST_QUEUES_DISTINCT_COUNT_PAYLOAD_ASC',
+  NotificationDigestQueuesDistinctCountPayloadDesc = 'NOTIFICATION_DIGEST_QUEUES_DISTINCT_COUNT_PAYLOAD_DESC',
+  NotificationDigestQueuesDistinctCountRowIdAsc = 'NOTIFICATION_DIGEST_QUEUES_DISTINCT_COUNT_ROW_ID_ASC',
+  NotificationDigestQueuesDistinctCountRowIdDesc = 'NOTIFICATION_DIGEST_QUEUES_DISTINCT_COUNT_ROW_ID_DESC',
+  NotificationDigestQueuesDistinctCountSendAfterAsc = 'NOTIFICATION_DIGEST_QUEUES_DISTINCT_COUNT_SEND_AFTER_ASC',
+  NotificationDigestQueuesDistinctCountSendAfterDesc = 'NOTIFICATION_DIGEST_QUEUES_DISTINCT_COUNT_SEND_AFTER_DESC',
+  NotificationDigestQueuesDistinctCountUserIdAsc = 'NOTIFICATION_DIGEST_QUEUES_DISTINCT_COUNT_USER_ID_ASC',
+  NotificationDigestQueuesDistinctCountUserIdDesc = 'NOTIFICATION_DIGEST_QUEUES_DISTINCT_COUNT_USER_ID_DESC',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
   RowIdAsc = 'ROW_ID_ASC',
@@ -10235,6 +10695,18 @@ export type UserToManyEmojiFilter = {
   some?: InputMaybe<EmojiFilter>;
 };
 
+/** A filter to be used against many `NotificationDigestQueue` object types. All fields are combined with a logical ‘and.’ */
+export type UserToManyNotificationDigestQueueFilter = {
+  /** Aggregates across related `NotificationDigestQueue` match the filter criteria. */
+  aggregates?: InputMaybe<NotificationDigestQueueAggregatesFilter>;
+  /** Every related `NotificationDigestQueue` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<NotificationDigestQueueFilter>;
+  /** No related `NotificationDigestQueue` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<NotificationDigestQueueFilter>;
+  /** Some related `NotificationDigestQueue` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<NotificationDigestQueueFilter>;
+};
+
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
 export type UserToManyPostFilter = {
   /** Aggregates across related `Post` match the filter criteria. */
@@ -10703,7 +11175,7 @@ export type CreateNotificationPreferenceMutationVariables = Exact<{
 }>;
 
 
-export type CreateNotificationPreferenceMutation = { __typename?: 'Mutation', createNotificationPreference?: { __typename?: 'CreateNotificationPreferencePayload', notificationPreference?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean } | null } | null };
+export type CreateNotificationPreferenceMutation = { __typename?: 'Mutation', createNotificationPreference?: { __typename?: 'CreateNotificationPreferencePayload', notificationPreference?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean, taskAssignedCadence: string } | null } | null };
 
 export type UpdateNotificationPreferenceMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -10711,7 +11183,7 @@ export type UpdateNotificationPreferenceMutationVariables = Exact<{
 }>;
 
 
-export type UpdateNotificationPreferenceMutation = { __typename?: 'Mutation', updateNotificationPreference?: { __typename?: 'UpdateNotificationPreferencePayload', notificationPreference?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean } | null } | null };
+export type UpdateNotificationPreferenceMutation = { __typename?: 'Mutation', updateNotificationPreference?: { __typename?: 'UpdateNotificationPreferencePayload', notificationPreference?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean, taskAssignedCadence: string } | null } | null };
 
 export type CreatePostMutationVariables = Exact<{
   input: CreatePostInput;
@@ -10923,7 +11395,7 @@ export type NotificationPreferenceQueryVariables = Exact<{
 }>;
 
 
-export type NotificationPreferenceQuery = { __typename?: 'Query', notificationPreferenceByUserId?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean } | null };
+export type NotificationPreferenceQuery = { __typename?: 'Query', notificationPreferenceByUserId?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean, taskAssignedCadence: string } | null };
 
 export type ProjectColumnsQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -11234,6 +11706,7 @@ export const CreateNotificationPreferenceDocument = gql`
     notificationPreference {
       rowId
       emailTaskAssigned
+      taskAssignedCadence
     }
   }
 }
@@ -11244,6 +11717,7 @@ export const UpdateNotificationPreferenceDocument = gql`
     notificationPreference {
       rowId
       emailTaskAssigned
+      taskAssignedCadence
     }
   }
 }
@@ -11539,6 +12013,7 @@ export const NotificationPreferenceDocument = gql`
   notificationPreferenceByUserId(userId: $userId) {
     rowId
     emailTaskAssigned
+    taskAssignedCadence
   }
 }
     `;

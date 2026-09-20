@@ -34,16 +34,24 @@ const NotificationSettings = () => {
 
   // default to enabled when no row exists yet (opt-out model)
   const [emailTaskAssigned, setEmailTaskAssigned] = useState(true);
+  // default to immediate delivery when no row exists yet
+  const [isDigest, setIsDigest] = useState(false);
 
   useEffect(() => {
-    if (preference) setEmailTaskAssigned(preference.emailTaskAssigned);
+    if (preference) {
+      setEmailTaskAssigned(preference.emailTaskAssigned);
+      setIsDigest(preference.taskAssignedCadence === "digest");
+    }
   }, [preference]);
 
-  // revert the optimistic toggle if the write fails, so the switch never shows a
-  // state that was not persisted (the query still holds the pre-toggle value)
+  // revert the optimistic toggles if the write fails, so a switch never shows a
+  // state that was not persisted (the query still holds the pre-toggle values)
   const mutationOptions = {
     meta: { invalidates: [getQueryKeyPrefix(useNotificationPreferenceQuery)] },
-    onError: () => setEmailTaskAssigned(preference?.emailTaskAssigned ?? true),
+    onError: () => {
+      setEmailTaskAssigned(preference?.emailTaskAssigned ?? true);
+      setIsDigest(preference?.taskAssignedCadence === "digest");
+    },
   };
 
   const { mutate: createPreference } =
@@ -51,25 +59,32 @@ const NotificationSettings = () => {
   const { mutate: updatePreference } =
     useUpdateNotificationPreferenceMutation(mutationOptions);
 
-  const onToggle = (checked: boolean) => {
+  // persist a patch, creating the row lazily on first change
+  const persist = (patch: {
+    emailTaskAssigned?: boolean;
+    taskAssignedCadence?: string;
+  }) => {
     if (!userId) return;
-
-    // optimistic local update; the mutation reconciles and invalidates, and
-    // onError rolls this back if the write fails
-    setEmailTaskAssigned(checked);
-
     if (preference?.rowId) {
-      updatePreference({
-        rowId: preference.rowId,
-        patch: { emailTaskAssigned: checked },
-      });
+      updatePreference({ rowId: preference.rowId, patch });
     } else {
       createPreference({
-        input: {
-          notificationPreference: { userId, emailTaskAssigned: checked },
-        },
+        input: { notificationPreference: { userId, ...patch } },
       });
     }
+  };
+
+  const onToggle = (checked: boolean) => {
+    if (!userId) return;
+    // optimistic local update; the mutation reconciles/invalidates, onError rolls back
+    setEmailTaskAssigned(checked);
+    persist({ emailTaskAssigned: checked });
+  };
+
+  const onToggleDigest = (checked: boolean) => {
+    if (!userId) return;
+    setIsDigest(checked);
+    persist({ taskAssignedCadence: checked ? "digest" : "immediate" });
   };
 
   return (
@@ -94,6 +109,23 @@ const NotificationSettings = () => {
               checked={emailTaskAssigned}
               onCheckedChange={onToggle}
               disabled={!userId}
+            />
+          </div>
+        </div>
+
+        <div className="flex h-10 w-full items-center justify-between">
+          <div className="flex items-center gap-3 pl-2 lg:pl-0">
+            <BellIcon className="size-4 text-base-500" />
+            <span className="text-sm">
+              Batch assignment emails into a digest
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 pr-2">
+            <Switch
+              checked={isDigest}
+              onCheckedChange={onToggleDigest}
+              disabled={!userId || !emailTaskAssigned}
             />
           </div>
         </div>
