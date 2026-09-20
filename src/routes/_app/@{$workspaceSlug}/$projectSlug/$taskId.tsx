@@ -7,6 +7,7 @@ import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
+  FolderInputIcon,
   LinkIcon,
   MoreHorizontalIcon,
   SlidersHorizontalIcon,
@@ -20,6 +21,7 @@ import { Link, RichTextEditor } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import { AttachmentsSection, Comments } from "@/components/tasks";
 import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
+import MoveTaskDialog from "@/components/tasks/MoveTaskDialog";
 import TaskKey from "@/components/tasks/TaskKey";
 import TaskProperties from "@/components/tasks/TaskProperties";
 import { Button } from "@/components/ui/button";
@@ -250,6 +252,7 @@ function AuthenticatedTaskPage() {
 
   const matches = useViewportSize({ breakpoint: Breakpoint.Large });
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
+  const [isMoveOpen, setIsMoveOpen] = useState(false);
 
   // Get role from IDP organization claims
   const role = useCurrentUserRole(organizationId);
@@ -391,6 +394,13 @@ function AuthenticatedTaskPage() {
                 </MenuItem>
 
                 {canEdit && (
+                  <MenuItem value="move" onClick={() => setIsMoveOpen(true)}>
+                    <FolderInputIcon />
+                    <span>Move to project</span>
+                  </MenuItem>
+                )}
+
+                {canEdit && (
                   <MenuItem
                     value="delete"
                     variant="destructive"
@@ -463,6 +473,15 @@ function AuthenticatedTaskPage() {
       </div>
 
       <DeleteTaskDialog />
+
+      <MoveTaskDialog
+        open={isMoveOpen}
+        onOpenChange={setIsMoveOpen}
+        taskId={taskId}
+        currentProjectId={projectId}
+        organizationId={organizationId}
+        workspaceSlug={workspaceSlug}
+      />
     </div>
   );
 }

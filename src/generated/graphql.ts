@@ -3144,6 +3144,31 @@ export type LabelToManyTaskLabelFilter = {
   some?: InputMaybe<TaskLabelFilter>;
 };
 
+/** Input for moving a task to a column in another project (same workspace). */
+export type MoveTaskInput = {
+  /** A column belonging to the destination project. */
+  columnId: Scalars['UUID']['input'];
+  /** The destination project. */
+  projectId: Scalars['UUID']['input'];
+  /** The task to move. */
+  taskId: Scalars['UUID']['input'];
+};
+
+/** Result of a moveTask mutation. */
+export type MoveTaskPayload = {
+  __typename?: 'MoveTaskPayload';
+  /** The destination column id. */
+  columnId?: Maybe<Scalars['UUID']['output']>;
+  /** The task's new fractional index within the destination column. */
+  columnIndex?: Maybe<Scalars['String']['output']>;
+  /** The task's newly assigned number in the destination project. */
+  number?: Maybe<Scalars['Int']['output']>;
+  /** The destination project id. */
+  projectId?: Maybe<Scalars['UUID']['output']>;
+  /** The moved task's id. */
+  taskId?: Maybe<Scalars['UUID']['output']>;
+};
+
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
@@ -3249,6 +3274,11 @@ export type Mutation = {
   deleteWardenSyncQueue?: Maybe<DeleteWardenSyncQueuePayload>;
   /** Deletes a single `WardenSyncQueue` using its globally unique id. */
   deleteWardenSyncQueueById?: Maybe<DeleteWardenSyncQueuePayload>;
+  /**
+   * Move a task to a column in another project within the same workspace.
+   * Requires editor permission on both the source and destination project.
+   */
+  moveTask?: Maybe<MoveTaskPayload>;
   /** Updates a single `Assignee` using a unique key and a patch. */
   updateAssignee?: Maybe<UpdateAssigneePayload>;
   /** Updates a single `Assignee` using its globally unique id and a patch. */
@@ -3623,6 +3653,12 @@ export type MutationDeleteWardenSyncQueueArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteWardenSyncQueueByIdArgs = {
   input: DeleteWardenSyncQueueByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationMoveTaskArgs = {
+  input: MoveTaskInput;
 };
 
 
@@ -10801,6 +10837,13 @@ export type DeleteTaskMutationVariables = Exact<{
 
 export type DeleteTaskMutation = { __typename?: 'Mutation', deleteTask?: { __typename?: 'DeleteTaskPayload', task?: { __typename?: 'Task', rowId: string } | null } | null };
 
+export type MoveTaskMutationVariables = Exact<{
+  input: MoveTaskInput;
+}>;
+
+
+export type MoveTaskMutation = { __typename?: 'Mutation', moveTask?: { __typename?: 'MoveTaskPayload', taskId?: string | null, number?: number | null, projectId?: string | null, columnId?: string | null } | null };
+
 export type UpdateTaskMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
   patch: TaskPatch;
@@ -11973,6 +12016,35 @@ useDeleteTaskMutation.getKey = () => ['DeleteTask'];
 
 
 useDeleteTaskMutation.fetcher = (variables: DeleteTaskMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteTaskMutation, DeleteTaskMutationVariables>(DeleteTaskDocument, variables, options);
+
+export const MoveTaskDocument = new TypedDocumentString(`
+    mutation MoveTask($input: MoveTaskInput!) {
+  moveTask(input: $input) {
+    taskId
+    number
+    projectId
+    columnId
+  }
+}
+    `);
+
+export const useMoveTaskMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<MoveTaskMutation, TError, MoveTaskMutationVariables, TContext>) => {
+    
+    return useMutation<MoveTaskMutation, TError, MoveTaskMutationVariables, TContext>(
+      {
+    mutationKey: ['MoveTask'],
+    mutationFn: (variables?: MoveTaskMutationVariables) => graphqlFetch<MoveTaskMutation, MoveTaskMutationVariables>(MoveTaskDocument, variables)(),
+    ...options
+  }
+    )};
+
+useMoveTaskMutation.getKey = () => ['MoveTask'];
+
+
+useMoveTaskMutation.fetcher = (variables: MoveTaskMutationVariables, options?: RequestInit['headers']) => graphqlFetch<MoveTaskMutation, MoveTaskMutationVariables>(MoveTaskDocument, variables, options);
 
 export const UpdateTaskDocument = new TypedDocumentString(`
     mutation UpdateTask($rowId: UUID!, $patch: TaskPatch!) {
