@@ -16,6 +16,7 @@ export enum DialogType {
   DeleteProjectColumn = "delete_project_column",
   UpgradeSubscription = "upgrade_subscription",
   DeleteTask = "delete_task",
+  MoveTask = "move_task",
   DeleteComment = "delete_comment",
   CreateTask = "create_task",
   KeyboardShortcuts = "keyboard_shortcuts",

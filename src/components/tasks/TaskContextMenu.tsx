@@ -40,6 +40,9 @@ const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
   const { setIsOpen: setIsDeleteTaskDialogOpen } = useDialogStore({
     type: DialogType.DeleteTask,
   });
+  const { setIsOpen: setIsMoveTaskDialogOpen } = useDialogStore({
+    type: DialogType.MoveTask,
+  });
 
   const navigateToTask = () => {
     navigate({
@@ -68,6 +71,11 @@ const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
     setIsDeleteTaskDialogOpen(true);
   };
 
+  const handleOpenMoveTaskDialog = () => {
+    setTaskId(taskRowId);
+    setIsMoveTaskDialogOpen(true);
+  };
+
   return (
     <MenuRoot>
       <MenuContextTrigger className="w-full">{children}</MenuContextTrigger>
@@ -92,6 +100,10 @@ const TaskContextMenu = ({ taskRowId, children }: PropsWithChildren<Props>) => {
             <MenuItem value="labels" onSelect={handleOpenTaskLabelsDialog}>
               Update Labels
               <Shortcut>{Hotkeys.UpdateTaskLabels}</Shortcut>
+            </MenuItem>
+
+            <MenuItem value="move" onSelect={handleOpenMoveTaskDialog}>
+              Move to Project
             </MenuItem>
 
             <MenuItem

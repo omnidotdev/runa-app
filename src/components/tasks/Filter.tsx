@@ -40,6 +40,7 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import labelsOptions from "@/lib/options/labels.options";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
+import workspaceLabelsOptions from "@/lib/options/workspaceLabels.options";
 import { cn } from "@/lib/utils";
 
 const Filter = () => {
@@ -67,6 +68,15 @@ const Filter = () => {
     select: (data) => data?.labels?.nodes ?? [],
     enabled: !!projectId,
   });
+
+  const { data: workspaceLabels = [] } = useQuery({
+    ...workspaceLabelsOptions({ organizationId: organizationId! }),
+    select: (data) => data?.labels?.nodes ?? [],
+    enabled: !!organizationId,
+  });
+
+  // workspace-shared labels first, then this board's own labels
+  const availableLabels = [...workspaceLabels, ...projectLabels];
 
   // Fetch organization members from IDP
   const { data: membersData } = useQuery({
@@ -162,7 +172,7 @@ const Filter = () => {
 
                 <MenuPositioner>
                   <MenuContent className="w-48">
-                    {projectLabels.map((label) => (
+                    {availableLabels.map((label) => (
                       <MenuCheckboxItem
                         key={label.rowId}
                         closeOnSelect={false}

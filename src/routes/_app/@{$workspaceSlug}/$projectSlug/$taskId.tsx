@@ -252,7 +252,6 @@ function AuthenticatedTaskPage() {
 
   const matches = useViewportSize({ breakpoint: Breakpoint.Large });
   const [isTaskSidebarOpen, setIsTaskSidebarOpen] = useState(false);
-  const [isMoveOpen, setIsMoveOpen] = useState(false);
 
   // Get role from IDP organization claims
   const role = useCurrentUserRole(organizationId);
@@ -313,6 +312,9 @@ function AuthenticatedTaskPage() {
 
   const { setIsOpen: setIsDeleteTaskDialogOpen } = useDialogStore({
     type: DialogType.DeleteTask,
+  });
+  const { setIsOpen: setIsMoveTaskDialogOpen } = useDialogStore({
+    type: DialogType.MoveTask,
   });
 
   useEffect(() => {
@@ -394,7 +396,10 @@ function AuthenticatedTaskPage() {
                 </MenuItem>
 
                 {canEdit && (
-                  <MenuItem value="move" onClick={() => setIsMoveOpen(true)}>
+                  <MenuItem
+                    value="move"
+                    onClick={() => setIsMoveTaskDialogOpen(true)}
+                  >
                     <FolderInputIcon />
                     <span>Move to project</span>
                   </MenuItem>
@@ -475,9 +480,6 @@ function AuthenticatedTaskPage() {
       <DeleteTaskDialog />
 
       <MoveTaskDialog
-        open={isMoveOpen}
-        onOpenChange={setIsMoveOpen}
-        taskId={taskId}
         currentProjectId={projectId}
         organizationId={organizationId}
         workspaceSlug={workspaceSlug}

@@ -40,6 +40,7 @@ import {
   UpdateTaskLabelsDialog,
 } from "@/components/tasks";
 import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
+import MoveTaskDialog from "@/components/tasks/MoveTaskDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -663,6 +664,11 @@ function AuthenticatedProjectPage() {
       <UpdateDueDateDialog />
       <UpdateTaskLabelsDialog />
       <DeleteTaskDialog />
+      <MoveTaskDialog
+        currentProjectId={projectId}
+        organizationId={organizationId}
+        workspaceSlug={workspaceSlug}
+      />
     </div>
   );
 }

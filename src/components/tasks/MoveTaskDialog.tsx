@@ -18,15 +18,15 @@ import {
   useProjectQuery,
   useTasksQuery,
 } from "@/generated/graphql";
+import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
+import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import columnsOptions from "@/lib/options/columns.options";
 import projectsOptions from "@/lib/options/projects.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { isTaskRowId } from "@/lib/util/taskUrl";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  taskId: string;
   currentProjectId: string;
   organizationId: string;
   workspaceSlug: string;
@@ -35,17 +35,21 @@ interface Props {
 /**
  * Moves a task to a column in another board within the same workspace. The task
  * gets a new key in the destination board and labels scoped to the current board
- * do not carry over (workspace-shared labels do).
+ * do not carry over (workspace-shared labels do). Opened via the shared dialog
+ * store; the target task is read from the task store, so one instance per route
+ * serves every card and the task detail menu
  */
 const MoveTaskDialog = ({
-  open,
-  onOpenChange,
-  taskId,
   currentProjectId,
   organizationId,
   workspaceSlug,
 }: Props) => {
   const navigate = useNavigate();
+  const { taskId } = useTaskStore();
+  const { isOpen: open, setIsOpen } = useDialogStore({
+    type: DialogType.MoveTask,
+  });
+  const onOpenChange = (next: boolean) => setIsOpen(next);
   const [targetProjectId, setTargetProjectId] = useState<string | null>(null);
   const [targetColumnId, setTargetColumnId] = useState<string | null>(null);
 
@@ -182,6 +186,11 @@ const MoveTaskDialog = ({
               disabled={!targetProjectId || !targetColumnId || isPending}
               onClick={() => {
                 if (!targetProjectId || !targetColumnId) return;
+                // the store holds the resolved rowId; guard against a vanity key
+                if (!isTaskRowId(taskId)) {
+                  toast.error("Failed to move task. Please try again.");
+                  return;
+                }
                 moveTask({
                   input: {
                     taskId,
