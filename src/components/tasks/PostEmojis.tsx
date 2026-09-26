@@ -1,6 +1,7 @@
 import { Format } from "@ark-ui/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -45,24 +46,22 @@ const PostEmojis = ({ postId }: Props) => {
     },
   });
 
-  const { mutate: deleteEmoji, isPending: isDeleteEmojiPending } =
-      useDeletePostEmojiMutation({
-        meta: {
-          invalidates: [
-            getQueryKeyPrefix(usePostEmojisQuery),
-            getQueryKeyPrefix(useUserEmojisQuery),
-          ],
-        },
-      }),
-    { mutate: createPostEmoji, isPending: isCreatePostEmojiPending } =
-      useCreatePostEmojiMutation({
-        meta: {
-          invalidates: [
-            getQueryKeyPrefix(usePostEmojisQuery),
-            getQueryKeyPrefix(useUserEmojisQuery),
-          ],
-        },
-      });
+  // Track only the emoji currently being toggled, so reacting to one emoji
+  // doesn't disable every other reaction during the round-trip (and prevents
+  // double-toggling the same one before the refetch reconciles)
+  const [pendingEmoji, setPendingEmoji] = useState<string | null>(null);
+
+  const emojiMutationMeta = {
+    meta: {
+      invalidates: [
+        getQueryKeyPrefix(usePostEmojisQuery),
+        getQueryKeyPrefix(useUserEmojisQuery),
+      ],
+    },
+  };
+
+  const { mutate: deleteEmoji } = useDeletePostEmojiMutation(emojiMutationMeta),
+    { mutate: createPostEmoji } = useCreatePostEmojiMutation(emojiMutationMeta);
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -73,20 +72,25 @@ const PostEmojis = ({ postId }: Props) => {
           key={emoji}
           variant="ghost"
           size="icon"
-          disabled={isCreatePostEmojiPending || isDeleteEmojiPending}
+          disabled={pendingEmoji === emoji}
           onClick={() => {
+            setPendingEmoji(emoji ?? null);
+            const onSettled = () => setPendingEmoji(null);
             if (userEmoji) {
-              deleteEmoji({ rowId: userEmoji.rowId });
+              deleteEmoji({ rowId: userEmoji.rowId }, { onSettled });
             } else {
-              createPostEmoji({
-                input: {
-                  emoji: {
-                    userId: session?.user?.rowId!,
-                    postId,
-                    emoji,
+              createPostEmoji(
+                {
+                  input: {
+                    emoji: {
+                      userId: session?.user?.rowId!,
+                      postId,
+                      emoji,
+                    },
                   },
                 },
-              });
+                { onSettled },
+              );
             }
           }}
           className={cn(
