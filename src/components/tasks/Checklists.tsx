@@ -4,6 +4,7 @@ import { useLoaderData } from "@tanstack/react-router";
 import {
   ArrowUpRightIcon,
   CheckSquareIcon,
+  LinkIcon,
   MoreHorizontalIcon,
   PlusIcon,
   SquareIcon,
@@ -35,6 +36,7 @@ import {
 } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import { faviconUrl, isHttpUrl, shortenUrl } from "@/lib/util/linkChip";
 import nextFractionalIndex from "@/lib/util/nextFractionalIndex";
 
 import type { TaskQuery } from "@/generated/graphql";
@@ -147,10 +149,21 @@ const Checklists = () => {
 
   const addItem = (
     checklistId: string,
-    items: ReadonlyArray<{ index: string }>,
+    items: ReadonlyArray<{ index: string; content: string }>,
   ) => {
     const content = (newItemContent[checklistId] ?? "").trim();
     if (!content) return;
+
+    // Skip exact duplicates (guards accidental double-submit and re-adds of the
+    // same link/text), rather than silently creating another identical item
+    const isDuplicate = items.some(
+      (item) => item.content.trim().toLowerCase() === content.toLowerCase(),
+    );
+    if (isDuplicate) {
+      toast.info("That item is already on the checklist");
+      setNewItemContent((prev) => ({ ...prev, [checklistId]: "" }));
+      return;
+    }
 
     createChecklistItem({
       input: {
@@ -269,15 +282,40 @@ const Checklists = () => {
                           <SquareIcon className="size-4" />
                         )}
                       </button>
-                      <span
-                        className={
-                          item.isDone
-                            ? "flex-1 text-base-400 text-sm line-through dark:text-base-500"
-                            : "flex-1 text-base-900 text-sm dark:text-base-100"
-                        }
-                      >
-                        {item.content}
-                      </span>
+                      {isHttpUrl(item.content) ? (
+                        <a
+                          href={item.content}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={item.content}
+                          className={
+                            item.isDone
+                              ? "flex min-w-0 flex-1 items-center gap-1.5 text-sm opacity-60"
+                              : "flex min-w-0 flex-1 items-center gap-1.5 text-sm"
+                          }
+                        >
+                          <LinkFavicon url={item.content} />
+                          <span
+                            className={
+                              item.isDone
+                                ? "truncate text-primary line-through"
+                                : "truncate text-primary hover:underline"
+                            }
+                          >
+                            {shortenUrl(item.content)}
+                          </span>
+                        </a>
+                      ) : (
+                        <span
+                          className={
+                            item.isDone
+                              ? "flex-1 text-base-400 text-sm line-through dark:text-base-500"
+                              : "flex-1 text-base-900 text-sm dark:text-base-100"
+                          }
+                        >
+                          {item.content}
+                        </span>
+                      )}
                       <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                         <ItemActions
                           onConvert={() =>
@@ -361,6 +399,27 @@ const Checklists = () => {
         onConfirm={runPending}
       />
     </>
+  );
+};
+
+/** Favicon for a link item, falling back to a generic link icon on load error. */
+const LinkFavicon = ({ url }: { url: string }) => {
+  const [failed, setFailed] = useState(false);
+  const src = faviconUrl(url);
+
+  if (!src || failed) {
+    return <LinkIcon className="size-3.5 shrink-0 text-base-400" />;
+  }
+
+  return (
+    <img
+      src={src}
+      alt=""
+      width={14}
+      height={14}
+      className="size-3.5 shrink-0 rounded-sm"
+      onError={() => setFailed(true)}
+    />
   );
 };
 
