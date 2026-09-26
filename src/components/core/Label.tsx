@@ -41,7 +41,8 @@ const Label = ({ label }: Props) => {
           icon={label.icon}
           className="size-2.5!"
           style={{
-            color: isDark ? textColor : color.toString("css"),
+            // use the contrast-adjusted text color so pale labels stay legible
+            color: textColor,
           }}
         />
         <span className="font-medium text-[10px]">{label.name}</span>

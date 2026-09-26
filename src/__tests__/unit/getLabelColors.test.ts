@@ -6,14 +6,51 @@ describe("getLabelColors", () => {
   const red = "rgb(255, 0, 0)";
 
   describe("light mode (default)", () => {
+    const channels = (color: string) =>
+      color
+        .replace(/[^\d,]/g, "")
+        .split(",")
+        .map(Number);
+
+    const relativeLuminance = ([r, g, b]: number[]) => {
+      const channel = (c: number) => {
+        const s = c / 255;
+        return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+      };
+      return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+    };
+
+    // Chip background is ~6% color over white, so contrast is measured vs white
+    const contrastVsWhite = (color: string) =>
+      1.05 / (relativeLuminance(channels(color)) + 0.05);
+
     it("returns subtle background opacity", () => {
       const { backgroundColor } = getLabelColors(red);
       expect(backgroundColor).toBe("rgba(255, 0, 0, 0.06)");
     });
 
-    it("returns full color text", () => {
-      const { textColor } = getLabelColors(red);
-      expect(textColor).toBe("rgba(255, 0, 0)");
+    it("darkens text until it meets AA contrast on a light background", () => {
+      // includes pale colors that were previously unreadable (the bug)
+      for (const color of [
+        "rgb(255, 0, 0)",
+        "rgb(255, 255, 120)", // pale yellow
+        "rgb(150, 220, 255)", // pale blue
+        "rgb(120, 230, 120)", // pale green
+        "rgb(0, 0, 0)",
+      ]) {
+        expect(
+          contrastVsWhite(getLabelColors(color).textColor),
+        ).toBeGreaterThanOrEqual(4.5);
+      }
+    });
+
+    it("darkens a pale color more than an already-dark one", () => {
+      const paleText = getLabelColors("rgb(255, 255, 150)").textColor;
+      const darkText = getLabelColors("rgb(40, 40, 60)").textColor;
+      // the pale color must be pulled well below the near-white background
+      expect(relativeLuminance(channels(paleText))).toBeLessThan(0.4);
+      // an already-dark color is left essentially unchanged
+      expect(channels(darkText)).toEqual([40, 40, 60]);
     });
   });
 

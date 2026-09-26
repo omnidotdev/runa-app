@@ -17,7 +17,17 @@ describe("label color derivation", () => {
     const { textColor } = getLabelColors(color.toString("rgb"), false);
 
     expect(textColor).not.toBe("rgba(255, 255, 255)");
-    expect(textColor).toBe("rgba(228, 162, 27)");
+    expect(textColor).not.toBe("rgb(255, 255, 255)");
+
+    // Still derived from the stored gold hue (r > g > b), just darkened toward
+    // black so it stays readable on the near-white chip background
+    const [r, g, b] = textColor
+      .replace(/[^\d,]/g, "")
+      .split(",")
+      .map(Number);
+    expect(r).toBeGreaterThan(g);
+    expect(g).toBeGreaterThan(b);
+    expect(r).toBeLessThan(228);
   });
 
   it("derives the stored color (not white) in dark mode", () => {
