@@ -44,6 +44,7 @@ import MoveTaskDialog from "@/components/tasks/MoveTaskDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  useCreateUserPreferenceMutation,
   useSettingByOrganizationIdQuery,
   useTaskQuery,
   useTasksQuery,
@@ -66,6 +67,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import { compareKeys, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import resolveActiveColumnId from "@/lib/util/resolveActiveColumnId";
+import resolveViewModeToggle from "@/lib/util/resolveViewModeToggle";
 import signInHref from "@/lib/util/signInHref";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
@@ -352,6 +354,59 @@ function AuthenticatedProjectPage() {
     },
   });
 
+  const { mutate: createViewModePreference } = useCreateUserPreferenceMutation({
+    meta: {
+      invalidates: [
+        getQueryKeyPrefix(useUserPreferencesQuery),
+        getQueryKeyPrefix(useSettingByOrganizationIdQuery),
+      ],
+    },
+    onMutate: (variables) => {
+      // Seed the preference cache so the board flips immediately, before the
+      // created row comes back from the server
+      queryClient.setQueryData(
+        userPreferencesOptions({
+          projectId,
+          userId: session?.user?.rowId!,
+        }).queryKey,
+        (old) => ({
+          userPreferenceByUserIdAndProjectId: {
+            ...old?.userPreferenceByUserIdAndProjectId!,
+            viewMode: variables.input.userPreference.viewMode!,
+          },
+        }),
+      );
+    },
+  });
+
+  // Toggle the board view mode, creating the preference row on first use.
+  // A UserPreference row is created lazily (only once a column is hidden), so
+  // most users have none when they first toggle. The update mutation requires a
+  // rowId, so without this the write fails and the UI snaps back to the board
+  // (kanban) default on refetch
+  const toggleViewMode = () => {
+    const { action, viewMode } = resolveViewModeToggle(userPreferences);
+
+    if (action === "create") {
+      createViewModePreference({
+        input: {
+          userPreference: {
+            userId: session?.user?.rowId!,
+            projectId,
+            viewMode,
+            hiddenColumnIds: userPreferences?.hiddenColumnIds ?? [],
+          },
+        },
+      });
+      return;
+    }
+
+    updateViewMode({
+      rowId: userPreferences?.rowId!,
+      patch: { viewMode },
+    });
+  };
+
   const { mutateAsync: updateTask } = useUpdateTaskMutation({
     meta: {
       invalidates: [
@@ -486,17 +541,7 @@ function AuthenticatedProjectPage() {
     [setDraggableId, setIsDragging],
   );
 
-  useHotkeys(
-    Hotkeys.ToggleViewMode,
-    () =>
-      updateViewMode({
-        rowId: userPreferences?.rowId!,
-        patch: {
-          viewMode: userPreferences?.viewMode !== "list" ? "list" : "board",
-        },
-      }),
-    [updateViewMode, userPreferences?.viewMode, projectId],
-  );
+  useHotkeys(Hotkeys.ToggleViewMode, () => toggleViewMode(), [toggleViewMode]);
 
   const { focusedColumnId, hoveredColumnId, setColumnId } = useTaskStore();
 
@@ -581,17 +626,7 @@ function AuthenticatedProjectPage() {
                     variant="outline"
                     size="icon"
                     aria-label="Switch View Mode"
-                    onClick={() =>
-                      updateViewMode({
-                        rowId: userPreferences?.rowId!,
-                        patch: {
-                          viewMode:
-                            userPreferences?.viewMode !== "list"
-                              ? "list"
-                              : "board",
-                        },
-                      })
-                    }
+                    onClick={() => toggleViewMode()}
                   >
                     {userPreferences?.viewMode === "list" ? (
                       <Grid2X2Icon />
