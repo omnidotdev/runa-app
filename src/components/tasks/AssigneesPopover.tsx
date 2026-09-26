@@ -10,7 +10,7 @@ import {
   PopoverRoot,
   PopoverTrigger,
 } from "@omnidotdev/thornberry/popover";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { SearchIcon } from "lucide-react";
 
@@ -30,6 +30,7 @@ import AssigneeLimitNotice from "./AssigneeLimitNotice";
 import AssigneeList from "./AssigneeList";
 import { PropertyTrigger, PropertyValue } from "./propertyRow";
 
+import type { TaskQuery, TasksQuery } from "@/generated/graphql";
 import type { WorkspaceUser } from "./UpdateAssignees";
 
 interface Assignee {
@@ -133,19 +134,124 @@ const AssigneesEditor = ({
     filter: contains,
   });
 
-  const mutationOptions = {
-    meta: {
-      invalidates: [
-        taskOptions({ rowId: taskId }).queryKey,
-        getQueryKeyPrefix(useTasksQuery),
-      ],
-    },
+  const queryClient = useQueryClient();
+  const taskQueryKey = taskOptions({ rowId: taskId }).queryKey;
+
+  const invalidates = [taskQueryKey, getQueryKeyPrefix(useTasksQuery)];
+
+  // Assignees are keyed on the member's IDP id (user.identityProviderId); the
+  // stored node's userId is a local id we don't have client-side, so optimistic
+  // nodes use a temp id and the refetch reconciles.
+  const buildOptimisticAssignee = (userId: string) => {
+    const member = members.find((m) => m.userId === userId);
+    return {
+      __typename: "Assignee" as const,
+      taskId,
+      userId,
+      user: {
+        __typename: "User" as const,
+        rowId: `optimistic-${crypto.randomUUID()}`,
+        identityProviderId: userId,
+        name: member?.user.name ?? "",
+        avatarUrl: member?.user.image ?? null,
+      },
+    };
   };
 
-  const { mutateAsync: removeAssignee } =
-    useDeleteAssigneeMutation(mutationOptions);
-  const { mutateAsync: addAssignee } =
-    useCreateAssigneeMutation(mutationOptions);
+  const optimisticallyRemoveAssignee = (userId: string) => {
+    queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) =>
+      old?.task
+        ? {
+            ...old,
+            task: {
+              ...old.task,
+              assignees: {
+                ...old.task.assignees,
+                nodes: old.task.assignees.nodes.filter(
+                  (node) => node.user?.identityProviderId !== userId,
+                ),
+              },
+            },
+          }
+        : old,
+    );
+    queryClient.setQueriesData<TasksQuery>(
+      { queryKey: getQueryKeyPrefix(useTasksQuery) },
+      (old) =>
+        old?.tasks?.nodes
+          ? {
+              ...old,
+              tasks: {
+                ...old.tasks,
+                nodes: old.tasks.nodes.map((node) =>
+                  node.rowId === taskId
+                    ? {
+                        ...node,
+                        assignees: {
+                          ...node.assignees,
+                          nodes: node.assignees.nodes.filter(
+                            (a) => a.user?.identityProviderId !== userId,
+                          ),
+                        },
+                      }
+                    : node,
+                ),
+              },
+            }
+          : old,
+    );
+  };
+
+  const optimisticallyAddAssignee = (userId: string) => {
+    const node = buildOptimisticAssignee(userId);
+    queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) =>
+      old?.task
+        ? {
+            ...old,
+            task: {
+              ...old.task,
+              assignees: {
+                ...old.task.assignees,
+                nodes: [...old.task.assignees.nodes, node],
+              },
+            },
+          }
+        : old,
+    );
+    queryClient.setQueriesData<TasksQuery>(
+      { queryKey: getQueryKeyPrefix(useTasksQuery) },
+      (old) =>
+        old?.tasks?.nodes
+          ? {
+              ...old,
+              tasks: {
+                ...old.tasks,
+                nodes: old.tasks.nodes.map((task) =>
+                  task.rowId === taskId
+                    ? {
+                        ...task,
+                        assignees: {
+                          ...task.assignees,
+                          nodes: [...task.assignees.nodes, node],
+                        },
+                      }
+                    : task,
+                ),
+              },
+            }
+          : old,
+    );
+  };
+
+  const { mutateAsync: removeAssignee } = useDeleteAssigneeMutation({
+    meta: { invalidates },
+    onMutate: (variables) => optimisticallyRemoveAssignee(variables.userId),
+  });
+  const { mutateAsync: addAssignee } = useCreateAssigneeMutation({
+    meta: { invalidates },
+    onMutate: (variables) =>
+      optimisticallyAddAssignee(variables.input.assignee.userId),
+  });
 
   // Member list values are IDP ids (Gatekeeper keys members by identityProviderId),
   // so selection must be compared in the same namespace or the remove branch in
