@@ -4,7 +4,6 @@ import { useLoaderData } from "@tanstack/react-router";
 import {
   ArrowUpRightIcon,
   CheckSquareIcon,
-  LinkIcon,
   MoreHorizontalIcon,
   PlusIcon,
   SquareIcon,
@@ -13,6 +12,7 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { LinkChip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
@@ -36,7 +36,7 @@ import {
 } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
-import { faviconUrl, isHttpUrl, shortenUrl } from "@/lib/util/linkChip";
+import { isHttpUrl } from "@/lib/util/linkChip";
 import nextFractionalIndex from "@/lib/util/nextFractionalIndex";
 
 import type { TaskQuery } from "@/generated/graphql";
@@ -283,28 +283,7 @@ const Checklists = () => {
                         )}
                       </button>
                       {isHttpUrl(item.content) ? (
-                        <a
-                          href={item.content}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={item.content}
-                          className={
-                            item.isDone
-                              ? "flex min-w-0 flex-1 items-center gap-1.5 text-sm opacity-60"
-                              : "flex min-w-0 flex-1 items-center gap-1.5 text-sm"
-                          }
-                        >
-                          <LinkFavicon url={item.content} />
-                          <span
-                            className={
-                              item.isDone
-                                ? "truncate text-primary line-through"
-                                : "truncate text-primary hover:underline"
-                            }
-                          >
-                            {shortenUrl(item.content)}
-                          </span>
-                        </a>
+                        <LinkChip url={item.content} done={item.isDone} />
                       ) : (
                         <span
                           className={
@@ -399,27 +378,6 @@ const Checklists = () => {
         onConfirm={runPending}
       />
     </>
-  );
-};
-
-/** Favicon for a link item, falling back to a generic link icon on load error. */
-const LinkFavicon = ({ url }: { url: string }) => {
-  const [failed, setFailed] = useState(false);
-  const src = faviconUrl(url);
-
-  if (!src || failed) {
-    return <LinkIcon className="size-3.5 shrink-0 text-base-400" />;
-  }
-
-  return (
-    <img
-      src={src}
-      alt=""
-      width={14}
-      height={14}
-      className="size-3.5 shrink-0 rounded-sm"
-      onError={() => setFailed(true)}
-    />
   );
 };
 

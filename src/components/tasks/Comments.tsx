@@ -11,7 +11,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { MoreHorizontalIcon, PenLineIcon, Trash2Icon } from "lucide-react";
 import { Suspense, useEffect, useRef, useState } from "react";
 
-import { RichTextEditor, Tooltip } from "@/components/core";
+import { LinkPreviews, RichTextEditor, Tooltip } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import {
   DialogBackdrop,
@@ -216,6 +216,8 @@ const Comments = () => {
                           editable={false}
                         />
                       )}
+
+                      <LinkPreviews content={post.description} />
 
                       <Suspense
                         fallback={<CommentEmojiPicker postId={post.rowId!} />}

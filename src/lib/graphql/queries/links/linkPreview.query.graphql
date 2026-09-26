@@ -1,0 +1,10 @@
+query LinkPreview($url: String!) {
+  linkPreview(url: $url) {
+    url
+    status
+    title
+    description
+    imageUrl
+    faviconDataUri
+  }
+}

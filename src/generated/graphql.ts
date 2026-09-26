@@ -3943,6 +3943,40 @@ export type LabelToManyTaskLabelFilter = {
   some?: InputMaybe<TaskLabelFilter>;
 };
 
+/** Cached link preview metadata for a URL. */
+export type LinkPreview = {
+  __typename?: 'LinkPreview';
+  /** Page description (OpenGraph), if any. */
+  description?: Maybe<Scalars['String']['output']>;
+  /** Favicon as a size-capped data URI, if fetched. */
+  faviconDataUri?: Maybe<Scalars['String']['output']>;
+  /** OpenGraph image URL, if any. */
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  /** Either ok, or error for a cached failure. */
+  status?: Maybe<Scalars['String']['output']>;
+  /** Page title (OpenGraph or document title), if any. */
+  title?: Maybe<Scalars['String']['output']>;
+  /** The requested URL. */
+  url?: Maybe<Scalars['String']['output']>;
+};
+
+export type LinkUnfurl = Node & {
+  __typename?: 'LinkUnfurl';
+  createdAt: Scalars['Datetime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  faviconDataUri?: Maybe<Scalars['String']['output']>;
+  fetchedAt: Scalars['Datetime']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  rowId: Scalars['UUID']['output'];
+  status: Scalars['String']['output'];
+  title?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
+  url: Scalars['String']['output'];
+  urlHash: Scalars['String']['output'];
+};
+
 /** Input for moving a task to a column in another project (same workspace). */
 export type MoveTaskInput = {
   /** A column belonging to the destination project. */
@@ -7692,6 +7726,10 @@ export type Query = Node & {
   labelById?: Maybe<Label>;
   /** Reads and enables pagination through a set of `Label`. */
   labels?: Maybe<LabelConnection>;
+  /** Fetch (and cache) OpenGraph/favicon preview metadata for an http(s) URL. */
+  linkPreview?: Maybe<LinkPreview>;
+  /** Reads a single `LinkUnfurl` using its globally unique `ID`. */
+  linkUnfurlById?: Maybe<LinkUnfurl>;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
   /** Get a single `NotificationDigestQueue`. */
@@ -7987,6 +8025,18 @@ export type QueryLabelsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<LabelOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLinkPreviewArgs = {
+  url: Scalars['String']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLinkUnfurlByIdArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -12550,6 +12600,13 @@ export type WorkspaceLabelsQueryVariables = Exact<{
 
 export type WorkspaceLabelsQuery = { __typename?: 'Query', labels?: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null }> } | null };
 
+export type LinkPreviewQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+
+export type LinkPreviewQuery = { __typename?: 'Query', linkPreview?: { __typename?: 'LinkPreview', url?: string | null, status?: string | null, title?: string | null, description?: string | null, imageUrl?: string | null, faviconDataUri?: string | null } | null };
+
 export type NotificationPreferenceQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
@@ -14596,6 +14653,100 @@ useSuspenseInfiniteWorkspaceLabelsQuery.getKey = (variables: WorkspaceLabelsQuer
 
 
 useWorkspaceLabelsQuery.fetcher = (variables: WorkspaceLabelsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WorkspaceLabelsQuery, WorkspaceLabelsQueryVariables>(WorkspaceLabelsDocument, variables, options);
+
+export const LinkPreviewDocument = new TypedDocumentString(`
+    query LinkPreview($url: String!) {
+  linkPreview(url: $url) {
+    url
+    status
+    title
+    description
+    imageUrl
+    faviconDataUri
+  }
+}
+    `);
+
+export const useLinkPreviewQuery = <
+      TData = LinkPreviewQuery,
+      TError = unknown
+    >(
+      variables: LinkPreviewQueryVariables,
+      options?: Omit<UseQueryOptions<LinkPreviewQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<LinkPreviewQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<LinkPreviewQuery, TError, TData>(
+      {
+    queryKey: ['LinkPreview', variables],
+    queryFn: graphqlFetch<LinkPreviewQuery, LinkPreviewQueryVariables>(LinkPreviewDocument, variables),
+    ...options
+  }
+    )};
+
+useLinkPreviewQuery.getKey = (variables: LinkPreviewQueryVariables) => ['LinkPreview', variables];
+
+export const useSuspenseLinkPreviewQuery = <
+      TData = LinkPreviewQuery,
+      TError = unknown
+    >(
+      variables: LinkPreviewQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<LinkPreviewQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<LinkPreviewQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<LinkPreviewQuery, TError, TData>(
+      {
+    queryKey: ['LinkPreview', variables],
+    queryFn: graphqlFetch<LinkPreviewQuery, LinkPreviewQueryVariables>(LinkPreviewDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseLinkPreviewQuery.getKey = (variables: LinkPreviewQueryVariables) => ['LinkPreview', variables];
+
+export const useInfiniteLinkPreviewQuery = <
+      TData = InfiniteData<LinkPreviewQuery>,
+      TError = unknown
+    >(
+      variables: LinkPreviewQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<LinkPreviewQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<LinkPreviewQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<LinkPreviewQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['LinkPreview.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<LinkPreviewQuery, LinkPreviewQueryVariables>(LinkPreviewDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteLinkPreviewQuery.getKey = (variables: LinkPreviewQueryVariables) => ['LinkPreview.infinite', variables];
+
+export const useSuspenseInfiniteLinkPreviewQuery = <
+      TData = InfiniteData<LinkPreviewQuery>,
+      TError = unknown
+    >(
+      variables: LinkPreviewQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<LinkPreviewQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<LinkPreviewQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<LinkPreviewQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['LinkPreview.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<LinkPreviewQuery, LinkPreviewQueryVariables>(LinkPreviewDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteLinkPreviewQuery.getKey = (variables: LinkPreviewQueryVariables) => ['LinkPreview.infinite', variables];
+
+
+useLinkPreviewQuery.fetcher = (variables: LinkPreviewQueryVariables, options?: RequestInit['headers']) => graphqlFetch<LinkPreviewQuery, LinkPreviewQueryVariables>(LinkPreviewDocument, variables, options);
 
 export const NotificationPreferenceDocument = new TypedDocumentString(`
     query NotificationPreference($userId: UUID!) {

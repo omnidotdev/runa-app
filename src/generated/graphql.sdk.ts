@@ -3943,6 +3943,40 @@ export type LabelToManyTaskLabelFilter = {
   some?: InputMaybe<TaskLabelFilter>;
 };
 
+/** Cached link preview metadata for a URL. */
+export type LinkPreview = {
+  __typename?: 'LinkPreview';
+  /** Page description (OpenGraph), if any. */
+  description?: Maybe<Scalars['String']['output']>;
+  /** Favicon as a size-capped data URI, if fetched. */
+  faviconDataUri?: Maybe<Scalars['String']['output']>;
+  /** OpenGraph image URL, if any. */
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  /** Either ok, or error for a cached failure. */
+  status?: Maybe<Scalars['String']['output']>;
+  /** Page title (OpenGraph or document title), if any. */
+  title?: Maybe<Scalars['String']['output']>;
+  /** The requested URL. */
+  url?: Maybe<Scalars['String']['output']>;
+};
+
+export type LinkUnfurl = Node & {
+  __typename?: 'LinkUnfurl';
+  createdAt: Scalars['Datetime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  faviconDataUri?: Maybe<Scalars['String']['output']>;
+  fetchedAt: Scalars['Datetime']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  imageUrl?: Maybe<Scalars['String']['output']>;
+  rowId: Scalars['UUID']['output'];
+  status: Scalars['String']['output'];
+  title?: Maybe<Scalars['String']['output']>;
+  updatedAt: Scalars['Datetime']['output'];
+  url: Scalars['String']['output'];
+  urlHash: Scalars['String']['output'];
+};
+
 /** Input for moving a task to a column in another project (same workspace). */
 export type MoveTaskInput = {
   /** A column belonging to the destination project. */
@@ -7692,6 +7726,10 @@ export type Query = Node & {
   labelById?: Maybe<Label>;
   /** Reads and enables pagination through a set of `Label`. */
   labels?: Maybe<LabelConnection>;
+  /** Fetch (and cache) OpenGraph/favicon preview metadata for an http(s) URL. */
+  linkPreview?: Maybe<LinkPreview>;
+  /** Reads a single `LinkUnfurl` using its globally unique `ID`. */
+  linkUnfurlById?: Maybe<LinkUnfurl>;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
   /** Get a single `NotificationDigestQueue`. */
@@ -7987,6 +8025,18 @@ export type QueryLabelsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<LabelOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLinkPreviewArgs = {
+  url: Scalars['String']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryLinkUnfurlByIdArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -12550,6 +12600,13 @@ export type WorkspaceLabelsQueryVariables = Exact<{
 
 export type WorkspaceLabelsQuery = { __typename?: 'Query', labels?: { __typename?: 'LabelConnection', nodes: Array<{ __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null }> } | null };
 
+export type LinkPreviewQueryVariables = Exact<{
+  url: Scalars['String']['input'];
+}>;
+
+
+export type LinkPreviewQuery = { __typename?: 'Query', linkPreview?: { __typename?: 'LinkPreview', url?: string | null, status?: string | null, title?: string | null, description?: string | null, imageUrl?: string | null, faviconDataUri?: string | null } | null };
+
 export type NotificationPreferenceQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
@@ -13243,6 +13300,18 @@ export const WorkspaceLabelsDocument = gql`
   }
 }
     ${LabelFragmentDoc}`;
+export const LinkPreviewDocument = gql`
+    query LinkPreview($url: String!) {
+  linkPreview(url: $url) {
+    url
+    status
+    title
+    description
+    imageUrl
+    faviconDataUri
+  }
+}
+    `;
 export const NotificationPreferenceDocument = gql`
     query NotificationPreference($userId: UUID!) {
   notificationPreferenceByUserId(userId: $userId) {
@@ -13652,6 +13721,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     WorkspaceLabels(variables: WorkspaceLabelsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<WorkspaceLabelsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<WorkspaceLabelsQuery>({ document: WorkspaceLabelsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'WorkspaceLabels', 'query', variables);
+    },
+    LinkPreview(variables: LinkPreviewQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<LinkPreviewQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<LinkPreviewQuery>({ document: LinkPreviewDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'LinkPreview', 'query', variables);
     },
     NotificationPreference(variables: NotificationPreferenceQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<NotificationPreferenceQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<NotificationPreferenceQuery>({ document: NotificationPreferenceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'NotificationPreference', 'query', variables);

@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useDebounceCallback } from "usehooks-ts";
 
-import { Link, RichTextEditor } from "@/components/core";
+import { Link, LinkPreviews, RichTextEditor } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import { AttachmentsSection, Checklists, Comments } from "@/components/tasks";
 import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
@@ -454,6 +454,8 @@ function AuthenticatedTaskPage() {
               })
             }
           />
+
+          <LinkPreviews content={task?.description} />
 
           <AttachmentsSection
             taskId={taskId}
