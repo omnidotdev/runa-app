@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import {
   AlignLeftIcon,
   CalendarIcon,
+  CheckSquareIcon,
   MessageCircleIcon,
   PaperclipIcon,
 } from "lucide-react";
@@ -13,6 +14,7 @@ import { Assignees, Label, RichTextEditor, Tooltip } from "@/components/core";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import checklistProgress from "@/lib/util/checklistProgress";
 import { buildTaskKey } from "@/lib/util/taskUrl";
 import TaskContextMenu from "../tasks/TaskContextMenu";
 import BoardItemBase from "./BoardItemBase";
@@ -197,6 +199,32 @@ const BoardItem = ({ task, index, displayId, prefix }: Props) => {
                 }
               />
             )}
+
+            {(() => {
+              const { done, total } = checklistProgress(task.checklists?.nodes);
+              if (total === 0) return null;
+
+              return (
+                <Tooltip
+                  positioning={{ placement: "top" }}
+                  tooltip={`${done} of ${total} checklist item${total === 1 ? "" : "s"} complete`}
+                  trigger={
+                    <div
+                      className={
+                        done === total
+                          ? "flex items-center gap-0.5 text-green-600 dark:text-green-500"
+                          : "flex items-center gap-0.5"
+                      }
+                    >
+                      <CheckSquareIcon className="size-3" />
+                      <span>
+                        {done}/{total}
+                      </span>
+                    </div>
+                  }
+                />
+              );
+            })()}
 
             {task.dueDate && (
               <Tooltip

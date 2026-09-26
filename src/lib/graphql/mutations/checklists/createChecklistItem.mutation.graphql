@@ -1,0 +1,7 @@
+mutation CreateChecklistItem($input: CreateChecklistItemInput!) {
+  createChecklistItem(input: $input) {
+    checklistItem {
+      rowId
+    }
+  }
+}

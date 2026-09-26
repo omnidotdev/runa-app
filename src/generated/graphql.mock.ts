@@ -52,6 +52,160 @@ export const mockDeleteAssigneeMutation = (resolver: GraphQLResponseResolver<Typ
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockConvertChecklistItemToTaskMutation(
+ *   ({ query, variables }) => {
+ *     const { input } = variables;
+ *     return HttpResponse.json({
+ *       data: { convertChecklistItemToTask }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockConvertChecklistItemToTaskMutation = (resolver: GraphQLResponseResolver<Types.ConvertChecklistItemToTaskMutation, Types.ConvertChecklistItemToTaskMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.ConvertChecklistItemToTaskMutation, Types.ConvertChecklistItemToTaskMutationVariables>(
+    'ConvertChecklistItemToTask',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCreateChecklistMutation(
+ *   ({ query, variables }) => {
+ *     const { input } = variables;
+ *     return HttpResponse.json({
+ *       data: { createChecklist }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockCreateChecklistMutation = (resolver: GraphQLResponseResolver<Types.CreateChecklistMutation, Types.CreateChecklistMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.CreateChecklistMutation, Types.CreateChecklistMutationVariables>(
+    'CreateChecklist',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCreateChecklistItemMutation(
+ *   ({ query, variables }) => {
+ *     const { input } = variables;
+ *     return HttpResponse.json({
+ *       data: { createChecklistItem }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockCreateChecklistItemMutation = (resolver: GraphQLResponseResolver<Types.CreateChecklistItemMutation, Types.CreateChecklistItemMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.CreateChecklistItemMutation, Types.CreateChecklistItemMutationVariables>(
+    'CreateChecklistItem',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockDeleteChecklistMutation(
+ *   ({ query, variables }) => {
+ *     const { rowId } = variables;
+ *     return HttpResponse.json({
+ *       data: { deleteChecklist }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockDeleteChecklistMutation = (resolver: GraphQLResponseResolver<Types.DeleteChecklistMutation, Types.DeleteChecklistMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.DeleteChecklistMutation, Types.DeleteChecklistMutationVariables>(
+    'DeleteChecklist',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockDeleteChecklistItemMutation(
+ *   ({ query, variables }) => {
+ *     const { rowId } = variables;
+ *     return HttpResponse.json({
+ *       data: { deleteChecklistItem }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockDeleteChecklistItemMutation = (resolver: GraphQLResponseResolver<Types.DeleteChecklistItemMutation, Types.DeleteChecklistItemMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.DeleteChecklistItemMutation, Types.DeleteChecklistItemMutationVariables>(
+    'DeleteChecklistItem',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUpdateChecklistMutation(
+ *   ({ query, variables }) => {
+ *     const { input } = variables;
+ *     return HttpResponse.json({
+ *       data: { updateChecklist }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockUpdateChecklistMutation = (resolver: GraphQLResponseResolver<Types.UpdateChecklistMutation, Types.UpdateChecklistMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.UpdateChecklistMutation, Types.UpdateChecklistMutationVariables>(
+    'UpdateChecklist',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockUpdateChecklistItemMutation(
+ *   ({ query, variables }) => {
+ *     const { input } = variables;
+ *     return HttpResponse.json({
+ *       data: { updateChecklistItem }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockUpdateChecklistItemMutation = (resolver: GraphQLResponseResolver<Types.UpdateChecklistItemMutation, Types.UpdateChecklistItemMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.UpdateChecklistItemMutation, Types.UpdateChecklistItemMutationVariables>(
+    'UpdateChecklistItem',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockCreateColumnMutation(
  *   ({ query, variables }) => {
  *     const { input } = variables;

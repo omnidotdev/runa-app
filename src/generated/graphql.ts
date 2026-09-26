@@ -888,6 +888,549 @@ export type BooleanFilter = {
   notIn?: InputMaybe<Array<Scalars['Boolean']['input']>>;
 };
 
+export type Checklist = Node & {
+  __typename?: 'Checklist';
+  /** Reads and enables pagination through a set of `ChecklistItem`. */
+  checklistItems: ChecklistItemConnection;
+  createdAt: Scalars['Datetime']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  index: Scalars['String']['output'];
+  rowId: Scalars['UUID']['output'];
+  /** Reads a single `Task` that is related to this `Checklist`. */
+  task?: Maybe<Task>;
+  taskId: Scalars['UUID']['output'];
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+
+export type ChecklistChecklistItemsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ChecklistItemCondition>;
+  filter?: InputMaybe<ChecklistItemFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChecklistItemOrderBy>>;
+};
+
+export type ChecklistAggregates = {
+  __typename?: 'ChecklistAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<ChecklistDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `Checklist` object types. */
+export type ChecklistAggregatesFilter = {
+  /** Distinct count aggregate over matching `Checklist` objects. */
+  distinctCount?: InputMaybe<ChecklistDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `Checklist` object to be included within the aggregate. */
+  filter?: InputMaybe<ChecklistFilter>;
+};
+
+/**
+ * A condition to be used against `Checklist` object types. All fields are tested
+ * for equality and combined with a logical ‘and.’
+ */
+export type ChecklistCondition = {
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `index` field. */
+  index?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `taskId` field. */
+  taskId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `title` field. */
+  title?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `Checklist` values. */
+export type ChecklistConnection = {
+  __typename?: 'ChecklistConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<ChecklistAggregates>;
+  /** A list of edges which contains the `Checklist` and cursor to aid in pagination. */
+  edges: Array<ChecklistEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<ChecklistAggregates>>;
+  /** A list of `Checklist` objects. */
+  nodes: Array<Checklist>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `Checklist` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `Checklist` values. */
+export type ChecklistConnectionGroupedAggregatesArgs = {
+  groupBy: Array<ChecklistGroupBy>;
+  having?: InputMaybe<ChecklistHavingInput>;
+};
+
+export type ChecklistDistinctCountAggregateFilter = {
+  createdAt?: InputMaybe<BigIntFilter>;
+  index?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  taskId?: InputMaybe<BigIntFilter>;
+  title?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type ChecklistDistinctCountAggregates = {
+  __typename?: 'ChecklistDistinctCountAggregates';
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of index across the matching connection */
+  index?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of taskId across the matching connection */
+  taskId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of title across the matching connection */
+  title?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `Checklist` edge in the connection. */
+export type ChecklistEdge = {
+  __typename?: 'ChecklistEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `Checklist` at the end of the edge. */
+  node: Checklist;
+};
+
+/** A filter to be used against `Checklist` object types. All fields are combined with a logical ‘and.’ */
+export type ChecklistFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<ChecklistFilter>>;
+  /** Filter by the object’s `checklistItems` relation. */
+  checklistItems?: InputMaybe<ChecklistToManyChecklistItemFilter>;
+  /** Some related `checklistItems` exist. */
+  checklistItemsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `index` field. */
+  index?: InputMaybe<StringFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<ChecklistFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<ChecklistFilter>>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `task` relation. */
+  task?: InputMaybe<TaskFilter>;
+  /** Filter by the object’s `taskId` field. */
+  taskId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `title` field. */
+  title?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `Checklist` for usage during aggregation. */
+export enum ChecklistGroupBy {
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Index = 'INDEX',
+  TaskId = 'TASK_ID',
+  Title = 'TITLE',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type ChecklistHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `Checklist` aggregates. */
+export type ChecklistHavingInput = {
+  AND?: InputMaybe<Array<ChecklistHavingInput>>;
+  OR?: InputMaybe<Array<ChecklistHavingInput>>;
+  average?: InputMaybe<ChecklistHavingAverageInput>;
+  distinctCount?: InputMaybe<ChecklistHavingDistinctCountInput>;
+  max?: InputMaybe<ChecklistHavingMaxInput>;
+  min?: InputMaybe<ChecklistHavingMinInput>;
+  stddevPopulation?: InputMaybe<ChecklistHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<ChecklistHavingStddevSampleInput>;
+  sum?: InputMaybe<ChecklistHavingSumInput>;
+  variancePopulation?: InputMaybe<ChecklistHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<ChecklistHavingVarianceSampleInput>;
+};
+
+export type ChecklistHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `Checklist` */
+export type ChecklistInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  index: Scalars['String']['input'];
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  taskId: Scalars['UUID']['input'];
+  title: Scalars['String']['input'];
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+export type ChecklistItem = Node & {
+  __typename?: 'ChecklistItem';
+  /** Reads a single `Checklist` that is related to this `ChecklistItem`. */
+  checklist?: Maybe<Checklist>;
+  checklistId: Scalars['UUID']['output'];
+  content: Scalars['String']['output'];
+  createdAt: Scalars['Datetime']['output'];
+  /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
+  id: Scalars['ID']['output'];
+  index: Scalars['String']['output'];
+  isDone: Scalars['Boolean']['output'];
+  rowId: Scalars['UUID']['output'];
+  updatedAt: Scalars['Datetime']['output'];
+};
+
+export type ChecklistItemAggregates = {
+  __typename?: 'ChecklistItemAggregates';
+  /** Distinct count aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  distinctCount?: Maybe<ChecklistItemDistinctCountAggregates>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
+/** A filter to be used against aggregates of `ChecklistItem` object types. */
+export type ChecklistItemAggregatesFilter = {
+  /** Distinct count aggregate over matching `ChecklistItem` objects. */
+  distinctCount?: InputMaybe<ChecklistItemDistinctCountAggregateFilter>;
+  /** A filter that must pass for the relevant `ChecklistItem` object to be included within the aggregate. */
+  filter?: InputMaybe<ChecklistItemFilter>;
+};
+
+/**
+ * A condition to be used against `ChecklistItem` object types. All fields are
+ * tested for equality and combined with a logical ‘and.’
+ */
+export type ChecklistItemCondition = {
+  /** Checks for equality with the object’s `checklistId` field. */
+  checklistId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `content` field. */
+  content?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `createdAt` field. */
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `index` field. */
+  index?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `isDone` field. */
+  isDone?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `rowId` field. */
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A connection to a list of `ChecklistItem` values. */
+export type ChecklistItemConnection = {
+  __typename?: 'ChecklistItemConnection';
+  /** Aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  aggregates?: Maybe<ChecklistItemAggregates>;
+  /** A list of edges which contains the `ChecklistItem` and cursor to aid in pagination. */
+  edges: Array<ChecklistItemEdge>;
+  /** Grouped aggregates across the matching connection (ignoring before/after/first/last/offset) */
+  groupedAggregates?: Maybe<Array<ChecklistItemAggregates>>;
+  /** A list of `ChecklistItem` objects. */
+  nodes: Array<ChecklistItem>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The count of *all* `ChecklistItem` you could get from the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+
+/** A connection to a list of `ChecklistItem` values. */
+export type ChecklistItemConnectionGroupedAggregatesArgs = {
+  groupBy: Array<ChecklistItemGroupBy>;
+  having?: InputMaybe<ChecklistItemHavingInput>;
+};
+
+export type ChecklistItemDistinctCountAggregateFilter = {
+  checklistId?: InputMaybe<BigIntFilter>;
+  content?: InputMaybe<BigIntFilter>;
+  createdAt?: InputMaybe<BigIntFilter>;
+  index?: InputMaybe<BigIntFilter>;
+  isDone?: InputMaybe<BigIntFilter>;
+  rowId?: InputMaybe<BigIntFilter>;
+  updatedAt?: InputMaybe<BigIntFilter>;
+};
+
+export type ChecklistItemDistinctCountAggregates = {
+  __typename?: 'ChecklistItemDistinctCountAggregates';
+  /** Distinct count of checklistId across the matching connection */
+  checklistId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of content across the matching connection */
+  content?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of createdAt across the matching connection */
+  createdAt?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of index across the matching connection */
+  index?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of isDone across the matching connection */
+  isDone?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of rowId across the matching connection */
+  rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of updatedAt across the matching connection */
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+};
+
+/** A `ChecklistItem` edge in the connection. */
+export type ChecklistItemEdge = {
+  __typename?: 'ChecklistItemEdge';
+  /** A cursor for use in pagination. */
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  /** The `ChecklistItem` at the end of the edge. */
+  node: ChecklistItem;
+};
+
+/** A filter to be used against `ChecklistItem` object types. All fields are combined with a logical ‘and.’ */
+export type ChecklistItemFilter = {
+  /** Checks for all expressions in this list. */
+  and?: InputMaybe<Array<ChecklistItemFilter>>;
+  /** Filter by the object’s `checklist` relation. */
+  checklist?: InputMaybe<ChecklistFilter>;
+  /** Filter by the object’s `checklistId` field. */
+  checklistId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `content` field. */
+  content?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `createdAt` field. */
+  createdAt?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `index` field. */
+  index?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `isDone` field. */
+  isDone?: InputMaybe<BooleanFilter>;
+  /** Negates the expression. */
+  not?: InputMaybe<ChecklistItemFilter>;
+  /** Checks for any expressions in this list. */
+  or?: InputMaybe<Array<ChecklistItemFilter>>;
+  /** Filter by the object’s `rowId` field. */
+  rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `updatedAt` field. */
+  updatedAt?: InputMaybe<DatetimeFilter>;
+};
+
+/** Grouping methods for `ChecklistItem` for usage during aggregation. */
+export enum ChecklistItemGroupBy {
+  ChecklistId = 'CHECKLIST_ID',
+  Content = 'CONTENT',
+  CreatedAt = 'CREATED_AT',
+  CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
+  CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
+  Index = 'INDEX',
+  IsDone = 'IS_DONE',
+  UpdatedAt = 'UPDATED_AT',
+  UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
+  UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
+}
+
+export type ChecklistItemHavingAverageInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistItemHavingDistinctCountInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** Conditions for `ChecklistItem` aggregates. */
+export type ChecklistItemHavingInput = {
+  AND?: InputMaybe<Array<ChecklistItemHavingInput>>;
+  OR?: InputMaybe<Array<ChecklistItemHavingInput>>;
+  average?: InputMaybe<ChecklistItemHavingAverageInput>;
+  distinctCount?: InputMaybe<ChecklistItemHavingDistinctCountInput>;
+  max?: InputMaybe<ChecklistItemHavingMaxInput>;
+  min?: InputMaybe<ChecklistItemHavingMinInput>;
+  stddevPopulation?: InputMaybe<ChecklistItemHavingStddevPopulationInput>;
+  stddevSample?: InputMaybe<ChecklistItemHavingStddevSampleInput>;
+  sum?: InputMaybe<ChecklistItemHavingSumInput>;
+  variancePopulation?: InputMaybe<ChecklistItemHavingVariancePopulationInput>;
+  varianceSample?: InputMaybe<ChecklistItemHavingVarianceSampleInput>;
+};
+
+export type ChecklistItemHavingMaxInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistItemHavingMinInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistItemHavingStddevPopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistItemHavingStddevSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistItemHavingSumInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistItemHavingVariancePopulationInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+export type ChecklistItemHavingVarianceSampleInput = {
+  createdAt?: InputMaybe<HavingDatetimeFilter>;
+  updatedAt?: InputMaybe<HavingDatetimeFilter>;
+};
+
+/** An input for mutations affecting `ChecklistItem` */
+export type ChecklistItemInput = {
+  checklistId: Scalars['UUID']['input'];
+  content: Scalars['String']['input'];
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  index: Scalars['String']['input'];
+  isDone?: InputMaybe<Scalars['Boolean']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** Methods to use when ordering `ChecklistItem`. */
+export enum ChecklistItemOrderBy {
+  ChecklistIdAsc = 'CHECKLIST_ID_ASC',
+  ChecklistIdDesc = 'CHECKLIST_ID_DESC',
+  ContentAsc = 'CONTENT_ASC',
+  ContentDesc = 'CONTENT_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  IndexAsc = 'INDEX_ASC',
+  IndexDesc = 'INDEX_DESC',
+  IsDoneAsc = 'IS_DONE_ASC',
+  IsDoneDesc = 'IS_DONE_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `ChecklistItem`. Fields that are set will be updated. */
+export type ChecklistItemPatch = {
+  checklistId?: InputMaybe<Scalars['UUID']['input']>;
+  content?: InputMaybe<Scalars['String']['input']>;
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  index?: InputMaybe<Scalars['String']['input']>;
+  isDone?: InputMaybe<Scalars['Boolean']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** Methods to use when ordering `Checklist`. */
+export enum ChecklistOrderBy {
+  ChecklistItemsCountAsc = 'CHECKLIST_ITEMS_COUNT_ASC',
+  ChecklistItemsCountDesc = 'CHECKLIST_ITEMS_COUNT_DESC',
+  ChecklistItemsDistinctCountChecklistIdAsc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_CHECKLIST_ID_ASC',
+  ChecklistItemsDistinctCountChecklistIdDesc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_CHECKLIST_ID_DESC',
+  ChecklistItemsDistinctCountContentAsc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_CONTENT_ASC',
+  ChecklistItemsDistinctCountContentDesc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_CONTENT_DESC',
+  ChecklistItemsDistinctCountCreatedAtAsc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ChecklistItemsDistinctCountCreatedAtDesc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ChecklistItemsDistinctCountIndexAsc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_INDEX_ASC',
+  ChecklistItemsDistinctCountIndexDesc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_INDEX_DESC',
+  ChecklistItemsDistinctCountIsDoneAsc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_IS_DONE_ASC',
+  ChecklistItemsDistinctCountIsDoneDesc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_IS_DONE_DESC',
+  ChecklistItemsDistinctCountRowIdAsc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_ROW_ID_ASC',
+  ChecklistItemsDistinctCountRowIdDesc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_ROW_ID_DESC',
+  ChecklistItemsDistinctCountUpdatedAtAsc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  ChecklistItemsDistinctCountUpdatedAtDesc = 'CHECKLIST_ITEMS_DISTINCT_COUNT_UPDATED_AT_DESC',
+  CreatedAtAsc = 'CREATED_AT_ASC',
+  CreatedAtDesc = 'CREATED_AT_DESC',
+  IndexAsc = 'INDEX_ASC',
+  IndexDesc = 'INDEX_DESC',
+  Natural = 'NATURAL',
+  PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
+  PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
+  RowIdAsc = 'ROW_ID_ASC',
+  RowIdDesc = 'ROW_ID_DESC',
+  TaskIdAsc = 'TASK_ID_ASC',
+  TaskIdDesc = 'TASK_ID_DESC',
+  TitleAsc = 'TITLE_ASC',
+  TitleDesc = 'TITLE_DESC',
+  UpdatedAtAsc = 'UPDATED_AT_ASC',
+  UpdatedAtDesc = 'UPDATED_AT_DESC'
+}
+
+/** Represents an update to a `Checklist`. Fields that are set will be updated. */
+export type ChecklistPatch = {
+  createdAt?: InputMaybe<Scalars['Datetime']['input']>;
+  index?: InputMaybe<Scalars['String']['input']>;
+  rowId?: InputMaybe<Scalars['UUID']['input']>;
+  taskId?: InputMaybe<Scalars['UUID']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
+};
+
+/** A filter to be used against many `ChecklistItem` object types. All fields are combined with a logical ‘and.’ */
+export type ChecklistToManyChecklistItemFilter = {
+  /** Aggregates across related `ChecklistItem` match the filter criteria. */
+  aggregates?: InputMaybe<ChecklistItemAggregatesFilter>;
+  /** Every related `ChecklistItem` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<ChecklistItemFilter>;
+  /** No related `ChecklistItem` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<ChecklistItemFilter>;
+  /** Some related `ChecklistItem` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<ChecklistItemFilter>;
+};
+
 export type Column = Node & {
   __typename?: 'Column';
   createdAt: Scalars['Datetime']['output'];
@@ -1167,6 +1710,8 @@ export enum ColumnOrderBy {
   TasksDistinctCountProjectIdDesc = 'TASKS_DISTINCT_COUNT_PROJECT_ID_DESC',
   TasksDistinctCountRowIdAsc = 'TASKS_DISTINCT_COUNT_ROW_ID_ASC',
   TasksDistinctCountRowIdDesc = 'TASKS_DISTINCT_COUNT_ROW_ID_DESC',
+  TasksDistinctCountSourceTaskIdAsc = 'TASKS_DISTINCT_COUNT_SOURCE_TASK_ID_ASC',
+  TasksDistinctCountSourceTaskIdDesc = 'TASKS_DISTINCT_COUNT_SOURCE_TASK_ID_DESC',
   TasksDistinctCountUpdatedAtAsc = 'TASKS_DISTINCT_COUNT_UPDATED_AT_ASC',
   TasksDistinctCountUpdatedAtDesc = 'TASKS_DISTINCT_COUNT_UPDATED_AT_DESC',
   TasksMaxNumberAsc = 'TASKS_MAX_NUMBER_ASC',
@@ -1212,6 +1757,29 @@ export type ColumnToManyTaskFilter = {
   some?: InputMaybe<TaskFilter>;
 };
 
+/** Input for converting a checklist item into a standalone task. */
+export type ConvertChecklistItemToTaskInput = {
+  /** The checklist item to convert. */
+  checklistItemId: Scalars['UUID']['input'];
+};
+
+/** Result of a convertChecklistItemToTask mutation. */
+export type ConvertChecklistItemToTaskPayload = {
+  __typename?: 'ConvertChecklistItemToTaskPayload';
+  /** The column the new task was placed in (the project's first column). */
+  columnId?: Maybe<Scalars['UUID']['output']>;
+  /** The new task's fractional index within its column. */
+  columnIndex?: Maybe<Scalars['String']['output']>;
+  /** The new task's assigned number within its project. */
+  number?: Maybe<Scalars['Int']['output']>;
+  /** The project the new task was created in. */
+  projectId?: Maybe<Scalars['UUID']['output']>;
+  /** The origin task the checklist item belonged to. */
+  sourceTaskId?: Maybe<Scalars['UUID']['output']>;
+  /** The new task's id. */
+  taskId?: Maybe<Scalars['UUID']['output']>;
+};
+
 /** All input for the create `Assignee` mutation. */
 export type CreateAssigneeInput = {
   /** The `Assignee` to be created by this mutation. */
@@ -1243,6 +1811,72 @@ export type CreateAssigneePayload = {
 /** The output of our create `Assignee` mutation. */
 export type CreateAssigneePayloadAssigneeEdgeArgs = {
   orderBy?: Array<AssigneeOrderBy>;
+};
+
+/** All input for the create `Checklist` mutation. */
+export type CreateChecklistInput = {
+  /** The `Checklist` to be created by this mutation. */
+  checklist: ChecklistInput;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** All input for the create `ChecklistItem` mutation. */
+export type CreateChecklistItemInput = {
+  /** The `ChecklistItem` to be created by this mutation. */
+  checklistItem: ChecklistItemInput;
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** The output of our create `ChecklistItem` mutation. */
+export type CreateChecklistItemPayload = {
+  __typename?: 'CreateChecklistItemPayload';
+  /** The `ChecklistItem` that was created by this mutation. */
+  checklistItem?: Maybe<ChecklistItem>;
+  /** An edge for our `ChecklistItem`. May be used by Relay 1. */
+  checklistItemEdge?: Maybe<ChecklistItemEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `ChecklistItem` mutation. */
+export type CreateChecklistItemPayloadChecklistItemEdgeArgs = {
+  orderBy?: Array<ChecklistItemOrderBy>;
+};
+
+/** The output of our create `Checklist` mutation. */
+export type CreateChecklistPayload = {
+  __typename?: 'CreateChecklistPayload';
+  /** The `Checklist` that was created by this mutation. */
+  checklist?: Maybe<Checklist>;
+  /** An edge for our `Checklist`. May be used by Relay 1. */
+  checklistEdge?: Maybe<ChecklistEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our create `Checklist` mutation. */
+export type CreateChecklistPayloadChecklistEdgeArgs = {
+  orderBy?: Array<ChecklistOrderBy>;
 };
 
 /** All input for the create `Column` mutation. */
@@ -1875,6 +2509,94 @@ export type DeleteAssigneePayload = {
 /** The output of our delete `Assignee` mutation. */
 export type DeleteAssigneePayloadAssigneeEdgeArgs = {
   orderBy?: Array<AssigneeOrderBy>;
+};
+
+/** All input for the `deleteChecklistById` mutation. */
+export type DeleteChecklistByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Checklist` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteChecklist` mutation. */
+export type DeleteChecklistInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** All input for the `deleteChecklistItemById` mutation. */
+export type DeleteChecklistItemByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `ChecklistItem` to be deleted. */
+  id: Scalars['ID']['input'];
+};
+
+/** All input for the `deleteChecklistItem` mutation. */
+export type DeleteChecklistItemInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our delete `ChecklistItem` mutation. */
+export type DeleteChecklistItemPayload = {
+  __typename?: 'DeleteChecklistItemPayload';
+  /** The `ChecklistItem` that was deleted by this mutation. */
+  checklistItem?: Maybe<ChecklistItem>;
+  /** An edge for our `ChecklistItem`. May be used by Relay 1. */
+  checklistItemEdge?: Maybe<ChecklistItemEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedChecklistItemId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `ChecklistItem` mutation. */
+export type DeleteChecklistItemPayloadChecklistItemEdgeArgs = {
+  orderBy?: Array<ChecklistItemOrderBy>;
+};
+
+/** The output of our delete `Checklist` mutation. */
+export type DeleteChecklistPayload = {
+  __typename?: 'DeleteChecklistPayload';
+  /** The `Checklist` that was deleted by this mutation. */
+  checklist?: Maybe<Checklist>;
+  /** An edge for our `Checklist`. May be used by Relay 1. */
+  checklistEdge?: Maybe<ChecklistEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  deletedChecklistId?: Maybe<Scalars['ID']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our delete `Checklist` mutation. */
+export type DeleteChecklistPayloadChecklistEdgeArgs = {
+  orderBy?: Array<ChecklistOrderBy>;
 };
 
 /** All input for the `deleteColumnById` mutation. */
@@ -3249,8 +3971,18 @@ export type MoveTaskPayload = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
+  /**
+   * Convert a checklist item into a standalone task in the origin task's
+   * project. The item is removed and the new task links back via sourceTaskId.
+   * Requires editor permission on the project.
+   */
+  convertChecklistItemToTask?: Maybe<ConvertChecklistItemToTaskPayload>;
   /** Creates a single `Assignee`. */
   createAssignee?: Maybe<CreateAssigneePayload>;
+  /** Creates a single `Checklist`. */
+  createChecklist?: Maybe<CreateChecklistPayload>;
+  /** Creates a single `ChecklistItem`. */
+  createChecklistItem?: Maybe<CreateChecklistItemPayload>;
   /** Creates a single `Column`. */
   createColumn?: Maybe<CreateColumnPayload>;
   /** Creates a single `Emoji`. */
@@ -3289,6 +4021,14 @@ export type Mutation = {
   deleteAssignee?: Maybe<DeleteAssigneePayload>;
   /** Deletes a single `Assignee` using its globally unique id. */
   deleteAssigneeById?: Maybe<DeleteAssigneePayload>;
+  /** Deletes a single `Checklist` using a unique key. */
+  deleteChecklist?: Maybe<DeleteChecklistPayload>;
+  /** Deletes a single `Checklist` using its globally unique id. */
+  deleteChecklistById?: Maybe<DeleteChecklistPayload>;
+  /** Deletes a single `ChecklistItem` using a unique key. */
+  deleteChecklistItem?: Maybe<DeleteChecklistItemPayload>;
+  /** Deletes a single `ChecklistItem` using its globally unique id. */
+  deleteChecklistItemById?: Maybe<DeleteChecklistItemPayload>;
   /** Deletes a single `Column` using a unique key. */
   deleteColumn?: Maybe<DeleteColumnPayload>;
   /** Deletes a single `Column` using its globally unique id. */
@@ -3366,6 +4106,14 @@ export type Mutation = {
   updateAssignee?: Maybe<UpdateAssigneePayload>;
   /** Updates a single `Assignee` using its globally unique id and a patch. */
   updateAssigneeById?: Maybe<UpdateAssigneePayload>;
+  /** Updates a single `Checklist` using a unique key and a patch. */
+  updateChecklist?: Maybe<UpdateChecklistPayload>;
+  /** Updates a single `Checklist` using its globally unique id and a patch. */
+  updateChecklistById?: Maybe<UpdateChecklistPayload>;
+  /** Updates a single `ChecklistItem` using a unique key and a patch. */
+  updateChecklistItem?: Maybe<UpdateChecklistItemPayload>;
+  /** Updates a single `ChecklistItem` using its globally unique id and a patch. */
+  updateChecklistItemById?: Maybe<UpdateChecklistItemPayload>;
   /** Updates a single `Column` using a unique key and a patch. */
   updateColumn?: Maybe<UpdateColumnPayload>;
   /** Updates a single `Column` using its globally unique id and a patch. */
@@ -3438,8 +4186,26 @@ export type Mutation = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationConvertChecklistItemToTaskArgs = {
+  input: ConvertChecklistItemToTaskInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateAssigneeArgs = {
   input: CreateAssigneeInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateChecklistArgs = {
+  input: CreateChecklistInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateChecklistItemArgs = {
+  input: CreateChecklistItemInput;
 };
 
 
@@ -3554,6 +4320,30 @@ export type MutationDeleteAssigneeArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationDeleteAssigneeByIdArgs = {
   input: DeleteAssigneeByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteChecklistArgs = {
+  input: DeleteChecklistInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteChecklistByIdArgs = {
+  input: DeleteChecklistByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteChecklistItemArgs = {
+  input: DeleteChecklistItemInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteChecklistItemByIdArgs = {
+  input: DeleteChecklistItemByIdInput;
 };
 
 
@@ -3776,6 +4566,30 @@ export type MutationUpdateAssigneeArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateAssigneeByIdArgs = {
   input: UpdateAssigneeByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateChecklistArgs = {
+  input: UpdateChecklistInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateChecklistByIdArgs = {
+  input: UpdateChecklistByIdInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateChecklistItemArgs = {
+  input: UpdateChecklistItemInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationUpdateChecklistItemByIdArgs = {
+  input: UpdateChecklistItemByIdInput;
 };
 
 
@@ -6435,6 +7249,8 @@ export enum ProjectOrderBy {
   TasksDistinctCountProjectIdDesc = 'TASKS_DISTINCT_COUNT_PROJECT_ID_DESC',
   TasksDistinctCountRowIdAsc = 'TASKS_DISTINCT_COUNT_ROW_ID_ASC',
   TasksDistinctCountRowIdDesc = 'TASKS_DISTINCT_COUNT_ROW_ID_DESC',
+  TasksDistinctCountSourceTaskIdAsc = 'TASKS_DISTINCT_COUNT_SOURCE_TASK_ID_ASC',
+  TasksDistinctCountSourceTaskIdDesc = 'TASKS_DISTINCT_COUNT_SOURCE_TASK_ID_DESC',
   TasksDistinctCountUpdatedAtAsc = 'TASKS_DISTINCT_COUNT_UPDATED_AT_ASC',
   TasksDistinctCountUpdatedAtDesc = 'TASKS_DISTINCT_COUNT_UPDATED_AT_DESC',
   TasksMaxNumberAsc = 'TASKS_MAX_NUMBER_ASC',
@@ -6844,6 +7660,18 @@ export type Query = Node & {
   attachmentById?: Maybe<Attachment>;
   /** Reads and enables pagination through a set of `Attachment`. */
   attachments?: Maybe<AttachmentConnection>;
+  /** Get a single `Checklist`. */
+  checklist?: Maybe<Checklist>;
+  /** Reads a single `Checklist` using its globally unique `ID`. */
+  checklistById?: Maybe<Checklist>;
+  /** Get a single `ChecklistItem`. */
+  checklistItem?: Maybe<ChecklistItem>;
+  /** Reads a single `ChecklistItem` using its globally unique `ID`. */
+  checklistItemById?: Maybe<ChecklistItem>;
+  /** Reads and enables pagination through a set of `ChecklistItem`. */
+  checklistItems?: Maybe<ChecklistItemConnection>;
+  /** Reads and enables pagination through a set of `Checklist`. */
+  checklists?: Maybe<ChecklistConnection>;
   /** Get a single `Column`. */
   column?: Maybe<Column>;
   /** Reads a single `Column` using its globally unique `ID`. */
@@ -7034,6 +7862,56 @@ export type QueryAttachmentsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<AttachmentOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryChecklistArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryChecklistByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryChecklistItemArgs = {
+  rowId: Scalars['UUID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryChecklistItemByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryChecklistItemsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ChecklistItemCondition>;
+  filter?: InputMaybe<ChecklistItemFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChecklistItemOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryChecklistsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ChecklistCondition>;
+  filter?: InputMaybe<ChecklistFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChecklistOrderBy>>;
 };
 
 
@@ -7912,6 +8790,8 @@ export type Task = Node & {
   /** Reads a single `User` that is related to this `Task`. */
   author?: Maybe<User>;
   authorId?: Maybe<Scalars['UUID']['output']>;
+  /** Reads and enables pagination through a set of `Checklist`. */
+  checklists: ChecklistConnection;
   /** Reads a single `Column` that is related to this `Task`. */
   column?: Maybe<Column>;
   columnId: Scalars['UUID']['output'];
@@ -7930,8 +8810,13 @@ export type Task = Node & {
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
   rowId: Scalars['UUID']['output'];
+  /** Reads a single `Task` that is related to this `Task`. */
+  sourceTask?: Maybe<Task>;
+  sourceTaskId?: Maybe<Scalars['UUID']['output']>;
   /** Reads and enables pagination through a set of `TaskLabel`. */
   taskLabels: TaskLabelConnection;
+  /** Reads and enables pagination through a set of `Task`. */
+  tasksBySourceTaskId: TaskConnection;
   updatedAt: Scalars['Datetime']['output'];
 };
 
@@ -7960,6 +8845,18 @@ export type TaskAttachmentsArgs = {
 };
 
 
+export type TaskChecklistsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<ChecklistCondition>;
+  filter?: InputMaybe<ChecklistFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<ChecklistOrderBy>>;
+};
+
+
 export type TaskPostsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -7981,6 +8878,18 @@ export type TaskTaskLabelsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<TaskLabelOrderBy>>;
+};
+
+
+export type TaskTasksBySourceTaskIdArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  condition?: InputMaybe<TaskCondition>;
+  filter?: InputMaybe<TaskFilter>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<TaskOrderBy>>;
 };
 
 export type TaskAggregates = {
@@ -8064,6 +8973,8 @@ export type TaskCondition = {
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  /** Checks for equality with the object’s `sourceTaskId` field. */
+  sourceTaskId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
@@ -8104,6 +9015,7 @@ export type TaskDistinctCountAggregateFilter = {
   priority?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
+  sourceTaskId?: InputMaybe<BigIntFilter>;
   updatedAt?: InputMaybe<BigIntFilter>;
 };
 
@@ -8131,6 +9043,8 @@ export type TaskDistinctCountAggregates = {
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of sourceTaskId across the matching connection */
+  sourceTaskId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of updatedAt across the matching connection */
   updatedAt?: Maybe<Scalars['BigInt']['output']>;
 };
@@ -8162,6 +9076,10 @@ export type TaskFilter = {
   authorExists?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `authorId` field. */
   authorId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `checklists` relation. */
+  checklists?: InputMaybe<TaskToManyChecklistFilter>;
+  /** Some related `checklists` exist. */
+  checklistsExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `column` relation. */
   column?: InputMaybe<ColumnFilter>;
   /** Filter by the object’s `columnId` field. */
@@ -8194,10 +9112,20 @@ export type TaskFilter = {
   projectId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `rowId` field. */
   rowId?: InputMaybe<UuidFilter>;
+  /** Filter by the object’s `sourceTask` relation. */
+  sourceTask?: InputMaybe<TaskFilter>;
+  /** A related `sourceTask` exists. */
+  sourceTaskExists?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `sourceTaskId` field. */
+  sourceTaskId?: InputMaybe<UuidFilter>;
   /** Filter by the object’s `taskLabels` relation. */
   taskLabels?: InputMaybe<TaskToManyTaskLabelFilter>;
   /** Some related `taskLabels` exist. */
   taskLabelsExist?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter by the object’s `tasksBySourceTaskId` relation. */
+  tasksBySourceTaskId?: InputMaybe<TaskToManyTaskFilter>;
+  /** Some related `tasksBySourceTaskId` exist. */
+  tasksBySourceTaskIdExist?: InputMaybe<Scalars['Boolean']['input']>;
   /** Filter by the object’s `updatedAt` field. */
   updatedAt?: InputMaybe<DatetimeFilter>;
 };
@@ -8218,6 +9146,7 @@ export enum TaskGroupBy {
   Number = 'NUMBER',
   Priority = 'PRIORITY',
   ProjectId = 'PROJECT_ID',
+  SourceTaskId = 'SOURCE_TASK_ID',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
   UpdatedAtTruncatedToHour = 'UPDATED_AT_TRUNCATED_TO_HOUR'
@@ -8314,6 +9243,7 @@ export type TaskInput = {
   priority?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sourceTaskId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
@@ -8656,6 +9586,20 @@ export enum TaskOrderBy {
   AttachmentsVarianceSampleWidthDesc = 'ATTACHMENTS_VARIANCE_SAMPLE_WIDTH_DESC',
   AuthorIdAsc = 'AUTHOR_ID_ASC',
   AuthorIdDesc = 'AUTHOR_ID_DESC',
+  ChecklistsCountAsc = 'CHECKLISTS_COUNT_ASC',
+  ChecklistsCountDesc = 'CHECKLISTS_COUNT_DESC',
+  ChecklistsDistinctCountCreatedAtAsc = 'CHECKLISTS_DISTINCT_COUNT_CREATED_AT_ASC',
+  ChecklistsDistinctCountCreatedAtDesc = 'CHECKLISTS_DISTINCT_COUNT_CREATED_AT_DESC',
+  ChecklistsDistinctCountIndexAsc = 'CHECKLISTS_DISTINCT_COUNT_INDEX_ASC',
+  ChecklistsDistinctCountIndexDesc = 'CHECKLISTS_DISTINCT_COUNT_INDEX_DESC',
+  ChecklistsDistinctCountRowIdAsc = 'CHECKLISTS_DISTINCT_COUNT_ROW_ID_ASC',
+  ChecklistsDistinctCountRowIdDesc = 'CHECKLISTS_DISTINCT_COUNT_ROW_ID_DESC',
+  ChecklistsDistinctCountTaskIdAsc = 'CHECKLISTS_DISTINCT_COUNT_TASK_ID_ASC',
+  ChecklistsDistinctCountTaskIdDesc = 'CHECKLISTS_DISTINCT_COUNT_TASK_ID_DESC',
+  ChecklistsDistinctCountTitleAsc = 'CHECKLISTS_DISTINCT_COUNT_TITLE_ASC',
+  ChecklistsDistinctCountTitleDesc = 'CHECKLISTS_DISTINCT_COUNT_TITLE_DESC',
+  ChecklistsDistinctCountUpdatedAtAsc = 'CHECKLISTS_DISTINCT_COUNT_UPDATED_AT_ASC',
+  ChecklistsDistinctCountUpdatedAtDesc = 'CHECKLISTS_DISTINCT_COUNT_UPDATED_AT_DESC',
   ColumnIdAsc = 'COLUMN_ID_ASC',
   ColumnIdDesc = 'COLUMN_ID_DESC',
   ColumnIndexAsc = 'COLUMN_INDEX_ASC',
@@ -8695,6 +9639,52 @@ export enum TaskOrderBy {
   ProjectIdDesc = 'PROJECT_ID_DESC',
   RowIdAsc = 'ROW_ID_ASC',
   RowIdDesc = 'ROW_ID_DESC',
+  SourceTaskIdAsc = 'SOURCE_TASK_ID_ASC',
+  SourceTaskIdDesc = 'SOURCE_TASK_ID_DESC',
+  TasksBySourceTaskIdAverageNumberAsc = 'TASKS_BY_SOURCE_TASK_ID_AVERAGE_NUMBER_ASC',
+  TasksBySourceTaskIdAverageNumberDesc = 'TASKS_BY_SOURCE_TASK_ID_AVERAGE_NUMBER_DESC',
+  TasksBySourceTaskIdCountAsc = 'TASKS_BY_SOURCE_TASK_ID_COUNT_ASC',
+  TasksBySourceTaskIdCountDesc = 'TASKS_BY_SOURCE_TASK_ID_COUNT_DESC',
+  TasksBySourceTaskIdDistinctCountAuthorIdAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_AUTHOR_ID_ASC',
+  TasksBySourceTaskIdDistinctCountAuthorIdDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_AUTHOR_ID_DESC',
+  TasksBySourceTaskIdDistinctCountColumnIdAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_COLUMN_ID_ASC',
+  TasksBySourceTaskIdDistinctCountColumnIdDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_COLUMN_ID_DESC',
+  TasksBySourceTaskIdDistinctCountColumnIndexAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_COLUMN_INDEX_ASC',
+  TasksBySourceTaskIdDistinctCountColumnIndexDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_COLUMN_INDEX_DESC',
+  TasksBySourceTaskIdDistinctCountContentAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_CONTENT_ASC',
+  TasksBySourceTaskIdDistinctCountContentDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_CONTENT_DESC',
+  TasksBySourceTaskIdDistinctCountCreatedAtAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_CREATED_AT_ASC',
+  TasksBySourceTaskIdDistinctCountCreatedAtDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_CREATED_AT_DESC',
+  TasksBySourceTaskIdDistinctCountDescriptionAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_DESCRIPTION_ASC',
+  TasksBySourceTaskIdDistinctCountDescriptionDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_DESCRIPTION_DESC',
+  TasksBySourceTaskIdDistinctCountDueDateAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_DUE_DATE_ASC',
+  TasksBySourceTaskIdDistinctCountDueDateDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_DUE_DATE_DESC',
+  TasksBySourceTaskIdDistinctCountNumberAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_NUMBER_ASC',
+  TasksBySourceTaskIdDistinctCountNumberDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_NUMBER_DESC',
+  TasksBySourceTaskIdDistinctCountPriorityAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_PRIORITY_ASC',
+  TasksBySourceTaskIdDistinctCountPriorityDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_PRIORITY_DESC',
+  TasksBySourceTaskIdDistinctCountProjectIdAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_PROJECT_ID_ASC',
+  TasksBySourceTaskIdDistinctCountProjectIdDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_PROJECT_ID_DESC',
+  TasksBySourceTaskIdDistinctCountRowIdAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_ROW_ID_ASC',
+  TasksBySourceTaskIdDistinctCountRowIdDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_ROW_ID_DESC',
+  TasksBySourceTaskIdDistinctCountSourceTaskIdAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_SOURCE_TASK_ID_ASC',
+  TasksBySourceTaskIdDistinctCountSourceTaskIdDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_SOURCE_TASK_ID_DESC',
+  TasksBySourceTaskIdDistinctCountUpdatedAtAsc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_UPDATED_AT_ASC',
+  TasksBySourceTaskIdDistinctCountUpdatedAtDesc = 'TASKS_BY_SOURCE_TASK_ID_DISTINCT_COUNT_UPDATED_AT_DESC',
+  TasksBySourceTaskIdMaxNumberAsc = 'TASKS_BY_SOURCE_TASK_ID_MAX_NUMBER_ASC',
+  TasksBySourceTaskIdMaxNumberDesc = 'TASKS_BY_SOURCE_TASK_ID_MAX_NUMBER_DESC',
+  TasksBySourceTaskIdMinNumberAsc = 'TASKS_BY_SOURCE_TASK_ID_MIN_NUMBER_ASC',
+  TasksBySourceTaskIdMinNumberDesc = 'TASKS_BY_SOURCE_TASK_ID_MIN_NUMBER_DESC',
+  TasksBySourceTaskIdStddevPopulationNumberAsc = 'TASKS_BY_SOURCE_TASK_ID_STDDEV_POPULATION_NUMBER_ASC',
+  TasksBySourceTaskIdStddevPopulationNumberDesc = 'TASKS_BY_SOURCE_TASK_ID_STDDEV_POPULATION_NUMBER_DESC',
+  TasksBySourceTaskIdStddevSampleNumberAsc = 'TASKS_BY_SOURCE_TASK_ID_STDDEV_SAMPLE_NUMBER_ASC',
+  TasksBySourceTaskIdStddevSampleNumberDesc = 'TASKS_BY_SOURCE_TASK_ID_STDDEV_SAMPLE_NUMBER_DESC',
+  TasksBySourceTaskIdSumNumberAsc = 'TASKS_BY_SOURCE_TASK_ID_SUM_NUMBER_ASC',
+  TasksBySourceTaskIdSumNumberDesc = 'TASKS_BY_SOURCE_TASK_ID_SUM_NUMBER_DESC',
+  TasksBySourceTaskIdVariancePopulationNumberAsc = 'TASKS_BY_SOURCE_TASK_ID_VARIANCE_POPULATION_NUMBER_ASC',
+  TasksBySourceTaskIdVariancePopulationNumberDesc = 'TASKS_BY_SOURCE_TASK_ID_VARIANCE_POPULATION_NUMBER_DESC',
+  TasksBySourceTaskIdVarianceSampleNumberAsc = 'TASKS_BY_SOURCE_TASK_ID_VARIANCE_SAMPLE_NUMBER_ASC',
+  TasksBySourceTaskIdVarianceSampleNumberDesc = 'TASKS_BY_SOURCE_TASK_ID_VARIANCE_SAMPLE_NUMBER_DESC',
   TaskLabelsCountAsc = 'TASK_LABELS_COUNT_ASC',
   TaskLabelsCountDesc = 'TASK_LABELS_COUNT_DESC',
   TaskLabelsDistinctCountCreatedAtAsc = 'TASK_LABELS_DISTINCT_COUNT_CREATED_AT_ASC',
@@ -8722,6 +9712,7 @@ export type TaskPatch = {
   priority?: InputMaybe<Scalars['String']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
+  sourceTaskId?: InputMaybe<Scalars['UUID']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
 };
 
@@ -8779,6 +9770,18 @@ export type TaskToManyAttachmentFilter = {
   some?: InputMaybe<AttachmentFilter>;
 };
 
+/** A filter to be used against many `Checklist` object types. All fields are combined with a logical ‘and.’ */
+export type TaskToManyChecklistFilter = {
+  /** Aggregates across related `Checklist` match the filter criteria. */
+  aggregates?: InputMaybe<ChecklistAggregatesFilter>;
+  /** Every related `Checklist` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<ChecklistFilter>;
+  /** No related `Checklist` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<ChecklistFilter>;
+  /** Some related `Checklist` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<ChecklistFilter>;
+};
+
 /** A filter to be used against many `Post` object types. All fields are combined with a logical ‘and.’ */
 export type TaskToManyPostFilter = {
   /** Aggregates across related `Post` match the filter criteria. */
@@ -8789,6 +9792,18 @@ export type TaskToManyPostFilter = {
   none?: InputMaybe<PostFilter>;
   /** Some related `Post` matches the filter criteria. All fields are combined with a logical ‘and.’ */
   some?: InputMaybe<PostFilter>;
+};
+
+/** A filter to be used against many `Task` object types. All fields are combined with a logical ‘and.’ */
+export type TaskToManyTaskFilter = {
+  /** Aggregates across related `Task` match the filter criteria. */
+  aggregates?: InputMaybe<TaskAggregatesFilter>;
+  /** Every related `Task` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  every?: InputMaybe<TaskFilter>;
+  /** No related `Task` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  none?: InputMaybe<TaskFilter>;
+  /** Some related `Task` matches the filter criteria. All fields are combined with a logical ‘and.’ */
+  some?: InputMaybe<TaskFilter>;
 };
 
 /** A filter to be used against many `TaskLabel` object types. All fields are combined with a logical ‘and.’ */
@@ -8895,6 +9910,100 @@ export type UpdateAssigneePayload = {
 /** The output of our update `Assignee` mutation. */
 export type UpdateAssigneePayloadAssigneeEdgeArgs = {
   orderBy?: Array<AssigneeOrderBy>;
+};
+
+/** All input for the `updateChecklistById` mutation. */
+export type UpdateChecklistByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `Checklist` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `Checklist` being updated. */
+  patch: ChecklistPatch;
+};
+
+/** All input for the `updateChecklist` mutation. */
+export type UpdateChecklistInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `Checklist` being updated. */
+  patch: ChecklistPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** All input for the `updateChecklistItemById` mutation. */
+export type UpdateChecklistItemByIdInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** The globally unique `ID` which will identify a single `ChecklistItem` to be updated. */
+  id: Scalars['ID']['input'];
+  /** An object where the defined keys will be set on the `ChecklistItem` being updated. */
+  patch: ChecklistItemPatch;
+};
+
+/** All input for the `updateChecklistItem` mutation. */
+export type UpdateChecklistItemInput = {
+  /**
+   * An arbitrary string value with no semantic meaning. Will be included in the
+   * payload verbatim. May be used to track mutations by the client.
+   */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  /** An object where the defined keys will be set on the `ChecklistItem` being updated. */
+  patch: ChecklistItemPatch;
+  rowId: Scalars['UUID']['input'];
+};
+
+/** The output of our update `ChecklistItem` mutation. */
+export type UpdateChecklistItemPayload = {
+  __typename?: 'UpdateChecklistItemPayload';
+  /** The `ChecklistItem` that was updated by this mutation. */
+  checklistItem?: Maybe<ChecklistItem>;
+  /** An edge for our `ChecklistItem`. May be used by Relay 1. */
+  checklistItemEdge?: Maybe<ChecklistItemEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `ChecklistItem` mutation. */
+export type UpdateChecklistItemPayloadChecklistItemEdgeArgs = {
+  orderBy?: Array<ChecklistItemOrderBy>;
+};
+
+/** The output of our update `Checklist` mutation. */
+export type UpdateChecklistPayload = {
+  __typename?: 'UpdateChecklistPayload';
+  /** The `Checklist` that was updated by this mutation. */
+  checklist?: Maybe<Checklist>;
+  /** An edge for our `Checklist`. May be used by Relay 1. */
+  checklistEdge?: Maybe<ChecklistEdge>;
+  /**
+   * The exact same `clientMutationId` that was provided in the mutation input,
+   * unchanged and unused. May be used by a client to track mutations.
+   */
+  clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** Our root query field type. Allows us to run any query from our mutation payload. */
+  query?: Maybe<Query>;
+};
+
+
+/** The output of our update `Checklist` mutation. */
+export type UpdateChecklistPayloadChecklistEdgeArgs = {
+  orderBy?: Array<ChecklistOrderBy>;
 };
 
 /** All input for the `updateColumnById` mutation. */
@@ -10164,6 +11273,8 @@ export enum UserOrderBy {
   AuthoredTasksDistinctCountProjectIdDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_PROJECT_ID_DESC',
   AuthoredTasksDistinctCountRowIdAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_ROW_ID_ASC',
   AuthoredTasksDistinctCountRowIdDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_ROW_ID_DESC',
+  AuthoredTasksDistinctCountSourceTaskIdAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_SOURCE_TASK_ID_ASC',
+  AuthoredTasksDistinctCountSourceTaskIdDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_SOURCE_TASK_ID_DESC',
   AuthoredTasksDistinctCountUpdatedAtAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_UPDATED_AT_ASC',
   AuthoredTasksDistinctCountUpdatedAtDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_UPDATED_AT_DESC',
   AuthoredTasksMaxNumberAsc = 'AUTHORED_TASKS_MAX_NUMBER_ASC',
@@ -11088,7 +12199,7 @@ export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: strin
 
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: string, color?: string | null, background?: any | null, updatedAt: Date, createdAt: Date, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } };
 
-export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } };
+export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number }, checklists: { __typename?: 'ChecklistConnection', nodes: Array<{ __typename?: 'Checklist', rowId: string, checklistItems: { __typename?: 'ChecklistItemConnection', totalCount: number }, doneItems: { __typename?: 'ChecklistItemConnection', totalCount: number } }> } };
 
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
@@ -11104,6 +12215,55 @@ export type DeleteAssigneeMutationVariables = Exact<{
 
 
 export type DeleteAssigneeMutation = { __typename?: 'Mutation', deleteAssignee?: { __typename?: 'DeleteAssigneePayload', assignee?: { __typename?: 'Assignee', taskId: string, userId: string } | null } | null };
+
+export type ConvertChecklistItemToTaskMutationVariables = Exact<{
+  input: ConvertChecklistItemToTaskInput;
+}>;
+
+
+export type ConvertChecklistItemToTaskMutation = { __typename?: 'Mutation', convertChecklistItemToTask?: { __typename?: 'ConvertChecklistItemToTaskPayload', taskId?: string | null, number?: number | null, projectId?: string | null, columnId?: string | null } | null };
+
+export type CreateChecklistMutationVariables = Exact<{
+  input: CreateChecklistInput;
+}>;
+
+
+export type CreateChecklistMutation = { __typename?: 'Mutation', createChecklist?: { __typename?: 'CreateChecklistPayload', checklist?: { __typename?: 'Checklist', rowId: string } | null } | null };
+
+export type CreateChecklistItemMutationVariables = Exact<{
+  input: CreateChecklistItemInput;
+}>;
+
+
+export type CreateChecklistItemMutation = { __typename?: 'Mutation', createChecklistItem?: { __typename?: 'CreateChecklistItemPayload', checklistItem?: { __typename?: 'ChecklistItem', rowId: string } | null } | null };
+
+export type DeleteChecklistMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteChecklistMutation = { __typename?: 'Mutation', deleteChecklist?: { __typename?: 'DeleteChecklistPayload', checklist?: { __typename?: 'Checklist', rowId: string } | null } | null };
+
+export type DeleteChecklistItemMutationVariables = Exact<{
+  rowId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteChecklistItemMutation = { __typename?: 'Mutation', deleteChecklistItem?: { __typename?: 'DeleteChecklistItemPayload', checklistItem?: { __typename?: 'ChecklistItem', rowId: string } | null } | null };
+
+export type UpdateChecklistMutationVariables = Exact<{
+  input: UpdateChecklistInput;
+}>;
+
+
+export type UpdateChecklistMutation = { __typename?: 'Mutation', updateChecklist?: { __typename?: 'UpdateChecklistPayload', checklist?: { __typename?: 'Checklist', rowId: string } | null } | null };
+
+export type UpdateChecklistItemMutationVariables = Exact<{
+  input: UpdateChecklistItemInput;
+}>;
+
+
+export type UpdateChecklistItemMutation = { __typename?: 'Mutation', updateChecklistItem?: { __typename?: 'UpdateChecklistItemPayload', checklistItem?: { __typename?: 'ChecklistItem', rowId: string } | null } | null };
 
 export type CreateColumnMutationVariables = Exact<{
   input: CreateColumnInput;
@@ -11449,7 +12609,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: string, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, icon?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: string, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, checklists: { __typename?: 'ChecklistConnection', nodes: Array<{ __typename?: 'Checklist', rowId: string, title: string, index: string, checklistItems: { __typename?: 'ChecklistItemConnection', nodes: Array<{ __typename?: 'ChecklistItem', rowId: string, content: string, isDone: boolean, index: string }> } }> }, column?: { __typename?: 'Column', title: string, icon?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TaskByNumberQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -11468,7 +12628,7 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number }, checklists: { __typename?: 'ChecklistConnection', nodes: Array<{ __typename?: 'Checklist', rowId: string, checklistItems: { __typename?: 'ChecklistItemConnection', totalCount: number }, doneItems: { __typename?: 'ChecklistItemConnection', totalCount: number } }> } }> } | null };
 
 export type UserPreferencesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -11613,6 +12773,17 @@ export const TaskFragmentDoc = new TypedDocumentString(`
   attachments {
     totalCount
   }
+  checklists {
+    nodes {
+      rowId
+      checklistItems {
+        totalCount
+      }
+      doneItems: checklistItems(filter: {isDone: {equalTo: true}}) {
+        totalCount
+      }
+    }
+  }
 }
     fragment Label on Label {
   color
@@ -11679,6 +12850,203 @@ useDeleteAssigneeMutation.getKey = () => ['DeleteAssignee'];
 
 
 useDeleteAssigneeMutation.fetcher = (variables: DeleteAssigneeMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteAssigneeMutation, DeleteAssigneeMutationVariables>(DeleteAssigneeDocument, variables, options);
+
+export const ConvertChecklistItemToTaskDocument = new TypedDocumentString(`
+    mutation ConvertChecklistItemToTask($input: ConvertChecklistItemToTaskInput!) {
+  convertChecklistItemToTask(input: $input) {
+    taskId
+    number
+    projectId
+    columnId
+  }
+}
+    `);
+
+export const useConvertChecklistItemToTaskMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<ConvertChecklistItemToTaskMutation, TError, ConvertChecklistItemToTaskMutationVariables, TContext>) => {
+    
+    return useMutation<ConvertChecklistItemToTaskMutation, TError, ConvertChecklistItemToTaskMutationVariables, TContext>(
+      {
+    mutationKey: ['ConvertChecklistItemToTask'],
+    mutationFn: (variables?: ConvertChecklistItemToTaskMutationVariables) => graphqlFetch<ConvertChecklistItemToTaskMutation, ConvertChecklistItemToTaskMutationVariables>(ConvertChecklistItemToTaskDocument, variables)(),
+    ...options
+  }
+    )};
+
+useConvertChecklistItemToTaskMutation.getKey = () => ['ConvertChecklistItemToTask'];
+
+
+useConvertChecklistItemToTaskMutation.fetcher = (variables: ConvertChecklistItemToTaskMutationVariables, options?: RequestInit['headers']) => graphqlFetch<ConvertChecklistItemToTaskMutation, ConvertChecklistItemToTaskMutationVariables>(ConvertChecklistItemToTaskDocument, variables, options);
+
+export const CreateChecklistDocument = new TypedDocumentString(`
+    mutation CreateChecklist($input: CreateChecklistInput!) {
+  createChecklist(input: $input) {
+    checklist {
+      rowId
+    }
+  }
+}
+    `);
+
+export const useCreateChecklistMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateChecklistMutation, TError, CreateChecklistMutationVariables, TContext>) => {
+    
+    return useMutation<CreateChecklistMutation, TError, CreateChecklistMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateChecklist'],
+    mutationFn: (variables?: CreateChecklistMutationVariables) => graphqlFetch<CreateChecklistMutation, CreateChecklistMutationVariables>(CreateChecklistDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateChecklistMutation.getKey = () => ['CreateChecklist'];
+
+
+useCreateChecklistMutation.fetcher = (variables: CreateChecklistMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateChecklistMutation, CreateChecklistMutationVariables>(CreateChecklistDocument, variables, options);
+
+export const CreateChecklistItemDocument = new TypedDocumentString(`
+    mutation CreateChecklistItem($input: CreateChecklistItemInput!) {
+  createChecklistItem(input: $input) {
+    checklistItem {
+      rowId
+    }
+  }
+}
+    `);
+
+export const useCreateChecklistItemMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateChecklistItemMutation, TError, CreateChecklistItemMutationVariables, TContext>) => {
+    
+    return useMutation<CreateChecklistItemMutation, TError, CreateChecklistItemMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateChecklistItem'],
+    mutationFn: (variables?: CreateChecklistItemMutationVariables) => graphqlFetch<CreateChecklistItemMutation, CreateChecklistItemMutationVariables>(CreateChecklistItemDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateChecklistItemMutation.getKey = () => ['CreateChecklistItem'];
+
+
+useCreateChecklistItemMutation.fetcher = (variables: CreateChecklistItemMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateChecklistItemMutation, CreateChecklistItemMutationVariables>(CreateChecklistItemDocument, variables, options);
+
+export const DeleteChecklistDocument = new TypedDocumentString(`
+    mutation DeleteChecklist($rowId: UUID!) {
+  deleteChecklist(input: {rowId: $rowId}) {
+    checklist {
+      rowId
+    }
+  }
+}
+    `);
+
+export const useDeleteChecklistMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteChecklistMutation, TError, DeleteChecklistMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteChecklistMutation, TError, DeleteChecklistMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteChecklist'],
+    mutationFn: (variables?: DeleteChecklistMutationVariables) => graphqlFetch<DeleteChecklistMutation, DeleteChecklistMutationVariables>(DeleteChecklistDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteChecklistMutation.getKey = () => ['DeleteChecklist'];
+
+
+useDeleteChecklistMutation.fetcher = (variables: DeleteChecklistMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteChecklistMutation, DeleteChecklistMutationVariables>(DeleteChecklistDocument, variables, options);
+
+export const DeleteChecklistItemDocument = new TypedDocumentString(`
+    mutation DeleteChecklistItem($rowId: UUID!) {
+  deleteChecklistItem(input: {rowId: $rowId}) {
+    checklistItem {
+      rowId
+    }
+  }
+}
+    `);
+
+export const useDeleteChecklistItemMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteChecklistItemMutation, TError, DeleteChecklistItemMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteChecklistItemMutation, TError, DeleteChecklistItemMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteChecklistItem'],
+    mutationFn: (variables?: DeleteChecklistItemMutationVariables) => graphqlFetch<DeleteChecklistItemMutation, DeleteChecklistItemMutationVariables>(DeleteChecklistItemDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteChecklistItemMutation.getKey = () => ['DeleteChecklistItem'];
+
+
+useDeleteChecklistItemMutation.fetcher = (variables: DeleteChecklistItemMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteChecklistItemMutation, DeleteChecklistItemMutationVariables>(DeleteChecklistItemDocument, variables, options);
+
+export const UpdateChecklistDocument = new TypedDocumentString(`
+    mutation UpdateChecklist($input: UpdateChecklistInput!) {
+  updateChecklist(input: $input) {
+    checklist {
+      rowId
+    }
+  }
+}
+    `);
+
+export const useUpdateChecklistMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateChecklistMutation, TError, UpdateChecklistMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateChecklistMutation, TError, UpdateChecklistMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateChecklist'],
+    mutationFn: (variables?: UpdateChecklistMutationVariables) => graphqlFetch<UpdateChecklistMutation, UpdateChecklistMutationVariables>(UpdateChecklistDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateChecklistMutation.getKey = () => ['UpdateChecklist'];
+
+
+useUpdateChecklistMutation.fetcher = (variables: UpdateChecklistMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateChecklistMutation, UpdateChecklistMutationVariables>(UpdateChecklistDocument, variables, options);
+
+export const UpdateChecklistItemDocument = new TypedDocumentString(`
+    mutation UpdateChecklistItem($input: UpdateChecklistItemInput!) {
+  updateChecklistItem(input: $input) {
+    checklistItem {
+      rowId
+    }
+  }
+}
+    `);
+
+export const useUpdateChecklistItemMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateChecklistItemMutation, TError, UpdateChecklistItemMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateChecklistItemMutation, TError, UpdateChecklistItemMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateChecklistItem'],
+    mutationFn: (variables?: UpdateChecklistItemMutationVariables) => graphqlFetch<UpdateChecklistItemMutation, UpdateChecklistItemMutationVariables>(UpdateChecklistItemDocument, variables)(),
+    ...options
+  }
+    )};
+
+useUpdateChecklistItemMutation.getKey = () => ['UpdateChecklistItem'];
+
+
+useUpdateChecklistItemMutation.fetcher = (variables: UpdateChecklistItemMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateChecklistItemMutation, UpdateChecklistItemMutationVariables>(UpdateChecklistItemDocument, variables, options);
 
 export const CreateColumnDocument = new TypedDocumentString(`
     mutation CreateColumn($input: CreateColumnInput!) {
@@ -13996,6 +15364,21 @@ export const TaskDocument = new TypedDocumentString(`
         }
       }
     }
+    checklists(orderBy: INDEX_ASC) {
+      nodes {
+        rowId
+        title
+        index
+        checklistItems(orderBy: INDEX_ASC) {
+          nodes {
+            rowId
+            content
+            isDone
+            index
+          }
+        }
+      }
+    }
     column {
       title
       icon
@@ -14252,6 +15635,17 @@ fragment Task on Task {
   }
   attachments {
     totalCount
+  }
+  checklists {
+    nodes {
+      rowId
+      checklistItems {
+        totalCount
+      }
+      doneItems: checklistItems(filter: {isDone: {equalTo: true}}) {
+        totalCount
+      }
+    }
   }
 }`);
 

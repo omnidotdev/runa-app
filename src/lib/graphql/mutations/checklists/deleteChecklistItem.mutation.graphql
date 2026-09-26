@@ -1,0 +1,7 @@
+mutation DeleteChecklistItem($rowId: UUID!) {
+  deleteChecklistItem(input: { rowId: $rowId }) {
+    checklistItem {
+      rowId
+    }
+  }
+}

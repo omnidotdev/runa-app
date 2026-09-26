@@ -1,0 +1,8 @@
+mutation ConvertChecklistItemToTask($input: ConvertChecklistItemToTaskInput!) {
+  convertChecklistItemToTask(input: $input) {
+    taskId
+    number
+    projectId
+    columnId
+  }
+}
