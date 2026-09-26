@@ -5,7 +5,15 @@ const theme: EditorThemeClasses = {
   heading: {
     h1: "text-2xl font-bold mb-4 mt-6 first:mt-0",
     h2: "text-xl font-bold mb-3 mt-5 first:mt-0",
+    h3: "text-lg font-bold mb-2 mt-4 first:mt-0",
+    h4: "text-base font-bold mb-2 mt-4 first:mt-0",
+    h5: "text-sm font-bold mb-1 mt-3 first:mt-0",
+    h6: "text-sm font-semibold text-base-600 dark:text-base-400 mb-1 mt-3 first:mt-0",
   },
+  // Blockquote: left bar + indent + muted italic. Passing a custom theme replaces
+  // Thornberry's default entirely, so without this a `>` quote renders unstyled
+  quote:
+    "my-2 border-l-2 border-base-300 dark:border-base-600 pl-3 text-base-600 dark:text-base-400 italic",
   text: {
     bold: "font-bold",
     italic: "italic",
