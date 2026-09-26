@@ -3,6 +3,7 @@ import { useParams } from "@tanstack/react-router";
 import { all } from "better-all";
 import { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +19,9 @@ import {
   useCreateLabelMutation,
   useCreateTaskLabelMutation,
   useDeleteTaskLabelMutation,
+  useLabelsQuery,
   useTasksQuery,
+  useWorkspaceLabelsQuery,
 } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
@@ -30,6 +33,8 @@ import taskOptions from "@/lib/options/task.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { parseTaskParam } from "@/lib/util/taskUrl";
 import TaskLabelsForm from "./TaskLabelsForm";
+
+import type { TaskQuery, TasksQuery } from "@/generated/graphql";
 
 const UpdateTaskLabelsDialog = () => {
   const queryClient = useQueryClient();
@@ -88,10 +93,10 @@ const UpdateTaskLabelsDialog = () => {
       ...taskFormDefaults,
       labels: defaultLabels,
     },
-    onSubmit: async ({ value }) => {
-      const allTaskLabels = value.labels.filter((l) => l.checked);
+    onSubmit: ({ value }) => {
+      const checkedLabels = value.labels.filter((l) => l.checked);
       const pendingLabels = value.labels.filter((l) => l.rowId === "pending");
-      const existingTaskLabels = allTaskLabels.filter(
+      const existingTaskLabels = checkedLabels.filter(
         (label) => label.rowId !== "pending",
       );
 
@@ -101,57 +106,146 @@ const UpdateTaskLabelsDialog = () => {
           labelId: l.labelId,
         })) ?? [];
 
-      await all({
-        async newLabels() {
-          return Promise.all(
-            pendingLabels.map((label) =>
-              updateProjectLabel({
-                input: {
-                  label: {
-                    name: label.name,
-                    color: label.color,
-                    projectId: projectId!,
-                  },
-                },
-              }),
-            ),
-          );
-        },
-        async deleteCurrentLabels() {
-          return Promise.all(
-            currentTaskLabels.map(({ taskId, labelId }) =>
-              deleteTaskLabel({ taskId, labelId }),
-            ),
-          );
-        },
-        async createTaskLabels() {
-          const newLabels = await this.$.newLabels;
-          const newlyAddedLabels = newLabels.map(
-            (mutation) => mutation.createLabel?.label!,
-          );
-          const allLabels = [...existingTaskLabels, ...newlyAddedLabels];
+      // Optimistic label objects. Brand-new "pending" labels get a temporary id
+      // so they render instantly; the post-write refetch swaps in the real ids.
+      const optimisticLabels = checkedLabels.map((label) => ({
+        __typename: "Label" as const,
+        rowId:
+          label.rowId === "pending"
+            ? `optimistic-${crypto.randomUUID()}`
+            : label.rowId,
+        name: label.name,
+        color: label.color,
+        icon: label.icon ?? null,
+        projectId: label.projectId ?? projectId ?? null,
+        organizationId: label.organizationId ?? null,
+      }));
 
-          return Promise.all(
-            allLabels.map((label) =>
-              createTaskLabel({
-                input: {
-                  taskLabel: {
-                    labelId: label.rowId,
-                    taskId: taskId!,
-                  },
-                },
-              }),
-            ),
-          );
-        },
-      });
-
-      await queryClient.invalidateQueries({ queryKey: taskQueryKey });
-      await queryClient.invalidateQueries({
+      // Snapshot for rollback if the write fails
+      const previousTask = queryClient.getQueryData<TaskQuery>(taskQueryKey);
+      const previousTasks = queryClient.getQueriesData<TasksQuery>({
         queryKey: getQueryKeyPrefix(useTasksQuery),
       });
+
+      // Optimistically reflect the new label set on the task detail...
+      queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) =>
+        old?.task
+          ? {
+              ...old,
+              task: {
+                ...old.task,
+                taskLabels: {
+                  __typename: "TaskLabelConnection",
+                  nodes: optimisticLabels.map((label) => ({
+                    __typename: "TaskLabel" as const,
+                    taskId: taskId!,
+                    labelId: label.rowId,
+                    label,
+                  })),
+                },
+              },
+            }
+          : old,
+      );
+
+      // ...and on every board/list card for this task
+      queryClient.setQueriesData<TasksQuery>(
+        { queryKey: getQueryKeyPrefix(useTasksQuery) },
+        (old) =>
+          old?.tasks?.nodes
+            ? {
+                ...old,
+                tasks: {
+                  ...old.tasks,
+                  nodes: old.tasks.nodes.map((node) =>
+                    node.rowId === taskId
+                      ? {
+                          ...node,
+                          taskLabels: {
+                            __typename: "TaskLabelConnection" as const,
+                            nodes: optimisticLabels.map((label) => ({
+                              __typename: "TaskLabel" as const,
+                              label,
+                            })),
+                          },
+                        }
+                      : node,
+                  ),
+                },
+              }
+            : old,
+      );
+
+      // Close immediately; the writes reconcile in the background
       setIsOpen(false);
       setTaskId(null);
+
+      void (async () => {
+        try {
+          await all({
+            async newLabels() {
+              return Promise.all(
+                pendingLabels.map((label) =>
+                  updateProjectLabel({
+                    input: {
+                      label: {
+                        name: label.name,
+                        color: label.color,
+                        projectId: projectId!,
+                      },
+                    },
+                  }),
+                ),
+              );
+            },
+            async deleteCurrentLabels() {
+              return Promise.all(
+                currentTaskLabels.map(({ taskId: t, labelId }) =>
+                  deleteTaskLabel({ taskId: t, labelId }),
+                ),
+              );
+            },
+            async createTaskLabels() {
+              const newLabels = await this.$.newLabels;
+              const newlyAddedLabels = newLabels.map(
+                (mutation) => mutation.createLabel?.label!,
+              );
+              const allLabels = [...existingTaskLabels, ...newlyAddedLabels];
+
+              return Promise.all(
+                allLabels.map((label) =>
+                  createTaskLabel({
+                    input: {
+                      taskLabel: { labelId: label.rowId, taskId: taskId! },
+                    },
+                  }),
+                ),
+              );
+            },
+          });
+        } catch {
+          // Roll back the optimistic caches on failure
+          if (previousTask)
+            queryClient.setQueryData(taskQueryKey, previousTask);
+          for (const [key, data] of previousTasks) {
+            queryClient.setQueryData(key, data);
+          }
+          toast.error("Couldn't update labels. Please try again.");
+        } finally {
+          // Reconcile the task, the board, and the shared label pickers. The
+          // last two keys are why a newly-created label now reaches other tasks.
+          queryClient.invalidateQueries({ queryKey: taskQueryKey });
+          queryClient.invalidateQueries({
+            queryKey: getQueryKeyPrefix(useTasksQuery),
+          });
+          queryClient.invalidateQueries({
+            queryKey: getQueryKeyPrefix(useLabelsQuery),
+          });
+          queryClient.invalidateQueries({
+            queryKey: getQueryKeyPrefix(useWorkspaceLabelsQuery),
+          });
+        }
+      })();
     },
   });
 
