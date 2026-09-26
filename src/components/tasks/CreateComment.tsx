@@ -3,6 +3,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { SendIcon } from "lucide-react";
 import { useRef, useState } from "react";
@@ -18,6 +19,7 @@ import { cn } from "@/lib/utils";
 
 import type { RefObject } from "react";
 import type { EditorApi } from "@/components/core";
+import type { TaskQuery } from "@/generated/graphql";
 
 interface CreateCommentProps {
   /** Shared editor handle so siblings can focus the composer */
@@ -57,9 +59,51 @@ const CreateComment = ({
     from: "/_app/@{$workspaceSlug}/$projectSlug/$taskId",
   });
 
+  const queryClient = useQueryClient();
+  const taskQueryKey = taskOptions({ rowId: taskId }).queryKey;
+
   const { mutate: addComment } = useCreatePostMutation({
     meta: {
-      invalidates: [taskOptions({ rowId: taskId }).queryKey],
+      invalidates: [taskQueryKey],
+    },
+    // Optimistically append the comment so it appears the instant the composer
+    // clears; the refetch swaps the temp row for the persisted one
+    onMutate: (variables) => {
+      queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) => {
+        if (!old?.task) return old;
+        const { posts } = old.task;
+        const user = session?.user;
+        return {
+          ...old,
+          task: {
+            ...old.task,
+            posts: {
+              ...posts,
+              totalCount: (posts.totalCount ?? 0) + 1,
+              nodes: [
+                ...posts.nodes,
+                {
+                  __typename: "Post",
+                  rowId: `optimistic-${crypto.randomUUID()}`,
+                  title: null,
+                  description: variables.input.post.description ?? "",
+                  createdAt: new Date(),
+                  authorId: user?.rowId ?? null,
+                  author: user?.rowId
+                    ? {
+                        __typename: "User",
+                        name: user.name,
+                        avatarUrl: user.image ?? null,
+                        rowId: user.rowId,
+                        id: user.id,
+                      }
+                    : null,
+                },
+              ],
+            },
+          },
+        };
+      });
     },
   });
 

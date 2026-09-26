@@ -4,7 +4,7 @@ import {
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
 import { CardContent, CardHeader, CardRoot } from "@omnidotdev/thornberry/card";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -39,6 +39,7 @@ import PostEmojis from "./PostEmojis";
 import UpdateCommentForm from "./UpdateCommentForm";
 
 import type { EditorApi } from "@/components/core";
+import type { TaskQuery } from "@/generated/graphql";
 
 dayjs.extend(relativeTime);
 
@@ -69,9 +70,28 @@ const Comments = () => {
 
   const taskQueryKey = taskOptions({ rowId: taskId }).queryKey;
 
+  const queryClient = useQueryClient();
+
   const { mutate: deletePost } = useDeletePostMutation({
     meta: {
       invalidates: [taskQueryKey],
+    },
+    // Optimistically remove the comment so it disappears immediately
+    onMutate: (variables) => {
+      queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) => {
+        if (!old?.task) return old;
+        const { posts } = old.task;
+        const nodes = posts.nodes.filter(
+          (post) => post.rowId !== variables.rowId,
+        );
+        return {
+          ...old,
+          task: {
+            ...old.task,
+            posts: { ...posts, totalCount: nodes.length, nodes },
+          },
+        };
+      });
     },
   });
 
