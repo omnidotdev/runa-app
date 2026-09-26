@@ -41,6 +41,13 @@ import nextFractionalIndex from "@/lib/util/nextFractionalIndex";
 
 import type { TaskQuery } from "@/generated/graphql";
 
+type ChecklistNode = NonNullable<
+  TaskQuery["task"]
+>["checklists"]["nodes"][number];
+
+/** Temporary client id for an optimistic row until the server id is fetched. */
+const tempId = () => `optimistic-${crypto.randomUUID()}`;
+
 type PendingAction =
   | { kind: "deleteChecklist"; id: string; label: string }
   | { kind: "deleteItem"; id: string; label: string }
@@ -73,50 +80,125 @@ const Checklists = () => {
   );
   const [pending, setPending] = useState<PendingAction | null>(null);
 
+  // Optimistically patch the task's checklists so every checklist edit (add,
+  // rename, delete, add/toggle/delete item) reflects instantly; the
+  // meta.invalidates refetch then reconciles temp ids with the real rows
+  const patchChecklists = (
+    updater: (nodes: ChecklistNode[]) => ChecklistNode[],
+  ) =>
+    queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) =>
+      old?.task
+        ? {
+            ...old,
+            task: {
+              ...old.task,
+              checklists: {
+                ...old.task.checklists,
+                nodes: updater(old.task.checklists.nodes),
+              },
+            },
+          }
+        : old,
+    );
+
   const { mutate: createChecklist } = useCreateChecklistMutation({
     meta: { invalidates: [taskQueryKey] },
+    onMutate: (variables) => {
+      const { title, index } = variables.input.checklist;
+      patchChecklists((nodes) => [
+        ...nodes,
+        {
+          __typename: "Checklist",
+          rowId: tempId(),
+          title: title ?? "Checklist",
+          index: index ?? "",
+          checklistItems: { __typename: "ChecklistItemConnection", nodes: [] },
+        },
+      ]);
+    },
   });
   const { mutate: updateChecklist } = useUpdateChecklistMutation({
     meta: { invalidates: [taskQueryKey] },
+    onMutate: (variables) =>
+      patchChecklists((nodes) =>
+        nodes.map((checklist) =>
+          checklist.rowId === variables.input.rowId
+            ? {
+                ...checklist,
+                title: variables.input.patch.title ?? checklist.title,
+              }
+            : checklist,
+        ),
+      ),
   });
   const { mutate: deleteChecklist } = useDeleteChecklistMutation({
     meta: { invalidates: [taskQueryKey] },
+    onMutate: (variables) =>
+      patchChecklists((nodes) =>
+        nodes.filter((checklist) => checklist.rowId !== variables.rowId),
+      ),
   });
   const { mutate: createChecklistItem } = useCreateChecklistItemMutation({
     meta: { invalidates: [taskQueryKey] },
+    onMutate: (variables) => {
+      const { checklistId, content, index } = variables.input.checklistItem;
+      patchChecklists((nodes) =>
+        nodes.map((checklist) =>
+          checklist.rowId === checklistId
+            ? {
+                ...checklist,
+                checklistItems: {
+                  ...checklist.checklistItems,
+                  nodes: [
+                    ...checklist.checklistItems.nodes,
+                    {
+                      __typename: "ChecklistItem",
+                      rowId: tempId(),
+                      content,
+                      isDone: false,
+                      index: index ?? "",
+                    },
+                  ],
+                },
+              }
+            : checklist,
+        ),
+      );
+    },
   });
   const { mutate: deleteChecklistItem } = useDeleteChecklistItemMutation({
     meta: { invalidates: [taskQueryKey] },
+    onMutate: (variables) =>
+      patchChecklists((nodes) =>
+        nodes.map((checklist) => ({
+          ...checklist,
+          checklistItems: {
+            ...checklist.checklistItems,
+            nodes: checklist.checklistItems.nodes.filter(
+              (item) => item.rowId !== variables.rowId,
+            ),
+          },
+        })),
+      ),
   });
 
   const { mutate: updateChecklistItem } = useUpdateChecklistItemMutation({
     meta: { invalidates: [taskQueryKey] },
     // Optimistically flip the checkbox so toggling feels instant
-    onMutate: (variables) => {
-      queryClient.setQueryData<TaskQuery>(taskQueryKey, (old) => {
-        if (!old?.task) return old;
-        return {
-          ...old,
-          task: {
-            ...old.task,
-            checklists: {
-              ...old.task.checklists,
-              nodes: old.task.checklists.nodes.map((checklist) => ({
-                ...checklist,
-                checklistItems: {
-                  ...checklist.checklistItems,
-                  nodes: checklist.checklistItems.nodes.map((item) =>
-                    item.rowId === variables.input.rowId
-                      ? { ...item, isDone: !!variables.input.patch.isDone }
-                      : item,
-                  ),
-                },
-              })),
-            },
+    onMutate: (variables) =>
+      patchChecklists((nodes) =>
+        nodes.map((checklist) => ({
+          ...checklist,
+          checklistItems: {
+            ...checklist.checklistItems,
+            nodes: checklist.checklistItems.nodes.map((item) =>
+              item.rowId === variables.input.rowId
+                ? { ...item, isDone: !!variables.input.patch.isDone }
+                : item,
+            ),
           },
-        };
-      });
-    },
+        })),
+      ),
   });
 
   const { mutate: convertChecklistItemToTask } =
