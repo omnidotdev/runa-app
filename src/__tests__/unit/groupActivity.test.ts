@@ -58,4 +58,39 @@ describe("groupActivity", () => {
   it("returns an empty array for no entries", () => {
     expect(groupActivity([])).toEqual([]);
   });
+
+  it("prefers field-level detail as the verb and collapses repeats of it", () => {
+    const groups = groupActivity([
+      {
+        id: "a",
+        action: "task.updated",
+        actorName: "Brian",
+        detail: "edited the description",
+        relativeTime: "now",
+      },
+      {
+        id: "b",
+        action: "task.updated",
+        actorName: "Brian",
+        detail: "edited the description",
+        relativeTime: "1m",
+      },
+      {
+        id: "c",
+        action: "task.updated",
+        actorName: "Brian",
+        detail: "moved this task to Done",
+        relativeTime: "2m",
+      },
+    ]);
+    expect(groups).toHaveLength(2);
+    expect(groups[0]).toMatchObject({
+      verb: "edited the description",
+      count: 2,
+    });
+    expect(groups[1]).toMatchObject({
+      verb: "moved this task to Done",
+      count: 1,
+    });
+  });
 });

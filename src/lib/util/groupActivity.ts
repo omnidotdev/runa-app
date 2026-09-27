@@ -2,6 +2,8 @@ interface ActivityEntry {
   id?: string | null;
   action?: string | null;
   actorName?: string | null;
+  /** Field-level phrase for the change, e.g. "moved this task to Done". */
+  detail?: string | null;
   relativeTime?: string | null;
 }
 
@@ -50,7 +52,9 @@ const groupActivity = (
   const groups: ActivityGroup[] = [];
 
   for (const entry of entries) {
-    const verb = verbFor(entry.action);
+    // Prefer the field-level detail ("moved this task to Done"); fall back to a
+    // generic verb only when the event carries no change detail.
+    const verb = entry.detail?.trim() || verbFor(entry.action);
     const last = groups[groups.length - 1];
 
     if (last && last.verb === verb && last.actorName === entry.actorName) {

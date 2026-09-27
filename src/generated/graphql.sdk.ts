@@ -8051,6 +8051,8 @@ export type TaskActivityEntry = {
   action?: Maybe<Scalars['String']['output']>;
   /** Display name of who performed the action, if known. */
   actorName?: Maybe<Scalars['String']['output']>;
+  /** Field-level detail for updates, e.g. "moved this task to Done". */
+  detail?: Maybe<Scalars['String']['output']>;
   /** Chronicle event id. */
   id?: Maybe<Scalars['String']['output']>;
   /** ISO timestamp the event occurred. */
@@ -11541,7 +11543,7 @@ export type TaskActivityQueryVariables = Exact<{
 }>;
 
 
-export type TaskActivityQuery = { __typename?: 'Query', taskActivity?: Array<{ __typename?: 'TaskActivityEntry', id?: string | null, action?: string | null, actorName?: string | null, relativeTime?: string | null }> | null };
+export type TaskActivityQuery = { __typename?: 'Query', taskActivity?: Array<{ __typename?: 'TaskActivityEntry', id?: string | null, action?: string | null, actorName?: string | null, detail?: string | null, relativeTime?: string | null }> | null };
 
 export type TaskByNumberQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -12308,6 +12310,7 @@ export const TaskActivityDocument = gql`
     id
     action
     actorName
+    detail
     relativeTime
   }
 }
