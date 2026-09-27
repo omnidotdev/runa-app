@@ -11541,7 +11541,7 @@ export type TaskActivityQueryVariables = Exact<{
 }>;
 
 
-export type TaskActivityQuery = { __typename?: 'Query', taskActivity?: Array<{ __typename?: 'TaskActivityEntry', id?: string | null, action?: string | null, actorName?: string | null, summary?: string | null, occurredAt?: string | null, relativeTime?: string | null }> | null };
+export type TaskActivityQuery = { __typename?: 'Query', taskActivity?: Array<{ __typename?: 'TaskActivityEntry', id?: string | null, action?: string | null, actorName?: string | null, relativeTime?: string | null }> | null };
 
 export type TaskByNumberQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -14301,8 +14301,6 @@ export const TaskActivityDocument = new TypedDocumentString(`
     id
     action
     actorName
-    summary
-    occurredAt
     relativeTime
   }
 }

@@ -3,8 +3,6 @@ query TaskActivity($taskId: UUID!) {
     id
     action
     actorName
-    summary
-    occurredAt
     relativeTime
   }
 }
