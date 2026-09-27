@@ -19,7 +19,17 @@ const TaskActivity = () => {
     from: "/_app/@{$workspaceSlug}/$projectSlug/$taskId",
   });
 
-  const { data } = useTaskActivityQuery({ taskId }, { staleTime: 30_000 });
+  // TEMP: hidden on prod. Spurious `task.updated` events are racking up without
+  // real user edits (likely the description/title editor firing onUpdate on
+  // mount/hydration), so the feed showed noise like "updated this task (42×)".
+  // `enabled: false` stops the polling and renders nothing. Re-enable once the
+  // source of the phantom updates is fixed.
+  const ACTIVITY_FEED_ENABLED = false;
+
+  const { data } = useTaskActivityQuery(
+    { taskId },
+    { staleTime: 30_000, enabled: ACTIVITY_FEED_ENABLED },
+  );
 
   const groups = groupActivity(data?.taskActivity ?? []);
   if (!groups.length) return null;
