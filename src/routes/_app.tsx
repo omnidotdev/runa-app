@@ -1,5 +1,5 @@
 import { Outlet, createFileRoute, useSearch } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import { AppSidebar, Link, Logo, ThemeToggle } from "@/components/core";
 import { NotFound } from "@/components/layout";
@@ -59,6 +59,19 @@ function AppLayout() {
     () => session?.organizations ?? [],
     [session?.organizations],
   );
+
+  // The app shell is a fixed-viewport layout with its own inner scroll areas, so
+  // the global `html { overflow-y: scroll }` (kept for the scrolling marketing
+  // pages) would add a second, redundant body scrollbar. Suppress it while the
+  // app layout is mounted and restore it on unmount (e.g. navigating to landing).
+  useEffect(() => {
+    const { style } = document.documentElement;
+    const previous = style.overflowY;
+    style.overflowY = "hidden";
+    return () => {
+      style.overflowY = previous;
+    };
+  }, []);
 
   const handleSignIn = async () => {
     try {
