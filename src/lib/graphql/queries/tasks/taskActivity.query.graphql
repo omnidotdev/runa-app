@@ -1,0 +1,10 @@
+query TaskActivity($taskId: UUID!) {
+  taskActivity(taskId: $taskId) {
+    id
+    action
+    actorName
+    summary
+    occurredAt
+    relativeTime
+  }
+}

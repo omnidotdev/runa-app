@@ -10,6 +10,7 @@ export { default as CreateTaskPriority } from "./CreateTaskPriority";
 export { default as Filter } from "./Filter";
 export { default as PostEmojis } from "./PostEmojis";
 export { default as PriorityIcon } from "./PriorityIcon";
+export { default as TaskActivity } from "./TaskActivity";
 export { default as TaskColumnForm } from "./TaskColumnForm";
 export { default as TaskLabelsForm } from "./TaskLabelsForm";
 export { default as UpdateAssignees } from "./UpdateAssignees";

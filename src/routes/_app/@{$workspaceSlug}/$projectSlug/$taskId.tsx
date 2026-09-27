@@ -19,7 +19,7 @@ import { useDebounceCallback } from "usehooks-ts";
 
 import { Link, LinkPreviews, RichTextEditor } from "@/components/core";
 import { NotFound } from "@/components/layout";
-import { AttachmentsSection, Comments } from "@/components/tasks";
+import { AttachmentsSection, Comments, TaskActivity } from "@/components/tasks";
 import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
 import MoveTaskDialog from "@/components/tasks/MoveTaskDialog";
 import TaskKey from "@/components/tasks/TaskKey";
@@ -463,6 +463,7 @@ function AuthenticatedTaskPage() {
             editable={canEdit}
           />
           <Comments />
+          <TaskActivity />
         </div>
 
         <aside className="hidden lg:block">
