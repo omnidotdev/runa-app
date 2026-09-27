@@ -1,5 +1,4 @@
 export { default as AttachmentsSection } from "./AttachmentsSection";
-export { default as Checklists } from "./Checklists";
 export { default as CommentEmojiPicker } from "./CommentEmojiPicker";
 export { default as Comments } from "./Comments";
 export { default as CreateComment } from "./CreateComment";

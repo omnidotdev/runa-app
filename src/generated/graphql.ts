@@ -12249,7 +12249,7 @@ export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: strin
 
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: string, color?: string | null, background?: any | null, updatedAt: Date, createdAt: Date, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } };
 
-export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number }, checklists: { __typename?: 'ChecklistConnection', nodes: Array<{ __typename?: 'Checklist', rowId: string, checklistItems: { __typename?: 'ChecklistItemConnection', totalCount: number }, doneItems: { __typename?: 'ChecklistItemConnection', totalCount: number } }> } };
+export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } };
 
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
@@ -12265,55 +12265,6 @@ export type DeleteAssigneeMutationVariables = Exact<{
 
 
 export type DeleteAssigneeMutation = { __typename?: 'Mutation', deleteAssignee?: { __typename?: 'DeleteAssigneePayload', assignee?: { __typename?: 'Assignee', taskId: string, userId: string } | null } | null };
-
-export type ConvertChecklistItemToTaskMutationVariables = Exact<{
-  input: ConvertChecklistItemToTaskInput;
-}>;
-
-
-export type ConvertChecklistItemToTaskMutation = { __typename?: 'Mutation', convertChecklistItemToTask?: { __typename?: 'ConvertChecklistItemToTaskPayload', taskId?: string | null, number?: number | null, projectId?: string | null, columnId?: string | null } | null };
-
-export type CreateChecklistMutationVariables = Exact<{
-  input: CreateChecklistInput;
-}>;
-
-
-export type CreateChecklistMutation = { __typename?: 'Mutation', createChecklist?: { __typename?: 'CreateChecklistPayload', checklist?: { __typename?: 'Checklist', rowId: string } | null } | null };
-
-export type CreateChecklistItemMutationVariables = Exact<{
-  input: CreateChecklistItemInput;
-}>;
-
-
-export type CreateChecklistItemMutation = { __typename?: 'Mutation', createChecklistItem?: { __typename?: 'CreateChecklistItemPayload', checklistItem?: { __typename?: 'ChecklistItem', rowId: string } | null } | null };
-
-export type DeleteChecklistMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
-}>;
-
-
-export type DeleteChecklistMutation = { __typename?: 'Mutation', deleteChecklist?: { __typename?: 'DeleteChecklistPayload', checklist?: { __typename?: 'Checklist', rowId: string } | null } | null };
-
-export type DeleteChecklistItemMutationVariables = Exact<{
-  rowId: Scalars['UUID']['input'];
-}>;
-
-
-export type DeleteChecklistItemMutation = { __typename?: 'Mutation', deleteChecklistItem?: { __typename?: 'DeleteChecklistItemPayload', checklistItem?: { __typename?: 'ChecklistItem', rowId: string } | null } | null };
-
-export type UpdateChecklistMutationVariables = Exact<{
-  input: UpdateChecklistInput;
-}>;
-
-
-export type UpdateChecklistMutation = { __typename?: 'Mutation', updateChecklist?: { __typename?: 'UpdateChecklistPayload', checklist?: { __typename?: 'Checklist', rowId: string } | null } | null };
-
-export type UpdateChecklistItemMutationVariables = Exact<{
-  input: UpdateChecklistItemInput;
-}>;
-
-
-export type UpdateChecklistItemMutation = { __typename?: 'Mutation', updateChecklistItem?: { __typename?: 'UpdateChecklistItemPayload', checklistItem?: { __typename?: 'ChecklistItem', rowId: string } | null } | null };
 
 export type CreateColumnMutationVariables = Exact<{
   input: CreateColumnInput;
@@ -12666,7 +12617,7 @@ export type TaskQueryVariables = Exact<{
 }>;
 
 
-export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: string, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, checklists: { __typename?: 'ChecklistConnection', nodes: Array<{ __typename?: 'Checklist', rowId: string, title: string, index: string, checklistItems: { __typename?: 'ChecklistItemConnection', nodes: Array<{ __typename?: 'ChecklistItem', rowId: string, content: string, isDone: boolean, index: string }> } }> }, column?: { __typename?: 'Column', title: string, icon?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
+export type TaskQuery = { __typename?: 'Query', task?: { __typename?: 'Task', rowId: string, number?: number | null, projectId: string, columnId: string, columnIndex: string, content: string, description: string, priority: string, createdAt: Date, updatedAt: Date, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', taskId: string, labelId: string, label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number, nodes: Array<{ __typename?: 'Post', rowId: string, title?: string | null, description?: string | null, createdAt: Date, authorId?: string | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string, id: string } | null }> }, column?: { __typename?: 'Column', title: string, icon?: string | null } | null, author?: { __typename?: 'User', name: string, avatarUrl?: string | null, rowId: string } | null, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } } | null };
 
 export type TaskByNumberQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -12685,7 +12636,7 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number }, checklists: { __typename?: 'ChecklistConnection', nodes: Array<{ __typename?: 'Checklist', rowId: string, checklistItems: { __typename?: 'ChecklistItemConnection', totalCount: number }, doneItems: { __typename?: 'ChecklistItemConnection', totalCount: number } }> } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } }> } | null };
 
 export type UserPreferencesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -12830,17 +12781,6 @@ export const TaskFragmentDoc = new TypedDocumentString(`
   attachments {
     totalCount
   }
-  checklists {
-    nodes {
-      rowId
-      checklistItems {
-        totalCount
-      }
-      doneItems: checklistItems(filter: {isDone: {equalTo: true}}) {
-        totalCount
-      }
-    }
-  }
 }
     fragment Label on Label {
   color
@@ -12907,203 +12847,6 @@ useDeleteAssigneeMutation.getKey = () => ['DeleteAssignee'];
 
 
 useDeleteAssigneeMutation.fetcher = (variables: DeleteAssigneeMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteAssigneeMutation, DeleteAssigneeMutationVariables>(DeleteAssigneeDocument, variables, options);
-
-export const ConvertChecklistItemToTaskDocument = new TypedDocumentString(`
-    mutation ConvertChecklistItemToTask($input: ConvertChecklistItemToTaskInput!) {
-  convertChecklistItemToTask(input: $input) {
-    taskId
-    number
-    projectId
-    columnId
-  }
-}
-    `);
-
-export const useConvertChecklistItemToTaskMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<ConvertChecklistItemToTaskMutation, TError, ConvertChecklistItemToTaskMutationVariables, TContext>) => {
-    
-    return useMutation<ConvertChecklistItemToTaskMutation, TError, ConvertChecklistItemToTaskMutationVariables, TContext>(
-      {
-    mutationKey: ['ConvertChecklistItemToTask'],
-    mutationFn: (variables?: ConvertChecklistItemToTaskMutationVariables) => graphqlFetch<ConvertChecklistItemToTaskMutation, ConvertChecklistItemToTaskMutationVariables>(ConvertChecklistItemToTaskDocument, variables)(),
-    ...options
-  }
-    )};
-
-useConvertChecklistItemToTaskMutation.getKey = () => ['ConvertChecklistItemToTask'];
-
-
-useConvertChecklistItemToTaskMutation.fetcher = (variables: ConvertChecklistItemToTaskMutationVariables, options?: RequestInit['headers']) => graphqlFetch<ConvertChecklistItemToTaskMutation, ConvertChecklistItemToTaskMutationVariables>(ConvertChecklistItemToTaskDocument, variables, options);
-
-export const CreateChecklistDocument = new TypedDocumentString(`
-    mutation CreateChecklist($input: CreateChecklistInput!) {
-  createChecklist(input: $input) {
-    checklist {
-      rowId
-    }
-  }
-}
-    `);
-
-export const useCreateChecklistMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<CreateChecklistMutation, TError, CreateChecklistMutationVariables, TContext>) => {
-    
-    return useMutation<CreateChecklistMutation, TError, CreateChecklistMutationVariables, TContext>(
-      {
-    mutationKey: ['CreateChecklist'],
-    mutationFn: (variables?: CreateChecklistMutationVariables) => graphqlFetch<CreateChecklistMutation, CreateChecklistMutationVariables>(CreateChecklistDocument, variables)(),
-    ...options
-  }
-    )};
-
-useCreateChecklistMutation.getKey = () => ['CreateChecklist'];
-
-
-useCreateChecklistMutation.fetcher = (variables: CreateChecklistMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateChecklistMutation, CreateChecklistMutationVariables>(CreateChecklistDocument, variables, options);
-
-export const CreateChecklistItemDocument = new TypedDocumentString(`
-    mutation CreateChecklistItem($input: CreateChecklistItemInput!) {
-  createChecklistItem(input: $input) {
-    checklistItem {
-      rowId
-    }
-  }
-}
-    `);
-
-export const useCreateChecklistItemMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<CreateChecklistItemMutation, TError, CreateChecklistItemMutationVariables, TContext>) => {
-    
-    return useMutation<CreateChecklistItemMutation, TError, CreateChecklistItemMutationVariables, TContext>(
-      {
-    mutationKey: ['CreateChecklistItem'],
-    mutationFn: (variables?: CreateChecklistItemMutationVariables) => graphqlFetch<CreateChecklistItemMutation, CreateChecklistItemMutationVariables>(CreateChecklistItemDocument, variables)(),
-    ...options
-  }
-    )};
-
-useCreateChecklistItemMutation.getKey = () => ['CreateChecklistItem'];
-
-
-useCreateChecklistItemMutation.fetcher = (variables: CreateChecklistItemMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateChecklistItemMutation, CreateChecklistItemMutationVariables>(CreateChecklistItemDocument, variables, options);
-
-export const DeleteChecklistDocument = new TypedDocumentString(`
-    mutation DeleteChecklist($rowId: UUID!) {
-  deleteChecklist(input: {rowId: $rowId}) {
-    checklist {
-      rowId
-    }
-  }
-}
-    `);
-
-export const useDeleteChecklistMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteChecklistMutation, TError, DeleteChecklistMutationVariables, TContext>) => {
-    
-    return useMutation<DeleteChecklistMutation, TError, DeleteChecklistMutationVariables, TContext>(
-      {
-    mutationKey: ['DeleteChecklist'],
-    mutationFn: (variables?: DeleteChecklistMutationVariables) => graphqlFetch<DeleteChecklistMutation, DeleteChecklistMutationVariables>(DeleteChecklistDocument, variables)(),
-    ...options
-  }
-    )};
-
-useDeleteChecklistMutation.getKey = () => ['DeleteChecklist'];
-
-
-useDeleteChecklistMutation.fetcher = (variables: DeleteChecklistMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteChecklistMutation, DeleteChecklistMutationVariables>(DeleteChecklistDocument, variables, options);
-
-export const DeleteChecklistItemDocument = new TypedDocumentString(`
-    mutation DeleteChecklistItem($rowId: UUID!) {
-  deleteChecklistItem(input: {rowId: $rowId}) {
-    checklistItem {
-      rowId
-    }
-  }
-}
-    `);
-
-export const useDeleteChecklistItemMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteChecklistItemMutation, TError, DeleteChecklistItemMutationVariables, TContext>) => {
-    
-    return useMutation<DeleteChecklistItemMutation, TError, DeleteChecklistItemMutationVariables, TContext>(
-      {
-    mutationKey: ['DeleteChecklistItem'],
-    mutationFn: (variables?: DeleteChecklistItemMutationVariables) => graphqlFetch<DeleteChecklistItemMutation, DeleteChecklistItemMutationVariables>(DeleteChecklistItemDocument, variables)(),
-    ...options
-  }
-    )};
-
-useDeleteChecklistItemMutation.getKey = () => ['DeleteChecklistItem'];
-
-
-useDeleteChecklistItemMutation.fetcher = (variables: DeleteChecklistItemMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteChecklistItemMutation, DeleteChecklistItemMutationVariables>(DeleteChecklistItemDocument, variables, options);
-
-export const UpdateChecklistDocument = new TypedDocumentString(`
-    mutation UpdateChecklist($input: UpdateChecklistInput!) {
-  updateChecklist(input: $input) {
-    checklist {
-      rowId
-    }
-  }
-}
-    `);
-
-export const useUpdateChecklistMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateChecklistMutation, TError, UpdateChecklistMutationVariables, TContext>) => {
-    
-    return useMutation<UpdateChecklistMutation, TError, UpdateChecklistMutationVariables, TContext>(
-      {
-    mutationKey: ['UpdateChecklist'],
-    mutationFn: (variables?: UpdateChecklistMutationVariables) => graphqlFetch<UpdateChecklistMutation, UpdateChecklistMutationVariables>(UpdateChecklistDocument, variables)(),
-    ...options
-  }
-    )};
-
-useUpdateChecklistMutation.getKey = () => ['UpdateChecklist'];
-
-
-useUpdateChecklistMutation.fetcher = (variables: UpdateChecklistMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateChecklistMutation, UpdateChecklistMutationVariables>(UpdateChecklistDocument, variables, options);
-
-export const UpdateChecklistItemDocument = new TypedDocumentString(`
-    mutation UpdateChecklistItem($input: UpdateChecklistItemInput!) {
-  updateChecklistItem(input: $input) {
-    checklistItem {
-      rowId
-    }
-  }
-}
-    `);
-
-export const useUpdateChecklistItemMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateChecklistItemMutation, TError, UpdateChecklistItemMutationVariables, TContext>) => {
-    
-    return useMutation<UpdateChecklistItemMutation, TError, UpdateChecklistItemMutationVariables, TContext>(
-      {
-    mutationKey: ['UpdateChecklistItem'],
-    mutationFn: (variables?: UpdateChecklistItemMutationVariables) => graphqlFetch<UpdateChecklistItemMutation, UpdateChecklistItemMutationVariables>(UpdateChecklistItemDocument, variables)(),
-    ...options
-  }
-    )};
-
-useUpdateChecklistItemMutation.getKey = () => ['UpdateChecklistItem'];
-
-
-useUpdateChecklistItemMutation.fetcher = (variables: UpdateChecklistItemMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateChecklistItemMutation, UpdateChecklistItemMutationVariables>(UpdateChecklistItemDocument, variables, options);
 
 export const CreateColumnDocument = new TypedDocumentString(`
     mutation CreateColumn($input: CreateColumnInput!) {
@@ -15515,21 +15258,6 @@ export const TaskDocument = new TypedDocumentString(`
         }
       }
     }
-    checklists(orderBy: INDEX_ASC) {
-      nodes {
-        rowId
-        title
-        index
-        checklistItems(orderBy: INDEX_ASC) {
-          nodes {
-            rowId
-            content
-            isDone
-            index
-          }
-        }
-      }
-    }
     column {
       title
       icon
@@ -15786,17 +15514,6 @@ fragment Task on Task {
   }
   attachments {
     totalCount
-  }
-  checklists {
-    nodes {
-      rowId
-      checklistItems {
-        totalCount
-      }
-      doneItems: checklistItems(filter: {isDone: {equalTo: true}}) {
-        totalCount
-      }
-    }
   }
 }`);
 

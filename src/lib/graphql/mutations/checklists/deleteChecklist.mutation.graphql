@@ -1,7 +1,0 @@
-mutation DeleteChecklist($rowId: UUID!) {
-  deleteChecklist(input: { rowId: $rowId }) {
-    checklist {
-      rowId
-    }
-  }
-}

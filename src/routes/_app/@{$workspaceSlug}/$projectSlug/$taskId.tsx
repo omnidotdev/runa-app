@@ -19,7 +19,7 @@ import { useDebounceCallback } from "usehooks-ts";
 
 import { Link, LinkPreviews, RichTextEditor } from "@/components/core";
 import { NotFound } from "@/components/layout";
-import { AttachmentsSection, Checklists, Comments } from "@/components/tasks";
+import { AttachmentsSection, Comments } from "@/components/tasks";
 import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
 import MoveTaskDialog from "@/components/tasks/MoveTaskDialog";
 import TaskKey from "@/components/tasks/TaskKey";
@@ -462,7 +462,6 @@ function AuthenticatedTaskPage() {
             organizationId={organizationId}
             editable={canEdit}
           />
-          {canEdit && <Checklists />}
           <Comments />
         </div>
 

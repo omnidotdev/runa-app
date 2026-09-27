@@ -2,7 +2,7 @@ import { LinkIcon } from "lucide-react";
 
 import { useLinkPreviewQuery } from "@/generated/graphql";
 import extractUrls from "@/lib/util/extractUrls";
-import { isHttpUrl, shortenUrl } from "@/lib/util/linkChip";
+import { shortenUrl } from "@/lib/util/linkChip";
 import { cn } from "@/lib/utils";
 
 // Server caches unfurls, so keep them fresh for the session without refetching
@@ -35,54 +35,6 @@ const PreviewFavicon = ({
   ) : (
     <LinkIcon className={cn("size-3.5 shrink-0 text-base-400", className)} />
   );
-
-interface LinkChipProps {
-  /** The URL to render. Non-http(s) values render as plain text. */
-  url: string;
-  /** Render in a completed/struck-through style. */
-  done?: boolean;
-}
-
-/**
- * Inline link chip: favicon + a shortened label (page title once unfurled, else
- * the shortened URL), opening in a new tab. Used for checklist items that are a
- * bare URL
- */
-export const LinkChip = ({ url, done = false }: LinkChipProps) => {
-  const enabled = isHttpUrl(url);
-  const { data } = useLinkPreviewQuery(
-    { url },
-    { enabled, staleTime: PREVIEW_STALE_TIME },
-  );
-
-  if (!enabled) return <span className="flex-1 text-sm">{url}</span>;
-
-  const preview = data?.linkPreview;
-  const label = preview?.title || shortenUrl(url);
-
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      title={url}
-      className={cn(
-        "flex min-w-0 flex-1 items-center gap-1.5 text-sm",
-        done && "opacity-60",
-      )}
-    >
-      <PreviewFavicon dataUri={preview?.faviconDataUri} />
-      <span
-        className={cn(
-          "truncate text-primary",
-          done ? "line-through" : "hover:underline",
-        )}
-      >
-        {label}
-      </span>
-    </a>
-  );
-};
 
 /** A single link preview card (favicon + title + host). */
 const LinkPreviewCard = ({ url }: { url: string }) => {

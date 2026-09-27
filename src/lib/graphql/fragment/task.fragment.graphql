@@ -32,15 +32,4 @@ fragment Task on Task {
   attachments {
     totalCount
   }
-  checklists {
-    nodes {
-      rowId
-      checklistItems {
-        totalCount
-      }
-      doneItems: checklistItems(filter: { isDone: { equalTo: true } }) {
-        totalCount
-      }
-    }
-  }
 }

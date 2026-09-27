@@ -36,21 +36,6 @@ query Task($rowId: UUID!) {
         }
       }
     }
-    checklists(orderBy: INDEX_ASC) {
-      nodes {
-        rowId
-        title
-        index
-        checklistItems(orderBy: INDEX_ASC) {
-          nodes {
-            rowId
-            content
-            isDone
-            index
-          }
-        }
-      }
-    }
     column {
       title
       icon

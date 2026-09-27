@@ -253,14 +253,7 @@ const Comments = () => {
             </div>
           ) : (
             <p className="flex items-center justify-center p-4 text-muted-foreground text-sm">
-              <Button
-                variant="link"
-                className="h-auto p-0 align-baseline text-sm"
-                onClick={() => commentEditorApi.current?.focus()}
-              >
-                Add a comment
-              </Button>
-              <span className="ml-1">to start the discussion</span>
+              No comments yet
             </p>
           )}
         </CardContent>
