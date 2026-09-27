@@ -431,13 +431,18 @@ function AuthenticatedTaskPage() {
             skeletonClassName="h-8 min-w-40"
             editable={canEdit}
             hideToolbar
-            onUpdate={({ getHTML, isEmpty }) =>
-              !isEmpty &&
-              handleContentUpdate({
-                rowId: taskId,
-                patch: { content: getHTML() },
-              })
-            }
+            onUpdate={({ getHTML, isEmpty }) => {
+              // Only save on a genuine change. Lexical fires onUpdate on initial
+              // content load/normalization too, which otherwise writes the task
+              // (and emits an event) just from viewing it.
+              const next = getHTML();
+              if (!isEmpty && next !== task?.content) {
+                handleContentUpdate({
+                  rowId: taskId,
+                  patch: { content: next },
+                });
+              }
+            }}
           />
 
           <RichTextEditor
@@ -447,12 +452,17 @@ function AuthenticatedTaskPage() {
             placeholder={canEdit ? "Add a description…" : undefined}
             className="min-h-[160px] overflow-hidden rounded-xl border"
             skeletonClassName="h-[160px]"
-            onUpdate={({ getHTML, isEmpty }) =>
-              handleDescriptionUpdate({
-                rowId: taskId,
-                patch: { description: isEmpty ? "" : getHTML() },
-              })
-            }
+            onUpdate={({ getHTML, isEmpty }) => {
+              // Only save on a genuine change (see title editor above); the
+              // initial-load emit must not write the task on view.
+              const next = isEmpty ? "" : getHTML();
+              if (next !== (task?.description ?? "")) {
+                handleDescriptionUpdate({
+                  rowId: taskId,
+                  patch: { description: next },
+                });
+              }
+            }}
           />
 
           <LinkPreviews content={task?.description} />
