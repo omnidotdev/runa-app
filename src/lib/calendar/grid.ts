@@ -79,3 +79,26 @@ export const bucketTasksByDay = <T extends { dueDate?: string | Date | null }>(
  */
 export const dueDateForCalendarDay = (dayKey: string): Date =>
   dayjs(dayKey).startOf("day").toDate();
+
+/** A resolved calendar reschedule: move `taskId` to the day `dayKey`. */
+export interface CalendarDrop {
+  taskId: string;
+  dayKey: string;
+}
+
+/**
+ * Turn a drag result (droppable ids are day keys) into a reschedule, or null
+ * when the drop was cancelled or landed back on the same day. Pure, so the drop
+ * decision is testable without driving the drag library.
+ */
+export const resolveCalendarDrop = (result: {
+  draggableId: string;
+  source: { droppableId: string };
+  destination?: { droppableId: string } | null;
+}): CalendarDrop | null => {
+  const destination = result.destination;
+  if (!destination || destination.droppableId === result.source.droppableId) {
+    return null;
+  }
+  return { taskId: result.draggableId, dayKey: destination.droppableId };
+};

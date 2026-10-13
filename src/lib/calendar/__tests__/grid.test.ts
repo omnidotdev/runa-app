@@ -6,6 +6,7 @@ import {
   bucketTasksByDay,
   buildMonthGrid,
   dueDateForCalendarDay,
+  resolveCalendarDrop,
   taskDueDayKey,
 } from "@/lib/calendar/grid";
 
@@ -72,5 +73,34 @@ describe("dueDateForCalendarDay", () => {
     const stored = dueDateForCalendarDay("2026-10-15");
     expect(taskDueDayKey(stored)).toBe("2026-10-15");
     expect(dayjs(stored).format("MMM D")).toBe("Oct 15");
+  });
+});
+
+describe("resolveCalendarDrop", () => {
+  test("resolves a drop onto a different day", () => {
+    expect(
+      resolveCalendarDrop({
+        draggableId: "t1",
+        source: { droppableId: "2026-10-15" },
+        destination: { droppableId: "2026-10-20" },
+      }),
+    ).toEqual({ taskId: "t1", dayKey: "2026-10-20" });
+  });
+
+  test("ignores a cancelled drop or a drop on the same day", () => {
+    expect(
+      resolveCalendarDrop({
+        draggableId: "t1",
+        source: { droppableId: "2026-10-15" },
+        destination: null,
+      }),
+    ).toBeNull();
+    expect(
+      resolveCalendarDrop({
+        draggableId: "t1",
+        source: { droppableId: "2026-10-15" },
+        destination: { droppableId: "2026-10-15" },
+      }),
+    ).toBeNull();
   });
 });

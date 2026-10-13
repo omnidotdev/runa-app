@@ -10,6 +10,7 @@ import {
 import { zodValidator } from "@tanstack/zod-adapter";
 import { all } from "better-all";
 import {
+  CalendarIcon,
   GlobeIcon,
   Grid2X2Icon,
   ListIcon,
@@ -23,6 +24,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
+import CalendarView from "@/components/calendar/CalendarView";
 import { Link, Tooltip } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import {
@@ -52,6 +54,7 @@ import {
   useUpdateUserPreferenceMutation,
   useUserPreferencesQuery,
 } from "@/generated/graphql";
+import { dueDateForCalendarDay } from "@/lib/calendar/grid";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -67,8 +70,11 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import { compareKeys, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import resolveActiveColumnId from "@/lib/util/resolveActiveColumnId";
-import resolveViewModeToggle from "@/lib/util/resolveViewModeToggle";
+import resolveViewModeToggle, {
+  type ViewMode,
+} from "@/lib/util/resolveViewModeToggle";
 import signInHref from "@/lib/util/signInHref";
+import { buildTaskKey, stripMarkup } from "@/lib/util/taskUrl";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
@@ -416,6 +422,64 @@ function AuthenticatedProjectPage() {
     },
   });
 
+  // Calendar view mode: the current mode, the tasks in the shape the calendar
+  // renders, and handlers for selecting and drag-rescheduling a task.
+  const activeViewMode: ViewMode =
+    userPreferences?.viewMode === "list"
+      ? "list"
+      : userPreferences?.viewMode === "calendar"
+        ? "calendar"
+        : "board";
+
+  const calendarTasks = useMemo(
+    () =>
+      tasks.map((task) => ({
+        id: task.rowId,
+        title: stripMarkup(task.content ?? "") || "Untitled",
+        dueDate: task.dueDate,
+      })),
+    [tasks],
+  );
+
+  const handleSelectCalendarTask = (taskId: string) => {
+    const task = tasks.find((candidate) => candidate.rowId === taskId);
+    if (!task) return;
+    navigate({
+      to: "/@{$workspaceSlug}/$projectSlug/$taskId",
+      params: {
+        workspaceSlug,
+        projectSlug,
+        taskId: buildTaskKey({
+          prefix: project?.prefix,
+          number: task.number!,
+          content: task.content,
+        }),
+      },
+    });
+  };
+
+  const handleRescheduleTask = (taskId: string, dayKey: string) => {
+    updateTask({
+      rowId: taskId,
+      patch: { dueDate: dueDateForCalendarDay(dayKey) },
+    });
+  };
+
+  // The toggle cycles board -> list -> calendar; show the mode it will switch to.
+  const nextViewMode = resolveViewModeToggle(userPreferences).viewMode;
+  const NextViewIcon =
+    nextViewMode === "board"
+      ? Grid2X2Icon
+      : nextViewMode === "list"
+        ? ListIcon
+        : CalendarIcon;
+  const nextViewLabel =
+    nextViewMode === "board"
+      ? "Board"
+      : nextViewMode === "list"
+        ? "List"
+        : "Calendar";
+
   const onDragEnd = useCallback(
     async (result: DropResult) => {
       setIsDragging(false);
@@ -615,11 +679,7 @@ function AuthenticatedProjectPage() {
 
               <Tooltip
                 positioning={{ placement: "bottom" }}
-                tooltip={
-                  userPreferences?.viewMode === "list"
-                    ? "Board View"
-                    : "List View"
-                }
+                tooltip={`${nextViewLabel} View`}
                 shortcut={Hotkeys.ToggleViewMode.toUpperCase()}
                 trigger={
                   <Button
@@ -628,11 +688,7 @@ function AuthenticatedProjectPage() {
                     aria-label="Switch View Mode"
                     onClick={() => toggleViewMode()}
                   >
-                    {userPreferences?.viewMode === "list" ? (
-                      <Grid2X2Icon />
-                    ) : (
-                      <ListIcon />
-                    )}
+                    <NextViewIcon />
                   </Button>
                 }
               />
@@ -680,18 +736,27 @@ function AuthenticatedProjectPage() {
           </div>
         </div>
 
-        <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-          {userPreferences?.viewMode !== "list" ? (
-            <Board tasks={tasks} />
-          ) : (
-            <List
-              tasks={tasks}
-              openStates={projectColumnOpenStates}
-              setOpenStates={setProjectColumnOpenStates}
-              setIsForceClosed={setIsForceClosed}
-            />
-          )}
-        </DragDropContext>
+        {activeViewMode === "calendar" ? (
+          <CalendarView
+            tasks={calendarTasks}
+            onSelectTask={handleSelectCalendarTask}
+            onReschedule={handleRescheduleTask}
+            className="px-1"
+          />
+        ) : (
+          <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+            {activeViewMode === "list" ? (
+              <List
+                tasks={tasks}
+                openStates={projectColumnOpenStates}
+                setOpenStates={setProjectColumnOpenStates}
+                setIsForceClosed={setIsForceClosed}
+              />
+            ) : (
+              <Board tasks={tasks} />
+            )}
+          </DragDropContext>
+        )}
       </div>
 
       <CreateTaskDialog />
