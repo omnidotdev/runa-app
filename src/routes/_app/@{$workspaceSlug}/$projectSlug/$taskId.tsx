@@ -448,6 +448,7 @@ function AuthenticatedTaskPage() {
           <RichTextEditor
             defaultContent={task?.description}
             editable={canEdit}
+            enableBlockDrag
             imageUpload={{ taskId }}
             placeholder={canEdit ? "Add a description…" : undefined}
             className="min-h-[160px] overflow-hidden rounded-xl border"

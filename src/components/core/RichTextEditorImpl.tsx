@@ -36,6 +36,8 @@ export interface RichTextEditorProps
   editorClassName?: string;
   /** Hide the formatting toolbar (e.g. for single-line title fields). */
   hideToolbar?: boolean;
+  /** Enable a hover drag handle to reorder top-level blocks (multi-block surfaces only). */
+  enableBlockDrag?: boolean;
   /** When set, pasted/dropped images upload to this task (and optional comment) and embed inline. */
   imageUpload?: { taskId: string; postId?: string };
 }
