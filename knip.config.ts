@@ -23,7 +23,13 @@ const knipConfig: KnipConfig = {
   },
   // used for proper management of Thornberry components, see https://knip.dev/reference/configuration#ignoreexportsusedinfile
   ignoreExportsUsedInFile: true,
-  ignore: ["src/generated/**", "src/routeTree.gen.ts"],
+  ignore: [
+    "src/generated/**",
+    "src/routeTree.gen.ts",
+    // Calendar view: verified in isolation; wired into the project route (a new
+    // third view mode) in the next slice, where it gets its first importer.
+    "src/components/calendar/CalendarView.tsx",
+  ],
   ignoreDependencies: [
     // used by GraphQL Code Generator scripts
     "dotenv",
