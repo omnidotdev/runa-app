@@ -9,6 +9,11 @@ const knipConfig: KnipConfig = {
     "src/routes/**/*.{ts,tsx}",
     "src/router.tsx",
     "src/lib/graphql/graphqlFetch.ts",
+    // Plugin subsystem public API: `host` is the embedding entry (mounted by the
+    // app's extension points) and `sdk` is imported by out-of-repo plugin bundles,
+    // so neither has an in-repo importer by design.
+    "src/lib/plugins/host.ts",
+    "src/lib/plugins/sdk.ts",
   ],
   // NB: files are reported as unused if they are in the set of project files, but not in the set of files resolved from the entry files. See: https://knip.dev/guides/configuring-project-files
   project: ["src/**/*.{ts,tsx,css}"],
