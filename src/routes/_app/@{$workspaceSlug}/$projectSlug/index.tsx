@@ -9,7 +9,6 @@ import {
 } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { all } from "better-all";
-import dayjs from "dayjs";
 import {
   CalendarIcon,
   GlobeIcon,
@@ -67,6 +66,7 @@ import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationI
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import createMetaTags from "@/lib/util/createMetaTags";
+import { storedDueDate } from "@/lib/util/dueDate";
 import { compareKeys, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import resolveActiveColumnId from "@/lib/util/resolveActiveColumnId";
@@ -463,7 +463,7 @@ function AuthenticatedProjectPage() {
       rowId: taskId,
       // store local start-of-day so it reads back on this same day via the
       // card's dayjs(dueDate).format (keeps calendar + card placement aligned)
-      patch: { dueDate: dayjs(dayKey).startOf("day").toDate() },
+      patch: { dueDate: storedDueDate(dayKey) },
     });
   };
 

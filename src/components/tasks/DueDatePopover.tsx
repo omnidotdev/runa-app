@@ -34,6 +34,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
+import { storedDueDate } from "@/lib/util/dueDate";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { TaskQuery } from "@/generated/graphql";
@@ -89,9 +90,7 @@ const DueDateEditor = ({
     <DatePickerRoot
       value={dueDateIso ? [parseAbsoluteToLocal(dueDateIso)] : []}
       onValueChange={({ value }) =>
-        setDueDate(
-          value.length ? new Date(value[0].add({ days: 1 }).toString()) : null,
-        )
+        setDueDate(value.length ? storedDueDate(value[0].toString()) : null)
       }
     >
       <DatePickerControl>
