@@ -1,9 +1,4 @@
 import { parseAbsoluteToLocal } from "@internationalized/date";
-import dayjs from "dayjs";
-import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { useState } from "react";
-
-import { Button } from "@/components/ui/button";
 import {
   DatePickerContent,
   DatePickerContext,
@@ -24,7 +19,12 @@ import {
   DatePickerView,
   DatePickerViewControl,
   DatePickerViewTrigger,
-} from "@/components/ui/date-picker";
+} from "@omnidotdev/thornberry/date-picker";
+import dayjs from "dayjs";
+import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
