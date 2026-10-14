@@ -1,0 +1,18 @@
+mutation CreateWebhookEndpoint(
+  $organizationId: String!
+  $url: String!
+  $eventTypes: [String!]
+) {
+  createWebhookEndpoint(
+    input: {
+      organizationId: $organizationId
+      url: $url
+      eventTypes: $eventTypes
+    }
+  ) {
+    id
+    url
+    enabled
+    secret
+  }
+}

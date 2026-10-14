@@ -1,0 +1,6 @@
+mutation DeleteWebhookEndpoint($id: UUID!) {
+  deleteWebhookEndpoint(input: { id: $id }) {
+    id
+    deleted
+  }
+}

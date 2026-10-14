@@ -1,0 +1,9 @@
+query WebhookEndpoints($organizationId: String!) {
+  webhookEndpoints(organizationId: $organizationId) {
+    id
+    url
+    eventTypes
+    enabled
+    createdAt
+  }
+}

@@ -5,6 +5,7 @@ export { default as OverviewBoardItem } from "./OverviewBoardItem";
 export { default as OverviewList } from "./OverviewList";
 export { default as OverviewListItem } from "./OverviewListItem";
 export { default as Projects } from "./Projects";
+export { default as WebhooksSettings } from "./WebhooksSettings";
 export { default as WorkspaceBenefits } from "./WorkspaceBenefits";
 export { default as WorkspaceColumnForm } from "./WorkspaceColumnForm";
 export { default as WorkspaceColumnsForm } from "./WorkspaceColumnsForm";

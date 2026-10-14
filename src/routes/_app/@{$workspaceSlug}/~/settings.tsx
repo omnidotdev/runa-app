@@ -5,6 +5,7 @@ import { NotFound } from "@/components/layout";
 import {
   NotificationSettings,
   Projects,
+  WebhooksSettings,
   WorkspaceBenefits,
   WorkspaceColumnsForm,
   WorkspaceMembers,
@@ -94,6 +95,8 @@ function SettingsPage() {
         <WorkspaceColumnsForm />
 
         <NotificationSettings />
+
+        <WebhooksSettings />
 
         <WorkspaceBenefits />
       </div>

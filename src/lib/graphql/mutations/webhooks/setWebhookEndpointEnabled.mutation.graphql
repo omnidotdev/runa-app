@@ -1,0 +1,9 @@
+mutation SetWebhookEndpointEnabled($id: UUID!, $enabled: Boolean!) {
+  setWebhookEndpointEnabled(input: { id: $id, enabled: $enabled }) {
+    id
+    url
+    eventTypes
+    enabled
+    createdAt
+  }
+}

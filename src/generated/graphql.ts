@@ -40,6 +40,17 @@ export type Scalars = {
   UUID: { input: string; output: string; }
 };
 
+/** A token's metadata, without the secret. */
+export type ApiTokenInfo = {
+  __typename?: 'ApiTokenInfo';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['UUID']['output']>;
+  lastUsedAt?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  revoked?: Maybe<Scalars['Boolean']['output']>;
+  scopes?: Maybe<Array<Scalars['String']['output']>>;
+};
+
 export type Assignee = Node & {
   __typename?: 'Assignee';
   createdAt: Scalars['Datetime']['output'];
@@ -1212,6 +1223,24 @@ export type ColumnToManyTaskFilter = {
   some?: InputMaybe<TaskFilter>;
 };
 
+export type CreateApiTokenInput = {
+  /** Human label for the token. */
+  name: Scalars['String']['input'];
+  /** Owning workspace (organization id). */
+  organizationId: Scalars['String']['input'];
+  /** Granted scopes (e.g. ["task:read"]). */
+  scopes: Array<Scalars['String']['input']>;
+};
+
+/** Create result. The token plaintext is shown only here; store it now. */
+export type CreateApiTokenPayload = {
+  __typename?: 'CreateApiTokenPayload';
+  id?: Maybe<Scalars['UUID']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  /** The token plaintext (runa_...). Never retrievable again. */
+  token?: Maybe<Scalars['String']['output']>;
+};
+
 /** All input for the create `Assignee` mutation. */
 export type CreateAssigneeInput = {
   /** The `Assignee` to be created by this mutation. */
@@ -1804,6 +1833,24 @@ export type CreateWardenSyncQueuePayload = {
 /** The output of our create `WardenSyncQueue` mutation. */
 export type CreateWardenSyncQueuePayloadWardenSyncQueueEdgeArgs = {
   orderBy?: Array<WardenSyncQueueOrderBy>;
+};
+
+export type CreateWebhookEndpointInput = {
+  /** Optional event-type whitelist; omit for all events. */
+  eventTypes?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** Owning workspace (organization id). */
+  organizationId: Scalars['String']['input'];
+  /** Destination URL (must be a public http(s) host). */
+  url: Scalars['String']['input'];
+};
+
+/** Create result. The secret is shown only here and on rotate; store it now. */
+export type CreateWebhookEndpointPayload = {
+  __typename?: 'CreateWebhookEndpointPayload';
+  enabled?: Maybe<Scalars['Boolean']['output']>;
+  id?: Maybe<Scalars['UUID']['output']>;
+  secret?: Maybe<Scalars['String']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
 };
 
 /** A filter to be used against Datetime fields. All fields are combined with a logical ‘and.’ */
@@ -2627,6 +2674,16 @@ export type DeleteWardenSyncQueuePayloadWardenSyncQueueEdgeArgs = {
   orderBy?: Array<WardenSyncQueueOrderBy>;
 };
 
+export type DeleteWebhookEndpointInput = {
+  id: Scalars['UUID']['input'];
+};
+
+export type DeleteWebhookEndpointPayload = {
+  __typename?: 'DeleteWebhookEndpointPayload';
+  deleted?: Maybe<Scalars['Boolean']['output']>;
+  id?: Maybe<Scalars['UUID']['output']>;
+};
+
 export type Emoji = Node & {
   __typename?: 'Emoji';
   createdAt: Scalars['Datetime']['output'];
@@ -3283,6 +3340,8 @@ export type MoveTaskPayload = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Issue a scoped API token for a workspace (requires workspace admin). */
+  createApiToken?: Maybe<CreateApiTokenPayload>;
   /** Creates a single `Assignee`. */
   createAssignee?: Maybe<CreateAssigneePayload>;
   /** Creates a single `Column`. */
@@ -3319,6 +3378,8 @@ export type Mutation = {
   createUserPreference?: Maybe<CreateUserPreferencePayload>;
   /** Creates a single `WardenSyncQueue`. */
   createWardenSyncQueue?: Maybe<CreateWardenSyncQueuePayload>;
+  /** Register a webhook endpoint for a workspace (requires workspace admin). */
+  createWebhookEndpoint?: Maybe<CreateWebhookEndpointPayload>;
   /** Deletes a single `Assignee` using a unique key. */
   deleteAssignee?: Maybe<DeleteAssigneePayload>;
   /** Deletes a single `Assignee` using its globally unique id. */
@@ -3391,11 +3452,19 @@ export type Mutation = {
   deleteWardenSyncQueue?: Maybe<DeleteWardenSyncQueuePayload>;
   /** Deletes a single `WardenSyncQueue` using its globally unique id. */
   deleteWardenSyncQueueById?: Maybe<DeleteWardenSyncQueuePayload>;
+  /** Delete an endpoint (requires workspace admin). */
+  deleteWebhookEndpoint?: Maybe<DeleteWebhookEndpointPayload>;
   /**
    * Move a task to a column in another project within the same workspace.
    * Requires editor permission on both the source and destination project.
    */
   moveTask?: Maybe<MoveTaskPayload>;
+  /** Revoke an API token (requires workspace admin). */
+  revokeApiToken?: Maybe<RevokeApiTokenPayload>;
+  /** Rotate an endpoint's signing secret (requires workspace admin). */
+  rotateWebhookEndpointSecret?: Maybe<RotateWebhookEndpointSecretPayload>;
+  /** Enable or disable an endpoint (requires workspace admin). */
+  setWebhookEndpointEnabled?: Maybe<WebhookEndpointInfo>;
   /** Updates a single `Assignee` using a unique key and a patch. */
   updateAssignee?: Maybe<UpdateAssigneePayload>;
   /** Updates a single `Assignee` using its globally unique id and a patch. */
@@ -3468,6 +3537,12 @@ export type Mutation = {
   updateWardenSyncQueue?: Maybe<UpdateWardenSyncQueuePayload>;
   /** Updates a single `WardenSyncQueue` using its globally unique id and a patch. */
   updateWardenSyncQueueById?: Maybe<UpdateWardenSyncQueuePayload>;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateApiTokenArgs = {
+  input: CreateApiTokenInput;
 };
 
 
@@ -3576,6 +3651,12 @@ export type MutationCreateUserPreferenceArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateWardenSyncQueueArgs = {
   input: CreateWardenSyncQueueInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateWebhookEndpointArgs = {
+  input: CreateWebhookEndpointInput;
 };
 
 
@@ -3796,8 +3877,32 @@ export type MutationDeleteWardenSyncQueueByIdArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationDeleteWebhookEndpointArgs = {
+  input: DeleteWebhookEndpointInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationMoveTaskArgs = {
   input: MoveTaskInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationRevokeApiTokenArgs = {
+  input: RevokeApiTokenInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationRotateWebhookEndpointSecretArgs = {
+  input: RotateWebhookEndpointSecretInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationSetWebhookEndpointEnabledArgs = {
+  input: SetWebhookEndpointEnabledInput;
 };
 
 
@@ -6864,6 +6969,8 @@ export type ProjectVarianceSampleAggregates = {
 /** The root query type which gives access points into the data universe. */
 export type Query = Node & {
   __typename?: 'Query';
+  /** List a workspace's API tokens (requires workspace admin). Secret-less. */
+  apiTokens?: Maybe<Array<ApiTokenInfo>>;
   /** Get a single `Assignee`. */
   assignee?: Maybe<Assignee>;
   /** Reads a single `Assignee` using its globally unique `ID`. */
@@ -7019,6 +7126,14 @@ export type Query = Node & {
   wardenSyncQueueById?: Maybe<WardenSyncQueue>;
   /** Reads and enables pagination through a set of `WardenSyncQueue`. */
   wardenSyncQueues?: Maybe<WardenSyncQueueConnection>;
+  /** List a workspace's webhook endpoints (requires workspace admin). Secret-less. */
+  webhookEndpoints?: Maybe<Array<WebhookEndpointInfo>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryApiTokensArgs = {
+  organizationId: Scalars['String']['input'];
 };
 
 
@@ -7580,6 +7695,38 @@ export type QueryWardenSyncQueuesArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<WardenSyncQueueOrderBy>>;
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryWebhookEndpointsArgs = {
+  organizationId: Scalars['String']['input'];
+};
+
+export type RevokeApiTokenInput = {
+  id: Scalars['UUID']['input'];
+};
+
+export type RevokeApiTokenPayload = {
+  __typename?: 'RevokeApiTokenPayload';
+  id?: Maybe<Scalars['UUID']['output']>;
+  revoked?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type RotateWebhookEndpointSecretInput = {
+  id: Scalars['UUID']['input'];
+};
+
+/** Rotate result. The new secret is shown only here. */
+export type RotateWebhookEndpointSecretPayload = {
+  __typename?: 'RotateWebhookEndpointSecretPayload';
+  id?: Maybe<Scalars['UUID']['output']>;
+  secret?: Maybe<Scalars['String']['output']>;
+};
+
+export type SetWebhookEndpointEnabledInput = {
+  enabled: Scalars['Boolean']['input'];
+  id: Scalars['UUID']['input'];
 };
 
 export type Setting = Node & {
@@ -11160,6 +11307,16 @@ export type WardenSyncQueueVarianceSampleAggregates = {
   maxAttempts?: Maybe<Scalars['BigFloat']['output']>;
 };
 
+/** A webhook endpoint, without its signing secret. */
+export type WebhookEndpointInfo = {
+  __typename?: 'WebhookEndpointInfo';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  enabled?: Maybe<Scalars['Boolean']['output']>;
+  eventTypes?: Maybe<Array<Scalars['String']['output']>>;
+  id?: Maybe<Scalars['UUID']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
+};
+
 export type ColumnFragment = { __typename?: 'Column', title: string, index: string, rowId: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } };
 
 export type LabelFragment = { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null };
@@ -11426,6 +11583,37 @@ export type DeleteUserMutationVariables = Exact<{
 
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser?: { __typename?: 'DeleteUserPayload', clientMutationId?: string | null } | null };
 
+export type CreateWebhookEndpointMutationVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+  url: Scalars['String']['input'];
+  eventTypes?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type CreateWebhookEndpointMutation = { __typename?: 'Mutation', createWebhookEndpoint?: { __typename?: 'CreateWebhookEndpointPayload', id?: string | null, url?: string | null, enabled?: boolean | null, secret?: string | null } | null };
+
+export type DeleteWebhookEndpointMutationVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteWebhookEndpointMutation = { __typename?: 'Mutation', deleteWebhookEndpoint?: { __typename?: 'DeleteWebhookEndpointPayload', id?: string | null, deleted?: boolean | null } | null };
+
+export type RotateWebhookEndpointSecretMutationVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+
+export type RotateWebhookEndpointSecretMutation = { __typename?: 'Mutation', rotateWebhookEndpointSecret?: { __typename?: 'RotateWebhookEndpointSecretPayload', id?: string | null, secret?: string | null } | null };
+
+export type SetWebhookEndpointEnabledMutationVariables = Exact<{
+  id: Scalars['UUID']['input'];
+  enabled: Scalars['Boolean']['input'];
+}>;
+
+
+export type SetWebhookEndpointEnabledMutation = { __typename?: 'Mutation', setWebhookEndpointEnabled?: { __typename?: 'WebhookEndpointInfo', id?: string | null, url?: string | null, eventTypes?: Array<string> | null, enabled?: boolean | null, createdAt?: string | null } | null };
+
 export type TaskAttachmentsQueryVariables = Exact<{
   taskId: Scalars['UUID']['input'];
 }>;
@@ -11590,6 +11778,13 @@ export type UserByIdentityProviderIdQueryVariables = Exact<{
 
 
 export type UserByIdentityProviderIdQuery = { __typename?: 'Query', userByIdentityProviderId?: { __typename?: 'User', rowId: string } | null };
+
+export type WebhookEndpointsQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type WebhookEndpointsQuery = { __typename?: 'Query', webhookEndpoints?: Array<{ __typename?: 'WebhookEndpointInfo', id?: string | null, url?: string | null, eventTypes?: Array<string> | null, enabled?: boolean | null, createdAt?: string | null }> | null };
 
 
 export class TypedDocumentString<TResult, TVariables>
@@ -12723,6 +12918,121 @@ useDeleteUserMutation.getKey = () => ['DeleteUser'];
 
 
 useDeleteUserMutation.fetcher = (variables: DeleteUserMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, variables, options);
+
+export const CreateWebhookEndpointDocument = new TypedDocumentString(`
+    mutation CreateWebhookEndpoint($organizationId: String!, $url: String!, $eventTypes: [String!]) {
+  createWebhookEndpoint(
+    input: {organizationId: $organizationId, url: $url, eventTypes: $eventTypes}
+  ) {
+    id
+    url
+    enabled
+    secret
+  }
+}
+    `);
+
+export const useCreateWebhookEndpointMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateWebhookEndpointMutation, TError, CreateWebhookEndpointMutationVariables, TContext>) => {
+    
+    return useMutation<CreateWebhookEndpointMutation, TError, CreateWebhookEndpointMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateWebhookEndpoint'],
+    mutationFn: (variables?: CreateWebhookEndpointMutationVariables) => graphqlFetch<CreateWebhookEndpointMutation, CreateWebhookEndpointMutationVariables>(CreateWebhookEndpointDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateWebhookEndpointMutation.getKey = () => ['CreateWebhookEndpoint'];
+
+
+useCreateWebhookEndpointMutation.fetcher = (variables: CreateWebhookEndpointMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateWebhookEndpointMutation, CreateWebhookEndpointMutationVariables>(CreateWebhookEndpointDocument, variables, options);
+
+export const DeleteWebhookEndpointDocument = new TypedDocumentString(`
+    mutation DeleteWebhookEndpoint($id: UUID!) {
+  deleteWebhookEndpoint(input: {id: $id}) {
+    id
+    deleted
+  }
+}
+    `);
+
+export const useDeleteWebhookEndpointMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteWebhookEndpointMutation, TError, DeleteWebhookEndpointMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteWebhookEndpointMutation, TError, DeleteWebhookEndpointMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteWebhookEndpoint'],
+    mutationFn: (variables?: DeleteWebhookEndpointMutationVariables) => graphqlFetch<DeleteWebhookEndpointMutation, DeleteWebhookEndpointMutationVariables>(DeleteWebhookEndpointDocument, variables)(),
+    ...options
+  }
+    )};
+
+useDeleteWebhookEndpointMutation.getKey = () => ['DeleteWebhookEndpoint'];
+
+
+useDeleteWebhookEndpointMutation.fetcher = (variables: DeleteWebhookEndpointMutationVariables, options?: RequestInit['headers']) => graphqlFetch<DeleteWebhookEndpointMutation, DeleteWebhookEndpointMutationVariables>(DeleteWebhookEndpointDocument, variables, options);
+
+export const RotateWebhookEndpointSecretDocument = new TypedDocumentString(`
+    mutation RotateWebhookEndpointSecret($id: UUID!) {
+  rotateWebhookEndpointSecret(input: {id: $id}) {
+    id
+    secret
+  }
+}
+    `);
+
+export const useRotateWebhookEndpointSecretMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<RotateWebhookEndpointSecretMutation, TError, RotateWebhookEndpointSecretMutationVariables, TContext>) => {
+    
+    return useMutation<RotateWebhookEndpointSecretMutation, TError, RotateWebhookEndpointSecretMutationVariables, TContext>(
+      {
+    mutationKey: ['RotateWebhookEndpointSecret'],
+    mutationFn: (variables?: RotateWebhookEndpointSecretMutationVariables) => graphqlFetch<RotateWebhookEndpointSecretMutation, RotateWebhookEndpointSecretMutationVariables>(RotateWebhookEndpointSecretDocument, variables)(),
+    ...options
+  }
+    )};
+
+useRotateWebhookEndpointSecretMutation.getKey = () => ['RotateWebhookEndpointSecret'];
+
+
+useRotateWebhookEndpointSecretMutation.fetcher = (variables: RotateWebhookEndpointSecretMutationVariables, options?: RequestInit['headers']) => graphqlFetch<RotateWebhookEndpointSecretMutation, RotateWebhookEndpointSecretMutationVariables>(RotateWebhookEndpointSecretDocument, variables, options);
+
+export const SetWebhookEndpointEnabledDocument = new TypedDocumentString(`
+    mutation SetWebhookEndpointEnabled($id: UUID!, $enabled: Boolean!) {
+  setWebhookEndpointEnabled(input: {id: $id, enabled: $enabled}) {
+    id
+    url
+    eventTypes
+    enabled
+    createdAt
+  }
+}
+    `);
+
+export const useSetWebhookEndpointEnabledMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<SetWebhookEndpointEnabledMutation, TError, SetWebhookEndpointEnabledMutationVariables, TContext>) => {
+    
+    return useMutation<SetWebhookEndpointEnabledMutation, TError, SetWebhookEndpointEnabledMutationVariables, TContext>(
+      {
+    mutationKey: ['SetWebhookEndpointEnabled'],
+    mutationFn: (variables?: SetWebhookEndpointEnabledMutationVariables) => graphqlFetch<SetWebhookEndpointEnabledMutation, SetWebhookEndpointEnabledMutationVariables>(SetWebhookEndpointEnabledDocument, variables)(),
+    ...options
+  }
+    )};
+
+useSetWebhookEndpointEnabledMutation.getKey = () => ['SetWebhookEndpointEnabled'];
+
+
+useSetWebhookEndpointEnabledMutation.fetcher = (variables: SetWebhookEndpointEnabledMutationVariables, options?: RequestInit['headers']) => graphqlFetch<SetWebhookEndpointEnabledMutation, SetWebhookEndpointEnabledMutationVariables>(SetWebhookEndpointEnabledDocument, variables, options);
 
 export const TaskAttachmentsDocument = new TypedDocumentString(`
     query TaskAttachments($taskId: UUID!) {
@@ -14976,3 +15286,96 @@ useSuspenseInfiniteUserByIdentityProviderIdQuery.getKey = (variables: UserByIden
 
 
 useUserByIdentityProviderIdQuery.fetcher = (variables: UserByIdentityProviderIdQueryVariables, options?: RequestInit['headers']) => graphqlFetch<UserByIdentityProviderIdQuery, UserByIdentityProviderIdQueryVariables>(UserByIdentityProviderIdDocument, variables, options);
+
+export const WebhookEndpointsDocument = new TypedDocumentString(`
+    query WebhookEndpoints($organizationId: String!) {
+  webhookEndpoints(organizationId: $organizationId) {
+    id
+    url
+    eventTypes
+    enabled
+    createdAt
+  }
+}
+    `);
+
+export const useWebhookEndpointsQuery = <
+      TData = WebhookEndpointsQuery,
+      TError = unknown
+    >(
+      variables: WebhookEndpointsQueryVariables,
+      options?: Omit<UseQueryOptions<WebhookEndpointsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<WebhookEndpointsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<WebhookEndpointsQuery, TError, TData>(
+      {
+    queryKey: ['WebhookEndpoints', variables],
+    queryFn: graphqlFetch<WebhookEndpointsQuery, WebhookEndpointsQueryVariables>(WebhookEndpointsDocument, variables),
+    ...options
+  }
+    )};
+
+useWebhookEndpointsQuery.getKey = (variables: WebhookEndpointsQueryVariables) => ['WebhookEndpoints', variables];
+
+export const useSuspenseWebhookEndpointsQuery = <
+      TData = WebhookEndpointsQuery,
+      TError = unknown
+    >(
+      variables: WebhookEndpointsQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<WebhookEndpointsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<WebhookEndpointsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<WebhookEndpointsQuery, TError, TData>(
+      {
+    queryKey: ['WebhookEndpoints', variables],
+    queryFn: graphqlFetch<WebhookEndpointsQuery, WebhookEndpointsQueryVariables>(WebhookEndpointsDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseWebhookEndpointsQuery.getKey = (variables: WebhookEndpointsQueryVariables) => ['WebhookEndpoints', variables];
+
+export const useInfiniteWebhookEndpointsQuery = <
+      TData = InfiniteData<WebhookEndpointsQuery>,
+      TError = unknown
+    >(
+      variables: WebhookEndpointsQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<WebhookEndpointsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<WebhookEndpointsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<WebhookEndpointsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['WebhookEndpoints.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<WebhookEndpointsQuery, WebhookEndpointsQueryVariables>(WebhookEndpointsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteWebhookEndpointsQuery.getKey = (variables: WebhookEndpointsQueryVariables) => ['WebhookEndpoints.infinite', variables];
+
+export const useSuspenseInfiniteWebhookEndpointsQuery = <
+      TData = InfiniteData<WebhookEndpointsQuery>,
+      TError = unknown
+    >(
+      variables: WebhookEndpointsQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<WebhookEndpointsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<WebhookEndpointsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<WebhookEndpointsQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['WebhookEndpoints.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<WebhookEndpointsQuery, WebhookEndpointsQueryVariables>(WebhookEndpointsDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteWebhookEndpointsQuery.getKey = (variables: WebhookEndpointsQueryVariables) => ['WebhookEndpoints.infinite', variables];
+
+
+useWebhookEndpointsQuery.fetcher = (variables: WebhookEndpointsQueryVariables, options?: RequestInit['headers']) => graphqlFetch<WebhookEndpointsQuery, WebhookEndpointsQueryVariables>(WebhookEndpointsDocument, variables, options);

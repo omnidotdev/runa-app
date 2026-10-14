@@ -778,6 +778,94 @@ export const mockDeleteUserMutation = (resolver: GraphQLResponseResolver<Types.D
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockCreateWebhookEndpointMutation(
+ *   ({ query, variables }) => {
+ *     const { organizationId, url, eventTypes } = variables;
+ *     return HttpResponse.json({
+ *       data: { createWebhookEndpoint }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockCreateWebhookEndpointMutation = (resolver: GraphQLResponseResolver<Types.CreateWebhookEndpointMutation, Types.CreateWebhookEndpointMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.CreateWebhookEndpointMutation, Types.CreateWebhookEndpointMutationVariables>(
+    'CreateWebhookEndpoint',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockDeleteWebhookEndpointMutation(
+ *   ({ query, variables }) => {
+ *     const { id } = variables;
+ *     return HttpResponse.json({
+ *       data: { deleteWebhookEndpoint }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockDeleteWebhookEndpointMutation = (resolver: GraphQLResponseResolver<Types.DeleteWebhookEndpointMutation, Types.DeleteWebhookEndpointMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.DeleteWebhookEndpointMutation, Types.DeleteWebhookEndpointMutationVariables>(
+    'DeleteWebhookEndpoint',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockRotateWebhookEndpointSecretMutation(
+ *   ({ query, variables }) => {
+ *     const { id } = variables;
+ *     return HttpResponse.json({
+ *       data: { rotateWebhookEndpointSecret }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockRotateWebhookEndpointSecretMutation = (resolver: GraphQLResponseResolver<Types.RotateWebhookEndpointSecretMutation, Types.RotateWebhookEndpointSecretMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.RotateWebhookEndpointSecretMutation, Types.RotateWebhookEndpointSecretMutationVariables>(
+    'RotateWebhookEndpointSecret',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockSetWebhookEndpointEnabledMutation(
+ *   ({ query, variables }) => {
+ *     const { id, enabled } = variables;
+ *     return HttpResponse.json({
+ *       data: { setWebhookEndpointEnabled }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockSetWebhookEndpointEnabledMutation = (resolver: GraphQLResponseResolver<Types.SetWebhookEndpointEnabledMutation, Types.SetWebhookEndpointEnabledMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.SetWebhookEndpointEnabledMutation, Types.SetWebhookEndpointEnabledMutationVariables>(
+    'SetWebhookEndpointEnabled',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockTaskAttachmentsQuery(
  *   ({ query, variables }) => {
  *     const { taskId } = variables;
@@ -1252,6 +1340,28 @@ export const mockUserQuery = (resolver: GraphQLResponseResolver<Types.UserQuery,
 export const mockUserByIdentityProviderIdQuery = (resolver: GraphQLResponseResolver<Types.UserByIdentityProviderIdQuery, Types.UserByIdentityProviderIdQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<Types.UserByIdentityProviderIdQuery, Types.UserByIdentityProviderIdQueryVariables>(
     'UserByIdentityProviderId',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockWebhookEndpointsQuery(
+ *   ({ query, variables }) => {
+ *     const { organizationId } = variables;
+ *     return HttpResponse.json({
+ *       data: { webhookEndpoints }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockWebhookEndpointsQuery = (resolver: GraphQLResponseResolver<Types.WebhookEndpointsQuery, Types.WebhookEndpointsQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.WebhookEndpointsQuery, Types.WebhookEndpointsQueryVariables>(
+    'WebhookEndpoints',
     resolver,
     options
   )
