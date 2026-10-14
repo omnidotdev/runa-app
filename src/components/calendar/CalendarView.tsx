@@ -1,13 +1,16 @@
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
-import dayjs from "dayjs";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { useMemo, useState } from "react";
-
+import { bucketByDay, resolveCalendarDrop } from "@omnidotdev/cadence";
 import {
-  bucketTasksByDay,
-  buildMonthGrid,
-  resolveCalendarDrop,
-} from "@/lib/calendar/grid";
+  CalendarDayCell,
+  CalendarGrid,
+  CalendarHeader,
+  CalendarItemChip,
+  CalendarWeekdays,
+  useCalendarMonth,
+} from "@omnidotdev/thornberry/calendar";
+import dayjs from "dayjs";
+import { useMemo } from "react";
+
 import { cn } from "@/lib/utils";
 
 import type { DropResult } from "@hello-pangea/dnd";
@@ -21,109 +24,74 @@ export interface CalendarTask {
 
 interface CalendarViewProps {
   tasks: CalendarTask[];
-  /** Month to open on (defaults to the current month). */
-  initialMonth?: string | Date;
   /** Called when a task chip is clicked. */
   onSelectTask?: (taskId: string) => void;
   /** Called when a task is dragged onto a different day (its new due day key). */
   onReschedule?: (taskId: string, dayKey: string) => void;
+  /** 0 = Sunday (default), 1 = Monday. */
+  weekStartsOn?: 0 | 1;
   className?: string;
 }
 
-const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+/**
+ * The local day (`YYYY-MM-DD`) a due date buckets onto. Runa stores `dueDate` as
+ * a tz-aware instant but renders it with `dayjs(dueDate).format` (local) on the
+ * cards, so bucket by that same local day and the calendar matches the cards.
+ * Deriving the local day here (rather than handing a `Z`-suffixed instant to
+ * cadence's `toDayKey`, which rejects those) is where the off-by-one stays fixed.
+ */
+const dueDayKey = (dueDate: string | Date | null | undefined): string | null =>
+  dueDate ? dayjs(dueDate).format("YYYY-MM-DD") : null;
 
 /**
- * Month calendar of tasks by due date. Presentational: it owns only the viewed
- * month; tasks, selection, and rescheduling are supplied by the caller. Day
- * bucketing matches the board/list cards (see lib/calendar/grid). Drag-to-
- * reschedule uses @hello-pangea/dnd (same library as the board) so the dragged
- * chip follows the cursor; dropping on a day calls `onReschedule`.
+ * Month calendar of tasks by due date, built on @omnidotdev/cadence (headless
+ * grid + drop resolution) and the @omnidotdev/thornberry/calendar primitives
+ * (presentational). Drag-to-reschedule stays here via @hello-pangea/dnd (same
+ * library as the board): each day cell is a droppable keyed by its day key and
+ * each chip a draggable; a drop resolves through cadence's resolveCalendarDrop.
  */
 const CalendarView = ({
   tasks,
-  initialMonth,
   onSelectTask,
   onReschedule,
+  weekStartsOn = 0,
   className,
 }: CalendarViewProps) => {
-  const [month, setMonth] = useState(() =>
-    dayjs(initialMonth ?? undefined).startOf("month"),
+  const { grid, label, goToPrevious, goToNext, goToToday } = useCalendarMonth({
+    weekStartsOn,
+  });
+  const byDay = useMemo(
+    () => bucketByDay(tasks, (task) => dueDayKey(task.dueDate)),
+    [tasks],
   );
-  const grid = useMemo(() => buildMonthGrid(month.toDate(), 0), [month]);
-  const byDay = useMemo(() => bucketTasksByDay(tasks), [tasks]);
 
   const handleDragEnd = (result: DropResult) => {
     const drop = resolveCalendarDrop(result);
-    if (drop) onReschedule?.(drop.taskId, drop.dayKey);
+    if (drop) onReschedule?.(drop.itemId, drop.dayKey);
   };
 
   return (
     <div className={cn("flex flex-col", className)} data-calendar-view>
-      <div className="flex items-center justify-between px-1 py-3">
-        <h2 className="font-semibold text-lg">{month.format("MMMM YYYY")}</h2>
-        <div className="flex items-center gap-1">
-          <button
-            type="button"
-            aria-label="Previous month"
-            onClick={() => setMonth((m) => m.subtract(1, "month"))}
-            className="rounded-md p-1.5 hover:bg-muted"
-          >
-            <ChevronLeftIcon className="size-4" />
-          </button>
-          <button
-            type="button"
-            onClick={() => setMonth(dayjs().startOf("month"))}
-            className="rounded-md border px-2 py-1 text-sm hover:bg-muted"
-          >
-            Today
-          </button>
-          <button
-            type="button"
-            aria-label="Next month"
-            onClick={() => setMonth((m) => m.add(1, "month"))}
-            className="rounded-md p-1.5 hover:bg-muted"
-          >
-            <ChevronRightIcon className="size-4" />
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-7 border-border border-b">
-        {WEEKDAYS.map((day) => (
-          <div
-            key={day}
-            className="px-2 py-1 text-center font-medium text-muted-foreground text-xs"
-          >
-            {day}
-          </div>
-        ))}
-      </div>
-
+      <CalendarHeader
+        title={label}
+        onPrevious={goToPrevious}
+        onNext={goToNext}
+        onToday={goToToday}
+      />
+      <CalendarWeekdays weekStartsOn={weekStartsOn} />
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-7">
+        <CalendarGrid>
           {grid.flat().map((day) => (
             <Droppable droppableId={day.key} key={day.key}>
-              {(provided, snapshot) => (
+              {(dropProvided, dropSnapshot) => (
                 <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  data-day={day.key}
-                  className={cn(
-                    "flex min-h-24 flex-col border-border border-r border-b p-1",
-                    !day.inMonth && "bg-muted/30 text-muted-foreground",
-                    snapshot.isDraggingOver && "bg-accent/40",
-                  )}
+                  ref={dropProvided.innerRef}
+                  {...dropProvided.droppableProps}
                 >
-                  <span
-                    className={cn(
-                      "inline-flex size-6 items-center justify-center self-start text-xs",
-                      day.isToday &&
-                        "rounded-full bg-primary font-semibold text-primary-foreground",
-                    )}
+                  <CalendarDayCell
+                    day={day}
+                    isOver={dropSnapshot.isDraggingOver}
                   >
-                    {day.dayOfMonth}
-                  </span>
-                  <div className="mt-1 flex flex-col gap-1 overflow-hidden">
                     {(byDay[day.key] ?? []).map((task, index) => (
                       <Draggable
                         draggableId={task.id}
@@ -131,32 +99,29 @@ const CalendarView = ({
                         key={task.id}
                       >
                         {(dragProvided, dragSnapshot) => (
-                          <button
+                          <div
                             ref={dragProvided.innerRef}
                             {...dragProvided.draggableProps}
                             {...dragProvided.dragHandleProps}
-                            type="button"
-                            data-task-chip
-                            onClick={() => onSelectTask?.(task.id)}
-                            className={cn(
-                              "truncate rounded bg-accent px-1.5 py-0.5 text-left text-xs hover:bg-accent/80",
-                              dragSnapshot.isDragging &&
-                                "shadow-lg ring-1 ring-primary",
-                            )}
-                            title={task.title}
                           >
-                            {task.title}
-                          </button>
+                            <CalendarItemChip
+                              isDragging={dragSnapshot.isDragging}
+                              onClick={() => onSelectTask?.(task.id)}
+                              title={task.title}
+                            >
+                              {task.title}
+                            </CalendarItemChip>
+                          </div>
                         )}
                       </Draggable>
                     ))}
-                    {provided.placeholder}
-                  </div>
+                    {dropProvided.placeholder}
+                  </CalendarDayCell>
                 </div>
               )}
             </Droppable>
           ))}
-        </div>
+        </CalendarGrid>
       </DragDropContext>
     </div>
   );

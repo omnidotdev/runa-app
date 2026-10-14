@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { all } from "better-all";
+import dayjs from "dayjs";
 import {
   CalendarIcon,
   GlobeIcon,
@@ -54,7 +55,6 @@ import {
   useUpdateUserPreferenceMutation,
   useUserPreferencesQuery,
 } from "@/generated/graphql";
-import { dueDateForCalendarDay } from "@/lib/calendar/grid";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -461,7 +461,9 @@ function AuthenticatedProjectPage() {
   const handleRescheduleTask = (taskId: string, dayKey: string) => {
     updateTask({
       rowId: taskId,
-      patch: { dueDate: dueDateForCalendarDay(dayKey) },
+      // store local start-of-day so it reads back on this same day via the
+      // card's dayjs(dueDate).format (keeps calendar + card placement aligned)
+      patch: { dueDate: dayjs(dayKey).startOf("day").toDate() },
     });
   };
 
