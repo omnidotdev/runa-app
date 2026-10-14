@@ -1,0 +1,8 @@
+query CalendarFeed($projectId: UUID!) {
+  calendarFeed(projectId: $projectId) {
+    projectId
+    enabled
+    createdAt
+    lastUsedAt
+  }
+}

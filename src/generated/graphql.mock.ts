@@ -52,6 +52,50 @@ export const mockDeleteAssigneeMutation = (resolver: GraphQLResponseResolver<Typ
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockCreateCalendarFeedTokenMutation(
+ *   ({ query, variables }) => {
+ *     const { projectId } = variables;
+ *     return HttpResponse.json({
+ *       data: { createCalendarFeedToken }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockCreateCalendarFeedTokenMutation = (resolver: GraphQLResponseResolver<Types.CreateCalendarFeedTokenMutation, Types.CreateCalendarFeedTokenMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.CreateCalendarFeedTokenMutation, Types.CreateCalendarFeedTokenMutationVariables>(
+    'CreateCalendarFeedToken',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockRevokeCalendarFeedTokenMutation(
+ *   ({ query, variables }) => {
+ *     const { projectId } = variables;
+ *     return HttpResponse.json({
+ *       data: { revokeCalendarFeedToken }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockRevokeCalendarFeedTokenMutation = (resolver: GraphQLResponseResolver<Types.RevokeCalendarFeedTokenMutation, Types.RevokeCalendarFeedTokenMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.RevokeCalendarFeedTokenMutation, Types.RevokeCalendarFeedTokenMutationVariables>(
+    'RevokeCalendarFeedToken',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockCreateColumnMutation(
  *   ({ query, variables }) => {
  *     const { input } = variables;
@@ -879,6 +923,28 @@ export const mockSetWebhookEndpointEnabledMutation = (resolver: GraphQLResponseR
 export const mockTaskAttachmentsQuery = (resolver: GraphQLResponseResolver<Types.TaskAttachmentsQuery, Types.TaskAttachmentsQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<Types.TaskAttachmentsQuery, Types.TaskAttachmentsQueryVariables>(
     'TaskAttachments',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockCalendarFeedQuery(
+ *   ({ query, variables }) => {
+ *     const { projectId } = variables;
+ *     return HttpResponse.json({
+ *       data: { calendarFeed }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockCalendarFeedQuery = (resolver: GraphQLResponseResolver<Types.CalendarFeedQuery, Types.CalendarFeedQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.CalendarFeedQuery, Types.CalendarFeedQueryVariables>(
+    'CalendarFeed',
     resolver,
     options
   )

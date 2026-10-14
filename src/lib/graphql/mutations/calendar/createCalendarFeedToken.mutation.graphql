@@ -1,0 +1,6 @@
+mutation CreateCalendarFeedToken($projectId: UUID!) {
+  createCalendarFeedToken(input: { projectId: $projectId }) {
+    projectId
+    url
+  }
+}

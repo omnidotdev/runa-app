@@ -5,6 +5,7 @@ export { default as List } from "./List";
 export { default as ListItem } from "./ListItem";
 export { default as ProjectAvatar } from "./ProjectAvatar";
 export { default as ProjectBackgroundPicker } from "./ProjectBackgroundPicker";
+export { default as ProjectCalendarFeed } from "./ProjectCalendarFeed";
 export { default as ProjectColorPicker } from "./ProjectColorPicker";
 export { default as ProjectColumnForm } from "./ProjectColumnForm";
 export { default as ProjectColumnsForm } from "./ProjectColumnsForm";

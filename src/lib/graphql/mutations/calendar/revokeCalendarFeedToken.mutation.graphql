@@ -1,0 +1,6 @@
+mutation RevokeCalendarFeedToken($projectId: UUID!) {
+  revokeCalendarFeedToken(input: { projectId: $projectId }) {
+    projectId
+    revoked
+  }
+}

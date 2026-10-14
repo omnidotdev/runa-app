@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { DestructiveActionDialog } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import {
+  ProjectCalendarFeed,
   ProjectColumnsForm,
   ProjectDangerZone,
   ProjectDataSection,
@@ -125,6 +126,8 @@ function ProjectSettingsPage() {
         <ProjectLabelsForm />
 
         <ProjectColumnsForm />
+
+        <ProjectCalendarFeed />
 
         <ProjectDataSection />
 
