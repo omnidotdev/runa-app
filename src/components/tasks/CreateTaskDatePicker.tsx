@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
+import { storedDueDate } from "@/lib/util/dueDate";
 
 const CreateTaskDatePicker = withForm({
   defaultValues: taskFormDefaults,
@@ -49,9 +50,7 @@ const CreateTaskDatePicker = withForm({
             onValueChange={({ value }) =>
               value.length
                 ? field.handleChange(
-                    new Date(
-                      value[0].add({ days: 1 }).toString(),
-                    ).toISOString(),
+                    storedDueDate(value[0].toString()).toISOString(),
                   )
                 : field.handleChange("")
             }
@@ -62,8 +61,7 @@ const CreateTaskDatePicker = withForm({
                 <Button variant="outline">
                   <CalendarIcon className="size-4" />
                   {field.state.value.length
-                    ? // TODO: timezone handling
-                      dayjs(field.state.value).format("MMM D, YYYY")
+                    ? dayjs(field.state.value).format("MMM D, YYYY")
                     : !isMobile && "Set due date"}
                 </Button>
               </DatePickerTrigger>
