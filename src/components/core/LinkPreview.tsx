@@ -2,7 +2,7 @@ import { LinkIcon } from "lucide-react";
 
 import { useLinkPreviewQuery } from "@/generated/graphql";
 import extractUrls from "@/lib/util/extractUrls";
-import { shortenUrl } from "@/lib/util/linkChip";
+import { friendlyLinkLabel } from "@/lib/util/linkChip";
 import { cn } from "@/lib/utils";
 
 // Server caches unfurls, so keep them fresh for the session without refetching
@@ -44,6 +44,12 @@ const LinkPreviewCard = ({ url }: { url: string }) => {
   );
   const preview = data?.linkPreview;
 
+  // prefer the fetched page title; otherwise a clean provider/host label (never
+  // the raw `host/…/edit` path). Drop the host subtitle when it just repeats it
+  const host = hostname(url);
+  const label = preview?.title || friendlyLinkLabel(url);
+  const showHost = label.toLowerCase() !== host.toLowerCase();
+
   return (
     <a
       href={url}
@@ -55,11 +61,13 @@ const LinkPreviewCard = ({ url }: { url: string }) => {
       <PreviewFavicon dataUri={preview?.faviconDataUri} className="size-4" />
       <span className="flex min-w-0 flex-col">
         <span className="truncate font-medium text-base-900 text-sm dark:text-base-100">
-          {preview?.title || shortenUrl(url)}
+          {label}
         </span>
-        <span className="truncate text-base-500 text-xs dark:text-base-400">
-          {hostname(url)}
-        </span>
+        {showHost && (
+          <span className="truncate text-base-500 text-xs dark:text-base-400">
+            {host}
+          </span>
+        )}
       </span>
     </a>
   );

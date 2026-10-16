@@ -34,6 +34,33 @@ export const shortenUrl = (value: string): string => {
   }
 };
 
+/**
+ * A clean, human label for a link that has no fetched title. Auth-walled pages
+ * (e.g. a private Google Doc) never yield a title to an anonymous server fetch,
+ * so rather than show an ugly `host/…/edit` path we show the provider or the
+ * bare host. Used for the preview-card fallback, not inline chips.
+ */
+export const friendlyLinkLabel = (value: string): string => {
+  try {
+    const url = new URL(value.trim());
+    const host = url.hostname.replace(/^www\./, "");
+    const path = url.pathname;
+
+    if (host === "docs.google.com") {
+      if (path.startsWith("/spreadsheets")) return "Google Sheets";
+      if (path.startsWith("/presentation")) return "Google Slides";
+      if (path.startsWith("/forms")) return "Google Forms";
+      return "Google Docs";
+    }
+    if (host === "drive.google.com") return "Google Drive";
+
+    // otherwise the bare host reads better than a truncated path
+    return host;
+  } catch {
+    return value;
+  }
+};
+
 /** A favicon URL for the link's host, or null if the value is not a URL. */
 export const faviconUrl = (value: string): string | null => {
   try {
