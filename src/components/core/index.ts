@@ -23,3 +23,4 @@ export { default as Shortcut } from "./Shortcut";
 export { default as ThemeToggle } from "./ThemeToggle";
 export { default as TiltCard } from "./TiltCard";
 export { default as Tooltip } from "./Tooltip";
+export { default as ViewModeTabs } from "./ViewModeTabs";

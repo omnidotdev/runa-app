@@ -10,10 +10,7 @@ import {
 import { zodValidator } from "@tanstack/zod-adapter";
 import { all } from "better-all";
 import {
-  CalendarIcon,
   GlobeIcon,
-  Grid2X2Icon,
-  ListIcon,
   Maximize2Icon,
   Minimize2Icon,
   SearchIcon,
@@ -25,7 +22,7 @@ import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
 import CalendarView from "@/components/calendar/CalendarView";
-import { Link, Tooltip } from "@/components/core";
+import { Link, Tooltip, ViewModeTabs } from "@/components/core";
 import { NotFound } from "@/components/layout";
 import {
   Board,
@@ -87,6 +84,9 @@ const projectSearchParamsSchema = z.object({
   labels: z.array(z.guid()).default([]),
   priorities: z.array(z.enum(["low", "medium", "high"])).default([]),
   mode: z.enum(["public"]).optional(),
+  // Which view to show; absent falls back to the user's saved preference. In
+  // the URL so a view is deep-linkable, bookmarkable, and shareable.
+  view: z.enum(["board", "list", "calendar"]).optional(),
 });
 
 export const Route = createFileRoute("/_app/@{$workspaceSlug}/$projectSlug/")({
@@ -200,6 +200,7 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/$projectSlug/")({
         labels: [],
         priorities: [],
         mode: undefined,
+        view: undefined,
       }),
     ],
   },
@@ -239,7 +240,7 @@ function AuthenticatedProjectPage() {
   const { projectSlug, workspaceSlug } = Route.useParams();
   const loaderData = Route.useLoaderData();
   const { projectId, organizationId } = loaderData;
-  const { search, assignees, labels, priorities } = Route.useSearch();
+  const { search, assignees, labels, priorities, view } = Route.useSearch();
   const [isForceClosed, setIsForceClosed] = useState(false);
 
   const navigate = Route.useNavigate();
@@ -385,32 +386,37 @@ function AuthenticatedProjectPage() {
     },
   });
 
-  // Toggle the board view mode, creating the preference row on first use.
-  // A UserPreference row is created lazily (only once a column is hidden), so
-  // most users have none when they first toggle. The update mutation requires a
-  // rowId, so without this the write fails and the UI snaps back to the board
-  // (kanban) default on refetch
-  const toggleViewMode = () => {
-    const { action, viewMode } = resolveViewModeToggle(userPreferences);
-
-    if (action === "create") {
-      createViewModePreference({
-        input: {
-          userPreference: {
-            userId: session?.user?.rowId!,
-            projectId,
-            viewMode,
-            hiddenColumnIds: userPreferences?.hiddenColumnIds ?? [],
-          },
-        },
-      });
+  // Persist the chosen view as the user's default, creating the preference row
+  // on first use. A UserPreference row is created lazily (only once a column is
+  // hidden), so most users have none the first time; the update mutation
+  // requires a rowId, so without a row we CREATE instead, otherwise the write
+  // fails and the UI snaps back to the board (kanban) default on refetch
+  const persistViewMode = (viewMode: ViewMode) => {
+    if (userPreferences?.rowId) {
+      updateViewMode({ rowId: userPreferences.rowId, patch: { viewMode } });
       return;
     }
 
-    updateViewMode({
-      rowId: userPreferences?.rowId!,
-      patch: { viewMode },
+    createViewModePreference({
+      input: {
+        userPreference: {
+          userId: session?.user?.rowId!,
+          projectId,
+          viewMode,
+          hiddenColumnIds: userPreferences?.hiddenColumnIds ?? [],
+        },
+      },
     });
+  };
+
+  // Switch view: reflect it in the URL (so the view is shareable and survives a
+  // reload) and remember it as the user's default for next time.
+  const setViewMode = (viewMode: ViewMode) => {
+    navigate({
+      search: (prev) => ({ ...prev, view: viewMode }),
+      replace: true,
+    });
+    persistViewMode(viewMode);
   };
 
   const { mutateAsync: updateTask } = useUpdateTaskMutation({
@@ -424,12 +430,16 @@ function AuthenticatedProjectPage() {
 
   // Calendar view mode: the current mode, the tasks in the shape the calendar
   // renders, and handlers for selecting and drag-rescheduling a task.
-  const activeViewMode: ViewMode =
+  // The user's saved default (board unless they persisted another).
+  const preferredViewMode: ViewMode =
     userPreferences?.viewMode === "list"
       ? "list"
       : userPreferences?.viewMode === "calendar"
         ? "calendar"
         : "board";
+  // The URL wins so a shared `?view=` link always lands on that view; the saved
+  // preference is the fallback when the URL says nothing.
+  const activeViewMode: ViewMode = view ?? preferredViewMode;
 
   const calendarTasks = useMemo(
     () =>
@@ -466,21 +476,6 @@ function AuthenticatedProjectPage() {
       patch: { dueDate: storedDueDate(dayKey) },
     });
   };
-
-  // The toggle cycles board -> list -> calendar; show the mode it will switch to.
-  const nextViewMode = resolveViewModeToggle(userPreferences).viewMode;
-  const NextViewIcon =
-    nextViewMode === "board"
-      ? Grid2X2Icon
-      : nextViewMode === "list"
-        ? ListIcon
-        : CalendarIcon;
-  const nextViewLabel =
-    nextViewMode === "board"
-      ? "Board"
-      : nextViewMode === "list"
-        ? "List"
-        : "Calendar";
 
   const onDragEnd = useCallback(
     async (result: DropResult) => {
@@ -607,7 +602,18 @@ function AuthenticatedProjectPage() {
     [setDraggableId, setIsDragging],
   );
 
-  useHotkeys(Hotkeys.ToggleViewMode, () => toggleViewMode(), [toggleViewMode]);
+  // Hotkey cycles board -> list -> calendar from whatever view is active
+  useHotkeys(
+    Hotkeys.ToggleViewMode,
+    () =>
+      setViewMode(
+        resolveViewModeToggle({
+          viewMode: activeViewMode,
+          rowId: userPreferences?.rowId,
+        }).viewMode,
+      ),
+    [activeViewMode, userPreferences?.rowId],
+  );
 
   const { focusedColumnId, hoveredColumnId, setColumnId } = useTaskStore();
 
@@ -679,21 +685,7 @@ function AuthenticatedProjectPage() {
                 />
               </div>
 
-              <Tooltip
-                positioning={{ placement: "bottom" }}
-                tooltip={`${nextViewLabel} View`}
-                shortcut={Hotkeys.ToggleViewMode.toUpperCase()}
-                trigger={
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    aria-label="Switch View Mode"
-                    onClick={() => toggleViewMode()}
-                  >
-                    <NextViewIcon />
-                  </Button>
-                }
-              />
+              <ViewModeTabs value={activeViewMode} onChange={setViewMode} />
 
               <Filter />
 
@@ -716,7 +708,7 @@ function AuthenticatedProjectPage() {
                 }
               />
 
-              {userPreferences?.viewMode === "list" && (
+              {activeViewMode === "list" && (
                 <Tooltip
                   positioning={{ placement: "bottom" }}
                   tooltip={isForceClosed ? "Expand Lists" : "Collapse Lists"}
