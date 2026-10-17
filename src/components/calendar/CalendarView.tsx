@@ -9,7 +9,7 @@ import {
   useCalendarMonth,
 } from "@omnidotdev/thornberry/calendar";
 import dayjs from "dayjs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -20,6 +20,10 @@ export interface CalendarTask {
   id: string;
   title: string;
   dueDate?: string | Date | null;
+  /** Drives the chip's left-edge accent color. */
+  priority?: string | null;
+  /** Label colors (CSS color strings) shown as dots on the chip. */
+  labelColors?: string[];
 }
 
 interface CalendarViewProps {
@@ -33,6 +37,9 @@ interface CalendarViewProps {
   className?: string;
 }
 
+/** How many chips a day cell shows before collapsing the rest behind "+N more". */
+const VISIBLE_PER_DAY = 3;
+
 /**
  * The local day (`YYYY-MM-DD`) a due date buckets onto. Runa stores `dueDate` as
  * a tz-aware instant but renders it with `dayjs(dueDate).format` (local) on the
@@ -43,12 +50,26 @@ interface CalendarViewProps {
 const dueDayKey = (dueDate: string | Date | null | undefined): string | null =>
   dueDate ? dayjs(dueDate).format("YYYY-MM-DD") : null;
 
+/** Left-edge accent for a task's priority (matches the Filter swatches). */
+const priorityAccent = (priority?: string | null): string =>
+  priority === "high"
+    ? "border-l-red-500"
+    : priority === "medium"
+      ? "border-l-yellow-500"
+      : priority === "low"
+        ? "border-l-green-500"
+        : "border-l-transparent";
+
 /**
  * Month calendar of tasks by due date, built on @omnidotdev/cadence (headless
  * grid + drop resolution) and the @omnidotdev/thornberry/calendar primitives
  * (presentational). Drag-to-reschedule stays here via @hello-pangea/dnd (same
  * library as the board): each day cell is a droppable keyed by its day key and
  * each chip a draggable; a drop resolves through cadence's resolveCalendarDrop.
+ *
+ * Each cell shows a few chips and collapses the rest behind a "+N more" toggle,
+ * so a busy day never stretches its grid row (the overflow fix). Chips carry a
+ * priority accent and label-color dots for a quick visual read.
  */
 const CalendarView = ({
   tasks,
@@ -64,6 +85,19 @@ const CalendarView = ({
     () => bucketByDay(tasks, (task) => dueDayKey(task.dueDate)),
     [tasks],
   );
+
+  // day keys the user has expanded to see every task (the rest stay collapsed)
+  const [expandedDays, setExpandedDays] = useState<ReadonlySet<string>>(
+    new Set(),
+  );
+
+  const toggleDay = (dayKey: string) =>
+    setExpandedDays((previous) => {
+      const next = new Set(previous);
+      if (next.has(dayKey)) next.delete(dayKey);
+      else next.add(dayKey);
+      return next;
+    });
 
   const handleDragEnd = (result: DropResult) => {
     const drop = resolveCalendarDrop(result);
@@ -81,46 +115,82 @@ const CalendarView = ({
       <CalendarWeekdays weekStartsOn={weekStartsOn} />
       <DragDropContext onDragEnd={handleDragEnd}>
         <CalendarGrid>
-          {grid.flat().map((day) => (
-            <Droppable droppableId={day.key} key={day.key}>
-              {(dropProvided, dropSnapshot) => (
-                <div
-                  ref={dropProvided.innerRef}
-                  {...dropProvided.droppableProps}
-                >
-                  <CalendarDayCell
-                    day={day}
-                    isOver={dropSnapshot.isDraggingOver}
+          {grid.flat().map((day) => {
+            const dayTasks = byDay[day.key] ?? [];
+            const isExpanded = expandedDays.has(day.key);
+            const overflow = dayTasks.length - VISIBLE_PER_DAY;
+            const visibleTasks =
+              isExpanded || overflow <= 0
+                ? dayTasks
+                : dayTasks.slice(0, VISIBLE_PER_DAY);
+
+            return (
+              <Droppable droppableId={day.key} key={day.key}>
+                {(dropProvided, dropSnapshot) => (
+                  <div
+                    ref={dropProvided.innerRef}
+                    {...dropProvided.droppableProps}
                   >
-                    {(byDay[day.key] ?? []).map((task, index) => (
-                      <Draggable
-                        draggableId={task.id}
-                        index={index}
-                        key={task.id}
-                      >
-                        {(dragProvided, dragSnapshot) => (
-                          <div
-                            ref={dragProvided.innerRef}
-                            {...dragProvided.draggableProps}
-                            {...dragProvided.dragHandleProps}
-                          >
-                            <CalendarItemChip
-                              isDragging={dragSnapshot.isDragging}
-                              onClick={() => onSelectTask?.(task.id)}
-                              title={task.title}
+                    <CalendarDayCell
+                      day={day}
+                      isOver={dropSnapshot.isDraggingOver}
+                    >
+                      {visibleTasks.map((task, index) => (
+                        <Draggable
+                          draggableId={task.id}
+                          index={index}
+                          key={task.id}
+                        >
+                          {(dragProvided, dragSnapshot) => (
+                            <div
+                              ref={dragProvided.innerRef}
+                              {...dragProvided.draggableProps}
+                              {...dragProvided.dragHandleProps}
                             >
-                              {task.title}
-                            </CalendarItemChip>
-                          </div>
+                              <CalendarItemChip
+                                isDragging={dragSnapshot.isDragging}
+                                onClick={() => onSelectTask?.(task.id)}
+                                title={task.title}
+                                className={cn(
+                                  "flex w-full items-center gap-1 border-l-2",
+                                  priorityAccent(task.priority),
+                                )}
+                              >
+                                {task.labelColors
+                                  ?.slice(0, 3)
+                                  .map((color, i) => (
+                                    <span
+                                      // biome-ignore lint/suspicious/noArrayIndexKey: colors are positional dots
+                                      key={i}
+                                      className="size-1.5 shrink-0 rounded-full"
+                                      style={{ backgroundColor: color }}
+                                    />
+                                  ))}
+                                <span className="min-w-0 flex-1 truncate">
+                                  {task.title}
+                                </span>
+                              </CalendarItemChip>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {dropProvided.placeholder}
+                      {(overflow > 0 || isExpanded) &&
+                        dayTasks.length > VISIBLE_PER_DAY && (
+                          <button
+                            type="button"
+                            onClick={() => toggleDay(day.key)}
+                            className="px-1.5 py-0.5 text-left text-muted-foreground text-xs hover:text-foreground"
+                          >
+                            {isExpanded ? "Show less" : `+${overflow} more`}
+                          </button>
                         )}
-                      </Draggable>
-                    ))}
-                    {dropProvided.placeholder}
-                  </CalendarDayCell>
-                </div>
-              )}
-            </Droppable>
-          ))}
+                    </CalendarDayCell>
+                  </div>
+                )}
+              </Droppable>
+            );
+          })}
         </CalendarGrid>
       </DragDropContext>
     </div>

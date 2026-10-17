@@ -447,6 +447,11 @@ function AuthenticatedProjectPage() {
         id: task.rowId,
         title: stripMarkup(task.content ?? "") || "Untitled",
         dueDate: task.dueDate,
+        priority: task.priority,
+        labelColors:
+          task.taskLabels?.nodes
+            ?.map((node) => node.label?.color)
+            .filter((color): color is string => Boolean(color)) ?? [],
       })),
     [tasks],
   );
