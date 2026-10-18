@@ -17,16 +17,22 @@ describe("resolveViewModeToggle", () => {
     });
   });
 
-  it("updates the existing row when switching board to list", () => {
+  it("updates the existing row when cycling board to list", () => {
     expect(
       resolveViewModeToggle({ rowId: "row-1", viewMode: "board" }),
     ).toEqual({ action: "update", viewMode: "list" });
   });
 
-  it("updates the existing row when switching list to board", () => {
+  it("updates the existing row when cycling list to calendar", () => {
     expect(resolveViewModeToggle({ rowId: "row-1", viewMode: "list" })).toEqual(
-      { action: "update", viewMode: "board" },
+      { action: "update", viewMode: "calendar" },
     );
+  });
+
+  it("updates the existing row when cycling calendar back to board", () => {
+    expect(
+      resolveViewModeToggle({ rowId: "row-1", viewMode: "calendar" }),
+    ).toEqual({ action: "update", viewMode: "board" });
   });
 
   it("treats an unknown or missing viewMode as board and toggles to list", () => {
