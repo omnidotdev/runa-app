@@ -113,9 +113,10 @@ const DraggableTaskChip = ({
           onClick={() => onSelectTask?.(task.id)}
           title={task.title}
           className={cn(
-            // replace the browser's default focus outline with a keyboard-only
-            // ring so a clicked chip does not keep a stray outline
-            "outline-none focus-visible:ring-2 focus-visible:ring-primary",
+            // the drag library focuses a chip on click/drop, which with a focus
+            // ring reads as a stray outline, so suppress the focus outline and
+            // ring entirely (the chip opens on click, it is not a tab target)
+            "outline-none focus:outline-none focus-visible:outline-none",
             task.isDone && "italic line-through opacity-60",
             task.isOverdue && "ring-1 ring-red-400 dark:ring-red-500",
           )}
@@ -327,8 +328,8 @@ const CalendarView = ({
                   // still collapses by default
                   cellClassName={
                     range === "week"
-                      ? "min-h-64 max-h-80 overflow-y-auto"
-                      : "max-h-40 overflow-y-auto"
+                      ? "h-96 overflow-y-auto"
+                      : "h-32 overflow-y-auto"
                   }
                 />
               ))}
