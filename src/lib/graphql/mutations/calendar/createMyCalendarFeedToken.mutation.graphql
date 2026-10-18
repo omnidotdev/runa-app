@@ -1,0 +1,5 @@
+mutation CreateMyCalendarFeedToken($organizationId: String!) {
+  createMyCalendarFeedToken(input: { organizationId: $organizationId }) {
+    url
+  }
+}

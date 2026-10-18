@@ -74,6 +74,28 @@ export const mockCreateCalendarFeedTokenMutation = (resolver: GraphQLResponseRes
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockCreateMyCalendarFeedTokenMutation(
+ *   ({ query, variables }) => {
+ *     const { organizationId } = variables;
+ *     return HttpResponse.json({
+ *       data: { createMyCalendarFeedToken }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockCreateMyCalendarFeedTokenMutation = (resolver: GraphQLResponseResolver<Types.CreateMyCalendarFeedTokenMutation, Types.CreateMyCalendarFeedTokenMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.CreateMyCalendarFeedTokenMutation, Types.CreateMyCalendarFeedTokenMutationVariables>(
+    'CreateMyCalendarFeedToken',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockRevokeCalendarFeedTokenMutation(
  *   ({ query, variables }) => {
  *     const { projectId } = variables;
@@ -87,6 +109,28 @@ export const mockCreateCalendarFeedTokenMutation = (resolver: GraphQLResponseRes
 export const mockRevokeCalendarFeedTokenMutation = (resolver: GraphQLResponseResolver<Types.RevokeCalendarFeedTokenMutation, Types.RevokeCalendarFeedTokenMutationVariables>, options?: RequestHandlerOptions) =>
   graphql.mutation<Types.RevokeCalendarFeedTokenMutation, Types.RevokeCalendarFeedTokenMutationVariables>(
     'RevokeCalendarFeedToken',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockRevokeMyCalendarFeedTokenMutation(
+ *   ({ query, variables }) => {
+ *     const { organizationId } = variables;
+ *     return HttpResponse.json({
+ *       data: { revokeMyCalendarFeedToken }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockRevokeMyCalendarFeedTokenMutation = (resolver: GraphQLResponseResolver<Types.RevokeMyCalendarFeedTokenMutation, Types.RevokeMyCalendarFeedTokenMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.RevokeMyCalendarFeedTokenMutation, Types.RevokeMyCalendarFeedTokenMutationVariables>(
+    'RevokeMyCalendarFeedToken',
     resolver,
     options
   )
@@ -945,6 +989,28 @@ export const mockTaskAttachmentsQuery = (resolver: GraphQLResponseResolver<Types
 export const mockCalendarFeedQuery = (resolver: GraphQLResponseResolver<Types.CalendarFeedQuery, Types.CalendarFeedQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<Types.CalendarFeedQuery, Types.CalendarFeedQueryVariables>(
     'CalendarFeed',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockMyCalendarFeedQuery(
+ *   ({ query, variables }) => {
+ *     const { organizationId } = variables;
+ *     return HttpResponse.json({
+ *       data: { myCalendarFeed }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockMyCalendarFeedQuery = (resolver: GraphQLResponseResolver<Types.MyCalendarFeedQuery, Types.MyCalendarFeedQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.MyCalendarFeedQuery, Types.MyCalendarFeedQueryVariables>(
+    'MyCalendarFeed',
     resolver,
     options
   )

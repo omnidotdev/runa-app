@@ -1,0 +1,7 @@
+query MyCalendarFeed($organizationId: String!) {
+  myCalendarFeed(organizationId: $organizationId) {
+    enabled
+    createdAt
+    lastUsedAt
+  }
+}

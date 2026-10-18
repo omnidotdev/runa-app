@@ -1,0 +1,5 @@
+mutation RevokeMyCalendarFeedToken($organizationId: String!) {
+  revokeMyCalendarFeedToken(input: { organizationId: $organizationId }) {
+    revoked
+  }
+}

@@ -1394,6 +1394,12 @@ export type CreateLabelPayloadLabelEdgeArgs = {
   orderBy?: Array<LabelOrderBy>;
 };
 
+/** Create result. The feed URL contains the secret and is shown only here. */
+export type CreateMyCalendarFeedTokenPayload = {
+  __typename?: 'CreateMyCalendarFeedTokenPayload';
+  url?: Maybe<Scalars['String']['output']>;
+};
+
 /** All input for the create `NotificationDigestQueue` mutation. */
 export type CreateNotificationDigestQueueInput = {
   /**
@@ -3373,6 +3379,8 @@ export type Mutation = {
   createEmoji?: Maybe<CreateEmojiPayload>;
   /** Creates a single `Label`. */
   createLabel?: Maybe<CreateLabelPayload>;
+  /** Create or regenerate your own cross-project calendar feed URL. Returns the URL once. */
+  createMyCalendarFeedToken?: Maybe<CreateMyCalendarFeedTokenPayload>;
   /** Creates a single `NotificationDigestQueue`. */
   createNotificationDigestQueue?: Maybe<CreateNotificationDigestQueuePayload>;
   /** Creates a single `NotificationPreference`. */
@@ -3486,6 +3494,8 @@ export type Mutation = {
   revokeApiToken?: Maybe<RevokeApiTokenPayload>;
   /** Revoke a project's calendar feed URL (requires workspace admin). */
   revokeCalendarFeedToken?: Maybe<RevokeCalendarFeedTokenPayload>;
+  /** Revoke your own calendar feed URL for a workspace. */
+  revokeMyCalendarFeedToken?: Maybe<RevokeMyCalendarFeedTokenPayload>;
   /** Rotate an endpoint's signing secret (requires workspace admin). */
   rotateWebhookEndpointSecret?: Maybe<RotateWebhookEndpointSecretPayload>;
   /** Enable or disable an endpoint (requires workspace admin). */
@@ -3598,6 +3608,12 @@ export type MutationCreateEmojiArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateLabelArgs = {
   input: CreateLabelInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateMyCalendarFeedTokenArgs = {
+  input: MyCalendarFeedInput;
 };
 
 
@@ -3932,6 +3948,12 @@ export type MutationRevokeCalendarFeedTokenArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationRevokeMyCalendarFeedTokenArgs = {
+  input: MyCalendarFeedInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationRotateWebhookEndpointSecretArgs = {
   input: RotateWebhookEndpointSecretInput;
 };
@@ -4156,6 +4178,19 @@ export type MutationUpdateWardenSyncQueueArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateWardenSyncQueueByIdArgs = {
   input: UpdateWardenSyncQueueByIdInput;
+};
+
+export type MyCalendarFeedInput = {
+  organizationId: Scalars['String']['input'];
+};
+
+/** Your personal calendar feed status, without the secret feed URL. */
+export type MyCalendarFeedStatus = {
+  __typename?: 'MyCalendarFeedStatus';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  /** Whether a live personal feed URL currently exists in this workspace. */
+  enabled?: Maybe<Scalars['Boolean']['output']>;
+  lastUsedAt?: Maybe<Scalars['String']['output']>;
 };
 
 /** An object with a globally unique `ID`. */
@@ -7048,6 +7083,8 @@ export type Query = Node & {
   linkPreview?: Maybe<LinkPreview>;
   /** Reads a single `LinkUnfurl` using its globally unique `ID`. */
   linkUnfurlById?: Maybe<LinkUnfurl>;
+  /** Your own calendar feed status for a workspace. Secret-less. */
+  myCalendarFeed?: Maybe<MyCalendarFeedStatus>;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
   /** Get a single `NotificationDigestQueue`. */
@@ -7324,6 +7361,12 @@ export type QueryLinkPreviewArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryLinkUnfurlByIdArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMyCalendarFeedArgs = {
+  organizationId: Scalars['String']['input'];
 };
 
 
@@ -7765,6 +7808,11 @@ export type RevokeCalendarFeedTokenInput = {
 export type RevokeCalendarFeedTokenPayload = {
   __typename?: 'RevokeCalendarFeedTokenPayload';
   projectId?: Maybe<Scalars['UUID']['output']>;
+  revoked?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type RevokeMyCalendarFeedTokenPayload = {
+  __typename?: 'RevokeMyCalendarFeedTokenPayload';
   revoked?: Maybe<Scalars['Boolean']['output']>;
 };
 
@@ -11404,12 +11452,26 @@ export type CreateCalendarFeedTokenMutationVariables = Exact<{
 
 export type CreateCalendarFeedTokenMutation = { __typename?: 'Mutation', createCalendarFeedToken?: { __typename?: 'CreateCalendarFeedTokenPayload', projectId?: string | null, url?: string | null } | null };
 
+export type CreateMyCalendarFeedTokenMutationVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type CreateMyCalendarFeedTokenMutation = { __typename?: 'Mutation', createMyCalendarFeedToken?: { __typename?: 'CreateMyCalendarFeedTokenPayload', url?: string | null } | null };
+
 export type RevokeCalendarFeedTokenMutationVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
 
 
 export type RevokeCalendarFeedTokenMutation = { __typename?: 'Mutation', revokeCalendarFeedToken?: { __typename?: 'RevokeCalendarFeedTokenPayload', projectId?: string | null, revoked?: boolean | null } | null };
+
+export type RevokeMyCalendarFeedTokenMutationVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type RevokeMyCalendarFeedTokenMutation = { __typename?: 'Mutation', revokeMyCalendarFeedToken?: { __typename?: 'RevokeMyCalendarFeedTokenPayload', revoked?: boolean | null } | null };
 
 export type CreateColumnMutationVariables = Exact<{
   input: CreateColumnInput;
@@ -11696,6 +11758,13 @@ export type CalendarFeedQueryVariables = Exact<{
 
 
 export type CalendarFeedQuery = { __typename?: 'Query', calendarFeed?: { __typename?: 'CalendarFeedStatus', projectId?: string | null, enabled?: boolean | null, createdAt?: string | null, lastUsedAt?: string | null } | null };
+
+export type MyCalendarFeedQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type MyCalendarFeedQuery = { __typename?: 'Query', myCalendarFeed?: { __typename?: 'MyCalendarFeedStatus', enabled?: boolean | null, createdAt?: string | null, lastUsedAt?: string | null } | null };
 
 export type MyCalendarTasksQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -11997,10 +12066,24 @@ export const CreateCalendarFeedTokenDocument = gql`
   }
 }
     `;
+export const CreateMyCalendarFeedTokenDocument = gql`
+    mutation CreateMyCalendarFeedToken($organizationId: String!) {
+  createMyCalendarFeedToken(input: {organizationId: $organizationId}) {
+    url
+  }
+}
+    `;
 export const RevokeCalendarFeedTokenDocument = gql`
     mutation RevokeCalendarFeedToken($projectId: UUID!) {
   revokeCalendarFeedToken(input: {projectId: $projectId}) {
     projectId
+    revoked
+  }
+}
+    `;
+export const RevokeMyCalendarFeedTokenDocument = gql`
+    mutation RevokeMyCalendarFeedToken($organizationId: String!) {
+  revokeMyCalendarFeedToken(input: {organizationId: $organizationId}) {
     revoked
   }
 }
@@ -12380,6 +12463,15 @@ export const CalendarFeedDocument = gql`
     query CalendarFeed($projectId: UUID!) {
   calendarFeed(projectId: $projectId) {
     projectId
+    enabled
+    createdAt
+    lastUsedAt
+  }
+}
+    `;
+export const MyCalendarFeedDocument = gql`
+    query MyCalendarFeed($organizationId: String!) {
+  myCalendarFeed(organizationId: $organizationId) {
     enabled
     createdAt
     lastUsedAt
@@ -12767,8 +12859,14 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     CreateCalendarFeedToken(variables: CreateCalendarFeedTokenMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateCalendarFeedTokenMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateCalendarFeedTokenMutation>({ document: CreateCalendarFeedTokenDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateCalendarFeedToken', 'mutation', variables);
     },
+    CreateMyCalendarFeedToken(variables: CreateMyCalendarFeedTokenMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateMyCalendarFeedTokenMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateMyCalendarFeedTokenMutation>({ document: CreateMyCalendarFeedTokenDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateMyCalendarFeedToken', 'mutation', variables);
+    },
     RevokeCalendarFeedToken(variables: RevokeCalendarFeedTokenMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<RevokeCalendarFeedTokenMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<RevokeCalendarFeedTokenMutation>({ document: RevokeCalendarFeedTokenDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'RevokeCalendarFeedToken', 'mutation', variables);
+    },
+    RevokeMyCalendarFeedToken(variables: RevokeMyCalendarFeedTokenMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<RevokeMyCalendarFeedTokenMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<RevokeMyCalendarFeedTokenMutation>({ document: RevokeMyCalendarFeedTokenDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'RevokeMyCalendarFeedToken', 'mutation', variables);
     },
     CreateColumn(variables: CreateColumnMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateColumnMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateColumnMutation>({ document: CreateColumnDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateColumn', 'mutation', variables);
@@ -12886,6 +12984,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     CalendarFeed(variables: CalendarFeedQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CalendarFeedQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<CalendarFeedQuery>({ document: CalendarFeedDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CalendarFeed', 'query', variables);
+    },
+    MyCalendarFeed(variables: MyCalendarFeedQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<MyCalendarFeedQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MyCalendarFeedQuery>({ document: MyCalendarFeedDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'MyCalendarFeed', 'query', variables);
     },
     MyCalendarTasks(variables: MyCalendarTasksQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<MyCalendarTasksQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MyCalendarTasksQuery>({ document: MyCalendarTasksDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'MyCalendarTasks', 'query', variables);

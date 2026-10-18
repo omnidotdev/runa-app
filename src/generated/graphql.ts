@@ -1394,6 +1394,12 @@ export type CreateLabelPayloadLabelEdgeArgs = {
   orderBy?: Array<LabelOrderBy>;
 };
 
+/** Create result. The feed URL contains the secret and is shown only here. */
+export type CreateMyCalendarFeedTokenPayload = {
+  __typename?: 'CreateMyCalendarFeedTokenPayload';
+  url?: Maybe<Scalars['String']['output']>;
+};
+
 /** All input for the create `NotificationDigestQueue` mutation. */
 export type CreateNotificationDigestQueueInput = {
   /**
@@ -3373,6 +3379,8 @@ export type Mutation = {
   createEmoji?: Maybe<CreateEmojiPayload>;
   /** Creates a single `Label`. */
   createLabel?: Maybe<CreateLabelPayload>;
+  /** Create or regenerate your own cross-project calendar feed URL. Returns the URL once. */
+  createMyCalendarFeedToken?: Maybe<CreateMyCalendarFeedTokenPayload>;
   /** Creates a single `NotificationDigestQueue`. */
   createNotificationDigestQueue?: Maybe<CreateNotificationDigestQueuePayload>;
   /** Creates a single `NotificationPreference`. */
@@ -3486,6 +3494,8 @@ export type Mutation = {
   revokeApiToken?: Maybe<RevokeApiTokenPayload>;
   /** Revoke a project's calendar feed URL (requires workspace admin). */
   revokeCalendarFeedToken?: Maybe<RevokeCalendarFeedTokenPayload>;
+  /** Revoke your own calendar feed URL for a workspace. */
+  revokeMyCalendarFeedToken?: Maybe<RevokeMyCalendarFeedTokenPayload>;
   /** Rotate an endpoint's signing secret (requires workspace admin). */
   rotateWebhookEndpointSecret?: Maybe<RotateWebhookEndpointSecretPayload>;
   /** Enable or disable an endpoint (requires workspace admin). */
@@ -3598,6 +3608,12 @@ export type MutationCreateEmojiArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationCreateLabelArgs = {
   input: CreateLabelInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
+export type MutationCreateMyCalendarFeedTokenArgs = {
+  input: MyCalendarFeedInput;
 };
 
 
@@ -3932,6 +3948,12 @@ export type MutationRevokeCalendarFeedTokenArgs = {
 
 
 /** The root mutation type which contains root level fields which mutate data. */
+export type MutationRevokeMyCalendarFeedTokenArgs = {
+  input: MyCalendarFeedInput;
+};
+
+
+/** The root mutation type which contains root level fields which mutate data. */
 export type MutationRotateWebhookEndpointSecretArgs = {
   input: RotateWebhookEndpointSecretInput;
 };
@@ -4156,6 +4178,19 @@ export type MutationUpdateWardenSyncQueueArgs = {
 /** The root mutation type which contains root level fields which mutate data. */
 export type MutationUpdateWardenSyncQueueByIdArgs = {
   input: UpdateWardenSyncQueueByIdInput;
+};
+
+export type MyCalendarFeedInput = {
+  organizationId: Scalars['String']['input'];
+};
+
+/** Your personal calendar feed status, without the secret feed URL. */
+export type MyCalendarFeedStatus = {
+  __typename?: 'MyCalendarFeedStatus';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  /** Whether a live personal feed URL currently exists in this workspace. */
+  enabled?: Maybe<Scalars['Boolean']['output']>;
+  lastUsedAt?: Maybe<Scalars['String']['output']>;
 };
 
 /** An object with a globally unique `ID`. */
@@ -7048,6 +7083,8 @@ export type Query = Node & {
   linkPreview?: Maybe<LinkPreview>;
   /** Reads a single `LinkUnfurl` using its globally unique `ID`. */
   linkUnfurlById?: Maybe<LinkUnfurl>;
+  /** Your own calendar feed status for a workspace. Secret-less. */
+  myCalendarFeed?: Maybe<MyCalendarFeedStatus>;
   /** Fetches an object given its globally unique `ID`. */
   node?: Maybe<Node>;
   /** Get a single `NotificationDigestQueue`. */
@@ -7324,6 +7361,12 @@ export type QueryLinkPreviewArgs = {
 /** The root query type which gives access points into the data universe. */
 export type QueryLinkUnfurlByIdArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+/** The root query type which gives access points into the data universe. */
+export type QueryMyCalendarFeedArgs = {
+  organizationId: Scalars['String']['input'];
 };
 
 
@@ -7765,6 +7808,11 @@ export type RevokeCalendarFeedTokenInput = {
 export type RevokeCalendarFeedTokenPayload = {
   __typename?: 'RevokeCalendarFeedTokenPayload';
   projectId?: Maybe<Scalars['UUID']['output']>;
+  revoked?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type RevokeMyCalendarFeedTokenPayload = {
+  __typename?: 'RevokeMyCalendarFeedTokenPayload';
   revoked?: Maybe<Scalars['Boolean']['output']>;
 };
 
@@ -11404,12 +11452,26 @@ export type CreateCalendarFeedTokenMutationVariables = Exact<{
 
 export type CreateCalendarFeedTokenMutation = { __typename?: 'Mutation', createCalendarFeedToken?: { __typename?: 'CreateCalendarFeedTokenPayload', projectId?: string | null, url?: string | null } | null };
 
+export type CreateMyCalendarFeedTokenMutationVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type CreateMyCalendarFeedTokenMutation = { __typename?: 'Mutation', createMyCalendarFeedToken?: { __typename?: 'CreateMyCalendarFeedTokenPayload', url?: string | null } | null };
+
 export type RevokeCalendarFeedTokenMutationVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
 
 
 export type RevokeCalendarFeedTokenMutation = { __typename?: 'Mutation', revokeCalendarFeedToken?: { __typename?: 'RevokeCalendarFeedTokenPayload', projectId?: string | null, revoked?: boolean | null } | null };
+
+export type RevokeMyCalendarFeedTokenMutationVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type RevokeMyCalendarFeedTokenMutation = { __typename?: 'Mutation', revokeMyCalendarFeedToken?: { __typename?: 'RevokeMyCalendarFeedTokenPayload', revoked?: boolean | null } | null };
 
 export type CreateColumnMutationVariables = Exact<{
   input: CreateColumnInput;
@@ -11696,6 +11758,13 @@ export type CalendarFeedQueryVariables = Exact<{
 
 
 export type CalendarFeedQuery = { __typename?: 'Query', calendarFeed?: { __typename?: 'CalendarFeedStatus', projectId?: string | null, enabled?: boolean | null, createdAt?: string | null, lastUsedAt?: string | null } | null };
+
+export type MyCalendarFeedQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type MyCalendarFeedQuery = { __typename?: 'Query', myCalendarFeed?: { __typename?: 'MyCalendarFeedStatus', enabled?: boolean | null, createdAt?: string | null, lastUsedAt?: string | null } | null };
 
 export type MyCalendarTasksQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -12080,6 +12149,32 @@ useCreateCalendarFeedTokenMutation.getKey = () => ['CreateCalendarFeedToken'];
 
 useCreateCalendarFeedTokenMutation.fetcher = (variables: CreateCalendarFeedTokenMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateCalendarFeedTokenMutation, CreateCalendarFeedTokenMutationVariables>(CreateCalendarFeedTokenDocument, variables, options);
 
+export const CreateMyCalendarFeedTokenDocument = new TypedDocumentString(`
+    mutation CreateMyCalendarFeedToken($organizationId: String!) {
+  createMyCalendarFeedToken(input: {organizationId: $organizationId}) {
+    url
+  }
+}
+    `);
+
+export const useCreateMyCalendarFeedTokenMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateMyCalendarFeedTokenMutation, TError, CreateMyCalendarFeedTokenMutationVariables, TContext>) => {
+    
+    return useMutation<CreateMyCalendarFeedTokenMutation, TError, CreateMyCalendarFeedTokenMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateMyCalendarFeedToken'],
+    mutationFn: (variables?: CreateMyCalendarFeedTokenMutationVariables) => graphqlFetch<CreateMyCalendarFeedTokenMutation, CreateMyCalendarFeedTokenMutationVariables>(CreateMyCalendarFeedTokenDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateMyCalendarFeedTokenMutation.getKey = () => ['CreateMyCalendarFeedToken'];
+
+
+useCreateMyCalendarFeedTokenMutation.fetcher = (variables: CreateMyCalendarFeedTokenMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateMyCalendarFeedTokenMutation, CreateMyCalendarFeedTokenMutationVariables>(CreateMyCalendarFeedTokenDocument, variables, options);
+
 export const RevokeCalendarFeedTokenDocument = new TypedDocumentString(`
     mutation RevokeCalendarFeedToken($projectId: UUID!) {
   revokeCalendarFeedToken(input: {projectId: $projectId}) {
@@ -12106,6 +12201,32 @@ useRevokeCalendarFeedTokenMutation.getKey = () => ['RevokeCalendarFeedToken'];
 
 
 useRevokeCalendarFeedTokenMutation.fetcher = (variables: RevokeCalendarFeedTokenMutationVariables, options?: RequestInit['headers']) => graphqlFetch<RevokeCalendarFeedTokenMutation, RevokeCalendarFeedTokenMutationVariables>(RevokeCalendarFeedTokenDocument, variables, options);
+
+export const RevokeMyCalendarFeedTokenDocument = new TypedDocumentString(`
+    mutation RevokeMyCalendarFeedToken($organizationId: String!) {
+  revokeMyCalendarFeedToken(input: {organizationId: $organizationId}) {
+    revoked
+  }
+}
+    `);
+
+export const useRevokeMyCalendarFeedTokenMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<RevokeMyCalendarFeedTokenMutation, TError, RevokeMyCalendarFeedTokenMutationVariables, TContext>) => {
+    
+    return useMutation<RevokeMyCalendarFeedTokenMutation, TError, RevokeMyCalendarFeedTokenMutationVariables, TContext>(
+      {
+    mutationKey: ['RevokeMyCalendarFeedToken'],
+    mutationFn: (variables?: RevokeMyCalendarFeedTokenMutationVariables) => graphqlFetch<RevokeMyCalendarFeedTokenMutation, RevokeMyCalendarFeedTokenMutationVariables>(RevokeMyCalendarFeedTokenDocument, variables)(),
+    ...options
+  }
+    )};
+
+useRevokeMyCalendarFeedTokenMutation.getKey = () => ['RevokeMyCalendarFeedToken'];
+
+
+useRevokeMyCalendarFeedTokenMutation.fetcher = (variables: RevokeMyCalendarFeedTokenMutationVariables, options?: RequestInit['headers']) => graphqlFetch<RevokeMyCalendarFeedTokenMutation, RevokeMyCalendarFeedTokenMutationVariables>(RevokeMyCalendarFeedTokenDocument, variables, options);
 
 export const CreateColumnDocument = new TypedDocumentString(`
     mutation CreateColumn($input: CreateColumnInput!) {
@@ -13370,6 +13491,97 @@ useSuspenseInfiniteCalendarFeedQuery.getKey = (variables: CalendarFeedQueryVaria
 
 
 useCalendarFeedQuery.fetcher = (variables: CalendarFeedQueryVariables, options?: RequestInit['headers']) => graphqlFetch<CalendarFeedQuery, CalendarFeedQueryVariables>(CalendarFeedDocument, variables, options);
+
+export const MyCalendarFeedDocument = new TypedDocumentString(`
+    query MyCalendarFeed($organizationId: String!) {
+  myCalendarFeed(organizationId: $organizationId) {
+    enabled
+    createdAt
+    lastUsedAt
+  }
+}
+    `);
+
+export const useMyCalendarFeedQuery = <
+      TData = MyCalendarFeedQuery,
+      TError = unknown
+    >(
+      variables: MyCalendarFeedQueryVariables,
+      options?: Omit<UseQueryOptions<MyCalendarFeedQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MyCalendarFeedQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<MyCalendarFeedQuery, TError, TData>(
+      {
+    queryKey: ['MyCalendarFeed', variables],
+    queryFn: graphqlFetch<MyCalendarFeedQuery, MyCalendarFeedQueryVariables>(MyCalendarFeedDocument, variables),
+    ...options
+  }
+    )};
+
+useMyCalendarFeedQuery.getKey = (variables: MyCalendarFeedQueryVariables) => ['MyCalendarFeed', variables];
+
+export const useSuspenseMyCalendarFeedQuery = <
+      TData = MyCalendarFeedQuery,
+      TError = unknown
+    >(
+      variables: MyCalendarFeedQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<MyCalendarFeedQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<MyCalendarFeedQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<MyCalendarFeedQuery, TError, TData>(
+      {
+    queryKey: ['MyCalendarFeed', variables],
+    queryFn: graphqlFetch<MyCalendarFeedQuery, MyCalendarFeedQueryVariables>(MyCalendarFeedDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseMyCalendarFeedQuery.getKey = (variables: MyCalendarFeedQueryVariables) => ['MyCalendarFeed', variables];
+
+export const useInfiniteMyCalendarFeedQuery = <
+      TData = InfiniteData<MyCalendarFeedQuery>,
+      TError = unknown
+    >(
+      variables: MyCalendarFeedQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<MyCalendarFeedQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<MyCalendarFeedQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<MyCalendarFeedQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['MyCalendarFeed.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<MyCalendarFeedQuery, MyCalendarFeedQueryVariables>(MyCalendarFeedDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteMyCalendarFeedQuery.getKey = (variables: MyCalendarFeedQueryVariables) => ['MyCalendarFeed.infinite', variables];
+
+export const useSuspenseInfiniteMyCalendarFeedQuery = <
+      TData = InfiniteData<MyCalendarFeedQuery>,
+      TError = unknown
+    >(
+      variables: MyCalendarFeedQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<MyCalendarFeedQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<MyCalendarFeedQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<MyCalendarFeedQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['MyCalendarFeed.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<MyCalendarFeedQuery, MyCalendarFeedQueryVariables>(MyCalendarFeedDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteMyCalendarFeedQuery.getKey = (variables: MyCalendarFeedQueryVariables) => ['MyCalendarFeed.infinite', variables];
+
+
+useMyCalendarFeedQuery.fetcher = (variables: MyCalendarFeedQueryVariables, options?: RequestInit['headers']) => graphqlFetch<MyCalendarFeedQuery, MyCalendarFeedQueryVariables>(MyCalendarFeedDocument, variables, options);
 
 export const MyCalendarTasksDocument = new TypedDocumentString(`
     query MyCalendarTasks($organizationId: String!, $userId: UUID!) {

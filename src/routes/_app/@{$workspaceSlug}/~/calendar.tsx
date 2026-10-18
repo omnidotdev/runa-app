@@ -2,6 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useMemo } from "react";
 
 import CalendarView from "@/components/calendar/CalendarView";
+import MyCalendarFeedButton from "@/components/calendar/MyCalendarFeedButton";
 import {
   useMyCalendarTasksQuery,
   useTaskQuery,
@@ -91,7 +92,10 @@ function MyCalendarPage() {
 
   return (
     <div className="no-scrollbar relative h-full overflow-auto px-4 py-8 lg:p-12">
-      <h1 className="mb-4 ml-2 font-semibold text-xl lg:ml-0">My calendar</h1>
+      <div className="mb-4 ml-2 flex items-center justify-between lg:ml-0">
+        <h1 className="font-semibold text-xl">My calendar</h1>
+        <MyCalendarFeedButton organizationId={organizationId} />
+      </div>
       <CalendarView
         tasks={calendarTasks}
         onSelectTask={onSelectTask}
