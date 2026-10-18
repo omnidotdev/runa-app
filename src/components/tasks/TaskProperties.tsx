@@ -8,6 +8,8 @@ import dayjs from "dayjs";
 import { ColumnSelector, PrioritySelector } from "@/components/core";
 import LabelIcon from "@/components/core/LabelIcon";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
+import { stripMarkup } from "@/lib/util/taskUrl";
+import AddToCalendar from "./AddToCalendar";
 import AssigneesPopover from "./AssigneesPopover";
 import DueDatePopover from "./DueDatePopover";
 import LabelsPopover from "./LabelsPopover";
@@ -104,6 +106,15 @@ const TaskProperties = ({ task, projectId, editable, onPatch }: Props) => (
         editable={editable}
       />
     </PropertyRow>
+
+    {task.dueDate && (
+      <PropertyRow label="Add to calendar">
+        <AddToCalendar
+          title={stripMarkup(task.content ?? "") || "Untitled"}
+          dueDate={task.dueDate}
+        />
+      </PropertyRow>
+    )}
 
     <div className="my-2 border-t" />
 
