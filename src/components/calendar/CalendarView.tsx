@@ -50,15 +50,19 @@ const VISIBLE_PER_DAY = 3;
 const dueDayKey = (dueDate: string | Date | null | undefined): string | null =>
   dueDate ? dayjs(dueDate).format("YYYY-MM-DD") : null;
 
-/** Left-edge accent for a task's priority (matches the Filter swatches). */
-const priorityAccent = (priority?: string | null): string =>
+/**
+ * A soft full-chip tint for a task's priority (matches the Filter swatches). A
+ * background tint reads as color without the hard edge a border draws around
+ * the chip's rounded corners. Unset priority keeps the default chip surface.
+ */
+const priorityTint = (priority?: string | null): string =>
   priority === "high"
-    ? "border-l-red-500"
+    ? "bg-red-500/15 hover:bg-red-500/25"
     : priority === "medium"
-      ? "border-l-yellow-500"
+      ? "bg-yellow-500/15 hover:bg-yellow-500/25"
       : priority === "low"
-        ? "border-l-green-500"
-        : "border-l-transparent";
+        ? "bg-green-500/15 hover:bg-green-500/25"
+        : "";
 
 /**
  * Month calendar of tasks by due date, built on @omnidotdev/cadence (headless
@@ -152,8 +156,8 @@ const CalendarView = ({
                                 onClick={() => onSelectTask?.(task.id)}
                                 title={task.title}
                                 className={cn(
-                                  "flex w-full items-center gap-1 border-l-2",
-                                  priorityAccent(task.priority),
+                                  "flex w-full items-center gap-1",
+                                  priorityTint(task.priority),
                                 )}
                               >
                                 {task.labelColors
