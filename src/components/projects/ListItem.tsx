@@ -1,6 +1,5 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { useNavigate, useParams } from "@tanstack/react-router";
-import dayjs from "dayjs";
 import { AlignLeftIcon, CalendarIcon, MessageCircleIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
@@ -9,6 +8,7 @@ import { PriorityIcon } from "@/components/tasks";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
+import { formatDueDate } from "@/lib/util/dueDate";
 import { buildTaskKey } from "@/lib/util/taskUrl";
 import { cn } from "@/lib/utils";
 import TaskContextMenu from "../tasks/TaskContextMenu";
@@ -186,7 +186,7 @@ const ListItem = ({ task, index, displayId, prefix }: Props) => {
                     trigger={
                       <div className="flex items-center gap-1">
                         <CalendarIcon className="size-3" />
-                        <span>{dayjs(task.dueDate).format("MMM D")}</span>
+                        <span>{formatDueDate(task.dueDate)}</span>
                       </div>
                     }
                   />

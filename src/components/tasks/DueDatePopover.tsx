@@ -27,6 +27,7 @@ import {
   CalendarIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ClockIcon,
   XIcon,
 } from "lucide-react";
 
@@ -34,7 +35,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
-import { storedDueDate } from "@/lib/util/dueDate";
+import {
+  dueHasTime,
+  dueTimeValue,
+  storedDueDate,
+  storedDueDateAtTime,
+} from "@/lib/util/dueDate";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { TaskQuery } from "@/generated/graphql";
@@ -89,9 +95,16 @@ const DueDateEditor = ({
   return (
     <DatePickerRoot
       value={dueDateIso ? [parseAbsoluteToLocal(dueDateIso)] : []}
-      onValueChange={({ value }) =>
-        setDueDate(value.length ? storedDueDate(value[0].toString()) : null)
-      }
+      onValueChange={({ value }) => {
+        if (!value.length) {
+          setDueDate(null);
+          return;
+        }
+        // keep any existing time-of-day when the day changes
+        const day = value[0].toString();
+        const time = dueTimeValue(dueDate);
+        setDueDate(time ? storedDueDateAtTime(day, time) : storedDueDate(day));
+      }}
     >
       <DatePickerControl>
         <DatePickerTrigger asChild>
@@ -101,7 +114,11 @@ const DueDateEditor = ({
           >
             <CalendarIcon className="size-4 text-muted-foreground" />
             {dueDate ? (
-              <span>{dayjs(dueDate).format("MMM D, YYYY")}</span>
+              <span>
+                {dayjs(dueDate).format(
+                  dueHasTime(dueDate) ? "MMM D, YYYY h:mm A" : "MMM D, YYYY",
+                )}
+              </span>
             ) : (
               <span className="text-muted-foreground">Set due date</span>
             )}
@@ -180,6 +197,24 @@ const DueDateEditor = ({
             </DatePickerContext>
           </DatePickerView>
 
+          <div className="mt-2 flex items-center gap-2 border-t pt-2">
+            <ClockIcon className="size-4 text-muted-foreground" />
+            <input
+              type="time"
+              aria-label="Due time"
+              value={dueTimeValue(dueDate)}
+              onChange={(event) => {
+                const day = dayjs(dueDate ?? undefined).format("YYYY-MM-DD");
+                setDueDate(
+                  event.target.value
+                    ? storedDueDateAtTime(day, event.target.value)
+                    : storedDueDate(day),
+                );
+              }}
+              className="h-8 flex-1 rounded-md border bg-transparent px-2 text-sm outline-none focus-visible:ring-1 focus-visible:ring-primary"
+            />
+          </div>
+
           {dueDate && (
             <Button
               variant="ghost"
@@ -203,7 +238,11 @@ const DueDatePopover = ({ taskId, dueDate, editable }: Props) => {
       <div className="flex w-full items-center gap-2 px-2 py-1.5 text-sm">
         <CalendarIcon className="size-4 text-muted-foreground" />
         {dueDate ? (
-          <span>{dayjs(dueDate).format("MMM D, YYYY")}</span>
+          <span>
+            {dayjs(dueDate).format(
+              dueHasTime(dueDate) ? "MMM D, YYYY h:mm A" : "MMM D, YYYY",
+            )}
+          </span>
         ) : (
           <span className="text-muted-foreground">No due date</span>
         )}
