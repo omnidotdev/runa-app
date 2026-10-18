@@ -288,8 +288,14 @@ const CalendarView = ({
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="flex gap-3">
           <div className="min-w-0 flex-1">
-            <CalendarWeekdays weekStartsOn={weekStartsOn} />
-            <CalendarGrid>
+            {/* close the grid frame on the left/top so it matches the cells'
+                own right/bottom borders (otherwise the grid is open on the
+                left and top while framed on the right and bottom) */}
+            <CalendarWeekdays
+              weekStartsOn={weekStartsOn}
+              className="border-border border-t border-r border-l"
+            />
+            <CalendarGrid className="border-border border-l">
               {grid.flat().map((day) => (
                 <ProjectCalendarDay
                   key={day.key}

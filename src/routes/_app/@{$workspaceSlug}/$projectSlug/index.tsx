@@ -757,14 +757,19 @@ function AuthenticatedProjectPage() {
         <FilterChips />
 
         {activeViewMode === "calendar" ? (
-          <CalendarView
-            tasks={calendarTasks}
-            unscheduledTasks={unscheduledCalendarTasks}
-            onSelectTask={handleSelectCalendarTask}
-            onReschedule={handleRescheduleTask}
-            onUnschedule={handleUnscheduleTask}
-            className="px-1"
-          />
+          // the app shell panes are fixed-height + overflow-hidden, so the
+          // calendar owns its own vertical scroll (like the board and My
+          // Calendar); without this a tall month grid clips its bottom weeks
+          <div className="min-h-0 flex-1 overflow-auto">
+            <CalendarView
+              tasks={calendarTasks}
+              unscheduledTasks={unscheduledCalendarTasks}
+              onSelectTask={handleSelectCalendarTask}
+              onReschedule={handleRescheduleTask}
+              onUnschedule={handleUnscheduleTask}
+              className="px-1"
+            />
+          </div>
         ) : (
           <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
             {activeViewMode === "list" ? (
