@@ -8,6 +8,7 @@ export { default as CreateTaskDialog } from "./CreateTaskDialog";
 export { default as CreateTaskLabels } from "./CreateTaskLabels";
 export { default as CreateTaskPriority } from "./CreateTaskPriority";
 export { default as Filter } from "./Filter";
+export { default as FilterChips } from "./FilterChips";
 export { default as PostEmojis } from "./PostEmojis";
 export { default as PriorityIcon } from "./PriorityIcon";
 export { default as TaskActivity } from "./TaskActivity";

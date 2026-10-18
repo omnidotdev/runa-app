@@ -34,6 +34,7 @@ import {
 import {
   CreateTaskDialog,
   Filter,
+  FilterChips,
   UpdateAssigneesDialog,
   UpdateDueDateDialog,
   UpdateTaskLabelsDialog,
@@ -744,6 +745,8 @@ function AuthenticatedProjectPage() {
             </div>
           </div>
         </div>
+
+        <FilterChips />
 
         {activeViewMode === "calendar" ? (
           <CalendarView
