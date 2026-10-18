@@ -41,6 +41,7 @@ const createMetaTags = ({
     { name: "twitter:creator", content: "@omnidotdev" },
     { name: "twitter:url", content: url },
     { property: "og:type", content: "website" },
+    { property: "og:site_name", content: app.name },
     { property: "og:title", content: title },
     {
       property: "og:description",
@@ -52,6 +53,7 @@ const createMetaTags = ({
           { name: "twitter:image", content: image },
           { name: "twitter:card", content: "summary_large_image" },
           { property: "og:image", content: image },
+          { property: "og:image:alt", content: title },
           { property: "og:image:width", content: "1200" },
           { property: "og:image:height", content: "630" },
         ]
@@ -59,6 +61,7 @@ const createMetaTags = ({
           { name: "twitter:image", content: `${BASE_URL}/runa_og.png` },
           { name: "twitter:card", content: "summary_large_image" },
           { property: "og:image", content: `${BASE_URL}/runa_og.png` },
+          { property: "og:image:alt", content: title },
           { property: "og:image:width", content: "1200" },
           { property: "og:image:height", content: "630" },
         ]),

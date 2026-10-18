@@ -17,6 +17,7 @@ type OgTaskProject = {
   name: string;
   color?: string | null;
   prefix?: string | null;
+  isPublic: boolean;
   tasks: { nodes: OgTask[] };
 };
 
@@ -26,6 +27,7 @@ const OG_TASK_QUERY = `
       name
       color
       prefix
+      isPublic
       tasks(condition: { number: $number }, first: 1) {
         nodes {
           number
@@ -53,7 +55,9 @@ const fetchTask = async (
     }>(document, { slug, organizationId, number });
     const project = data.projectBySlugAndOrganizationId;
     const task = project?.tasks.nodes[0];
-    if (!project || !task) return null;
+    // only tasks in a public project get a share card, never a private one's
+    // content for an anonymous (unfurler) request
+    if (!project || !project.isPublic || !task) return null;
     return { project, task };
   } catch {
     return null;

@@ -42,7 +42,9 @@ export const Route = createFileRoute(
         }
 
         const project = await fetchProject(projectSlug, organizationId);
-        if (!project) {
+        // only public projects get a share card: a private project's name and
+        // description must never render for an anonymous (unfurler) request
+        if (!project || !project.isPublic) {
           return new Response("Not found", { status: 404 });
         }
 

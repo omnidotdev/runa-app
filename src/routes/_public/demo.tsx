@@ -3,8 +3,19 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { DemoBoard } from "@/components/landing";
 import app from "@/lib/config/app.config";
+import { BASE_URL } from "@/lib/config/env.config";
+import createMetaTags from "@/lib/util/createMetaTags";
 
 export const Route = createFileRoute("/_public/demo")({
+  head: () => ({
+    meta: [
+      ...createMetaTags({
+        title: "Demo",
+        description: `Try ${app.name}: an interactive Kanban board. Drag tasks between columns and open one to see its details.`,
+        url: `${BASE_URL}/demo`,
+      }),
+    ],
+  }),
   component: DemoPage,
 });
 

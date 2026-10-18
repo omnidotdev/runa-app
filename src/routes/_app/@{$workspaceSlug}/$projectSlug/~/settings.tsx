@@ -81,7 +81,8 @@ export const Route = createFileRoute(
             url: `${BASE_URL}/@${params.workspaceSlug}/${params.projectSlug}/~/settings`,
           }),
         ]
-      : undefined,
+      : // keep at least the default Runa card when loader data is absent
+        [...createMetaTags()],
   }),
   notFoundComponent: () => <NotFound>Project Not Found</NotFound>,
   component: ProjectSettingsPage,

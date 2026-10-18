@@ -142,6 +142,7 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/$projectSlug/")({
         projectId: project.rowId,
         organizationId,
         isPublicAccess: true,
+        isPublic: true,
       };
     }
 
@@ -191,6 +192,7 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/$projectSlug/")({
       name: project.name,
       projectId: project.rowId,
       organizationId,
+      isPublic: project.isPublic,
     };
   },
   validateSearch: zodValidator(projectSearchParamsSchema),
@@ -213,10 +215,15 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/$projectSlug/")({
             title: loaderData.name,
             description: `View and manage tasks for ${loaderData.name}.`,
             url: `${BASE_URL}/@${params.workspaceSlug}/${params.projectSlug}`,
-            image: `${BASE_URL}/api/og/project/${params.workspaceSlug}/${params.projectSlug}`,
+            // only public projects have a dynamic card (the route is gated to
+            // public too); a private project advertises the static Runa card
+            image: loaderData.isPublic
+              ? `${BASE_URL}/api/og/project/${params.workspaceSlug}/${params.projectSlug}`
+              : undefined,
           }),
         ]
-      : undefined,
+      : // keep at least the default Runa card when loader data is absent
+        [...createMetaTags()],
   }),
   notFoundComponent: () => <NotFound>Project Not Found</NotFound>,
   component: ProjectPage,

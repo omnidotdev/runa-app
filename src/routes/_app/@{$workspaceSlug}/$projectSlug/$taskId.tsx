@@ -135,7 +135,11 @@ export const Route = createFileRoute(
       projectName: project.name,
       taskId: resolved.rowId,
       taskTitle: title || undefined,
-      ogImageUrl: `${BASE_URL}/api/og/task/${workspaceSlug}/${projectSlug}/${resolved.number}`,
+      // only public projects have a dynamic card (the route is gated to public
+      // too); a task in a private project advertises the static Runa card
+      ogImageUrl: project.isPublic
+        ? `${BASE_URL}/api/og/task/${workspaceSlug}/${projectSlug}/${resolved.number}`
+        : undefined,
       isPublicAccess: !session?.user?.rowId || undefined,
     };
   },
