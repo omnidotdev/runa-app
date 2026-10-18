@@ -1,9 +1,9 @@
-import { useOrganization } from "@omnidotdev/providers/react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useMemo } from "react";
 
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 
 import type { MentionItem } from "@omnidotdev/thornberry/rich-text-editor";
 
@@ -18,7 +18,7 @@ import type { MentionItem } from "@omnidotdev/thornberry/rich-text-editor";
  */
 const useMentionItems = (): MentionItem[] => {
   const { workspaceSlug } = useParams({ strict: false });
-  const orgContext = useOrganization();
+  const orgContext = useWorkspace();
 
   const organizationId = workspaceSlug
     ? orgContext?.organizations?.find((org) => org.slug === workspaceSlug)?.id

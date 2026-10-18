@@ -1,6 +1,6 @@
 export {
-  OrganizationProvider,
-  useOrganization,
+  OrganizationProvider as WorkspaceProvider,
+  useOrganization as useWorkspace,
 } from "@omnidotdev/providers/react";
 
 // Default export for backward compatibility with existing default imports

@@ -17,7 +17,7 @@ import CreateWorkspaceButton from "@/components/workspaces/CreateWorkspaceButton
 import signIn from "@/lib/auth/signIn";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
-import { useOrganization } from "@/providers/OrganizationProvider";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 import { signOutLocal } from "@/server/functions/auth";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 
@@ -52,7 +52,7 @@ export const Route = createFileRoute("/_app/workspaces/")({
 });
 
 function WorkspacesOverviewPage() {
-  const orgContext = useOrganization();
+  const orgContext = useWorkspace();
 
   // Get user's organizations from JWT claims
   const organizations = orgContext?.organizations ?? [];

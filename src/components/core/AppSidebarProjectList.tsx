@@ -44,14 +44,14 @@ import projectColumnsOptions from "@/lib/options/projectColumns.options";
 import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
 import { Role } from "@/lib/permissions";
 import sortProjects from "@/lib/util/sortProjects";
-import { useOrganization } from "@/providers/OrganizationProvider";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 import AppSidebarProjectItem from "./AppSidebarProjectItem";
 import Tooltip from "./Tooltip";
 
 const AppSidebarProjectList = () => {
   const { session } = useRouteContext({ from: "/_app" });
   const { workspaceSlug } = useParams({ strict: false });
-  const orgContext = useOrganization();
+  const orgContext = useWorkspace();
   const organizationId = workspaceSlug
     ? orgContext?.organizations.find((org) => org.slug === workspaceSlug)?.id
     : undefined;

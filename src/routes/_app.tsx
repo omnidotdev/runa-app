@@ -10,8 +10,8 @@ import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
 import { EventsProvider } from "@/providers/EventsProvider";
-import OrganizationProvider from "@/providers/OrganizationProvider";
 import SidebarProvider from "@/providers/SidebarProvider";
+import WorkspaceProvider from "@/providers/WorkspaceProvider";
 
 // Noop provider for client-side (main @omnidotdev/providers entry requires Node.js)
 const eventsProvider = {
@@ -120,7 +120,7 @@ function AppLayout() {
 
   return (
     <EventsProvider provider={eventsProvider}>
-      <OrganizationProvider organizations={organizations}>
+      <WorkspaceProvider organizations={organizations}>
         <SidebarProvider>
           <div className="flex h-dvh w-full">
             <AppSidebar variant="inset" />
@@ -132,7 +132,7 @@ function AppLayout() {
 
           <CreateProjectDialog />
         </SidebarProvider>
-      </OrganizationProvider>
+      </WorkspaceProvider>
     </EventsProvider>
   );
 }

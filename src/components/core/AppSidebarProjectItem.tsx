@@ -35,7 +35,7 @@ import {
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
-import { useOrganization } from "@/providers/OrganizationProvider";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 import Shortcut from "./Shortcut";
 
 import type { ProjectsSidebarQuery } from "@/generated/graphql";
@@ -50,7 +50,7 @@ type Props = {
 const AppSidebarProjectItem = ({ project }: Props) => {
   const { session } = useRouteContext({ from: "/_app" });
   const { workspaceSlug } = useParams({ strict: false });
-  const orgContext = useOrganization();
+  const orgContext = useWorkspace();
   const organizationId = workspaceSlug
     ? orgContext?.organizations.find((org) => org.slug === workspaceSlug)?.id
     : undefined;

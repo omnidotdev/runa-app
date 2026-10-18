@@ -35,7 +35,7 @@ import {
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
-import { useOrganization } from "@/providers/OrganizationProvider";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 import Logo from "./Logo";
 
@@ -61,7 +61,7 @@ const AppSidebarHeader = () => {
   const router = useRouter();
   const navigate = useNavigate();
   const { toggleSidebar, closeMobileSidebar } = useSidebar();
-  const orgContext = useOrganization();
+  const orgContext = useWorkspace();
 
   // Get user's organizations from context
   const organizations = orgContext?.organizations ?? [];

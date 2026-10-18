@@ -5,7 +5,7 @@
  * the organization claims in the JWT token, not from local database queries.
  */
 
-import { useOrganization } from "@/providers/OrganizationProvider";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 
 import type { Role } from "@/lib/permissions";
 
@@ -18,7 +18,7 @@ import type { Role } from "@/lib/permissions";
 export function useCurrentUserRole(
   organizationId: string | undefined,
 ): Role | undefined {
-  const orgContext = useOrganization();
+  const orgContext = useWorkspace();
 
   if (!organizationId || !orgContext) return undefined;
 

@@ -36,13 +36,13 @@ import generateSlug from "@/lib/util/generateSlug";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import resolveProjectColumnId from "@/lib/util/resolveProjectColumnId";
 import { submitOnEnter, submitOnModEnter } from "@/lib/util/submitOnEnter";
-import { useOrganization } from "@/providers/OrganizationProvider";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 
 const CreateProjectDialog = () => {
   const { workspaceSlug } = useParams({ strict: false });
 
   const nameRef = useRef<HTMLInputElement>(null);
-  const orgContext = useOrganization();
+  const orgContext = useWorkspace();
 
   const currentOrg = workspaceSlug
     ? orgContext?.organizations.find((org) => org.slug === workspaceSlug)

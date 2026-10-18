@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import signOut from "@/lib/auth/signOut";
 import { BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
-import { useOrganization } from "@/providers/OrganizationProvider";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 
 export const Route = createFileRoute("/_app/profile/$userId")({
   head: (context) => ({
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_app/profile/$userId")({
 
 function ProfilePage() {
   const { session } = Route.useRouteContext();
-  const orgContext = useOrganization();
+  const orgContext = useWorkspace();
 
   const isOmniMember =
     session?.organizations?.some((org) => org.slug === "omni") ?? false;

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { hasBilling } from "@/lib/config/env.config";
 import { getTierFromSubscription } from "@/lib/types/tier";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
-import { useOrganization } from "@/providers/OrganizationProvider";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 
 const routeApi = getRouteApi("/_app/@{$workspaceSlug}/~/settings");
 
@@ -16,7 +16,7 @@ export default function WorkspaceSettingsHeader() {
   const router = useRouter();
   const navigate = routeApi.useNavigate();
   const canGoBack = useCanGoBack();
-  const orgContext = useOrganization();
+  const orgContext = useWorkspace();
 
   // Resolve org name from JWT claims
   const orgName = organizationId

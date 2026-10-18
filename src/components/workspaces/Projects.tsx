@@ -37,7 +37,7 @@ import projectsOptions from "@/lib/options/projects.options";
 import { isAdminOrOwner } from "@/lib/permissions";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
-import { useOrganization } from "@/providers/OrganizationProvider";
+import { useWorkspace } from "@/providers/WorkspaceProvider";
 
 const Projects = () => {
   const { workspaceSlug } = useParams({
@@ -58,7 +58,7 @@ const Projects = () => {
   }>();
 
   const navigate = useNavigate();
-  const orgContext = useOrganization();
+  const orgContext = useWorkspace();
 
   // Fetch projects for this organization
   const { data: projects } = useSuspenseQuery({
