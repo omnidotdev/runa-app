@@ -82,7 +82,14 @@ const DraggableTaskChip = ({
   index: number;
   onSelectTask?: (taskId: string) => void;
 }) => (
-  <Draggable draggableId={task.id} index={index}>
+  // the chip renders a <button> (it is clickable to open the task), and
+  // @hello-pangea/dnd refuses to start a drag from an interactive element
+  // unless blocking is disabled, so without this the chip never picks up
+  <Draggable
+    draggableId={task.id}
+    index={index}
+    disableInteractiveElementBlocking
+  >
     {(dragProvided, dragSnapshot) => (
       <div
         ref={dragProvided.innerRef}
