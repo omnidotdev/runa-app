@@ -11888,7 +11888,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, color?: string | null, background?: any | null, image?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: string, title: string, icon?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number } }> }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, color?: string | null, background?: any | null, image?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: string, title: string, icon?: string | null, isDone: boolean, tasks: { __typename?: 'TaskConnection', totalCount: number } }> }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -12719,6 +12719,7 @@ export const ProjectDocument = gql`
         index
         title
         icon
+        isDone
         tasks {
           totalCount
         }

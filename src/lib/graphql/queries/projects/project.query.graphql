@@ -20,6 +20,7 @@ query Project($rowId: UUID!) {
         index
         title
         icon
+        isDone
         tasks {
           totalCount
         }

@@ -1,6 +1,11 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
-import { EyeOffIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
+import {
+  CircleCheckIcon,
+  EyeOffIcon,
+  MoreHorizontalIcon,
+  Trash2Icon,
+} from "lucide-react";
 
 import { DestructiveActionDialog } from "@/components/core";
 import { Button } from "@/components/ui/button";
@@ -15,6 +20,7 @@ import {
   useDeleteTaskMutation,
   useProjectQuery,
   useTasksQuery,
+  useUpdateColumnMutation,
   useUpdateUserPreferenceMutation,
 } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
@@ -66,6 +72,38 @@ const ColumnMenu = ({ columnId, taskIds }: Props) => {
     select: (data) =>
       data?.project?.columns?.nodes?.find((col) => col.rowId === columnId),
   });
+
+  // The project's current done column, so marking a new one unmarks it and the
+  // "one done column per project" convention holds.
+  const { data: currentDoneColumn } = useSuspenseQuery({
+    ...projectOptions({
+      rowId: projectId,
+    }),
+    select: (data) => data?.project?.columns?.nodes?.find((col) => col.isDone),
+  });
+
+  const { mutate: updateColumn } = useUpdateColumnMutation({
+    meta: {
+      invalidates: [
+        getQueryKeyPrefix(useProjectQuery),
+        getQueryKeyPrefix(useTasksQuery),
+      ],
+    },
+  });
+
+  const toggleDoneColumn = () => {
+    if (column?.isDone) {
+      updateColumn({ rowId: columnId, patch: { isDone: false } });
+      return;
+    }
+    if (currentDoneColumn && currentDoneColumn.rowId !== columnId) {
+      updateColumn({
+        rowId: currentDoneColumn.rowId,
+        patch: { isDone: false },
+      });
+    }
+    updateColumn({ rowId: columnId, patch: { isDone: true } });
+  };
 
   const { mutate: updateUserPreferences } = useUpdateUserPreferenceMutation({
     meta: {
@@ -124,6 +162,20 @@ const ColumnMenu = ({ columnId, taskIds }: Props) => {
             >
               <EyeOffIcon />
               <span>Hide Column</span>
+            </MenuItem>
+
+            <MenuItem
+              value="toggle-done"
+              className={cn(
+                "flex cursor-pointer items-center gap-2",
+                isMember && "hidden",
+              )}
+              onClick={toggleDoneColumn}
+            >
+              <CircleCheckIcon />
+              <span>
+                {column?.isDone ? "Unmark done column" : "Mark as done column"}
+              </span>
             </MenuItem>
 
             <MenuItem
