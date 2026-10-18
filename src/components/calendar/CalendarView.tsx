@@ -7,17 +7,20 @@ import {
   CalendarItemChip,
   CalendarMoreToggle,
   CalendarWeekdays,
-  useCalendarMonth,
+  useCalendarView,
   useDayOverflow,
 } from "@omnidotdev/thornberry/calendar";
 import dayjs from "dayjs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
 import type { DropResult } from "@hello-pangea/dnd";
 import type { CalendarDay } from "@omnidotdev/cadence";
-import type { CalendarItemTone } from "@omnidotdev/thornberry/calendar";
+import type {
+  CalendarItemTone,
+  CalendarRange,
+} from "@omnidotdev/thornberry/calendar";
 
 /** Minimal task shape the calendar renders. */
 export interface CalendarTask {
@@ -71,10 +74,12 @@ const ProjectCalendarDay = ({
   day,
   tasks,
   onSelectTask,
+  cellClassName,
 }: {
   day: CalendarDay;
   tasks: CalendarTask[];
   onSelectTask?: (taskId: string) => void;
+  cellClassName?: string;
 }) => {
   const { visibleCount, hiddenCount, hasOverflow, isExpanded, toggle } =
     useDayOverflow({ count: tasks.length });
@@ -84,7 +89,11 @@ const ProjectCalendarDay = ({
     <Droppable droppableId={day.key}>
       {(dropProvided, dropSnapshot) => (
         <div ref={dropProvided.innerRef} {...dropProvided.droppableProps}>
-          <CalendarDayCell day={day} isOver={dropSnapshot.isDraggingOver}>
+          <CalendarDayCell
+            day={day}
+            isOver={dropSnapshot.isDraggingOver}
+            className={cellClassName}
+          >
             {visibleTasks.map((task, index) => (
               <Draggable draggableId={task.id} index={index} key={task.id}>
                 {(dragProvided, dragSnapshot) => (
@@ -121,6 +130,34 @@ const ProjectCalendarDay = ({
   );
 };
 
+/** A compact month/week switch for the calendar header. */
+const RangeToggle = ({
+  range,
+  onChange,
+}: {
+  range: CalendarRange;
+  onChange: (next: CalendarRange) => void;
+}) => (
+  <div className="ml-1 inline-flex items-center gap-0.5 rounded-md border p-0.5">
+    {(["month", "week"] as const).map((option) => (
+      <button
+        key={option}
+        type="button"
+        aria-pressed={range === option}
+        onClick={() => onChange(option)}
+        className={cn(
+          "rounded px-2 py-1 font-medium text-xs capitalize transition-colors",
+          range === option
+            ? "bg-base-100 text-base-900 dark:bg-base-800 dark:text-base-100"
+            : "text-base-500 hover:text-base-800 dark:hover:text-base-200",
+        )}
+      >
+        {option}
+      </button>
+    ))}
+  </div>
+);
+
 /**
  * Month calendar of tasks by due date, built on @omnidotdev/cadence (headless
  * grid + drop resolution) and the @omnidotdev/thornberry/calendar primitives
@@ -136,7 +173,9 @@ const CalendarView = ({
   weekStartsOn = 0,
   className,
 }: CalendarViewProps) => {
-  const { grid, label, goToPrevious, goToNext, goToToday } = useCalendarMonth({
+  const [range, setRange] = useState<CalendarRange>("month");
+  const { grid, label, goToPrevious, goToNext, goToToday } = useCalendarView({
+    range,
     weekStartsOn,
   });
   const byDay = useMemo(
@@ -156,7 +195,9 @@ const CalendarView = ({
         onPrevious={goToPrevious}
         onNext={goToNext}
         onToday={goToToday}
-      />
+      >
+        <RangeToggle range={range} onChange={setRange} />
+      </CalendarHeader>
       <CalendarWeekdays weekStartsOn={weekStartsOn} />
       <DragDropContext onDragEnd={handleDragEnd}>
         <CalendarGrid>
@@ -166,6 +207,7 @@ const CalendarView = ({
               day={day}
               tasks={byDay[day.key] ?? []}
               onSelectTask={onSelectTask}
+              cellClassName={range === "week" ? "min-h-64" : undefined}
             />
           ))}
         </CalendarGrid>
