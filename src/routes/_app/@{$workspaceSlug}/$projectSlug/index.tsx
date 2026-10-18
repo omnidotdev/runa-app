@@ -482,6 +482,16 @@ function AuthenticatedProjectPage() {
     });
   };
 
+  // tasks with no due date, shown in the calendar's unscheduled rail
+  const unscheduledCalendarTasks = useMemo(
+    () => calendarTasks.filter((task) => !task.dueDate),
+    [calendarTasks],
+  );
+
+  const handleUnscheduleTask = (taskId: string) => {
+    updateTask({ rowId: taskId, patch: { dueDate: null } });
+  };
+
   const onDragEnd = useCallback(
     async (result: DropResult) => {
       setIsDragging(false);
@@ -738,8 +748,10 @@ function AuthenticatedProjectPage() {
         {activeViewMode === "calendar" ? (
           <CalendarView
             tasks={calendarTasks}
+            unscheduledTasks={unscheduledCalendarTasks}
             onSelectTask={handleSelectCalendarTask}
             onReschedule={handleRescheduleTask}
+            onUnschedule={handleUnscheduleTask}
             className="px-1"
           />
         ) : (

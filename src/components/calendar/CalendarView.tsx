@@ -35,14 +35,22 @@ export interface CalendarTask {
 
 interface CalendarViewProps {
   tasks: CalendarTask[];
+  /** Tasks with no due date, shown in a side rail to drag onto a day. Pass it
+   * (even empty) to enable the rail + drag-to-unschedule; omit to hide it. */
+  unscheduledTasks?: CalendarTask[];
   /** Called when a task chip is clicked. */
   onSelectTask?: (taskId: string) => void;
-  /** Called when a task is dragged onto a different day (its new due day key). */
+  /** Called when a task is dragged onto a day (its new due day key). */
   onReschedule?: (taskId: string, dayKey: string) => void;
+  /** Called when a task is dragged into the rail (clear its due date). */
+  onUnschedule?: (taskId: string) => void;
   /** 0 = Sunday (default), 1 = Monday. */
   weekStartsOn?: 0 | 1;
   className?: string;
 }
+
+/** Droppable id for the unscheduled rail (not a day key). */
+const UNSCHEDULED_DROPPABLE = "unscheduled";
 
 /**
  * The local day (`YYYY-MM-DD`) a due date buckets onto. Runa stores `dueDate` as
@@ -63,6 +71,65 @@ const priorityTone = (priority?: string | null): CalendarItemTone =>
       : priority === "low"
         ? "success"
         : "neutral";
+
+/** A task chip wrapped as a draggable (shared by day cells and the rail). */
+const DraggableTaskChip = ({
+  task,
+  index,
+  onSelectTask,
+}: {
+  task: CalendarTask;
+  index: number;
+  onSelectTask?: (taskId: string) => void;
+}) => (
+  <Draggable draggableId={task.id} index={index}>
+    {(dragProvided, dragSnapshot) => (
+      <div
+        ref={dragProvided.innerRef}
+        {...dragProvided.draggableProps}
+        {...dragProvided.dragHandleProps}
+      >
+        <CalendarItemChip
+          isDragging={dragSnapshot.isDragging}
+          tone={priorityTone(task.priority)}
+          dots={task.labelColors}
+          onClick={() => onSelectTask?.(task.id)}
+          title={task.title}
+        >
+          {task.title}
+        </CalendarItemChip>
+      </div>
+    )}
+  </Draggable>
+);
+
+/** A compact month/week switch for the calendar header. */
+const RangeToggle = ({
+  range,
+  onChange,
+}: {
+  range: CalendarRange;
+  onChange: (next: CalendarRange) => void;
+}) => (
+  <div className="ml-1 inline-flex items-center gap-0.5 rounded-md border p-0.5">
+    {(["month", "week"] as const).map((option) => (
+      <button
+        key={option}
+        type="button"
+        aria-pressed={range === option}
+        onClick={() => onChange(option)}
+        className={cn(
+          "rounded px-2 py-1 font-medium text-xs capitalize transition-colors",
+          range === option
+            ? "bg-base-100 text-base-900 dark:bg-base-800 dark:text-base-100"
+            : "text-base-500 hover:text-base-800 dark:hover:text-base-200",
+        )}
+      >
+        {option}
+      </button>
+    ))}
+  </div>
+);
 
 /**
  * One day cell: a droppable keyed by its day key, its tasks as draggable chips,
@@ -95,25 +162,12 @@ const ProjectCalendarDay = ({
             className={cellClassName}
           >
             {visibleTasks.map((task, index) => (
-              <Draggable draggableId={task.id} index={index} key={task.id}>
-                {(dragProvided, dragSnapshot) => (
-                  <div
-                    ref={dragProvided.innerRef}
-                    {...dragProvided.draggableProps}
-                    {...dragProvided.dragHandleProps}
-                  >
-                    <CalendarItemChip
-                      isDragging={dragSnapshot.isDragging}
-                      tone={priorityTone(task.priority)}
-                      dots={task.labelColors}
-                      onClick={() => onSelectTask?.(task.id)}
-                      title={task.title}
-                    >
-                      {task.title}
-                    </CalendarItemChip>
-                  </div>
-                )}
-              </Draggable>
+              <DraggableTaskChip
+                key={task.id}
+                task={task}
+                index={index}
+                onSelectTask={onSelectTask}
+              />
             ))}
             {dropProvided.placeholder}
             {hasOverflow && (
@@ -130,46 +184,63 @@ const ProjectCalendarDay = ({
   );
 };
 
-/** A compact month/week switch for the calendar header. */
-const RangeToggle = ({
-  range,
-  onChange,
+/** Side rail of undated tasks; drag one onto a day to schedule it, or drag a
+ * dated task in here to clear its due date. */
+const UnscheduledRail = ({
+  tasks,
+  onSelectTask,
 }: {
-  range: CalendarRange;
-  onChange: (next: CalendarRange) => void;
+  tasks: CalendarTask[];
+  onSelectTask?: (taskId: string) => void;
 }) => (
-  <div className="ml-1 inline-flex items-center gap-0.5 rounded-md border p-0.5">
-    {(["month", "week"] as const).map((option) => (
-      <button
-        key={option}
-        type="button"
-        aria-pressed={range === option}
-        onClick={() => onChange(option)}
-        className={cn(
-          "rounded px-2 py-1 font-medium text-xs capitalize transition-colors",
-          range === option
-            ? "bg-base-100 text-base-900 dark:bg-base-800 dark:text-base-100"
-            : "text-base-500 hover:text-base-800 dark:hover:text-base-200",
-        )}
-      >
-        {option}
-      </button>
-    ))}
-  </div>
+  <aside className="w-44 shrink-0">
+    <div className="mb-1 px-1 font-medium text-muted-foreground text-xs">
+      Unscheduled
+    </div>
+    <Droppable droppableId={UNSCHEDULED_DROPPABLE}>
+      {(dropProvided, dropSnapshot) => (
+        <div
+          ref={dropProvided.innerRef}
+          {...dropProvided.droppableProps}
+          className={cn(
+            "flex min-h-24 flex-col gap-1 rounded-md border border-dashed p-1",
+            dropSnapshot.isDraggingOver && "bg-accent/40",
+          )}
+        >
+          {tasks.map((task, index) => (
+            <DraggableTaskChip
+              key={task.id}
+              task={task}
+              index={index}
+              onSelectTask={onSelectTask}
+            />
+          ))}
+          {dropProvided.placeholder}
+          {tasks.length === 0 && !dropSnapshot.isDraggingOver && (
+            <p className="px-1 py-2 text-muted-foreground text-xs">
+              Drag a task here to clear its due date.
+            </p>
+          )}
+        </div>
+      )}
+    </Droppable>
+  </aside>
 );
 
 /**
- * Month calendar of tasks by due date, built on @omnidotdev/cadence (headless
- * grid + drop resolution) and the @omnidotdev/thornberry/calendar primitives
- * (presentational, incl. per-day overflow + chip tint/dots). Drag-to-reschedule
- * stays here via @hello-pangea/dnd (same library as the board): each day cell is
- * a droppable and each chip a draggable; a drop resolves through cadence's
- * resolveCalendarDrop.
+ * Month/week calendar of tasks by due date, built on @omnidotdev/cadence
+ * (headless grid + drop resolution) and the @omnidotdev/thornberry/calendar
+ * primitives (presentational, incl. per-day overflow + chip tint/dots). Drag
+ * stays here via @hello-pangea/dnd (same library as the board): each day cell
+ * and the optional unscheduled rail are droppables and each chip a draggable; a
+ * drop onto a day reschedules, a drop into the rail unschedules.
  */
 const CalendarView = ({
   tasks,
+  unscheduledTasks,
   onSelectTask,
   onReschedule,
+  onUnschedule,
   weekStartsOn = 0,
   className,
 }: CalendarViewProps) => {
@@ -184,6 +255,11 @@ const CalendarView = ({
   );
 
   const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+    if (result.destination.droppableId === UNSCHEDULED_DROPPABLE) {
+      onUnschedule?.(result.draggableId);
+      return;
+    }
     const drop = resolveCalendarDrop(result);
     if (drop) onReschedule?.(drop.itemId, drop.dayKey);
   };
@@ -198,19 +274,29 @@ const CalendarView = ({
       >
         <RangeToggle range={range} onChange={setRange} />
       </CalendarHeader>
-      <CalendarWeekdays weekStartsOn={weekStartsOn} />
       <DragDropContext onDragEnd={handleDragEnd}>
-        <CalendarGrid>
-          {grid.flat().map((day) => (
-            <ProjectCalendarDay
-              key={day.key}
-              day={day}
-              tasks={byDay[day.key] ?? []}
+        <div className="flex gap-3">
+          <div className="min-w-0 flex-1">
+            <CalendarWeekdays weekStartsOn={weekStartsOn} />
+            <CalendarGrid>
+              {grid.flat().map((day) => (
+                <ProjectCalendarDay
+                  key={day.key}
+                  day={day}
+                  tasks={byDay[day.key] ?? []}
+                  onSelectTask={onSelectTask}
+                  cellClassName={range === "week" ? "min-h-64" : undefined}
+                />
+              ))}
+            </CalendarGrid>
+          </div>
+          {unscheduledTasks !== undefined && (
+            <UnscheduledRail
+              tasks={unscheduledTasks}
               onSelectTask={onSelectTask}
-              cellClassName={range === "week" ? "min-h-64" : undefined}
             />
-          ))}
-        </CalendarGrid>
+          )}
+        </div>
       </DragDropContext>
     </div>
   );
