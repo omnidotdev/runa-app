@@ -24,6 +24,18 @@ query MyCalendarTasks($organizationId: String!, $userId: UUID!) {
           }
         }
       }
+      assignees {
+        nodes {
+          taskId
+          userId
+          user {
+            rowId
+            identityProviderId
+            name
+            avatarUrl
+          }
+        }
+      }
     }
   }
 }

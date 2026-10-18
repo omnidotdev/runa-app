@@ -11807,7 +11807,7 @@ export type MyCalendarTasksQueryVariables = Exact<{
 }>;
 
 
-export type MyCalendarTasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, content: string, dueDate?: Date | null, priority: string, project?: { __typename?: 'Project', slug: string, prefix?: string | null, name: string } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string } | null }> } }> } | null };
+export type MyCalendarTasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, content: string, dueDate?: Date | null, priority: string, project?: { __typename?: 'Project', slug: string, prefix?: string | null, name: string } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
 
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -12560,6 +12560,18 @@ export const MyCalendarTasksDocument = gql`
         nodes {
           label {
             color
+          }
+        }
+      }
+      assignees {
+        nodes {
+          taskId
+          userId
+          user {
+            rowId
+            identityProviderId
+            name
+            avatarUrl
           }
         }
       }

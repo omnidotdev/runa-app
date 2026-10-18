@@ -52,6 +52,13 @@ function MyCalendarPage() {
           task.taskLabels?.nodes
             ?.map((node) => node.label?.color)
             .filter((color): color is string => Boolean(color)) ?? [],
+        assignees:
+          task.assignees?.nodes
+            ?.filter((node) => node.user)
+            .map((node) => ({
+              name: node.user!.name,
+              src: node.user!.avatarUrl,
+            })) ?? [],
       })),
     [taskNodes],
   );
