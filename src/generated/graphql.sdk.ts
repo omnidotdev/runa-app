@@ -11692,6 +11692,22 @@ export type UpdateTaskMutationVariables = Exact<{
 
 export type UpdateTaskMutation = { __typename?: 'Mutation', updateTask?: { __typename?: 'UpdateTaskPayload', task?: { __typename?: 'Task', rowId: string } | null } | null };
 
+export type CreateApiTokenMutationVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  scopes: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type CreateApiTokenMutation = { __typename?: 'Mutation', createApiToken?: { __typename?: 'CreateApiTokenPayload', id?: string | null, name?: string | null, token?: string | null } | null };
+
+export type RevokeApiTokenMutationVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+
+export type RevokeApiTokenMutation = { __typename?: 'Mutation', revokeApiToken?: { __typename?: 'RevokeApiTokenPayload', id?: string | null, revoked?: boolean | null } | null };
+
 export type CreateUserPreferenceMutationVariables = Exact<{
   input: CreateUserPreferenceInput;
 }>;
@@ -11904,6 +11920,13 @@ export type TasksQueryVariables = Exact<{
 
 
 export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } }> } | null };
+
+export type ApiTokensQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type ApiTokensQuery = { __typename?: 'Query', apiTokens?: Array<{ __typename?: 'ApiTokenInfo', id?: string | null, name?: string | null, scopes?: Array<string> | null, createdAt?: string | null, lastUsedAt?: string | null, revoked?: boolean | null }> | null };
 
 export type UserPreferencesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -12370,6 +12393,25 @@ export const UpdateTaskDocument = gql`
   }
 }
     `;
+export const CreateApiTokenDocument = gql`
+    mutation CreateApiToken($organizationId: String!, $name: String!, $scopes: [String!]!) {
+  createApiToken(
+    input: {organizationId: $organizationId, name: $name, scopes: $scopes}
+  ) {
+    id
+    name
+    token
+  }
+}
+    `;
+export const RevokeApiTokenDocument = gql`
+    mutation RevokeApiToken($id: UUID!) {
+  revokeApiToken(input: {id: $id}) {
+    id
+    revoked
+  }
+}
+    `;
 export const CreateUserPreferenceDocument = gql`
     mutation CreateUserPreference($input: CreateUserPreferenceInput!) {
   createUserPreference(input: $input) {
@@ -12799,6 +12841,18 @@ export const TasksDocument = gql`
   }
 }
     ${TaskFragmentDoc}`;
+export const ApiTokensDocument = gql`
+    query ApiTokens($organizationId: String!) {
+  apiTokens(organizationId: $organizationId) {
+    id
+    name
+    scopes
+    createdAt
+    lastUsedAt
+    revoked
+  }
+}
+    `;
 export const UserPreferencesDocument = gql`
     query UserPreferences($userId: UUID!, $projectId: UUID!) {
   userPreferenceByUserIdAndProjectId(userId: $userId, projectId: $projectId) {
@@ -12958,6 +13012,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     UpdateTask(variables: UpdateTaskMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UpdateTaskMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UpdateTaskMutation>({ document: UpdateTaskDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UpdateTask', 'mutation', variables);
     },
+    CreateApiToken(variables: CreateApiTokenMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateApiTokenMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateApiTokenMutation>({ document: CreateApiTokenDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateApiToken', 'mutation', variables);
+    },
+    RevokeApiToken(variables: RevokeApiTokenMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<RevokeApiTokenMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<RevokeApiTokenMutation>({ document: RevokeApiTokenDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'RevokeApiToken', 'mutation', variables);
+    },
     CreateUserPreference(variables: CreateUserPreferenceMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CreateUserPreferenceMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateUserPreferenceMutation>({ document: CreateUserPreferenceDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CreateUserPreference', 'mutation', variables);
     },
@@ -13041,6 +13101,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Tasks(variables: TasksQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<TasksQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TasksQuery>({ document: TasksDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Tasks', 'query', variables);
+    },
+    ApiTokens(variables: ApiTokensQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ApiTokensQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ApiTokensQuery>({ document: ApiTokensDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'ApiTokens', 'query', variables);
     },
     UserPreferences(variables: UserPreferencesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserPreferencesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserPreferencesQuery>({ document: UserPreferencesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'UserPreferences', 'query', variables);

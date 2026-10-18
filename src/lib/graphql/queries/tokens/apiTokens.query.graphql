@@ -1,0 +1,10 @@
+query ApiTokens($organizationId: String!) {
+  apiTokens(organizationId: $organizationId) {
+    id
+    name
+    scopes
+    createdAt
+    lastUsedAt
+    revoked
+  }
+}

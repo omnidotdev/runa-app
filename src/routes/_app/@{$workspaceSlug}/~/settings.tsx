@@ -3,6 +3,7 @@ import { all } from "better-all";
 
 import { NotFound } from "@/components/layout";
 import {
+  ApiTokensSettings,
   NotificationSettings,
   Projects,
   WebhooksSettings,
@@ -97,6 +98,8 @@ function SettingsPage() {
         <NotificationSettings />
 
         <WebhooksSettings />
+
+        <ApiTokensSettings />
 
         <WorkspaceBenefits />
       </div>

@@ -1,0 +1,6 @@
+mutation RevokeApiToken($id: UUID!) {
+  revokeApiToken(input: { id: $id }) {
+    id
+    revoked
+  }
+}

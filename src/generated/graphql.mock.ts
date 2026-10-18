@@ -800,6 +800,50 @@ export const mockUpdateTaskMutation = (resolver: GraphQLResponseResolver<Types.U
  * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
  * @see https://mswjs.io/docs/basics/response-resolver
  * @example
+ * mockCreateApiTokenMutation(
+ *   ({ query, variables }) => {
+ *     const { organizationId, name, scopes } = variables;
+ *     return HttpResponse.json({
+ *       data: { createApiToken }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockCreateApiTokenMutation = (resolver: GraphQLResponseResolver<Types.CreateApiTokenMutation, Types.CreateApiTokenMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.CreateApiTokenMutation, Types.CreateApiTokenMutationVariables>(
+    'CreateApiToken',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockRevokeApiTokenMutation(
+ *   ({ query, variables }) => {
+ *     const { id } = variables;
+ *     return HttpResponse.json({
+ *       data: { revokeApiToken }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockRevokeApiTokenMutation = (resolver: GraphQLResponseResolver<Types.RevokeApiTokenMutation, Types.RevokeApiTokenMutationVariables>, options?: RequestHandlerOptions) =>
+  graphql.mutation<Types.RevokeApiTokenMutation, Types.RevokeApiTokenMutationVariables>(
+    'RevokeApiToken',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
  * mockCreateUserPreferenceMutation(
  *   ({ query, variables }) => {
  *     const { input } = variables;
@@ -1407,6 +1451,28 @@ export const mockTaskByNumberQuery = (resolver: GraphQLResponseResolver<Types.Ta
 export const mockTasksQuery = (resolver: GraphQLResponseResolver<Types.TasksQuery, Types.TasksQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<Types.TasksQuery, Types.TasksQueryVariables>(
     'Tasks',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockApiTokensQuery(
+ *   ({ query, variables }) => {
+ *     const { organizationId } = variables;
+ *     return HttpResponse.json({
+ *       data: { apiTokens }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockApiTokensQuery = (resolver: GraphQLResponseResolver<Types.ApiTokensQuery, Types.ApiTokensQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<Types.ApiTokensQuery, Types.ApiTokensQueryVariables>(
+    'ApiTokens',
     resolver,
     options
   )

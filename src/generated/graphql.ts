@@ -11692,6 +11692,22 @@ export type UpdateTaskMutationVariables = Exact<{
 
 export type UpdateTaskMutation = { __typename?: 'Mutation', updateTask?: { __typename?: 'UpdateTaskPayload', task?: { __typename?: 'Task', rowId: string } | null } | null };
 
+export type CreateApiTokenMutationVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  scopes: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type CreateApiTokenMutation = { __typename?: 'Mutation', createApiToken?: { __typename?: 'CreateApiTokenPayload', id?: string | null, name?: string | null, token?: string | null } | null };
+
+export type RevokeApiTokenMutationVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+
+export type RevokeApiTokenMutation = { __typename?: 'Mutation', revokeApiToken?: { __typename?: 'RevokeApiTokenPayload', id?: string | null, revoked?: boolean | null } | null };
+
 export type CreateUserPreferenceMutationVariables = Exact<{
   input: CreateUserPreferenceInput;
 }>;
@@ -11904,6 +11920,13 @@ export type TasksQueryVariables = Exact<{
 
 
 export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } }> } | null };
+
+export type ApiTokensQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+}>;
+
+
+export type ApiTokensQuery = { __typename?: 'Query', apiTokens?: Array<{ __typename?: 'ApiTokenInfo', id?: string | null, name?: string | null, scopes?: Array<string> | null, createdAt?: string | null, lastUsedAt?: string | null, revoked?: boolean | null }> | null };
 
 export type UserPreferencesQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -13095,6 +13118,63 @@ useUpdateTaskMutation.getKey = () => ['UpdateTask'];
 
 
 useUpdateTaskMutation.fetcher = (variables: UpdateTaskMutationVariables, options?: RequestInit['headers']) => graphqlFetch<UpdateTaskMutation, UpdateTaskMutationVariables>(UpdateTaskDocument, variables, options);
+
+export const CreateApiTokenDocument = new TypedDocumentString(`
+    mutation CreateApiToken($organizationId: String!, $name: String!, $scopes: [String!]!) {
+  createApiToken(
+    input: {organizationId: $organizationId, name: $name, scopes: $scopes}
+  ) {
+    id
+    name
+    token
+  }
+}
+    `);
+
+export const useCreateApiTokenMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateApiTokenMutation, TError, CreateApiTokenMutationVariables, TContext>) => {
+    
+    return useMutation<CreateApiTokenMutation, TError, CreateApiTokenMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateApiToken'],
+    mutationFn: (variables?: CreateApiTokenMutationVariables) => graphqlFetch<CreateApiTokenMutation, CreateApiTokenMutationVariables>(CreateApiTokenDocument, variables)(),
+    ...options
+  }
+    )};
+
+useCreateApiTokenMutation.getKey = () => ['CreateApiToken'];
+
+
+useCreateApiTokenMutation.fetcher = (variables: CreateApiTokenMutationVariables, options?: RequestInit['headers']) => graphqlFetch<CreateApiTokenMutation, CreateApiTokenMutationVariables>(CreateApiTokenDocument, variables, options);
+
+export const RevokeApiTokenDocument = new TypedDocumentString(`
+    mutation RevokeApiToken($id: UUID!) {
+  revokeApiToken(input: {id: $id}) {
+    id
+    revoked
+  }
+}
+    `);
+
+export const useRevokeApiTokenMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<RevokeApiTokenMutation, TError, RevokeApiTokenMutationVariables, TContext>) => {
+    
+    return useMutation<RevokeApiTokenMutation, TError, RevokeApiTokenMutationVariables, TContext>(
+      {
+    mutationKey: ['RevokeApiToken'],
+    mutationFn: (variables?: RevokeApiTokenMutationVariables) => graphqlFetch<RevokeApiTokenMutation, RevokeApiTokenMutationVariables>(RevokeApiTokenDocument, variables)(),
+    ...options
+  }
+    )};
+
+useRevokeApiTokenMutation.getKey = () => ['RevokeApiToken'];
+
+
+useRevokeApiTokenMutation.fetcher = (variables: RevokeApiTokenMutationVariables, options?: RequestInit['headers']) => graphqlFetch<RevokeApiTokenMutation, RevokeApiTokenMutationVariables>(RevokeApiTokenDocument, variables, options);
 
 export const CreateUserPreferenceDocument = new TypedDocumentString(`
     mutation CreateUserPreference($input: CreateUserPreferenceInput!) {
@@ -15477,6 +15557,100 @@ useSuspenseInfiniteTasksQuery.getKey = (variables: TasksQueryVariables) => ['Tas
 
 
 useTasksQuery.fetcher = (variables: TasksQueryVariables, options?: RequestInit['headers']) => graphqlFetch<TasksQuery, TasksQueryVariables>(TasksDocument, variables, options);
+
+export const ApiTokensDocument = new TypedDocumentString(`
+    query ApiTokens($organizationId: String!) {
+  apiTokens(organizationId: $organizationId) {
+    id
+    name
+    scopes
+    createdAt
+    lastUsedAt
+    revoked
+  }
+}
+    `);
+
+export const useApiTokensQuery = <
+      TData = ApiTokensQuery,
+      TError = unknown
+    >(
+      variables: ApiTokensQueryVariables,
+      options?: Omit<UseQueryOptions<ApiTokensQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ApiTokensQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ApiTokensQuery, TError, TData>(
+      {
+    queryKey: ['ApiTokens', variables],
+    queryFn: graphqlFetch<ApiTokensQuery, ApiTokensQueryVariables>(ApiTokensDocument, variables),
+    ...options
+  }
+    )};
+
+useApiTokensQuery.getKey = (variables: ApiTokensQueryVariables) => ['ApiTokens', variables];
+
+export const useSuspenseApiTokensQuery = <
+      TData = ApiTokensQuery,
+      TError = unknown
+    >(
+      variables: ApiTokensQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<ApiTokensQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<ApiTokensQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<ApiTokensQuery, TError, TData>(
+      {
+    queryKey: ['ApiTokens', variables],
+    queryFn: graphqlFetch<ApiTokensQuery, ApiTokensQueryVariables>(ApiTokensDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseApiTokensQuery.getKey = (variables: ApiTokensQueryVariables) => ['ApiTokens', variables];
+
+export const useInfiniteApiTokensQuery = <
+      TData = InfiniteData<ApiTokensQuery>,
+      TError = unknown
+    >(
+      variables: ApiTokensQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<ApiTokensQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<ApiTokensQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<ApiTokensQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['ApiTokens.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<ApiTokensQuery, ApiTokensQueryVariables>(ApiTokensDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteApiTokensQuery.getKey = (variables: ApiTokensQueryVariables) => ['ApiTokens.infinite', variables];
+
+export const useSuspenseInfiniteApiTokensQuery = <
+      TData = InfiniteData<ApiTokensQuery>,
+      TError = unknown
+    >(
+      variables: ApiTokensQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<ApiTokensQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<ApiTokensQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<ApiTokensQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['ApiTokens.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<ApiTokensQuery, ApiTokensQueryVariables>(ApiTokensDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteApiTokensQuery.getKey = (variables: ApiTokensQueryVariables) => ['ApiTokens.infinite', variables];
+
+
+useApiTokensQuery.fetcher = (variables: ApiTokensQueryVariables, options?: RequestInit['headers']) => graphqlFetch<ApiTokensQuery, ApiTokensQueryVariables>(ApiTokensDocument, variables, options);
 
 export const UserPreferencesDocument = new TypedDocumentString(`
     query UserPreferences($userId: UUID!, $projectId: UUID!) {

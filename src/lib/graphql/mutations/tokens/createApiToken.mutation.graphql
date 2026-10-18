@@ -1,0 +1,13 @@
+mutation CreateApiToken(
+  $organizationId: String!
+  $name: String!
+  $scopes: [String!]!
+) {
+  createApiToken(
+    input: { organizationId: $organizationId, name: $name, scopes: $scopes }
+  ) {
+    id
+    name
+    token
+  }
+}
