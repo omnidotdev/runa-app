@@ -14,11 +14,10 @@ import { ExternalLinkIcon, InfoIcon, LayersIcon } from "lucide-react";
 import { Link } from "@/components/core";
 import { Button } from "@/components/ui/button";
 import CreateWorkspaceButton from "@/components/workspaces/CreateWorkspaceButton";
-import signIn from "@/lib/auth/signIn";
+import useReAuth from "@/lib/auth/useReAuth";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { useWorkspace } from "@/providers/WorkspaceProvider";
-import { signOutLocal } from "@/server/functions/auth";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 
 export const Route = createFileRoute("/_app/workspaces/")({
@@ -65,19 +64,7 @@ function WorkspacesOverviewPage() {
     authDegraded?: boolean;
   };
 
-  const handleReAuth = async () => {
-    // The better-auth session is still valid (only the OAuth refresh token is
-    // dead), so signing in with an active session just bounces back to the
-    // callback without re-authorizing. Clear the local session (and row-id
-    // cache) first so the OAuth redirect actually fires and mints a fresh
-    // token family.
-    try {
-      await signOutLocal();
-    } catch {
-      // Proceed with re-auth even if local sign-out fails.
-    }
-    await signIn({ redirectUrl: `${BASE_URL}/workspaces`, providerId: "omni" });
-  };
+  const handleReAuth = useReAuth(`${BASE_URL}/workspaces`);
 
   if (!organizations.length && authDegraded) {
     return (

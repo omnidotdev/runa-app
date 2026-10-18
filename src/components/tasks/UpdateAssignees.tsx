@@ -3,14 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { LayoutGridIcon, ListIcon, SearchIcon } from "lucide-react";
 
+import { isSessionDegraded } from "@/lib/auth/sessionState";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import useCookieState from "@/lib/hooks/useCookieState";
 import { withForm } from "@/lib/hooks/useForm";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
+import memberListState from "@/lib/util/memberListState";
 import { cn } from "@/lib/utils";
 import Tooltip from "../core/Tooltip";
 import { Input } from "../ui/input";
 import AssigneeList from "./AssigneeList";
+import MemberListStatus from "./MemberListStatus";
 
 export interface WorkspaceUser {
   label: string;
@@ -41,7 +44,11 @@ const UpdateAssignees = withForm({
       "grid",
     );
 
-    const { data: membersData } = useQuery({
+    const {
+      data: membersData,
+      isError: membersError,
+      refetch: refetchMembers,
+    } = useQuery({
       ...organizationMembersOptions({
         organizationId: organizationId!,
       }),
@@ -49,6 +56,15 @@ const UpdateAssignees = withForm({
     });
 
     const members = membersData?.data ?? [];
+
+    // Distinguish a load failure / degraded session from a genuinely
+    // member-less workspace so the picker never renders the misleading "No
+    // members found" when the list simply could not be loaded.
+    const listState = memberListState({
+      degraded: isSessionDegraded(session),
+      isError: membersError,
+      memberCount: members.length,
+    });
 
     const { collection: usersCollection, filter } =
       useListCollection<WorkspaceUser>({
@@ -141,7 +157,12 @@ const UpdateAssignees = withForm({
                 </div>
               </div>
 
-              {sortedItems.length === 0 ? (
+              {listState !== "list" ? (
+                <MemberListStatus
+                  state={listState}
+                  onRetry={() => refetchMembers()}
+                />
+              ) : sortedItems.length === 0 ? (
                 <p className="py-6 text-center text-xs">No members found</p>
               ) : (
                 <AssigneeList

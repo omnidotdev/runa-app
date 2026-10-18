@@ -20,14 +20,17 @@ import {
   useDeleteAssigneeMutation,
   useTasksQuery,
 } from "@/generated/graphql";
+import { isSessionDegraded } from "@/lib/auth/sessionState";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import pricesOptions from "@/lib/options/prices.options";
 import subscriptionOptions from "@/lib/options/subscription.options";
 import taskOptions from "@/lib/options/task.options";
 import { getMaxAssignees, getTierFromSubscription } from "@/lib/types/tier";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import memberListState from "@/lib/util/memberListState";
 import AssigneeLimitNotice from "./AssigneeLimitNotice";
 import AssigneeList from "./AssigneeList";
+import MemberListStatus from "./MemberListStatus";
 import { PropertyTrigger, PropertyValue } from "./propertyRow";
 
 import type { TaskQuery, TasksQuery } from "@/generated/graphql";
@@ -98,7 +101,11 @@ const AssigneesEditor = ({
   const { session } = useRouteContext({ from: "/_app" });
   const { contains } = useFilter({ sensitivity: "base" });
 
-  const { data: membersData } = useQuery({
+  const {
+    data: membersData,
+    isError: membersError,
+    refetch: refetchMembers,
+  } = useQuery({
     ...organizationMembersOptions({
       organizationId: organizationId!,
     }),
@@ -121,6 +128,15 @@ const AssigneesEditor = ({
   const maxAssignees = getMaxAssignees(tier);
 
   const members = membersData?.data ?? [];
+
+  // Distinguish a load failure / degraded session from a genuinely member-less
+  // workspace so the picker never renders the misleading "No members found"
+  // when the real problem is that the member list could not be loaded.
+  const listState = memberListState({
+    degraded: isSessionDegraded(session),
+    isError: membersError,
+    memberCount: members.length,
+  });
 
   const { collection, filter } = useListCollection<WorkspaceUser>({
     initialItems: members.map((member) => ({
@@ -308,7 +324,12 @@ const AssigneesEditor = ({
               />
             </div>
 
-            {sortedItems.length === 0 ? (
+            {listState !== "list" ? (
+              <MemberListStatus
+                state={listState}
+                onRetry={() => refetchMembers()}
+              />
+            ) : sortedItems.length === 0 ? (
               <p className="py-6 text-center text-xs">No members found</p>
             ) : (
               <AssigneeList
