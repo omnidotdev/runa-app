@@ -37,10 +37,13 @@ import {
   MenuTrigger,
   MenuTriggerItem,
 } from "@/components/ui/menu";
+import { isSessionDegraded } from "@/lib/auth/sessionState";
+import useReAuth from "@/lib/auth/useReAuth";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import labelsOptions from "@/lib/options/labels.options";
 import organizationMembersOptions from "@/lib/options/organizationMembers.options";
 import workspaceLabelsOptions from "@/lib/options/workspaceLabels.options";
+import memberListState from "@/lib/util/memberListState";
 import { cn } from "@/lib/utils";
 
 const Filter = () => {
@@ -79,7 +82,7 @@ const Filter = () => {
   const availableLabels = [...workspaceLabels, ...projectLabels];
 
   // Fetch organization members from IDP
-  const { data: membersData } = useQuery({
+  const { data: membersData, isError: membersError } = useQuery({
     ...organizationMembersOptions({
       organizationId: organizationId!,
     }),
@@ -87,6 +90,15 @@ const Filter = () => {
   });
 
   const users = membersData?.data ?? [];
+
+  // When the member list cannot be loaded (degraded session or a failed read),
+  // offer re-auth instead of a silently empty assignee filter
+  const membersState = memberListState({
+    degraded: isSessionDegraded(session),
+    isError: membersError,
+    memberCount: users.length,
+  });
+  const reAuth = useReAuth();
 
   useHotkeys(Hotkeys.ToggleFilter, () => setIsFilterOpen(!isFilterOpen), [
     isFilterOpen,
@@ -220,6 +232,15 @@ const Filter = () => {
 
                 <MenuPositioner>
                   <MenuContent className="w-48">
+                    {membersState === "degraded" || membersState === "error" ? (
+                      <MenuItem
+                        value="members-reauth"
+                        closeOnSelect={false}
+                        onSelect={reAuth}
+                      >
+                        Sign in again to load members
+                      </MenuItem>
+                    ) : null}
                     {users.map((member) => (
                       <MenuCheckboxItem
                         key={member.userId}
