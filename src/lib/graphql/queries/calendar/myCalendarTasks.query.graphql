@@ -12,6 +12,9 @@ query MyCalendarTasks($organizationId: String!, $userId: UUID!) {
       content
       dueDate
       priority
+      column {
+        isDone
+      }
       project {
         slug
         prefix

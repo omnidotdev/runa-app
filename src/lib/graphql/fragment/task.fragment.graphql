@@ -3,6 +3,9 @@ fragment Task on Task {
   number
   columnId
   columnIndex
+  column {
+    isDone
+  }
   content
   description
   priority

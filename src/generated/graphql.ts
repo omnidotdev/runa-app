@@ -916,6 +916,7 @@ export type Column = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   index: Scalars['String']['output'];
+  isDone: Scalars['Boolean']['output'];
   /** Reads a single `Project` that is related to this `Column`. */
   project?: Maybe<Project>;
   projectId: Scalars['UUID']['output'];
@@ -961,6 +962,8 @@ export type ColumnCondition = {
   icon?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `index` field. */
   index?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `isDone` field. */
+  isDone?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `projectId` field. */
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
@@ -999,6 +1002,7 @@ export type ColumnDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   icon?: InputMaybe<BigIntFilter>;
   index?: InputMaybe<BigIntFilter>;
+  isDone?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
   rowId?: InputMaybe<BigIntFilter>;
   title?: InputMaybe<BigIntFilter>;
@@ -1013,6 +1017,8 @@ export type ColumnDistinctCountAggregates = {
   icon?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of index across the matching connection */
   index?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of isDone across the matching connection */
+  isDone?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of projectId across the matching connection */
   projectId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
@@ -1042,6 +1048,8 @@ export type ColumnFilter = {
   icon?: InputMaybe<StringFilter>;
   /** Filter by the object’s `index` field. */
   index?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `isDone` field. */
+  isDone?: InputMaybe<BooleanFilter>;
   /** Negates the expression. */
   not?: InputMaybe<ColumnFilter>;
   /** Checks for any expressions in this list. */
@@ -1069,6 +1077,7 @@ export enum ColumnGroupBy {
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Icon = 'ICON',
   Index = 'INDEX',
+  IsDone = 'IS_DONE',
   ProjectId = 'PROJECT_ID',
   Title = 'TITLE',
   UpdatedAt = 'UPDATED_AT',
@@ -1141,6 +1150,7 @@ export type ColumnInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   icon?: InputMaybe<Scalars['String']['input']>;
   index: Scalars['String']['input'];
+  isDone?: InputMaybe<Scalars['Boolean']['input']>;
   projectId: Scalars['UUID']['input'];
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title: Scalars['String']['input'];
@@ -1155,6 +1165,8 @@ export enum ColumnOrderBy {
   IconDesc = 'ICON_DESC',
   IndexAsc = 'INDEX_ASC',
   IndexDesc = 'INDEX_DESC',
+  IsDoneAsc = 'IS_DONE_ASC',
+  IsDoneDesc = 'IS_DONE_DESC',
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
@@ -1217,6 +1229,7 @@ export type ColumnPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   icon?: InputMaybe<Scalars['String']['input']>;
   index?: InputMaybe<Scalars['String']['input']>;
+  isDone?: InputMaybe<Scalars['Boolean']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
@@ -6529,6 +6542,8 @@ export enum ProjectOrderBy {
   ColumnsDistinctCountIconDesc = 'COLUMNS_DISTINCT_COUNT_ICON_DESC',
   ColumnsDistinctCountIndexAsc = 'COLUMNS_DISTINCT_COUNT_INDEX_ASC',
   ColumnsDistinctCountIndexDesc = 'COLUMNS_DISTINCT_COUNT_INDEX_DESC',
+  ColumnsDistinctCountIsDoneAsc = 'COLUMNS_DISTINCT_COUNT_IS_DONE_ASC',
+  ColumnsDistinctCountIsDoneDesc = 'COLUMNS_DISTINCT_COUNT_IS_DONE_DESC',
   ColumnsDistinctCountProjectIdAsc = 'COLUMNS_DISTINCT_COUNT_PROJECT_ID_ASC',
   ColumnsDistinctCountProjectIdDesc = 'COLUMNS_DISTINCT_COUNT_PROJECT_ID_DESC',
   ColumnsDistinctCountRowIdAsc = 'COLUMNS_DISTINCT_COUNT_ROW_ID_ASC',
@@ -11447,7 +11462,7 @@ export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: strin
 
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: string, color?: string | null, background?: any | null, updatedAt: Date, createdAt: Date, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } };
 
-export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, dueHasTime: boolean, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } };
+export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, dueHasTime: boolean, column?: { __typename?: 'Column', isDone: boolean } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } };
 
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
@@ -11807,7 +11822,7 @@ export type MyCalendarTasksQueryVariables = Exact<{
 }>;
 
 
-export type MyCalendarTasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, content: string, dueDate?: Date | null, priority: string, project?: { __typename?: 'Project', slug: string, prefix?: string | null, name: string } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
+export type MyCalendarTasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, content: string, dueDate?: Date | null, priority: string, column?: { __typename?: 'Column', isDone: boolean } | null, project?: { __typename?: 'Project', slug: string, prefix?: string | null, name: string } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> } }> } | null };
 
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
@@ -11938,7 +11953,7 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, dueHasTime: boolean, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, dueHasTime: boolean, column?: { __typename?: 'Column', isDone: boolean } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } }> } | null };
 
 export type ApiTokensQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -12068,6 +12083,9 @@ export const TaskFragmentDoc = new TypedDocumentString(`
   number
   columnId
   columnIndex
+  column {
+    isDone
+  }
   content
   description
   priority
@@ -13694,6 +13712,9 @@ export const MyCalendarTasksDocument = new TypedDocumentString(`
       content
       dueDate
       priority
+      column {
+        isDone
+      }
       project {
         slug
         prefix
@@ -15478,6 +15499,9 @@ fragment Task on Task {
   number
   columnId
   columnIndex
+  column {
+    isDone
+  }
   content
   description
   priority

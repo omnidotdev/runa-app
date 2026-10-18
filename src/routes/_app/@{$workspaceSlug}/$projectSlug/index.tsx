@@ -68,6 +68,7 @@ import createMetaTags from "@/lib/util/createMetaTags";
 import { storedDueDate } from "@/lib/util/dueDate";
 import { compareKeys, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
+import isTaskOverdue from "@/lib/util/isTaskOverdue";
 import resolveActiveColumnId from "@/lib/util/resolveActiveColumnId";
 import resolveViewModeToggle, {
   type ViewMode,
@@ -468,6 +469,8 @@ function AuthenticatedProjectPage() {
               name: node.user!.name,
               src: node.user!.avatarUrl,
             })) ?? [],
+        isDone: task.column?.isDone ?? false,
+        isOverdue: isTaskOverdue(task.dueDate, task.column?.isDone ?? false),
       })),
     [tasks],
   );

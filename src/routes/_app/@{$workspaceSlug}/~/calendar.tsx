@@ -8,6 +8,7 @@ import { BASE_URL } from "@/lib/config/env.config";
 import useRescheduleTask from "@/lib/hooks/useRescheduleTask";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { storedDueDate } from "@/lib/util/dueDate";
+import isTaskOverdue from "@/lib/util/isTaskOverdue";
 import { buildTaskKey, stripMarkup } from "@/lib/util/taskUrl";
 
 export const Route = createFileRoute("/_app/@{$workspaceSlug}/~/calendar")({
@@ -59,6 +60,8 @@ function MyCalendarPage() {
               name: node.user!.name,
               src: node.user!.avatarUrl,
             })) ?? [],
+        isDone: task.column?.isDone ?? false,
+        isOverdue: isTaskOverdue(task.dueDate, task.column?.isDone ?? false),
       })),
     [taskNodes],
   );

@@ -34,6 +34,10 @@ export interface CalendarTask {
   labelColors?: string[];
   /** Assignees shown as a trailing avatar stack on the chip. */
   assignees?: CalendarItemAvatar[];
+  /** The task's column is the project's done column (struck through + muted). */
+  isDone?: boolean;
+  /** Past due and not done (a danger ring, distinct from the priority tint). */
+  isOverdue?: boolean;
 }
 
 interface CalendarViewProps {
@@ -106,6 +110,10 @@ const DraggableTaskChip = ({
           avatars={task.assignees}
           onClick={() => onSelectTask?.(task.id)}
           title={task.title}
+          className={cn(
+            task.isDone && "italic line-through opacity-60",
+            task.isOverdue && "ring-1 ring-red-400 dark:ring-red-500",
+          )}
         >
           {task.title}
         </CalendarItemChip>
