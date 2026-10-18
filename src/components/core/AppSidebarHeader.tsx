@@ -196,7 +196,7 @@ const AppSidebarHeader = () => {
                 >
                   <a href={orgDashboardUrl}>
                     <PlusIcon className="size-4" />
-                    Manage Organizations
+                    Manage Workspaces
                   </a>
                 </MenuItem>
               )}
@@ -212,7 +212,7 @@ const AppSidebarHeader = () => {
             <a href={orgDashboardUrl}>
               <PlusIcon />
 
-              <span>Manage Organizations</span>
+              <span>Manage Workspaces</span>
             </a>
           </SidebarMenuButton>
         )

@@ -185,7 +185,7 @@ function WorkspacesOverviewPage() {
                 href={gatekeeperDashboardUrl(AUTH_BASE_URL)}
                 className="inline-flex items-center gap-2 text-primary text-sm hover:underline"
               >
-                Manage Organizations
+                Manage Workspaces
                 <ExternalLinkIcon className="size-3" />
               </a>
             )}

@@ -7,7 +7,7 @@ import { authMiddleware } from "@/server/middleware";
 export type { GatekeeperOrganization as Organization } from "@omnidotdev/providers/auth";
 
 const createOrganizationSchema = z.object({
-  name: z.string().min(3, "Organization name must be at least 3 characters"),
+  name: z.string().min(3, "Workspace name must be at least 3 characters"),
   slug: z.string().optional(),
 });
 
