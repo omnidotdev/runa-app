@@ -11697,6 +11697,14 @@ export type CalendarFeedQueryVariables = Exact<{
 
 export type CalendarFeedQuery = { __typename?: 'Query', calendarFeed?: { __typename?: 'CalendarFeedStatus', projectId?: string | null, enabled?: boolean | null, createdAt?: string | null, lastUsedAt?: string | null } | null };
 
+export type MyCalendarTasksQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+  userId: Scalars['UUID']['input'];
+}>;
+
+
+export type MyCalendarTasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, content: string, dueDate?: Date | null, priority: string, project?: { __typename?: 'Project', slug: string, prefix?: string | null, name: string } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string } | null }> } }> } | null };
+
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -13362,6 +13370,115 @@ useSuspenseInfiniteCalendarFeedQuery.getKey = (variables: CalendarFeedQueryVaria
 
 
 useCalendarFeedQuery.fetcher = (variables: CalendarFeedQueryVariables, options?: RequestInit['headers']) => graphqlFetch<CalendarFeedQuery, CalendarFeedQueryVariables>(CalendarFeedDocument, variables, options);
+
+export const MyCalendarTasksDocument = new TypedDocumentString(`
+    query MyCalendarTasks($organizationId: String!, $userId: UUID!) {
+  tasks(
+    filter: {project: {organizationId: {equalTo: $organizationId}}, assignees: {some: {user: {rowId: {equalTo: $userId}}}}, dueDate: {isNull: false}}
+  ) {
+    nodes {
+      rowId
+      number
+      content
+      dueDate
+      priority
+      project {
+        slug
+        prefix
+        name
+      }
+      taskLabels {
+        nodes {
+          label {
+            color
+          }
+        }
+      }
+    }
+  }
+}
+    `);
+
+export const useMyCalendarTasksQuery = <
+      TData = MyCalendarTasksQuery,
+      TError = unknown
+    >(
+      variables: MyCalendarTasksQueryVariables,
+      options?: Omit<UseQueryOptions<MyCalendarTasksQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MyCalendarTasksQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<MyCalendarTasksQuery, TError, TData>(
+      {
+    queryKey: ['MyCalendarTasks', variables],
+    queryFn: graphqlFetch<MyCalendarTasksQuery, MyCalendarTasksQueryVariables>(MyCalendarTasksDocument, variables),
+    ...options
+  }
+    )};
+
+useMyCalendarTasksQuery.getKey = (variables: MyCalendarTasksQueryVariables) => ['MyCalendarTasks', variables];
+
+export const useSuspenseMyCalendarTasksQuery = <
+      TData = MyCalendarTasksQuery,
+      TError = unknown
+    >(
+      variables: MyCalendarTasksQueryVariables,
+      options?: Omit<UseSuspenseQueryOptions<MyCalendarTasksQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseQueryOptions<MyCalendarTasksQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseQuery<MyCalendarTasksQuery, TError, TData>(
+      {
+    queryKey: ['MyCalendarTasks', variables],
+    queryFn: graphqlFetch<MyCalendarTasksQuery, MyCalendarTasksQueryVariables>(MyCalendarTasksDocument, variables),
+    ...options
+  }
+    )};
+
+useSuspenseMyCalendarTasksQuery.getKey = (variables: MyCalendarTasksQueryVariables) => ['MyCalendarTasks', variables];
+
+export const useInfiniteMyCalendarTasksQuery = <
+      TData = InfiniteData<MyCalendarTasksQuery>,
+      TError = unknown
+    >(
+      variables: MyCalendarTasksQueryVariables,
+      options: Omit<UseInfiniteQueryOptions<MyCalendarTasksQuery, TError, TData>, 'queryKey'> & { queryKey?: UseInfiniteQueryOptions<MyCalendarTasksQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useInfiniteQuery<MyCalendarTasksQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['MyCalendarTasks.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<MyCalendarTasksQuery, MyCalendarTasksQueryVariables>(MyCalendarTasksDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useInfiniteMyCalendarTasksQuery.getKey = (variables: MyCalendarTasksQueryVariables) => ['MyCalendarTasks.infinite', variables];
+
+export const useSuspenseInfiniteMyCalendarTasksQuery = <
+      TData = InfiniteData<MyCalendarTasksQuery>,
+      TError = unknown
+    >(
+      variables: MyCalendarTasksQueryVariables,
+      options: Omit<UseSuspenseInfiniteQueryOptions<MyCalendarTasksQuery, TError, TData>, 'queryKey'> & { queryKey?: UseSuspenseInfiniteQueryOptions<MyCalendarTasksQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useSuspenseInfiniteQuery<MyCalendarTasksQuery, TError, TData>(
+      (() => {
+    const { queryKey: optionsQueryKey, ...restOptions } = options;
+    return {
+      queryKey: optionsQueryKey ?? ['MyCalendarTasks.infinite', variables],
+      queryFn: (metaData) => graphqlFetch<MyCalendarTasksQuery, MyCalendarTasksQueryVariables>(MyCalendarTasksDocument, {...variables, ...(metaData.pageParam ?? {})})(),
+      ...restOptions
+    }
+  })()
+    )};
+
+useSuspenseInfiniteMyCalendarTasksQuery.getKey = (variables: MyCalendarTasksQueryVariables) => ['MyCalendarTasks.infinite', variables];
+
+
+useMyCalendarTasksQuery.fetcher = (variables: MyCalendarTasksQueryVariables, options?: RequestInit['headers']) => graphqlFetch<MyCalendarTasksQuery, MyCalendarTasksQueryVariables>(MyCalendarTasksDocument, variables, options);
 
 export const ColumnsDocument = new TypedDocumentString(`
     query Columns($projectId: UUID!) {

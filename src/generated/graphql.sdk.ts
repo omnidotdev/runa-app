@@ -11697,6 +11697,14 @@ export type CalendarFeedQueryVariables = Exact<{
 
 export type CalendarFeedQuery = { __typename?: 'Query', calendarFeed?: { __typename?: 'CalendarFeedStatus', projectId?: string | null, enabled?: boolean | null, createdAt?: string | null, lastUsedAt?: string | null } | null };
 
+export type MyCalendarTasksQueryVariables = Exact<{
+  organizationId: Scalars['String']['input'];
+  userId: Scalars['UUID']['input'];
+}>;
+
+
+export type MyCalendarTasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, content: string, dueDate?: Date | null, priority: string, project?: { __typename?: 'Project', slug: string, prefix?: string | null, name: string } | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string } | null }> } }> } | null };
+
 export type ColumnsQueryVariables = Exact<{
   projectId: Scalars['UUID']['input'];
 }>;
@@ -12378,6 +12386,33 @@ export const CalendarFeedDocument = gql`
   }
 }
     `;
+export const MyCalendarTasksDocument = gql`
+    query MyCalendarTasks($organizationId: String!, $userId: UUID!) {
+  tasks(
+    filter: {project: {organizationId: {equalTo: $organizationId}}, assignees: {some: {user: {rowId: {equalTo: $userId}}}}, dueDate: {isNull: false}}
+  ) {
+    nodes {
+      rowId
+      number
+      content
+      dueDate
+      priority
+      project {
+        slug
+        prefix
+        name
+      }
+      taskLabels {
+        nodes {
+          label {
+            color
+          }
+        }
+      }
+    }
+  }
+}
+    `;
 export const ColumnsDocument = gql`
     query Columns($projectId: UUID!) {
   columns(condition: {projectId: $projectId}, orderBy: INDEX_ASC) {
@@ -12851,6 +12886,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     CalendarFeed(variables: CalendarFeedQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CalendarFeedQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<CalendarFeedQuery>({ document: CalendarFeedDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'CalendarFeed', 'query', variables);
+    },
+    MyCalendarTasks(variables: MyCalendarTasksQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<MyCalendarTasksQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MyCalendarTasksQuery>({ document: MyCalendarTasksDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'MyCalendarTasks', 'query', variables);
     },
     Columns(variables: ColumnsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ColumnsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ColumnsQuery>({ document: ColumnsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'Columns', 'query', variables);

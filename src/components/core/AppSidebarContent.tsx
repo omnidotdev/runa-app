@@ -4,7 +4,12 @@ import {
   CollapsibleTrigger,
 } from "@omnidotdev/thornberry/collapsible";
 import { Link, useLocation, useParams } from "@tanstack/react-router";
-import { ChevronRightIcon, LayersIcon, Settings2Icon } from "lucide-react";
+import {
+  CalendarIcon,
+  ChevronRightIcon,
+  LayersIcon,
+  Settings2Icon,
+} from "lucide-react";
 
 import {
   SidebarContent,
@@ -37,6 +42,13 @@ const AppSidebarContent = () => {
       to: "/@{$workspaceSlug}",
       icon: LayersIcon,
       label: "All Projects",
+    },
+    {
+      isActive: pathname === `/@${workspaceSlug}/~/calendar`,
+      tooltip: "My Calendar",
+      to: "/@{$workspaceSlug}/~/calendar",
+      icon: CalendarIcon,
+      label: "My Calendar",
     },
     {
       isActive: pathname === `/@${workspaceSlug}/~/settings`,

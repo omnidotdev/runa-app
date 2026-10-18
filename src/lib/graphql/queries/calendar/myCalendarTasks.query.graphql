@@ -1,0 +1,29 @@
+query MyCalendarTasks($organizationId: String!, $userId: UUID!) {
+  tasks(
+    filter: {
+      project: { organizationId: { equalTo: $organizationId } }
+      assignees: { some: { user: { rowId: { equalTo: $userId } } } }
+      dueDate: { isNull: false }
+    }
+  ) {
+    nodes {
+      rowId
+      number
+      content
+      dueDate
+      priority
+      project {
+        slug
+        prefix
+        name
+      }
+      taskLabels {
+        nodes {
+          label {
+            color
+          }
+        }
+      }
+    }
+  }
+}

@@ -24,6 +24,7 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppProfileUserIdRouteImport } from './routes/_app/profile/$userId'
 import { Route as AppAtChar123workspaceSlugChar125ProjectSlugIndexRouteImport } from './routes/_app/@{$workspaceSlug}/$projectSlug/index'
 import { Route as AppAtChar123workspaceSlugChar125Char126SettingsRouteImport } from './routes/_app/@{$workspaceSlug}/~/settings'
+import { Route as AppAtChar123workspaceSlugChar125Char126CalendarRouteImport } from './routes/_app/@{$workspaceSlug}/~/calendar'
 import { Route as AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRouteImport } from './routes/_app/@{$workspaceSlug}/$projectSlug/$taskId'
 import { Route as ApiOgProjectWorkspaceSlugProjectSlugRouteImport } from './routes/api/og/project.$workspaceSlug.$projectSlug'
 import { Route as AppAtChar123workspaceSlugChar125ProjectSlugChar126SettingsRouteImport } from './routes/_app/@{$workspaceSlug}/$projectSlug/~/settings'
@@ -106,6 +107,12 @@ const AppAtChar123workspaceSlugChar125Char126SettingsRoute =
     path: '/~/settings',
     getParentRoute: () => AppAtChar123workspaceSlugChar125Route,
   } as any)
+const AppAtChar123workspaceSlugChar125Char126CalendarRoute =
+  AppAtChar123workspaceSlugChar125Char126CalendarRouteImport.update({
+    id: '/~/calendar',
+    path: '/~/calendar',
+    getParentRoute: () => AppAtChar123workspaceSlugChar125Route,
+  } as any)
 const AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRoute =
   AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRouteImport.update({
     id: '/$projectSlug/$taskId',
@@ -144,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/@{$workspaceSlug}/': typeof AppAtChar123workspaceSlugChar125IndexRoute
   '/workspaces/': typeof AppWorkspacesIndexRoute
   '/@{$workspaceSlug}/$projectSlug/$taskId': typeof AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRoute
+  '/@{$workspaceSlug}/~/calendar': typeof AppAtChar123workspaceSlugChar125Char126CalendarRoute
   '/@{$workspaceSlug}/~/settings': typeof AppAtChar123workspaceSlugChar125Char126SettingsRoute
   '/@{$workspaceSlug}/$projectSlug/': typeof AppAtChar123workspaceSlugChar125ProjectSlugIndexRoute
   '/@{$workspaceSlug}/$projectSlug/~/settings': typeof AppAtChar123workspaceSlugChar125ProjectSlugChar126SettingsRoute
@@ -162,6 +170,7 @@ export interface FileRoutesByTo {
   '/@{$workspaceSlug}': typeof AppAtChar123workspaceSlugChar125IndexRoute
   '/workspaces': typeof AppWorkspacesIndexRoute
   '/@{$workspaceSlug}/$projectSlug/$taskId': typeof AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRoute
+  '/@{$workspaceSlug}/~/calendar': typeof AppAtChar123workspaceSlugChar125Char126CalendarRoute
   '/@{$workspaceSlug}/~/settings': typeof AppAtChar123workspaceSlugChar125Char126SettingsRoute
   '/@{$workspaceSlug}/$projectSlug': typeof AppAtChar123workspaceSlugChar125ProjectSlugIndexRoute
   '/@{$workspaceSlug}/$projectSlug/~/settings': typeof AppAtChar123workspaceSlugChar125ProjectSlugChar126SettingsRoute
@@ -184,6 +193,7 @@ export interface FileRoutesById {
   '/_app/@{$workspaceSlug}/': typeof AppAtChar123workspaceSlugChar125IndexRoute
   '/_app/workspaces/': typeof AppWorkspacesIndexRoute
   '/_app/@{$workspaceSlug}/$projectSlug/$taskId': typeof AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRoute
+  '/_app/@{$workspaceSlug}/~/calendar': typeof AppAtChar123workspaceSlugChar125Char126CalendarRoute
   '/_app/@{$workspaceSlug}/~/settings': typeof AppAtChar123workspaceSlugChar125Char126SettingsRoute
   '/_app/@{$workspaceSlug}/$projectSlug/': typeof AppAtChar123workspaceSlugChar125ProjectSlugIndexRoute
   '/_app/@{$workspaceSlug}/$projectSlug/~/settings': typeof AppAtChar123workspaceSlugChar125ProjectSlugChar126SettingsRoute
@@ -205,6 +215,7 @@ export interface FileRouteTypes {
     | '/@{$workspaceSlug}/'
     | '/workspaces/'
     | '/@{$workspaceSlug}/$projectSlug/$taskId'
+    | '/@{$workspaceSlug}/~/calendar'
     | '/@{$workspaceSlug}/~/settings'
     | '/@{$workspaceSlug}/$projectSlug/'
     | '/@{$workspaceSlug}/$projectSlug/~/settings'
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '/@{$workspaceSlug}'
     | '/workspaces'
     | '/@{$workspaceSlug}/$projectSlug/$taskId'
+    | '/@{$workspaceSlug}/~/calendar'
     | '/@{$workspaceSlug}/~/settings'
     | '/@{$workspaceSlug}/$projectSlug'
     | '/@{$workspaceSlug}/$projectSlug/~/settings'
@@ -244,6 +256,7 @@ export interface FileRouteTypes {
     | '/_app/@{$workspaceSlug}/'
     | '/_app/workspaces/'
     | '/_app/@{$workspaceSlug}/$projectSlug/$taskId'
+    | '/_app/@{$workspaceSlug}/~/calendar'
     | '/_app/@{$workspaceSlug}/~/settings'
     | '/_app/@{$workspaceSlug}/$projectSlug/'
     | '/_app/@{$workspaceSlug}/$projectSlug/~/settings'
@@ -369,6 +382,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAtChar123workspaceSlugChar125Char126SettingsRouteImport
       parentRoute: typeof AppAtChar123workspaceSlugChar125Route
     }
+    '/_app/@{$workspaceSlug}/~/calendar': {
+      id: '/_app/@{$workspaceSlug}/~/calendar'
+      path: '/~/calendar'
+      fullPath: '/@{$workspaceSlug}/~/calendar'
+      preLoaderRoute: typeof AppAtChar123workspaceSlugChar125Char126CalendarRouteImport
+      parentRoute: typeof AppAtChar123workspaceSlugChar125Route
+    }
     '/_app/@{$workspaceSlug}/$projectSlug/$taskId': {
       id: '/_app/@{$workspaceSlug}/$projectSlug/$taskId'
       path: '/$projectSlug/$taskId'
@@ -403,6 +423,7 @@ declare module '@tanstack/react-router' {
 interface AppAtChar123workspaceSlugChar125RouteChildren {
   AppAtChar123workspaceSlugChar125IndexRoute: typeof AppAtChar123workspaceSlugChar125IndexRoute
   AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRoute: typeof AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRoute
+  AppAtChar123workspaceSlugChar125Char126CalendarRoute: typeof AppAtChar123workspaceSlugChar125Char126CalendarRoute
   AppAtChar123workspaceSlugChar125Char126SettingsRoute: typeof AppAtChar123workspaceSlugChar125Char126SettingsRoute
   AppAtChar123workspaceSlugChar125ProjectSlugIndexRoute: typeof AppAtChar123workspaceSlugChar125ProjectSlugIndexRoute
   AppAtChar123workspaceSlugChar125ProjectSlugChar126SettingsRoute: typeof AppAtChar123workspaceSlugChar125ProjectSlugChar126SettingsRoute
@@ -414,6 +435,8 @@ const AppAtChar123workspaceSlugChar125RouteChildren: AppAtChar123workspaceSlugCh
       AppAtChar123workspaceSlugChar125IndexRoute,
     AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRoute:
       AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRoute,
+    AppAtChar123workspaceSlugChar125Char126CalendarRoute:
+      AppAtChar123workspaceSlugChar125Char126CalendarRoute,
     AppAtChar123workspaceSlugChar125Char126SettingsRoute:
       AppAtChar123workspaceSlugChar125Char126SettingsRoute,
     AppAtChar123workspaceSlugChar125ProjectSlugIndexRoute:
