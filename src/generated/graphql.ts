@@ -1180,6 +1180,8 @@ export enum ColumnOrderBy {
   TasksDistinctCountDescriptionDesc = 'TASKS_DISTINCT_COUNT_DESCRIPTION_DESC',
   TasksDistinctCountDueDateAsc = 'TASKS_DISTINCT_COUNT_DUE_DATE_ASC',
   TasksDistinctCountDueDateDesc = 'TASKS_DISTINCT_COUNT_DUE_DATE_DESC',
+  TasksDistinctCountDueHasTimeAsc = 'TASKS_DISTINCT_COUNT_DUE_HAS_TIME_ASC',
+  TasksDistinctCountDueHasTimeDesc = 'TASKS_DISTINCT_COUNT_DUE_HAS_TIME_DESC',
   TasksDistinctCountNumberAsc = 'TASKS_DISTINCT_COUNT_NUMBER_ASC',
   TasksDistinctCountNumberDesc = 'TASKS_DISTINCT_COUNT_NUMBER_DESC',
   TasksDistinctCountPriorityAsc = 'TASKS_DISTINCT_COUNT_PRIORITY_ASC',
@@ -6638,6 +6640,8 @@ export enum ProjectOrderBy {
   TasksDistinctCountDescriptionDesc = 'TASKS_DISTINCT_COUNT_DESCRIPTION_DESC',
   TasksDistinctCountDueDateAsc = 'TASKS_DISTINCT_COUNT_DUE_DATE_ASC',
   TasksDistinctCountDueDateDesc = 'TASKS_DISTINCT_COUNT_DUE_DATE_DESC',
+  TasksDistinctCountDueHasTimeAsc = 'TASKS_DISTINCT_COUNT_DUE_HAS_TIME_ASC',
+  TasksDistinctCountDueHasTimeDesc = 'TASKS_DISTINCT_COUNT_DUE_HAS_TIME_DESC',
   TasksDistinctCountNumberAsc = 'TASKS_DISTINCT_COUNT_NUMBER_ASC',
   TasksDistinctCountNumberDesc = 'TASKS_DISTINCT_COUNT_NUMBER_DESC',
   TasksDistinctCountPriorityAsc = 'TASKS_DISTINCT_COUNT_PRIORITY_ASC',
@@ -8231,6 +8235,7 @@ export type Task = Node & {
   createdAt: Scalars['Datetime']['output'];
   description: Scalars['String']['output'];
   dueDate?: Maybe<Scalars['Datetime']['output']>;
+  dueHasTime: Scalars['Boolean']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   number?: Maybe<Scalars['Int']['output']>;
@@ -8386,6 +8391,8 @@ export type TaskCondition = {
   description?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `dueDate` field. */
   dueDate?: InputMaybe<Scalars['Datetime']['input']>;
+  /** Checks for equality with the object’s `dueHasTime` field. */
+  dueHasTime?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `number` field. */
   number?: InputMaybe<Scalars['Int']['input']>;
   /** Checks for equality with the object’s `priority` field. */
@@ -8430,6 +8437,7 @@ export type TaskDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
   dueDate?: InputMaybe<BigIntFilter>;
+  dueHasTime?: InputMaybe<BigIntFilter>;
   number?: InputMaybe<BigIntFilter>;
   priority?: InputMaybe<BigIntFilter>;
   projectId?: InputMaybe<BigIntFilter>;
@@ -8453,6 +8461,8 @@ export type TaskDistinctCountAggregates = {
   description?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of dueDate across the matching connection */
   dueDate?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of dueHasTime across the matching connection */
+  dueHasTime?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of number across the matching connection */
   number?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of priority across the matching connection */
@@ -8506,6 +8516,8 @@ export type TaskFilter = {
   description?: InputMaybe<StringFilter>;
   /** Filter by the object’s `dueDate` field. */
   dueDate?: InputMaybe<DatetimeFilter>;
+  /** Filter by the object’s `dueHasTime` field. */
+  dueHasTime?: InputMaybe<BooleanFilter>;
   /** Negates the expression. */
   not?: InputMaybe<TaskFilter>;
   /** Filter by the object’s `number` field. */
@@ -8545,6 +8557,7 @@ export enum TaskGroupBy {
   DueDate = 'DUE_DATE',
   DueDateTruncatedToDay = 'DUE_DATE_TRUNCATED_TO_DAY',
   DueDateTruncatedToHour = 'DUE_DATE_TRUNCATED_TO_HOUR',
+  DueHasTime = 'DUE_HAS_TIME',
   Number = 'NUMBER',
   Priority = 'PRIORITY',
   ProjectId = 'PROJECT_ID',
@@ -8640,6 +8653,7 @@ export type TaskInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description: Scalars['String']['input'];
   dueDate?: InputMaybe<Scalars['Datetime']['input']>;
+  dueHasTime?: InputMaybe<Scalars['Boolean']['input']>;
   number?: InputMaybe<Scalars['Int']['input']>;
   priority?: InputMaybe<Scalars['String']['input']>;
   projectId: Scalars['UUID']['input'];
@@ -8998,6 +9012,8 @@ export enum TaskOrderBy {
   DescriptionDesc = 'DESCRIPTION_DESC',
   DueDateAsc = 'DUE_DATE_ASC',
   DueDateDesc = 'DUE_DATE_DESC',
+  DueHasTimeAsc = 'DUE_HAS_TIME_ASC',
+  DueHasTimeDesc = 'DUE_HAS_TIME_DESC',
   Natural = 'NATURAL',
   NumberAsc = 'NUMBER_ASC',
   NumberDesc = 'NUMBER_DESC',
@@ -9048,6 +9064,7 @@ export type TaskPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   dueDate?: InputMaybe<Scalars['Datetime']['input']>;
+  dueHasTime?: InputMaybe<Scalars['Boolean']['input']>;
   number?: InputMaybe<Scalars['Int']['input']>;
   priority?: InputMaybe<Scalars['String']['input']>;
   projectId?: InputMaybe<Scalars['UUID']['input']>;
@@ -10486,6 +10503,8 @@ export enum UserOrderBy {
   AuthoredTasksDistinctCountDescriptionDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_DESCRIPTION_DESC',
   AuthoredTasksDistinctCountDueDateAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_DUE_DATE_ASC',
   AuthoredTasksDistinctCountDueDateDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_DUE_DATE_DESC',
+  AuthoredTasksDistinctCountDueHasTimeAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_DUE_HAS_TIME_ASC',
+  AuthoredTasksDistinctCountDueHasTimeDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_DUE_HAS_TIME_DESC',
   AuthoredTasksDistinctCountNumberAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_NUMBER_ASC',
   AuthoredTasksDistinctCountNumberDesc = 'AUTHORED_TASKS_DISTINCT_COUNT_NUMBER_DESC',
   AuthoredTasksDistinctCountPriorityAsc = 'AUTHORED_TASKS_DISTINCT_COUNT_PRIORITY_ASC',
@@ -11428,7 +11447,7 @@ export type ProjectColumnFragment = { __typename?: 'ProjectColumn', title: strin
 
 export type ProjectFragment = { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, columnIndex: string, color?: string | null, background?: any | null, updatedAt: Date, createdAt: Date, allTasks: { __typename?: 'TaskConnection', totalCount: number }, completedTasks: { __typename?: 'TaskConnection', totalCount: number }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } };
 
-export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } };
+export type TaskFragment = { __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, dueHasTime: boolean, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } };
 
 export type CreateAssigneeMutationVariables = Exact<{
   input: CreateAssigneeInput;
@@ -11919,7 +11938,7 @@ export type TasksQueryVariables = Exact<{
 }>;
 
 
-export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } }> } | null };
+export type TasksQuery = { __typename?: 'Query', tasks?: { __typename?: 'TaskConnection', nodes: Array<{ __typename?: 'Task', rowId: string, number?: number | null, columnId: string, columnIndex: string, content: string, description: string, priority: string, dueDate?: Date | null, dueHasTime: boolean, taskLabels: { __typename?: 'TaskLabelConnection', nodes: Array<{ __typename?: 'TaskLabel', label?: { __typename?: 'Label', color: string, icon?: string | null, name: string, rowId: string, projectId?: string | null, organizationId?: string | null } | null }> }, assignees: { __typename?: 'AssigneeConnection', nodes: Array<{ __typename?: 'Assignee', taskId: string, userId: string, user?: { __typename?: 'User', rowId: string, identityProviderId: string, name: string, avatarUrl?: string | null } | null }> }, posts: { __typename?: 'PostConnection', totalCount: number }, attachments: { __typename?: 'AttachmentConnection', totalCount: number } }> } | null };
 
 export type ApiTokensQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -12053,6 +12072,7 @@ export const TaskFragmentDoc = new TypedDocumentString(`
   description
   priority
   dueDate
+  dueHasTime
   taskLabels {
     nodes {
       label {
@@ -15450,6 +15470,7 @@ fragment Task on Task {
   description
   priority
   dueDate
+  dueHasTime
   taskLabels {
     nodes {
       label {

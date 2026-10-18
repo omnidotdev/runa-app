@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import * as chrono from "chrono-node";
+import dayjs from "dayjs";
 import { useEffect, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
@@ -23,6 +24,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
+import { dueHasTime, storedDueDate } from "@/lib/util/dueDate";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { parseTaskParam } from "@/lib/util/taskUrl";
 import CreateTaskDatePicker from "./CreateTaskDatePicker";
@@ -89,10 +91,12 @@ const UpdateDueDateDialog = () => {
       dueDate: defaultDueDate ? new Date(defaultDueDate).toISOString() : "",
     },
     onSubmit: ({ value: { dueDate }, formApi }) => {
+      const value = new Date(dueDate);
       updateTask({
         rowId: taskId!,
         patch: {
-          dueDate: new Date(dueDate),
+          dueDate: value,
+          dueHasTime: dueHasTime(value),
         },
       });
 
@@ -163,12 +167,18 @@ const UpdateDueDateDialog = () => {
                   <Input
                     ref={inputRef}
                     onChange={(e) => {
-                      const parsed = chrono.parseDate(e.target.value);
-                      if (parsed) {
-                        field.handleChange(parsed.toISOString());
-                      } else {
+                      const [result] = chrono.parse(e.target.value);
+                      if (!result) {
                         field.handleChange("");
+                        return;
                       }
+                      // normalize an unset time to start-of-day (chrono defaults
+                      // it to noon) so the stored value reads back as all-day
+                      const parsed = result.start.date();
+                      const value = result.start.isCertain("hour")
+                        ? parsed
+                        : storedDueDate(dayjs(parsed).format("YYYY-MM-DD"));
+                      field.handleChange(value.toISOString());
                     }}
                     placeholder="Try: tomorrow, in 2 days, next wednesday"
                     id="due-date-input"

@@ -89,8 +89,11 @@ const DueDateEditor = ({
     },
   });
 
-  const setDueDate = (value: Date | null) =>
-    updateTask({ rowId: taskId, patch: { dueDate: value } });
+  const setDueDate = (value: Date | null, hasTime = false) =>
+    updateTask({
+      rowId: taskId,
+      patch: { dueDate: value, dueHasTime: hasTime },
+    });
 
   return (
     <DatePickerRoot
@@ -103,7 +106,10 @@ const DueDateEditor = ({
         // keep any existing time-of-day when the day changes
         const day = value[0].toString();
         const time = dueTimeValue(dueDate);
-        setDueDate(time ? storedDueDateAtTime(day, time) : storedDueDate(day));
+        setDueDate(
+          time ? storedDueDateAtTime(day, time) : storedDueDate(day),
+          !!time,
+        );
       }}
     >
       <DatePickerControl>
@@ -135,8 +141,20 @@ const DueDateEditor = ({
             onKeyDown={(event) => {
               if (event.key !== "Enter") return;
               event.preventDefault();
-              const parsed = chrono.parseDate(event.currentTarget.value);
-              if (parsed) setDueDate(parsed);
+              const [result] = chrono.parse(event.currentTarget.value);
+              if (result) {
+                // timed only when the phrase specified an hour; otherwise
+                // normalize to start-of-day (chrono defaults an unset time to
+                // noon, which would otherwise read back as a timed due date)
+                const hasTime = result.start.isCertain("hour");
+                const parsed = result.start.date();
+                setDueDate(
+                  hasTime
+                    ? parsed
+                    : storedDueDate(dayjs(parsed).format("YYYY-MM-DD")),
+                  hasTime,
+                );
+              }
             }}
           />
 
@@ -209,6 +227,7 @@ const DueDateEditor = ({
                   event.target.value
                     ? storedDueDateAtTime(day, event.target.value)
                     : storedDueDate(day),
+                  !!event.target.value,
                 );
               }}
               className="h-8 flex-1 rounded-md border bg-transparent px-2 text-sm outline-none focus-visible:ring-1 focus-visible:ring-primary"
