@@ -3,16 +3,11 @@ import { useMemo } from "react";
 
 import CalendarView from "@/components/calendar/CalendarView";
 import MyCalendarFeedButton from "@/components/calendar/MyCalendarFeedButton";
-import {
-  useMyCalendarTasksQuery,
-  useTaskQuery,
-  useTasksQuery,
-  useUpdateTaskMutation,
-} from "@/generated/graphql";
+import { useMyCalendarTasksQuery } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
+import useRescheduleTask from "@/lib/hooks/useRescheduleTask";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { storedDueDate } from "@/lib/util/dueDate";
-import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { buildTaskKey, stripMarkup } from "@/lib/util/taskUrl";
 
 export const Route = createFileRoute("/_app/@{$workspaceSlug}/~/calendar")({
@@ -44,15 +39,7 @@ function MyCalendarPage() {
   );
   const taskNodes = data?.tasks?.nodes ?? [];
 
-  const { mutate: updateTask } = useUpdateTaskMutation({
-    meta: {
-      invalidates: [
-        getQueryKeyPrefix(useMyCalendarTasksQuery),
-        getQueryKeyPrefix(useTasksQuery),
-        getQueryKeyPrefix(useTaskQuery),
-      ],
-    },
-  });
+  const reschedule = useRescheduleTask();
 
   const calendarTasks = useMemo(
     () =>
@@ -88,7 +75,7 @@ function MyCalendarPage() {
   };
 
   const onReschedule = (taskId: string, dayKey: string) =>
-    updateTask({ rowId: taskId, patch: { dueDate: storedDueDate(dayKey) } });
+    reschedule(taskId, storedDueDate(dayKey));
 
   return (
     <div className="no-scrollbar relative h-full overflow-auto px-4 py-8 lg:p-12">

@@ -58,6 +58,7 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
+import useRescheduleTask from "@/lib/hooks/useRescheduleTask";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
@@ -453,6 +454,13 @@ function AuthenticatedProjectPage() {
           task.taskLabels?.nodes
             ?.map((node) => node.label?.color)
             .filter((color): color is string => Boolean(color)) ?? [],
+        assignees:
+          task.assignees?.nodes
+            ?.filter((node) => node.user)
+            .map((node) => ({
+              name: node.user!.name,
+              src: node.user!.avatarUrl,
+            })) ?? [],
       })),
     [tasks],
   );
@@ -474,13 +482,13 @@ function AuthenticatedProjectPage() {
     });
   };
 
+  // optimistic so a dropped chip lands on its new day immediately; store local
+  // start-of-day so it reads back on this same day via the card's
+  // dayjs(dueDate).format (keeps calendar + card placement aligned)
+  const reschedule = useRescheduleTask();
+
   const handleRescheduleTask = (taskId: string, dayKey: string) => {
-    updateTask({
-      rowId: taskId,
-      // store local start-of-day so it reads back on this same day via the
-      // card's dayjs(dueDate).format (keeps calendar + card placement aligned)
-      patch: { dueDate: storedDueDate(dayKey) },
-    });
+    reschedule(taskId, storedDueDate(dayKey));
   };
 
   // tasks with no due date, shown in the calendar's unscheduled rail
@@ -490,7 +498,7 @@ function AuthenticatedProjectPage() {
   );
 
   const handleUnscheduleTask = (taskId: string) => {
-    updateTask({ rowId: taskId, patch: { dueDate: null } });
+    reschedule(taskId, null);
   };
 
   const onDragEnd = useCallback(

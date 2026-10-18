@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import type { DropResult } from "@hello-pangea/dnd";
 import type { CalendarDay } from "@omnidotdev/cadence";
 import type {
+  CalendarItemAvatar,
   CalendarItemTone,
   CalendarRange,
 } from "@omnidotdev/thornberry/calendar";
@@ -31,6 +32,8 @@ export interface CalendarTask {
   priority?: string | null;
   /** Label colors (CSS color strings) shown as dots on the chip. */
   labelColors?: string[];
+  /** Assignees shown as a trailing avatar stack on the chip. */
+  assignees?: CalendarItemAvatar[];
 }
 
 interface CalendarViewProps {
@@ -100,6 +103,7 @@ const DraggableTaskChip = ({
           isDragging={dragSnapshot.isDragging}
           tone={priorityTone(task.priority)}
           dots={task.labelColors}
+          avatars={task.assignees}
           onClick={() => onSelectTask?.(task.id)}
           title={task.title}
         >
