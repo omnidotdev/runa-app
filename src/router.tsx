@@ -28,20 +28,28 @@ export function getRouter() {
     },
     mutationCache: new MutationCache({
       onSettled: (_data, _error, _variables, _context, mutation) => {
+        const invalidates = mutation.meta?.invalidates;
+
         queryClient.invalidateQueries({
           predicate: (query) => {
             // if `all` is included in the pattern, invalidate entire cache
+            if (invalidates?.some((queryKey) => queryKey.includes("all")))
+              return true;
+
+            // Keep a task's Activity feed in lockstep with the task itself: any
+            // mutation that invalidates the task detail (assign, comment, due
+            // date, content edit) also refreshes its activity, so the new row
+            // shows at once instead of waiting for the feed's stale refetch
             if (
-              mutation.meta?.invalidates?.some((queryKey) =>
-                queryKey.includes("all"),
-              )
+              query.queryKey[0] === "TaskActivity" &&
+              invalidates?.some((queryKey) => queryKey[0] === "Task")
             )
               return true;
 
             // invalidate all matching tags at once
             // or nothing if no meta is provided
             return (
-              mutation.meta?.invalidates?.some((queryKey) =>
+              invalidates?.some((queryKey) =>
                 matchQuery({ queryKey }, query),
               ) ?? false
             );

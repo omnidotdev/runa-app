@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Image } from "@/components/core/Image";
+import { useTaskActivityQuery } from "@/generated/graphql";
 import useTier from "@/lib/hooks/useTier";
 import { formatFileSize, validateFile } from "@/lib/media/mediaConfig";
 import {
@@ -14,6 +15,7 @@ import {
 } from "@/lib/media/uploadAttachment";
 import taskAttachmentsOptions from "@/lib/options/taskAttachments.options";
 import { getMaxAttachmentBytes } from "@/lib/types/tier";
+import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { cn } from "@/lib/utils";
 
 interface AttachmentMetadata {
@@ -50,8 +52,12 @@ const AttachmentsSection = ({
   });
   const attachments = data ?? [];
 
-  const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: options.queryKey });
+  const invalidate = async () => {
+    await queryClient.invalidateQueries({ queryKey: options.queryKey });
+    await queryClient.invalidateQueries({
+      queryKey: getQueryKeyPrefix(useTaskActivityQuery),
+    });
+  };
 
   const uploadFiles = async (files: FileList | File[]) => {
     const list = Array.from(files);

@@ -17,6 +17,7 @@ import {
   useCreateLabelMutation,
   useCreateTaskLabelMutation,
   useDeleteTaskLabelMutation,
+  useTaskActivityQuery,
   useTasksQuery,
 } from "@/generated/graphql";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
@@ -113,6 +114,9 @@ const LabelsEditor = ({
     });
     await queryClient.invalidateQueries({
       queryKey: workspaceLabelsOptions({ organizationId }).queryKey,
+    });
+    await queryClient.invalidateQueries({
+      queryKey: getQueryKeyPrefix(useTaskActivityQuery),
     });
   };
 
