@@ -13,6 +13,7 @@ import {
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 
+import useMounted from "@/lib/hooks/useMounted";
 import { cn } from "@/lib/utils";
 
 import type { DropResult } from "@hello-pangea/dnd";
@@ -102,6 +103,7 @@ const DraggableTaskChip = ({
         ref={dragProvided.innerRef}
         {...dragProvided.draggableProps}
         {...dragProvided.dragHandleProps}
+        className="outline-none"
       >
         <CalendarItemChip
           isDragging={dragSnapshot.isDragging}
@@ -111,6 +113,9 @@ const DraggableTaskChip = ({
           onClick={() => onSelectTask?.(task.id)}
           title={task.title}
           className={cn(
+            // replace the browser's default focus outline with a keyboard-only
+            // ring so a clicked chip does not keep a stray outline
+            "outline-none focus-visible:ring-2 focus-visible:ring-primary",
             task.isDone && "italic line-through opacity-60",
             task.isOverdue && "ring-1 ring-red-400 dark:ring-red-500",
           )}
@@ -268,9 +273,16 @@ const CalendarView = ({
     range,
     weekStartsOn,
   });
+  // Day bucketing depends on the viewer's local time zone (dueDayKey formats in
+  // local time), which the server cannot know. Bucketing on the server would
+  // place a near-midnight task in a different cell than the client, so the chip
+  // would visibly jump on hydration. Defer bucketing to the client: the grid
+  // renders empty until mounted, then fills each chip in its correct local day.
+  const mounted = useMounted();
   const byDay = useMemo(
-    () => bucketByDay(tasks, (task) => dueDayKey(task.dueDate)),
-    [tasks],
+    () =>
+      mounted ? bucketByDay(tasks, (task) => dueDayKey(task.dueDate)) : {},
+    [tasks, mounted],
   );
 
   const handleDragEnd = (result: DropResult) => {
@@ -310,7 +322,14 @@ const CalendarView = ({
                   day={day}
                   tasks={byDay[day.key] ?? []}
                   onSelectTask={onSelectTask}
-                  cellClassName={range === "week" ? "min-h-64" : undefined}
+                  // cap the cell height and scroll its items instead of letting
+                  // a busy day stretch the whole grid row; the "+N more" toggle
+                  // still collapses by default
+                  cellClassName={
+                    range === "week"
+                      ? "min-h-64 max-h-80 overflow-y-auto"
+                      : "max-h-40 overflow-y-auto"
+                  }
                 />
               ))}
             </CalendarGrid>

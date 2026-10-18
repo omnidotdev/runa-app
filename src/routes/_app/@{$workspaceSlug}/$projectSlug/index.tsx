@@ -777,7 +777,7 @@ function AuthenticatedProjectPage() {
               onSelectTask={handleSelectCalendarTask}
               onReschedule={handleRescheduleTask}
               onUnschedule={handleUnscheduleTask}
-              className="px-1"
+              className="px-6"
             />
           </div>
         ) : (
