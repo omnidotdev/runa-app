@@ -218,7 +218,7 @@ const UnscheduledRail = ({
   tasks: CalendarTask[];
   onSelectTask?: (taskId: string) => void;
 }) => (
-  <aside className="w-44 shrink-0">
+  <aside className="w-full md:w-44 md:shrink-0">
     <div className="mb-1 px-1 font-medium text-muted-foreground text-xs">
       Unscheduled
     </div>
@@ -307,7 +307,7 @@ const CalendarView = ({
         <RangeToggle range={range} onChange={setRange} />
       </CalendarHeader>
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 md:flex-row">
           <div className="min-w-0 flex-1">
             {/* close the grid frame on the left/top so it matches the cells'
                 own right/bottom borders (otherwise the grid is open on the
