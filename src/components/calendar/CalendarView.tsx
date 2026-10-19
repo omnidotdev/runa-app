@@ -120,7 +120,9 @@ const DraggableTaskChip = ({
               // outline and ring (the chip opens on click, not a tab target)
               "outline-none focus:outline-none focus-visible:outline-none",
               task.isDone && "italic line-through opacity-60",
-              task.isOverdue && "ring-1 ring-red-400 dark:ring-red-500",
+              // overdue (past due, not done): red text, not a ring (a ring
+              // reads as a stray selection outline around the chip)
+              task.isOverdue && "font-medium text-red-600 dark:text-red-400",
             )}
           >
             {task.title}
