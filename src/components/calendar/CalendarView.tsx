@@ -12,6 +12,7 @@ import {
 } from "@omnidotdev/thornberry/calendar";
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 
 import useMounted from "@/lib/hooks/useMounted";
 import { cn } from "@/lib/utils";
@@ -98,33 +99,45 @@ const DraggableTaskChip = ({
     index={index}
     disableInteractiveElementBlocking
   >
-    {(dragProvided, dragSnapshot) => (
-      <div
-        ref={dragProvided.innerRef}
-        {...dragProvided.draggableProps}
-        {...dragProvided.dragHandleProps}
-        className="outline-none"
-      >
-        <CalendarItemChip
-          isDragging={dragSnapshot.isDragging}
-          tone={priorityTone(task.priority)}
-          dots={task.labelColors}
-          avatars={task.assignees}
-          onClick={() => onSelectTask?.(task.id)}
-          title={task.title}
-          className={cn(
-            // the drag library focuses a chip on click/drop, which with a focus
-            // ring reads as a stray outline, so suppress the focus outline and
-            // ring entirely (the chip opens on click, it is not a tab target)
-            "outline-none focus:outline-none focus-visible:outline-none",
-            task.isDone && "italic line-through opacity-60",
-            task.isOverdue && "ring-1 ring-red-400 dark:ring-red-500",
-          )}
+    {(dragProvided, dragSnapshot) => {
+      const node = (
+        <div
+          ref={dragProvided.innerRef}
+          {...dragProvided.draggableProps}
+          {...dragProvided.dragHandleProps}
+          className="outline-none"
         >
-          {task.title}
-        </CalendarItemChip>
-      </div>
-    )}
+          <CalendarItemChip
+            isDragging={dragSnapshot.isDragging}
+            tone={priorityTone(task.priority)}
+            dots={task.labelColors}
+            avatars={task.assignees}
+            onClick={() => onSelectTask?.(task.id)}
+            title={task.title}
+            className={cn(
+              // the drag library focuses a chip on click/drop, which with a
+              // focus ring reads as a stray outline, so suppress the focus
+              // outline and ring (the chip opens on click, not a tab target)
+              "outline-none focus:outline-none focus-visible:outline-none",
+              task.isDone && "italic line-through opacity-60",
+              task.isOverdue && "ring-1 ring-red-400 dark:ring-red-500",
+            )}
+          >
+            {task.title}
+          </CalendarItemChip>
+        </div>
+      );
+
+      // While dragging, render the lifted chip into a body-level portal so it
+      // escapes the day cell's overflow clipping. This library lifts the item
+      // with a transform, and any ancestor with overflow != visible would clip
+      // it (snapping it to the cell top), so the portal is what lets the cells
+      // scroll AND drag still work. The library keeps the item's size via the
+      // dragging style, so it stays the same width in the portal.
+      return dragSnapshot.isDragging && typeof document !== "undefined"
+        ? createPortal(node, document.body)
+        : node;
+    }}
   </Draggable>
 );
 
@@ -323,13 +336,15 @@ const CalendarView = ({
                   day={day}
                   tasks={byDay[day.key] ?? []}
                   onSelectTask={onSelectTask}
-                  // NB: no overflow/scroll or fixed height on the cell. This
-                  // library lifts a dragged chip with a transform, and any
-                  // ancestor with overflow != visible clips it (the chip would
-                  // snap to the cell top mid-drag) and can strand it with a
-                  // stuck drag ring. The "+N more" toggle bounds a busy day
-                  // instead; a scrollable cell needs a drag portal (follow-up)
-                  cellClassName={range === "week" ? "min-h-64" : undefined}
+                  // Fixed-height cells that scroll their items (uniform rows, no
+                  // stretching). Safe now that a dragged chip renders in a body
+                  // portal (see DraggableTaskChip), so the cell's overflow no
+                  // longer clips the lifted item mid-drag
+                  cellClassName={
+                    range === "week"
+                      ? "h-96 overflow-y-auto"
+                      : "h-32 overflow-y-auto"
+                  }
                 />
               ))}
             </CalendarGrid>
