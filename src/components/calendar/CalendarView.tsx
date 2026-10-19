@@ -323,14 +323,13 @@ const CalendarView = ({
                   day={day}
                   tasks={byDay[day.key] ?? []}
                   onSelectTask={onSelectTask}
-                  // cap the cell height and scroll its items instead of letting
-                  // a busy day stretch the whole grid row; the "+N more" toggle
-                  // still collapses by default
-                  cellClassName={
-                    range === "week"
-                      ? "h-96 overflow-y-auto"
-                      : "h-32 overflow-y-auto"
-                  }
+                  // NB: no overflow/scroll or fixed height on the cell. This
+                  // library lifts a dragged chip with a transform, and any
+                  // ancestor with overflow != visible clips it (the chip would
+                  // snap to the cell top mid-drag) and can strand it with a
+                  // stuck drag ring. The "+N more" toggle bounds a busy day
+                  // instead; a scrollable cell needs a drag portal (follow-up)
+                  cellClassName={range === "week" ? "min-h-64" : undefined}
                 />
               ))}
             </CalendarGrid>
