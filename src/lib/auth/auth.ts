@@ -32,6 +32,12 @@ if (AUTH_CLIENT_ID && AUTH_CLIENT_SECRET && AUTH_BASE_URL) {
     scopes: ["openid", "profile", "email", "offline_access", "organization"],
     accessType: "offline",
     pkce: true,
+    // Force the Gatekeeper login screen on every sign-in instead of silently
+    // reusing an existing IdP session. Sign-out clears Runa's session but the
+    // IdP session can linger, which otherwise re-logs the user straight back
+    // into the same account; prompt=login lets them re-authenticate as a
+    // different account.
+    authorizationUrlParams: { prompt: "login" },
     // better-auth 1.7 tightened the mapped-user return type; the IDP's custom
     // `email_verified`/`picture` claims arrive untyped, so coerce them
     mapProfileToUser: (profile) => ({
