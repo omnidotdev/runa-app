@@ -22,7 +22,7 @@ export function useCurrentUserRole(
 
   if (!organizationId || !orgContext) return undefined;
 
-  const org = orgContext.getOrganizationById(organizationId);
+  const org = orgContext.getWorkspaceById(organizationId);
   if (!org) return undefined;
 
   // The roles array contains the user's roles in this org

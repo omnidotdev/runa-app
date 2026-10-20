@@ -20,7 +20,7 @@ export default function WorkspaceSettingsHeader() {
 
   // Resolve org name from JWT claims
   const orgName = organizationId
-    ? orgContext?.getOrganizationById(organizationId)?.name
+    ? orgContext?.getWorkspaceById(organizationId)?.name
     : undefined;
 
   // Derive tier from subscription

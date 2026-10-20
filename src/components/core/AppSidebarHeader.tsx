@@ -64,7 +64,7 @@ const AppSidebarHeader = () => {
   const orgContext = useWorkspace();
 
   // Get user's organizations from context
-  const organizations = orgContext?.organizations ?? [];
+  const organizations = orgContext?.workspaces ?? [];
 
   // Org/workspace lifecycle lives on the Gatekeeper identity dashboard
   const orgDashboardUrl = AUTH_BASE_URL
