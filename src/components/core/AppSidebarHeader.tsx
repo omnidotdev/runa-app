@@ -6,6 +6,7 @@ import {
 } from "@omnidotdev/thornberry/avatar";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import { LogoLockup } from "@omnidotdev/thornberry/logo-lockup";
+import { useQuery } from "@tanstack/react-query";
 import {
   useLocation,
   useNavigate,
@@ -35,6 +36,7 @@ import {
 } from "@/components/ui/sidebar";
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import organizationBySlugOptions from "@/lib/options/organizationBySlug.options";
 import getDomainLabel from "@/lib/util/getDomainLabel";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/providers/WorkspaceProvider";
@@ -80,6 +82,11 @@ const AppSidebarHeader = () => {
     ? organizations.find((org) => org.slug === workspaceSlug)
     : undefined;
   const currentOrgName = currentOrg?.name;
+
+  // Prefer freshly fetched links over the cached JWT claim so account-hub edits
+  // show quickly; fall back to the claim while the live fetch loads.
+  const { data: liveOrg } = useQuery(organizationBySlugOptions(workspaceSlug));
+  const workspaceLinks = liveOrg?.links ?? currentOrg?.links ?? [];
 
   return (
     <SidebarHeader>
@@ -220,9 +227,9 @@ const AppSidebarHeader = () => {
         )
       )}
 
-      {currentOrg?.links?.length ? (
+      {workspaceLinks.length ? (
         <div className="mt-2 flex flex-col gap-0.5 group-data-[collapsible=icon]:hidden">
-          {currentOrg.links.map((link) => (
+          {workspaceLinks.map((link) => (
             <a
               key={link.url}
               href={link.url}
