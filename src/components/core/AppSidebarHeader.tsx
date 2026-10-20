@@ -19,7 +19,7 @@ import {
   PlusIcon,
 } from "lucide-react";
 
-import { Favicon, Tooltip } from "@/components/core";
+import { Favicon } from "@/components/core";
 import {
   MenuContent,
   MenuItem,
@@ -221,22 +221,20 @@ const AppSidebarHeader = () => {
       )}
 
       {currentOrg?.links?.length ? (
-        <div className="mt-2 flex flex-wrap items-center gap-0.5 group-data-[collapsible=icon]:hidden">
+        <div className="mt-2 flex flex-col gap-0.5 group-data-[collapsible=icon]:hidden">
           {currentOrg.links.map((link) => (
-            <Tooltip
+            <a
               key={link.url}
-              tooltip={link.title || getDomainLabel(link.url)}
-              trigger={
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-md p-1.5 text-base-500 hover:bg-sidebar-accent hover:text-foreground dark:text-base-400"
-                >
-                  <Favicon url={link.url} />
-                </a>
-              }
-            />
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-md px-2 py-1 text-base-500 text-sm hover:bg-sidebar-accent hover:text-foreground dark:text-base-400"
+            >
+              <Favicon url={link.url} />
+              <span className="truncate">
+                {link.title || getDomainLabel(link.url)}
+              </span>
+            </a>
           ))}
         </div>
       ) : null}
