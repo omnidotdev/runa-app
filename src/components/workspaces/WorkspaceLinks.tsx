@@ -1,10 +1,12 @@
 import { gatekeeperOrgManageUrl } from "@omnidotdev/providers/react";
+import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useParams } from "@tanstack/react-router";
 import { ExternalLinkIcon } from "lucide-react";
 
 import { Favicon } from "@/components/core";
 import { buttonVariants } from "@/components/ui/button";
 import { ACCOUNT_URL } from "@/lib/config/env.config";
+import organizationBySlugOptions from "@/lib/options/organizationBySlug.options";
 import getDomainLabel from "@/lib/util/getDomainLabel";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/providers/WorkspaceProvider";
@@ -30,7 +32,10 @@ const WorkspaceLinks = () => {
     ? orgContext?.getWorkspaceById(organizationId)
     : undefined;
 
-  const links = org?.links ?? [];
+  // Prefer a live fetch so links edited in the account hub show without waiting
+  // for the JWT claim to refresh; fall back to the claim while it loads.
+  const { data: liveOrg } = useQuery(organizationBySlugOptions(workspaceSlug));
+  const links = liveOrg?.links ?? org?.links ?? [];
 
   const manageUrl = ACCOUNT_URL
     ? gatekeeperOrgManageUrl(ACCOUNT_URL, workspaceSlug)
