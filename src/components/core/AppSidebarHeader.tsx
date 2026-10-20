@@ -19,6 +19,7 @@ import {
   PlusIcon,
 } from "lucide-react";
 
+import { Favicon, Tooltip } from "@/components/core";
 import {
   MenuContent,
   MenuItem,
@@ -34,6 +35,7 @@ import {
 } from "@/components/ui/sidebar";
 import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import getDomainLabel from "@/lib/util/getDomainLabel";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/providers/WorkspaceProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
@@ -217,6 +219,27 @@ const AppSidebarHeader = () => {
           </SidebarMenuButton>
         )
       )}
+
+      {currentOrg?.links?.length ? (
+        <div className="mt-2 flex flex-wrap items-center gap-0.5 group-data-[collapsible=icon]:hidden">
+          {currentOrg.links.map((link) => (
+            <Tooltip
+              key={link.url}
+              tooltip={link.title || getDomainLabel(link.url)}
+              trigger={
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-md p-1.5 text-base-500 hover:bg-sidebar-accent hover:text-foreground dark:text-base-400"
+                >
+                  <Favicon url={link.url} />
+                </a>
+              }
+            />
+          ))}
+        </div>
+      ) : null}
     </SidebarHeader>
   );
 };
