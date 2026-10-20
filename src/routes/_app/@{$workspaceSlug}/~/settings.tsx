@@ -9,6 +9,7 @@ import {
   WebhooksSettings,
   WorkspaceBenefits,
   WorkspaceColumnsForm,
+  WorkspaceLinks,
   WorkspaceMembers,
   WorkspaceSettingsHeader,
 } from "@/components/workspaces";
@@ -90,6 +91,8 @@ function SettingsPage() {
 
       <div className="ml-2 flex flex-col gap-12 lg:ml-0">
         <WorkspaceMembers />
+
+        <WorkspaceLinks />
 
         <Projects />
 
