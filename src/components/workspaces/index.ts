@@ -10,5 +10,6 @@ export { default as WebhooksSettings } from "./WebhooksSettings";
 export { default as WorkspaceBenefits } from "./WorkspaceBenefits";
 export { default as WorkspaceColumnForm } from "./WorkspaceColumnForm";
 export { default as WorkspaceColumnsForm } from "./WorkspaceColumnsForm";
+export { default as WorkspaceLinks } from "./WorkspaceLinks";
 export { default as WorkspaceMembers } from "./WorkspaceMembers";
 export { default as WorkspaceSettingsHeader } from "./WorkspaceSettingsHeader";
