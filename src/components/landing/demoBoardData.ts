@@ -1,3 +1,7 @@
+import dayjs from "dayjs";
+
+import { storedDueDate } from "@/lib/util/dueDate";
+
 export interface DemoLabel {
   name: string;
   color: string;
@@ -18,7 +22,16 @@ export interface DemoTask {
   priority: "high" | "medium" | "low" | null;
   labels: DemoLabel[];
   assignees: DemoAssignee[];
+  /** Local start-of-day instant, or null when unscheduled (shown in the
+   * calendar's unscheduled rail). Stored via `storedDueDate` so the calendar
+   * buckets it the same way the real app does. */
+  dueDate: Date | null;
 }
+
+/** A local day relative to today, so the demo tasks always land in the visible
+ * month regardless of when the page is viewed. */
+const demoDueDate = (offsetDays: number): Date =>
+  storedDueDate(dayjs().add(offsetDays, "day").format("YYYY-MM-DD"));
 
 export interface DemoColumn {
   rowId: string;
@@ -42,6 +55,8 @@ export const initialDemoTasks: DemoTask[] = [
     priority: "high",
     labels: [{ name: "Design", color: "#8b5cf6" }],
     assignees: [{ name: "Alex", color: "#3b82f6" }],
+    // past due and not done -> renders overdue (red) on the calendar
+    dueDate: demoDueDate(-2),
   },
   {
     rowId: "task-2",
@@ -52,6 +67,8 @@ export const initialDemoTasks: DemoTask[] = [
     priority: "medium",
     labels: [{ name: "DevOps", color: "#f59e0b" }],
     assignees: [],
+    // unscheduled -> shown in the calendar's unscheduled rail
+    dueDate: null,
   },
   {
     rowId: "task-3",
@@ -62,6 +79,7 @@ export const initialDemoTasks: DemoTask[] = [
     priority: "low",
     labels: [{ name: "Docs", color: "#6366f1" }],
     assignees: [{ name: "Casey", color: "#10b981" }],
+    dueDate: demoDueDate(3),
   },
   {
     rowId: "task-4",
@@ -75,5 +93,7 @@ export const initialDemoTasks: DemoTask[] = [
       { name: "Alex", color: "#3b82f6" },
       { name: "Jordan", color: "#ec4899" },
     ],
+    // done -> struck through on the calendar, never overdue
+    dueDate: demoDueDate(-1),
   },
 ];

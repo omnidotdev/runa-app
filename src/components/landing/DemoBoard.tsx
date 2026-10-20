@@ -8,16 +8,15 @@ import {
 } from "@omnidotdev/thornberry/collapsible";
 import {
   CalendarIcon,
-  Grid2X2Icon,
-  ListIcon,
   MoonIcon,
   SunIcon,
   TagIcon,
   UserIcon,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { LabelIcon, Shortcut, Tooltip } from "@/components/core";
+import CalendarView from "@/components/calendar/CalendarView";
+import { LabelIcon, Shortcut, Tooltip, ViewModeTabs } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +32,8 @@ import signIn from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useAutoScrollOnDrag from "@/lib/hooks/useAutoScrollOnDrag";
+import { formatDueDate, storedDueDate } from "@/lib/util/dueDate";
+import isTaskOverdue from "@/lib/util/isTaskOverdue";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
 import DemoBoardItem from "./DemoBoardItem";
@@ -40,9 +41,17 @@ import DemoListItem from "./DemoListItem";
 import { demoColumns, initialDemoTasks } from "./demoBoardData";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
+import type { CalendarTask } from "@/components/calendar/CalendarView";
+import type { ViewMode } from "@/lib/util/resolveViewModeToggle";
 import type { DemoTask } from "./demoBoardData";
 
 const DEMO_PROJECT_PREFIX = "DEMO";
+
+/** The demo board's done column (tasks here read as done on the calendar). */
+const DEMO_DONE_COLUMN_ID = "col-done";
+
+/** Cycle order for the view-mode hotkey, matching the real app. */
+const VIEW_MODE_CYCLE: ViewMode[] = ["board", "list", "calendar"];
 
 /** 3 columns (320px) + 2 gaps (12px) + padding (32px) */
 const BOARD_WIDTH = 3 * 320 + 2 * 12 + 32;
@@ -55,7 +64,7 @@ const DemoBoard = () => {
   const { theme, setTheme } = useTheme();
   const [tasks, setTasks] = useState<DemoTask[]>(initialDemoTasks);
   const [selectedTask, setSelectedTask] = useState<DemoTask | null>(null);
-  const [viewMode, setViewMode] = useState<"board" | "list">("board");
+  const [viewMode, setViewMode] = useState<ViewMode>("board");
   const [columnOpenStates, setColumnOpenStates] = useState(
     demoColumns.map(() => true),
   );
@@ -73,7 +82,12 @@ const DemoBoard = () => {
   } = useInertialScroll();
 
   const toggleViewMode = useCallback(
-    () => setViewMode((prev) => (prev === "board" ? "list" : "board")),
+    () =>
+      setViewMode((prev) => {
+        const next =
+          (VIEW_MODE_CYCLE.indexOf(prev) + 1) % VIEW_MODE_CYCLE.length;
+        return VIEW_MODE_CYCLE[next]!;
+      }),
     [],
   );
 
@@ -204,6 +218,50 @@ const DemoBoard = () => {
   const getDisplayId = (task: DemoTask) =>
     `${DEMO_PROJECT_PREFIX}-${task.number}`;
 
+  // Map the demo tasks onto the calendar's task shape, mirroring the real
+  // project view (priority tint, label-color dots, assignee avatars, done +
+  // overdue treatment).
+  const calendarTasks: CalendarTask[] = useMemo(
+    () =>
+      tasks.map((task) => {
+        const isDone = task.columnId === DEMO_DONE_COLUMN_ID;
+        return {
+          id: task.rowId,
+          title: task.content,
+          dueDate: task.dueDate,
+          priority: task.priority,
+          labelColors: task.labels.map((label) => label.color),
+          assignees: task.assignees.map((assignee) => ({
+            name: assignee.name,
+            src: assignee.avatarUrl,
+          })),
+          isDone,
+          isOverdue: isTaskOverdue(task.dueDate, isDone),
+        };
+      }),
+    [tasks],
+  );
+
+  const unscheduledCalendarTasks = useMemo(
+    () => calendarTasks.filter((task) => !task.dueDate),
+    [calendarTasks],
+  );
+
+  const setTaskDueDate = (taskId: string, dueDate: Date | null) =>
+    setTasks((prev) =>
+      prev.map((task) => (task.rowId === taskId ? { ...task, dueDate } : task)),
+    );
+
+  const handleRescheduleTask = (taskId: string, dayKey: string) =>
+    setTaskDueDate(taskId, storedDueDate(dayKey));
+
+  const handleUnscheduleTask = (taskId: string) => setTaskDueDate(taskId, null);
+
+  const handleSelectCalendarTask = (taskId: string) => {
+    const task = tasks.find((candidate) => candidate.rowId === taskId);
+    if (task) setSelectedTask(task);
+  };
+
   return (
     <div
       ref={containerRef}
@@ -232,183 +290,170 @@ const DemoBoard = () => {
             </Button>
           }
         />
-        <Tooltip
-          positioning={{ placement: "bottom" }}
-          tooltip={viewMode === "list" ? "Board View" : "List View"}
-          shortcut={Hotkeys.ToggleViewMode.toUpperCase()}
-          trigger={
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleViewMode}
-              className="gap-2 text-base-600 text-xs dark:text-base-400"
-            >
-              {viewMode === "list" ? (
-                <>
-                  <Grid2X2Icon className="size-4" />
-                  Board View
-                </>
-              ) : (
-                <>
-                  <ListIcon className="size-4" />
-                  List View
-                </>
-              )}
-              <Shortcut>{Hotkeys.ToggleViewMode.toUpperCase()}</Shortcut>
-            </Button>
-          }
-        />
+        <ViewModeTabs value={viewMode} onChange={setViewMode} />
       </div>
 
-      <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-        {viewMode === "board" ? (
-          <div
-            ref={scrollContainerRef}
-            className="custom-scrollbar max-w-full cursor-grab overflow-x-auto bg-base-100/50 dark:bg-base-900/20"
-            style={{ height: BOARD_HEIGHT }}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-          >
-            <div className="flex h-full w-max gap-3 p-4">
-              {demoColumns.map((column) => {
-                const columnTasks = getColumnTasks(column.rowId);
+      {viewMode === "calendar" ? (
+        <div className="bg-base-100/50 p-4 dark:bg-base-900/20">
+          <CalendarView
+            tasks={calendarTasks}
+            unscheduledTasks={unscheduledCalendarTasks}
+            onSelectTask={handleSelectCalendarTask}
+            onReschedule={handleRescheduleTask}
+            onUnschedule={handleUnscheduleTask}
+          />
+        </div>
+      ) : (
+        <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+          {viewMode === "board" ? (
+            <div
+              ref={scrollContainerRef}
+              className="custom-scrollbar max-w-full cursor-grab overflow-x-auto bg-base-100/50 dark:bg-base-900/20"
+              style={{ height: BOARD_HEIGHT }}
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+            >
+              <div className="flex h-full w-max gap-3 p-4">
+                {demoColumns.map((column) => {
+                  const columnTasks = getColumnTasks(column.rowId);
 
-                return (
-                  <div
-                    key={column.rowId}
-                    className="relative flex h-full w-80 shrink-0 flex-col gap-2"
-                  >
-                    {/* column header */}
-                    <div className="mb-1 flex items-center justify-between rounded-lg py-2">
-                      <div className="flex items-center gap-2">
-                        <LabelIcon icon={column.icon} className="size-4" />
-                        <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
-                          {column.title}
-                        </h3>
-                        <span className="flex size-7 items-center justify-center rounded-full font-semibold text-foreground text-xs tabular-nums">
-                          {columnTasks.length}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* droppable column */}
-                    <Droppable droppableId={column.rowId}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                          className={cn(
-                            "custom-scrollbar flex flex-1 flex-col overflow-y-auto rounded-xl",
-                            snapshot.isDraggingOver &&
-                              "bg-primary-100/40 dark:bg-primary-950/40",
-                          )}
-                        >
-                          {columnTasks.map((task, index) => (
-                            <DemoBoardItem
-                              key={task.rowId}
-                              task={task}
-                              index={index}
-                              displayId={getDisplayId(task)}
-                              onSelect={() => setSelectedTask(task)}
-                              isFirst={index === 0}
-                            />
-                          ))}
-                          {provided.placeholder}
+                  return (
+                    <div
+                      key={column.rowId}
+                      className="relative flex h-full w-80 shrink-0 flex-col gap-2"
+                    >
+                      {/* column header */}
+                      <div className="mb-1 flex items-center justify-between rounded-lg py-2">
+                        <div className="flex items-center gap-2">
+                          <LabelIcon icon={column.icon} className="size-4" />
+                          <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
+                            {column.title}
+                          </h3>
+                          <span className="flex size-7 items-center justify-center rounded-full font-semibold text-foreground text-xs tabular-nums">
+                            {columnTasks.length}
+                          </span>
                         </div>
-                      )}
-                    </Droppable>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ) : (
-          <div
-            className="custom-scrollbar overflow-y-auto bg-base-100/50 p-4 dark:bg-base-900/20"
-            style={{ height: BOARD_HEIGHT }}
-          >
-            {demoColumns.map((column, index) => {
-              const columnTasks = getColumnTasks(column.rowId);
+                      </div>
 
-              return (
-                <CollapsibleRoot
-                  key={column.rowId}
-                  className="mb-4 w-full rounded-lg border bg-background last:mb-0"
-                  open={columnOpenStates[index]}
-                  onOpenChange={({ open }) => {
-                    setColumnOpenStates((prev) => {
-                      const newStates = [...prev];
-                      newStates[index] = open;
-                      return newStates;
-                    });
-                  }}
-                >
-                  <button
-                    type="button"
-                    className="flex w-full items-center gap-2 rounded-t-lg px-3 py-2 hover:bg-base-50 dark:hover:bg-base-800"
-                    onClick={() =>
-                      setColumnOpenStates((prev) => {
-                        const newStates = [...prev];
-                        newStates[index] = !newStates[index];
-                        return newStates;
-                      })
-                    }
-                  >
-                    <LabelIcon icon={column.icon} className="size-4" />
-                    <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
-                      {column.title}
-                    </h3>
-                    <span className="flex size-6 items-center justify-center rounded-full font-semibold text-foreground text-xs tabular-nums">
-                      {columnTasks.length}
-                    </span>
-                  </button>
-
-                  <CollapsibleContent className="rounded-b-lg p-0">
-                    <div className="border-t transition-opacity ease-in-out" />
-                    <Droppable droppableId={column.rowId}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                          className={cn(
-                            "divide-y divide-base-200 overflow-hidden dark:divide-base-700",
-                            snapshot.isDraggingOver &&
-                              "bg-primary-100/40 dark:bg-primary-950/30",
-                          )}
-                        >
-                          {columnTasks.length === 0 ? (
-                            <p
-                              className={cn(
-                                "p-2 pl-2 text-muted-foreground text-xs",
-                                snapshot.isDraggingOver && "hidden",
-                              )}
-                            >
-                              No tasks
-                            </p>
-                          ) : (
-                            columnTasks.map((task, index) => (
-                              <DemoListItem
+                      {/* droppable column */}
+                      <Droppable droppableId={column.rowId}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            className={cn(
+                              "custom-scrollbar flex flex-1 flex-col overflow-y-auto rounded-xl",
+                              snapshot.isDraggingOver &&
+                                "bg-primary-100/40 dark:bg-primary-950/40",
+                            )}
+                          >
+                            {columnTasks.map((task, index) => (
+                              <DemoBoardItem
                                 key={task.rowId}
                                 task={task}
                                 index={index}
                                 displayId={getDisplayId(task)}
                                 onSelect={() => setSelectedTask(task)}
+                                isFirst={index === 0}
                               />
-                            ))
-                          )}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                  </CollapsibleContent>
-                </CollapsibleRoot>
-              );
-            })}
-          </div>
-        )}
-      </DragDropContext>
+                            ))}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <div
+              className="custom-scrollbar overflow-y-auto bg-base-100/50 p-4 dark:bg-base-900/20"
+              style={{ height: BOARD_HEIGHT }}
+            >
+              {demoColumns.map((column, index) => {
+                const columnTasks = getColumnTasks(column.rowId);
+
+                return (
+                  <CollapsibleRoot
+                    key={column.rowId}
+                    className="mb-4 w-full rounded-lg border bg-background last:mb-0"
+                    open={columnOpenStates[index]}
+                    onOpenChange={({ open }) => {
+                      setColumnOpenStates((prev) => {
+                        const newStates = [...prev];
+                        newStates[index] = open;
+                        return newStates;
+                      });
+                    }}
+                  >
+                    <button
+                      type="button"
+                      className="flex w-full items-center gap-2 rounded-t-lg px-3 py-2 hover:bg-base-50 dark:hover:bg-base-800"
+                      onClick={() =>
+                        setColumnOpenStates((prev) => {
+                          const newStates = [...prev];
+                          newStates[index] = !newStates[index];
+                          return newStates;
+                        })
+                      }
+                    >
+                      <LabelIcon icon={column.icon} className="size-4" />
+                      <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
+                        {column.title}
+                      </h3>
+                      <span className="flex size-6 items-center justify-center rounded-full font-semibold text-foreground text-xs tabular-nums">
+                        {columnTasks.length}
+                      </span>
+                    </button>
+
+                    <CollapsibleContent className="rounded-b-lg p-0">
+                      <div className="border-t transition-opacity ease-in-out" />
+                      <Droppable droppableId={column.rowId}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            className={cn(
+                              "divide-y divide-base-200 overflow-hidden dark:divide-base-700",
+                              snapshot.isDraggingOver &&
+                                "bg-primary-100/40 dark:bg-primary-950/30",
+                            )}
+                          >
+                            {columnTasks.length === 0 ? (
+                              <p
+                                className={cn(
+                                  "p-2 pl-2 text-muted-foreground text-xs",
+                                  snapshot.isDraggingOver && "hidden",
+                                )}
+                              >
+                                No tasks
+                              </p>
+                            ) : (
+                              columnTasks.map((task, index) => (
+                                <DemoListItem
+                                  key={task.rowId}
+                                  task={task}
+                                  index={index}
+                                  displayId={getDisplayId(task)}
+                                  onSelect={() => setSelectedTask(task)}
+                                />
+                              ))
+                            )}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </CollapsibleContent>
+                  </CollapsibleRoot>
+                );
+              })}
+            </div>
+          )}
+        </DragDropContext>
+      )}
 
       {/* task detail modal */}
       <DialogRoot
@@ -503,10 +548,16 @@ const DemoBoard = () => {
                     )}
                   </div>
 
-                  {/* due date placeholder */}
+                  {/* due date */}
                   <div className="flex items-center gap-3">
                     <CalendarIcon className="size-4 text-base-400" />
-                    <span className="text-base-400 text-sm">No due date</span>
+                    {selectedTask.dueDate ? (
+                      <span className="text-sm">
+                        {formatDueDate(selectedTask.dueDate)}
+                      </span>
+                    ) : (
+                      <span className="text-base-400 text-sm">No due date</span>
+                    )}
                   </div>
                 </div>
 
