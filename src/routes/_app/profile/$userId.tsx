@@ -39,7 +39,7 @@ function ProfilePage() {
     session?.organizations?.some((org) => org.slug === "omni") ?? false;
 
   // Get user's organizations from JWT claims
-  const organizations = orgContext?.organizations ?? [];
+  const organizations = orgContext?.workspaces ?? [];
 
   return (
     <div className="no-scrollbar min-h-dvh overflow-y-auto bg-linear-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">

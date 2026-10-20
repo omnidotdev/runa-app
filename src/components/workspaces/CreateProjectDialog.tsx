@@ -45,7 +45,7 @@ const CreateProjectDialog = () => {
   const orgContext = useWorkspace();
 
   const currentOrg = workspaceSlug
-    ? orgContext?.organizations.find((org) => org.slug === workspaceSlug)
+    ? orgContext?.workspaces.find((org) => org.slug === workspaceSlug)
     : undefined;
   const organizationId = currentOrg?.id;
   const orgName = currentOrg?.name;

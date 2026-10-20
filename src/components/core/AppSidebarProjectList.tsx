@@ -53,7 +53,7 @@ const AppSidebarProjectList = () => {
   const { workspaceSlug } = useParams({ strict: false });
   const orgContext = useWorkspace();
   const organizationId = workspaceSlug
-    ? orgContext?.organizations.find((org) => org.slug === workspaceSlug)?.id
+    ? orgContext?.workspaces.find((org) => org.slug === workspaceSlug)?.id
     : undefined;
   const { pathname } = useLocation();
   const [isProjectMenuOpen, setProjectMenuOpen] = useState(false);

@@ -26,14 +26,8 @@ const WorkspaceLinks = () => {
 
   const orgContext = useWorkspace();
 
-  // Workspace links are provided by the Gatekeeper userinfo org claim at
-  // runtime. The pinned @omnidotdev/providers predates the `links` field on its
-  // OrganizationClaim type, so read it through a narrow local type; drop this
-  // once providers is upgraded to a version that types `links`.
   const org = organizationId
-    ? (orgContext?.getOrganizationById(organizationId) as
-        | { links?: Array<{ url: string; title?: string | null }> }
-        | undefined)
+    ? orgContext?.getWorkspaceById(organizationId)
     : undefined;
 
   const links = org?.links ?? [];

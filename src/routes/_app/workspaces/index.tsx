@@ -54,7 +54,7 @@ function WorkspacesOverviewPage() {
   const orgContext = useWorkspace();
 
   // Get user's organizations from JWT claims
-  const organizations = orgContext?.organizations ?? [];
+  const organizations = orgContext?.workspaces ?? [];
 
   // A degraded session (refresh-token grant failed) is authenticated but has no
   // access token, so organizations came back empty. Without a signal it renders

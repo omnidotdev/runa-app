@@ -21,7 +21,7 @@ const useMentionItems = (): MentionItem[] => {
   const orgContext = useWorkspace();
 
   const organizationId = workspaceSlug
-    ? orgContext?.organizations?.find((org) => org.slug === workspaceSlug)?.id
+    ? orgContext?.workspaces?.find((org) => org.slug === workspaceSlug)?.id
     : undefined;
 
   const { data } = useQuery({
