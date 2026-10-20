@@ -1,7 +1,6 @@
 import { GlobeIcon } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
-import getFaviconUrl from "@/lib/util/getFaviconUrl";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -12,12 +11,32 @@ interface Props {
 }
 
 /**
- * Favicon component that fetches and displays a website's favicon.
- * Falls back to a globe icon if favicon fails to load.
+ * Candidate favicon sources for a site, best-first: the site's own declared
+ * icon paths (handles sites that serve favicon.svg / apple-touch-icon rather
+ * than a root favicon.ico), then a public favicon service as a last resort.
+ */
+const faviconCandidates = (url: string): string[] => {
+  try {
+    const { origin, hostname } = new URL(url);
+    return [
+      `${origin}/favicon.svg`,
+      `${origin}/favicon.ico`,
+      `${origin}/apple-touch-icon.png`,
+      `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`,
+    ];
+  } catch {
+    return [];
+  }
+};
+
+/**
+ * Favicon for a website URL. Tries the site's declared icon paths and falls
+ * through to a favicon service, then to a globe when none resolve.
  */
 const Favicon = ({ url, size = 16, className }: Props) => {
-  const [hasError, setHasError] = useState(false);
-  const faviconUrl = getFaviconUrl(url);
+  const candidates = useMemo(() => faviconCandidates(url), [url]);
+  const [index, setIndex] = useState(0);
+  const src = candidates[index];
 
   return (
     <div
@@ -26,14 +45,15 @@ const Favicon = ({ url, size = 16, className }: Props) => {
         className,
       )}
     >
-      {faviconUrl && !hasError ? (
+      {src ? (
         <img
-          src={faviconUrl}
+          key={src}
+          src={src}
           alt=""
           width={size}
           height={size}
           className="size-4 object-contain"
-          onError={() => setHasError(true)}
+          onError={() => setIndex((current) => current + 1)}
         />
       ) : (
         <GlobeIcon className="size-4 text-current" />
