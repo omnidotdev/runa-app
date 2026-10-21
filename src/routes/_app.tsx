@@ -1,4 +1,9 @@
-import { Outlet, createFileRoute, useSearch } from "@tanstack/react-router";
+import {
+  Outlet,
+  createFileRoute,
+  redirect,
+  useSearch,
+} from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
 
 import { AppSidebar, Link, Logo, ThemeToggle } from "@/components/core";
@@ -24,7 +29,7 @@ const eventsProvider = {
 };
 
 export const Route = createFileRoute("/_app")({
-  beforeLoad: async ({ params, context: { session } }) => {
+  beforeLoad: async ({ params, context: { session, authDegraded } }) => {
     const { workspaceSlug, projectSlug } = params as {
       workspaceSlug?: string;
       projectSlug?: string;
@@ -40,6 +45,17 @@ export const Route = createFileRoute("/_app")({
 
       const { signOutAndRedirect } = await import("@/server/functions/auth");
       await signOutAndRedirect();
+    }
+
+    // A degraded session (refresh-token grant failed, so no fresh access token)
+    // still carries a cached rowId, so it passes the gate above, but its
+    // authenticated workspace data fetches 401 and the suspense loaders rethrow
+    // into the error boundary ("Something went wrong"). Route workspace-scoped
+    // degraded sessions to /workspaces, which surfaces a graceful "Sign in
+    // again" prompt (useReAuth) to mint fresh tokens. /workspaces has no
+    // workspaceSlug, so it is exempt and there is no redirect loop.
+    if (authDegraded && workspaceSlug) {
+      throw redirect({ to: "/workspaces" });
     }
 
     return {};
