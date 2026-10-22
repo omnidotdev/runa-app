@@ -1,4 +1,9 @@
-import { Outlet, createFileRoute, notFound } from "@tanstack/react-router";
+import {
+  Outlet,
+  createFileRoute,
+  notFound,
+  redirect,
+} from "@tanstack/react-router";
 import { all } from "better-all";
 
 import projectsSidebarOptions from "@/lib/options/projectsSidebar.options";
@@ -20,7 +25,7 @@ import {
 export const Route = createFileRoute("/_app/@{$workspaceSlug}")({
   beforeLoad: async ({
     params: { workspaceSlug },
-    context: { session, isPublicAccess },
+    context: { session, isPublicAccess, authDegraded },
   }) => {
     if (isPublicAccess) {
       const fetchedOrg = await fetchOrganizationBySlug({
@@ -28,6 +33,20 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}")({
       });
       if (!fetchedOrg) throw notFound();
       return { organizationId: fetchedOrg.id, fetchedOrg };
+    }
+
+    // A degraded session (refresh-token grant failed, so no fresh access
+    // token) still carries a cached rowId, so the `_app` gate lets it through,
+    // but its authenticated workspace data fetches (the `settingByOrganizationId`
+    // suspense query below) 401 and rethrow into the error boundary ("Something
+    // went wrong"). The equivalent guard in `_app.tsx` is unreliable: that match
+    // owns no param, so it is reused with stale params on client navigation and
+    // preload and never re-evaluates `workspaceSlug`. This route owns the
+    // segment, so its `beforeLoad` always runs with the destination workspace.
+    // Route the degraded session to /workspaces, which surfaces a graceful
+    // "Sign in again" prompt (useReAuth) to mint fresh tokens
+    if (authDegraded) {
+      throw redirect({ to: "/workspaces" });
     }
 
     const orgFromClaim = session?.organizations?.find(
