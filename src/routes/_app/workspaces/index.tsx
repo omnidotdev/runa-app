@@ -9,18 +9,39 @@ import {
   redirect,
   useRouteContext,
 } from "@tanstack/react-router";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { ExternalLinkIcon, InfoIcon, LayersIcon } from "lucide-react";
+import { z } from "zod";
 
+import DegradedSessionRecovery from "@/components/auth/DegradedSessionRecovery";
 import { Link } from "@/components/core";
-import { Button } from "@/components/ui/button";
 import CreateWorkspaceButton from "@/components/workspaces/CreateWorkspaceButton";
-import useReAuth from "@/lib/auth/useReAuth";
 import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { useWorkspace } from "@/providers/WorkspaceProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 
+const searchSchema = z.object({
+  /** Path to return to after a degraded session is recovered */
+  from: z.string().optional(),
+});
+
+/**
+ * Resolve the post-recovery return URL. Only same-origin absolute paths are
+ * honored (the value is user-controlled via the query string); anything else,
+ * including protocol-relative `//host` and absolute URLs, falls back to the
+ * workspaces page.
+ */
+const resolveReturnUrl = (from: string | undefined) => {
+  if (from?.startsWith("/") && !from.startsWith("//")) {
+    return `${BASE_URL}${from}`;
+  }
+
+  return `${BASE_URL}/workspaces`;
+};
+
 export const Route = createFileRoute("/_app/workspaces/")({
+  validateSearch: zodValidator(searchSchema),
   beforeLoad: async ({ context: { session }, preload }) => {
     const organizations = session?.organizations ?? [];
     if (!organizations.length || organizations.length > 1) return;
@@ -58,41 +79,17 @@ function WorkspacesOverviewPage() {
 
   // A degraded session (refresh-token grant failed) is authenticated but has no
   // access token, so organizations came back empty. Without a signal it renders
-  // identically to a genuinely workspace-less user; distinguish it so the user
-  // gets a re-login prompt instead of a dead-end "create a workspace" state.
+  // identically to a genuinely workspace-less user; distinguish it so the
+  // session is recovered automatically instead of showing a dead-end "create a
+  // workspace" state.
   const { authDegraded } = useRouteContext({ strict: false }) as {
     authDegraded?: boolean;
   };
 
-  const handleReAuth = useReAuth(`${BASE_URL}/workspaces`);
+  const { from } = Route.useSearch();
 
   if (!organizations.length && authDegraded) {
-    return (
-      <div className="flex h-full flex-col">
-        <div className="shrink-0 px-12 pt-12">
-          <div className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-4">
-            <LayersIcon className="size-12 text-base-500 dark:text-base-400" />
-
-            <h1 className="text-pretty text-center font-semibold text-2xl text-base-900 dark:text-base-100">
-              Your session expired
-            </h1>
-          </div>
-        </div>
-
-        <div className="custom-scrollbar flex-1 overflow-y-auto px-12 py-8">
-          <div className="mx-auto w-full max-w-4xl">
-            <div className="flex flex-col items-center gap-4 rounded-lg border border-base-300 border-dashed bg-base-50 p-8 text-center dark:border-base-700 dark:bg-base-900">
-              <InfoIcon className="size-6 text-base-500" />
-              <p className="mx-auto max-w-sm text-base-700 text-sm dark:text-base-300">
-                We could not refresh your session, so your workspaces could not
-                be loaded. Sign in again to restore access.
-              </p>
-              <Button onClick={handleReAuth}>Sign in again</Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <DegradedSessionRecovery returnTo={resolveReturnUrl(from)} />;
   }
 
   return (

@@ -25,6 +25,7 @@ import {
 export const Route = createFileRoute("/_app/@{$workspaceSlug}")({
   beforeLoad: async ({
     params: { workspaceSlug },
+    location,
     context: { session, isPublicAccess, authDegraded },
   }) => {
     if (isPublicAccess) {
@@ -43,10 +44,11 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}")({
     // owns no param, so it is reused with stale params on client navigation and
     // preload and never re-evaluates `workspaceSlug`. This route owns the
     // segment, so its `beforeLoad` always runs with the destination workspace.
-    // Route the degraded session to /workspaces, which surfaces a graceful
-    // "Sign in again" prompt (useReAuth) to mint fresh tokens
+    // Route the degraded session to /workspaces, which recovers it
+    // automatically (silent re-auth), and carry the requested path so recovery
+    // returns the user here rather than to the picker
     if (authDegraded) {
-      throw redirect({ to: "/workspaces" });
+      throw redirect({ to: "/workspaces", search: { from: location.href } });
     }
 
     const orgFromClaim = session?.organizations?.find(

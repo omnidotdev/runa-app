@@ -11,6 +11,7 @@ import { NotFound } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/workspaces";
+import { clearReauthAttempt } from "@/lib/auth/reauthGuard";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
 import { BASE_URL } from "@/lib/config/env.config";
@@ -65,9 +66,16 @@ export const Route = createFileRoute("/_app")({
 });
 
 function AppLayout() {
-  const { session } = Route.useRouteContext();
+  const { session, authDegraded } = Route.useRouteContext();
 
   const isAuthenticated = !!session?.user?.rowId;
+
+  // A healthy authenticated render means any prior degraded-session recovery
+  // succeeded, so drop the one-shot guard to re-arm automatic recovery for a
+  // future degrade.
+  useEffect(() => {
+    if (isAuthenticated && !authDegraded) clearReauthAttempt();
+  }, [isAuthenticated, authDegraded]);
   const search = useSearch({ strict: false }) as { mode?: string };
   const isPublicPreview = search.mode === "public";
 
