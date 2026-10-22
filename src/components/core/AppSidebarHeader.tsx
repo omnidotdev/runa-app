@@ -38,6 +38,7 @@ import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import organizationBySlugOptions from "@/lib/options/organizationBySlug.options";
 import getDomainLabel from "@/lib/util/getDomainLabel";
+import normalizeWorkspaceLinks from "@/lib/util/normalizeWorkspaceLinks";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/providers/WorkspaceProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
@@ -86,7 +87,9 @@ const AppSidebarHeader = () => {
   // Prefer freshly fetched links over the cached JWT claim so account-hub edits
   // show quickly; fall back to the claim while the live fetch loads.
   const { data: liveOrg } = useQuery(organizationBySlugOptions(workspaceSlug));
-  const workspaceLinks = liveOrg?.links ?? currentOrg?.links ?? [];
+  const workspaceLinks = normalizeWorkspaceLinks(
+    liveOrg?.links ?? currentOrg?.links,
+  );
 
   return (
     <SidebarHeader>
