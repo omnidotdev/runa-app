@@ -1,4 +1,5 @@
 import { gatekeeperDashboardUrl } from "@omnidotdev/providers/react";
+import { normalizeWorkspaceLinks } from "@omnidotdev/providers/workspace-links";
 import {
   AvatarFallback,
   AvatarImage,
@@ -38,7 +39,6 @@ import app from "@/lib/config/app.config";
 import { AUTH_BASE_URL } from "@/lib/config/env.config";
 import organizationBySlugOptions from "@/lib/options/organizationBySlug.options";
 import getDomainLabel from "@/lib/util/getDomainLabel";
-import normalizeWorkspaceLinks from "@/lib/util/normalizeWorkspaceLinks";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/providers/WorkspaceProvider";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";

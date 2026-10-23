@@ -1,4 +1,5 @@
 import { gatekeeperOrgManageUrl } from "@omnidotdev/providers/react";
+import { normalizeWorkspaceLinks } from "@omnidotdev/providers/workspace-links";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useParams } from "@tanstack/react-router";
 import { ExternalLinkIcon } from "lucide-react";
@@ -8,7 +9,6 @@ import { buttonVariants } from "@/components/ui/button";
 import { ACCOUNT_URL } from "@/lib/config/env.config";
 import organizationBySlugOptions from "@/lib/options/organizationBySlug.options";
 import getDomainLabel from "@/lib/util/getDomainLabel";
-import normalizeWorkspaceLinks from "@/lib/util/normalizeWorkspaceLinks";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/providers/WorkspaceProvider";
 
