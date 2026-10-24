@@ -22,7 +22,7 @@
         "@lexical/markdown": "0.39.0",
         "@lexical/react": "^0.39.0",
         "@lexical/rich-text": "^0.39.0",
-        "@omnidotdev/cadence": "github:omnidotdev/cadence#9352906",
+        "@omnidotdev/cadence": "github:omnidotdev/cadence#7d23f05",
         "@omnidotdev/providers": "github:omnidotdev/providers#7d49a0c",
         "@omnidotdev/thornberry": "github:omnidotdev/thornberry#720247d",
         "@react-three/drei": "^10.7.7",
@@ -632,7 +632,7 @@
 
     "@npmcli/redact": ["@npmcli/redact@4.0.0", "", {}, "sha512-gOBg5YHMfZy+TfHArfVogwgfBeQnKbbGo3pSUyK/gSI0AVu+pEiDVcKlQb0D8Mg1LNRZILZ6XG8I5dJ4KuAd9Q=="],
 
-    "@omnidotdev/cadence": ["@omnidotdev/cadence@github:omnidotdev/cadence#9352906", { "dependencies": { "@internationalized/date": "^3.10.1" } }, "omnidotdev-cadence-9352906", "sha512-pH+1qGDRtoMF8d0/MfzrkIROiKgkAdGZpX+eDgJfUzI8QeHEOjX0/Wx0qjyMu5cLgvPMw1qZV4iZsMWf6bgnUA=="],
+    "@omnidotdev/cadence": ["@omnidotdev/cadence@github:omnidotdev/cadence#7d23f05", { "dependencies": { "@internationalized/date": "^3.10.1" }, "hasInstallScript": true }, "omnidotdev-cadence-7d23f05", "sha512-yGYiPkK5KCq4gsb2oQZyXN07ifopKtB92hFbKOeskosoOs/I4ryRk5GaNLTPZPuiB7++EaLZ2QCa3j8n8uDfXQ=="],
 
     "@omnidotdev/providers": ["@omnidotdev/providers@github:omnidotdev/providers#7d49a0c", { "dependencies": { "ajv": "^8.18.0", "jose": "^6.1.3" }, "peerDependencies": { "@aws-sdk/client-s3": ">=3.0.0", "@aws-sdk/s3-request-presigner": ">=3.0.0", "@envelop/types": ">=5.0.0", "@escape.tech/graphql-armor": ">=3.0.0", "@iggy.rs/sdk": ">=1.0.0", "@openfeature/server-sdk": ">=1.0.0", "@smithy/node-http-handler": ">=4.0.0", "@tanstack/query-core": ">=5.0.0", "@tanstack/react-start": ">=1.0.0", "ajv": ">=8.0.0", "graphile-export": ">=1.0.0-rc.0", "postgraphile": ">=5.0.0-rc.0", "react": ">=19.0.0", "unleash-client": ">=6.0.0" }, "optionalPeers": ["@aws-sdk/client-s3", "@aws-sdk/s3-request-presigner", "@envelop/types", "@escape.tech/graphql-armor", "@iggy.rs/sdk", "@openfeature/server-sdk", "@smithy/node-http-handler", "@tanstack/query-core", "@tanstack/react-start", "ajv", "graphile-export", "postgraphile", "react", "unleash-client"], "hasInstallScript": true }, "omnidotdev-providers-7d49a0c", "sha512-uHSzfogqD7bHg4wKVNs/OzWqbtOUOFt1ck24ASrWdOl+HxnmAWkS7NUEKdH++VmtTwH4raON7U2ajWjalMqQpA=="],
 
