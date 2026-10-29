@@ -1,5 +1,8 @@
 import { CommandPalette as CommandPaletteShell } from "@omnidotdev/thornberry/command-palette";
-import { hotkeyLabel } from "@omnidotdev/thornberry/use-hotkeys";
+import {
+  GLOBAL_HOTKEYS,
+  hotkeyLabel,
+} from "@omnidotdev/thornberry/use-hotkeys";
 import {
   FolderPlusIcon,
   KeyboardIcon,
@@ -50,9 +53,9 @@ const CommandPalette = () => {
     {
       id: "toggle-theme",
       label: "Toggle theme",
-      group: "General",
+      group: "Preferences",
       icon: SunMoonIcon,
-      shortcut: hotkeyLabel(Hotkeys.ToggleTheme),
+      shortcut: hotkeyLabel(GLOBAL_HOTKEYS.toggleTheme),
       onSelect: () => setTheme(theme === "dark" ? "light" : "dark"),
     },
     {
@@ -60,7 +63,7 @@ const CommandPalette = () => {
       label: "Keyboard shortcuts",
       group: "General",
       icon: KeyboardIcon,
-      shortcut: "?",
+      shortcut: hotkeyLabel(Hotkeys.ShowShortcuts),
       onSelect: () => setShortcutsOpen(true),
     },
   ];
@@ -68,7 +71,7 @@ const CommandPalette = () => {
   return (
     <CommandPaletteShell
       commands={commands}
-      triggerKey={Hotkeys.CommandPalette}
+      triggerKey={GLOBAL_HOTKEYS.commandPalette}
       placeholder="Type a command or search..."
     />
   );
