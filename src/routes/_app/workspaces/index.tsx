@@ -1,24 +1,20 @@
-import { gatekeeperDashboardUrl } from "@omnidotdev/providers/react";
+import { workspacesUrl } from "@omnidotdev/providers/react";
 import {
   AvatarFallback,
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
-import {
-  createFileRoute,
-  redirect,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
-import { ExternalLinkIcon, InfoIcon, LayersIcon } from "lucide-react";
+import { InfoIcon, LayersIcon, PlusIcon, RefreshCwIcon } from "lucide-react";
 import { z } from "zod";
 
 import DegradedSessionRecovery from "@/components/auth/DegradedSessionRecovery";
 import { Link } from "@/components/core";
-import CreateWorkspaceButton from "@/components/workspaces/CreateWorkspaceButton";
-import { AUTH_BASE_URL, BASE_URL } from "@/lib/config/env.config";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ACCOUNT_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
-import { useWorkspace } from "@/providers/WorkspaceProvider";
+import { fetchFreshSession } from "@/server/functions/auth";
 import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
 
 const searchSchema = z.object({
@@ -58,6 +54,13 @@ export const Route = createFileRoute("/_app/workspaces/")({
       params: { workspaceSlug: slug },
     });
   },
+  // Re-hydrate organizations live (bypassing the display cache) so a workspace
+  // just created in the account portal shows on arrival, rather than waiting
+  // out getAuth's org cache TTL. Invalidating the route re-runs this.
+  loader: async () => {
+    const { organizations, authDegraded } = await fetchFreshSession();
+    return { organizations, authDegraded };
+  },
   head: () => ({
     meta: [
       ...createMetaTags({
@@ -71,26 +74,41 @@ export const Route = createFileRoute("/_app/workspaces/")({
   component: WorkspacesOverviewPage,
 });
 
+/**
+ * Workspaces overview page.
+ *
+ * Lists the workspaces the user belongs to. Workspace creation and management
+ * is funneled to the account hub (account.omni.dev/workspaces), the single
+ * ecosystem surface that owns it, so this page lists and links out rather than
+ * embedding its own creation flow.
+ */
 function WorkspacesOverviewPage() {
-  const orgContext = useWorkspace();
+  const router = useRouter();
+  const { organizations, authDegraded } = Route.useLoaderData();
 
-  // Get user's organizations from JWT claims
-  const organizations = orgContext?.workspaces ?? [];
+  const { from } = Route.useSearch();
 
   // A degraded session (refresh-token grant failed) is authenticated but has no
   // access token, so organizations came back empty. Without a signal it renders
   // identically to a genuinely workspace-less user; distinguish it so the
   // session is recovered automatically instead of showing a dead-end "create a
   // workspace" state.
-  const { authDegraded } = useRouteContext({ strict: false }) as {
-    authDegraded?: boolean;
-  };
-
-  const { from } = Route.useSearch();
-
   if (!organizations.length && authDegraded) {
     return <DegradedSessionRecovery returnTo={resolveReturnUrl(from)} />;
   }
+
+  // The account hub owns workspace creation; link out to it. Rendered only when
+  // the hub URL is configured (optional env), so a missing config degrades to
+  // no button rather than a dead link.
+  const newWorkspaceHref = workspacesUrl(ACCOUNT_URL);
+  const NewWorkspaceLink = newWorkspaceHref
+    ? ({ className }: { className?: string }) => (
+        <a href={newWorkspaceHref} className={buttonVariants({ className })}>
+          <PlusIcon className="size-4" />
+          New workspace
+        </a>
+      )
+    : () => null;
 
   return (
     <div className="flex h-full flex-col">
@@ -105,7 +123,20 @@ function WorkspacesOverviewPage() {
               : "Create a workspace to get started"}
           </h1>
 
-          {!!organizations.length && <CreateWorkspaceButton />}
+          {!!organizations.length && (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                aria-label="Refresh workspaces"
+                title="Refresh workspaces"
+                onClick={() => router.invalidate()}
+              >
+                <RefreshCwIcon className="size-4" />
+              </Button>
+              <NewWorkspaceLink />
+            </div>
+          )}
         </div>
       </div>
 
@@ -152,27 +183,16 @@ function WorkspacesOverviewPage() {
             <div className="space-y-2">
               <p className="text-base-700 text-sm dark:text-base-300">
                 {organizations.length
-                  ? "Need another workspace? Create one below."
-                  : "Create your first workspace to get started."}
+                  ? "Need another workspace? Create one in your Omni account."
+                  : "Create your first workspace in your Omni account to get started."}
               </p>
               <p className="text-base-500 text-xs">
-                A workspace is where your projects and tasks live.
+                A workspace is part of your Omni account and works across Omni
+                products.
               </p>
             </div>
 
-            <CreateWorkspaceButton>
-              {organizations.length ? "New workspace" : "Create workspace"}
-            </CreateWorkspaceButton>
-
-            {AUTH_BASE_URL && (
-              <a
-                href={gatekeeperDashboardUrl(AUTH_BASE_URL)}
-                className="inline-flex items-center gap-2 text-primary text-sm hover:underline"
-              >
-                Manage Workspaces
-                <ExternalLinkIcon className="size-3" />
-              </a>
-            )}
+            <NewWorkspaceLink />
           </div>
         </div>
       </div>
