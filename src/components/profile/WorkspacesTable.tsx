@@ -1,7 +1,4 @@
-import {
-  ManageTeamLink,
-  gatekeeperDashboardUrl,
-} from "@omnidotdev/providers/react";
+import { ManageTeamLink, workspacesUrl } from "@omnidotdev/providers/react";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import {
   Table,
@@ -15,7 +12,7 @@ import { Building2 } from "lucide-react";
 
 import { Link } from "@/components/core";
 import { buttonVariants } from "@/components/ui/button";
-import { ACCOUNT_URL, AUTH_BASE_URL } from "@/lib/config/env.config";
+import { ACCOUNT_URL } from "@/lib/config/env.config";
 import { Role } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import { cn } from "@/lib/utils";
@@ -40,9 +37,7 @@ const WorkspacesTable = ({ organizations }: Props) => {
         <p>
           No current workspaces.{" "}
           <a
-            href={
-              AUTH_BASE_URL ? gatekeeperDashboardUrl(AUTH_BASE_URL) : undefined
-            }
+            href={workspacesUrl(ACCOUNT_URL) || undefined}
             className="p-0 text-md text-primary-600 underline"
           >
             Create a workspace
