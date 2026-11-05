@@ -1,4 +1,4 @@
-import { gatekeeperDashboardUrl } from "@omnidotdev/providers/react";
+import { workspacesUrl } from "@omnidotdev/providers/react";
 import { normalizeWorkspaceLinks } from "@omnidotdev/providers/workspace-links";
 import {
   AvatarFallback,
@@ -36,7 +36,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import app from "@/lib/config/app.config";
-import { AUTH_BASE_URL } from "@/lib/config/env.config";
+import { ACCOUNT_URL } from "@/lib/config/env.config";
 import organizationBySlugOptions from "@/lib/options/organizationBySlug.options";
 import getDomainLabel from "@/lib/util/getDomainLabel";
 import { cn } from "@/lib/utils";
@@ -71,10 +71,8 @@ const AppSidebarHeader = () => {
   // Get user's organizations from context
   const organizations = orgContext?.workspaces ?? [];
 
-  // Org/workspace lifecycle lives on the Gatekeeper identity dashboard
-  const orgDashboardUrl = AUTH_BASE_URL
-    ? gatekeeperDashboardUrl(AUTH_BASE_URL)
-    : "";
+  // Workspace lifecycle lives on the account hub
+  const manageWorkspacesUrl = ACCOUNT_URL ? workspacesUrl(ACCOUNT_URL) : "";
 
   // Resolve current org from URL slug. Sidebar is rendered by `_app.tsx`
   // (above `$workspaceSlug.tsx` in the chain), so we cannot read the
@@ -200,13 +198,13 @@ const AppSidebarHeader = () => {
                 All Workspaces
               </MenuItem>
 
-              {orgDashboardUrl && (
+              {manageWorkspacesUrl && (
                 <MenuItem
                   asChild
                   className="mt-1 cursor-pointer gap-2 px-2 py-1"
                   value="manage-organizations"
                 >
-                  <a href={orgDashboardUrl}>
+                  <a href={manageWorkspacesUrl}>
                     <PlusIcon className="size-4" />
                     Manage Workspaces
                   </a>
@@ -216,12 +214,12 @@ const AppSidebarHeader = () => {
           </MenuPositioner>
         </MenuRoot>
       ) : (
-        orgDashboardUrl && (
+        manageWorkspacesUrl && (
           <SidebarMenuButton
             asChild
             className="border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
           >
-            <a href={orgDashboardUrl}>
+            <a href={manageWorkspacesUrl}>
               <PlusIcon />
 
               <span>Manage Workspaces</span>
