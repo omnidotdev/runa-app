@@ -1,8 +1,5 @@
-import {
-  CodeHighlightNode,
-  CodeNode,
-  registerCodeHighlighting,
-} from "@lexical/code";
+import { CodeHighlightNode, CodeNode } from "@lexical/code";
+import { registerCodeHighlighting } from "@lexical/code-prism";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { RichTextEditor as BaseRichTextEditor } from "@omnidotdev/thornberry/rich-text-editor";
 import { useEffect } from "react";

@@ -1,4 +1,5 @@
-import { $isCodeNode, getLanguageFriendlyName } from "@lexical/code";
+import { $isCodeNode } from "@lexical/code";
+import { getLanguageFriendlyName } from "@lexical/code-prism";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getNearestNodeFromDOMNode } from "lexical";
 import { CheckIcon, CopyIcon } from "lucide-react";
