@@ -48,7 +48,7 @@
     "@tanstack/react-start": "1.169.5",
     "@tanstack/zod-adapter": "^1.147.3",
     "better-all": "^0.0.9",
-    "better-auth": "1.7.21",
+    "better-auth": "1.7.22",
     "chrono-node": "^2.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -72,7 +72,7 @@
     "tailwind-merge": "^3.4.0",
     "three": "^0.187.0",
     "usehooks-ts": "^3.1.1",
-    "zod": "4.6.6",
+    "zod": "4.6.7",
     "zustand": "^5.0.10"
   },
   "devDependencies": {
