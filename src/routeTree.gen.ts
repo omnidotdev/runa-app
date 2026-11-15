@@ -9,64 +9,39 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SigninRouteImport } from './routes/signin'
-import { Route as PublicRouteImport } from './routes/_public'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as PublicIndexRouteImport } from './routes/_public/index'
-import { Route as ApiVersionRouteImport } from './routes/api/version'
-import { Route as ApiHealthRouteImport } from './routes/api/health'
-import { Route as PublicPricingRouteImport } from './routes/_public/pricing'
-import { Route as PublicDemoRouteImport } from './routes/_public/demo'
+import { Route as PublicRouteImport } from './routes/_public'
+import { Route as SigninRouteImport } from './routes/signin'
 import { Route as AppAtChar123workspaceSlugChar125RouteImport } from './routes/_app/@{$workspaceSlug}'
-import { Route as AppWorkspacesIndexRouteImport } from './routes/_app/workspaces/index'
+import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as PublicDemoRouteImport } from './routes/_public/demo'
+import { Route as PublicPricingRouteImport } from './routes/_public/pricing'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
+import { Route as ApiVersionRouteImport } from './routes/api/version'
 import { Route as AppAtChar123workspaceSlugChar125IndexRouteImport } from './routes/_app/@{$workspaceSlug}/index'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppProfileUserIdRouteImport } from './routes/_app/profile/$userId'
+import { Route as AppWorkspacesIndexRouteImport } from './routes/_app/workspaces/index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppAtChar123workspaceSlugChar125ProjectSlugIndexRouteImport } from './routes/_app/@{$workspaceSlug}/$projectSlug/index'
-import { Route as AppAtChar123workspaceSlugChar125Char126SettingsRouteImport } from './routes/_app/@{$workspaceSlug}/~/settings'
-import { Route as AppAtChar123workspaceSlugChar125Char126CalendarRouteImport } from './routes/_app/@{$workspaceSlug}/~/calendar'
 import { Route as AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRouteImport } from './routes/_app/@{$workspaceSlug}/$projectSlug/$taskId'
-import { Route as ApiOgProjectWorkspaceSlugProjectSlugRouteImport } from './routes/api/og/project.$workspaceSlug.$projectSlug'
+import { Route as AppAtChar123workspaceSlugChar125Char126CalendarRouteImport } from './routes/_app/@{$workspaceSlug}/~/calendar'
+import { Route as AppAtChar123workspaceSlugChar125Char126SettingsRouteImport } from './routes/_app/@{$workspaceSlug}/~/settings'
 import { Route as AppAtChar123workspaceSlugChar125ProjectSlugChar126SettingsRouteImport } from './routes/_app/@{$workspaceSlug}/$projectSlug/~/settings'
+import { Route as ApiOgProjectWorkspaceSlugProjectSlugRouteImport } from './routes/api/og/project.$workspaceSlug.$projectSlug'
 import { Route as ApiOgTaskWorkspaceSlugProjectSlugNumberRouteImport } from './routes/api/og/task.$workspaceSlug.$projectSlug.$number'
 
-const SigninRoute = SigninRouteImport.update({
-  id: '/signin',
-  path: '/signin',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublicRoute = PublicRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppRoute = AppRouteImport.update({
-  id: '/_app',
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
   getParentRoute: () => rootRouteImport,
-} as any)
-const PublicIndexRoute = PublicIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PublicRoute,
-} as any)
-const ApiVersionRoute = ApiVersionRouteImport.update({
-  id: '/api/version',
-  path: '/api/version',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiHealthRoute = ApiHealthRouteImport.update({
-  id: '/api/health',
-  path: '/api/health',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PublicPricingRoute = PublicPricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => PublicRoute,
-} as any)
-const PublicDemoRoute = PublicDemoRouteImport.update({
-  id: '/demo',
-  path: '/demo',
-  getParentRoute: () => PublicRoute,
 } as any)
 const AppAtChar123workspaceSlugChar125Route =
   AppAtChar123workspaceSlugChar125RouteImport.update({
@@ -74,10 +49,30 @@ const AppAtChar123workspaceSlugChar125Route =
     path: '/@{$workspaceSlug}',
     getParentRoute: () => AppRoute,
   } as any)
-const AppWorkspacesIndexRoute = AppWorkspacesIndexRouteImport.update({
-  id: '/workspaces/',
-  path: '/workspaces/',
-  getParentRoute: () => AppRoute,
+const PublicIndexRoute = PublicIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicDemoRoute = PublicDemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
+  getParentRoute: () => PublicRoute,
+} as any)
+const PublicPricingRoute = PublicPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => PublicRoute,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiVersionRoute = ApiVersionRouteImport.update({
+  id: '/api/version',
+  path: '/api/version',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppAtChar123workspaceSlugChar125IndexRoute =
   AppAtChar123workspaceSlugChar125IndexRouteImport.update({
@@ -85,32 +80,25 @@ const AppAtChar123workspaceSlugChar125IndexRoute =
     path: '/',
     getParentRoute: () => AppAtChar123workspaceSlugChar125Route,
   } as any)
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AppProfileUserIdRoute = AppProfileUserIdRouteImport.update({
   id: '/profile/$userId',
   path: '/profile/$userId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppWorkspacesIndexRoute = AppWorkspacesIndexRouteImport.update({
+  id: '/workspaces/',
+  path: '/workspaces/',
+  getParentRoute: () => AppRoute,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppAtChar123workspaceSlugChar125ProjectSlugIndexRoute =
   AppAtChar123workspaceSlugChar125ProjectSlugIndexRouteImport.update({
     id: '/$projectSlug/',
     path: '/$projectSlug/',
-    getParentRoute: () => AppAtChar123workspaceSlugChar125Route,
-  } as any)
-const AppAtChar123workspaceSlugChar125Char126SettingsRoute =
-  AppAtChar123workspaceSlugChar125Char126SettingsRouteImport.update({
-    id: '/~/settings',
-    path: '/~/settings',
-    getParentRoute: () => AppAtChar123workspaceSlugChar125Route,
-  } as any)
-const AppAtChar123workspaceSlugChar125Char126CalendarRoute =
-  AppAtChar123workspaceSlugChar125Char126CalendarRouteImport.update({
-    id: '/~/calendar',
-    path: '/~/calendar',
     getParentRoute: () => AppAtChar123workspaceSlugChar125Route,
   } as any)
 const AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRoute =
@@ -119,17 +107,29 @@ const AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRoute =
     path: '/$projectSlug/$taskId',
     getParentRoute: () => AppAtChar123workspaceSlugChar125Route,
   } as any)
-const ApiOgProjectWorkspaceSlugProjectSlugRoute =
-  ApiOgProjectWorkspaceSlugProjectSlugRouteImport.update({
-    id: '/api/og/project/$workspaceSlug/$projectSlug',
-    path: '/api/og/project/$workspaceSlug/$projectSlug',
-    getParentRoute: () => rootRouteImport,
+const AppAtChar123workspaceSlugChar125Char126CalendarRoute =
+  AppAtChar123workspaceSlugChar125Char126CalendarRouteImport.update({
+    id: '/~/calendar',
+    path: '/~/calendar',
+    getParentRoute: () => AppAtChar123workspaceSlugChar125Route,
+  } as any)
+const AppAtChar123workspaceSlugChar125Char126SettingsRoute =
+  AppAtChar123workspaceSlugChar125Char126SettingsRouteImport.update({
+    id: '/~/settings',
+    path: '/~/settings',
+    getParentRoute: () => AppAtChar123workspaceSlugChar125Route,
   } as any)
 const AppAtChar123workspaceSlugChar125ProjectSlugChar126SettingsRoute =
   AppAtChar123workspaceSlugChar125ProjectSlugChar126SettingsRouteImport.update({
     id: '/$projectSlug/~/settings',
     path: '/$projectSlug/~/settings',
     getParentRoute: () => AppAtChar123workspaceSlugChar125Route,
+  } as any)
+const ApiOgProjectWorkspaceSlugProjectSlugRoute =
+  ApiOgProjectWorkspaceSlugProjectSlugRouteImport.update({
+    id: '/api/og/project/$workspaceSlug/$projectSlug',
+    path: '/api/og/project/$workspaceSlug/$projectSlug',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const ApiOgTaskWorkspaceSlugProjectSlugNumberRoute =
   ApiOgTaskWorkspaceSlugProjectSlugNumberRouteImport.update({
@@ -277,11 +277,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signin': {
-      id: '/signin'
-      path: '/signin'
-      fullPath: '/signin'
-      preLoaderRoute: typeof SigninRouteImport
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_public': {
@@ -291,39 +291,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app': {
-      id: '/_app'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppRouteImport
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_app/@{$workspaceSlug}': {
+      id: '/_app/@{$workspaceSlug}'
+      path: '/@{$workspaceSlug}'
+      fullPath: '/@{$workspaceSlug}'
+      preLoaderRoute: typeof AppAtChar123workspaceSlugChar125RouteImport
+      parentRoute: typeof AppRoute
     }
     '/_public/': {
       id: '/_public/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
-      parentRoute: typeof PublicRoute
-    }
-    '/api/version': {
-      id: '/api/version'
-      path: '/api/version'
-      fullPath: '/api/version'
-      preLoaderRoute: typeof ApiVersionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/health': {
-      id: '/api/health'
-      path: '/api/health'
-      fullPath: '/api/health'
-      preLoaderRoute: typeof ApiHealthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_public/pricing': {
-      id: '/_public/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PublicPricingRouteImport
       parentRoute: typeof PublicRoute
     }
     '/_public/demo': {
@@ -333,11 +319,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicDemoRouteImport
       parentRoute: typeof PublicRoute
     }
-    '/_app/@{$workspaceSlug}': {
-      id: '/_app/@{$workspaceSlug}'
-      path: '/@{$workspaceSlug}'
-      fullPath: '/@{$workspaceSlug}'
-      preLoaderRoute: typeof AppAtChar123workspaceSlugChar125RouteImport
+    '/_public/pricing': {
+      id: '/_public/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PublicPricingRouteImport
+      parentRoute: typeof PublicRoute
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/version': {
+      id: '/api/version'
+      path: '/api/version'
+      fullPath: '/api/version'
+      preLoaderRoute: typeof ApiVersionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/@{$workspaceSlug}/': {
+      id: '/_app/@{$workspaceSlug}/'
+      path: '/'
+      fullPath: '/@{$workspaceSlug}/'
+      preLoaderRoute: typeof AppAtChar123workspaceSlugChar125IndexRouteImport
+      parentRoute: typeof AppAtChar123workspaceSlugChar125Route
+    }
+    '/_app/profile/$userId': {
+      id: '/_app/profile/$userId'
+      path: '/profile/$userId'
+      fullPath: '/profile/$userId'
+      preLoaderRoute: typeof AppProfileUserIdRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/workspaces/': {
@@ -347,13 +361,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWorkspacesIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/@{$workspaceSlug}/': {
-      id: '/_app/@{$workspaceSlug}/'
-      path: '/'
-      fullPath: '/@{$workspaceSlug}/'
-      preLoaderRoute: typeof AppAtChar123workspaceSlugChar125IndexRouteImport
-      parentRoute: typeof AppAtChar123workspaceSlugChar125Route
-    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -361,32 +368,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_app/profile/$userId': {
-      id: '/_app/profile/$userId'
-      path: '/profile/$userId'
-      fullPath: '/profile/$userId'
-      preLoaderRoute: typeof AppProfileUserIdRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/@{$workspaceSlug}/$projectSlug/': {
       id: '/_app/@{$workspaceSlug}/$projectSlug/'
       path: '/$projectSlug'
       fullPath: '/@{$workspaceSlug}/$projectSlug/'
       preLoaderRoute: typeof AppAtChar123workspaceSlugChar125ProjectSlugIndexRouteImport
-      parentRoute: typeof AppAtChar123workspaceSlugChar125Route
-    }
-    '/_app/@{$workspaceSlug}/~/settings': {
-      id: '/_app/@{$workspaceSlug}/~/settings'
-      path: '/~/settings'
-      fullPath: '/@{$workspaceSlug}/~/settings'
-      preLoaderRoute: typeof AppAtChar123workspaceSlugChar125Char126SettingsRouteImport
-      parentRoute: typeof AppAtChar123workspaceSlugChar125Route
-    }
-    '/_app/@{$workspaceSlug}/~/calendar': {
-      id: '/_app/@{$workspaceSlug}/~/calendar'
-      path: '/~/calendar'
-      fullPath: '/@{$workspaceSlug}/~/calendar'
-      preLoaderRoute: typeof AppAtChar123workspaceSlugChar125Char126CalendarRouteImport
       parentRoute: typeof AppAtChar123workspaceSlugChar125Route
     }
     '/_app/@{$workspaceSlug}/$projectSlug/$taskId': {
@@ -396,12 +382,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAtChar123workspaceSlugChar125ProjectSlugTaskIdRouteImport
       parentRoute: typeof AppAtChar123workspaceSlugChar125Route
     }
-    '/api/og/project/$workspaceSlug/$projectSlug': {
-      id: '/api/og/project/$workspaceSlug/$projectSlug'
-      path: '/api/og/project/$workspaceSlug/$projectSlug'
-      fullPath: '/api/og/project/$workspaceSlug/$projectSlug'
-      preLoaderRoute: typeof ApiOgProjectWorkspaceSlugProjectSlugRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_app/@{$workspaceSlug}/~/calendar': {
+      id: '/_app/@{$workspaceSlug}/~/calendar'
+      path: '/~/calendar'
+      fullPath: '/@{$workspaceSlug}/~/calendar'
+      preLoaderRoute: typeof AppAtChar123workspaceSlugChar125Char126CalendarRouteImport
+      parentRoute: typeof AppAtChar123workspaceSlugChar125Route
+    }
+    '/_app/@{$workspaceSlug}/~/settings': {
+      id: '/_app/@{$workspaceSlug}/~/settings'
+      path: '/~/settings'
+      fullPath: '/@{$workspaceSlug}/~/settings'
+      preLoaderRoute: typeof AppAtChar123workspaceSlugChar125Char126SettingsRouteImport
+      parentRoute: typeof AppAtChar123workspaceSlugChar125Route
     }
     '/_app/@{$workspaceSlug}/$projectSlug/~/settings': {
       id: '/_app/@{$workspaceSlug}/$projectSlug/~/settings'
@@ -409,6 +402,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/@{$workspaceSlug}/$projectSlug/~/settings'
       preLoaderRoute: typeof AppAtChar123workspaceSlugChar125ProjectSlugChar126SettingsRouteImport
       parentRoute: typeof AppAtChar123workspaceSlugChar125Route
+    }
+    '/api/og/project/$workspaceSlug/$projectSlug': {
+      id: '/api/og/project/$workspaceSlug/$projectSlug'
+      path: '/api/og/project/$workspaceSlug/$projectSlug'
+      fullPath: '/api/og/project/$workspaceSlug/$projectSlug'
+      preLoaderRoute: typeof ApiOgProjectWorkspaceSlugProjectSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/og/task/$workspaceSlug/$projectSlug/$number': {
       id: '/api/og/task/$workspaceSlug/$projectSlug/$number'

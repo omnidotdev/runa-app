@@ -29,8 +29,6 @@ const knipConfig: KnipConfig = {
     "dotenv",
     // used via subpath imports (e.g. @omnidotdev/providers/billing)
     "@omnidotdev/providers",
-    // used at runtime via dynamic import in feature flags provider
-    "unleash-client",
   ],
   tags: ["-knipignore"],
 };
