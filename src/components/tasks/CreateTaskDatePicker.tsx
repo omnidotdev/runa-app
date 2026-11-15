@@ -28,7 +28,7 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
-import { storedDueDate } from "@/lib/util/dueDate";
+import { pickedLocalDay, storedDueDate } from "@/lib/util/dueDate";
 
 const CreateTaskDatePicker = withForm({
   defaultValues: taskFormDefaults,
@@ -50,7 +50,7 @@ const CreateTaskDatePicker = withForm({
             onValueChange={({ value }) =>
               value.length
                 ? field.handleChange(
-                    storedDueDate(value[0].toString()).toISOString(),
+                    storedDueDate(pickedLocalDay(value[0])).toISOString(),
                   )
                 : field.handleChange("")
             }

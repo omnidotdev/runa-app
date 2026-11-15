@@ -1,11 +1,13 @@
 import { describe, expect, it } from "bun:test";
 
+import { CalendarDate, parseAbsoluteToLocal } from "@internationalized/date";
 import dayjs from "dayjs";
 
 import {
   dueHasTime,
   dueTimeValue,
   formatDueDate,
+  pickedLocalDay,
   storedDueDate,
   storedDueDateAtTime,
 } from "@/lib/util/dueDate";
@@ -59,5 +61,18 @@ describe("timed due dates", () => {
     expect(formatDueDate(null)).toBe("");
     expect(formatDueDate(undefined)).toBe("");
     expect(dueHasTime(null)).toBe(false);
+  });
+});
+
+describe("pickedLocalDay", () => {
+  it("reduces a zoned picker value to its plain local day", () => {
+    const zoned = parseAbsoluteToLocal("2026-11-20T06:00:00.000Z");
+    const day = pickedLocalDay(zoned);
+    expect(day).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(Number.isNaN(storedDueDate(day).getTime())).toBe(false);
+  });
+
+  it("passes a calendar date through unchanged", () => {
+    expect(pickedLocalDay(new CalendarDate(2026, 11, 20))).toBe("2026-11-20");
   });
 });
