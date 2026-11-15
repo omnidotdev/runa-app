@@ -8,11 +8,6 @@ import { getGraphQLClient } from "@/lib/graphql/graphqlClientFactory";
 
 import type { ResolveRowIdFn } from "@omnidotdev/providers/auth";
 
-export type {
-  GetAuthSession,
-  OrganizationClaim,
-} from "@omnidotdev/providers/auth";
-
 /**
  * Resolve the runa-api `user.rowId` UUID for the authenticated caller. Better
  * Auth's `user.id` is a 32-char base64 string and fails the runa-api `UUID`

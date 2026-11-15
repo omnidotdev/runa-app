@@ -18,7 +18,7 @@ const getOrganizationBySlugSchema = z.object({
  * Used when JWT claims are stale and don't include a newly created org
  */
 export const getOrganizationBySlug = createServerFn({ method: "GET" })
-  .inputValidator((data) => getOrganizationBySlugSchema.parse(data))
+  .validator((data) => getOrganizationBySlugSchema.parse(data))
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     const accessToken = context.session.accessToken;
@@ -35,7 +35,7 @@ export const getOrganizationBySlug = createServerFn({ method: "GET" })
  * Used for public board access when no JWT is available
  */
 export const fetchOrganizationBySlug = createServerFn()
-  .inputValidator((data) => getOrganizationBySlugSchema.parse(data))
+  .validator((data) => getOrganizationBySlugSchema.parse(data))
   .handler(async ({ data }) => {
     try {
       return await gatekeeperOrg.fetchOrganizationBySlug(data.slug);
