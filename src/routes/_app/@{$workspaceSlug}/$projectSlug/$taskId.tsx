@@ -50,6 +50,14 @@ import { buildTaskKey, parseTaskParam, stripMarkup } from "@/lib/util/taskUrl";
 
 import type { TaskQuery } from "@/generated/graphql";
 
+/** A title's visible text, ignoring the markup the editor wraps it in */
+const titleText = (html: string | null | undefined): string =>
+  (html ?? "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
 export const Route = createFileRoute(
   "/_app/@{$workspaceSlug}/$projectSlug/$taskId",
 )({
@@ -439,8 +447,15 @@ function AuthenticatedTaskPage() {
               // Only save on a genuine change. Lexical fires onUpdate on initial
               // content load/normalization too, which otherwise writes the task
               // (and emits an event) just from viewing it.
+              // Compare as text, and only once the task is loaded: right after
+              // a move the page re-keys and the editor can re-emit the same
+              // title in different markup, which recorded a bogus rename.
               const next = getHTML();
-              if (!isEmpty && next !== task?.content) {
+              if (
+                task &&
+                !isEmpty &&
+                titleText(next) !== titleText(task.content)
+              ) {
                 handleContentUpdate({
                   rowId: taskId,
                   patch: { content: next },
@@ -461,7 +476,7 @@ function AuthenticatedTaskPage() {
               // Only save on a genuine change (see title editor above); the
               // initial-load emit must not write the task on view.
               const next = isEmpty ? "" : getHTML();
-              if (next !== (task?.description ?? "")) {
+              if (task && next !== (task.description ?? "")) {
                 handleDescriptionUpdate({
                   rowId: taskId,
                   patch: { description: next },
