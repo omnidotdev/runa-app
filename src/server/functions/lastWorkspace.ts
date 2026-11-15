@@ -5,7 +5,7 @@ const COOKIE_NAME = "runa:lastWorkspaceSlug";
 const COOKIE_TTL = 60 * 60 * 24 * 7; // 7 days
 
 export const setLastWorkspaceCookie = createServerFn({ method: "POST" })
-  .inputValidator((data: string) => data)
+  .validator((data: string) => data)
   .handler(async ({ data: slug }) => {
     setCookie(COOKIE_NAME, slug, {
       maxAge: COOKIE_TTL,

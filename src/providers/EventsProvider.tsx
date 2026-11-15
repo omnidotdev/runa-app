@@ -1,1 +1,1 @@
-export { EventsProvider, useEvents } from "@omnidotdev/providers/react";
+export { EventsProvider } from "@omnidotdev/providers/react";

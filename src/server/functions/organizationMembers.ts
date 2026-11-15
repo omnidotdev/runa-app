@@ -22,7 +22,7 @@ const organizationSchema = z.object({
  */
 export const getOrganizationMembers = createServerFn()
   .middleware([authMiddleware])
-  .inputValidator((data) => organizationSchema.parse(data))
+  .validator((data) => organizationSchema.parse(data))
   .handler(async ({ data, context }): Promise<IdpMembersResponse> => {
     const { organizationId } = data;
 

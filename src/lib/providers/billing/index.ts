@@ -9,9 +9,6 @@ import { createBillingProvider } from "@omnidotdev/providers/billing";
 import { BILLING_BASE_URL } from "@/lib/config/env.config";
 
 export type {
-  BillingProvider,
-  CheckoutParams,
-  Entitlement,
   EntitlementsResponse,
   Price,
   Subscription,

@@ -1,14 +1,10 @@
 export { default as AppSidebar } from "./AppSidebar";
-export { default as AppSidebarContent } from "./AppSidebarContent";
-export { default as AppSidebarFooter } from "./AppSidebarFooter";
-export { default as AppSidebarHeader } from "./AppSidebarHeader";
 export { default as Assignees } from "./Assignees";
 export { default as ColorSelector } from "./ColorSelector";
 export { default as ColumnHeader } from "./ColumnHeader";
 export { default as ColumnSelector } from "./ColumnSelector";
 export { default as ColumnTrigger } from "./ColumnTrigger";
 export { default as DestructiveActionDialog } from "./DestructiveActionDialog";
-export { default as EmojiSelector } from "./EmojiSelector";
 export { default as Favicon } from "./Favicon";
 export { default as IconSelector } from "./IconSelector";
 export { default as Label } from "./Label";

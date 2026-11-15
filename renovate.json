@@ -1,4 +1,22 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>omnidotdev/.github", "customManagers:biomeVersions"]
+  "extends": ["github>omnidotdev/.github", "customManagers:biomeVersions"],
+  "packageRules": [
+    {
+      "description": "Keep graphql in lockstep with runa-api, where Postgraphile v5 and grafast peer on graphql ^16",
+      "matchPackageNames": ["graphql"],
+      "allowedVersions": "<17"
+    },
+    {
+      "description": "GraphQL Code Generator 8 changes generated shapes (optional fields become required, __typename and the any scalar default go away); migrate deliberately",
+      "matchPackageNames": ["@graphql-codegen/**"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "thornberry's compiled editor runs on the app's Lexical; move Lexical together with a thornberry ref bump",
+      "matchPackageNames": ["lexical", "@lexical/**"],
+      "enabled": false
+    }
+  ]
 }

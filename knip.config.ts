@@ -25,8 +25,10 @@ const knipConfig: KnipConfig = {
   ignoreExportsUsedInFile: true,
   ignore: ["src/generated/**", "src/routeTree.gen.ts"],
   ignoreDependencies: [
-    // used by GraphQL Code Generator scripts
-    "dotenv",
+    // not imported directly: hoists cookie-es 3 to the root so the bundled
+    // TanStack Start server (which imports parseCookie) resolves it; Nitro's
+    // own dependency would otherwise put cookie-es 2 there and break the build
+    "cookie-es",
     // used via subpath imports (e.g. @omnidotdev/providers/billing)
     "@omnidotdev/providers",
   ],
