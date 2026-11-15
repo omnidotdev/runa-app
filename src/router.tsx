@@ -64,7 +64,6 @@ export function getRouter() {
     context: {
       queryClient,
       session: null,
-      isMaintenanceMode: false,
       authDegraded: false,
     },
     defaultPreload: "intent",

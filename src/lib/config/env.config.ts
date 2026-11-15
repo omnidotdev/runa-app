@@ -42,11 +42,6 @@ export const ORG_SYNC_SERVICE_TOKEN =
     ? process.env.ORG_SYNC_SERVICE_TOKEN
     : undefined;
 
-// Feature flags
-export const FLAGS_API_HOST = env.FLAGS_API_HOST || env.VITE_FLAGS_API_HOST;
-export const FLAGS_CLIENT_KEY =
-  env.FLAGS_CLIENT_KEY || env.VITE_FLAGS_CLIENT_KEY;
-
 export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 
 // Internal GraphQL URL for server-side requests
@@ -64,8 +59,6 @@ export const hasBilling = !!BILLING_BASE_URL;
 // Startup warnings for optional integrations
 if (!BILLING_BASE_URL)
   console.warn("BILLING_BASE_URL not set, billing disabled");
-if (!FLAGS_API_HOST)
-  console.warn("FLAGS_API_HOST not set, feature flags disabled");
 if (!ACCOUNT_URL)
   console.warn("ACCOUNT_URL not set, manage-account link disabled");
 if (typeof window === "undefined" && !ORG_SYNC_SERVICE_TOKEN)

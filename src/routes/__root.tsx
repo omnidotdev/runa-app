@@ -6,10 +6,8 @@ import {
   Outlet,
   Scripts,
   createRootRouteWithContext,
-  useRouteContext,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { createServerFn } from "@tanstack/react-start";
 
 import CommandPalette from "@/components/core/CommandPalette";
 import KeyboardShortcutsDialog from "@/components/core/KeyboardShortcutsDialog";
@@ -18,7 +16,6 @@ import { Toaster } from "@/components/ui/sonner";
 import app from "@/lib/config/app.config";
 import getClientEnv from "@/lib/config/clientEnv";
 import { BASE_URL } from "@/lib/config/env.config";
-import { fetchMaintenanceMode } from "@/lib/providers";
 import appCss from "@/lib/styles/globals.css?url";
 import createMetaTags from "@/lib/util/createMetaTags";
 import ThemeProvider from "@/providers/ThemeProvider";
@@ -46,40 +43,14 @@ interface ExtendedSession extends Omit<Session, "user"> {
   organizations?: OrganizationClaim[];
 }
 
-const fetchSessionAndMaintenanceMode = createServerFn({
-  method: "GET",
-}).handler(async () => {
-  // Fetch session first to get user email for maintenance mode bypass evaluation
-  const { session, authDegraded } = await fetchSession();
-
-  // Pass user context to Unleash for @omni.dev admin bypass
-  const context = session?.user?.email
-    ? { userId: session.user.id, properties: { email: session.user.email } }
-    : undefined;
-  const { isMaintenanceMode } = await fetchMaintenanceMode({ data: context });
-
-  return { session, isMaintenanceMode, authDegraded };
-});
-
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
   session: ExtendedSession | null;
-  isMaintenanceMode: boolean;
   authDegraded: boolean;
 }>()({
   beforeLoad: async () => {
-    const { session, isMaintenanceMode, authDegraded } =
-      await fetchSessionAndMaintenanceMode();
-
-    // Admin bypass (@omni.dev) is now handled by Unleash constraints.
-    // If isMaintenanceMode is true, Unleash has already evaluated the user's email
-    // and determined they should see maintenance mode.
-
-    // Skip auth when maintenance page is shown
-    if (isMaintenanceMode)
-      return { session: null, isMaintenanceMode, authDegraded: false };
-
-    return { session, isMaintenanceMode, authDegraded };
+    const { session, authDegraded } = await fetchSession();
+    return { session, authDegraded };
   },
   loader: async () => {
     const theme = await getTheme();
@@ -169,34 +140,9 @@ export const Route = createRootRouteWithContext<{
   component: RootComponent,
 });
 
-function MaintenancePage() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-linear-to-br from-zinc-900 to-zinc-800 p-8 text-white">
-      <div className="text-center">
-        <div className="mb-6 text-9xl">🌙</div>
-        <h1 className="mb-4 text-4xl font-bold">In a Lunar Phase</h1>
-        <p className="max-w-md text-lg text-zinc-300">
-          We're cycling through some changes. Runa will wax back soon.
-        </p>
-      </div>
-    </div>
-  );
-}
-
 function RootComponent() {
   // Keep the OAuth access token fresh while the user is idle
   useSessionRefresh(fetchSession);
-
-  const { isMaintenanceMode } = useRouteContext({ from: "__root__" });
-
-  // Show maintenance page when flag is enabled
-  if (isMaintenanceMode) {
-    return (
-      <RootDocument>
-        <MaintenancePage />
-      </RootDocument>
-    );
-  }
 
   return (
     <RootDocument>
