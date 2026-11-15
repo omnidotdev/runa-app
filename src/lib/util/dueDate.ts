@@ -1,4 +1,18 @@
+import { toCalendarDate } from "@internationalized/date";
 import dayjs from "dayjs";
+
+import type { DateValue } from "@internationalized/date";
+
+/**
+ * The local day (`YYYY-MM-DD`) a date picker selection represents. The picker is
+ * seeded with a zoned value (`parseAbsoluteToLocal`), so a pick can come back as
+ * a ZonedDateTime whose `toString()` is `2026-11-20T00:00:00-06:00[America/Chicago]`,
+ * which dayjs cannot parse (it became an Invalid Date, saved as a null due date
+ * and crashed the page). Converting to a calendar date first always yields a
+ * plain day
+ */
+export const pickedLocalDay = (value: DateValue): string =>
+  toCalendarDate(value).toString();
 
 /**
  * The value to store for a due date picked as a local day (`YYYY-MM-DD`, or a

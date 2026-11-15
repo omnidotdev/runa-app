@@ -38,6 +38,7 @@ import taskOptions from "@/lib/options/task.options";
 import {
   dueHasTime,
   dueTimeValue,
+  pickedLocalDay,
   storedDueDate,
   storedDueDateAtTime,
 } from "@/lib/util/dueDate";
@@ -59,7 +60,11 @@ const DueDateEditor = ({
   taskId: string;
   dueDate?: Date | string | null;
 }) => {
-  const dueDateIso = dueDate ? new Date(dueDate).toISOString() : null;
+  // tolerate an unparseable value instead of throwing during render
+  const dueDateTime = dueDate ? new Date(dueDate).getTime() : Number.NaN;
+  const dueDateIso = Number.isNaN(dueDateTime)
+    ? null
+    : new Date(dueDateTime).toISOString();
 
   const queryClient = useQueryClient();
   const taskQueryKey = taskOptions({ rowId: taskId }).queryKey;
@@ -104,7 +109,7 @@ const DueDateEditor = ({
           return;
         }
         // keep any existing time-of-day when the day changes
-        const day = value[0].toString();
+        const day = pickedLocalDay(value[0]);
         const time = dueTimeValue(dueDate);
         setDueDate(
           time ? storedDueDateAtTime(day, time) : storedDueDate(day),
