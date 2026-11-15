@@ -104,6 +104,9 @@ export const renderOgImage = async ({
         style: {
           width: "100%",
           height: "100%",
+          // padding must sit inside the canvas: newer satori sizes boxes as
+          // content-box, which pushed the footer and long titles off the card
+          boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
