@@ -6,6 +6,9 @@ mutation CreateNotificationPreference(
       rowId
       emailTaskAssigned
       taskAssignedCadence
+      emailTaskComment
+      emailTaskMention
+      emailTaskMoved
     }
   }
 }
