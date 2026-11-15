@@ -1,6 +1,7 @@
 import tailwindcss from "@tailwindcss/vite";
 import { nitroV2Plugin } from "@tanstack/nitro-v2-vite-plugin";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import tsConfigPaths from "vite-tsconfig-paths";
@@ -21,6 +22,8 @@ const viteConfig = defineConfig(({ command }) => ({
     tailwindcss(),
     tsConfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart(),
+    // React Refresh runtime, required by TanStack Start's dev mode
+    viteReact(),
     nitroV2Plugin({
       preset: "node-server",
       // Inline modules to avoid resolution issues with Bun runtime

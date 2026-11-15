@@ -12,11 +12,6 @@
       "matchPackageNames": ["@graphql-codegen/**"],
       "matchUpdateTypes": ["major"],
       "enabled": false
-    },
-    {
-      "description": "thornberry's compiled editor runs on the app's Lexical; move Lexical together with a thornberry ref bump",
-      "matchPackageNames": ["lexical", "@lexical/**"],
-      "enabled": false
     }
   ]
 }

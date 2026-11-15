@@ -49,8 +49,16 @@ const ImagePastePlugin = ({ taskId, postId }: Props) => {
 
     const removePaste = editor.registerCommand(
       PASTE_COMMAND,
-      (event: ClipboardEvent) => {
-        const files = imageFilesFrom(event.clipboardData);
+      (event) => {
+        // a paste can also arrive as a beforeinput event (e.g. some input
+        // methods) carrying the clipboard on dataTransfer
+        const data =
+          "clipboardData" in event
+            ? event.clipboardData
+            : "dataTransfer" in event
+              ? event.dataTransfer
+              : null;
+        const files = imageFilesFrom(data);
         if (!files.length) return false;
         event.preventDefault();
         void handleFiles(files);
