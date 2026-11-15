@@ -4441,6 +4441,9 @@ export type NotificationPreference = Node & {
   __typename?: 'NotificationPreference';
   createdAt: Scalars['Datetime']['output'];
   emailTaskAssigned: Scalars['Boolean']['output'];
+  emailTaskComment: Scalars['Boolean']['output'];
+  emailTaskMention: Scalars['Boolean']['output'];
+  emailTaskMoved: Scalars['Boolean']['output'];
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   rowId: Scalars['UUID']['output'];
@@ -4467,6 +4470,12 @@ export type NotificationPreferenceCondition = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   /** Checks for equality with the object’s `emailTaskAssigned` field. */
   emailTaskAssigned?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `emailTaskComment` field. */
+  emailTaskComment?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `emailTaskMention` field. */
+  emailTaskMention?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Checks for equality with the object’s `emailTaskMoved` field. */
+  emailTaskMoved?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `rowId` field. */
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   /** Checks for equality with the object’s `taskAssignedCadence` field. */
@@ -4507,6 +4516,12 @@ export type NotificationPreferenceDistinctCountAggregates = {
   createdAt?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of emailTaskAssigned across the matching connection */
   emailTaskAssigned?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of emailTaskComment across the matching connection */
+  emailTaskComment?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of emailTaskMention across the matching connection */
+  emailTaskMention?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of emailTaskMoved across the matching connection */
+  emailTaskMoved?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of rowId across the matching connection */
   rowId?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of taskAssignedCadence across the matching connection */
@@ -4534,6 +4549,12 @@ export type NotificationPreferenceFilter = {
   createdAt?: InputMaybe<DatetimeFilter>;
   /** Filter by the object’s `emailTaskAssigned` field. */
   emailTaskAssigned?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `emailTaskComment` field. */
+  emailTaskComment?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `emailTaskMention` field. */
+  emailTaskMention?: InputMaybe<BooleanFilter>;
+  /** Filter by the object’s `emailTaskMoved` field. */
+  emailTaskMoved?: InputMaybe<BooleanFilter>;
   /** Negates the expression. */
   not?: InputMaybe<NotificationPreferenceFilter>;
   /** Checks for any expressions in this list. */
@@ -4556,6 +4577,9 @@ export enum NotificationPreferenceGroupBy {
   CreatedAtTruncatedToDay = 'CREATED_AT_TRUNCATED_TO_DAY',
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   EmailTaskAssigned = 'EMAIL_TASK_ASSIGNED',
+  EmailTaskComment = 'EMAIL_TASK_COMMENT',
+  EmailTaskMention = 'EMAIL_TASK_MENTION',
+  EmailTaskMoved = 'EMAIL_TASK_MOVED',
   TaskAssignedCadence = 'TASK_ASSIGNED_CADENCE',
   UpdatedAt = 'UPDATED_AT',
   UpdatedAtTruncatedToDay = 'UPDATED_AT_TRUNCATED_TO_DAY',
@@ -4626,6 +4650,9 @@ export type NotificationPreferenceHavingVarianceSampleInput = {
 export type NotificationPreferenceInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   emailTaskAssigned?: InputMaybe<Scalars['Boolean']['input']>;
+  emailTaskComment?: InputMaybe<Scalars['Boolean']['input']>;
+  emailTaskMention?: InputMaybe<Scalars['Boolean']['input']>;
+  emailTaskMoved?: InputMaybe<Scalars['Boolean']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   taskAssignedCadence?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -4638,6 +4665,12 @@ export enum NotificationPreferenceOrderBy {
   CreatedAtDesc = 'CREATED_AT_DESC',
   EmailTaskAssignedAsc = 'EMAIL_TASK_ASSIGNED_ASC',
   EmailTaskAssignedDesc = 'EMAIL_TASK_ASSIGNED_DESC',
+  EmailTaskCommentAsc = 'EMAIL_TASK_COMMENT_ASC',
+  EmailTaskCommentDesc = 'EMAIL_TASK_COMMENT_DESC',
+  EmailTaskMentionAsc = 'EMAIL_TASK_MENTION_ASC',
+  EmailTaskMentionDesc = 'EMAIL_TASK_MENTION_DESC',
+  EmailTaskMovedAsc = 'EMAIL_TASK_MOVED_ASC',
+  EmailTaskMovedDesc = 'EMAIL_TASK_MOVED_DESC',
   Natural = 'NATURAL',
   PrimaryKeyAsc = 'PRIMARY_KEY_ASC',
   PrimaryKeyDesc = 'PRIMARY_KEY_DESC',
@@ -4655,6 +4688,9 @@ export enum NotificationPreferenceOrderBy {
 export type NotificationPreferencePatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   emailTaskAssigned?: InputMaybe<Scalars['Boolean']['input']>;
+  emailTaskComment?: InputMaybe<Scalars['Boolean']['input']>;
+  emailTaskMention?: InputMaybe<Scalars['Boolean']['input']>;
+  emailTaskMoved?: InputMaybe<Scalars['Boolean']['input']>;
   rowId?: InputMaybe<Scalars['UUID']['input']>;
   taskAssignedCadence?: InputMaybe<Scalars['String']['input']>;
   updatedAt?: InputMaybe<Scalars['Datetime']['input']>;
@@ -11577,7 +11613,7 @@ export type CreateNotificationPreferenceMutationVariables = Exact<{
 }>;
 
 
-export type CreateNotificationPreferenceMutation = { __typename?: 'Mutation', createNotificationPreference?: { __typename?: 'CreateNotificationPreferencePayload', notificationPreference?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean, taskAssignedCadence: string } | null } | null };
+export type CreateNotificationPreferenceMutation = { __typename?: 'Mutation', createNotificationPreference?: { __typename?: 'CreateNotificationPreferencePayload', notificationPreference?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean, taskAssignedCadence: string, emailTaskComment: boolean, emailTaskMention: boolean, emailTaskMoved: boolean } | null } | null };
 
 export type UpdateNotificationPreferenceMutationVariables = Exact<{
   rowId: Scalars['UUID']['input'];
@@ -11585,7 +11621,7 @@ export type UpdateNotificationPreferenceMutationVariables = Exact<{
 }>;
 
 
-export type UpdateNotificationPreferenceMutation = { __typename?: 'Mutation', updateNotificationPreference?: { __typename?: 'UpdateNotificationPreferencePayload', notificationPreference?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean, taskAssignedCadence: string } | null } | null };
+export type UpdateNotificationPreferenceMutation = { __typename?: 'Mutation', updateNotificationPreference?: { __typename?: 'UpdateNotificationPreferencePayload', notificationPreference?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean, taskAssignedCadence: string, emailTaskComment: boolean, emailTaskMention: boolean, emailTaskMoved: boolean } | null } | null };
 
 export type CreatePostMutationVariables = Exact<{
   input: CreatePostInput;
@@ -11873,7 +11909,7 @@ export type NotificationPreferenceQueryVariables = Exact<{
 }>;
 
 
-export type NotificationPreferenceQuery = { __typename?: 'Query', notificationPreferenceByUserId?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean, taskAssignedCadence: string } | null };
+export type NotificationPreferenceQuery = { __typename?: 'Query', notificationPreferenceByUserId?: { __typename?: 'NotificationPreference', rowId: string, emailTaskAssigned: boolean, taskAssignedCadence: string, emailTaskComment: boolean, emailTaskMention: boolean, emailTaskMoved: boolean } | null };
 
 export type ProjectColumnsQueryVariables = Exact<{
   organizationId: Scalars['String']['input'];
@@ -12240,6 +12276,9 @@ export const CreateNotificationPreferenceDocument = gql`
       rowId
       emailTaskAssigned
       taskAssignedCadence
+      emailTaskComment
+      emailTaskMention
+      emailTaskMoved
     }
   }
 }
@@ -12251,6 +12290,9 @@ export const UpdateNotificationPreferenceDocument = gql`
       rowId
       emailTaskAssigned
       taskAssignedCadence
+      emailTaskComment
+      emailTaskMention
+      emailTaskMoved
     }
   }
 }
@@ -12678,6 +12720,9 @@ export const NotificationPreferenceDocument = gql`
     rowId
     emailTaskAssigned
     taskAssignedCadence
+    emailTaskComment
+    emailTaskMention
+    emailTaskMoved
   }
 }
     `;

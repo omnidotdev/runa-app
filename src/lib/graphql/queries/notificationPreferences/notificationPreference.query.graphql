@@ -3,5 +3,8 @@ query NotificationPreference($userId: UUID!) {
     rowId
     emailTaskAssigned
     taskAssignedCadence
+    emailTaskComment
+    emailTaskMention
+    emailTaskMoved
   }
 }
