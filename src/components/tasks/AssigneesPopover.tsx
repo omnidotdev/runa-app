@@ -56,7 +56,7 @@ const AssigneeAvatars = ({ assignees }: { assignees: Assignee[] }) => (
     {assignees.slice(0, 4).map((assignee) => (
       <AvatarRoot
         key={assignee.userId}
-        className="size-5 rounded-full border-2 border-background bg-background font-medium text-[10px]"
+        className="border-background bg-background size-5 rounded-full border-2 text-[10px] font-medium"
       >
         <AvatarImage
           src={assignee.user?.avatarUrl ?? undefined}
@@ -316,7 +316,7 @@ const AssigneesEditor = ({
         <PopoverContent className="w-72 p-2">
           <div className="flex flex-col gap-2">
             <div className="relative">
-              <SearchIcon className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <SearchIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2" />
               <Input
                 placeholder="Filter members…"
                 className="h-8 pl-8 text-sm shadow-none"

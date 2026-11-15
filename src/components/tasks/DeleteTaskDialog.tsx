@@ -73,7 +73,7 @@ const DeleteTaskDialog = () => {
     >
       <DialogBackdrop />
       <DialogPositioner>
-        <DialogContent className="w-full max-w-md rounded-lg bg-background">
+        <DialogContent className="bg-background w-full max-w-md rounded-lg">
           <DialogCloseTrigger />
 
           <div className="mb-4 flex flex-col gap-4">

@@ -113,7 +113,7 @@ const Projects = () => {
     <>
       <div className="flex flex-col">
         <div className="mb-1 flex h-10 items-center justify-between">
-          <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+          <h2 className="text-base-700 dark:text-base-300 ml-2 flex items-center gap-2 text-sm font-medium lg:ml-0">
             Projects
           </h2>
 
@@ -149,7 +149,7 @@ const Projects = () => {
               return (
                 <div
                   key={project?.rowId}
-                  className="group flex h-10 w-full cursor-pointer items-center hover:bg-accent"
+                  className="group hover:bg-accent flex h-10 w-full cursor-pointer items-center"
                   onClick={() =>
                     navigate({
                       to: "/@{$workspaceSlug}/$projectSlug",
@@ -163,7 +163,7 @@ const Projects = () => {
                   <div className="flex items-center">
                     <div className="flex size-10 items-center justify-center">
                       <div
-                        className="flex size-6 items-center justify-center rounded-full border bg-primary font-medium text-background text-sm uppercase shadow"
+                        className="bg-primary text-background flex size-6 items-center justify-center rounded-full border text-sm font-medium uppercase shadow"
                         style={{
                           backgroundColor: project?.color ?? undefined,
                         }}
@@ -178,7 +178,7 @@ const Projects = () => {
                   </div>
 
                   <div className="mr-2 ml-auto flex gap-1">
-                    <span className="flex items-center px-3 text-base-500 text-xs dark:text-base-400">
+                    <span className="text-base-500 dark:text-base-400 flex items-center px-3 text-xs">
                       {completedTasks}/{totalTasks} tasks
                     </span>
 
@@ -192,7 +192,7 @@ const Projects = () => {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="size-7 text-base-400"
+                          className="text-base-400 size-7"
                           aria-label="More project options"
                           onClick={(evt) => evt.stopPropagation()}
                         >
@@ -247,7 +247,7 @@ const Projects = () => {
             })}
           </div>
         ) : (
-          <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
+          <div className="text-base-500 ml-2 flex items-center text-sm lg:ml-0">
             {!projectColumns.length ? (
               "Please create workspace columns first"
             ) : canManageProjects ? (
@@ -271,7 +271,7 @@ const Projects = () => {
         description={
           <span>
             This will permanently delete the{" "}
-            <strong className="font-medium text-base-900 dark:text-base-100">
+            <strong className="text-base-900 dark:text-base-100 font-medium">
               {selectedProject?.name}
             </strong>{" "}
             project, including all tasks, labels, and member assignments. This

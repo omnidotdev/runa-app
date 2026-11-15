@@ -64,7 +64,7 @@ const AccordionItemContent = ({
 }: AccordionItemContentProps) => (
   <ArkAccordion.ItemContent
     className={
-      "overflow-hidden p-2 text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+      "data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden p-2 text-sm"
     }
     {...rest}
   >
@@ -73,8 +73,8 @@ const AccordionItemContent = ({
 );
 
 export {
-  AccordionRoot,
   AccordionItem,
-  AccordionItemTrigger,
   AccordionItemContent,
+  AccordionItemTrigger,
+  AccordionRoot,
 };

@@ -33,10 +33,10 @@ const ColumnHeader = ({
   <div className="mb-1 flex items-center justify-between rounded-lg py-2">
     <div className="flex items-center gap-2">
       <LabelIcon icon={icon} className="size-4" />
-      <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
+      <h3 className="text-base-800 dark:text-base-100 text-sm font-semibold">
         {title}
       </h3>
-      <span className="flex size-7 items-center justify-center rounded-full font-semibold text-foreground text-xs tabular-nums">
+      <span className="text-foreground flex size-7 items-center justify-center rounded-full text-xs font-semibold tabular-nums">
         {count}
       </span>
     </div>

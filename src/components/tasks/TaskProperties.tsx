@@ -132,7 +132,7 @@ const TaskProperties = ({ task, projectId, editable, onPatch }: Props) => (
 
     <PropertyRow label="Author">
       <PropertyValue>
-        <AvatarRoot className="size-5 rounded-full border bg-background font-medium text-[10px]">
+        <AvatarRoot className="bg-background size-5 rounded-full border text-[10px] font-medium">
           <AvatarImage
             src={task.author?.avatarUrl ?? undefined}
             alt={task.author?.name ?? undefined}

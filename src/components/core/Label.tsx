@@ -45,7 +45,7 @@ const Label = ({ label }: Props) => {
             color: textColor,
           }}
         />
-        <span className="font-medium text-[10px]">{label.name}</span>
+        <span className="text-[10px] font-medium">{label.name}</span>
       </Badge>
     </div>
   );

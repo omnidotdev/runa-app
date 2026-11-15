@@ -381,7 +381,7 @@ const ProjectLabelForm = ({
                       form.reset();
                     }}
                     disabled={isSubmitting}
-                    className="size-7 hover:text-destructive focus-visible:ring-offset-0"
+                    className="hover:text-destructive size-7 focus-visible:ring-offset-0"
                   >
                     <XIcon className="size-4" />
                   </Button>

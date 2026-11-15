@@ -108,16 +108,16 @@ function AppLayout() {
   if (!isAuthenticated || isPublicPreview) {
     // Minimal header for unauthenticated or public preview access
     return (
-      <div className="flex h-dvh flex-col bg-background">
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-sm">
+      <div className="bg-background flex h-dvh flex-col">
+        <header className="bg-background/95 sticky top-0 z-50 w-full border-b backdrop-blur-sm">
           <div className="flex h-14 items-center justify-between px-6">
             <Link
               to="/"
               variant="ghost"
               className="-ml-4 gap-2 hover:bg-transparent dark:hover:bg-transparent"
             >
-              <Logo className="size-6 text-primary-500" />
-              <span className="font-bold text-lg tracking-tight">
+              <Logo className="text-primary-500 size-6" />
+              <span className="text-lg font-bold tracking-tight">
                 {app.name}
               </span>
             </Link>
@@ -135,7 +135,7 @@ function AppLayout() {
           </div>
         </header>
 
-        <main className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
+        <main className="bg-background flex min-h-0 flex-1 flex-col overflow-hidden">
           <Outlet />
         </main>
       </div>

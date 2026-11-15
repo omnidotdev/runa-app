@@ -165,7 +165,7 @@ const IconSelector = ({
               <button
                 type="button"
                 onClick={handleClear}
-                className="flex w-full items-center gap-2 border-b px-3 py-2 text-base-500 text-sm transition-colors hover:bg-accent hover:text-base-700 dark:hover:text-base-300"
+                className="text-base-500 hover:bg-accent hover:text-base-700 dark:hover:text-base-300 flex w-full items-center gap-2 border-b px-3 py-2 text-sm transition-colors"
               >
                 <XIcon className="size-4" />
                 Remove icon
@@ -194,7 +194,7 @@ const IconSelector = ({
 
             <TabsContent value="lucide" className="mt-0 p-2">
               <div className="relative mb-2">
-                <SearchIcon className="absolute top-1/2 left-2 size-4 -translate-y-1/2 text-base-400" />
+                <SearchIcon className="text-base-400 absolute top-1/2 left-2 size-4 -translate-y-1/2" />
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -227,7 +227,7 @@ const IconSelector = ({
                   );
                 })}
                 {filteredIcons.length === 0 && (
-                  <div className="col-span-6 py-8 text-center text-base-400 text-sm">
+                  <div className="text-base-400 col-span-6 py-8 text-center text-sm">
                     No icons found
                   </div>
                 )}

@@ -30,7 +30,7 @@ export default function ProjectSettingsHeader() {
         <ArrowLeft className="size-4" />
       </Button>
 
-      <h1 className="font-semibold text-2xl">{name}</h1>
+      <h1 className="text-2xl font-semibold">{name}</h1>
     </div>
   );
 }

@@ -109,14 +109,14 @@ const ApiTokensSettings = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+      <h2 className="text-base-700 dark:text-base-300 ml-2 flex items-center gap-2 text-sm font-medium lg:ml-0">
         API tokens
-        <span className="rounded bg-base-100 px-1.5 py-0.5 font-medium text-[10px] text-base-500 uppercase tracking-wide dark:bg-base-800">
+        <span className="bg-base-100 text-base-500 dark:bg-base-800 rounded px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase">
           Admin only
         </span>
       </h2>
 
-      <p className="ml-2 text-base-500 text-xs lg:ml-0">
+      <p className="text-base-500 ml-2 text-xs lg:ml-0">
         Scoped, revocable tokens for external apps to call the API on this
         workspace's behalf. The token is shown once when you create it.
       </p>
@@ -138,8 +138,8 @@ const ApiTokensSettings = () => {
                 onClick={() => toggleScope(scope)}
                 className={
                   checked
-                    ? "rounded-full border border-primary bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs"
-                    : "rounded-full border px-2 py-0.5 text-base-500 text-xs hover:text-base-800 dark:hover:text-base-200"
+                    ? "border-primary bg-primary/10 text-primary rounded-full border px-2 py-0.5 text-xs font-medium"
+                    : "text-base-500 hover:text-base-800 dark:hover:text-base-200 rounded-full border px-2 py-0.5 text-xs"
                 }
               >
                 {scope}
@@ -159,7 +159,7 @@ const ApiTokensSettings = () => {
 
       <div className="flex flex-col divide-y border-y">
         {tokens.length === 0 ? (
-          <div className="flex h-10 w-full items-center pl-2 text-base-500 text-sm lg:pl-0">
+          <div className="text-base-500 flex h-10 w-full items-center pl-2 text-sm lg:pl-0">
             No tokens yet.
           </div>
         ) : (
@@ -169,10 +169,10 @@ const ApiTokensSettings = () => {
               className="flex w-full items-center justify-between gap-2 py-2"
             >
               <div className="flex min-w-0 items-center gap-3 pl-2 lg:pl-0">
-                <KeyIcon className="size-4 shrink-0 text-base-500" />
+                <KeyIcon className="text-base-500 size-4 shrink-0" />
                 <div className="flex min-w-0 flex-col">
                   <span className="truncate text-sm">{token.name}</span>
-                  <span className="truncate text-base-500 text-xs">
+                  <span className="text-base-500 truncate text-xs">
                     {(token.scopes ?? []).join(", ") || "no scopes"}
                   </span>
                 </div>
@@ -204,7 +204,7 @@ const ApiTokensSettings = () => {
       >
         <DialogBackdrop />
         <DialogPositioner>
-          <DialogContent className="w-full max-w-md rounded-lg bg-background">
+          <DialogContent className="bg-background w-full max-w-md rounded-lg">
             <DialogCloseTrigger />
             <div className="mb-4 flex flex-col gap-4">
               <DialogTitle>API token</DialogTitle>
@@ -212,7 +212,7 @@ const ApiTokensSettings = () => {
                 Copy this now. For your security it will not be shown again.
                 Send it as a Bearer token in the Authorization header.
               </DialogDescription>
-              <code className="block overflow-x-auto break-all rounded-md border bg-base-100 p-3 font-mono text-xs dark:bg-base-800">
+              <code className="bg-base-100 dark:bg-base-800 block overflow-x-auto rounded-md border p-3 font-mono text-xs break-all">
                 {revealedToken}
               </code>
             </div>
@@ -235,7 +235,7 @@ const ApiTokensSettings = () => {
       >
         <DialogBackdrop />
         <DialogPositioner>
-          <DialogContent className="w-full max-w-md rounded-lg bg-background">
+          <DialogContent className="bg-background w-full max-w-md rounded-lg">
             <DialogCloseTrigger />
             <div className="mb-4 flex flex-col gap-4">
               <DialogTitle>Revoke token?</DialogTitle>

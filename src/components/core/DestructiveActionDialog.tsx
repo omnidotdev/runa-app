@@ -73,12 +73,12 @@ const DestructiveActionDialog = ({
     >
       <DialogBackdrop />
       <DialogPositioner>
-        <DialogContent className="w-full max-w-md rounded-lg bg-background">
+        <DialogContent className="bg-background w-full max-w-md rounded-lg">
           <DialogCloseTrigger />
 
           <div className="mb-4 flex flex-col gap-4">
-            <div className="flex size-10 items-center justify-center rounded-full border border-destructive bg-destructive/10">
-              <AlertTriangle className="size-5 text-destructive" />
+            <div className="border-destructive bg-destructive/10 flex size-10 items-center justify-center rounded-full border">
+              <AlertTriangle className="text-destructive size-5" />
             </div>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>

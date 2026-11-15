@@ -41,11 +41,11 @@ const DemoListItem = ({ task, index, displayId, onSelect }: Props) => (
           />
         )}
 
-        <span className="shrink-0 font-mono text-base-400 text-xs dark:text-base-400">
+        <span className="text-base-400 dark:text-base-400 shrink-0 font-mono text-xs">
           {displayId}
         </span>
 
-        <p className="min-w-0 flex-1 truncate text-foreground text-xs">
+        <p className="text-foreground min-w-0 flex-1 truncate text-xs">
           {task.content}
         </p>
 
@@ -73,7 +73,7 @@ const DemoListItem = ({ task, index, displayId, onSelect }: Props) => (
               {task.assignees.slice(0, 2).map((assignee) => (
                 <AvatarRoot
                   key={assignee.name}
-                  className="size-6 border-2 border-background"
+                  className="border-background size-6 border-2"
                 >
                   <AvatarFallback
                     className="text-xs"
@@ -87,8 +87,8 @@ const DemoListItem = ({ task, index, displayId, onSelect }: Props) => (
                 </AvatarRoot>
               ))}
               {task.assignees.length > 2 && (
-                <AvatarRoot className="size-6 border-2 border-background">
-                  <AvatarFallback className="bg-base-100 text-base-600 text-xs dark:bg-base-800 dark:text-base-400">
+                <AvatarRoot className="border-background size-6 border-2">
+                  <AvatarFallback className="bg-base-100 text-base-600 dark:bg-base-800 dark:text-base-400 text-xs">
                     +{task.assignees.length - 2}
                   </AvatarFallback>
                 </AvatarRoot>
@@ -96,7 +96,7 @@ const DemoListItem = ({ task, index, displayId, onSelect }: Props) => (
             </div>
           ) : (
             <AvatarRoot aria-label="No Assignees" className="size-5.5">
-              <AvatarFallback className="border border-border border-dashed bg-transparent p-1 text-muted-foreground">
+              <AvatarFallback className="border-border text-muted-foreground border border-dashed bg-transparent p-1">
                 <span className="text-[10px]">?</span>
               </AvatarFallback>
             </AvatarRoot>

@@ -107,7 +107,7 @@ const KeyboardShortcutsDialog = () => {
             {SHORTCUT_GROUPS.map((group) => (
               <div key={group.title} className="flex flex-col gap-2">
                 <div className="flex items-baseline gap-2">
-                  <h3 className="font-medium text-foreground text-sm">
+                  <h3 className="text-foreground text-sm font-medium">
                     {group.title}
                   </h3>
                   {group.hint && (
@@ -117,7 +117,7 @@ const KeyboardShortcutsDialog = () => {
                   )}
                 </div>
 
-                <ul className="flex flex-col divide-y divide-border">
+                <ul className="divide-border flex flex-col divide-y">
                   {group.shortcuts.map((shortcut) => (
                     <li
                       key={shortcut.keys}

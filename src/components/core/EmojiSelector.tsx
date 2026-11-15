@@ -49,7 +49,7 @@ const EmojiSelector = ({
           {value ? (
             <span className="text-xl">{value}</span>
           ) : (
-            <SmilePlusIcon className="size-5 text-muted-foreground" />
+            <SmilePlusIcon className="text-muted-foreground size-5" />
           )}
         </Button>
       </DialogTrigger>
@@ -71,11 +71,11 @@ const EmojiSelector = ({
                         onChange(null);
                         setIsOpen(false);
                       }}
-                      className="flex items-center gap-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive flex items-center gap-2"
                       aria-label="Remove selected emoji"
                     >
                       <Trash2Icon className="size-4" />
-                      <span className="font-medium text-sm">Remove</span>
+                      <span className="text-sm font-medium">Remove</span>
                     </Button>
                   </div>
 

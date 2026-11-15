@@ -95,12 +95,12 @@ const AppSidebarHeader = () => {
         <div className="flex items-center gap-2">
           <SidebarMenuButton
             onClick={toggleSidebar}
-            className="cursor-pointer border border-transparent focus-visible:border focus-visible:border-primary focus-visible:ring-0! focus-visible:ring-offset-0"
+            className="focus-visible:border-primary cursor-pointer border border-transparent focus-visible:border focus-visible:ring-0! focus-visible:ring-offset-0"
             aria-label="Toggle sidebar"
           >
             <LogoLockup
               logo={
-                <Logo aria-hidden className="h-5 w-auto text-primary-500" />
+                <Logo aria-hidden className="text-primary-500 h-5 w-auto" />
               }
               name={app.name}
               nameClassName="group-data-[collapsible=icon]:hidden"
@@ -108,7 +108,7 @@ const AppSidebarHeader = () => {
           </SidebarMenuButton>
         </div>
 
-        <Badge className="ml-auto border-primary-500/20 bg-primary-500/10 text-primary-500 text-xs group-data-[collapsible=icon]:hidden">
+        <Badge className="border-primary-500/20 bg-primary-500/10 text-primary-500 ml-auto text-xs group-data-[collapsible=icon]:hidden">
           Early Access
         </Badge>
       </div>
@@ -217,7 +217,7 @@ const AppSidebarHeader = () => {
         manageWorkspacesUrl && (
           <SidebarMenuButton
             asChild
-            className="border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground"
+            className="bg-background hover:bg-accent hover:text-accent-foreground border shadow-xs"
           >
             <a href={manageWorkspacesUrl}>
               <PlusIcon />
@@ -236,7 +236,7 @@ const AppSidebarHeader = () => {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-md px-2 py-1 text-base-500 text-sm hover:bg-sidebar-accent hover:text-foreground dark:text-base-400"
+              className="text-base-500 hover:bg-sidebar-accent hover:text-foreground dark:text-base-400 flex items-center gap-2 rounded-md px-2 py-1 text-sm"
             >
               <Favicon url={link.url} />
               <span className="truncate">

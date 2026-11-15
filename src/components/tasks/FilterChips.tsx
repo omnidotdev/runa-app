@@ -29,10 +29,10 @@ const Chip = ({
   <button
     type="button"
     onClick={onRemove}
-    className="inline-flex items-center gap-1 rounded-full border py-0.5 pr-1.5 pl-2 text-base-700 text-xs hover:bg-base-50 dark:text-base-300 dark:hover:bg-base-800"
+    className="text-base-700 hover:bg-base-50 dark:text-base-300 dark:hover:bg-base-800 inline-flex items-center gap-1 rounded-full border py-0.5 pr-1.5 pl-2 text-xs"
   >
     {children}
-    <XIcon className="size-3 text-base-400" />
+    <XIcon className="text-base-400 size-3" />
   </button>
 );
 
@@ -139,7 +139,7 @@ const FilterChips = () => {
       <button
         type="button"
         onClick={clearAll}
-        className="ml-0.5 text-base-500 text-xs underline hover:text-base-800 dark:hover:text-base-200"
+        className="text-base-500 hover:text-base-800 dark:hover:text-base-200 ml-0.5 text-xs underline"
       >
         Clear all
       </button>

@@ -22,11 +22,11 @@ const WorkspaceMembers = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="ml-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+      <h2 className="text-base-700 dark:text-base-300 ml-2 text-sm font-medium lg:ml-0">
         Team Members
       </h2>
 
-      <p className="ml-2 max-w-prose text-base-500 text-sm lg:ml-0">
+      <p className="text-base-500 ml-2 max-w-prose text-sm lg:ml-0">
         Team members and roles are managed in your Omni account, so they stay
         consistent across every Omni product you use.
       </p>

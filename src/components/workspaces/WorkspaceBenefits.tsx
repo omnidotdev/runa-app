@@ -107,7 +107,7 @@ export default function WorkspaceBenefits() {
       )}
     >
       <div className="flex flex-col gap-4 pt-2">
-        <h3 className="font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+        <h3 className="text-base-700 dark:text-base-300 text-sm font-medium lg:ml-0">
           Workspace Benefits
         </h3>
 
@@ -128,7 +128,7 @@ export default function WorkspaceBenefits() {
                 key={feature.name}
                 className="flex h-10 items-center gap-2 pl-2"
               >
-                <div className="size-1.5 shrink-0 rounded-full bg-primary" />
+                <div className="bg-primary size-1.5 shrink-0 rounded-full" />
                 <span className="text-sm leading-relaxed">{feature.name}</span>
               </li>
             ))}
@@ -183,21 +183,21 @@ export default function WorkspaceBenefits() {
                             className="cursor-pointer"
                           >
                             <MenuItemText className="flex w-full items-center justify-between">
-                              <span className="font-medium text-sm">
+                              <span className="text-sm font-medium">
                                 {capitalizeFirstLetter(
                                   price.recurring?.interval!,
                                 )}
                                 ly
                               </span>
 
-                              <span className="font-semibold text-sm">
+                              <span className="text-sm font-semibold">
                                 <Format.Number
                                   value={price.unit_amount! / 100}
                                   currency="USD"
                                   style="currency"
                                   notation="compact"
                                 />
-                                <span className="font-normal text-muted-foreground">
+                                <span className="text-muted-foreground font-normal">
                                   /
                                   {price.recurring?.interval === "month"
                                     ? "mo"

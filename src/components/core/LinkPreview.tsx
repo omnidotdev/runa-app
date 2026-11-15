@@ -56,15 +56,15 @@ const LinkPreviewCard = ({ url }: { url: string }) => {
       target="_blank"
       rel="noopener noreferrer"
       title={url}
-      className="flex items-center gap-2 rounded-md border px-2.5 py-1.5 no-underline transition-colors hover:bg-base-50 dark:hover:bg-base-800"
+      className="hover:bg-base-50 dark:hover:bg-base-800 flex items-center gap-2 rounded-md border px-2.5 py-1.5 no-underline transition-colors"
     >
       <PreviewFavicon dataUri={preview?.faviconDataUri} className="size-4" />
       <span className="flex min-w-0 flex-col">
-        <span className="truncate font-medium text-base-900 text-sm dark:text-base-100">
+        <span className="text-base-900 dark:text-base-100 truncate text-sm font-medium">
           {label}
         </span>
         {showHost && (
-          <span className="truncate text-base-500 text-xs dark:text-base-400">
+          <span className="text-base-500 dark:text-base-400 truncate text-xs">
             {host}
           </span>
         )}

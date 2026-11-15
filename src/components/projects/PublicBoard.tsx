@@ -48,7 +48,7 @@ const PublicBoard = ({ project, tasks }: Props) => {
               icon={
                 <LabelIcon
                   icon={column.icon}
-                  className="size-4 shrink-0 text-muted-foreground"
+                  className="text-muted-foreground size-4 shrink-0"
                 />
               }
             />

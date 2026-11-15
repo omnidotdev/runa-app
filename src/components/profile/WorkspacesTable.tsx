@@ -38,7 +38,7 @@ const WorkspacesTable = ({ organizations }: Props) => {
           No current workspaces.{" "}
           <a
             href={workspacesUrl(ACCOUNT_URL) || undefined}
-            className="p-0 text-md text-primary-600 underline"
+            className="text-md text-primary-600 p-0 underline"
           >
             Create a workspace
           </a>{" "}
@@ -68,8 +68,8 @@ const WorkspacesTable = ({ organizations }: Props) => {
             <TableRow key={org.id} className="hover:bg-background">
               <TableCell className="py-4 pl-3">
                 <div className="flex items-center gap-3">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
-                    <Building2 className="size-4 text-primary" />
+                  <div className="bg-primary/10 flex size-8 items-center justify-center rounded-lg">
+                    <Building2 className="text-primary size-4" />
                   </div>
                   <span className="font-medium">{org.name}</span>
                 </div>

@@ -212,7 +212,7 @@ const ProjectColumnsForm = () => {
     <>
       <div className="flex flex-col">
         <div className="mb-1 flex h-10 items-center justify-between">
-          <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+          <h2 className="text-base-700 dark:text-base-300 ml-2 flex items-center gap-2 text-sm font-medium lg:ml-0">
             Project Columns
           </h2>
 
@@ -318,7 +318,7 @@ const ProjectColumnsForm = () => {
                                       icon={column.icon}
                                       className="size-4"
                                     />
-                                    <p className="font-light text-sm first-letter:uppercase">
+                                    <p className="text-sm font-light first-letter:uppercase">
                                       {column.title}
                                     </p>
                                   </div>
@@ -384,7 +384,7 @@ const ProjectColumnsForm = () => {
             </SortableContext>
           </DndContext>
         ) : showEmptyState ? (
-          <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
+          <div className="text-base-500 ml-2 flex items-center text-sm lg:ml-0">
             {isMember ? (
               "No project columns"
             ) : (
@@ -406,11 +406,11 @@ const ProjectColumnsForm = () => {
         description={
           <span>
             This will delete the column{" "}
-            <strong className="font-medium text-base-900 dark:text-base-100">
+            <strong className="text-base-900 dark:text-base-100 font-medium">
               {columnToDelete?.title}
             </strong>{" "}
             and its{" "}
-            <strong className="font-medium text-base-900 dark:text-base-100">
+            <strong className="text-base-900 dark:text-base-100 font-medium">
               {columnToDelete?.tasks?.totalCount}{" "}
               {columnToDelete?.tasks?.totalCount === 1 ? "task" : "tasks"}
             </strong>

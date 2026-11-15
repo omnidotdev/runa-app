@@ -77,7 +77,7 @@ const AddToCalendar = ({
 
   return (
     <div className="flex items-center gap-1.5">
-      <CalendarPlusIcon className="size-3.5 text-muted-foreground" />
+      <CalendarPlusIcon className="text-muted-foreground size-3.5" />
       <button type="button" onClick={downloadIcs} className={linkClass}>
         .ics
       </button>

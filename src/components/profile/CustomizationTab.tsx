@@ -6,11 +6,11 @@ const CustomizationTab = () => {
     <CardRoot className="mt-4 border">
       <CardContent className="p-6">
         <div className="p-8 text-center">
-          <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-muted/50">
-            <Settings className="size-8 text-muted-foreground" />
+          <div className="bg-muted/50 mx-auto mb-6 flex size-16 items-center justify-center rounded-full">
+            <Settings className="text-muted-foreground size-8" />
           </div>
-          <h3 className="mb-3 font-bold text-xl">Coming Soon</h3>
-          <p className="mx-auto max-w-md text-muted-foreground text-sm leading-relaxed">
+          <h3 className="mb-3 text-xl font-bold">Coming Soon</h3>
+          <p className="text-muted-foreground mx-auto max-w-md text-sm leading-relaxed">
             Customization options will be available in a future update. You'll
             be able to personalize your workspaces, themes, and preferences.
           </p>

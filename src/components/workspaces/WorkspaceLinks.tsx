@@ -44,11 +44,11 @@ const WorkspaceLinks = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="ml-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+      <h2 className="text-base-700 dark:text-base-300 ml-2 text-sm font-medium lg:ml-0">
         Links
       </h2>
 
-      <p className="ml-2 max-w-prose text-base-500 text-sm lg:ml-0">
+      <p className="text-base-500 ml-2 max-w-prose text-sm lg:ml-0">
         Your workspace's website and social links are managed in your Omni
         account, so they stay consistent across every Omni product you use.
       </p>
@@ -61,13 +61,13 @@ const WorkspaceLinks = () => {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-10 items-center gap-2 text-sm hover:text-foreground"
+              className="hover:text-foreground flex h-10 items-center gap-2 text-sm"
             >
               <Favicon url={link.url} />
               <span className="truncate">
                 {link.title || getDomainLabel(link.url)}
               </span>
-              <span className="truncate text-base-400 text-xs">{link.url}</span>
+              <span className="text-base-400 truncate text-xs">{link.url}</span>
             </a>
           ))}
         </div>

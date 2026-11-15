@@ -219,7 +219,7 @@ const Sidebar = ({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="w-5/6 bg-sidebar p-0 text-sidebar-foreground sm:w-1/2 [&>button]:hidden"
+          className="bg-sidebar text-sidebar-foreground w-5/6 p-0 sm:w-1/2 [&>button]:hidden"
           side={side}
         >
           <div className="sr-only">
@@ -235,7 +235,7 @@ const Sidebar = ({
   return (
     <div
       // initially hidden for small viewports in order to wait for hydration on `isMobile`
-      className="group peer hidden text-sidebar-foreground md:block"
+      className="group peer text-sidebar-foreground hidden md:block"
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
@@ -277,7 +277,7 @@ const Sidebar = ({
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="flex h-full w-full flex-col rounded-xl bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow-sm"
+          className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col rounded-xl group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
         >
           {children}
         </div>
@@ -387,7 +387,7 @@ const SidebarRail = ({
           <span>Drag to resize</span>
           <div className="flex items-center gap-2">
             Click to {isCollapsed ? "expand" : "collapse"}{" "}
-            <span className="ml-auto flex items-center justify-center gap-0.5 rounded border bg-background px-1 font-medium text-foreground text-xs">
+            <span className="bg-background text-foreground ml-auto flex items-center justify-center gap-0.5 rounded border px-1 text-xs font-medium">
               B
             </span>
           </div>
@@ -615,7 +615,7 @@ const SidebarMenuButton = ({
         <TooltipContent className="flex items-center gap-2">
           {tooltip}
           {shortcut && (
-            <span className="ml-auto flex items-center justify-center gap-0.5 rounded border bg-background px-1 font-medium text-foreground text-xs">
+            <span className="bg-background text-foreground ml-auto flex items-center justify-center gap-0.5 rounded border px-1 text-xs font-medium">
               {shortcut}
             </span>
           )}
@@ -750,7 +750,7 @@ export {
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
+  SidebarSeparator,
   SidebarTrigger,
   useSidebar,
-  SidebarSeparator,
 };

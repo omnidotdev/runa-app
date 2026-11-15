@@ -253,11 +253,11 @@
 
   /* handle autofill states on light mode */
   :is(input, textarea, select):-webkit-autofill:is(
-      :hover,
-      :focus,
-      :active,
-      :not(:hover):not(:focus):not(:active)
-    ) {
+    :hover,
+    :focus,
+    :active,
+    :not(:hover):not(:focus):not(:active)
+  ) {
     -webkit-box-shadow: 0 0 0px 1000px var(--color-white) inset;
     box-shadow: 0 0 0px 1000px var(--color-white) inset;
     -webkit-text-fill-color: var(--base-800);
@@ -268,12 +268,12 @@
 
   /* handle autofill states on dark mode */
   .dark
-  :is(input, textarea, select):-webkit-autofill:is(
-    :hover,
-    :focus,
-    :active,
-    :not(:hover):not(:focus):not(:active)
-  ) {
+    :is(input, textarea, select):-webkit-autofill:is(
+      :hover,
+      :focus,
+      :active,
+      :not(:hover):not(:focus):not(:active)
+    ) {
     -webkit-box-shadow: 0 0 0px 1000px var(--base-950) inset;
     box-shadow: 0 0 0px 1000px var(--base-950) inset;
     -webkit-text-fill-color: var(--base-200);

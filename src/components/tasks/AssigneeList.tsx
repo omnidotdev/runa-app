@@ -64,7 +64,7 @@ export default function AssigneeList({
                   </AvatarFallback>
                 </AvatarRoot>
 
-                <span className="w-full truncate text-center text-muted-foreground text-xs group-hover:text-foreground">
+                <span className="text-muted-foreground group-hover:text-foreground w-full truncate text-center text-xs">
                   {item.user.name?.split(" ")[0]}
                 </span>
 
@@ -88,7 +88,7 @@ export default function AssigneeList({
 
   return (
     <div className="h-56 max-h-80 overflow-y-auto rounded-md">
-      <div className="flex flex-col divide-y rounded-md border border-input">
+      <div className="border-input flex flex-col divide-y rounded-md border">
         {items.map((item, index) => {
           const isSelected = selected.includes(item.value);
           const isDisabled = !isSelected && atLimit && maxAssignees > 1;
@@ -125,7 +125,7 @@ export default function AssigneeList({
                 </AvatarFallback>
               </AvatarRoot>
 
-              <span className="w-full truncate text-left text-muted-foreground text-xs hover:text-foreground">
+              <span className="text-muted-foreground hover:text-foreground w-full truncate text-left text-xs">
                 {item.user.name}
               </span>
 

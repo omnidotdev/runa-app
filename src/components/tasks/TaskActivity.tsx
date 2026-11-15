@@ -26,8 +26,8 @@ const TaskActivity = () => {
 
   return (
     <CardRoot className="p-0 shadow-none">
-      <CardHeader className="flex h-10 flex-row items-center gap-2 rounded-t-xl border-b bg-base-50 px-3 dark:bg-base-800">
-        <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
+      <CardHeader className="bg-base-50 dark:bg-base-800 flex h-10 flex-row items-center gap-2 rounded-t-xl border-b px-3">
+        <h3 className="text-base-900 dark:text-base-100 text-sm font-medium">
           Activity
         </h3>
       </CardHeader>
@@ -43,8 +43,8 @@ const TaskActivity = () => {
                   : "flex items-baseline justify-between gap-3 border-b px-3 py-2"
               }
             >
-              <span className="min-w-0 text-base-700 text-sm dark:text-base-300">
-                <span className="font-medium text-base-900 dark:text-base-100">
+              <span className="text-base-700 dark:text-base-300 min-w-0 text-sm">
+                <span className="text-base-900 dark:text-base-100 font-medium">
                   {group.actorName ?? "Someone"}
                 </span>{" "}
                 {group.verb}
@@ -55,7 +55,7 @@ const TaskActivity = () => {
                   </span>
                 )}
               </span>
-              <span className="shrink-0 text-base-500 text-xs tabular-nums dark:text-base-400">
+              <span className="text-base-500 dark:text-base-400 shrink-0 text-xs tabular-nums">
                 {group.relativeTime}
               </span>
             </li>

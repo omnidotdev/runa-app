@@ -33,8 +33,8 @@ const CodeBlockHeader = ({
   const displayLanguage = getLanguageFriendlyName(language) || language;
 
   return createPortal(
-    <div className="flex items-center justify-between rounded-t-lg border bg-base-100 px-4 py-2 dark:bg-base-900/70">
-      <span className="font-medium text-base-600 text-sm dark:text-base-400">
+    <div className="bg-base-100 dark:bg-base-900/70 flex items-center justify-between rounded-t-lg border px-4 py-2">
+      <span className="text-base-600 dark:text-base-400 text-sm font-medium">
         {displayLanguage}
       </span>
       <Button

@@ -149,7 +149,7 @@ const CreateTaskAssignees = withForm({
 
             <SelectPositioner>
               <SelectContent className="max-h-80 w-48 overflow-auto p-0">
-                <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
+                <div className="text-base-500 flex w-full items-center justify-between border-b p-2 text-sm">
                   Assignees <Shortcut>{Hotkeys.UpdateAssignees}</Shortcut>
                 </div>
 

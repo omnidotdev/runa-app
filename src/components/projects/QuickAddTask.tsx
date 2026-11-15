@@ -138,7 +138,7 @@ const QuickAddTask = ({
         type="button"
         disabled={disabled}
         onClick={() => setQuickAddColumnId(columnId)}
-        className="w-full cursor-pointer rounded-lg border border-border border-dashed py-2 text-base-500 text-xs opacity-0 transition-opacity hover:bg-base-50 disabled:cursor-not-allowed disabled:opacity-50 group-focus-within:opacity-100 group-hover:opacity-100 dark:text-base-400 dark:hover:bg-base-900"
+        className="border-border text-base-500 hover:bg-base-50 dark:text-base-400 dark:hover:bg-base-900 w-full cursor-pointer rounded-lg border border-dashed py-2 text-xs opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
       >
         + Add task
       </button>
@@ -147,7 +147,7 @@ const QuickAddTask = ({
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-nowrap font-mono text-base-400 text-xs dark:text-base-500">
+      <span className="text-base-400 dark:text-base-500 font-mono text-xs text-nowrap">
         {prefix}-{nextTaskNumber}
       </span>
 

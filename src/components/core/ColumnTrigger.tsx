@@ -43,9 +43,9 @@ const ColumnTrigger = ({
         <div className="flex items-center gap-2">
           <LabelIcon icon={icon} className="size-4" />
 
-          <h3 className="text-base-800 text-sm dark:text-base-100">{title}</h3>
+          <h3 className="text-base-800 dark:text-base-100 text-sm">{title}</h3>
 
-          <span className="flex size-7 items-center justify-center rounded-full bg-muted text-foreground text-xs tabular-nums">
+          <span className="bg-muted text-foreground flex size-7 items-center justify-center rounded-full text-xs tabular-nums">
             {count}
           </span>
         </div>
@@ -71,7 +71,7 @@ const ColumnTrigger = ({
           />
         </div>
 
-        <ChevronRightIcon className="ml-2 size-5 text-base-400 transition-transform" />
+        <ChevronRightIcon className="text-base-400 ml-2 size-5 transition-transform" />
       </div>
     </CollapsibleTrigger>
   );

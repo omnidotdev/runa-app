@@ -30,7 +30,7 @@ const ProjectPageSkeleton = () => (
       </div>
 
       {/* Board area - matches bg and padding */}
-      <div className="h-full overflow-hidden bg-base-100/50 dark:bg-base-900/20">
+      <div className="bg-base-100/50 dark:bg-base-900/20 h-full overflow-hidden">
         <div className="h-full min-w-fit p-4">
           <div className="flex h-full gap-3">
             {/* Render 4 column skeletons */}
@@ -79,7 +79,7 @@ const ProjectPageSkeleton = () => (
 );
 
 const CardSkeleton = () => (
-  <div className="rounded-lg border bg-background p-3">
+  <div className="bg-background rounded-lg border p-3">
     <div className="flex flex-col gap-1">
       <div className="flex items-start gap-2">
         <div className="mt-0.5 min-w-0 flex-1">

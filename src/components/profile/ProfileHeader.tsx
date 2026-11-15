@@ -21,25 +21,25 @@ interface Props {
  */
 const ProfileHeader = ({ session, isOmniTeamMember }: Props) => (
   <div className="mb-8 flex flex-col items-center gap-6 rounded-2xl p-6">
-    <AvatarRoot className="size-28 ring-4 ring-primary/10">
+    <AvatarRoot className="ring-primary/10 size-28 ring-4">
       <AvatarImage
         src={session?.user.image ?? undefined}
         alt={session?.user.name}
       />
-      <AvatarFallback className="font-semibold text-2xl">
+      <AvatarFallback className="text-2xl font-semibold">
         {session?.user.name?.slice(0, 2).toUpperCase()}
       </AvatarFallback>
     </AvatarRoot>
 
     <div className="text-center">
-      <h2 className="font-bold text-xl tracking-tight">{session?.user.name}</h2>
+      <h2 className="text-xl font-bold tracking-tight">{session?.user.name}</h2>
 
-      <p className="mt-1 text-muted-foreground text-sm">
+      <p className="text-muted-foreground mt-1 text-sm">
         {session?.user.email}
       </p>
 
       {isOmniTeamMember && (
-        <Badge className="mt-2 bg-linear-to-r from-primary-400 to-primary-600 text-base-950">
+        <Badge className="from-primary-400 to-primary-600 text-base-950 mt-2 bg-linear-to-r">
           Omni Team
         </Badge>
       )}

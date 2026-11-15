@@ -117,12 +117,12 @@ const Comments = () => {
   return (
     <>
       <CardRoot className="p-0 shadow-none">
-        <CardHeader className="flex h-10 flex-row items-center gap-2 rounded-t-xl border-b bg-base-50 px-3 dark:bg-base-800">
-          <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
+        <CardHeader className="bg-base-50 dark:bg-base-800 flex h-10 flex-row items-center gap-2 rounded-t-xl border-b px-3">
+          <h3 className="text-base-900 dark:text-base-100 text-sm font-medium">
             Comments
           </h3>
           {commentCount > 0 && (
-            <span className="rounded-full bg-base-200 px-1.5 py-0.5 font-medium text-base-600 text-xs tabular-nums dark:bg-base-700 dark:text-base-300">
+            <span className="bg-base-200 text-base-600 dark:bg-base-700 dark:text-base-300 rounded-full px-1.5 py-0.5 text-xs font-medium tabular-nums">
               {commentCount}
             </span>
           )}
@@ -155,7 +155,7 @@ const Comments = () => {
                             {post?.author?.name.charAt(0)}
                           </AvatarFallback>
                         </AvatarRoot>
-                        <span className="font-medium text-base-900 text-sm dark:text-base-100">
+                        <span className="text-base-900 dark:text-base-100 text-sm font-medium">
                           {post?.author?.name ?? "Anonymous"}
                         </span>
 
@@ -164,7 +164,7 @@ const Comments = () => {
                             "MMM D, YYYY [at] h:mm A",
                           )}
                           trigger={
-                            <span className="cursor-default text-base-500 text-xs dark:text-base-400">
+                            <span className="text-base-500 dark:text-base-400 cursor-default text-xs">
                               {dayjs(post.createdAt).fromNow()}
                             </span>
                           }
@@ -182,7 +182,7 @@ const Comments = () => {
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="size-7 text-base-400"
+                                  className="text-base-400 size-7"
                                   aria-label="More options"
                                 >
                                   <MoreHorizontalIcon />
@@ -230,7 +230,7 @@ const Comments = () => {
                       ) : (
                         <RichTextEditor
                           defaultContent={post.description!}
-                          className="min-h-0 border-0 p-0 px-3 py-2 text-foreground text-sm"
+                          className="text-foreground min-h-0 border-0 p-0 px-3 py-2 text-sm"
                           editorClassName="min-h-0"
                           skeletonClassName="h-[38.75px]"
                           editable={false}
@@ -252,7 +252,7 @@ const Comments = () => {
               <div ref={endRef} />
             </div>
           ) : (
-            <p className="flex items-center justify-center p-4 text-muted-foreground text-sm">
+            <p className="text-muted-foreground flex items-center justify-center p-4 text-sm">
               No comments yet
             </p>
           )}
@@ -271,7 +271,7 @@ const Comments = () => {
       >
         <DialogBackdrop />
         <DialogPositioner>
-          <DialogContent className="w-full max-w-md rounded-lg bg-background">
+          <DialogContent className="bg-background w-full max-w-md rounded-lg">
             <DialogCloseTrigger />
 
             <div className="mb-4 flex flex-col gap-4">

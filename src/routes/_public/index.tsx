@@ -126,18 +126,18 @@ function HomePage() {
           <div className="mx-auto max-w-4xl text-center">
             {/* Badge */}
             <div className="mb-8 flex justify-center">
-              <Badge className="gap-2 border-primary-500/20 bg-primary-500/10 px-4 py-2 text-primary-700 dark:border-primary-400/20 dark:bg-primary-500/10 dark:text-primary-400">
+              <Badge className="border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:bg-primary-500/10 dark:text-primary-400 gap-2 px-4 py-2">
                 <span>{app.description}</span>
               </Badge>
             </div>
 
             {/* Headline */}
-            <h1 className="mb-6 font-extrabold text-4xl tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              <span className="block text-foreground">Project management</span>
-              <span className="mt-2 block text-shimmer">done right.</span>
+            <h1 className="mb-6 text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+              <span className="text-foreground block">Project management</span>
+              <span className="text-shimmer mt-2 block">done right.</span>
             </h1>
 
-            <p className="mx-auto mb-10 max-w-2xl text-base text-base-600 dark:text-base-400">
+            <p className="text-base-600 dark:text-base-400 mx-auto mb-10 max-w-2xl text-base">
               Beautiful Kanban boards, seamless collaboration, and powerful
               workflows. Everything your team needs to ship faster, completely
               free and open source.
@@ -157,7 +157,7 @@ function HomePage() {
               >
                 <Button
                   size="lg"
-                  className="group h-12 gap-2 bg-primary-500 px-8 font-semibold text-base text-base-950 shadow-lg shadow-primary-500/25 transition-all hover:bg-primary-400 hover:shadow-primary-500/30 hover:shadow-xl dark:bg-primary-500 dark:hover:bg-primary-400"
+                  className="group bg-primary-500 text-base-950 shadow-primary-500/25 hover:bg-primary-400 hover:shadow-primary-500/30 dark:bg-primary-500 dark:hover:bg-primary-400 h-12 gap-2 px-8 text-base font-semibold shadow-lg transition-all hover:shadow-xl"
                 >
                   Get Started Free
                   <ArrowRightIcon
@@ -182,7 +182,7 @@ function HomePage() {
                   <Button
                     variant="outline"
                     size="lg"
-                    className="h-12 gap-2 border-base-300 px-8 text-base dark:border-base-700"
+                    className="border-base-300 dark:border-base-700 h-12 gap-2 px-8 text-base"
                   >
                     <GithubIcon size={18} />
                     View on GitHub
@@ -195,7 +195,7 @@ function HomePage() {
             <div className="mt-16 flex flex-wrap items-center justify-center gap-8">
               {stats.map((stat) => (
                 <div key={stat.label} className="text-center">
-                  <div className="font-bold text-2xl text-foreground sm:text-3xl">
+                  <div className="text-foreground text-2xl font-bold sm:text-3xl">
                     {stat.value}
                   </div>
                   <div className="text-base-500 text-sm">{stat.label}</div>
@@ -206,27 +206,27 @@ function HomePage() {
         </div>
 
         {/* Decorative gradient orb behind hero */}
-        <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-150 w-150 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary-500/5 blur-[100px]" />
+        <div className="bg-primary-500/5 pointer-events-none absolute top-1/2 left-1/2 -z-10 h-150 w-150 -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px]" />
       </section>
 
       {/* Demo CTA Section */}
       <section className="relative px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
-          <div className="relative overflow-hidden rounded-2xl border border-primary-500/20 bg-linear-to-br from-primary-50/50 to-base-100 p-8 text-center dark:border-primary-500/10 dark:from-primary-950/20 dark:to-base-950">
+          <div className="border-primary-500/20 from-primary-50/50 to-base-100 dark:border-primary-500/10 dark:from-primary-950/20 dark:to-base-950 relative overflow-hidden rounded-2xl border bg-linear-to-br p-8 text-center">
             {/* Background decoration */}
-            <div className="absolute top-0 right-0 h-32 w-32 rounded-full bg-primary-500/15 blur-2xl" />
-            <div className="absolute bottom-0 left-0 h-32 w-32 rounded-full bg-primary-400/10 blur-2xl" />
+            <div className="bg-primary-500/15 absolute top-0 right-0 h-32 w-32 rounded-full blur-2xl" />
+            <div className="bg-primary-400/10 absolute bottom-0 left-0 h-32 w-32 rounded-full blur-2xl" />
 
             <div className="relative">
-              <Badge className="mb-4 border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400">
+              <Badge className="border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400 mb-4">
                 Try It Out
               </Badge>
 
-              <h2 className="mb-4 font-bold text-2xl text-foreground sm:text-3xl">
+              <h2 className="text-foreground mb-4 text-2xl font-bold sm:text-3xl">
                 See it in action
               </h2>
 
-              <p className="mb-6 text-base-600 dark:text-base-400">
+              <p className="text-base-600 dark:text-base-400 mb-6">
                 Experience the intuitive drag-and-drop workflow with our
                 interactive demo board.
               </p>
@@ -240,7 +240,7 @@ function HomePage() {
               >
                 <Link
                   to="/demo"
-                  className="group h-12 gap-2 bg-primary-500 px-8 font-semibold text-base text-base-950 shadow-lg shadow-primary-500/25 transition-all hover:bg-primary-400 hover:shadow-primary-500/30 hover:shadow-xl dark:bg-primary-500 dark:hover:bg-primary-400"
+                  className="group bg-primary-500 text-base-950 shadow-primary-500/25 hover:bg-primary-400 hover:shadow-primary-500/30 dark:bg-primary-500 dark:hover:bg-primary-400 h-12 gap-2 px-8 text-base font-semibold shadow-lg transition-all hover:shadow-xl"
                 >
                   Try the Demo
                   <ArrowRightIcon
@@ -259,13 +259,13 @@ function HomePage() {
         <div className="mx-auto max-w-7xl">
           {/* Section Header */}
           <div className="mx-auto mb-16 max-w-2xl text-center">
-            <Badge className="mb-4 border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400">
+            <Badge className="border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400 mb-4">
               Features
             </Badge>
-            <h2 className="mb-4 font-bold text-3xl text-foreground sm:text-4xl">
+            <h2 className="text-foreground mb-4 text-3xl font-bold sm:text-4xl">
               Everything you need to execute
             </h2>
-            <p className="text-base-600 text-lg dark:text-base-400">
+            <p className="text-base-600 dark:text-base-400 text-lg">
               Powerful features wrapped in a beautiful, intuitive interface.
             </p>
           </div>
@@ -295,15 +295,15 @@ function HomePage() {
                 </div>
 
                 {/* Content */}
-                <h3 className="mb-2 font-semibold text-foreground text-lg">
+                <h3 className="text-foreground mb-2 text-lg font-semibold">
                   {feature.title}
                 </h3>
-                <p className="text-base-600 text-sm leading-relaxed dark:text-base-400">
+                <p className="text-base-600 dark:text-base-400 text-sm leading-relaxed">
                   {feature.description}
                 </p>
 
                 {/* Decorative gradient */}
-                <div className="pointer-events-none absolute -right-20 -bottom-20 h-40 w-40 rounded-full bg-linear-to-br from-primary-500/10 to-transparent opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="from-primary-500/10 pointer-events-none absolute -right-20 -bottom-20 h-40 w-40 rounded-full bg-linear-to-br to-transparent opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100" />
               </TiltCard>
             ))}
           </div>
@@ -315,13 +315,13 @@ function HomePage() {
         <div className="mx-auto max-w-7xl">
           {/* Section Header */}
           <div className="mx-auto mb-16 max-w-2xl text-center">
-            <Badge className="mb-4 border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400">
+            <Badge className="border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400 mb-4">
               How It Works
             </Badge>
-            <h2 className="mb-4 font-bold text-3xl text-foreground sm:text-4xl">
+            <h2 className="text-foreground mb-4 text-3xl font-bold sm:text-4xl">
               From zero to 🌙 in minutes
             </h2>
-            <p className="text-base-600 text-lg dark:text-base-400">
+            <p className="text-base-600 dark:text-base-400 text-lg">
               Getting started in {app.name} is simple. No complex setup, no
               steep learning curve.
             </p>
@@ -330,7 +330,7 @@ function HomePage() {
           {/* Steps */}
           <div className="relative grid gap-8 md:grid-cols-3">
             {/* Connecting line */}
-            <div className="absolute top-16 right-0 left-0 hidden h-0.5 bg-linear-to-r from-transparent via-primary-500/30 to-transparent md:block" />
+            <div className="via-primary-500/30 absolute top-16 right-0 left-0 hidden h-0.5 bg-linear-to-r from-transparent to-transparent md:block" />
 
             {steps.map((step, _index) => (
               <TiltCard
@@ -339,23 +339,23 @@ function HomePage() {
                 liftAmount={12}
                 hoverScale={1.03}
                 glareIntensity={0.18}
-                className="group flex flex-col items-center rounded-2xl border-primary-500/10 bg-white/50 text-center backdrop-blur-sm dark:border-primary-500/10 dark:bg-base-900/50"
+                className="group border-primary-500/10 dark:border-primary-500/10 dark:bg-base-900/50 flex flex-col items-center rounded-2xl bg-white/50 text-center backdrop-blur-sm"
               >
                 {/* Step number with icon */}
                 <div className="relative mb-6">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-primary-500/20 bg-white shadow-lg transition-all duration-300 group-hover:border-primary-500/40 group-hover:shadow-primary-500/10 dark:border-primary-500/10 dark:bg-base-900">
+                  <div className="border-primary-500/20 group-hover:border-primary-500/40 group-hover:shadow-primary-500/10 dark:border-primary-500/10 dark:bg-base-900 flex h-20 w-20 items-center justify-center rounded-2xl border bg-white shadow-lg transition-all duration-300">
                     <div className="text-primary-500">{step.icon}</div>
                   </div>
-                  <div className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary-500 font-bold text-base-950 text-xs">
+                  <div className="bg-primary-500 text-base-950 absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold">
                     {step.number}
                   </div>
                 </div>
 
                 {/* Content */}
-                <h3 className="mb-2 font-semibold text-foreground text-xl">
+                <h3 className="text-foreground mb-2 text-xl font-semibold">
                   {step.title}
                 </h3>
-                <p className="max-w-xs text-base-600 dark:text-base-400">
+                <p className="text-base-600 dark:text-base-400 max-w-xs">
                   {step.description}
                 </p>
               </TiltCard>
@@ -367,22 +367,22 @@ function HomePage() {
       {/* Open Source Section */}
       <section className="relative px-4 py-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="relative overflow-hidden rounded-3xl border border-primary-500/20 bg-linear-to-br from-primary-50/50 to-base-100 p-8 sm:p-12 lg:p-16 dark:border-primary-500/10 dark:from-primary-950/20 dark:to-base-950">
+          <div className="border-primary-500/20 from-primary-50/50 to-base-100 dark:border-primary-500/10 dark:from-primary-950/20 dark:to-base-950 relative overflow-hidden rounded-3xl border bg-linear-to-br p-8 sm:p-12 lg:p-16">
             {/* Background decoration */}
-            <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-primary-500/15 blur-3xl" />
-            <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-primary-400/10 blur-3xl" />
+            <div className="bg-primary-500/15 absolute top-0 right-0 h-64 w-64 rounded-full blur-3xl" />
+            <div className="bg-primary-400/10 absolute bottom-0 left-0 h-64 w-64 rounded-full blur-3xl" />
 
             <div className="relative flex flex-col items-center gap-8 lg:flex-row lg:justify-between">
               {/* Content */}
               <div className="max-w-xl text-center lg:text-left">
-                <Badge className="mb-4 border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400">
+                <Badge className="border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400 mb-4">
                   <CheckCircle2Icon size={14} className="mr-1" />
                   Open Source
                 </Badge>
-                <h2 className="mb-4 font-bold text-3xl text-foreground sm:text-4xl">
+                <h2 className="text-foreground mb-4 text-3xl font-bold sm:text-4xl">
                   Built in the open, for everyone
                 </h2>
-                <p className="text-base-600 text-lg dark:text-base-400">
+                <p className="text-base-600 dark:text-base-400 text-lg">
                   {app.name} is completely open source. Inspect the code,
                   contribute features, or self-host on your own infrastructure.
                   Your data, your rules.
@@ -406,7 +406,7 @@ function HomePage() {
                     <Button
                       size="lg"
                       variant="outline"
-                      className="h-12 gap-2 border-base-300 px-6 dark:border-base-700"
+                      className="border-base-300 dark:border-base-700 h-12 gap-2 px-6"
                     >
                       <GithubIcon size={20} />
                       View on GitHub
@@ -424,14 +424,14 @@ function HomePage() {
         <div className="mx-auto max-w-4xl text-center">
           {/* Decorative elements */}
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <div className="h-100 w-100 rounded-full bg-primary-500/10 blur-[100px]" />
+            <div className="bg-primary-500/10 h-100 w-100 rounded-full blur-[100px]" />
           </div>
 
           <div className="relative">
-            <h2 className="mb-6 font-bold text-4xl text-foreground sm:text-5xl">
+            <h2 className="text-foreground mb-6 text-4xl font-bold sm:text-5xl">
               Ready for <span className="text-shimmer">stellar execution?</span>
             </h2>
-            <p className="mx-auto mb-10 max-w-xl text-base-600 text-lg dark:text-base-400">
+            <p className="text-base-600 dark:text-base-400 mx-auto mb-10 max-w-xl text-lg">
               Join innovative teams shipping better products with {app.name}.
               Free for individuals and small teams.
             </p>
@@ -449,7 +449,7 @@ function HomePage() {
               >
                 <Button
                   size="lg"
-                  className="group h-14 gap-2 bg-primary-500 px-10 font-semibold text-base-950 text-lg shadow-lg shadow-primary-500/25 transition-all hover:bg-primary-400 hover:shadow-primary-500/30 hover:shadow-xl dark:bg-primary-500 dark:hover:bg-primary-400"
+                  className="group bg-primary-500 text-base-950 shadow-primary-500/25 hover:bg-primary-400 hover:shadow-primary-500/30 dark:bg-primary-500 dark:hover:bg-primary-400 h-14 gap-2 px-10 text-lg font-semibold shadow-lg transition-all hover:shadow-xl"
                 >
                   Get Started for Free
                   <ArrowRightIcon
@@ -460,7 +460,7 @@ function HomePage() {
               </TiltCard>
             </div>
 
-            <p className="mt-6 text-base-500 text-sm">
+            <p className="text-base-500 mt-6 text-sm">
               No credit card required. Free and open source.
             </p>
           </div>

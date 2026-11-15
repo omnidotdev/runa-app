@@ -95,7 +95,7 @@ const ProjectAvatar = ({ projectId, name, image, disabled }: Props) => {
     <div className="flex items-center gap-4">
       <AvatarRoot size="xl" className="rounded-xl border">
         {image ? <AvatarImage src={image} alt="" /> : null}
-        <AvatarFallback className="rounded-xl font-semibold text-base-500 text-lg">
+        <AvatarFallback className="text-base-500 rounded-xl text-lg font-semibold">
           {initial}
         </AvatarFallback>
       </AvatarRoot>
