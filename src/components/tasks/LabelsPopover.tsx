@@ -173,7 +173,7 @@ const LabelsEditor = ({
               <div className="flex flex-col gap-2 border-b pb-2">
                 {canCreateWorkspace && (
                   <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-0.5 rounded-md bg-muted p-0.5 text-xs">
+                    <div className="bg-muted flex items-center gap-0.5 rounded-md p-0.5 text-xs">
                       {(
                         [
                           ["project", "This board"],
@@ -199,7 +199,7 @@ const LabelsEditor = ({
                     </div>
 
                     {newLabel.scope === "workspace" && (
-                      <p className="px-1 text-[11px] text-muted-foreground">
+                      <p className="text-muted-foreground px-1 text-[11px]">
                         Shared across all boards in this workspace
                       </p>
                     )}
@@ -275,7 +275,7 @@ const LabelsEditor = ({
                         />
                         <span className="truncate">{label.name}</span>
                         {label.organizationId && (
-                          <span className="shrink-0 rounded bg-muted px-1 py-0.5 text-[10px] text-muted-foreground">
+                          <span className="bg-muted text-muted-foreground shrink-0 rounded px-1 py-0.5 text-[10px]">
                             Workspace
                           </span>
                         )}
@@ -300,7 +300,7 @@ const LabelsEditor = ({
                 Create your first label
               </Button>
             ) : (
-              <p className="py-4 text-center text-muted-foreground text-xs">
+              <p className="text-muted-foreground py-4 text-center text-xs">
                 No labels yet
               </p>
             )}

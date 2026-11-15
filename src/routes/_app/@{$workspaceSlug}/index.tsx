@@ -309,15 +309,15 @@ function ProjectsOverviewPage() {
       <div className="flex size-full flex-col">
         <div className="border-b px-6 py-4">
           <div className="flex flex-col gap-2">
-            <h1 className="font-semibold text-2xl">Projects</h1>
+            <h1 className="text-2xl font-semibold">Projects</h1>
 
-            <p className="text-base-600 text-sm dark:text-base-400">
+            <p className="text-base-600 dark:text-base-400 text-sm">
               Manage and track all your projects in one place
             </p>
 
             <div className="mt-2 flex flex-wrap gap-2 sm:flex-nowrap">
               <div className="relative flex-1 sm:flex-none">
-                <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-base-400" />
+                <SearchIcon className="text-base-400 absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                 <Input
                   defaultValue={search}
                   onChange={handleSearch}

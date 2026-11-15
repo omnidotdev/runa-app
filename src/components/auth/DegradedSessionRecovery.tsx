@@ -49,14 +49,14 @@ const DegradedSessionRecovery = ({ returnTo }: Props) => {
 
   return (
     <div className="flex size-full flex-col items-center justify-center gap-4 p-6 text-center">
-      <Logo className="size-10 text-primary-500" />
+      <Logo className="text-primary-500 size-10" />
 
       {showManual ? (
         <>
-          <h1 className="font-semibold text-base-900 text-xl dark:text-base-100">
+          <h1 className="text-base-900 dark:text-base-100 text-xl font-semibold">
             Your session expired
           </h1>
-          <p className="max-w-sm text-base-600 text-sm dark:text-base-400">
+          <p className="text-base-600 dark:text-base-400 max-w-sm text-sm">
             We could not restore your session automatically. Sign in again to
             continue.
           </p>
@@ -68,7 +68,7 @@ const DegradedSessionRecovery = ({ returnTo }: Props) => {
           </Button>
         </>
       ) : (
-        <p className="flex items-center gap-2 text-base-600 text-sm dark:text-base-400">
+        <p className="text-base-600 dark:text-base-400 flex items-center gap-2 text-sm">
           <Loader2Icon className="size-4 animate-spin" />
           Restoring your session...
         </p>

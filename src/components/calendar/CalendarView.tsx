@@ -234,7 +234,7 @@ const UnscheduledRail = ({
   onSelectTask?: (taskId: string) => void;
 }) => (
   <aside className="w-full md:w-44 md:shrink-0">
-    <div className="mb-1 px-1 font-medium text-muted-foreground text-xs">
+    <div className="text-muted-foreground mb-1 px-1 text-xs font-medium">
       Unscheduled
     </div>
     <Droppable droppableId={UNSCHEDULED_DROPPABLE}>
@@ -257,7 +257,7 @@ const UnscheduledRail = ({
           ))}
           {dropProvided.placeholder}
           {tasks.length === 0 && !dropSnapshot.isDraggingOver && (
-            <p className="px-1 py-2 text-muted-foreground text-xs">
+            <p className="text-muted-foreground px-1 py-2 text-xs">
               Drag a task here to clear its due date.
             </p>
           )}

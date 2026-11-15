@@ -90,7 +90,7 @@ const MyCalendarFeedButton = ({
       >
         <DialogBackdrop />
         <DialogPositioner>
-          <DialogContent className="w-full max-w-md rounded-lg bg-background">
+          <DialogContent className="bg-background w-full max-w-md rounded-lg">
             <DialogCloseTrigger />
 
             <div className="mb-4 flex flex-col gap-4">
@@ -102,7 +102,7 @@ const MyCalendarFeedButton = ({
               </DialogDescription>
 
               {revealedUrl && (
-                <code className="block overflow-x-auto break-all rounded-md border bg-base-100 p-3 font-mono text-xs dark:bg-base-800">
+                <code className="bg-base-100 dark:bg-base-800 block overflow-x-auto rounded-md border p-3 font-mono text-xs break-all">
                   {revealedUrl}
                 </code>
               )}
@@ -149,7 +149,7 @@ const MyCalendarFeedButton = ({
       >
         <DialogBackdrop />
         <DialogPositioner>
-          <DialogContent className="w-full max-w-md rounded-lg bg-background">
+          <DialogContent className="bg-background w-full max-w-md rounded-lg">
             <DialogCloseTrigger />
 
             <div className="mb-4 flex flex-col gap-4">

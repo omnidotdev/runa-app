@@ -140,7 +140,7 @@ function ProjectSettingsPage() {
         description={
           <span>
             This will permanently delete the{" "}
-            <strong className="font-medium text-base-900 dark:text-base-100">
+            <strong className="text-base-900 dark:text-base-100 font-medium">
               {projectData.name}
             </strong>{" "}
             project, including all tasks, labels, and member assignments. This

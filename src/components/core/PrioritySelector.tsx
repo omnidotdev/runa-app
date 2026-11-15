@@ -82,7 +82,7 @@ const PrioritySelector = ({ triggerValue, trigger, ...rest }: Props) => {
 
       <SelectPositioner>
         <SelectContent className="w-48 p-0">
-          <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
+          <div className="text-base-500 flex w-full items-center justify-between border-b p-2 text-sm">
             Priority
             <Shortcut>{Hotkeys.UpdateTaskPriority}</Shortcut>
           </div>

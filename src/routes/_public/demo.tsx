@@ -27,11 +27,11 @@ function DemoPage() {
     <div className="relative px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto mb-8 max-w-2xl text-center">
-          <Badge className="mb-4 border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400">
+          <Badge className="border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400 mb-4">
             Interactive Demo
           </Badge>
 
-          <h1 className="mb-4 font-bold text-3xl text-foreground sm:text-4xl">
+          <h1 className="text-foreground mb-4 text-3xl font-bold sm:text-4xl">
             Experience {app.name}
           </h1>
 
@@ -45,7 +45,7 @@ function DemoPage() {
           <DemoBoard />
         </div>
 
-        <p className="mt-6 text-center text-base-500 text-sm">
+        <p className="text-base-500 mt-6 text-center text-sm">
           Sign up to create your own boards with unlimited customization.
         </p>
       </div>

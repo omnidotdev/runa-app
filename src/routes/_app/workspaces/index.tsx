@@ -115,9 +115,9 @@ function WorkspacesOverviewPage() {
       {/* Sticky header */}
       <div className="shrink-0 px-12 pt-12">
         <div className="mx-auto flex max-w-4xl flex-col items-center justify-center gap-4">
-          <LayersIcon className="size-12 text-base-500 dark:text-base-400" />
+          <LayersIcon className="text-base-500 dark:text-base-400 size-12" />
 
-          <h1 className="text-pretty text-center font-semibold text-2xl text-base-900 dark:text-base-100">
+          <h1 className="text-base-900 dark:text-base-100 text-center text-2xl font-semibold text-pretty">
             {organizations.length
               ? "Select a workspace"
               : "Create a workspace to get started"}
@@ -168,7 +168,7 @@ function WorkspacesOverviewPage() {
                     </AvatarRoot>
 
                     <div className="flex w-full min-w-0 flex-1 flex-col items-center justify-center">
-                      <h3 className="line-clamp-2 w-full break-words text-center font-semibold text-base-900 dark:text-base-100">
+                      <h3 className="text-base-900 dark:text-base-100 line-clamp-2 w-full text-center font-semibold break-words">
                         {orgName}
                       </h3>
                     </div>
@@ -178,10 +178,10 @@ function WorkspacesOverviewPage() {
             </div>
           )}
 
-          <div className="flex flex-col items-center gap-4 rounded-lg border border-base-300 border-dashed bg-base-50 p-8 text-center dark:border-base-700 dark:bg-base-900">
-            <InfoIcon className="size-6 text-base-500" />
+          <div className="border-base-300 bg-base-50 dark:border-base-700 dark:bg-base-900 flex flex-col items-center gap-4 rounded-lg border border-dashed p-8 text-center">
+            <InfoIcon className="text-base-500 size-6" />
             <div className="space-y-2">
-              <p className="text-base-700 text-sm dark:text-base-300">
+              <p className="text-base-700 dark:text-base-300 text-sm">
                 {organizations.length
                   ? "Need another workspace? Create one in your Omni account."
                   : "Create your first workspace in your Omni account to get started."}

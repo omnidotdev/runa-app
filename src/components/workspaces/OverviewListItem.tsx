@@ -40,13 +40,13 @@ const ListItem = ({ project }: Props) => {
     >
       <div className="flex h-full flex-col gap-3 overflow-hidden">
         <div className="min-w-0">
-          <span className="shrink-0 font-mono text-base-400 text-xs dark:text-base-400">
+          <span className="text-base-400 dark:text-base-400 shrink-0 font-mono text-xs">
             {project.prefix ?? "PROJ"}
           </span>
 
-          <p className="truncate py-1 font-semibold text-sm">{project.name}</p>
+          <p className="truncate py-1 text-sm font-semibold">{project.name}</p>
 
-          <p className="line-clamp-2 text-muted-foreground text-xs leading-relaxed">
+          <p className="text-muted-foreground line-clamp-2 text-xs leading-relaxed">
             {project.description}
           </p>
         </div>
@@ -57,7 +57,7 @@ const ListItem = ({ project }: Props) => {
               progressPercentage={progressPercentage}
               color={project?.color ?? "var(--primary-400)"}
             />
-            <span className="hidden text-muted-foreground tabular-nums group-hover/progress:inline">
+            <span className="text-muted-foreground hidden tabular-nums group-hover/progress:inline">
               {completedTasks}/{totalTasks} tasks
             </span>
             <span className="text-muted-foreground tabular-nums group-hover/progress:hidden">

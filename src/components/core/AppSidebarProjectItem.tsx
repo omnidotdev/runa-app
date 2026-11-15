@@ -138,7 +138,7 @@ const AppSidebarProjectItem = ({ project }: Props) => {
           )}
           <span className="w-full truncate">{project?.name}</span>
 
-          {isPinned && <PinIcon className="size-3 shrink-0 text-base-400" />}
+          {isPinned && <PinIcon className="text-base-400 size-3 shrink-0" />}
         </SidebarMenuButton>
       </Link>
 

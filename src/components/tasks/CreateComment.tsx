@@ -162,7 +162,7 @@ const CreateComment = ({
               hideToolbar={!isExpanded}
               imageUpload={{ taskId }}
               placeholder="Leave a comment..."
-              className="w-full rounded-lg transition-[color,box-shadow] focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-1 focus-within:ring-offset-background"
+              className="focus-within:ring-ring focus-within:ring-offset-background w-full rounded-lg transition-[color,box-shadow] focus-within:ring-2 focus-within:ring-offset-1"
               editorClassName={cn(
                 "max-h-64 overflow-y-auto",
                 isExpanded ? "min-h-[44px]" : "min-h-0",
@@ -184,7 +184,7 @@ const CreateComment = ({
               {([canSubmit, isSubmitting, isDefaultValue]) => (
                 <>
                   {!isDefaultValue && (
-                    <span className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                    <span className="text-muted-foreground flex items-center gap-1.5 text-xs">
                       <Shortcut className="ml-0">{getModKey()} ↵</Shortcut>
                       to send
                     </span>

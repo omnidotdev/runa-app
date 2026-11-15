@@ -63,7 +63,7 @@ const CommentEmojiPicker = ({ postId }: Props) => {
         <Button
           size="icon"
           variant="ghost"
-          className="size-7 text-base-400"
+          className="text-base-400 size-7"
           aria-label="Select Emoji"
         >
           <SmilePlusIcon className="size-4" />

@@ -91,7 +91,7 @@ function PricingPage() {
     <div className="size-full pt-8">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
-          <h1 className="mb-4 font-bold text-4xl text-foreground">
+          <h1 className="text-foreground mb-4 text-4xl font-bold">
             Simple, transparent pricing
           </h1>
 
@@ -141,7 +141,7 @@ function PricingPage() {
         </TabsRoot>
 
         <div className="mt-24 text-center">
-          <h2 className="mb-4 font-bold text-2xl text-foreground">
+          <h2 className="text-foreground mb-4 text-2xl font-bold">
             Frequently Asked Questions
           </h2>
 
@@ -156,7 +156,7 @@ function PricingPage() {
                   {item.question}
                 </AccordionItemTrigger>
 
-                <AccordionItemContent className="text-left text-muted-foreground">
+                <AccordionItemContent className="text-muted-foreground text-left">
                   {item.answer}
                 </AccordionItemContent>
               </AccordionItem>

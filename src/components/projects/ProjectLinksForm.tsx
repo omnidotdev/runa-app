@@ -100,7 +100,7 @@ const ProjectLinksForm = () => {
   return (
     <div className="flex flex-col">
       <div className="mb-1 flex h-10 items-center justify-between">
-        <h2 className="ml-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+        <h2 className="text-base-700 dark:text-base-300 ml-2 text-sm font-medium lg:ml-0">
           Links
         </h2>
       </div>
@@ -129,7 +129,7 @@ const ProjectLinksForm = () => {
               <span className="truncate text-sm">
                 {link.title || getDomainLabel(link.url)}
               </span>
-              <span className="truncate text-base-400 text-xs">{link.url}</span>
+              <span className="text-base-400 truncate text-xs">{link.url}</span>
             </div>
 
             {!isMember && (
@@ -139,7 +139,7 @@ const ProjectLinksForm = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="mr-2 size-7 text-base-400 hover:text-red-500"
+                    className="text-base-400 mr-2 size-7 hover:text-red-500"
                     onClick={() => handleDelete(link.rowId)}
                   >
                     <Trash2Icon className="size-3.5" />

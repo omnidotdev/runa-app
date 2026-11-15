@@ -38,7 +38,7 @@ function SignInPage() {
   const { redirect } = Route.useSearch();
 
   return (
-    <div className="flex h-dvh flex-col bg-background">
+    <div className="bg-background flex h-dvh flex-col">
       <AuthRequired redirectTo={resolveRedirectUrl(redirect)} />
     </div>
   );

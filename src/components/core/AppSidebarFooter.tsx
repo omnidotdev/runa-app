@@ -111,7 +111,7 @@ const AppSidebarFooter = () => {
                   className="cursor-ns-resize hover:bg-transparent!"
                   aria-label="Toggle sidebar options"
                 >
-                  <div className="mx-auto h-1 w-full max-w-24 rounded-full bg-border" />
+                  <div className="bg-border mx-auto h-1 w-full max-w-24 rounded-full" />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
             }
@@ -264,7 +264,7 @@ const AppSidebarFooter = () => {
                     alt={session?.user.name}
                   />
 
-                  <AvatarFallback className="font-semibold text-xs">
+                  <AvatarFallback className="text-xs font-semibold">
                     {session?.user.name?.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </AvatarRoot>

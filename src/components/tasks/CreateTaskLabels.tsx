@@ -123,7 +123,7 @@ const CreateTaskLabels = withForm({
 
             <MenuPositioner>
               <MenuContent className="flex min-w-fit flex-col gap-0 p-0">
-                <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
+                <div className="text-base-500 flex w-full items-center justify-between border-b p-2 text-sm">
                   Labels <Shortcut>{Hotkeys.UpdateTaskLabels}</Shortcut>
                 </div>
 

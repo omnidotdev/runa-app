@@ -37,7 +37,7 @@ const DemoBoardItem = ({
           {task.assignees.slice(0, 2).map((assignee) => (
             <AvatarRoot
               key={assignee.name}
-              className="size-6 border-2 border-background"
+              className="border-background size-6 border-2"
             >
               <AvatarFallback
                 className="text-xs"
@@ -51,8 +51,8 @@ const DemoBoardItem = ({
             </AvatarRoot>
           ))}
           {task.assignees.length > 2 && (
-            <AvatarRoot className="size-6 border-2 border-background">
-              <AvatarFallback className="bg-base-100 text-base-600 text-xs dark:bg-base-800 dark:text-base-400">
+            <AvatarRoot className="border-background size-6 border-2">
+              <AvatarFallback className="bg-base-100 text-base-600 dark:bg-base-800 dark:text-base-400 text-xs">
                 +{task.assignees.length - 2}
               </AvatarFallback>
             </AvatarRoot>

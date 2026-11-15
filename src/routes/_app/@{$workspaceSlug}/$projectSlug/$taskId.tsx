@@ -215,7 +215,7 @@ function PublicTaskView() {
         <div className="flex min-w-0 flex-col gap-6">
           <RichTextEditor
             defaultContent={task?.content}
-            className="min-h-0 border-0 bg-transparent p-0 font-semibold text-2xl dark:bg-transparent"
+            className="min-h-0 border-0 bg-transparent p-0 text-2xl font-semibold dark:bg-transparent"
             editorClassName="min-h-0"
             skeletonClassName="h-8 min-w-40"
             editable={false}
@@ -438,7 +438,7 @@ function AuthenticatedTaskPage() {
         <div className="flex min-w-0 flex-col gap-6">
           <RichTextEditor
             defaultContent={task?.content}
-            className="min-h-0 border-0 bg-transparent p-0 font-semibold text-2xl outline-none hover:outline-none dark:bg-transparent"
+            className="min-h-0 border-0 bg-transparent p-0 text-2xl font-semibold outline-none hover:outline-none dark:bg-transparent"
             editorClassName="min-h-0"
             skeletonClassName="h-8 min-w-40"
             editable={canEdit}

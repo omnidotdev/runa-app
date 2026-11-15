@@ -88,12 +88,12 @@ const BoardItemBase = ({
                     className="size-2.5 shrink-0 opacity-60"
                   />
                 )}
-                <span className="shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-400">
+                <span className="text-base-400 dark:text-base-400 shrink-0 font-mono text-xs font-medium">
                   {displayId}
                 </span>
               </div>
 
-              <div className="line-clamp-2 py-2 text-foreground text-xs">
+              <div className="text-foreground line-clamp-2 py-2 text-xs">
                 {content}
               </div>
             </div>

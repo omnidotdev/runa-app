@@ -74,7 +74,7 @@ const BoardItem = ({ task, index, displayId, prefix }: Props) => {
 
     if (isHovered) {
       setIsHovered(false);
-      if (!isUpdateDialogOpen && !isDragging && !!taskId) {
+      if (!isUpdateDialogOpen && !isDragging && taskId) {
         setTaskId(null);
       }
     }
@@ -115,7 +115,7 @@ const BoardItem = ({ task, index, displayId, prefix }: Props) => {
         content={
           <RichTextEditor
             defaultContent={task?.content}
-            className="min-h-0! w-fit border-0 p-0 text-left text-xs dark:bg-background [&_.ProseMirror]:line-clamp-2 [&_.ProseMirror]:overflow-hidden"
+            className="dark:bg-background min-h-0! w-fit border-0 p-0 text-left text-xs [&_.ProseMirror]:line-clamp-2 [&_.ProseMirror]:overflow-hidden"
             skeletonClassName="h-4 w-40"
             editable={false}
           />
@@ -159,7 +159,7 @@ const BoardItem = ({ task, index, displayId, prefix }: Props) => {
           ) : undefined
         }
         footer={
-          <div className="ml-auto flex items-center gap-2 text-base-500 text-xs dark:text-base-400">
+          <div className="text-base-500 dark:text-base-400 ml-auto flex items-center gap-2 text-xs">
             {task.description && (
               <Tooltip
                 positioning={{ placement: "top" }}

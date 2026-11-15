@@ -111,8 +111,8 @@ const AttachmentsSection = ({
 
   return (
     <CardRoot className="p-0 shadow-none">
-      <CardHeader className="flex h-10 flex-row items-center justify-between rounded-t-xl border-b bg-base-50 px-3 dark:bg-base-800">
-        <h3 className="font-medium text-base-900 text-sm dark:text-base-100">
+      <CardHeader className="bg-base-50 dark:bg-base-800 flex h-10 flex-row items-center justify-between rounded-t-xl border-b px-3">
+        <h3 className="text-base-900 dark:text-base-100 text-sm font-medium">
           Attachments{attachments.length ? ` (${attachments.length})` : ""}
         </h3>
       </CardHeader>
@@ -129,7 +129,7 @@ const AttachmentsSection = ({
               return (
                 <div
                   key={id}
-                  className="group relative overflow-hidden rounded-lg border bg-base-50 dark:bg-base-900"
+                  className="group bg-base-50 dark:bg-base-900 relative overflow-hidden rounded-lg border"
                 >
                   {attachment?.kind === "image" ? (
                     <a href={attachment.url} target="_blank" rel="noreferrer">
@@ -156,31 +156,31 @@ const AttachmentsSection = ({
                       rel="noreferrer"
                       className="flex aspect-video w-full flex-col items-center justify-center gap-1 p-2 text-center"
                     >
-                      <FileIcon className="size-6 text-base-500" />
-                      <span className="line-clamp-2 w-full break-all text-base-700 text-xs dark:text-base-300">
+                      <FileIcon className="text-base-500 size-6" />
+                      <span className="text-base-700 dark:text-base-300 line-clamp-2 w-full text-xs break-all">
                         {filename}
                       </span>
                     </a>
                   )}
 
-                  <div className="flex items-center justify-between gap-1 border-t bg-base-100 px-2 py-1 dark:bg-base-800">
-                    <span className="truncate text-base-500 text-xs">
+                  <div className="bg-base-100 dark:bg-base-800 flex items-center justify-between gap-1 border-t px-2 py-1">
+                    <span className="text-base-500 truncate text-xs">
                       {formatFileSize(attachment?.fileSize ?? 0)}
                     </span>
                     <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                       <a
                         href={attachment?.url}
                         download={filename}
-                        className="rounded p-1 hover:bg-base-200 dark:hover:bg-base-700"
+                        className="hover:bg-base-200 dark:hover:bg-base-700 rounded p-1"
                         aria-label="Download"
                       >
-                        <DownloadIcon className="size-3.5 text-base-500" />
+                        <DownloadIcon className="text-base-500 size-3.5" />
                       </a>
                       {editable && (
                         <button
                           type="button"
                           onClick={() => handleDelete(id, filename)}
-                          className="rounded p-1 hover:bg-base-200 dark:hover:bg-base-700"
+                          className="hover:bg-base-200 dark:hover:bg-base-700 rounded p-1"
                           aria-label="Delete"
                         >
                           <Trash2Icon className="size-3.5 text-red-500" />
@@ -214,7 +214,7 @@ const AttachmentsSection = ({
                 isDragging && "border-primary bg-primary/5",
               )}
             >
-              <UploadIcon className="size-4 text-base-500" />
+              <UploadIcon className="text-base-500 size-4" />
               <span className="text-base-600 dark:text-base-400">
                 {isUploading
                   ? "Uploading..."

@@ -280,7 +280,7 @@ const ColumnForm = ({
           isMember && "hidden",
         )}
       >
-        <GripVerticalIcon className="flex size-3 text-muted-foreground" />
+        <GripVerticalIcon className="text-muted-foreground flex size-3" />
       </Button>
 
       <form.Field name="icon">
@@ -322,7 +322,7 @@ const ColumnForm = ({
             <Button
               variant="ghost"
               size="icon"
-              className="size-7 text-base-400 opacity-0 group-hover:opacity-100"
+              className="text-base-400 size-7 opacity-0 group-hover:opacity-100"
               tabIndex={isHovering ? 0 : -1}
               aria-label="More column options"
             >
@@ -386,7 +386,7 @@ const ColumnForm = ({
                       form.reset();
                     }}
                     disabled={isSubmitting}
-                    className="size-7 hover:text-destructive focus-visible:ring-destructive focus-visible:ring-offset-0"
+                    className="hover:text-destructive focus-visible:ring-destructive size-7 focus-visible:ring-offset-0"
                     aria-label="Cancel"
                   >
                     <XIcon className="size-4" />

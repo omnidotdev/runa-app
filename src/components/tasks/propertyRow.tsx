@@ -15,7 +15,7 @@ interface PropertyRowProps {
  */
 export const PropertyRow = ({ label, children }: PropertyRowProps) => (
   <div className="flex items-start gap-2">
-    <span className="w-20 shrink-0 select-none pt-1.5 text-muted-foreground text-xs">
+    <span className="text-muted-foreground w-20 shrink-0 pt-1.5 text-xs select-none">
       {label}
     </span>
     <div className="flex min-w-0 flex-1">{children}</div>

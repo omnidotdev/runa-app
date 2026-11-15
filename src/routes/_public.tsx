@@ -40,12 +40,12 @@ function PublicLayout() {
       {/* cosmic background */}
       <div className="fixed inset-0 overflow-hidden">
         {/* base gradient */}
-        <div className="absolute inset-0 bg-linear-to-b from-base-50 via-base-100 to-base-50 dark:from-base-950 dark:via-base-900 dark:to-base-950" />
+        <div className="from-base-50 via-base-100 to-base-50 dark:from-base-950 dark:via-base-900 dark:to-base-950 absolute inset-0 bg-linear-to-b" />
 
         {/* ambient glow orbs */}
-        <div className="absolute top-1/4 left-1/4 h-125 w-125 rounded-full bg-primary-500/10 blur-[120px] dark:bg-primary-400/5" />
-        <div className="absolute top-1/2 right-1/4 h-100 w-100 rounded-full bg-primary-500/10 blur-[100px] dark:bg-primary-400/5" />
-        <div className="absolute bottom-1/4 left-1/2 h-75 w-75 rounded-full bg-secondary-500/5 blur-[80px] dark:bg-secondary-400/5" />
+        <div className="bg-primary-500/10 dark:bg-primary-400/5 absolute top-1/4 left-1/4 h-125 w-125 rounded-full blur-[120px]" />
+        <div className="bg-primary-500/10 dark:bg-primary-400/5 absolute top-1/2 right-1/4 h-100 w-100 rounded-full blur-[100px]" />
+        <div className="bg-secondary-500/5 dark:bg-secondary-400/5 absolute bottom-1/4 left-1/2 h-75 w-75 rounded-full blur-[80px]" />
 
         <ShootingStars className="opacity-40 dark:opacity-70" />
 
@@ -62,7 +62,7 @@ function PublicLayout() {
 
       {/* banner + header */}
       <div className="sticky top-0 z-50">
-        <div className="flex w-full items-center justify-center gap-2 border-primary-500/20 border-b bg-primary-500/20 px-4 py-2 text-sm backdrop-blur-sm sm:gap-3">
+        <div className="border-primary-500/20 bg-primary-500/20 flex w-full items-center justify-center gap-2 border-b px-4 py-2 text-sm backdrop-blur-sm sm:gap-3">
           <span className="text-base-700 dark:text-base-300">
             <strong className="font-semibold">Runa is in early access</strong> —
             help shape it!
@@ -73,7 +73,7 @@ function PublicLayout() {
               href={app.organization.discord}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-full bg-primary-500/20 px-2.5 py-0.5 font-medium text-primary-700 text-xs transition-colors hover:bg-primary-500/30 dark:text-primary-300"
+              className="bg-primary-500/20 text-primary-700 hover:bg-primary-500/30 dark:text-primary-300 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors"
             >
               <DiscordIcon className="size-3" />
               Discord
@@ -92,7 +92,7 @@ function PublicLayout() {
           </div>
         </div>
 
-        <header className="w-full border-base-200/50 border-b bg-white/80 backdrop-blur-xl dark:border-base-800/50 dark:bg-base-950/80">
+        <header className="border-base-200/50 dark:border-base-800/50 dark:bg-base-950/80 w-full border-b bg-white/80 backdrop-blur-xl">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <Link
@@ -100,11 +100,11 @@ function PublicLayout() {
                 variant="ghost"
                 className="gap-2 hover:bg-transparent dark:hover:bg-transparent"
               >
-                <Logo className="size-7 text-primary-500" />
-                <span className="font-bold text-xl tracking-tight">
+                <Logo className="text-primary-500 size-7" />
+                <span className="text-xl font-bold tracking-tight">
                   {app.name}
                 </span>
-                <Badge className="hidden border-primary-500/20 bg-primary-500/10 text-shimmer text-xs sm:inline-flex">
+                <Badge className="border-primary-500/20 bg-primary-500/10 text-shimmer hidden text-xs sm:inline-flex">
                   Early Access
                 </Badge>
               </Link>
@@ -133,7 +133,7 @@ function PublicLayout() {
                   href={app.links.docs}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-md px-3 py-2 font-medium text-base-600 text-sm hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
+                  className="text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground rounded-md px-3 py-2 text-sm font-medium"
                 >
                   Docs
                 </a>
@@ -184,7 +184,7 @@ function PublicLayout() {
               <Link
                 to="/demo"
                 variant="ghost"
-                className="block w-full justify-start text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
+                className="text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground block w-full justify-start"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Demo
@@ -194,7 +194,7 @@ function PublicLayout() {
                 <Link
                   to="/pricing"
                   variant="ghost"
-                  className="block w-full justify-start text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground"
+                  className="text-base-600 hover:text-foreground dark:text-base-400 dark:hover:text-foreground block w-full justify-start"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Pricing
@@ -205,7 +205,7 @@ function PublicLayout() {
                 href={app.links.docs}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-md px-3 py-2 font-medium text-base-600 text-sm hover:bg-base-100 hover:text-foreground dark:text-base-400 dark:hover:bg-base-800 dark:hover:text-foreground"
+                className="text-base-600 hover:bg-base-100 hover:text-foreground dark:text-base-400 dark:hover:bg-base-800 dark:hover:text-foreground block rounded-md px-3 py-2 text-sm font-medium"
               >
                 Docs
               </a>
@@ -222,7 +222,7 @@ function PublicLayout() {
                 ) : (
                   <Button
                     onClick={handleSignIn}
-                    className="w-full bg-primary-500 text-base-950 hover:bg-primary-400 dark:bg-primary-500 dark:hover:bg-primary-400"
+                    className="bg-primary-500 text-base-950 hover:bg-primary-400 dark:bg-primary-500 dark:hover:bg-primary-400 w-full"
                   >
                     Sign In
                   </Button>
@@ -241,8 +241,8 @@ function PublicLayout() {
 
         {/* Footer */}
         <AppFooter
-          className="relative border-base-200/50 border-t bg-base-50/50 backdrop-blur-sm dark:border-base-800/50 dark:bg-base-950/50"
-          appLogo={<Logo className="size-4 text-primary-500" />}
+          className="border-base-200/50 bg-base-50/50 dark:border-base-800/50 dark:bg-base-950/50 relative border-t backdrop-blur-sm"
+          appLogo={<Logo className="text-primary-500 size-4" />}
           appSymbol={app.icon}
           docsUrl={app.links.docs}
           orgUrl={app.organization.url}
@@ -253,7 +253,7 @@ function PublicLayout() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
-                className="rounded px-2 py-1 transition-colors hover:text-foreground"
+                className="hover:text-foreground rounded px-2 py-1 transition-colors"
               >
                 <GithubIcon className="size-5" />
               </a>
@@ -263,7 +263,7 @@ function PublicLayout() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="X"
-                className="rounded px-2 py-1 transition-colors hover:text-foreground"
+                className="hover:text-foreground rounded px-2 py-1 transition-colors"
               >
                 <XIcon className="size-5" />
               </a>
@@ -273,7 +273,7 @@ function PublicLayout() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
-                className="rounded px-2 py-1 transition-colors hover:text-foreground"
+                className="hover:text-foreground rounded px-2 py-1 transition-colors"
               >
                 <LinkedInIcon className="size-5" />
               </a>

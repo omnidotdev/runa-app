@@ -57,11 +57,11 @@ const List = ({ projects }: Props) => {
   });
 
   return (
-    <div className="custom-scrollbar h-full overflow-y-auto bg-base-100/50 p-4 dark:bg-base-900/20">
+    <div className="custom-scrollbar bg-base-100/50 dark:bg-base-900/20 h-full overflow-y-auto p-4">
       {projectColumns?.map((column) => (
         <CollapsibleRoot
           key={column.rowId}
-          className="mb-4 rounded-lg border bg-background last:mb-0"
+          className="bg-background mb-4 rounded-lg border last:mb-0"
           defaultOpen
         >
           <ColumnTrigger

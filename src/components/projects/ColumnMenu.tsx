@@ -153,7 +153,9 @@ const ColumnMenu = ({ columnId, taskIds }: Props) => {
                   rowId: userPreferences?.rowId!,
                   patch: {
                     hiddenColumnIds: [
-                      ...(userPreferences?.hiddenColumnIds as string[]),
+                      ...((userPreferences?.hiddenColumnIds as
+                        | string[]
+                        | undefined) ?? []),
                       columnId,
                     ],
                   },
@@ -204,7 +206,7 @@ const ColumnMenu = ({ columnId, taskIds }: Props) => {
           description={
             <span>
               This will delete all tasks from{" "}
-              <strong className="font-medium text-base-900 dark:text-base-100">
+              <strong className="text-base-900 dark:text-base-100 font-medium">
                 {column?.title}
               </strong>
               . This action cannot be undone.

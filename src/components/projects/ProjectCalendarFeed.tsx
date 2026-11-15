@@ -87,15 +87,15 @@ const ProjectCalendarFeed = () => {
   return (
     <div className="flex flex-col">
       <div className="mb-1 flex h-10 items-center justify-between">
-        <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+        <h2 className="text-base-700 dark:text-base-300 ml-2 flex items-center gap-2 text-sm font-medium lg:ml-0">
           Calendar feed
-          <span className="rounded bg-base-100 px-1.5 py-0.5 font-medium text-[10px] text-base-500 uppercase tracking-wide dark:bg-base-800">
+          <span className="bg-base-100 text-base-500 dark:bg-base-800 rounded px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase">
             Admin only
           </span>
         </h2>
       </div>
 
-      <p className="mb-3 ml-2 text-base-500 text-xs lg:ml-0">
+      <p className="text-base-500 mb-3 ml-2 text-xs lg:ml-0">
         Subscribe to this project's due dates in your calendar app. The feed URL
         is shown once when you create it; anyone with the link can view the
         calendar, so keep it private and regenerate it if it leaks.
@@ -103,7 +103,7 @@ const ProjectCalendarFeed = () => {
 
       <div className="flex items-center justify-between border-y py-3 pl-2 lg:pl-0">
         <div className="flex items-center gap-3">
-          <CalendarIcon className="size-4 text-base-500" />
+          <CalendarIcon className="text-base-500 size-4" />
           <span className="text-sm">
             {enabled
               ? "A feed URL is active for this project."
@@ -140,7 +140,7 @@ const ProjectCalendarFeed = () => {
       >
         <DialogBackdrop />
         <DialogPositioner>
-          <DialogContent className="w-full max-w-md rounded-lg bg-background">
+          <DialogContent className="bg-background w-full max-w-md rounded-lg">
             <DialogCloseTrigger />
 
             <div className="mb-4 flex flex-col gap-4">
@@ -151,7 +151,7 @@ const ProjectCalendarFeed = () => {
                 this link can view the project's task calendar.
               </DialogDescription>
 
-              <code className="block overflow-x-auto break-all rounded-md border bg-base-100 p-3 font-mono text-xs dark:bg-base-800">
+              <code className="bg-base-100 dark:bg-base-800 block overflow-x-auto rounded-md border p-3 font-mono text-xs break-all">
                 {revealedUrl}
               </code>
             </div>
@@ -176,7 +176,7 @@ const ProjectCalendarFeed = () => {
       >
         <DialogBackdrop />
         <DialogPositioner>
-          <DialogContent className="w-full max-w-md rounded-lg bg-background">
+          <DialogContent className="bg-background w-full max-w-md rounded-lg">
             <DialogCloseTrigger />
 
             <div className="mb-4 flex flex-col gap-4">

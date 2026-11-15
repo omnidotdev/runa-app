@@ -134,7 +134,7 @@ const NotificationSettings = () => {
       className="flex min-h-10 w-full items-center justify-between gap-4 py-2"
     >
       <div className="flex items-center gap-3 pl-2 lg:pl-0">
-        <BellIcon className="size-4 shrink-0 text-base-500" />
+        <BellIcon className="text-base-500 size-4 shrink-0" />
         <span className="text-sm">{label}</span>
       </div>
 
@@ -150,11 +150,11 @@ const NotificationSettings = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+      <h2 className="text-base-700 dark:text-base-300 ml-2 flex items-center gap-2 text-sm font-medium lg:ml-0">
         Notifications
       </h2>
 
-      <p className="ml-2 text-base-500 text-xs lg:ml-0">
+      <p className="text-base-500 ml-2 text-xs lg:ml-0">
         These preferences apply across all of your workspaces. A task you're
         involved in is one you created, are assigned to, or commented on.
       </p>

@@ -249,7 +249,7 @@ const CreateTaskDialog = () => {
         <DialogContent className="mx-8 flex max-w-3xl flex-col items-start rounded-lg">
           <DialogCloseTrigger />
 
-          <span className="text-nowrap font-medium font-mono text-base-400 dark:text-base-500">
+          <span className="text-base-400 dark:text-base-500 font-mono font-medium text-nowrap">
             {project?.prefix
               ? `${project?.prefix}-${nextTaskNumber}`
               : `PROJ-${nextTaskNumber}`}
@@ -282,7 +282,7 @@ const CreateTaskDialog = () => {
                 <Input
                   ref={titleRef}
                   id="task-title"
-                  className="border-none bg-transparent shadow-none transition-none focus-visible:outline focus-visible:outline-dashed focus-visible:outline-primary focus-visible:ring-0"
+                  className="focus-visible:outline-primary border-none bg-transparent shadow-none transition-none focus-visible:ring-0 focus-visible:outline focus-visible:outline-dashed"
                   placeholder="Task title..."
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}

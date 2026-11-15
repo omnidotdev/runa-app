@@ -110,7 +110,7 @@ const ProjectColorPicker = (props: ComponentProps<typeof ColorPickerRoot>) => {
                   if (props.disabled) return;
                   setIsUpdatingColorPreferences(!isUpdatingColorPreferences);
                 }}
-                className="relative flex size-9 items-center justify-center rounded-md border border-transparent transition-all hover:border-primary hover:bg-accent focus-visible:rounded-md focus-visible:border-2 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-offset-0 focus-visible:ring-offset-background disabled:cursor-default data-[state=open]:border-primary data-[state=open]:ring-0"
+                className="hover:border-primary hover:bg-accent focus-visible:border-primary focus-visible:ring-offset-background data-[state=open]:border-primary relative flex size-9 items-center justify-center rounded-md border border-transparent transition-all focus-visible:rounded-md focus-visible:border-2 focus-visible:ring-offset-0 focus-visible:outline-none disabled:cursor-default data-[state=open]:ring-0"
               >
                 <div className="size-5 overflow-hidden rounded">
                   <ColorPickerTransparencyGrid />

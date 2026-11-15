@@ -46,11 +46,11 @@ const AuthRequired = ({ redirectTo }: Props) => {
 
   return (
     <div className="flex size-full flex-col items-center justify-center gap-4 p-6 text-center">
-      <Logo className="size-10 text-primary-500" />
+      <Logo className="text-primary-500 size-10" />
 
       {failed ? (
         <>
-          <p className="text-base-600 text-sm dark:text-base-400">
+          <p className="text-base-600 dark:text-base-400 text-sm">
             Sign in to view this page.
           </p>
           <Button
@@ -61,7 +61,7 @@ const AuthRequired = ({ redirectTo }: Props) => {
           </Button>
         </>
       ) : (
-        <p className="flex items-center gap-2 text-base-600 text-sm dark:text-base-400">
+        <p className="text-base-600 dark:text-base-400 flex items-center gap-2 text-sm">
           <Loader2Icon className="size-4 animate-spin" />
           Redirecting to sign in...
         </p>

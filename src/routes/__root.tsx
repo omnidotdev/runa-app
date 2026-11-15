@@ -174,7 +174,7 @@ function MaintenancePage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-linear-to-br from-zinc-900 to-zinc-800 p-8 text-white">
       <div className="text-center">
         <div className="mb-6 text-9xl">🌙</div>
-        <h1 className="mb-4 font-bold text-4xl">In a Lunar Phase</h1>
+        <h1 className="mb-4 text-4xl font-bold">In a Lunar Phase</h1>
         <p className="max-w-md text-lg text-zinc-300">
           We're cycling through some changes. Runa will wax back soon.
         </p>

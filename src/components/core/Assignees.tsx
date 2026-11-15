@@ -70,7 +70,7 @@ const Assignees = ({
             key={member.userId}
             className="flex items-center gap-2 -space-x-1"
           >
-            <AvatarRoot className="size-6 border-2 border-background">
+            <AvatarRoot className="border-background size-6 border-2">
               <AvatarImage
                 src={member.user.image ?? undefined}
                 alt={member.user.name}
@@ -96,7 +96,7 @@ const Assignees = ({
       })}
 
       {extraCount > 0 && (
-        <AvatarRoot className="size-6 rounded-full border-2 border-background font-medium text-[10px]">
+        <AvatarRoot className="border-background size-6 rounded-full border-2 text-[10px] font-medium">
           <AvatarFallback className="bg-base-100 text-base-600 dark:bg-base-800 dark:text-base-400">
             +{extraCount}
           </AvatarFallback>

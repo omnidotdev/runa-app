@@ -175,7 +175,7 @@ export default function ProjectGeneralForm() {
         className="flex flex-col divide-y"
       >
         <div className="flex h-10 items-center justify-between pb-1">
-          <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+          <h2 className="text-base-700 dark:text-base-300 ml-2 flex items-center gap-2 text-sm font-medium lg:ml-0">
             General
           </h2>
 
@@ -201,7 +201,7 @@ export default function ProjectGeneralForm() {
             <div className="flex items-center justify-between px-2 py-2">
               <div>
                 {parseError && (
-                  <p className="text-red-500 text-sm">{parseError}</p>
+                  <p className="text-sm text-red-500">{parseError}</p>
                 )}
               </div>
 
@@ -222,7 +222,7 @@ export default function ProjectGeneralForm() {
                           size="icon"
                           onClick={handleCancel}
                           disabled={isSubmitting}
-                          className="size-7 hover:text-destructive focus-visible:ring-destructive focus-visible:ring-offset-0"
+                          className="hover:text-destructive focus-visible:ring-destructive size-7 focus-visible:ring-offset-0"
                           aria-label="Cancel"
                         >
                           <XIcon className="size-4" />
@@ -356,14 +356,14 @@ export default function ProjectGeneralForm() {
 
       {/* Visibility toggle — outside form since it takes immediate effect */}
       <div className="mt-6 flex flex-col">
-        <h2 className="mb-1 ml-2 flex h-10 items-center font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+        <h2 className="text-base-700 dark:text-base-300 mb-1 ml-2 flex h-10 items-center text-sm font-medium lg:ml-0">
           Visibility
         </h2>
 
         <div className="flex flex-col divide-y border-y">
           <div className="flex h-10 w-full items-center justify-between">
             <div className="flex items-center gap-3 pl-2 lg:pl-0">
-              <GlobeIcon className="size-4 text-base-500" />
+              <GlobeIcon className="text-base-500 size-4" />
               <span className="text-sm">Public</span>
             </div>
 
@@ -394,7 +394,7 @@ export default function ProjectGeneralForm() {
               </div>
 
               <div className="flex items-center gap-2 pr-2">
-                <code className="rounded bg-base-100 px-2 py-0.5 text-xs dark:bg-base-800">
+                <code className="bg-base-100 dark:bg-base-800 rounded px-2 py-0.5 text-xs">
                   {BASE_URL}/workspaces/{workspaceSlug}/projects/
                   {projectSlug}?mode=public
                 </code>
@@ -419,12 +419,12 @@ export default function ProjectGeneralForm() {
 
       {/* Board background — outside form since it takes immediate effect */}
       <div className="mt-6 flex flex-col">
-        <h2 className="mb-1 ml-2 flex h-10 items-center font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+        <h2 className="text-base-700 dark:text-base-300 mb-1 ml-2 flex h-10 items-center text-sm font-medium lg:ml-0">
           Background
         </h2>
 
         <div className="flex flex-col gap-2 border-y py-3">
-          <p className="px-2 text-base-500 text-xs lg:px-0">
+          <p className="text-base-500 px-2 text-xs lg:px-0">
             A neutral surface, or a curated tint for the board.
           </p>
           <div className="px-2 lg:px-0">

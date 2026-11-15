@@ -27,7 +27,7 @@ const MemberListStatus = ({ state, onRetry }: Props) => {
 
   return (
     <div className="flex flex-col items-center gap-2 py-6 text-center">
-      <p className="max-w-[14rem] text-muted-foreground text-xs">
+      <p className="text-muted-foreground max-w-[14rem] text-xs">
         {state === "degraded"
           ? "Your session expired, so members could not be loaded."
           : "Members could not be loaded."}

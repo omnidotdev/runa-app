@@ -42,7 +42,7 @@ function ProfilePage() {
   const organizations = orgContext?.workspaces ?? [];
 
   return (
-    <div className="no-scrollbar min-h-dvh overflow-y-auto bg-linear-to-br from-background via-background to-muted/20 p-4 sm:p-6 lg:p-8">
+    <div className="no-scrollbar from-background via-background to-muted/20 min-h-dvh overflow-y-auto bg-linear-to-br p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-12">
           <div className="xl:col-span-4">
@@ -72,7 +72,7 @@ function ProfilePage() {
               <TabsContent value="account">
                 <div className="mt-4 space-y-8">
                   <div className="space-y-4">
-                    <h2 className="font-bold text-lg">Workspaces</h2>
+                    <h2 className="text-lg font-bold">Workspaces</h2>
                     <WorkspacesTable organizations={organizations} />
                   </div>
 

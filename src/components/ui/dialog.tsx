@@ -111,14 +111,14 @@ const DialogCloseTrigger = ({
 
 /** @knipignore */
 export {
-  DialogRoot,
-  DialogTrigger,
   DialogBackdrop,
-  DialogPositioner,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
   DialogCloseTrigger,
-  DialogProvider,
+  DialogContent,
   DialogContext,
+  DialogDescription,
+  DialogPositioner,
+  DialogProvider,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
 };

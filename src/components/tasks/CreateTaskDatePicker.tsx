@@ -68,8 +68,8 @@ const CreateTaskDatePicker = withForm({
             </DatePickerControl>
 
             <DatePickerPositioner>
-              <DatePickerContent className="w-48 bg-background p-0">
-                <div className="flex w-full items-center justify-between border-b p-2 text-base-500 text-sm">
+              <DatePickerContent className="bg-background w-48 p-0">
+                <div className="text-base-500 flex w-full items-center justify-between border-b p-2 text-sm">
                   Date Picker
                 </div>
 
@@ -120,7 +120,7 @@ const CreateTaskDatePicker = withForm({
                                       value={day}
                                       className="size-8"
                                     >
-                                      <DatePickerTableCellTrigger className="hover:bg-primary-50 data-outside-range:opacity-40 hover:data-outside-range:bg-transparent dark:hover:bg-primary-950">
+                                      <DatePickerTableCellTrigger className="hover:bg-primary-50 dark:hover:bg-primary-950 data-outside-range:opacity-40 hover:data-outside-range:bg-transparent">
                                         {day.day}
                                       </DatePickerTableCellTrigger>
                                     </DatePickerTableCell>

@@ -24,7 +24,7 @@ export default function ProjectDangerZone() {
       className={cn("ml-2 hidden flex-col gap-4 lg:ml-0", isOwner && "flex")}
     >
       <div className="flex flex-col gap-4">
-        <h3 className="font-medium text-sm">Danger Zone</h3>
+        <h3 className="text-sm font-medium">Danger Zone</h3>
 
         <Button
           variant="destructive"

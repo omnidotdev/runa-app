@@ -92,7 +92,7 @@ const AppSidebarProjectList = () => {
 
   if (!workspaceSlug) return null;
 
-  if (!open && !!sortedProjects?.length)
+  if (!open && sortedProjects?.length)
     return (
       <MenuRoot
         positioning={{ placement: "bottom-start" }}
@@ -150,7 +150,7 @@ const AppSidebarProjectList = () => {
                     <span className="truncate">{project?.name}</span>
 
                     {userPreferences?.pinOrder != null && (
-                      <PinIcon className="ml-auto size-3 text-base-400" />
+                      <PinIcon className="text-base-400 ml-auto size-3" />
                     )}
 
                     {isActive && (
@@ -174,7 +174,7 @@ const AppSidebarProjectList = () => {
         <CollapsibleTrigger className="mt-1 gap-2 p-0 px-1">
           <SidebarGroupLabel>Projects</SidebarGroupLabel>
           {!!sortedProjects?.length && (
-            <ChevronRightIcon size={12} className="mr-auto text-base-400" />
+            <ChevronRightIcon size={12} className="text-base-400 mr-auto" />
           )}
 
           <Tooltip

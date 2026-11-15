@@ -197,7 +197,7 @@ const ColumnForm = ({
         )}
         aria-label="Drag handle"
       >
-        <GripVerticalIcon className="flex size-3 text-muted-foreground" />
+        <GripVerticalIcon className="text-muted-foreground flex size-3" />
       </Button>
 
       <form.Field name="icon">
@@ -295,7 +295,7 @@ const ColumnForm = ({
                       form.reset();
                     }}
                     disabled={isSubmitting}
-                    className="size-7 hover:text-destructive focus-visible:ring-destructive focus-visible:ring-offset-0"
+                    className="hover:text-destructive focus-visible:ring-destructive size-7 focus-visible:ring-offset-0"
                     aria-label="Cancel"
                   >
                     <XIcon className="size-4" />

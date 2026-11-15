@@ -103,7 +103,7 @@ const MoveTaskDialog = ({
     >
       <DialogBackdrop />
       <DialogPositioner>
-        <DialogContent className="w-full max-w-md rounded-lg bg-background">
+        <DialogContent className="bg-background w-full max-w-md rounded-lg">
           <DialogCloseTrigger />
 
           <div className="mb-4 flex flex-col gap-1">
@@ -117,7 +117,7 @@ const MoveTaskDialog = ({
 
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
-              <span className="font-medium text-muted-foreground text-xs">
+              <span className="text-muted-foreground text-xs font-medium">
                 Board
               </span>
               <div className="flex max-h-40 flex-col gap-0.5 overflow-y-auto">
@@ -140,7 +140,7 @@ const MoveTaskDialog = ({
                     </button>
                   ))
                 ) : (
-                  <p className="py-2 text-center text-muted-foreground text-xs">
+                  <p className="text-muted-foreground py-2 text-center text-xs">
                     No other boards in this workspace
                   </p>
                 )}
@@ -149,7 +149,7 @@ const MoveTaskDialog = ({
 
             {targetProjectId && (
               <div className="flex flex-col gap-1">
-                <span className="font-medium text-muted-foreground text-xs">
+                <span className="text-muted-foreground text-xs font-medium">
                   Column
                 </span>
                 <div className="flex max-h-40 flex-col gap-0.5 overflow-y-auto">
@@ -169,7 +169,7 @@ const MoveTaskDialog = ({
                       </button>
                     ))
                   ) : (
-                    <p className="py-2 text-center text-muted-foreground text-xs">
+                    <p className="text-muted-foreground py-2 text-center text-xs">
                       This board has no columns
                     </p>
                   )}

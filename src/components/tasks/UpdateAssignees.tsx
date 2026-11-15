@@ -110,7 +110,7 @@ const UpdateAssignees = withForm({
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
-                  <SearchIcon className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <SearchIcon className="text-muted-foreground pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2" />
                   <Input
                     placeholder="Filter members…"
                     className="h-8 pl-8 text-sm shadow-none"
@@ -118,7 +118,7 @@ const UpdateAssignees = withForm({
                   />
                 </div>
 
-                <div className="flex items-center gap-1 rounded-md border border-input p-0.5">
+                <div className="border-input flex items-center gap-1 rounded-md border p-0.5">
                   <Tooltip
                     tooltip="Grid view"
                     trigger={

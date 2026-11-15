@@ -52,7 +52,7 @@ const ProjectLabelsForm = () => {
   return (
     <div className="flex flex-col">
       <div className="mb-1 flex h-10 items-center justify-between">
-        <h2 className="ml-2 flex items-center gap-2 font-medium text-base-700 text-sm lg:ml-0 dark:text-base-300">
+        <h2 className="text-base-700 dark:text-base-300 ml-2 flex items-center gap-2 text-sm font-medium lg:ml-0">
           Project Labels
         </h2>
 
@@ -102,7 +102,7 @@ const ProjectLabelsForm = () => {
           ))}
         </div>
       ) : showEmptyState ? (
-        <div className="ml-2 flex items-center text-base-500 text-sm lg:ml-0">
+        <div className="text-base-500 ml-2 flex items-center text-sm lg:ml-0">
           {isMember ? (
             "No project labels"
           ) : (

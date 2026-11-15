@@ -27,7 +27,7 @@ const PublicBoardItem = ({ task, displayId }: Props) => {
   // });
 
   return (
-    <div className="mb-2 h-35 shrink-0 overflow-hidden rounded-lg border bg-background p-3 outline-hidden dark:border-border">
+    <div className="bg-background dark:border-border mb-2 h-35 shrink-0 overflow-hidden rounded-lg border p-3 outline-hidden">
       {/* TODO: re-enable click-through to task detail
       onClick={() =>
         navigate({
@@ -56,12 +56,12 @@ const PublicBoardItem = ({ task, displayId }: Props) => {
                   className="size-2.5 shrink-0 opacity-60"
                 />
               )}
-              <span className="shrink-0 font-medium font-mono text-base-400 text-xs dark:text-base-400">
+              <span className="text-base-400 dark:text-base-400 shrink-0 font-mono text-xs font-medium">
                 {displayId}
               </span>
             </div>
 
-            <div className="line-clamp-2 py-2 text-foreground text-xs">
+            <div className="text-foreground line-clamp-2 py-2 text-xs">
               <RichTextEditor
                 defaultContent={task.content}
                 className="min-h-0! w-fit border-0 bg-transparent p-0 text-xs dark:bg-transparent [&_.ProseMirror]:line-clamp-2 [&_.ProseMirror]:overflow-hidden"
@@ -86,7 +86,7 @@ const PublicBoardItem = ({ task, displayId }: Props) => {
             </div>
           )}
 
-          <div className="ml-auto flex items-center gap-2 text-base-500 text-xs dark:text-base-400">
+          <div className="text-base-500 dark:text-base-400 ml-auto flex items-center gap-2 text-xs">
             {task.description && (
               <div className="flex items-center">
                 <AlignLeftIcon className="size-3" />

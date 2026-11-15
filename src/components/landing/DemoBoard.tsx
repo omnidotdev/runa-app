@@ -265,11 +265,11 @@ const DemoBoard = () => {
   return (
     <div
       ref={containerRef}
-      className="max-w-full overflow-hidden rounded-2xl bg-white/95 ring-1 ring-primary-500/10 dark:bg-base-900/95"
+      className="ring-primary-500/10 dark:bg-base-900/95 max-w-full overflow-hidden rounded-2xl bg-white/95 ring-1"
       style={{ width: BOARD_WIDTH }}
     >
       {/* Toolbar header */}
-      <div className="flex items-center justify-end gap-1 border-primary-500/10 border-b px-4 py-2">
+      <div className="border-primary-500/10 flex items-center justify-end gap-1 border-b px-4 py-2">
         <Tooltip
           positioning={{ placement: "bottom" }}
           tooltip={theme === "dark" ? "Light Mode" : "Dark Mode"}
@@ -279,7 +279,7 @@ const DemoBoard = () => {
               variant="ghost"
               size="sm"
               onClick={toggleTheme}
-              className="gap-2 text-base-600 text-xs dark:text-base-400"
+              className="text-base-600 dark:text-base-400 gap-2 text-xs"
             >
               {theme === "dark" ? (
                 <MoonIcon className="size-4" />
@@ -294,7 +294,7 @@ const DemoBoard = () => {
       </div>
 
       {viewMode === "calendar" ? (
-        <div className="bg-base-100/50 p-4 dark:bg-base-900/20">
+        <div className="bg-base-100/50 dark:bg-base-900/20 p-4">
           <CalendarView
             tasks={calendarTasks}
             unscheduledTasks={unscheduledCalendarTasks}
@@ -308,7 +308,7 @@ const DemoBoard = () => {
           {viewMode === "board" ? (
             <div
               ref={scrollContainerRef}
-              className="custom-scrollbar max-w-full cursor-grab overflow-x-auto bg-base-100/50 dark:bg-base-900/20"
+              className="custom-scrollbar bg-base-100/50 dark:bg-base-900/20 max-w-full cursor-grab overflow-x-auto"
               style={{ height: BOARD_HEIGHT }}
               onMouseDown={handleMouseDown}
               onMouseUp={handleMouseUp}
@@ -328,10 +328,10 @@ const DemoBoard = () => {
                       <div className="mb-1 flex items-center justify-between rounded-lg py-2">
                         <div className="flex items-center gap-2">
                           <LabelIcon icon={column.icon} className="size-4" />
-                          <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
+                          <h3 className="text-base-800 dark:text-base-100 text-sm font-semibold">
                             {column.title}
                           </h3>
-                          <span className="flex size-7 items-center justify-center rounded-full font-semibold text-foreground text-xs tabular-nums">
+                          <span className="text-foreground flex size-7 items-center justify-center rounded-full text-xs font-semibold tabular-nums">
                             {columnTasks.length}
                           </span>
                         </div>
@@ -370,7 +370,7 @@ const DemoBoard = () => {
             </div>
           ) : (
             <div
-              className="custom-scrollbar overflow-y-auto bg-base-100/50 p-4 dark:bg-base-900/20"
+              className="custom-scrollbar bg-base-100/50 dark:bg-base-900/20 overflow-y-auto p-4"
               style={{ height: BOARD_HEIGHT }}
             >
               {demoColumns.map((column, index) => {
@@ -379,7 +379,7 @@ const DemoBoard = () => {
                 return (
                   <CollapsibleRoot
                     key={column.rowId}
-                    className="mb-4 w-full rounded-lg border bg-background last:mb-0"
+                    className="bg-background mb-4 w-full rounded-lg border last:mb-0"
                     open={columnOpenStates[index]}
                     onOpenChange={({ open }) => {
                       setColumnOpenStates((prev) => {
@@ -391,7 +391,7 @@ const DemoBoard = () => {
                   >
                     <button
                       type="button"
-                      className="flex w-full items-center gap-2 rounded-t-lg px-3 py-2 hover:bg-base-50 dark:hover:bg-base-800"
+                      className="hover:bg-base-50 dark:hover:bg-base-800 flex w-full items-center gap-2 rounded-t-lg px-3 py-2"
                       onClick={() =>
                         setColumnOpenStates((prev) => {
                           const newStates = [...prev];
@@ -401,10 +401,10 @@ const DemoBoard = () => {
                       }
                     >
                       <LabelIcon icon={column.icon} className="size-4" />
-                      <h3 className="font-semibold text-base-800 text-sm dark:text-base-100">
+                      <h3 className="text-base-800 dark:text-base-100 text-sm font-semibold">
                         {column.title}
                       </h3>
-                      <span className="flex size-6 items-center justify-center rounded-full font-semibold text-foreground text-xs tabular-nums">
+                      <span className="text-foreground flex size-6 items-center justify-center rounded-full text-xs font-semibold tabular-nums">
                         {columnTasks.length}
                       </span>
                     </button>
@@ -472,12 +472,12 @@ const DemoBoard = () => {
                   )}
                   <Badge
                     variant="outline"
-                    className="border-primary-500/20 text-primary-600 text-xs capitalize dark:text-primary-400"
+                    className="border-primary-500/20 text-primary-600 dark:text-primary-400 text-xs capitalize"
                   >
                     {demoColumns.find((c) => c.rowId === selectedTask.columnId)
                       ?.title ?? "Task"}
                   </Badge>
-                  <span className="font-medium font-mono text-base-400 text-xs">
+                  <span className="text-base-400 font-mono text-xs font-medium">
                     {getDisplayId(selectedTask)}
                   </span>
                 </div>
@@ -494,14 +494,14 @@ const DemoBoard = () => {
                 <div className="mt-4 space-y-3">
                   {/* assignees */}
                   <div className="flex items-center gap-3">
-                    <UserIcon className="size-4 text-base-400" />
+                    <UserIcon className="text-base-400 size-4" />
                     {selectedTask.assignees.length > 0 ? (
                       <div className="flex items-center gap-2">
                         <div className="flex -space-x-1">
                           {selectedTask.assignees.map((assignee) => (
                             <AvatarRoot
                               key={assignee.name}
-                              className="size-6 border-2 border-background"
+                              className="border-background size-6 border-2"
                             >
                               <AvatarFallback
                                 className="text-xs"
@@ -526,7 +526,7 @@ const DemoBoard = () => {
 
                   {/* labels */}
                   <div className="flex items-center gap-3">
-                    <TagIcon className="size-4 text-base-400" />
+                    <TagIcon className="text-base-400 size-4" />
                     {selectedTask.labels.length > 0 ? (
                       <div className="flex flex-wrap gap-1">
                         {selectedTask.labels.map((label) => (
@@ -550,7 +550,7 @@ const DemoBoard = () => {
 
                   {/* due date */}
                   <div className="flex items-center gap-3">
-                    <CalendarIcon className="size-4 text-base-400" />
+                    <CalendarIcon className="text-base-400 size-4" />
                     {selectedTask.dueDate ? (
                       <span className="text-sm">
                         {formatDueDate(selectedTask.dueDate)}
@@ -566,7 +566,7 @@ const DemoBoard = () => {
                     onClick={() =>
                       signIn({ redirectUrl: BASE_URL, providerId: "omni" })
                     }
-                    className="w-full bg-primary-500 text-base-950 hover:bg-primary-400"
+                    className="bg-primary-500 text-base-950 hover:bg-primary-400 w-full"
                   >
                     Sign up to edit tasks
                   </Button>

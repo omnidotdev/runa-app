@@ -15,7 +15,7 @@ import type { PropsWithChildren } from "react";
 const NotFound = ({ children }: PropsWithChildren) => (
   <NotFoundPage
     appName={app.name}
-    appLogo={<Logo className="size-8 text-primary-500" />}
+    appLogo={<Logo className="text-primary-500 size-8" />}
     description={children}
   />
 );

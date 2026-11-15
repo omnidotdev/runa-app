@@ -335,7 +335,7 @@ const Filter = () => {
                               priority === "low" && "bg-green-500",
                             )}
                           />
-                          <p className="font-light text-sm first-letter:uppercase">
+                          <p className="text-sm font-light first-letter:uppercase">
                             {priority}
                           </p>
                         </MenuItemText>

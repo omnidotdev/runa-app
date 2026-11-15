@@ -21,10 +21,10 @@ const DefaultCatchBoundary = ({ error }: ErrorComponentProps) => {
     <div className="flex min-h-[50vh] flex-col items-center justify-center p-8">
       <div className="text-center">
         <div className="mb-6 text-6xl">🌙</div>
-        <h1 className="font-bold text-2xl text-destructive">
+        <h1 className="text-destructive text-2xl font-bold">
           Something went wrong
         </h1>
-        <p className="mt-2 max-w-md text-muted-foreground">
+        <p className="text-muted-foreground mt-2 max-w-md">
           An unexpected error occurred. Please try again
           {isRoot ? " or return to the home page" : ""}.
         </p>
@@ -32,14 +32,14 @@ const DefaultCatchBoundary = ({ error }: ErrorComponentProps) => {
           <button
             type="button"
             onClick={() => router.invalidate()}
-            className="rounded-lg border border-border bg-card px-4 py-2 font-medium text-foreground text-sm transition-colors hover:bg-accent"
+            className="border-border bg-card text-foreground hover:bg-accent rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
           >
             Try again
           </button>
           {isRoot ? (
             <a
               href="/"
-              className="rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             >
               Go Home
             </a>
@@ -47,7 +47,7 @@ const DefaultCatchBoundary = ({ error }: ErrorComponentProps) => {
             <button
               type="button"
               onClick={() => window.history.back()}
-              className="rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground text-sm transition-colors hover:bg-primary/90"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
             >
               Go back
             </button>

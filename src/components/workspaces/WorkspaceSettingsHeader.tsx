@@ -48,7 +48,7 @@ export default function WorkspaceSettingsHeader() {
           <ArrowLeft className="size-4" />
         </Button>
         <div className="flex flex-col gap-2">
-          <h1 className="font-semibold text-2xl">{orgName ?? "Workspace"}</h1>
+          <h1 className="text-2xl font-semibold">{orgName ?? "Workspace"}</h1>
         </div>
         {hasBilling && (
           <Badge className="bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">

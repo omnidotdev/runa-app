@@ -121,9 +121,9 @@ const DueDateEditor = ({
         <DatePickerTrigger asChild>
           <button
             type="button"
-            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none transition-colors hover:bg-accent focus-visible:bg-accent data-[state=open]:bg-accent"
+            className="hover:bg-accent focus-visible:bg-accent data-[state=open]:bg-accent flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors outline-none"
           >
-            <CalendarIcon className="size-4 text-muted-foreground" />
+            <CalendarIcon className="text-muted-foreground size-4" />
             {dueDate ? (
               <span>
                 {dayjs(dueDate).format(
@@ -138,7 +138,7 @@ const DueDateEditor = ({
       </DatePickerControl>
 
       <DatePickerPositioner>
-        <DatePickerContent className="w-64 bg-background p-2">
+        <DatePickerContent className="bg-background w-64 p-2">
           <Input
             autoComplete="off"
             placeholder="Try: tomorrow, in 2 days"
@@ -206,7 +206,7 @@ const DueDateEditor = ({
                               value={day}
                               className="size-8"
                             >
-                              <DatePickerTableCellTrigger className="hover:bg-primary-50 data-outside-range:opacity-40 hover:data-outside-range:bg-transparent dark:hover:bg-primary-950">
+                              <DatePickerTableCellTrigger className="hover:bg-primary-50 dark:hover:bg-primary-950 data-outside-range:opacity-40 hover:data-outside-range:bg-transparent">
                                 {day.day}
                               </DatePickerTableCellTrigger>
                             </DatePickerTableCell>
@@ -221,7 +221,7 @@ const DueDateEditor = ({
           </DatePickerView>
 
           <div className="mt-2 flex items-center gap-2 border-t pt-2">
-            <ClockIcon className="size-4 text-muted-foreground" />
+            <ClockIcon className="text-muted-foreground size-4" />
             <input
               type="time"
               aria-label="Due time"
@@ -235,7 +235,7 @@ const DueDateEditor = ({
                   !!event.target.value,
                 );
               }}
-              className="h-8 flex-1 rounded-md border bg-transparent px-2 text-sm outline-none focus-visible:ring-1 focus-visible:ring-primary"
+              className="focus-visible:ring-primary h-8 flex-1 rounded-md border bg-transparent px-2 text-sm outline-none focus-visible:ring-1"
             />
           </div>
 
@@ -243,7 +243,7 @@ const DueDateEditor = ({
             <Button
               variant="ghost"
               size="sm"
-              className="mt-2 w-full justify-start text-muted-foreground"
+              className="text-muted-foreground mt-2 w-full justify-start"
               onClick={() => setDueDate(null)}
             >
               <XIcon className="size-4" />
@@ -260,7 +260,7 @@ const DueDatePopover = ({ taskId, dueDate, editable }: Props) => {
   if (!editable) {
     return (
       <div className="flex w-full items-center gap-2 px-2 py-1.5 text-sm">
-        <CalendarIcon className="size-4 text-muted-foreground" />
+        <CalendarIcon className="text-muted-foreground size-4" />
         {dueDate ? (
           <span>
             {dayjs(dueDate).format(

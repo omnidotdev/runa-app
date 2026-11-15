@@ -33,7 +33,7 @@ const ProjectLinks = ({ links }: Props) => {
   if (!sortedLinks.length) return null;
 
   return (
-    <div className="ml-1 flex items-center gap-0.5 border-border border-l pl-3">
+    <div className="border-border ml-1 flex items-center gap-0.5 border-l pl-3">
       {visibleLinks.map((link) => (
         <Tooltip
           key={link.rowId}
@@ -43,7 +43,7 @@ const ProjectLinks = ({ links }: Props) => {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-md p-1.5 text-base-500 hover:bg-accent hover:text-foreground dark:text-base-400"
+              className="text-base-500 hover:bg-accent hover:text-foreground dark:text-base-400 rounded-md p-1.5"
             >
               <Favicon url={link.url} />
             </a>
@@ -57,7 +57,7 @@ const ProjectLinks = ({ links }: Props) => {
             <Button
               variant="ghost"
               size="icon"
-              className="size-7 text-base-500 dark:text-base-400"
+              className="text-base-500 dark:text-base-400 size-7"
             >
               <EllipsisIcon className="size-4" />
             </Button>

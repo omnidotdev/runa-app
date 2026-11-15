@@ -178,7 +178,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
       >
         {isTeamTier && (
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-            <span className="rounded-full bg-primary-700 px-3 py-1 font-medium text-primary-foreground text-sm dark:bg-primary">
+            <span className="bg-primary-700 text-primary-foreground dark:bg-primary rounded-full px-3 py-1 text-sm font-medium">
               Recommended
             </span>
           </div>
@@ -189,23 +189,23 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
             isTeamTier && "bg-primary-400/10 dark:bg-primary-950/80",
           )}
         >
-          <CardTitle className="font-bold text-2xl">
+          <CardTitle className="text-2xl font-bold">
             {capitalizeFirstLetter(tier)}
           </CardTitle>
-          <CardDescription className="mt-2 text-muted-foreground">
+          <CardDescription className="text-muted-foreground mt-2">
             {price.product?.description}
           </CardDescription>
         </CardHeader>
         <CardContent className="pb-8 text-center">
           <div className="mb-8">
-            <div className="flex items-baseline justify-center font-bold text-4xl">
+            <div className="flex items-baseline justify-center text-4xl font-bold">
               <Format.Number
                 value={price.unit_amount! / 100}
                 style="currency"
                 notation="compact"
                 currency="USD"
               />
-              <span className="ml-1 font-medium text-lg text-muted-foreground">
+              <span className="text-muted-foreground ml-1 text-lg font-medium">
                 {price.recurring &&
                   !isFreeTier &&
                   `/${price.recurring.interval}`}
@@ -267,10 +267,10 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
                                 size={16}
                                 className="text-muted-foreground"
                               />
-                              <span className="flex-1 truncate font-medium text-sm">
+                              <span className="flex-1 truncate text-sm font-medium">
                                 {org.name}
                               </span>
-                              <span className="rounded bg-primary/10 px-1.5 py-0.5 text-primary text-xs">
+                              <span className="bg-primary/10 text-primary rounded px-1.5 py-0.5 text-xs">
                                 Upgrade
                               </span>
                             </MenuItemText>
@@ -293,10 +293,10 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
                                   size={16}
                                   className="text-muted-foreground"
                                 />
-                                <span className="flex-1 truncate font-medium text-sm">
+                                <span className="flex-1 truncate text-sm font-medium">
                                   {org.name}
                                 </span>
-                                <span className="rounded bg-muted px-1.5 py-0.5 text-muted-foreground text-xs">
+                                <span className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-xs">
                                   {isSameTier
                                     ? "Current plan"
                                     : capitalizeFirstLetter(orgTier)}
@@ -315,7 +315,7 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
                     <MenuItem value="create-new" className="cursor-pointer">
                       <MenuItemText className="flex w-full items-center gap-2">
                         <PlusIcon size={16} className="text-muted-foreground" />
-                        <span className="font-medium text-sm">
+                        <span className="text-sm font-medium">
                           New workspace
                         </span>
                       </MenuItemText>

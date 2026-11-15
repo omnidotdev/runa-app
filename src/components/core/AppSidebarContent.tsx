@@ -90,7 +90,7 @@ const AppSidebarContent = () => {
             <SidebarGroup>
               <CollapsibleTrigger className="gap-2 p-0 px-1">
                 <SidebarGroupLabel>Workspace</SidebarGroupLabel>
-                <ChevronRightIcon size={12} className="mr-auto text-base-400" />
+                <ChevronRightIcon size={12} className="text-base-400 mr-auto" />
               </CollapsibleTrigger>
 
               <CollapsibleContent className="-mx-2 p-0">

@@ -70,7 +70,7 @@ const ListItem = ({ task, index, displayId, prefix }: Props) => {
 
     if (isHovered) {
       setIsHovered(false);
-      if (!isUpdateDialogOpen && !isDragging && !!taskId) {
+      if (!isUpdateDialogOpen && !isDragging && taskId) {
         setTaskId(null);
       }
     }
@@ -113,7 +113,7 @@ const ListItem = ({ task, index, displayId, prefix }: Props) => {
               className="shrink-0 scale-75 opacity-50"
             />
 
-            <span className="shrink-0 font-mono text-base-400 text-xs dark:text-base-400">
+            <span className="text-base-400 dark:text-base-400 shrink-0 font-mono text-xs">
               {displayId}
             </span>
 
@@ -149,7 +149,7 @@ const ListItem = ({ task, index, displayId, prefix }: Props) => {
                 />
               )}
 
-              <div className="flex items-center gap-2 text-base-500 text-xs dark:text-base-400">
+              <div className="text-base-500 dark:text-base-400 flex items-center gap-2 text-xs">
                 {task.description && (
                   <Tooltip
                     positioning={{ placement: "top" }}

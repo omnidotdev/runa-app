@@ -70,15 +70,14 @@ import { compareKeys, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import isTaskOverdue from "@/lib/util/isTaskOverdue";
 import resolveActiveColumnId from "@/lib/util/resolveActiveColumnId";
-import resolveViewModeToggle, {
-  type ViewMode,
-} from "@/lib/util/resolveViewModeToggle";
+import resolveViewModeToggle from "@/lib/util/resolveViewModeToggle";
 import signInHref from "@/lib/util/signInHref";
 import { buildTaskKey, stripMarkup } from "@/lib/util/taskUrl";
 
 import type { DragStart, DropResult } from "@hello-pangea/dnd";
 import type { ChangeEvent } from "react";
 import type { TasksQuery, TasksQueryVariables } from "@/generated/graphql";
+import type { ViewMode } from "@/lib/util/resolveViewModeToggle";
 
 const projectSearchParamsSchema = z.object({
   search: z.string().default(""),
@@ -681,7 +680,7 @@ function AuthenticatedProjectPage() {
         <div className="border-b px-6 py-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <h1 className="font-semibold text-2xl">{project?.name}</h1>
+              <h1 className="text-2xl font-semibold">{project?.name}</h1>
               {project?.isPublic && (
                 <Link
                   to="/@{$workspaceSlug}/$projectSlug"
@@ -701,14 +700,14 @@ function AuthenticatedProjectPage() {
             </div>
 
             {project?.description && (
-              <p className="text-base-600 text-sm dark:text-base-400">
+              <p className="text-base-600 dark:text-base-400 text-sm">
                 {project.description}
               </p>
             )}
 
             <div className="mt-2 flex flex-wrap gap-2 sm:flex-nowrap">
               <div className="relative flex-1 sm:flex-none">
-                <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-base-400" />
+                <SearchIcon className="text-base-400 absolute top-1/2 left-3 size-4 -translate-y-1/2" />
                 <Input
                   id="search-tasks"
                   autoComplete="off"
@@ -828,13 +827,13 @@ function PublicProjectView({ projectId }: { projectId: string }) {
       <div className="border-b px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h1 className="font-semibold text-2xl">{project.name}</h1>
+            <h1 className="text-2xl font-semibold">{project.name}</h1>
             <ProjectLinks links={project?.projectLinks?.nodes ?? []} />
           </div>
         </div>
 
         {project.description && (
-          <p className="mt-1 text-base-600 text-sm dark:text-base-400">
+          <p className="text-base-600 dark:text-base-400 mt-1 text-sm">
             {project.description}
           </p>
         )}
