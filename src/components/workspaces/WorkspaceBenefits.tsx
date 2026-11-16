@@ -25,8 +25,8 @@ import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import getTierFromEntitlements from "@/lib/util/getTierFromEntitlements";
 import { cn } from "@/lib/utils";
 import {
+  createCheckoutWithWorkspace,
   getBillingPortalUrl,
-  getCreateSubscriptionUrl,
   renewSubscription,
 } from "@/server/functions/subscriptions";
 
@@ -58,16 +58,19 @@ export default function WorkspaceBenefits() {
     onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
   });
 
+  // Subscribes the workspace itself (Aether checks the user is its owner/admin)
   const { mutateAsync: createSubscription } = useMutation({
     mutationFn: async ({ priceId }: { priceId: string }) =>
-      await getCreateSubscriptionUrl({
+      await createCheckoutWithWorkspace({
         data: {
-          organizationId,
+          workspaceId: organizationId,
           priceId,
           successUrl: `${BASE_URL}/@${orgSlug}/~/settings`,
+          cancelUrl: `${BASE_URL}/@${orgSlug}/~/settings`,
         },
       }),
-    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
+    onSuccess: ({ checkoutUrl }) =>
+      navigate({ href: checkoutUrl, reloadDocument: true }),
   });
 
   const { mutateAsync: handleRenewSubscription, isPending: isRenewing } =

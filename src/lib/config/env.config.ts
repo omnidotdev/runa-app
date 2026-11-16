@@ -42,6 +42,15 @@ export const ORG_SYNC_SERVICE_TOKEN =
     ? process.env.ORG_SYNC_SERVICE_TOKEN
     : undefined;
 
+// Runa's Aether service key. Checkout, the subscription lookup, and the billing
+// portal act for the signed-in user, whose token is not minted for Aether, so
+// Aether only accepts it alongside this key. Server-only: guarded so the secret
+// is never read client-side and never bundled into the browser
+export const BILLING_SERVICE_API_KEY =
+  typeof window === "undefined"
+    ? process.env.BILLING_SERVICE_API_KEY
+    : undefined;
+
 export const API_GRAPHQL_URL = `${API_BASE_URL}/graphql`;
 
 // Internal GraphQL URL for server-side requests
@@ -61,6 +70,14 @@ if (!BILLING_BASE_URL)
   console.warn("BILLING_BASE_URL not set, billing disabled");
 if (!ACCOUNT_URL)
   console.warn("ACCOUNT_URL not set, manage-account link disabled");
+if (
+  typeof window === "undefined" &&
+  BILLING_BASE_URL &&
+  !BILLING_SERVICE_API_KEY
+)
+  console.warn(
+    "BILLING_SERVICE_API_KEY not set, checkout and billing management disabled",
+  );
 if (typeof window === "undefined" && !ORG_SYNC_SERVICE_TOKEN)
   console.warn(
     "ORG_SYNC_SERVICE_TOKEN not set, organization member list disabled",
