@@ -1,4 +1,4 @@
-import { parseAbsoluteToLocal } from "@internationalized/date";
+import { parseAbsoluteToLocal, parseDate } from "@internationalized/date";
 import {
   DatePickerContent,
   DatePickerContext,
@@ -36,10 +36,11 @@ import { Input } from "@/components/ui/input";
 import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
 import {
-  dueHasTime,
+  allDayDueDate,
+  dueDayKey,
   dueTimeValue,
+  formatDueDate,
   pickedLocalDay,
-  storedDueDate,
   storedDueDateAtTime,
 } from "@/lib/util/dueDate";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
@@ -49,6 +50,8 @@ import type { TaskQuery } from "@/generated/graphql";
 interface Props {
   taskId: string;
   dueDate?: Date | string | null;
+  /** Whether `dueDate` carries a time-of-day (otherwise it is all-day). */
+  dueHasTime?: boolean | null;
   editable: boolean;
 }
 
@@ -56,15 +59,18 @@ interface Props {
 const DueDateEditor = ({
   taskId,
   dueDate,
-}: {
-  taskId: string;
-  dueDate?: Date | string | null;
-}) => {
-  // tolerate an unparseable value instead of throwing during render
-  const dueDateTime = dueDate ? new Date(dueDate).getTime() : Number.NaN;
-  const dueDateIso = Number.isNaN(dueDateTime)
-    ? null
-    : new Date(dueDateTime).toISOString();
+  dueHasTime,
+}: Omit<Props, "editable">) => {
+  // the stored day (an unparseable value yields null instead of throwing), and
+  // the picker value for it: a timed date seeds the picker in local time, an
+  // all-day date as its plain calendar day (never shifted by the time zone)
+  const dueDay = dueDayKey(dueDate, dueHasTime);
+  const pickerValue = !dueDay
+    ? []
+    : dueHasTime
+      ? [parseAbsoluteToLocal(new Date(dueDate!).toISOString())]
+      : [parseDate(dueDay)];
+  const time = dueTimeValue(dueDate, dueHasTime);
 
   const queryClient = useQueryClient();
   const taskQueryKey = taskOptions({ rowId: taskId }).queryKey;
@@ -102,7 +108,7 @@ const DueDateEditor = ({
 
   return (
     <DatePickerRoot
-      value={dueDateIso ? [parseAbsoluteToLocal(dueDateIso)] : []}
+      value={pickerValue}
       onValueChange={({ value }) => {
         if (!value.length) {
           setDueDate(null);
@@ -110,9 +116,8 @@ const DueDateEditor = ({
         }
         // keep any existing time-of-day when the day changes
         const day = pickedLocalDay(value[0]);
-        const time = dueTimeValue(dueDate);
         setDueDate(
-          time ? storedDueDateAtTime(day, time) : storedDueDate(day),
+          time ? storedDueDateAtTime(day, time) : allDayDueDate(day),
           !!time,
         );
       }}
@@ -124,11 +129,9 @@ const DueDateEditor = ({
             className="hover:bg-accent focus-visible:bg-accent data-[state=open]:bg-accent flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors outline-none"
           >
             <CalendarIcon className="text-muted-foreground size-4" />
-            {dueDate ? (
+            {dueDay ? (
               <span>
-                {dayjs(dueDate).format(
-                  dueHasTime(dueDate) ? "MMM D, YYYY h:mm A" : "MMM D, YYYY",
-                )}
+                {formatDueDate(dueDate, dueHasTime, { withYear: true })}
               </span>
             ) : (
               <span className="text-muted-foreground">Set due date</span>
@@ -156,7 +159,7 @@ const DueDateEditor = ({
                 setDueDate(
                   hasTime
                     ? parsed
-                    : storedDueDate(dayjs(parsed).format("YYYY-MM-DD")),
+                    : allDayDueDate(dayjs(parsed).format("YYYY-MM-DD")),
                   hasTime,
                 );
               }
@@ -225,13 +228,14 @@ const DueDateEditor = ({
             <input
               type="time"
               aria-label="Due time"
-              value={dueTimeValue(dueDate)}
+              value={time}
               onChange={(event) => {
-                const day = dayjs(dueDate ?? undefined).format("YYYY-MM-DD");
+                // the task's own day, or today when it has no due date yet
+                const day = dueDay ?? dayjs().format("YYYY-MM-DD");
                 setDueDate(
                   event.target.value
                     ? storedDueDateAtTime(day, event.target.value)
-                    : storedDueDate(day),
+                    : allDayDueDate(day),
                   !!event.target.value,
                 );
               }}
@@ -256,17 +260,14 @@ const DueDateEditor = ({
   );
 };
 
-const DueDatePopover = ({ taskId, dueDate, editable }: Props) => {
+const DueDatePopover = ({ taskId, dueDate, dueHasTime, editable }: Props) => {
   if (!editable) {
+    const label = formatDueDate(dueDate, dueHasTime, { withYear: true });
     return (
       <div className="flex w-full items-center gap-2 px-2 py-1.5 text-sm">
         <CalendarIcon className="text-muted-foreground size-4" />
-        {dueDate ? (
-          <span>
-            {dayjs(dueDate).format(
-              dueHasTime(dueDate) ? "MMM D, YYYY h:mm A" : "MMM D, YYYY",
-            )}
-          </span>
+        {label ? (
+          <span>{label}</span>
         ) : (
           <span className="text-muted-foreground">No due date</span>
         )}
@@ -274,7 +275,9 @@ const DueDatePopover = ({ taskId, dueDate, editable }: Props) => {
     );
   }
 
-  return <DueDateEditor taskId={taskId} dueDate={dueDate} />;
+  return (
+    <DueDateEditor taskId={taskId} dueDate={dueDate} dueHasTime={dueHasTime} />
+  );
 };
 
 export default DueDatePopover;

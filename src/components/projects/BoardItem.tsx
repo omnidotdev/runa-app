@@ -206,7 +206,7 @@ const BoardItem = ({ task, index, displayId, prefix }: Props) => {
                 trigger={
                   <div className="flex items-center gap-1">
                     <CalendarIcon className="size-3" />
-                    <span>{formatDueDate(task.dueDate)}</span>
+                    <span>{formatDueDate(task.dueDate, task.dueHasTime)}</span>
                   </div>
                 }
               />

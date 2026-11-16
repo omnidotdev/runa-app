@@ -59,13 +59,14 @@ import useDragStore from "@/lib/hooks/store/useDragStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import useRescheduleTask from "@/lib/hooks/useRescheduleTask";
+import useToday from "@/lib/hooks/useToday";
 import projectOptions from "@/lib/options/project.options";
 import projectBySlugOptions from "@/lib/options/projectBySlug.options";
 import settingByOrganizationIdOptions from "@/lib/options/settingByOrganizationId.options";
 import tasksOptions from "@/lib/options/tasks.options";
 import userPreferencesOptions from "@/lib/options/userPreferences.options";
 import createMetaTags from "@/lib/util/createMetaTags";
-import { storedDueDate } from "@/lib/util/dueDate";
+import { rescheduledDueDate } from "@/lib/util/dueDate";
 import { compareKeys, reorderKey } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import isTaskOverdue from "@/lib/util/isTaskOverdue";
@@ -177,7 +178,7 @@ export const Route = createFileRoute("/_app/@{$workspaceSlug}/$projectSlug/")({
             projectId: project.rowId,
             search,
             assignees: assignees.length
-              ? { some: { user: { rowId: { in: assignees } } } }
+              ? { some: { user: { identityProviderId: { in: assignees } } } }
               : undefined,
             labels: labels.length
               ? { some: { label: { rowId: { in: labels } } } }
@@ -260,8 +261,10 @@ function AuthenticatedProjectPage() {
     () => ({
       projectId,
       search,
+      // the filter's `assignees` are Gatekeeper member ids (the IDP id
+      // namespace), not local user row ids
       assignees: assignees.length
-        ? { some: { user: { rowId: { in: assignees } } } }
+        ? { some: { user: { identityProviderId: { in: assignees } } } }
         : undefined,
       labels: labels.length
         ? { some: { label: { rowId: { in: labels } } } }
@@ -450,28 +453,40 @@ function AuthenticatedProjectPage() {
   // preference is the fallback when the URL says nothing.
   const activeViewMode: ViewMode = view ?? preferredViewMode;
 
+  // the board hides the viewer's hidden columns, so the calendar does too
+  const hiddenColumnIds = userPreferences?.hiddenColumnIds;
+  const today = useToday();
+
   const calendarTasks = useMemo(
     () =>
-      tasks.map((task) => ({
-        id: task.rowId,
-        title: stripMarkup(task.content ?? "") || "Untitled",
-        dueDate: task.dueDate,
-        priority: task.priority,
-        labelColors:
-          task.taskLabels?.nodes
-            ?.map((node) => node.label?.color)
-            .filter((color): color is string => Boolean(color)) ?? [],
-        assignees:
-          task.assignees?.nodes
-            ?.filter((node) => node.user)
-            .map((node) => ({
-              name: node.user!.name,
-              src: node.user!.avatarUrl,
-            })) ?? [],
-        isDone: task.column?.isDone ?? false,
-        isOverdue: isTaskOverdue(task.dueDate, task.column?.isDone ?? false),
-      })),
-    [tasks],
+      tasks
+        .filter((task) => !hiddenColumnIds?.includes(task.columnId))
+        .map((task) => ({
+          id: task.rowId,
+          title: stripMarkup(task.content ?? "") || "Untitled",
+          dueDate: task.dueDate,
+          dueHasTime: task.dueHasTime,
+          priority: task.priority,
+          labelColors:
+            task.taskLabels?.nodes
+              ?.map((node) => node.label?.color)
+              .filter((color): color is string => Boolean(color)) ?? [],
+          assignees:
+            task.assignees?.nodes
+              ?.filter((node) => node.user)
+              .map((node) => ({
+                name: node.user!.name,
+                src: node.user!.avatarUrl,
+              })) ?? [],
+          isDone: task.column?.isDone ?? false,
+          isOverdue: isTaskOverdue(
+            task.dueDate,
+            task.dueHasTime,
+            task.column?.isDone ?? false,
+            today,
+          ),
+        })),
+    [tasks, hiddenColumnIds, today],
   );
 
   const handleSelectCalendarTask = (taskId: string) => {
@@ -491,13 +506,19 @@ function AuthenticatedProjectPage() {
     });
   };
 
-  // optimistic so a dropped chip lands on its new day immediately; store local
-  // start-of-day so it reads back on this same day via the card's
-  // dayjs(dueDate).format (keeps calendar + card placement aligned)
+  // optimistic so a dropped chip lands on its new day immediately; a timed task
+  // keeps its time-of-day, an all-day task stays all-day
   const reschedule = useRescheduleTask();
 
   const handleRescheduleTask = (taskId: string, dayKey: string) => {
-    reschedule(taskId, storedDueDate(dayKey));
+    const task = tasks.find((candidate) => candidate.rowId === taskId);
+    reschedule(
+      taskId,
+      rescheduledDueDate(dayKey, {
+        dueDate: task?.dueDate,
+        dueHasTime: task?.dueHasTime,
+      }),
+    );
   };
 
   // tasks with no due date, shown in the calendar's unscheduled rail
@@ -507,7 +528,7 @@ function AuthenticatedProjectPage() {
   );
 
   const handleUnscheduleTask = (taskId: string) => {
-    reschedule(taskId, null);
+    reschedule(taskId, { dueDate: null, dueHasTime: false });
   };
 
   const onDragEnd = useCallback(

@@ -1,25 +1,29 @@
 import dayjs from "dayjs";
 import { CalendarPlusIcon } from "lucide-react";
 
-import { dueHasTime } from "@/lib/util/dueDate";
+import { dueDayKey } from "@/lib/util/dueDate";
 
 /**
  * "Add to calendar" for a single task's due date: a downloadable `.ics`
  * (Apple/Outlook/any) and a Google Calendar template link. All client-side and
  * read-only (adding to your own calendar needs no edit permission). All-day due
- * dates become an all-day event; a timed due date (see `dueHasTime`) becomes a
+ * dates become an all-day event; a timed due date (`dueHasTime`) becomes a
  * one-hour timed event. Distinct from the subscribe feed: this is a one-off add
  * of a single task, not a live subscription.
  */
 const AddToCalendar = ({
   title,
   dueDate,
+  dueHasTime,
 }: {
   title: string;
   dueDate: string | Date;
+  dueHasTime?: boolean | null;
 }) => {
-  const timed = dueHasTime(dueDate);
-  const start = dayjs(dueDate);
+  const timed = !!dueHasTime;
+  // a timed date is its local instant, an all-day date its stored day (read
+  // from the value, never by formatting the instant in local time)
+  const start = timed ? dayjs(dueDate) : dayjs(dueDayKey(dueDate, false));
 
   // ICS: all-day uses VALUE=DATE (DTEND = next day); timed uses a floating
   // local datetime with a 1h duration. Floating (no Z) so it lands on the

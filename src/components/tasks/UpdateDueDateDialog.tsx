@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import * as chrono from "chrono-node";
 import dayjs from "dayjs";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
@@ -24,7 +24,12 @@ import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";
-import { dueHasTime, storedDueDate } from "@/lib/util/dueDate";
+import {
+  allDayDueDate,
+  dueDayKey,
+  rescheduledDueDate,
+  storedDueDateAtTime,
+} from "@/lib/util/dueDate";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { parseTaskParam } from "@/lib/util/taskUrl";
 import CreateTaskDatePicker from "./CreateTaskDatePicker";
@@ -54,11 +59,20 @@ const UpdateDueDateDialog = () => {
   const queryClient = useQueryClient();
   const taskQueryKey = taskOptions({ rowId: taskId! }).queryKey;
 
-  const { data: defaultDueDate } = useQuery({
+  const { data: currentDue } = useQuery({
     ...taskOptions({ rowId: taskId! }),
     enabled: !!taskId,
-    select: (data) => data?.task?.dueDate,
+    select: (data) => ({
+      dueDate: data?.task?.dueDate,
+      dueHasTime: data?.task?.dueHasTime,
+    }),
   });
+  // the form edits the due day; a timed task keeps its time-of-day on save
+  // unless the typed phrase set one (`HH:mm`) or named only a day (`""`, which
+  // makes it all-day). `null` means no phrase override: keep the current time
+  const [timeOverride, setTimeOverride] = useState<string | null>(null);
+  const defaultDueDay =
+    dueDayKey(currentDue?.dueDate, currentDue?.dueHasTime) ?? "";
 
   const { mutate: updateTask } = useUpdateTaskMutation({
     onMutate: async (variables) => {
@@ -88,16 +102,24 @@ const UpdateDueDateDialog = () => {
   const form = useForm({
     defaultValues: {
       ...taskFormDefaults,
-      dueDate: defaultDueDate ? new Date(defaultDueDate).toISOString() : "",
+      dueDate: defaultDueDay,
     },
     onSubmit: ({ value: { dueDate }, formApi }) => {
-      const value = new Date(dueDate);
       updateTask({
         rowId: taskId!,
-        patch: {
-          dueDate: value,
-          dueHasTime: dueHasTime(value),
-        },
+        patch: !dueDate
+          ? { dueDate: null, dueHasTime: false }
+          : timeOverride === null
+            ? rescheduledDueDate(dueDate, {
+                dueDate: currentDue?.dueDate,
+                dueHasTime: currentDue?.dueHasTime,
+              })
+            : timeOverride
+              ? {
+                  dueDate: storedDueDateAtTime(dueDate, timeOverride),
+                  dueHasTime: true,
+                }
+              : { dueDate: allDayDueDate(dueDate), dueHasTime: false },
       });
 
       formApi.reset();
@@ -117,12 +139,13 @@ const UpdateDueDateDialog = () => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset is keyed on the resolved due date
   useEffect(() => {
     if (isOpen) {
+      setTimeOverride(null);
       form.reset({
         ...taskFormDefaults,
-        dueDate: defaultDueDate ? new Date(defaultDueDate).toISOString() : "",
+        dueDate: defaultDueDay,
       });
     }
-  }, [isOpen, taskId, defaultDueDate]);
+  }, [isOpen, taskId, defaultDueDay]);
 
   if (!taskId) return null;
 
@@ -169,16 +192,19 @@ const UpdateDueDateDialog = () => {
                     onChange={(e) => {
                       const [result] = chrono.parse(e.target.value);
                       if (!result) {
+                        setTimeOverride(null);
                         field.handleChange("");
                         return;
                       }
-                      // normalize an unset time to start-of-day (chrono defaults
-                      // it to noon) so the stored value reads back as all-day
-                      const parsed = result.start.date();
-                      const value = result.start.isCertain("hour")
-                        ? parsed
-                        : storedDueDate(dayjs(parsed).format("YYYY-MM-DD"));
-                      field.handleChange(value.toISOString());
+                      // timed only when the phrase specified an hour (chrono
+                      // defaults an unset time to noon); otherwise all-day
+                      const parsed = dayjs(result.start.date());
+                      setTimeOverride(
+                        result.start.isCertain("hour")
+                          ? parsed.format("HH:mm")
+                          : "",
+                      );
+                      field.handleChange(parsed.format("YYYY-MM-DD"));
                     }}
                     placeholder="Try: tomorrow, in 2 days, next wednesday"
                     id="due-date-input"

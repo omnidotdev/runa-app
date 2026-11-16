@@ -1,7 +1,6 @@
 // import { useNavigate, useParams } from "@tanstack/react-router";
 
 import { Badge } from "@omnidotdev/thornberry/badge";
-import dayjs from "dayjs";
 import {
   AlignLeftIcon,
   CalendarIcon,
@@ -11,6 +10,7 @@ import {
 
 import { Label, RichTextEditor } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
+import { formatDueDate } from "@/lib/util/dueDate";
 
 import type { LabelFragment, TaskFragment } from "@/generated/graphql";
 
@@ -110,7 +110,7 @@ const PublicBoardItem = ({ task, displayId }: Props) => {
             {task.dueDate && (
               <div className="flex items-center gap-1">
                 <CalendarIcon className="size-3" />
-                <span>{dayjs(task.dueDate).format("MMM D")}</span>
+                <span>{formatDueDate(task.dueDate, task.dueHasTime)}</span>
               </div>
             )}
           </div>

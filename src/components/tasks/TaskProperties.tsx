@@ -103,6 +103,7 @@ const TaskProperties = ({ task, projectId, editable, onPatch }: Props) => (
       <DueDatePopover
         taskId={task.rowId}
         dueDate={task.dueDate}
+        dueHasTime={task.dueHasTime}
         editable={editable}
       />
     </PropertyRow>
@@ -112,6 +113,7 @@ const TaskProperties = ({ task, projectId, editable, onPatch }: Props) => (
         <AddToCalendar
           title={stripMarkup(task.content ?? "") || "Untitled"}
           dueDate={task.dueDate}
+          dueHasTime={task.dueHasTime}
         />
       </PropertyRow>
     )}

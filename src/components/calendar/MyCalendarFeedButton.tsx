@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
@@ -35,6 +36,7 @@ const MyCalendarFeedButton = ({
   // the feed URL surfaced once after create/regenerate; cleared on dialog close
   const [revealedUrl, setRevealedUrl] = useState<string | null>(null);
   const [confirmRevoke, setConfirmRevoke] = useState(false);
+  const [confirmRegenerate, setConfirmRegenerate] = useState(false);
 
   const { data } = useMyCalendarFeedQuery({ organizationId });
   const enabled = !!data?.myCalendarFeed?.enabled;
@@ -49,19 +51,21 @@ const MyCalendarFeedButton = ({
       ...invalidates,
       onError,
       onSuccess: (result) => {
+        setConfirmRegenerate(false);
         const url = result.createMyCalendarFeedToken?.url;
         if (url) setRevealedUrl(url);
       },
     });
 
-  const { mutate: revokeFeed } = useRevokeMyCalendarFeedTokenMutation({
-    ...invalidates,
-    onError,
-    onSuccess: () => {
-      setConfirmRevoke(false);
-      toast.success("Calendar subscription removed.");
-    },
-  });
+  const { mutate: revokeFeed, isPending: isRevoking } =
+    useRevokeMyCalendarFeedTokenMutation({
+      ...invalidates,
+      onError,
+      onSuccess: () => {
+        setConfirmRevoke(false);
+        toast.success("Calendar subscription removed.");
+      },
+    });
 
   const onCopyUrl = async () => {
     if (!revealedUrl) return;
@@ -129,7 +133,12 @@ const MyCalendarFeedButton = ({
                   )}
                   <Button
                     disabled={isCreating}
-                    onClick={() => createFeed({ organizationId })}
+                    // regenerating revokes the live URL, so confirm it first
+                    onClick={() =>
+                      enabled
+                        ? setConfirmRegenerate(true)
+                        : createFeed({ organizationId })
+                    }
                   >
                     {enabled ? "Regenerate link" : "Create link"}
                   </Button>
@@ -140,41 +149,25 @@ const MyCalendarFeedButton = ({
         </DialogPositioner>
       </DialogRoot>
 
-      {/* destructive unsubscribe confirmation */}
-      <DialogRoot
+      {/* destructive unsubscribe + regenerate confirmations */}
+      <ConfirmDialog
         open={confirmRevoke}
-        onOpenChange={(details) => {
-          if (!details.open) setConfirmRevoke(false);
-        }}
-      >
-        <DialogBackdrop />
-        <DialogPositioner>
-          <DialogContent className="bg-background w-full max-w-md rounded-lg">
-            <DialogCloseTrigger />
-
-            <div className="mb-4 flex flex-col gap-4">
-              <DialogTitle>Unsubscribe?</DialogTitle>
-              <DialogDescription>
-                The current feed URL will stop working immediately and any
-                calendar subscribed to it will no longer update. This cannot be
-                undone.
-              </DialogDescription>
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setConfirmRevoke(false)}>
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => revokeFeed({ organizationId })}
-              >
-                Unsubscribe
-              </Button>
-            </div>
-          </DialogContent>
-        </DialogPositioner>
-      </DialogRoot>
+        onOpenChange={setConfirmRevoke}
+        title="Unsubscribe from your calendar feed?"
+        description="The current feed URL will stop working immediately and any calendar subscribed to it will no longer update. This cannot be undone."
+        confirmLabel="Unsubscribe"
+        isPending={isRevoking}
+        onConfirm={() => revokeFeed({ organizationId })}
+      />
+      <ConfirmDialog
+        open={confirmRegenerate}
+        onOpenChange={setConfirmRegenerate}
+        title="Regenerate your calendar feed URL?"
+        description="The current feed URL will stop working immediately, and any calendar subscribed to it will stop updating until you add the new link. This cannot be undone."
+        confirmLabel="Regenerate"
+        isPending={isCreating}
+        onConfirm={() => createFeed({ organizationId })}
+      />
     </>
   );
 };

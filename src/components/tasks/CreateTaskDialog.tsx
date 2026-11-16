@@ -31,6 +31,7 @@ import useMaxTasksReached from "@/lib/hooks/useMaxTasksReached";
 import labelsOptions from "@/lib/options/labels.options";
 import projectOptions from "@/lib/options/project.options";
 import tasksOptions from "@/lib/options/tasks.options";
+import { allDayDueDate } from "@/lib/util/dueDate";
 import { keyBetween } from "@/lib/util/fractionalKey";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 import { submitOnEnter, submitOnModEnter } from "@/lib/util/submitOnEnter";
@@ -145,9 +146,11 @@ const CreateTaskDialog = () => {
                   projectId,
                   columnId: value.columnId,
                   authorId: session?.user?.rowId!,
+                  // the picker sets a day, so a new task's due date is all-day
                   dueDate: value.dueDate.length
-                    ? new Date(value.dueDate)
+                    ? allDayDueDate(value.dueDate)
                     : undefined,
+                  dueHasTime: false,
                   priority: value.priority,
                   columnIndex: keyBetween(
                     lastTaskInColumn?.columnIndex ?? null,

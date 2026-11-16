@@ -32,7 +32,7 @@ import signIn from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useAutoScrollOnDrag from "@/lib/hooks/useAutoScrollOnDrag";
-import { formatDueDate, storedDueDate } from "@/lib/util/dueDate";
+import { allDayDueDate, formatDueDate } from "@/lib/util/dueDate";
 import isTaskOverdue from "@/lib/util/isTaskOverdue";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -229,6 +229,7 @@ const DemoBoard = () => {
           id: task.rowId,
           title: task.content,
           dueDate: task.dueDate,
+          dueHasTime: false,
           priority: task.priority,
           labelColors: task.labels.map((label) => label.color),
           assignees: task.assignees.map((assignee) => ({
@@ -236,7 +237,7 @@ const DemoBoard = () => {
             src: assignee.avatarUrl,
           })),
           isDone,
-          isOverdue: isTaskOverdue(task.dueDate, isDone),
+          isOverdue: isTaskOverdue(task.dueDate, false, isDone),
         };
       }),
     [tasks],
@@ -253,7 +254,7 @@ const DemoBoard = () => {
     );
 
   const handleRescheduleTask = (taskId: string, dayKey: string) =>
-    setTaskDueDate(taskId, storedDueDate(dayKey));
+    setTaskDueDate(taskId, allDayDueDate(dayKey));
 
   const handleUnscheduleTask = (taskId: string) => setTaskDueDate(taskId, null);
 
@@ -553,7 +554,7 @@ const DemoBoard = () => {
                     <CalendarIcon className="text-base-400 size-4" />
                     {selectedTask.dueDate ? (
                       <span className="text-sm">
-                        {formatDueDate(selectedTask.dueDate)}
+                        {formatDueDate(selectedTask.dueDate, false)}
                       </span>
                     ) : (
                       <span className="text-base-400 text-sm">No due date</span>

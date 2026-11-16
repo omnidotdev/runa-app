@@ -11,6 +11,7 @@ query MyCalendarTasks($organizationId: String!, $userId: UUID!) {
       number
       content
       dueDate
+      dueHasTime
       priority
       column {
         isDone

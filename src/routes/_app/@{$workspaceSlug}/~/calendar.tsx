@@ -6,8 +6,9 @@ import MyCalendarFeedButton from "@/components/calendar/MyCalendarFeedButton";
 import { useMyCalendarTasksQuery } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import useRescheduleTask from "@/lib/hooks/useRescheduleTask";
+import useToday from "@/lib/hooks/useToday";
 import createMetaTags from "@/lib/util/createMetaTags";
-import { storedDueDate } from "@/lib/util/dueDate";
+import { rescheduledDueDate } from "@/lib/util/dueDate";
 import isTaskOverdue from "@/lib/util/isTaskOverdue";
 import { buildTaskKey, stripMarkup } from "@/lib/util/taskUrl";
 
@@ -41,6 +42,7 @@ function MyCalendarPage() {
   const taskNodes = data?.tasks?.nodes ?? [];
 
   const reschedule = useRescheduleTask();
+  const today = useToday();
 
   const calendarTasks = useMemo(
     () =>
@@ -48,6 +50,7 @@ function MyCalendarPage() {
         id: task.rowId,
         title: stripMarkup(task.content ?? "") || "Untitled",
         dueDate: task.dueDate,
+        dueHasTime: task.dueHasTime,
         priority: task.priority,
         labelColors:
           task.taskLabels?.nodes
@@ -61,9 +64,14 @@ function MyCalendarPage() {
               src: node.user!.avatarUrl,
             })) ?? [],
         isDone: task.column?.isDone ?? false,
-        isOverdue: isTaskOverdue(task.dueDate, task.column?.isDone ?? false),
+        isOverdue: isTaskOverdue(
+          task.dueDate,
+          task.dueHasTime,
+          task.column?.isDone ?? false,
+          today,
+        ),
       })),
-    [taskNodes],
+    [taskNodes, today],
   );
 
   // Clicking a task opens it in its own project (this view spans all of them).
@@ -84,8 +92,17 @@ function MyCalendarPage() {
     });
   };
 
-  const onReschedule = (taskId: string, dayKey: string) =>
-    reschedule(taskId, storedDueDate(dayKey));
+  // a timed task keeps its time-of-day, an all-day task stays all-day
+  const onReschedule = (taskId: string, dayKey: string) => {
+    const task = taskNodes.find((candidate) => candidate.rowId === taskId);
+    reschedule(
+      taskId,
+      rescheduledDueDate(dayKey, {
+        dueDate: task?.dueDate,
+        dueHasTime: task?.dueHasTime,
+      }),
+    );
+  };
 
   return (
     <div className="no-scrollbar relative h-full overflow-auto px-4 py-8 lg:p-12">
