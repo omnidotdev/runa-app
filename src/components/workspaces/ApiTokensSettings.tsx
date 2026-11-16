@@ -19,7 +19,6 @@ import {
   useCreateApiTokenMutation,
   useRevokeApiTokenMutation,
 } from "@/generated/graphql";
-import { API_BASE_URL } from "@/lib/config/env.config";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { FormEvent } from "react";
@@ -123,11 +122,11 @@ const ApiTokensSettings = () => {
       </p>
 
       <p className="text-base-500 ml-2 text-xs lg:ml-0">
-        AI assistants that support MCP can use a token too: connect them to{" "}
+        AI assistants that support MCP can connect to Runa at{" "}
         <code className="bg-base-100 dark:bg-base-800 rounded px-1 py-0.5">
-          {`${API_BASE_URL}/mcp`}
-        </code>{" "}
-        with the token as a bearer token.
+          https://mcp.runa.omni.dev/mcp
+        </code>
+        , by signing in through the browser or with an API token.
       </p>
 
       <form onSubmit={onAdd} className="flex flex-col gap-2 px-2 pt-1 lg:px-0">
