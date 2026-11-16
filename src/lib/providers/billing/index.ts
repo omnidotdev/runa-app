@@ -6,7 +6,10 @@
 
 import { createBillingProvider } from "@omnidotdev/providers/billing";
 
-import { BILLING_BASE_URL } from "@/lib/config/env.config";
+import {
+  BILLING_BASE_URL,
+  BILLING_SERVICE_API_KEY,
+} from "@/lib/config/env.config";
 
 export type {
   EntitlementsResponse,
@@ -16,7 +19,12 @@ export type {
 
 const billing = createBillingProvider(
   BILLING_BASE_URL
-    ? { provider: "aether", baseUrl: BILLING_BASE_URL, appId: "runa" }
+    ? {
+        provider: "aether",
+        baseUrl: BILLING_BASE_URL,
+        appId: "runa",
+        serviceApiKey: BILLING_SERVICE_API_KEY,
+      }
     : { provider: "noop" },
 );
 
