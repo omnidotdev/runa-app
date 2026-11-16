@@ -1,37 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import app from "@/lib/config/app.config";
 import billing from "@/lib/providers/billing";
 import { authMiddleware } from "@/server/middleware";
 
 const organizationSchema = z.object({
   organizationId: z.string().min(1),
 });
-
-const billingPortalSchema = z.object({
-  organizationId: z.string().min(1),
-  returnUrl: z.string().url(),
-});
-
-const checkoutWithWorkspaceSchema = z
-  .object({
-    priceId: z.string().startsWith("price_"),
-    successUrl: z.string().url(),
-    cancelUrl: z.string().url(),
-    quantity: z.number().int().positive().optional(),
-    // Either workspaceId or createWorkspace must be provided
-    workspaceId: z.string().uuid().optional(),
-    createWorkspace: z
-      .object({
-        name: z.string().min(1).max(100),
-        slug: z.string().min(1).max(100).optional(),
-      })
-      .optional(),
-  })
-  .refine((data) => data.workspaceId || data.createWorkspace, {
-    message: "Either workspaceId or createWorkspace is required",
-  });
 
 /**
  * Validate access token or throw.
@@ -44,7 +19,9 @@ const requireAccessToken = (accessToken: string | undefined): string => {
 };
 
 /**
- * Get subscription details for an organization.
+ * Get subscription details for an organization. Buying, changing, canceling,
+ * and renewing a plan happen on the Omni account hub (see
+ * `lib/billing/hubLinks`), not here
  */
 export const getSubscription = createServerFn()
   .middleware([authMiddleware])
@@ -74,69 +51,4 @@ export const getEntitlements = createServerFn()
       undefined,
       requireAccessToken(context.session.accessToken),
     );
-  });
-
-/**
- * Cancel a subscription for an organization.
- * @knipignore
- */
-export const revokeSubscription = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .validator((data) => organizationSchema.parse(data))
-  .handler(async ({ data, context }) => {
-    return billing.cancelSubscription(
-      "organization",
-      data.organizationId,
-      requireAccessToken(context.session.accessToken),
-    );
-  });
-
-/**
- * Get billing portal URL.
- */
-export const getBillingPortalUrl = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .validator((data) => billingPortalSchema.parse(data))
-  .handler(async ({ data, context }) => {
-    return billing.getBillingPortalUrl(
-      "organization",
-      data.organizationId,
-      app.name.toLowerCase(),
-      data.returnUrl,
-      requireAccessToken(context.session.accessToken),
-    );
-  });
-
-/**
- * Renew a subscription (remove scheduled cancellation).
- */
-export const renewSubscription = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .validator((data) => organizationSchema.parse(data))
-  .handler(async ({ data, context }) => {
-    return billing.renewSubscription(
-      "organization",
-      data.organizationId,
-      requireAccessToken(context.session.accessToken),
-    );
-  });
-
-/**
- * Create a checkout session with workspace creation/selection.
- * Routes through Aether for orchestration.
- */
-export const createCheckoutWithWorkspace = createServerFn({ method: "POST" })
-  .middleware([authMiddleware])
-  .validator((data) => checkoutWithWorkspaceSchema.parse(data))
-  .handler(async ({ data, context }) => {
-    return billing.createCheckoutWithWorkspace({
-      appId: app.name.toLowerCase(),
-      priceId: data.priceId,
-      successUrl: data.successUrl,
-      cancelUrl: data.cancelUrl,
-      quantity: data.quantity,
-      accessToken: requireAccessToken(context.session.accessToken),
-      workspaceId: data.workspaceId,
-      createWorkspace: data.createWorkspace,
-    });
   });

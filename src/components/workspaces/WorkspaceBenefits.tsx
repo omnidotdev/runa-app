@@ -1,6 +1,5 @@
 import { Format } from "@ark-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { getRouteApi, useRouter } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import dayjs from "dayjs";
 import { AlertTriangleIcon } from "lucide-react";
 import { Fragment } from "react";
@@ -17,27 +16,25 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import { BASE_URL, hasBilling } from "@/lib/config/env.config";
+import { manageSubscriptionUrl, upgradePlanUrl } from "@/lib/billing/hubLinks";
+import { ACCOUNT_URL, BASE_URL, hasBilling } from "@/lib/config/env.config";
 import { FREE_PRICE } from "@/lib/constants/tiers";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import { isOwner } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import getTierFromEntitlements from "@/lib/util/getTierFromEntitlements";
 import { cn } from "@/lib/utils";
-import {
-  createCheckoutWithWorkspace,
-  getBillingPortalUrl,
-  renewSubscription,
-} from "@/server/functions/subscriptions";
 
 const routeApi = getRouteApi("/_app/@{$workspaceSlug}/~/settings");
 
+/**
+ * A workspace's plan benefits. Upgrading and managing the plan (change,
+ * cancel, renew, payment method, invoices) happen on the Omni account hub,
+ * which returns to this workspace's settings
+ */
 export default function WorkspaceBenefits() {
   const { organizationId, subscription, entitlements, prices } =
     routeApi.useLoaderData();
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const navigate = routeApi.useNavigate();
   const { workspaceSlug } = routeApi.useParams();
 
   // Resolve org slug from JWT claims (workspaceSlug in URL is already org slug)
@@ -47,46 +44,22 @@ export default function WorkspaceBenefits() {
   const currentUserRole = useCurrentUserRole(organizationId);
   const canDeleteWorkspace = currentUserRole && isOwner(currentUserRole);
 
-  const { mutateAsync: openBillingPortal } = useMutation({
-    mutationFn: async () =>
-      await getBillingPortalUrl({
-        data: {
-          organizationId,
-          returnUrl: `${BASE_URL}/@${orgSlug}/~/settings`,
-        },
-      }),
-    onSuccess: (url) => navigate({ href: url, reloadDocument: true }),
-  });
+  const manageHref = manageSubscriptionUrl(ACCOUNT_URL, BASE_URL, orgSlug);
 
-  // Subscribes the workspace itself (Aether checks the user is its owner/admin)
-  const { mutateAsync: createSubscription } = useMutation({
-    mutationFn: async ({ priceId }: { priceId: string }) =>
-      await createCheckoutWithWorkspace({
-        data: {
-          workspaceId: organizationId,
-          priceId,
-          successUrl: `${BASE_URL}/@${orgSlug}/~/settings`,
-          cancelUrl: `${BASE_URL}/@${orgSlug}/~/settings`,
-        },
-      }),
-    onSuccess: ({ checkoutUrl }) =>
-      navigate({ href: checkoutUrl, reloadDocument: true }),
-  });
+  // Buy the picked plan for this workspace on the account hub, which confirms
+  // it, runs checkout, and returns here
+  const upgradeToPrice = (priceId: string) => {
+    const price = prices.find((p) => p.id === priceId);
+    if (!price) return;
 
-  const { mutateAsync: handleRenewSubscription, isPending: isRenewing } =
-    useMutation({
-      mutationFn: async () =>
-        await renewSubscription({
-          data: { organizationId },
-        }),
-      onSuccess: async () => {
-        // NB: force loader to refetch subscription data. `ensureQueryData` will return stale data by default
-        await queryClient.resetQueries({
-          queryKey: ["stripe", "subscription", organizationId],
-        });
-        await router.invalidate();
-      },
+    const href = upgradePlanUrl(ACCOUNT_URL, BASE_URL, {
+      plan: price.metadata.tier,
+      interval: price.recurring?.interval === "year" ? "year" : "month",
+      workspaceSlug: orgSlug,
     });
+
+    if (href) window.location.assign(href);
+  };
 
   if (!hasBilling) return null;
 
@@ -119,8 +92,8 @@ export default function WorkspaceBenefits() {
             <AlertTriangleIcon className="size-4" />
             The current subscription is set to be canceled on{" "}
             {dayjs(subscription.cancelAt * 1000).format("MMM D, YYYY")}. To
-            avoid losing the current workspace benefits, renew your subscription
-            prior to this date.
+            avoid losing the current workspace benefits, renew it from Manage
+            Subscription prior to this date.
           </div>
         )}
 
@@ -139,32 +112,17 @@ export default function WorkspaceBenefits() {
         </div>
 
         {subscription ? (
-          <div className="flex gap-2">
-            {subscription.cancelAt ? (
-              <Button
-                onClick={() => handleRenewSubscription()}
-                disabled={isRenewing}
-              >
-                {isRenewing ? "Renewing..." : "Renew Subscription"}
-              </Button>
-            ) : (
-              <Button className="w-fit" onClick={() => openBillingPortal()}>
-                Manage Subscription
-              </Button>
-            )}
-
-            <Button
-              variant="outline"
-              onClick={() => openBillingPortal()}
-              disabled={!!subscription.cancelAt}
-            >
-              Cancel Subscription
+          manageHref ? (
+            <Button className="w-fit" asChild>
+              <a href={manageHref}>Manage Subscription</a>
             </Button>
-          </div>
-        ) : (
-          <MenuRoot
-            onSelect={({ value }) => createSubscription({ priceId: value })}
-          >
+          ) : (
+            <p className="text-muted-foreground text-sm">
+              Managing the plan is unavailable right now.
+            </p>
+          )
+        ) : ACCOUNT_URL ? (
+          <MenuRoot onSelect={({ value }) => upgradeToPrice(value)}>
             <MenuTrigger asChild>
               <Button className="mt-2 w-fit">Upgrade Workspace</Button>
             </MenuTrigger>
@@ -218,6 +176,10 @@ export default function WorkspaceBenefits() {
               </MenuContent>
             </MenuPositioner>
           </MenuRoot>
+        ) : (
+          <p className="text-muted-foreground text-sm">
+            Upgrading the plan is unavailable right now.
+          </p>
         )}
       </div>
     </div>

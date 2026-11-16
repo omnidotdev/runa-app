@@ -38,7 +38,7 @@
     "@lexical/react": "^0.53.0",
     "@lexical/rich-text": "^0.53.0",
     "@omnidotdev/cadence": "github:omnidotdev/cadence#9352906",
-    "@omnidotdev/providers": "github:omnidotdev/providers#5a2722ff6f2d0ded7b061be5466c4f7538818a53",
+    "@omnidotdev/providers": "github:omnidotdev/providers#9cbd6396c1ff78e6db6f3d2d51efbb8c20e1ae1d",
     "@omnidotdev/thornberry": "github:omnidotdev/thornberry#6e01c83",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
