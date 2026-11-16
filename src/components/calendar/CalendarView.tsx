@@ -10,11 +10,11 @@ import {
   useCalendarView,
   useDayOverflow,
 } from "@omnidotdev/thornberry/calendar";
-import dayjs from "dayjs";
 import { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 
 import useMounted from "@/lib/hooks/useMounted";
+import { dueDayKey } from "@/lib/util/dueDate";
 import { cn } from "@/lib/utils";
 
 import type { DropResult } from "@hello-pangea/dnd";
@@ -30,6 +30,8 @@ export interface CalendarTask {
   id: string;
   title: string;
   dueDate?: string | Date | null;
+  /** Whether `dueDate` carries a time-of-day (otherwise it is an all-day date). */
+  dueHasTime?: boolean | null;
   /** Drives the chip's tint. */
   priority?: string | null;
   /** Label colors (CSS color strings) shown as dots on the chip. */
@@ -60,16 +62,6 @@ interface CalendarViewProps {
 
 /** Droppable id for the unscheduled rail (not a day key). */
 const UNSCHEDULED_DROPPABLE = "unscheduled";
-
-/**
- * The local day (`YYYY-MM-DD`) a due date buckets onto. Runa stores `dueDate` as
- * a tz-aware instant but renders it with `dayjs(dueDate).format` (local) on the
- * cards, so bucket by that same local day and the calendar matches the cards.
- * Deriving the local day here (rather than handing a `Z`-suffixed instant to
- * cadence's `toDayKey`, which rejects those) is where the off-by-one stays fixed.
- */
-const dueDayKey = (dueDate: string | Date | null | undefined): string | null =>
-  dueDate ? dayjs(dueDate).format("YYYY-MM-DD") : null;
 
 /** Map a task's priority onto the shared chip tint (matches the Filter swatches). */
 const priorityTone = (priority?: string | null): CalendarItemTone =>
@@ -289,21 +281,26 @@ const CalendarView = ({
     range,
     weekStartsOn,
   });
-  // Day bucketing depends on the viewer's local time zone (dueDayKey formats in
-  // local time), which the server cannot know. Bucketing on the server would
-  // place a near-midnight task in a different cell than the client, so the chip
-  // would visibly jump on hydration. Defer bucketing to the client: the grid
-  // renders empty until mounted, then fills each chip in its correct local day.
+  // "Today", the visible month, and a timed task's day all depend on the
+  // viewer's local time zone, which the server cannot know. Defer bucketing to
+  // the client (the grid renders empty until mounted), and remount the grid once
+  // mounted (keyed below): hydration does not patch attribute mismatches, so the
+  // server's "today" highlight would otherwise stick to the wrong cell whenever
+  // the server's date differs from the viewer's (e.g. US evenings vs UTC).
   const mounted = useMounted();
   const byDay = useMemo(
     () =>
-      mounted ? bucketByDay(tasks, (task) => dueDayKey(task.dueDate)) : {},
+      mounted
+        ? bucketByDay(tasks, (task) => dueDayKey(task.dueDate, task.dueHasTime))
+        : {},
     [tasks, mounted],
   );
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
     if (result.destination.droppableId === UNSCHEDULED_DROPPABLE) {
+      // a rail task dropped back on the rail is already unscheduled
+      if (result.source.droppableId === UNSCHEDULED_DROPPABLE) return;
       onUnschedule?.(result.draggableId);
       return;
     }
@@ -312,7 +309,11 @@ const CalendarView = ({
   };
 
   return (
-    <div className={cn("flex flex-col", className)} data-calendar-view>
+    <div
+      key={mounted ? "client" : "server"}
+      className={cn("flex flex-col", className)}
+      data-calendar-view
+    >
       <CalendarHeader
         title={label}
         onPrevious={goToPrevious}

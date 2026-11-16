@@ -15,7 +15,13 @@ const LIST_PREFIXES: Array<QueryKey> = [["Tasks"], ["MyCalendarTasks"]];
 
 /** A cached list query's shape: everything else passes through untouched. */
 type TaskListData = {
-  tasks?: { nodes?: Array<{ rowId: string; dueDate?: Date | null }> } | null;
+  tasks?: {
+    nodes?: Array<{
+      rowId: string;
+      dueDate?: Date | null;
+      dueHasTime?: boolean;
+    }>;
+  } | null;
 };
 
 interface RescheduleContext {
@@ -55,7 +61,11 @@ const useRescheduleTask = () => {
               ...old.tasks,
               nodes: old.tasks.nodes.map((node) =>
                 node.rowId === rowId
-                  ? { ...node, dueDate: patch.dueDate ?? null }
+                  ? {
+                      ...node,
+                      dueDate: patch.dueDate ?? null,
+                      dueHasTime: patch.dueHasTime ?? false,
+                    }
                   : node,
               ),
             },
@@ -79,9 +89,12 @@ const useRescheduleTask = () => {
     },
   });
 
-  /** Move a task to `dueDate`, or unschedule it with `null`. */
-  return (rowId: string, dueDate: Date | null) =>
-    mutate({ rowId, patch: { dueDate } });
+  /** Move a task to a new due value, or unschedule it with a `null` date. Both
+   * fields are always sent so a drag never leaves a stale `dueHasTime` */
+  return (
+    rowId: string,
+    { dueDate, dueHasTime }: { dueDate: Date | null; dueHasTime: boolean },
+  ) => mutate({ rowId, patch: { dueDate, dueHasTime } });
 };
 
 export default useRescheduleTask;

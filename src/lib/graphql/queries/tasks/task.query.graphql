@@ -11,6 +11,7 @@ query Task($rowId: UUID!) {
     createdAt
     updatedAt
     dueDate
+    dueHasTime
     taskLabels {
       nodes {
         taskId

@@ -1,4 +1,3 @@
-import { Badge } from "@omnidotdev/thornberry/badge";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { DemoBoard } from "@/components/landing";
@@ -27,10 +26,6 @@ function DemoPage() {
     <div className="relative px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto mb-8 max-w-2xl text-center">
-          <Badge className="border-primary-500/20 bg-primary-500/10 text-primary-700 dark:border-primary-400/20 dark:text-primary-400 mb-4">
-            Interactive Demo
-          </Badge>
-
           <h1 className="text-foreground mb-4 text-3xl font-bold sm:text-4xl">
             Experience {app.name}
           </h1>

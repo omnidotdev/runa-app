@@ -8,6 +8,7 @@ export const taskFormDefaults = {
     rowId: string;
   }[],
   assignees: [] as string[],
+  /** The picked due day (`YYYY-MM-DD`), or empty for none */
   dueDate: "",
   columnId: "",
   priority: "low",

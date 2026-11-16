@@ -1,17 +1,25 @@
 import dayjs from "dayjs";
 
+import { dueDayKey } from "@/lib/util/dueDate";
+
+import type { DueValue } from "@/lib/util/dueDate";
+
 /**
  * Whether a task reads as overdue: it has a due date in the past and is not
- * done. Compared at local day granularity to match how the calendar buckets a
- * task onto a day, so a task due earlier today is not overdue, only one due
- * before today is. A done task is never overdue, whatever its due date.
+ * done. Compared at day granularity (the same day the calendar buckets it on),
+ * so a task due today is not overdue, only one due before today is. A done task
+ * is never overdue, whatever its due date.
  */
 const isTaskOverdue = (
-  dueDate: string | Date | null | undefined,
+  dueDate: DueValue,
+  dueHasTime: boolean | null | undefined,
   isDone: boolean,
+  today: string = dayjs().format("YYYY-MM-DD"),
 ): boolean => {
-  if (isDone || !dueDate) return false;
-  return dayjs(dueDate).isBefore(dayjs().startOf("day"));
+  if (isDone) return false;
+  const day = dueDayKey(dueDate, dueHasTime);
+  // day keys are zero-padded ISO dates, so string order is date order
+  return !!day && day < today;
 };
 
 export default isTaskOverdue;

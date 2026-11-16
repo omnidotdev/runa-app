@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
@@ -42,6 +43,7 @@ const ProjectCalendarFeed = () => {
   // the feed URL surfaced once after create/regenerate; cleared on dialog close
   const [revealedUrl, setRevealedUrl] = useState<string | null>(null);
   const [confirmRevoke, setConfirmRevoke] = useState(false);
+  const [confirmRegenerate, setConfirmRegenerate] = useState(false);
 
   const { data } = useCalendarFeedQuery({ projectId });
   const enabled = !!data?.calendarFeed?.enabled;
@@ -60,19 +62,21 @@ const ProjectCalendarFeed = () => {
       ...invalidates,
       onError,
       onSuccess: (result) => {
+        setConfirmRegenerate(false);
         const url = result.createCalendarFeedToken?.url;
         if (url) setRevealedUrl(url);
       },
     });
 
-  const { mutate: revokeFeed } = useRevokeCalendarFeedTokenMutation({
-    ...invalidates,
-    onError,
-    onSuccess: () => {
-      setConfirmRevoke(false);
-      toast.success("Calendar feed revoked.");
-    },
-  });
+  const { mutate: revokeFeed, isPending: isRevoking } =
+    useRevokeCalendarFeedTokenMutation({
+      ...invalidates,
+      onError,
+      onSuccess: () => {
+        setConfirmRevoke(false);
+        toast.success("Calendar feed revoked.");
+      },
+    });
 
   const onCopyUrl = async () => {
     if (!revealedUrl) return;
@@ -124,7 +128,10 @@ const ProjectCalendarFeed = () => {
           <Button
             variant={enabled ? "outline" : "solid"}
             disabled={isMember || isCreating}
-            onClick={() => createFeed({ projectId })}
+            // regenerating revokes the live URL, so confirm it first
+            onClick={() =>
+              enabled ? setConfirmRegenerate(true) : createFeed({ projectId })
+            }
           >
             {enabled ? "Regenerate" : "Create feed URL"}
           </Button>
@@ -167,41 +174,25 @@ const ProjectCalendarFeed = () => {
         </DialogPositioner>
       </DialogRoot>
 
-      {/* destructive revoke confirmation */}
-      <DialogRoot
+      {/* destructive revoke + regenerate confirmations */}
+      <ConfirmDialog
         open={confirmRevoke}
-        onOpenChange={(details) => {
-          if (!details.open) setConfirmRevoke(false);
-        }}
-      >
-        <DialogBackdrop />
-        <DialogPositioner>
-          <DialogContent className="bg-background w-full max-w-md rounded-lg">
-            <DialogCloseTrigger />
-
-            <div className="mb-4 flex flex-col gap-4">
-              <DialogTitle>Revoke calendar feed?</DialogTitle>
-              <DialogDescription>
-                The current feed URL will stop working immediately and any
-                calendar subscribed to it will no longer update. This cannot be
-                undone.
-              </DialogDescription>
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setConfirmRevoke(false)}>
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() => revokeFeed({ projectId })}
-              >
-                Revoke
-              </Button>
-            </div>
-          </DialogContent>
-        </DialogPositioner>
-      </DialogRoot>
+        onOpenChange={setConfirmRevoke}
+        title="Revoke calendar feed?"
+        description="The current feed URL will stop working immediately and any calendar subscribed to it will no longer update. This cannot be undone."
+        confirmLabel="Revoke"
+        isPending={isRevoking}
+        onConfirm={() => revokeFeed({ projectId })}
+      />
+      <ConfirmDialog
+        open={confirmRegenerate}
+        onOpenChange={setConfirmRegenerate}
+        title="Regenerate calendar feed URL?"
+        description="The current feed URL will stop working immediately, and any calendar subscribed to it will stop updating until you add the new link. This cannot be undone."
+        confirmLabel="Regenerate"
+        isPending={isCreating}
+        onConfirm={() => createFeed({ projectId })}
+      />
     </div>
   );
 };

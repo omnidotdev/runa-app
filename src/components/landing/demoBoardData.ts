@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { storedDueDate } from "@/lib/util/dueDate";
+import { allDayDueDate } from "@/lib/util/dueDate";
 
 export interface DemoLabel {
   name: string;
@@ -22,16 +22,16 @@ export interface DemoTask {
   priority: "high" | "medium" | "low" | null;
   labels: DemoLabel[];
   assignees: DemoAssignee[];
-  /** Local start-of-day instant, or null when unscheduled (shown in the
-   * calendar's unscheduled rail). Stored via `storedDueDate` so the calendar
-   * buckets it the same way the real app does. */
+  /** All-day due date (UTC midnight of the day), or null when unscheduled
+   * (shown in the calendar's unscheduled rail). Stored via `allDayDueDate` so
+   * the calendar buckets it the same way the real app does. */
   dueDate: Date | null;
 }
 
 /** A local day relative to today, so the demo tasks always land in the visible
  * month regardless of when the page is viewed. */
 const demoDueDate = (offsetDays: number): Date =>
-  storedDueDate(dayjs().add(offsetDays, "day").format("YYYY-MM-DD"));
+  allDayDueDate(dayjs().add(offsetDays, "day").format("YYYY-MM-DD"));
 
 export interface DemoColumn {
   rowId: string;

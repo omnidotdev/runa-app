@@ -1,4 +1,4 @@
-import { parseAbsoluteToLocal } from "@internationalized/date";
+import { parseDate } from "@internationalized/date";
 import {
   DatePickerContent,
   DatePickerContext,
@@ -28,7 +28,7 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";
-import { pickedLocalDay, storedDueDate } from "@/lib/util/dueDate";
+import { pickedLocalDay } from "@/lib/util/dueDate";
 
 const CreateTaskDatePicker = withForm({
   defaultValues: taskFormDefaults,
@@ -43,15 +43,11 @@ const CreateTaskDatePicker = withForm({
             open={isDatePickerOpen}
             onOpenChange={({ open }) => setIsDatePickerOpen(open)}
             value={
-              field.state.value.length
-                ? [parseAbsoluteToLocal(field.state.value)]
-                : []
+              field.state.value.length ? [parseDate(field.state.value)] : []
             }
             onValueChange={({ value }) =>
               value.length
-                ? field.handleChange(
-                    storedDueDate(pickedLocalDay(value[0])).toISOString(),
-                  )
+                ? field.handleChange(pickedLocalDay(value[0]))
                 : field.handleChange("")
             }
             autoFocus
