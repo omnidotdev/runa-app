@@ -19,6 +19,7 @@ import {
   useCreateApiTokenMutation,
   useRevokeApiTokenMutation,
 } from "@/generated/graphql";
+import { API_BASE_URL } from "@/lib/config/env.config";
 import getQueryKeyPrefix from "@/lib/util/getQueryKeyPrefix";
 
 import type { FormEvent } from "react";
@@ -119,6 +120,14 @@ const ApiTokensSettings = () => {
       <p className="text-base-500 ml-2 text-xs lg:ml-0">
         Scoped, revocable tokens for external apps to call the API on this
         workspace's behalf. The token is shown once when you create it.
+      </p>
+
+      <p className="text-base-500 ml-2 text-xs lg:ml-0">
+        AI assistants that support MCP can use a token too: connect them to{" "}
+        <code className="bg-base-100 dark:bg-base-800 rounded px-1 py-0.5">
+          {`${API_BASE_URL}/mcp`}
+        </code>{" "}
+        with the token as a bearer token.
       </p>
 
       <form onSubmit={onAdd} className="flex flex-col gap-2 px-2 pt-1 lg:px-0">
