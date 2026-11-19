@@ -1,27 +1,18 @@
 import { accountUrl } from "@omnidotdev/providers/react";
 import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@omnidotdev/thornberry/avatar";
+  AccountMenu,
+  AccountMenuItem,
+} from "@omnidotdev/thornberry/account-menu";
 import {
   CollapsibleContent,
   CollapsibleRoot,
   CollapsibleTrigger,
 } from "@omnidotdev/thornberry/collapsible";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { Link, useRouteContext } from "@tanstack/react-router";
 import {
   BookOpenIcon,
-  ExternalLinkIcon,
-  LogOutIcon,
   MessageSquareIcon,
   MoonIcon,
-  MoreHorizontalIcon,
   PanelLeftCloseIcon,
   PanelLeftIcon,
   SunIcon,
@@ -32,16 +23,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { RiDiscordLine as DiscordIcon } from "react-icons/ri";
 
 import {
-  MenuContent,
-  MenuItem,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-} from "@/components/ui/menu";
-import {
   SidebarFooter,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarSeparator,
   useSidebar,
@@ -60,8 +43,6 @@ const SIDEBAR_OPTIONS_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
 const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
   const { toggleSidebar, isMobile, open, closeMobileSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
   const triggerId = useId();
@@ -237,94 +218,33 @@ const AppSidebarFooter = () => {
 
         <SidebarSeparator className="my-1" />
 
-        <Tooltip
-          positioning={{ placement: "right" }}
-          tooltip="Profile"
-          disabled={isMobile || open}
-          trigger={
-            <div className="group/menu-item relative">
-              <SidebarMenuButton
-                isActive={
-                  pathname === `/profile/${session?.user.identityProviderId}`
-                }
-                tooltip="Profile"
-                onClick={() => {
-                  closeMobileSidebar();
-                  navigate({
-                    to: "/profile/$userId",
-                    params: {
-                      userId: session?.user.identityProviderId!,
-                    },
-                  });
-                }}
+        <AccountMenu
+          variant="sidebar"
+          user={{
+            name: session?.user.name,
+            email: session?.user.email,
+            image: session?.user.image,
+          }}
+          onSignOut={() => void signOut()}
+          manageAccountUrl={accountUrl(ACCOUNT_URL) || undefined}
+          // Fixed, so the menu escapes the sidebar's overflow
+          positioning={{
+            strategy: "fixed",
+            placement: isMobile ? "top" : "right-end",
+          }}
+        >
+          {session?.user.identityProviderId && (
+            <AccountMenuItem value="profile" asChild>
+              <Link
+                to="/profile/$userId"
+                params={{ userId: session.user.identityProviderId }}
+                onClick={closeMobileSidebar}
               >
-                <AvatarRoot className="size-4">
-                  <AvatarImage
-                    src={session?.user.image ?? undefined}
-                    alt={session?.user.name}
-                  />
-
-                  <AvatarFallback className="text-xs font-semibold">
-                    {session?.user.name?.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </AvatarRoot>
-
-                <span className="text-primary-500">
-                  {session?.user.name || session?.user.email}
-                </span>
-              </SidebarMenuButton>
-
-              <MenuRoot
-                positioning={{
-                  strategy: "fixed",
-                  placement: isMobile ? "bottom-end" : "right-start",
-                }}
-              >
-                <MenuTrigger
-                  asChild
-                  className="focus-visible:ring-offset-background [&[data-state=open]>svg]:rotate-0"
-                >
-                  <SidebarMenuAction
-                    isActive={
-                      pathname ===
-                      `/profile/${session?.user.identityProviderId}`
-                    }
-                    showOnHover
-                  >
-                    <MoreHorizontalIcon />
-                    <span className="sr-only">More</span>
-                  </SidebarMenuAction>
-                </MenuTrigger>
-
-                <MenuPositioner>
-                  <MenuContent className="flex w-48 flex-col gap-0.5 rounded-lg">
-                    {ACCOUNT_URL && (
-                      <MenuItem asChild value="manage-account">
-                        <a
-                          href={accountUrl(ACCOUNT_URL)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <ExternalLinkIcon />
-                          <span>Manage account</span>
-                        </a>
-                      </MenuItem>
-                    )}
-
-                    <MenuItem
-                      value="signout"
-                      variant="destructive"
-                      onClick={signOut}
-                    >
-                      <LogOutIcon />
-                      <span>Sign Out</span>
-                    </MenuItem>
-                  </MenuContent>
-                </MenuPositioner>
-              </MenuRoot>
-            </div>
-          }
-        />
+                Profile
+              </Link>
+            </AccountMenuItem>
+          )}
+        </AccountMenu>
       </SidebarMenu>
     </SidebarFooter>
   );
