@@ -1,5 +1,17 @@
 # @omnidotdev/runa-app
 
+## 0.1.1
+
+### Patch Changes
+
+- [#143](https://github.com/omnidotdev/runa-app/pull/143) [`3c6fc6e`](https://github.com/omnidotdev/runa-app/commit/3c6fc6e70bb4c42da6088fd8c29326d0be586865) Thanks [@coopbri](https://github.com/coopbri)! - Dropping a task on the calendar now glides it straight into the row where it will be listed, instead of settling over the day number and then jumping down. Other tasks in a day no longer shift while you drag over it, and the day number no longer squeezes when hovering a full day.
+
+- [#146](https://github.com/omnidotdev/runa-app/pull/146) [`1c9bad2`](https://github.com/omnidotdev/runa-app/commit/1c9bad27c98fdc81551ab2e9a2fdde78060f1ae6) Thanks [@coopbri](https://github.com/coopbri)! - Stop writing users' email addresses to the logs: a failed sign-in token check logs only the error message, not the user's email and name, by moving to `@omnidotdev/providers` v0.2.0.
+
+- [#145](https://github.com/omnidotdev/runa-app/pull/145) [`77cee80`](https://github.com/omnidotdev/runa-app/commit/77cee808f9a1f2a29a1367bc5ae156a07451a619) Thanks [@coopbri](https://github.com/coopbri)! - Keep you signed in after your session refreshes in the background
+
+- [#147](https://github.com/omnidotdev/runa-app/pull/147) [`44f7772`](https://github.com/omnidotdev/runa-app/commit/44f777230fa118083a57d236f9e5ac4d5f379650) Thanks [@coopbri](https://github.com/coopbri)! - The account row at the bottom of the sidebar is now the standard Omni account menu: it shows your avatar (or initials), name, and email, and opens one menu with Profile, Manage account, and Sign out, all reachable from the keyboard. In a collapsed sidebar it shrinks to your avatar.
+
 ## 0.1.0
 
 ### Minor Changes
