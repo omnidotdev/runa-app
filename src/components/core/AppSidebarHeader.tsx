@@ -1,78 +1,26 @@
-import { workspacesUrl } from "@omnidotdev/providers/react";
 import { normalizeWorkspaceLinks } from "@omnidotdev/providers/workspace-links";
-import {
-  AvatarFallback,
-  AvatarImage,
-  AvatarRoot,
-} from "@omnidotdev/thornberry/avatar";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import { LogoLockup } from "@omnidotdev/thornberry/logo-lockup";
 import { useQuery } from "@tanstack/react-query";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useRouter,
-} from "@tanstack/react-router";
-import {
-  CheckIcon,
-  ChevronsUpDown,
-  LayoutGridIcon,
-  PlusIcon,
-} from "lucide-react";
+import { useParams } from "@tanstack/react-router";
 
 import { Favicon } from "@/components/core";
-import {
-  MenuContent,
-  MenuItem,
-  MenuPositioner,
-  MenuRoot,
-  MenuSeparator,
-  MenuTrigger,
-} from "@/components/ui/menu";
 import {
   SidebarHeader,
   SidebarMenuButton,
   useSidebar,
 } from "@/components/ui/sidebar";
 import app from "@/lib/config/app.config";
-import { ACCOUNT_URL } from "@/lib/config/env.config";
 import organizationBySlugOptions from "@/lib/options/organizationBySlug.options";
 import getDomainLabel from "@/lib/util/getDomainLabel";
-import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/providers/WorkspaceProvider";
-import { setLastWorkspaceCookie } from "@/server/functions/lastWorkspace";
+import AppSidebarWorkspaceSwitcher from "./AppSidebarWorkspaceSwitcher";
 import Logo from "./Logo";
-
-/** Workspace logo, falling back to the first letter of the name when unset. */
-const WorkspaceLogo = ({
-  name,
-  logo,
-}: {
-  name?: string | null;
-  logo?: string | null;
-}) => (
-  <AvatarRoot size="xs" className="size-5 shrink-0 text-[10px]">
-    <AvatarImage src={logo ?? undefined} alt={name ?? undefined} />
-    <AvatarFallback className="font-semibold uppercase">
-      {name?.charAt(0)}
-    </AvatarFallback>
-  </AvatarRoot>
-);
 
 const AppSidebarHeader = () => {
   const { workspaceSlug } = useParams({ strict: false });
-  const { pathname } = useLocation();
-  const router = useRouter();
-  const navigate = useNavigate();
-  const { toggleSidebar, closeMobileSidebar } = useSidebar();
-  const orgContext = useWorkspace();
-
-  // Get user's organizations from context
-  const organizations = orgContext?.workspaces ?? [];
-
-  // Workspace lifecycle lives on the account hub
-  const manageWorkspacesUrl = ACCOUNT_URL ? workspacesUrl(ACCOUNT_URL) : "";
+  const { toggleSidebar } = useSidebar();
+  const organizations = useWorkspace()?.workspaces ?? [];
 
   // Resolve current org from URL slug. Sidebar is rendered by `_app.tsx`
   // (above `$workspaceSlug.tsx` in the chain), so we cannot read the
@@ -80,7 +28,6 @@ const AppSidebarHeader = () => {
   const currentOrg = workspaceSlug
     ? organizations.find((org) => org.slug === workspaceSlug)
     : undefined;
-  const currentOrgName = currentOrg?.name;
 
   // Prefer freshly fetched links over the cached JWT claim so account-hub edits
   // show quickly; fall back to the claim while the live fetch loads.
@@ -113,120 +60,7 @@ const AppSidebarHeader = () => {
         </Badge>
       </div>
 
-      {organizations?.length ? (
-        <MenuRoot>
-          <MenuTrigger asChild>
-            <SidebarMenuButton className="bg-sidebar-accent focus-visible:ring-offset-background">
-              <ChevronsUpDown className="rotate-none!" />
-
-              <span className="flex w-full items-center gap-2 group-data-[collapsible=icon]:hidden">
-                {currentOrg && (
-                  <WorkspaceLogo
-                    name={currentOrg.name}
-                    logo={currentOrg.logo}
-                  />
-                )}
-                <span className="truncate">
-                  {currentOrgName ?? "Select Workspace"}
-                </span>
-              </span>
-            </SidebarMenuButton>
-          </MenuTrigger>
-
-          <MenuPositioner className="w-(--reference-width)!">
-            <MenuContent className="no-scrollbar flex max-h-80 w-full flex-col gap-0 overflow-auto rounded-lg focus:outline-none">
-              {organizations?.map((org, index) => {
-                const orgSlug = org?.slug ?? org.id;
-                const isWorkspaceSelected = orgSlug === pathname.split("/")[2];
-
-                // Preload programmatically rather than wrapping the item in
-                // `<Link preload="intent">`. Link's per-item render cost
-                // (`useLinkProps` + `buildLocation` + store subscriptions)
-                // multiplied across menu items caused visible jank during
-                // the open/close animation. The destination resolves
-                // correctly because `$workspaceSlug.tsx` owns the segment
-                const preloadWorkspace = () => {
-                  void router.preloadRoute({
-                    to: "/@{$workspaceSlug}",
-                    params: { workspaceSlug: orgSlug },
-                  });
-                };
-
-                return (
-                  <MenuItem
-                    key={`${org?.id}-${index}`}
-                    value={`${org?.name}-${index}`}
-                    onMouseEnter={preloadWorkspace}
-                    onFocus={preloadWorkspace}
-                    onSelect={() => {
-                      closeMobileSidebar();
-                      setLastWorkspaceCookie({ data: orgSlug });
-                      navigate({
-                        to: "/@{$workspaceSlug}",
-                        params: { workspaceSlug: orgSlug },
-                      });
-                    }}
-                    className={cn(isWorkspaceSelected && "bg-sidebar-accent")}
-                  >
-                    <div className="flex w-full items-center gap-2">
-                      <WorkspaceLogo name={org.name} logo={org.logo} />
-                      <span className="truncate">{org.name}</span>
-                      {isWorkspaceSelected && (
-                        <CheckIcon className="ml-auto shrink-0" color="green" />
-                      )}
-                    </div>
-                  </MenuItem>
-                );
-              })}
-
-              <MenuSeparator />
-
-              <MenuItem
-                value="view-all-workspaces"
-                onMouseEnter={() => {
-                  void router.preloadRoute({ to: "/workspaces" });
-                }}
-                onFocus={() => {
-                  void router.preloadRoute({ to: "/workspaces" });
-                }}
-                onSelect={() => {
-                  closeMobileSidebar();
-                  navigate({ to: "/workspaces" });
-                }}
-              >
-                <LayoutGridIcon className="size-4" />
-                All Workspaces
-              </MenuItem>
-
-              {manageWorkspacesUrl && (
-                <MenuItem
-                  asChild
-                  className="mt-1 cursor-pointer gap-2 px-2 py-1"
-                  value="manage-organizations"
-                >
-                  <a href={manageWorkspacesUrl}>
-                    <PlusIcon className="size-4" />
-                    Manage Workspaces
-                  </a>
-                </MenuItem>
-              )}
-            </MenuContent>
-          </MenuPositioner>
-        </MenuRoot>
-      ) : (
-        manageWorkspacesUrl && (
-          <SidebarMenuButton
-            asChild
-            className="bg-background hover:bg-accent hover:text-accent-foreground border shadow-xs"
-          >
-            <a href={manageWorkspacesUrl}>
-              <PlusIcon />
-
-              <span>Manage Workspaces</span>
-            </a>
-          </SidebarMenuButton>
-        )
-      )}
+      <AppSidebarWorkspaceSwitcher />
 
       {workspaceLinks.length ? (
         <div className="mt-2 flex flex-col gap-0.5 group-data-[collapsible=icon]:hidden">
