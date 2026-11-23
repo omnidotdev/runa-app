@@ -5,6 +5,11 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@omnidotdev/thornberry/menu";
+import {
+  SidebarMenuAction,
+  SidebarMenuButton,
+  useSidebar,
+} from "@omnidotdev/thornberry/sidebar";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Link,
@@ -22,11 +27,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import {
-  SidebarMenuAction,
-  SidebarMenuButton,
-  useSidebar,
-} from "@/components/ui/sidebar";
 import {
   useProjectsSidebarQuery,
   useUpdateUserPreferenceMutation,
@@ -57,7 +57,7 @@ const AppSidebarProjectItem = ({ project }: Props) => {
 
   const queryClient = useQueryClient();
   const { pathname } = useLocation();
-  const { isMobile, closeMobileSidebar } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const userPref = project.userPreferences?.nodes?.[0];
@@ -124,7 +124,10 @@ const AppSidebarProjectItem = ({ project }: Props) => {
         }}
         tabIndex={-1}
       >
-        <SidebarMenuButton isActive={isActive} onClick={closeMobileSidebar}>
+        <SidebarMenuButton
+          isActive={isActive}
+          onClick={() => setOpenMobile(false)}
+        >
           {viewMode !== "list" ? (
             <Grid2X2Icon
               className="text-primary-500"
@@ -202,7 +205,7 @@ const AppSidebarProjectItem = ({ project }: Props) => {
                     workspaceSlug,
                     projectSlug: project.slug,
                   }}
-                  onClick={closeMobileSidebar}
+                  onClick={() => setOpenMobile(false)}
                 >
                   <Settings2Icon />
                   Settings

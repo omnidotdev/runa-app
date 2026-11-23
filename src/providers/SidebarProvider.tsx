@@ -1,7 +1,6 @@
+import { SidebarProvider as DefaultSidebarProvider } from "@omnidotdev/thornberry/sidebar";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getCookie } from "@tanstack/react-start/server";
-
-import { SidebarProvider as DefaultSidebarProvider } from "@/components/ui/sidebar";
 
 import type { PropsWithChildren } from "react";
 

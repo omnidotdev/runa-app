@@ -10,6 +10,14 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@omnidotdev/thornberry/menu";
+import {
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  useSidebar,
+} from "@omnidotdev/thornberry/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import {
   Link,
@@ -28,14 +36,6 @@ import {
 } from "lucide-react";
 import { useId, useState } from "react";
 
-import {
-  SidebarGroup,
-  SidebarGroupAction,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  useSidebar,
-} from "@/components/ui/sidebar";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
@@ -59,7 +59,7 @@ const AppSidebarProjectList = () => {
   const [isProjectMenuOpen, setProjectMenuOpen] = useState(false);
   const triggerId = useId();
 
-  const { open, closeMobileSidebar } = useSidebar();
+  const { open, setOpenMobile } = useSidebar();
   const { setIsOpen: setIsCreateProjectOpen } = useDialogStore({
     type: DialogType.CreateProject,
   });
@@ -134,7 +134,7 @@ const AppSidebarProjectList = () => {
                       workspaceSlug,
                       projectSlug: project.slug,
                     }}
-                    onClick={closeMobileSidebar}
+                    onClick={() => setOpenMobile(false)}
                   >
                     {userPreferences?.viewMode !== "list" ? (
                       <Grid2X2Icon
@@ -192,7 +192,9 @@ const AppSidebarProjectList = () => {
             }
             trigger={
               <SidebarGroupAction
-                disabled={isMember || maxProjectsReached}
+                aria-disabled={isMember || maxProjectsReached}
+                data-disabled={isMember || maxProjectsReached || undefined}
+                className="data-disabled:hover:text-base-400 data-disabled:cursor-not-allowed data-disabled:opacity-50 data-disabled:hover:bg-transparent"
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsCreateProjectOpen(true);
