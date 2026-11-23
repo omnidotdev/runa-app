@@ -1,3 +1,11 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  MenuContent,
+  MenuItem,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@omnidotdev/thornberry/menu";
 import {
   SheetContent,
   SheetRoot,
@@ -24,14 +32,6 @@ import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
 import MoveTaskDialog from "@/components/tasks/MoveTaskDialog";
 import TaskKey from "@/components/tasks/TaskKey";
 import TaskProperties from "@/components/tasks/TaskProperties";
-import { Button } from "@/components/ui/button";
-import {
-  MenuContent,
-  MenuItem,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-} from "@/components/ui/menu";
 import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import { BASE_URL } from "@/lib/config/env.config";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";

@@ -1,14 +1,14 @@
-import { EllipsisIcon } from "lucide-react";
-
-import { Favicon, Tooltip } from "@/components/core";
-import { Button } from "@/components/ui/button";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   MenuContent,
   MenuItem,
   MenuPositioner,
   MenuRoot,
   MenuTrigger,
-} from "@/components/ui/menu";
+} from "@omnidotdev/thornberry/menu";
+import { EllipsisIcon } from "lucide-react";
+
+import { Favicon, Tooltip } from "@/components/core";
 import getDomainLabel from "@/lib/util/getDomainLabel";
 
 interface ProjectLink {

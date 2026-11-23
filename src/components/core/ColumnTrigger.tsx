@@ -1,15 +1,14 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { CollapsibleTrigger } from "@omnidotdev/thornberry/collapsible";
 import { ChevronRightIcon, PlusIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import LabelIcon from "./LabelIcon";
 import Tooltip from "./Tooltip";
 
-import type { MouseEventHandler } from "react";
-import type { ButtonProps } from "@/components/ui/button";
+import type { ComponentProps, MouseEventHandler } from "react";
 
-interface Props extends ButtonProps {
+interface Props extends ComponentProps<typeof Button> {
   title: string;
   count: number;
   tooltip: {

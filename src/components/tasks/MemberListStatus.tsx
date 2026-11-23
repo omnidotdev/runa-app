@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@omnidotdev/thornberry/button";
+
 import useReAuth from "@/lib/auth/useReAuth";
 
 import type { MemberListState } from "@/lib/util/memberListState";

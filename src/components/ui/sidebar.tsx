@@ -1,5 +1,7 @@
 import { ark } from "@ark-ui/react/factory";
 import { TooltipContext } from "@ark-ui/react/tooltip";
+import { Button } from "@omnidotdev/thornberry/button";
+import { Input } from "@omnidotdev/thornberry/input";
 import {
   SheetContent,
   SheetDescription,
@@ -7,6 +9,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@omnidotdev/thornberry/sheet";
+import {
+  TooltipContent,
+  TooltipPositioner,
+  TooltipRoot,
+  TooltipTrigger,
+} from "@omnidotdev/thornberry/tooltip";
 import { PanelLeftIcon } from "lucide-react";
 import {
   createContext,
@@ -17,14 +25,6 @@ import {
   useState,
 } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  TooltipContent,
-  TooltipPositioner,
-  TooltipRoot,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import useIsMobile from "@/lib/hooks/useIsMobile";
 import { useSidebarResize } from "@/lib/hooks/useSidebarResize";
 import { cn } from "@/lib/utils";

@@ -1,12 +1,11 @@
 import { $isCodeNode } from "@lexical/code";
 import { getLanguageFriendlyName } from "@lexical/code-prism";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { Button } from "@omnidotdev/thornberry/button";
 import { $getNearestNodeFromDOMNode } from "lexical";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-
-import { Button } from "@/components/ui/button";
 
 interface CodeBlockHeaderProps {
   language: string;

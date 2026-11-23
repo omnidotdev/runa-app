@@ -1,5 +1,7 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import { Button } from "@omnidotdev/thornberry/button";
+import { Input } from "@omnidotdev/thornberry/input";
 import {
   PopoverContent,
   PopoverPositioner,
@@ -17,8 +19,6 @@ import { SearchIcon, XIcon, icons } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import LabelIcon from "@/components/core/LabelIcon";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import parseIcon from "@/lib/util/parseIcon";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/providers/ThemeProvider";

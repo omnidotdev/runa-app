@@ -1,19 +1,20 @@
-import { useLoaderData } from "@tanstack/react-router";
-import { CalendarIcon, CopyIcon } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
-import ConfirmDialog from "@/components/ui/confirm-dialog";
+import { Button } from "@omnidotdev/thornberry/button";
+import { ConfirmDialog } from "@omnidotdev/thornberry/confirm-dialog";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
   DialogContent,
   DialogDescription,
+  DialogPortal,
   DialogPositioner,
   DialogRoot,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@omnidotdev/thornberry/dialog";
+import { useLoaderData } from "@tanstack/react-router";
+import { CalendarIcon, CopyIcon } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+
 import {
   useCalendarFeedQuery,
   useCreateCalendarFeedTokenMutation,
@@ -145,33 +146,35 @@ const ProjectCalendarFeed = () => {
           if (!details.open) setRevealedUrl(null);
         }}
       >
-        <DialogBackdrop />
-        <DialogPositioner>
-          <DialogContent className="bg-background w-full max-w-md rounded-lg">
-            <DialogCloseTrigger />
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogPositioner>
+            <DialogContent className="max-w-md">
+              <DialogCloseTrigger />
 
-            <div className="mb-4 flex flex-col gap-4">
-              <DialogTitle>Calendar feed URL</DialogTitle>
-              <DialogDescription>
-                Copy this now. For your security it will not be shown again. Add
-                it as a subscribed calendar in your calendar app. Anyone with
-                this link can view the project's task calendar.
-              </DialogDescription>
+              <div className="flex flex-col gap-4">
+                <DialogTitle>Calendar feed URL</DialogTitle>
+                <DialogDescription>
+                  Copy this now. For your security it will not be shown again.
+                  Add it as a subscribed calendar in your calendar app. Anyone
+                  with this link can view the project's task calendar.
+                </DialogDescription>
 
-              <code className="bg-base-100 dark:bg-base-800 block overflow-x-auto rounded-md border p-3 font-mono text-xs break-all">
-                {revealedUrl}
-              </code>
-            </div>
+                <code className="bg-base-100 dark:bg-base-800 block overflow-x-auto rounded-md border p-3 font-mono text-xs break-all">
+                  {revealedUrl}
+                </code>
+              </div>
 
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={onCopyUrl}>
-                <CopyIcon />
-                Copy
-              </Button>
-              <Button onClick={() => setRevealedUrl(null)}>Done</Button>
-            </div>
-          </DialogContent>
-        </DialogPositioner>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={onCopyUrl}>
+                  <CopyIcon />
+                  Copy
+                </Button>
+                <Button onClick={() => setRevealedUrl(null)}>Done</Button>
+              </div>
+            </DialogContent>
+          </DialogPositioner>
+        </DialogPortal>
       </DialogRoot>
 
       {/* destructive revoke + regenerate confirmations */}
@@ -181,6 +184,7 @@ const ProjectCalendarFeed = () => {
         title="Revoke calendar feed?"
         description="The current feed URL will stop working immediately and any calendar subscribed to it will no longer update. This cannot be undone."
         confirmLabel="Revoke"
+        pendingLabel="Revoking..."
         isPending={isRevoking}
         onConfirm={() => revokeFeed({ projectId })}
       />
@@ -190,6 +194,7 @@ const ProjectCalendarFeed = () => {
         title="Regenerate calendar feed URL?"
         description="The current feed URL will stop working immediately, and any calendar subscribed to it will stop updating until you add the new link. This cannot be undone."
         confirmLabel="Regenerate"
+        pendingLabel="Regenerating..."
         isPending={isCreating}
         onConfirm={() => createFeed({ projectId })}
       />

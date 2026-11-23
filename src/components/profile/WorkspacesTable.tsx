@@ -1,5 +1,6 @@
 import { ManageTeamLink, workspacesUrl } from "@omnidotdev/providers/react";
 import { Badge } from "@omnidotdev/thornberry/badge";
+import { buttonVariants } from "@omnidotdev/thornberry/button";
 import {
   Table,
   TableBody,
@@ -11,7 +12,6 @@ import {
 import { Building2 } from "lucide-react";
 
 import { Link } from "@/components/core";
-import { buttonVariants } from "@/components/ui/button";
 import { ACCOUNT_URL } from "@/lib/config/env.config";
 import { Role } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";

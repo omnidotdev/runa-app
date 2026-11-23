@@ -4,6 +4,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { Button, buttonVariants } from "@omnidotdev/thornberry/button";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { InfoIcon, LayersIcon, PlusIcon, RefreshCwIcon } from "lucide-react";
@@ -11,7 +12,6 @@ import { z } from "zod";
 
 import DegradedSessionRecovery from "@/components/auth/DegradedSessionRecovery";
 import { Link } from "@/components/core";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { ACCOUNT_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { fetchFreshSession } from "@/server/functions/auth";

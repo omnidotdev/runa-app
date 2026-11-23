@@ -1,3 +1,9 @@
+import {
+  AccordionItem,
+  AccordionItemContent,
+  AccordionItemTrigger,
+  AccordionRoot,
+} from "@omnidotdev/thornberry/accordion";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import {
   TabsContent,
@@ -9,12 +15,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 import { PriceCard } from "@/components/pricing";
-import {
-  AccordionItem,
-  AccordionItemContent,
-  AccordionItemTrigger,
-  AccordionRoot,
-} from "@/components/ui/accordion";
 import { BASE_URL } from "@/lib/config/env.config";
 import { FREE_PRICE as FREE_PRICE_FALLBACK } from "@/lib/constants/tiers";
 import pricesOptions from "@/lib/options/prices.options";

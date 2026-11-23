@@ -1,4 +1,5 @@
 import { useFilter, useListCollection } from "@ark-ui/react";
+import { Input } from "@omnidotdev/thornberry/input";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { LayoutGridIcon, ListIcon, SearchIcon } from "lucide-react";
@@ -11,7 +12,6 @@ import organizationMembersOptions from "@/lib/options/organizationMembers.option
 import memberListState from "@/lib/util/memberListState";
 import { cn } from "@/lib/utils";
 import Tooltip from "../core/Tooltip";
-import { Input } from "../ui/input";
 import AssigneeList from "./AssigneeList";
 import MemberListStatus from "./MemberListStatus";
 

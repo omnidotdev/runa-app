@@ -3,6 +3,13 @@ import {
   CollapsibleRoot,
   CollapsibleTrigger,
 } from "@omnidotdev/thornberry/collapsible";
+import {
+  MenuContent,
+  MenuItem,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@omnidotdev/thornberry/menu";
 import { useQuery } from "@tanstack/react-query";
 import {
   Link,
@@ -21,13 +28,6 @@ import {
 } from "lucide-react";
 import { useId, useState } from "react";
 
-import {
-  MenuContent,
-  MenuItem,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-} from "@/components/ui/menu";
 import {
   SidebarGroup,
   SidebarGroupAction,

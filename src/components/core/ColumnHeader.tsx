@@ -1,12 +1,12 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { PlusIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import LabelIcon from "./LabelIcon";
 import Tooltip from "./Tooltip";
 
-import type { ButtonProps } from "@/components/ui/button";
+import type { ComponentProps } from "react";
 
-interface Props extends ButtonProps {
+interface Props extends ComponentProps<typeof Button> {
   title: string;
   count: number;
   tooltip?: {

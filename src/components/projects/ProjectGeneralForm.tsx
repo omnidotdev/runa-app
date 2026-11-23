@@ -1,3 +1,11 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import { Input } from "@omnidotdev/thornberry/input";
+import {
+  SwitchControl,
+  SwitchHiddenInput,
+  SwitchRoot,
+  SwitchThumb,
+} from "@omnidotdev/thornberry/switch";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getRouteApi } from "@tanstack/react-router";
 import {
@@ -17,9 +25,6 @@ import {
   ProjectBackgroundPicker,
   ProjectColorPicker,
 } from "@/components/projects";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import {
   useProjectQuery,
   useProjectsQuery,
@@ -373,9 +378,9 @@ export default function ProjectGeneralForm() {
                   ? "Anyone with the link can view"
                   : "Only workspace members can access"}
               </span>
-              <Switch
+              <SwitchRoot
                 checked={isPublic}
-                onCheckedChange={(checked) => {
+                onCheckedChange={({ checked }) => {
                   setIsPublic(checked);
                   updateProject({
                     rowId: projectId,
@@ -383,7 +388,12 @@ export default function ProjectGeneralForm() {
                   });
                 }}
                 disabled={isMember}
-              />
+              >
+                <SwitchControl>
+                  <SwitchThumb />
+                </SwitchControl>
+                <SwitchHiddenInput />
+              </SwitchRoot>
             </div>
           </div>
 

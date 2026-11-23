@@ -4,6 +4,7 @@ import {
 } from "@icons-pack/react-simple-icons";
 import { AppFooter } from "@omnidotdev/thornberry/app-footer";
 import { Badge } from "@omnidotdev/thornberry/badge";
+import { Button } from "@omnidotdev/thornberry/button";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { XIcon as CloseIcon, MenuIcon } from "lucide-react";
 import { useState } from "react";
@@ -12,7 +13,6 @@ import { SiDiscord as DiscordIcon } from "react-icons/si";
 
 import { Link, Logo, ThemeToggle } from "@/components/core";
 import { ShootingStars } from "@/components/landing";
-import { Button } from "@/components/ui/button";
 import signIn from "@/lib/auth/signIn";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";

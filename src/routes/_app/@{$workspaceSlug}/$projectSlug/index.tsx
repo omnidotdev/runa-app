@@ -1,5 +1,7 @@
 import { DragDropContext } from "@hello-pangea/dnd";
 import { Badge } from "@omnidotdev/thornberry/badge";
+import { Button } from "@omnidotdev/thornberry/button";
+import { Input } from "@omnidotdev/thornberry/input";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
@@ -41,8 +43,6 @@ import {
 } from "@/components/tasks";
 import DeleteTaskDialog from "@/components/tasks/DeleteTaskDialog";
 import MoveTaskDialog from "@/components/tasks/MoveTaskDialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   useCreateUserPreferenceMutation,
   useSettingByOrganizationIdQuery,

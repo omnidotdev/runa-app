@@ -1,3 +1,14 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogPortal,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@omnidotdev/thornberry/dialog";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { all } from "better-all";
@@ -5,16 +16,6 @@ import { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import {
-  DialogBackdrop,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogDescription,
-  DialogPositioner,
-  DialogRoot,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   useCreateLabelMutation,
   useCreateTaskLabelMutation,
@@ -272,52 +273,56 @@ const UpdateTaskLabelsDialog = () => {
         }
       }}
     >
-      <DialogBackdrop />
-      <DialogPositioner>
-        <DialogContent>
-          <DialogCloseTrigger />
-          <DialogTitle>Update Labels</DialogTitle>
-          <DialogDescription>
-            Update the labels for this task.
-          </DialogDescription>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
-            }}
-            className="flex flex-col gap-2"
-          >
-            <div className="rounded border">
-              <TaskLabelsForm form={form} />
+      <DialogPortal>
+        <DialogBackdrop />
+        <DialogPositioner>
+          <DialogContent>
+            <DialogCloseTrigger />
+            <div className="flex flex-col gap-1.5">
+              <DialogTitle>Update Labels</DialogTitle>
+              <DialogDescription>
+                Update the labels for this task.
+              </DialogDescription>
             </div>
 
-            <div className="mt-4 flex justify-end gap-2">
-              <DialogCloseTrigger asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogCloseTrigger>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                form.handleSubmit();
+              }}
+              className="flex flex-col gap-2"
+            >
+              <div className="rounded border">
+                <TaskLabelsForm form={form} />
+              </div>
 
-              <form.Subscribe
-                selector={(state) => [
-                  state.canSubmit,
-                  state.isSubmitting,
-                  state.isDefaultValue,
-                ]}
-              >
-                {([canSubmit, isSubmitting, isDefaultValue]) => (
-                  <Button
-                    type="submit"
-                    disabled={!canSubmit || isSubmitting || isDefaultValue}
-                  >
-                    Update Labels
-                  </Button>
-                )}
-              </form.Subscribe>
-            </div>
-          </form>
-        </DialogContent>
-      </DialogPositioner>
+              <div className="mt-4 flex justify-end gap-2">
+                <DialogCloseTrigger asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DialogCloseTrigger>
+
+                <form.Subscribe
+                  selector={(state) => [
+                    state.canSubmit,
+                    state.isSubmitting,
+                    state.isDefaultValue,
+                  ]}
+                >
+                  {([canSubmit, isSubmitting, isDefaultValue]) => (
+                    <Button
+                      type="submit"
+                      disabled={!canSubmit || isSubmitting || isDefaultValue}
+                    >
+                      Update Labels
+                    </Button>
+                  )}
+                </form.Subscribe>
+              </div>
+            </form>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogPortal>
     </DialogRoot>
   );
 };

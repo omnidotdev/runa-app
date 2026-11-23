@@ -1,3 +1,11 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  MenuContent,
+  MenuItem,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@omnidotdev/thornberry/menu";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import {
@@ -8,14 +16,6 @@ import {
 } from "lucide-react";
 
 import { DestructiveActionDialog } from "@/components/core";
-import { Button } from "@/components/ui/button";
-import {
-  MenuContent,
-  MenuItem,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-} from "@/components/ui/menu";
 import {
   useDeleteTaskMutation,
   useProjectQuery,

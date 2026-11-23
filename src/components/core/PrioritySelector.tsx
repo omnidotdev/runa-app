@@ -1,3 +1,4 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   Select,
   SelectContent,
@@ -14,7 +15,6 @@ import { useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { PriorityIcon } from "@/components/tasks";
-import { Button } from "@/components/ui/button";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
 import Shortcut from "./Shortcut";

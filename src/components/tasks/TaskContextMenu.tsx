@@ -1,15 +1,15 @@
 import { Portal } from "@ark-ui/react/portal";
-import { useNavigate, useParams } from "@tanstack/react-router";
-import { Trash2Icon } from "lucide-react";
-
-import { Shortcut } from "@/components/core";
 import {
   MenuContent,
   MenuContextTrigger,
   MenuItem,
   MenuPositioner,
   MenuRoot,
-} from "@/components/ui/menu";
+} from "@omnidotdev/thornberry/menu";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { Trash2Icon } from "lucide-react";
+
+import { Shortcut } from "@/components/core";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useTaskStore from "@/lib/hooks/store/useTaskStore";

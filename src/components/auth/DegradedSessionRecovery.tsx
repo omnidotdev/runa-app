@@ -1,8 +1,8 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Logo } from "@/components/core";
-import { Button } from "@/components/ui/button";
 import {
   markReauthAttempt,
   reauthRecentlyAttempted,

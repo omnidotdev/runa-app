@@ -1,20 +1,21 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogPortal,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@omnidotdev/thornberry/dialog";
+import { Input } from "@omnidotdev/thornberry/input";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import { useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import {
-  DialogBackdrop,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogDescription,
-  DialogPositioner,
-  DialogRoot,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import {
   useCreateProjectMutation,
   useProjectColumnsQuery,
@@ -200,95 +201,99 @@ const CreateProjectDialog = () => {
       initialFocusEl={() => nameRef.current}
       trapFocus
     >
-      <DialogBackdrop />
-      <DialogPositioner>
-        <DialogContent>
-          <DialogCloseTrigger />
-          <DialogTitle>Create Project</DialogTitle>
-          <DialogDescription>
-            Create a new project for the{" "}
-            <strong className="text-primary">{orgName}</strong> workspace.
-          </DialogDescription>
+      <DialogPortal>
+        <DialogBackdrop />
+        <DialogPositioner>
+          <DialogContent>
+            <DialogCloseTrigger />
+            <div className="flex flex-col gap-1.5">
+              <DialogTitle>Create Project</DialogTitle>
+              <DialogDescription>
+                Create a new project for the{" "}
+                <strong className="text-primary">{orgName}</strong> workspace.
+              </DialogDescription>
+            </div>
 
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              await form.handleSubmit();
-            }}
-            onKeyDown={submitOnModEnter(() => form.handleSubmit())}
-            className="flex flex-col gap-2"
-          >
-            <form.Field name="name">
-              {(field) => (
-                <div className="flex flex-col gap-2">
-                  <Input
-                    ref={nameRef}
-                    name="name"
-                    type="text"
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                await form.handleSubmit();
+              }}
+              onKeyDown={submitOnModEnter(() => form.handleSubmit())}
+              className="flex flex-col gap-2"
+            >
+              <form.Field name="name">
+                {(field) => (
+                  <div className="flex flex-col gap-2">
+                    <Input
+                      ref={nameRef}
+                      name="name"
+                      type="text"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      onKeyDown={submitOnEnter(() => form.handleSubmit())}
+                      placeholder="Project Name"
+                      autoComplete="off"
+                    />
+
+                    {field.state.meta.errors.map((error, index) => (
+                      // biome-ignore lint/suspicious/noArrayIndexKey: Allow index key for error messages
+                      <p key={index} className="text-destructive text-xs">
+                        {error}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </form.Field>
+
+              <form.Field name="description">
+                {(field) => (
+                  <textarea
+                    name="description"
+                    autoComplete="off"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    onKeyDown={submitOnEnter(() => form.handleSubmit())}
-                    placeholder="Project Name"
-                    autoComplete="off"
+                    placeholder="Project Description (optional)"
+                    className="border-input placeholder:text-muted-foreground focus-visible:ring-ring focus-visible:ring-offset-background aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 flex field-sizing-content min-h-16 w-full rounded-md border px-3 py-2 text-xs shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                   />
-
-                  {field.state.meta.errors.map((error, index) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: Allow index key for error messages
-                    <p key={index} className="text-destructive text-xs">
-                      {error}
-                    </p>
-                  ))}
-                </div>
-              )}
-            </form.Field>
-
-            <form.Field name="description">
-              {(field) => (
-                <textarea
-                  name="description"
-                  autoComplete="off"
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  placeholder="Project Description (optional)"
-                  className="border-input placeholder:text-muted-foreground focus-visible:ring-ring focus-visible:ring-offset-background aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 flex field-sizing-content min-h-16 w-full rounded-md border px-3 py-2 text-xs shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                />
-              )}
-            </form.Field>
-
-            <div className="mt-4 flex justify-end gap-2">
-              <Button
-                onClick={() => {
-                  setIsCreateProjectOpen(false);
-                  form.reset();
-                }}
-                variant="outline"
-                tabIndex={0}
-              >
-                Cancel
-              </Button>
-
-              <form.Subscribe
-                selector={(state) => [
-                  state.canSubmit,
-                  state.isSubmitting,
-                  state.isDefaultValue,
-                ]}
-              >
-                {([canSubmit, isSubmitting, isDefaultValue]) => (
-                  <Button
-                    type="submit"
-                    disabled={!canSubmit || isSubmitting || isDefaultValue}
-                    tabIndex={0}
-                  >
-                    Create
-                  </Button>
                 )}
-              </form.Subscribe>
-            </div>
-          </form>
-        </DialogContent>
-      </DialogPositioner>
+              </form.Field>
+
+              <div className="mt-4 flex justify-end gap-2">
+                <Button
+                  onClick={() => {
+                    setIsCreateProjectOpen(false);
+                    form.reset();
+                  }}
+                  variant="outline"
+                  tabIndex={0}
+                >
+                  Cancel
+                </Button>
+
+                <form.Subscribe
+                  selector={(state) => [
+                    state.canSubmit,
+                    state.isSubmitting,
+                    state.isDefaultValue,
+                  ]}
+                >
+                  {([canSubmit, isSubmitting, isDefaultValue]) => (
+                    <Button
+                      type="submit"
+                      disabled={!canSubmit || isSubmitting || isDefaultValue}
+                      tabIndex={0}
+                    >
+                      Create
+                    </Button>
+                  )}
+                </form.Subscribe>
+              </div>
+            </form>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogPortal>
     </DialogRoot>
   );
 };

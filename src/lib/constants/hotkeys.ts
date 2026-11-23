@@ -1,16 +1,9 @@
-import { GLOBAL_HOTKEYS } from "@omnidotdev/thornberry/use-hotkeys";
-
 /**
- * Runa keyboard bindings. The shared bindings (command palette, theme toggle)
- * are sourced from thornberry's `GLOBAL_HOTKEYS` so they stay normalized across
- * the fleet; the rest are Runa-specific.
+ * Runa-specific keyboard bindings. The shared bindings (command palette, theme,
+ * sidebar, shortcuts list) live in thornberry's `GLOBAL_HOTKEYS` so they stay
+ * normalized across the fleet
  */
 export const Hotkeys = {
-  CommandPalette: GLOBAL_HOTKEYS.commandPalette,
-  ToggleTheme: GLOBAL_HOTKEYS.toggleTheme,
-  // NB: react-hotkeys-hook matches the physical key code, so `?` is `shift+slash`
-  ShowShortcuts: "shift+slash",
-  ToggleSidebar: "b",
   ToggleViewMode: "v",
   CreateTask: "c",
   CreateProject: "p",

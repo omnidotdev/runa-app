@@ -1,3 +1,4 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   TabsContent,
   TabsList,
@@ -12,7 +13,6 @@ import {
   ProfileHeader,
   WorkspacesTable,
 } from "@/components/profile";
-import { Button } from "@/components/ui/button";
 import signOut from "@/lib/auth/signOut";
 import { BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";

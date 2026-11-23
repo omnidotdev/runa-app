@@ -1,18 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
   DialogContent,
   DialogDescription,
+  DialogPortal,
   DialogPositioner,
   DialogRoot,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@omnidotdev/thornberry/dialog";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { toast } from "sonner";
+
 import {
   useMoveTaskMutation,
   useProjectQuery,
@@ -101,110 +102,112 @@ const MoveTaskDialog = ({
         if (!details.open) reset();
       }}
     >
-      <DialogBackdrop />
-      <DialogPositioner>
-        <DialogContent className="bg-background w-full max-w-md rounded-lg">
-          <DialogCloseTrigger />
+      <DialogPortal>
+        <DialogBackdrop />
+        <DialogPositioner>
+          <DialogContent className="max-w-md">
+            <DialogCloseTrigger />
 
-          <div className="mb-4 flex flex-col gap-1">
-            <DialogTitle>Move task</DialogTitle>
-            <DialogDescription>
-              Move this task to another board in this workspace. The task gets a
-              new key, and labels specific to the current board do not carry
-              over (workspace-shared labels do).
-            </DialogDescription>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1">
-              <span className="text-muted-foreground text-xs font-medium">
-                Board
-              </span>
-              <div className="flex max-h-40 flex-col gap-0.5 overflow-y-auto">
-                {projects.length ? (
-                  projects.map((project) => (
-                    <button
-                      key={project.rowId}
-                      type="button"
-                      onClick={() => {
-                        setTargetProjectId(project.rowId);
-                        setTargetColumnId(null);
-                      }}
-                      className={cn(
-                        "rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent",
-                        targetProjectId === project.rowId &&
-                          "bg-accent font-medium",
-                      )}
-                    >
-                      {project.name}
-                    </button>
-                  ))
-                ) : (
-                  <p className="text-muted-foreground py-2 text-center text-xs">
-                    No other boards in this workspace
-                  </p>
-                )}
-              </div>
+            <div className="flex flex-col gap-1.5">
+              <DialogTitle>Move task</DialogTitle>
+              <DialogDescription>
+                Move this task to another board in this workspace. The task gets
+                a new key, and labels specific to the current board do not carry
+                over (workspace-shared labels do).
+              </DialogDescription>
             </div>
 
-            {targetProjectId && (
+            <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-1">
                 <span className="text-muted-foreground text-xs font-medium">
-                  Column
+                  Board
                 </span>
                 <div className="flex max-h-40 flex-col gap-0.5 overflow-y-auto">
-                  {columns.length ? (
-                    columns.map((column) => (
+                  {projects.length ? (
+                    projects.map((project) => (
                       <button
-                        key={column.rowId}
+                        key={project.rowId}
                         type="button"
-                        onClick={() => setTargetColumnId(column.rowId)}
+                        onClick={() => {
+                          setTargetProjectId(project.rowId);
+                          setTargetColumnId(null);
+                        }}
                         className={cn(
                           "rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent",
-                          targetColumnId === column.rowId &&
+                          targetProjectId === project.rowId &&
                             "bg-accent font-medium",
                         )}
                       >
-                        {column.title}
+                        {project.name}
                       </button>
                     ))
                   ) : (
                     <p className="text-muted-foreground py-2 text-center text-xs">
-                      This board has no columns
+                      No other boards in this workspace
                     </p>
                   )}
                 </div>
               </div>
-            )}
-          </div>
 
-          <div className="mt-4 flex justify-end gap-2">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button
-              disabled={!targetProjectId || !targetColumnId || isPending}
-              onClick={() => {
-                if (!targetProjectId || !targetColumnId) return;
-                // the store holds the resolved rowId; guard against a vanity key
-                if (!isTaskRowId(taskId)) {
-                  toast.error("Failed to move task. Please try again.");
-                  return;
-                }
-                moveTask({
-                  input: {
-                    taskId,
-                    projectId: targetProjectId,
-                    columnId: targetColumnId,
-                  },
-                });
-              }}
-            >
-              Move
-            </Button>
-          </div>
-        </DialogContent>
-      </DialogPositioner>
+              {targetProjectId && (
+                <div className="flex flex-col gap-1">
+                  <span className="text-muted-foreground text-xs font-medium">
+                    Column
+                  </span>
+                  <div className="flex max-h-40 flex-col gap-0.5 overflow-y-auto">
+                    {columns.length ? (
+                      columns.map((column) => (
+                        <button
+                          key={column.rowId}
+                          type="button"
+                          onClick={() => setTargetColumnId(column.rowId)}
+                          className={cn(
+                            "rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent",
+                            targetColumnId === column.rowId &&
+                              "bg-accent font-medium",
+                          )}
+                        >
+                          {column.title}
+                        </button>
+                      ))
+                    ) : (
+                      <p className="text-muted-foreground py-2 text-center text-xs">
+                        This board has no columns
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-4 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => onOpenChange(false)}>
+                Cancel
+              </Button>
+              <Button
+                disabled={!targetProjectId || !targetColumnId || isPending}
+                onClick={() => {
+                  if (!targetProjectId || !targetColumnId) return;
+                  // the store holds the resolved rowId; guard against a vanity key
+                  if (!isTaskRowId(taskId)) {
+                    toast.error("Failed to move task. Please try again.");
+                    return;
+                  }
+                  moveTask({
+                    input: {
+                      taskId,
+                      projectId: targetProjectId,
+                      columnId: targetColumnId,
+                    },
+                  });
+                }}
+              >
+                Move
+              </Button>
+            </div>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogPortal>
     </DialogRoot>
   );
 };

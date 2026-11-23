@@ -1,8 +1,8 @@
 import { gatekeeperOrgManageUrl } from "@omnidotdev/providers/react";
+import { buttonVariants } from "@omnidotdev/thornberry/button";
 import { useParams } from "@tanstack/react-router";
 import { ExternalLinkIcon } from "lucide-react";
 
-import { buttonVariants } from "@/components/ui/button";
 import { ACCOUNT_URL } from "@/lib/config/env.config";
 import { cn } from "@/lib/utils";
 

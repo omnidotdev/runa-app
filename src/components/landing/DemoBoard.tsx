@@ -2,10 +2,22 @@ import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 import { AvatarFallback, AvatarRoot } from "@omnidotdev/thornberry/avatar";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import { useInertialScroll } from "@omnidotdev/thornberry/board";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   CollapsibleContent,
   CollapsibleRoot,
 } from "@omnidotdev/thornberry/collapsible";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogPortal,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@omnidotdev/thornberry/dialog";
+import { GLOBAL_HOTKEYS } from "@omnidotdev/thornberry/use-hotkeys";
 import {
   CalendarIcon,
   MoonIcon,
@@ -18,16 +30,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CalendarView from "@/components/calendar/CalendarView";
 import { LabelIcon, Shortcut, Tooltip, ViewModeTabs } from "@/components/core";
 import { PriorityIcon } from "@/components/tasks";
-import { Button } from "@/components/ui/button";
-import {
-  DialogBackdrop,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogDescription,
-  DialogPositioner,
-  DialogRoot,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import signIn from "@/lib/auth/signIn";
 import { BASE_URL } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -125,16 +127,15 @@ const DemoBoard = () => {
         return;
       }
 
+      // `t` is bound app-wide by the command palette adapter
       if (e.key === Hotkeys.ToggleViewMode) {
         toggleViewMode();
-      } else if (e.key === Hotkeys.ToggleTheme) {
-        toggleTheme();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [toggleViewMode, toggleTheme, isInViewport]);
+  }, [toggleViewMode, isInViewport]);
 
   // Auto-scroll when dragging near edges
   useAutoScrollOnDrag({
@@ -274,7 +275,7 @@ const DemoBoard = () => {
         <Tooltip
           positioning={{ placement: "bottom" }}
           tooltip={theme === "dark" ? "Light Mode" : "Dark Mode"}
-          shortcut={Hotkeys.ToggleTheme.toUpperCase()}
+          shortcut={GLOBAL_HOTKEYS.toggleTheme.toUpperCase()}
           trigger={
             <Button
               variant="ghost"
@@ -287,7 +288,7 @@ const DemoBoard = () => {
               ) : (
                 <SunIcon className="size-4" />
               )}
-              <Shortcut>{Hotkeys.ToggleTheme.toUpperCase()}</Shortcut>
+              <Shortcut>{GLOBAL_HOTKEYS.toggleTheme.toUpperCase()}</Shortcut>
             </Button>
           }
         />
@@ -461,121 +462,130 @@ const DemoBoard = () => {
         open={!!selectedTask}
         onOpenChange={({ open }) => !open && setSelectedTask(null)}
       >
-        <DialogBackdrop />
-        <DialogPositioner>
-          <DialogContent className="max-w-md">
-            <DialogCloseTrigger />
-            {selectedTask && (
-              <>
-                <div className="flex items-center gap-2">
-                  {selectedTask.priority && (
-                    <PriorityIcon priority={selectedTask.priority} />
-                  )}
-                  <Badge
-                    variant="outline"
-                    className="border-primary-500/20 text-primary-600 dark:text-primary-400 text-xs capitalize"
-                  >
-                    {demoColumns.find((c) => c.rowId === selectedTask.columnId)
-                      ?.title ?? "Task"}
-                  </Badge>
-                  <span className="text-base-400 font-mono text-xs font-medium">
-                    {getDisplayId(selectedTask)}
-                  </span>
-                </div>
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogPositioner>
+            <DialogContent className="max-w-md">
+              <DialogCloseTrigger />
+              {selectedTask && (
+                <>
+                  <div className="flex items-center gap-2">
+                    {selectedTask.priority && (
+                      <PriorityIcon priority={selectedTask.priority} />
+                    )}
+                    <Badge
+                      variant="outline"
+                      className="border-primary-500/20 text-primary-600 dark:text-primary-400 text-xs capitalize"
+                    >
+                      {demoColumns.find(
+                        (c) => c.rowId === selectedTask.columnId,
+                      )?.title ?? "Task"}
+                    </Badge>
+                    <span className="text-base-400 font-mono text-xs font-medium">
+                      {getDisplayId(selectedTask)}
+                    </span>
+                  </div>
 
-                <DialogTitle className="mt-2">
-                  {selectedTask.content}
-                </DialogTitle>
+                  <DialogTitle className="mt-2">
+                    {selectedTask.content}
+                  </DialogTitle>
 
-                <DialogDescription className="text-base-500">
-                  This is a demo task. Sign up to create and manage your own
-                  tasks with full editing capabilities.
-                </DialogDescription>
+                  <DialogDescription className="text-base-500">
+                    This is a demo task. Sign up to create and manage your own
+                    tasks with full editing capabilities.
+                  </DialogDescription>
 
-                <div className="mt-4 space-y-3">
-                  {/* assignees */}
-                  <div className="flex items-center gap-3">
-                    <UserIcon className="text-base-400 size-4" />
-                    {selectedTask.assignees.length > 0 ? (
-                      <div className="flex items-center gap-2">
-                        <div className="flex -space-x-1">
-                          {selectedTask.assignees.map((assignee) => (
-                            <AvatarRoot
-                              key={assignee.name}
-                              className="border-background size-6 border-2"
-                            >
-                              <AvatarFallback
-                                className="text-xs"
-                                style={{
-                                  backgroundColor: `${assignee.color}20`,
-                                  color: assignee.color,
-                                }}
+                  <div className="mt-4 space-y-3">
+                    {/* assignees */}
+                    <div className="flex items-center gap-3">
+                      <UserIcon className="text-base-400 size-4" />
+                      {selectedTask.assignees.length > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <div className="flex -space-x-1">
+                            {selectedTask.assignees.map((assignee) => (
+                              <AvatarRoot
+                                key={assignee.name}
+                                className="border-background size-6 border-2"
                               >
-                                {assignee.name.charAt(0)}
-                              </AvatarFallback>
-                            </AvatarRoot>
+                                <AvatarFallback
+                                  className="text-xs"
+                                  style={{
+                                    backgroundColor: `${assignee.color}20`,
+                                    color: assignee.color,
+                                  }}
+                                >
+                                  {assignee.name.charAt(0)}
+                                </AvatarFallback>
+                              </AvatarRoot>
+                            ))}
+                          </div>
+                          <span className="text-sm">
+                            {selectedTask.assignees
+                              .map((a) => a.name)
+                              .join(", ")}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-base-400 text-sm">
+                          Unassigned
+                        </span>
+                      )}
+                    </div>
+
+                    {/* labels */}
+                    <div className="flex items-center gap-3">
+                      <TagIcon className="text-base-400 size-4" />
+                      {selectedTask.labels.length > 0 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {selectedTask.labels.map((label) => (
+                            <Badge
+                              key={label.name}
+                              variant="outline"
+                              className="border-0 px-2 py-0.5 text-xs"
+                              style={{
+                                backgroundColor: `${label.color}20`,
+                                color: label.color,
+                              }}
+                            >
+                              {label.name}
+                            </Badge>
                           ))}
                         </div>
+                      ) : (
+                        <span className="text-base-400 text-sm">No labels</span>
+                      )}
+                    </div>
+
+                    {/* due date */}
+                    <div className="flex items-center gap-3">
+                      <CalendarIcon className="text-base-400 size-4" />
+                      {selectedTask.dueDate ? (
                         <span className="text-sm">
-                          {selectedTask.assignees.map((a) => a.name).join(", ")}
+                          {formatDueDate(selectedTask.dueDate, false)}
                         </span>
-                      </div>
-                    ) : (
-                      <span className="text-base-400 text-sm">Unassigned</span>
-                    )}
+                      ) : (
+                        <span className="text-base-400 text-sm">
+                          No due date
+                        </span>
+                      )}
+                    </div>
                   </div>
 
-                  {/* labels */}
-                  <div className="flex items-center gap-3">
-                    <TagIcon className="text-base-400 size-4" />
-                    {selectedTask.labels.length > 0 ? (
-                      <div className="flex flex-wrap gap-1">
-                        {selectedTask.labels.map((label) => (
-                          <Badge
-                            key={label.name}
-                            variant="outline"
-                            className="border-0 px-2 py-0.5 text-xs"
-                            style={{
-                              backgroundColor: `${label.color}20`,
-                              color: label.color,
-                            }}
-                          >
-                            {label.name}
-                          </Badge>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-base-400 text-sm">No labels</span>
-                    )}
+                  <div className="mt-6">
+                    <Button
+                      onClick={() =>
+                        signIn({ redirectUrl: BASE_URL, providerId: "omni" })
+                      }
+                      className="bg-primary-500 text-base-950 hover:bg-primary-400 w-full"
+                    >
+                      Sign up to edit tasks
+                    </Button>
                   </div>
-
-                  {/* due date */}
-                  <div className="flex items-center gap-3">
-                    <CalendarIcon className="text-base-400 size-4" />
-                    {selectedTask.dueDate ? (
-                      <span className="text-sm">
-                        {formatDueDate(selectedTask.dueDate, false)}
-                      </span>
-                    ) : (
-                      <span className="text-base-400 text-sm">No due date</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <Button
-                    onClick={() =>
-                      signIn({ redirectUrl: BASE_URL, providerId: "omni" })
-                    }
-                    className="bg-primary-500 text-base-950 hover:bg-primary-400 w-full"
-                  >
-                    Sign up to edit tasks
-                  </Button>
-                </div>
-              </>
-            )}
-          </DialogContent>
-        </DialogPositioner>
+                </>
+              )}
+            </DialogContent>
+          </DialogPositioner>
+        </DialogPortal>
       </DialogRoot>
     </div>
   );

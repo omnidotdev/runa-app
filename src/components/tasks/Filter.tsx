@@ -4,6 +4,21 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  MenuCheckboxItem,
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuItemGroupLabel,
+  MenuItemIndicator,
+  MenuItemText,
+  MenuPositioner,
+  MenuProvider,
+  MenuRoot,
+  MenuTrigger,
+  MenuTriggerItem,
+} from "@omnidotdev/thornberry/menu";
 import { useQuery } from "@tanstack/react-query";
 import {
   useLoaderData,
@@ -22,21 +37,6 @@ import { useId, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Shortcut, Tooltip } from "@/components/core";
-import { Button } from "@/components/ui/button";
-import {
-  MenuCheckboxItem,
-  MenuContent,
-  MenuItem,
-  MenuItemGroup,
-  MenuItemGroupLabel,
-  MenuItemIndicator,
-  MenuItemText,
-  MenuPositioner,
-  MenuProvider,
-  MenuRoot,
-  MenuTrigger,
-  MenuTriggerItem,
-} from "@/components/ui/menu";
 import { isSessionDegraded } from "@/lib/auth/sessionState";
 import useReAuth from "@/lib/auth/useReAuth";
 import { Hotkeys } from "@/lib/constants/hotkeys";

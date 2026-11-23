@@ -1,9 +1,9 @@
 import { Format } from "@ark-ui/react";
+import { Button } from "@omnidotdev/thornberry/button";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
   useCreatePostEmojiMutation,
   useDeletePostEmojiMutation,

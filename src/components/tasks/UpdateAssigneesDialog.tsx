@@ -1,18 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
-import { useLoaderData, useParams } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
   DialogContent,
   DialogDescription,
+  DialogPortal,
   DialogPositioner,
   DialogRoot,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@omnidotdev/thornberry/dialog";
+import { useQuery } from "@tanstack/react-query";
+import { useLoaderData, useParams } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+
 import {
   useCreateAssigneeMutation,
   useDeleteAssigneeMutation,
@@ -172,60 +173,64 @@ export default function UpdateAssigneesDialog() {
         }
       }}
     >
-      <DialogBackdrop />
+      <DialogPortal>
+        <DialogBackdrop />
 
-      <DialogPositioner>
-        <DialogContent>
-          <DialogCloseTrigger />
+        <DialogPositioner>
+          <DialogContent>
+            <DialogCloseTrigger />
 
-          <DialogTitle>Update Assignees</DialogTitle>
+            <div className="flex flex-col gap-1.5">
+              <DialogTitle>Update Assignees</DialogTitle>
 
-          <DialogDescription>
-            Update the users assigned to this task.
-          </DialogDescription>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
-            }}
-            className="flex flex-col gap-2"
-          >
-            <UpdateAssignees
-              form={form}
-              maxAssignees={maxAssignees}
-              // pass default assignees instead of relying on form values
-              initialAssignees={defaultAssignees}
-            />
-
-            <AssigneeLimitNotice tier={tier} maxAssignees={maxAssignees} />
-
-            <div className="mt-4 flex justify-end gap-2">
-              <DialogCloseTrigger asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogCloseTrigger>
-
-              <form.Subscribe
-                selector={(state) => [
-                  state.canSubmit,
-                  state.isSubmitting,
-                  state.isDirty,
-                ]}
-              >
-                {([canSubmit, isSubmitting, isDirty]) => (
-                  <Button
-                    type="submit"
-                    disabled={!canSubmit || isSubmitting || !isDirty}
-                  >
-                    Update Assignees
-                  </Button>
-                )}
-              </form.Subscribe>
+              <DialogDescription>
+                Update the users assigned to this task.
+              </DialogDescription>
             </div>
-          </form>
-        </DialogContent>
-      </DialogPositioner>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                form.handleSubmit();
+              }}
+              className="flex flex-col gap-2"
+            >
+              <UpdateAssignees
+                form={form}
+                maxAssignees={maxAssignees}
+                // pass default assignees instead of relying on form values
+                initialAssignees={defaultAssignees}
+              />
+
+              <AssigneeLimitNotice tier={tier} maxAssignees={maxAssignees} />
+
+              <div className="mt-4 flex justify-end gap-2">
+                <DialogCloseTrigger asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DialogCloseTrigger>
+
+                <form.Subscribe
+                  selector={(state) => [
+                    state.canSubmit,
+                    state.isSubmitting,
+                    state.isDirty,
+                  ]}
+                >
+                  {([canSubmit, isSubmitting, isDirty]) => (
+                    <Button
+                      type="submit"
+                      disabled={!canSubmit || isSubmitting || !isDirty}
+                    >
+                      Update Assignees
+                    </Button>
+                  )}
+                </form.Subscribe>
+              </div>
+            </form>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogPortal>
     </DialogRoot>
   );
 }

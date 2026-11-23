@@ -1,8 +1,8 @@
+import { Input } from "@omnidotdev/thornberry/input";
 import { useRouteContext } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { Input } from "@/components/ui/input";
 import {
   useCreateTaskMutation,
   useProjectQuery,

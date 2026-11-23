@@ -1,3 +1,13 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogPortal,
+  DialogPositioner,
+  DialogRoot,
+} from "@omnidotdev/thornberry/dialog";
+import { Input } from "@omnidotdev/thornberry/input";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { all } from "better-all";
@@ -5,15 +15,6 @@ import { useRef } from "react";
 import { toast } from "sonner";
 
 import { RichTextEditor } from "@/components/core";
-import { Button } from "@/components/ui/button";
-import {
-  DialogBackdrop,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogPositioner,
-  DialogRoot,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import {
   useCreateAssigneeMutation,
   useCreateLabelMutation,
@@ -247,86 +248,89 @@ const CreateTaskDialog = () => {
       initialFocusEl={() => titleRef.current}
       unmountOnExit
     >
-      <DialogBackdrop />
-      <DialogPositioner>
-        <DialogContent className="mx-8 flex max-w-3xl flex-col items-start rounded-lg">
-          <DialogCloseTrigger />
+      <DialogPortal>
+        <DialogBackdrop />
+        <DialogPositioner>
+          {/* the assignee, label, and date pickers open inline, so the panel must not clip them */}
+          <DialogContent className="flex max-h-none max-w-3xl flex-col items-start overflow-visible">
+            <DialogCloseTrigger />
 
-          <span className="text-base-400 dark:text-base-500 font-mono font-medium text-nowrap">
-            {project?.prefix
-              ? `${project?.prefix}-${nextTaskNumber}`
-              : `PROJ-${nextTaskNumber}`}
-          </span>
+            <span className="text-base-400 dark:text-base-500 font-mono font-medium text-nowrap">
+              {project?.prefix
+                ? `${project?.prefix}-${nextTaskNumber}`
+                : `PROJ-${nextTaskNumber}`}
+            </span>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
-            }}
-            onKeyDown={submitOnModEnter(() => form.handleSubmit())}
-            className="flex w-full flex-1 flex-col gap-2"
-          >
-            {/* Tasks properties */}
-            <div className="flex gap-3 py-2">
-              <CreateTaskAssignees form={form} />
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                form.handleSubmit();
+              }}
+              onKeyDown={submitOnModEnter(() => form.handleSubmit())}
+              className="flex w-full flex-1 flex-col gap-2"
+            >
+              {/* Tasks properties */}
+              <div className="flex gap-3 py-2">
+                <CreateTaskAssignees form={form} />
 
-              <CreateTaskLabels form={form} />
+                <CreateTaskLabels form={form} />
 
-              <CreateTaskDatePicker form={form} />
+                <CreateTaskDatePicker form={form} />
 
-              <TaskColumnForm form={form} />
+                <TaskColumnForm form={form} />
 
-              <CreateTaskPriority form={form} />
-            </div>
+                <CreateTaskPriority form={form} />
+              </div>
 
-            <form.Field name="title">
-              {(field) => (
-                <Input
-                  ref={titleRef}
-                  id="task-title"
-                  className="focus-visible:outline-primary border-none bg-transparent shadow-none transition-none focus-visible:ring-0 focus-visible:outline focus-visible:outline-dashed"
-                  placeholder="Task title..."
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  onKeyDown={submitOnEnter(() => form.handleSubmit())}
-                />
-              )}
-            </form.Field>
-
-            <RichTextEditor
-              className="min-h-40 text-sm placeholder:text-xs md:text-sm"
-              placeholder="Task description..."
-              onUpdate={({ getHTML }) =>
-                form.setFieldValue("description", getHTML())
-              }
-            />
-
-            <div className="mt-4 flex justify-end gap-2">
-              <DialogCloseTrigger asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogCloseTrigger>
-
-              <form.Subscribe
-                selector={(state) => [
-                  state.canSubmit,
-                  state.isSubmitting,
-                  state.isDefaultValue,
-                ]}
-              >
-                {([canSubmit, isSubmitting, isDefaultValue]) => (
-                  <Button
-                    type="submit"
-                    disabled={!canSubmit || isSubmitting || isDefaultValue}
-                  >
-                    Create Task
-                  </Button>
+              <form.Field name="title">
+                {(field) => (
+                  <Input
+                    ref={titleRef}
+                    id="task-title"
+                    className="focus-visible:outline-primary border-none bg-transparent shadow-none transition-none focus-visible:ring-0 focus-visible:outline focus-visible:outline-dashed"
+                    placeholder="Task title..."
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    onKeyDown={submitOnEnter(() => form.handleSubmit())}
+                  />
                 )}
-              </form.Subscribe>
-            </div>
-          </form>
-        </DialogContent>
-      </DialogPositioner>
+              </form.Field>
+
+              <RichTextEditor
+                className="min-h-40 text-sm placeholder:text-xs md:text-sm"
+                placeholder="Task description..."
+                onUpdate={({ getHTML }) =>
+                  form.setFieldValue("description", getHTML())
+                }
+              />
+
+              <div className="mt-4 flex justify-end gap-2">
+                <DialogCloseTrigger asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DialogCloseTrigger>
+
+                <form.Subscribe
+                  selector={(state) => [
+                    state.canSubmit,
+                    state.isSubmitting,
+                    state.isDefaultValue,
+                  ]}
+                >
+                  {([canSubmit, isSubmitting, isDefaultValue]) => (
+                    <Button
+                      type="submit"
+                      disabled={!canSubmit || isSubmitting || isDefaultValue}
+                    >
+                      Create Task
+                    </Button>
+                  )}
+                </form.Subscribe>
+              </div>
+            </form>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogPortal>
     </DialogRoot>
   );
 };

@@ -1,8 +1,13 @@
+import {
+  SwitchControl,
+  SwitchHiddenInput,
+  SwitchRoot,
+  SwitchThumb,
+} from "@omnidotdev/thornberry/switch";
 import { useRouteContext } from "@tanstack/react-router";
 import { BellIcon } from "lucide-react";
 import { Fragment, useEffect, useState } from "react";
 
-import { Switch } from "@/components/ui/switch";
 import {
   useCreateNotificationPreferenceMutation,
   useNotificationPreferenceQuery,
@@ -139,11 +144,16 @@ const NotificationSettings = () => {
       </div>
 
       <div className="flex items-center gap-2 pr-2">
-        <Switch
+        <SwitchRoot
           checked={checked}
-          onCheckedChange={onCheckedChange}
+          onCheckedChange={({ checked }) => onCheckedChange(checked)}
           disabled={disabled}
-        />
+        >
+          <SwitchControl>
+            <SwitchThumb />
+          </SwitchControl>
+          <SwitchHiddenInput />
+        </SwitchRoot>
       </div>
     </div>
   );

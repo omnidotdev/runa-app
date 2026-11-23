@@ -16,6 +16,7 @@ import {
   arrayMove,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { Button } from "@omnidotdev/thornberry/button";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
@@ -23,7 +24,6 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { DestructiveActionDialog, Tooltip } from "@/components/core";
-import { Button } from "@/components/ui/button";
 import {
   useDeleteProjectColumnMutation,
   useProjectColumnsQuery,

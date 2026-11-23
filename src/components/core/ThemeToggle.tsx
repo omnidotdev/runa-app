@@ -1,8 +1,6 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { Moon, Sun } from "lucide-react";
-import { useHotkeys } from "react-hotkeys-hook";
 
-import { Button } from "@/components/ui/button";
-import { Hotkeys } from "@/lib/constants/hotkeys";
 import { useTheme } from "@/providers/ThemeProvider";
 
 const ThemeToggle = () => {
@@ -10,8 +8,6 @@ const ThemeToggle = () => {
 
   const toggleTheme = () =>
     theme === "dark" ? setTheme("light") : setTheme("dark");
-
-  useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
 
   return (
     <Button onClick={toggleTheme} variant="ghost" aria-label="Toggle theme">

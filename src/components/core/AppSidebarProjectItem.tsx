@@ -1,3 +1,10 @@
+import {
+  MenuContent,
+  MenuItem,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@omnidotdev/thornberry/menu";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Link,
@@ -15,13 +22,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-import {
-  MenuContent,
-  MenuItem,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-} from "@/components/ui/menu";
 import {
   SidebarMenuAction,
   SidebarMenuButton,

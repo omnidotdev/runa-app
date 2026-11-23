@@ -8,6 +8,7 @@ import {
   CollapsibleRoot,
   CollapsibleTrigger,
 } from "@omnidotdev/thornberry/collapsible";
+import { GLOBAL_HOTKEYS } from "@omnidotdev/thornberry/use-hotkeys";
 import { Link, useRouteContext } from "@tanstack/react-router";
 import {
   BookOpenIcon,
@@ -69,7 +70,6 @@ const AppSidebarFooter = () => {
 
   const toggleSidebarOptions = () => setOpen(!isOptionsOpen);
 
-  useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
   useHotkeys(Hotkeys.ToggleSidebarOptions, toggleSidebarOptions, [
     isOptionsOpen,
   ]);
@@ -103,14 +103,14 @@ const AppSidebarFooter = () => {
               <Tooltip
                 positioning={{ placement: "right" }}
                 tooltip="Expand Sidebar"
-                shortcut={Hotkeys.ToggleSidebar}
+                shortcut={GLOBAL_HOTKEYS.toggleSidebar}
                 disabled={isMobile || open}
                 trigger={
                   <SidebarMenuButton onClick={toggleSidebar}>
                     {open ? <PanelLeftCloseIcon /> : <PanelLeftIcon />}
                     <span className="flex w-full items-center">
                       Collapse Sidebar
-                      <Shortcut>{Hotkeys.ToggleSidebar}</Shortcut>
+                      <Shortcut>{GLOBAL_HOTKEYS.toggleSidebar}</Shortcut>
                     </span>
                   </SidebarMenuButton>
                 }
@@ -119,14 +119,14 @@ const AppSidebarFooter = () => {
               <Tooltip
                 positioning={{ placement: "right" }}
                 tooltip="Toggle Theme"
-                shortcut={Hotkeys.ToggleTheme}
+                shortcut={GLOBAL_HOTKEYS.toggleTheme}
                 disabled={isMobile || open}
                 trigger={
                   <SidebarMenuButton onClick={toggleTheme}>
                     {theme === "dark" ? <MoonIcon /> : <SunIcon />}
                     <span className="flex w-full items-center">
                       Toggle Theme
-                      <Shortcut>{Hotkeys.ToggleTheme}</Shortcut>
+                      <Shortcut>{GLOBAL_HOTKEYS.toggleTheme}</Shortcut>
                     </span>
                   </SidebarMenuButton>
                 }
