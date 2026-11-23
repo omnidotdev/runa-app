@@ -105,7 +105,7 @@ function MyCalendarPage() {
   };
 
   return (
-    <div className="no-scrollbar relative h-full overflow-auto px-4 py-8 lg:p-12">
+    <div className="custom-scrollbar relative h-full overflow-auto px-4 py-8 lg:p-12">
       <div className="mb-4 ml-2 flex items-center justify-between lg:ml-0">
         <h1 className="text-xl font-semibold">My calendar</h1>
         <MyCalendarFeedButton organizationId={organizationId} />

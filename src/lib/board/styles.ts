@@ -14,7 +14,7 @@ export const boardColumnStyles = {
   wrapper: "relative flex h-full w-[320px] flex-col gap-2",
   droppable: "flex flex-1 flex-col rounded-xl",
   droppableActive: "bg-primary-100/40 dark:bg-primary-950/40",
-  itemsContainer: "no-scrollbar flex h-full flex-col overflow-y-auto",
+  itemsContainer: "custom-scrollbar flex h-full flex-col overflow-y-auto",
 } as const;
 
 /** Board layout styles */

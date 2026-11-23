@@ -32,7 +32,7 @@ const TaskActivity = () => {
         </h3>
       </CardHeader>
 
-      <CardContent className="no-scrollbar max-h-96 overflow-auto p-0">
+      <CardContent className="custom-scrollbar max-h-96 overflow-auto p-0">
         <ol className="grid gap-0">
           {groups.map((group, index) => (
             <li
