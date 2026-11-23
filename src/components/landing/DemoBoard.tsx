@@ -310,7 +310,7 @@ const DemoBoard = () => {
           {viewMode === "board" ? (
             <div
               ref={scrollContainerRef}
-              className="custom-scrollbar bg-base-100/50 dark:bg-base-900/20 max-w-full cursor-grab overflow-x-auto"
+              className="bg-base-100/50 dark:bg-base-900/20 max-w-full cursor-grab overflow-x-auto"
               style={{ height: BOARD_HEIGHT }}
               onMouseDown={handleMouseDown}
               onMouseUp={handleMouseUp}
@@ -346,7 +346,7 @@ const DemoBoard = () => {
                             ref={provided.innerRef}
                             {...provided.droppableProps}
                             className={cn(
-                              "custom-scrollbar flex flex-1 flex-col overflow-y-auto rounded-xl",
+                              "flex flex-1 flex-col overflow-y-auto rounded-xl",
                               snapshot.isDraggingOver &&
                                 "bg-primary-100/40 dark:bg-primary-950/40",
                             )}
@@ -372,7 +372,7 @@ const DemoBoard = () => {
             </div>
           ) : (
             <div
-              className="custom-scrollbar bg-base-100/50 dark:bg-base-900/20 overflow-y-auto p-4"
+              className="bg-base-100/50 dark:bg-base-900/20 overflow-y-auto p-4"
               style={{ height: BOARD_HEIGHT }}
             >
               {demoColumns.map((column, index) => {

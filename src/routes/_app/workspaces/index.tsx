@@ -141,7 +141,7 @@ function WorkspacesOverviewPage() {
       </div>
 
       {/* Scrollable content */}
-      <div className="custom-scrollbar flex-1 overflow-y-auto px-12 py-8">
+      <div className="flex-1 overflow-y-auto px-12 py-8">
         <div className="mx-auto w-full max-w-4xl">
           {!!organizations.length && (
             <div className="mb-8 grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] justify-center gap-6">

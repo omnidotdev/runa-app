@@ -60,7 +60,7 @@ const AppSidebarContent = () => {
   ];
 
   return (
-    <SidebarContent className="custom-scrollbar overflow-x-hidden overflow-y-auto pt-2 group-data-[collapsible=icon]:gap-0">
+    <SidebarContent className="overflow-x-hidden overflow-y-auto pt-2 group-data-[collapsible=icon]:gap-0">
       {workspaceSlug && (
         <>
           <SidebarMenu className="ml-2 hidden gap-1 group-data-[collapsible=icon]:flex">

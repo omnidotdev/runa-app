@@ -5,7 +5,7 @@
 
 /** Board container styles */
 export const boardContainerStyles = {
-  base: "custom-scrollbar h-full cursor-grab select-none overflow-x-auto",
+  base: "h-full cursor-grab select-none overflow-x-auto",
   background: "bg-base-100/50 dark:bg-base-900/20",
 } as const;
 
