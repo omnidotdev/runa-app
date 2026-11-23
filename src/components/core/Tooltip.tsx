@@ -3,7 +3,8 @@ import {
   TooltipPositioner,
   TooltipRoot,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "@omnidotdev/thornberry/tooltip";
+
 import { cn } from "@/lib/utils";
 import Shortcut from "./Shortcut";
 

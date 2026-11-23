@@ -1,20 +1,26 @@
-import { useRouteContext } from "@tanstack/react-router";
-import { CopyIcon, RefreshCwIcon, Trash2Icon, WebhookIcon } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
   DialogContent,
   DialogDescription,
+  DialogPortal,
   DialogPositioner,
   DialogRoot,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+} from "@omnidotdev/thornberry/dialog";
+import { Input } from "@omnidotdev/thornberry/input";
+import {
+  SwitchControl,
+  SwitchHiddenInput,
+  SwitchRoot,
+  SwitchThumb,
+} from "@omnidotdev/thornberry/switch";
+import { useRouteContext } from "@tanstack/react-router";
+import { CopyIcon, RefreshCwIcon, Trash2Icon, WebhookIcon } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+
 import {
   useCreateWebhookEndpointMutation,
   useDeleteWebhookEndpointMutation,
@@ -159,13 +165,18 @@ const WebhooksSettings = () => {
               </div>
 
               <div className="flex items-center gap-2 pr-2">
-                <Switch
+                <SwitchRoot
                   checked={!!endpoint.enabled}
-                  onCheckedChange={(checked) =>
+                  onCheckedChange={({ checked }) =>
                     endpoint.id &&
                     setEnabled({ id: endpoint.id, enabled: checked })
                   }
-                />
+                >
+                  <SwitchControl>
+                    <SwitchThumb />
+                  </SwitchControl>
+                  <SwitchHiddenInput />
+                </SwitchRoot>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -203,32 +214,34 @@ const WebhooksSettings = () => {
           if (!details.open) setRevealedSecret(null);
         }}
       >
-        <DialogBackdrop />
-        <DialogPositioner>
-          <DialogContent className="bg-background w-full max-w-md rounded-lg">
-            <DialogCloseTrigger />
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogPositioner>
+            <DialogContent className="max-w-md">
+              <DialogCloseTrigger />
 
-            <div className="mb-4 flex flex-col gap-4">
-              <DialogTitle>Signing secret</DialogTitle>
-              <DialogDescription>
-                Copy this now. For your security it will not be shown again. Use
-                it to verify the signature on incoming webhook requests.
-              </DialogDescription>
+              <div className="flex flex-col gap-4">
+                <DialogTitle>Signing secret</DialogTitle>
+                <DialogDescription>
+                  Copy this now. For your security it will not be shown again.
+                  Use it to verify the signature on incoming webhook requests.
+                </DialogDescription>
 
-              <code className="bg-base-100 dark:bg-base-800 block overflow-x-auto rounded-md border p-3 font-mono text-xs break-all">
-                {revealedSecret}
-              </code>
-            </div>
+                <code className="bg-base-100 dark:bg-base-800 block overflow-x-auto rounded-md border p-3 font-mono text-xs break-all">
+                  {revealedSecret}
+                </code>
+              </div>
 
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={onCopySecret}>
-                <CopyIcon />
-                Copy
-              </Button>
-              <Button onClick={() => setRevealedSecret(null)}>Done</Button>
-            </div>
-          </DialogContent>
-        </DialogPositioner>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={onCopySecret}>
+                  <CopyIcon />
+                  Copy
+                </Button>
+                <Button onClick={() => setRevealedSecret(null)}>Done</Button>
+              </div>
+            </DialogContent>
+          </DialogPositioner>
+        </DialogPortal>
       </DialogRoot>
 
       {/* destructive delete confirmation */}
@@ -238,35 +251,37 @@ const WebhooksSettings = () => {
           if (!details.open) setDeleteTarget(null);
         }}
       >
-        <DialogBackdrop />
-        <DialogPositioner>
-          <DialogContent className="bg-background w-full max-w-md rounded-lg">
-            <DialogCloseTrigger />
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogPositioner>
+            <DialogContent className="max-w-md">
+              <DialogCloseTrigger />
 
-            <div className="mb-4 flex flex-col gap-4">
-              <DialogTitle>Delete webhook endpoint?</DialogTitle>
-              <DialogDescription>
-                This will stop delivering events to{" "}
-                <span className="font-medium">{deleteTarget?.url}</span>. This
-                action cannot be undone.
-              </DialogDescription>
-            </div>
+              <div className="flex flex-col gap-1.5">
+                <DialogTitle>Delete webhook endpoint?</DialogTitle>
+                <DialogDescription>
+                  This will stop delivering events to{" "}
+                  <span className="font-medium">{deleteTarget?.url}</span>. This
+                  action cannot be undone.
+                </DialogDescription>
+              </div>
 
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setDeleteTarget(null)}>
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() =>
-                  deleteTarget && deleteEndpoint({ id: deleteTarget.id })
-                }
-              >
-                Delete
-              </Button>
-            </div>
-          </DialogContent>
-        </DialogPositioner>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setDeleteTarget(null)}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() =>
+                    deleteTarget && deleteEndpoint({ id: deleteTarget.id })
+                  }
+                >
+                  Delete
+                </Button>
+              </div>
+            </DialogContent>
+          </DialogPositioner>
+        </DialogPortal>
       </DialogRoot>
     </div>
   );

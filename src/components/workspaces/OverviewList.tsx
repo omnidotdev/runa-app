@@ -1,4 +1,5 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   CollapsibleContent,
   CollapsibleRoot,
@@ -7,7 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useSearch } from "@tanstack/react-router";
 
 import { ColumnTrigger } from "@/components/core";
-import { Button } from "@/components/ui/button";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import useProjectStore from "@/lib/hooks/store/useProjectStore";
@@ -57,7 +57,7 @@ const List = ({ projects }: Props) => {
   });
 
   return (
-    <div className="custom-scrollbar bg-base-100/50 dark:bg-base-900/20 h-full overflow-y-auto p-4">
+    <div className="bg-base-100/50 dark:bg-base-900/20 h-full overflow-y-auto p-4">
       {projectColumns?.map((column) => (
         <CollapsibleRoot
           key={column.rowId}

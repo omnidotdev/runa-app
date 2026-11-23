@@ -4,6 +4,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   SelectContent,
   SelectControl,
@@ -23,7 +24,6 @@ import { UserPlusIcon, UserXIcon } from "lucide-react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { Assignees, Shortcut, Tooltip } from "@/components/core";
-import { Button } from "@/components/ui/button";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";

@@ -1,12 +1,12 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { parseColor } from "@omnidotdev/thornberry/color-picker";
+import { Input } from "@omnidotdev/thornberry/input";
 import { useField } from "@tanstack/react-form";
 import { useLoaderData } from "@tanstack/react-router";
 import { CheckIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
 
 import { ColorSelector } from "@/components/core";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import { withForm } from "@/lib/hooks/useForm";

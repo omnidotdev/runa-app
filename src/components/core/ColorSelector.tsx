@@ -21,9 +21,9 @@ import {
   ColorPickerValueSwatch,
   ColorPickerView,
 } from "@omnidotdev/thornberry/color-picker";
+import { Input } from "@omnidotdev/thornberry/input";
 import { PipetteIcon } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
 import { colors } from "@/lib/constants/colors";
 
 import type { ColorPicker as ArkColorPicker } from "@ark-ui/react/color-picker";

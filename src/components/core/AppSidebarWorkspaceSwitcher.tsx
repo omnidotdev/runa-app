@@ -1,9 +1,9 @@
 import { workspacesUrl } from "@omnidotdev/providers/react";
+import { useSidebar } from "@omnidotdev/thornberry/sidebar";
 import { WorkspaceSwitcher } from "@omnidotdev/thornberry/workspace-switcher";
 import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
 import { LayoutGridIcon, PlusIcon } from "lucide-react";
 
-import { useSidebar } from "@/components/ui/sidebar";
 import { ACCOUNT_URL } from "@/lib/config/env.config";
 import {
   routeSlugForId,
@@ -27,7 +27,7 @@ const AppSidebarWorkspaceSwitcher = () => {
   const { workspaceSlug } = useParams({ strict: false });
   const router = useRouter();
   const navigate = useNavigate();
-  const { closeMobileSidebar } = useSidebar();
+  const { setOpenMobile } = useSidebar();
   const workspaces = useWorkspace()?.workspaces ?? [];
 
   // Workspace lifecycle lives on the account hub
@@ -56,7 +56,7 @@ const AppSidebarWorkspaceSwitcher = () => {
     const slug = routeSlugForId(workspaces, id);
     if (!slug) return;
 
-    closeMobileSidebar();
+    setOpenMobile(false);
     setLastWorkspaceCookie({ data: slug });
     navigate({ to: "/@{$workspaceSlug}", params: { workspaceSlug: slug } });
   };
@@ -67,7 +67,7 @@ const AppSidebarWorkspaceSwitcher = () => {
       label: "All workspaces",
       icon: <LayoutGridIcon />,
       onSelect: () => {
-        closeMobileSidebar();
+        setOpenMobile(false);
         navigate({ to: "/workspaces" });
       },
     },

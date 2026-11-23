@@ -1,3 +1,4 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   ColorPickerArea,
   ColorPickerAreaBackground,
@@ -22,6 +23,14 @@ import {
   ColorPickerView,
   parseColor,
 } from "@omnidotdev/thornberry/color-picker";
+import { Input } from "@omnidotdev/thornberry/input";
+import {
+  MenuContent,
+  MenuItem,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@omnidotdev/thornberry/menu";
 import { useLoaderData, useNavigate } from "@tanstack/react-router";
 import {
   CheckIcon,
@@ -35,15 +44,6 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { IconSelector, Tooltip } from "@/components/core";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  MenuContent,
-  MenuItem,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-} from "@/components/ui/menu";
 import {
   useCreateLabelMutation,
   useDeleteLabelMutation,

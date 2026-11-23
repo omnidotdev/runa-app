@@ -4,6 +4,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { Button, buttonVariants } from "@omnidotdev/thornberry/button";
 import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { InfoIcon, LayersIcon, PlusIcon, RefreshCwIcon } from "lucide-react";
@@ -11,7 +12,6 @@ import { z } from "zod";
 
 import DegradedSessionRecovery from "@/components/auth/DegradedSessionRecovery";
 import { Link } from "@/components/core";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { ACCOUNT_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { fetchFreshSession } from "@/server/functions/auth";
@@ -141,7 +141,7 @@ function WorkspacesOverviewPage() {
       </div>
 
       {/* Scrollable content */}
-      <div className="custom-scrollbar flex-1 overflow-y-auto px-12 py-8">
+      <div className="flex-1 overflow-y-auto px-12 py-8">
         <div className="mx-auto w-full max-w-4xl">
           {!!organizations.length && (
             <div className="mb-8 grid grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] justify-center gap-6">

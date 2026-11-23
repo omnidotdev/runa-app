@@ -1,4 +1,6 @@
 import { DragDropContext } from "@hello-pangea/dnd";
+import { Button } from "@omnidotdev/thornberry/button";
+import { Input } from "@omnidotdev/thornberry/input";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   createFileRoute,
@@ -15,8 +17,6 @@ import { z } from "zod";
 
 import { Tooltip } from "@/components/core";
 import { NotFound } from "@/components/layout";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { OverviewBoard, OverviewList } from "@/components/workspaces";
 import {
   useProjectQuery,

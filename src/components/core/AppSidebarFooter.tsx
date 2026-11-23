@@ -8,6 +8,14 @@ import {
   CollapsibleRoot,
   CollapsibleTrigger,
 } from "@omnidotdev/thornberry/collapsible";
+import {
+  SidebarFooter,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarSeparator,
+  useSidebar,
+} from "@omnidotdev/thornberry/sidebar";
+import { GLOBAL_HOTKEYS } from "@omnidotdev/thornberry/use-hotkeys";
 import { Link, useRouteContext } from "@tanstack/react-router";
 import {
   BookOpenIcon,
@@ -22,13 +30,6 @@ import { useCallback, useId, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { RiDiscordLine as DiscordIcon } from "react-icons/ri";
 
-import {
-  SidebarFooter,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarSeparator,
-  useSidebar,
-} from "@/components/ui/sidebar";
 import signOut from "@/lib/auth/signOut";
 import app from "@/lib/config/app.config";
 import { ACCOUNT_URL, hasBilling } from "@/lib/config/env.config";
@@ -43,7 +44,7 @@ const SIDEBAR_OPTIONS_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
 const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
-  const { toggleSidebar, isMobile, open, closeMobileSidebar } = useSidebar();
+  const { toggleSidebar, isMobile, open, setOpenMobile } = useSidebar();
   const { theme, setTheme } = useTheme();
   const triggerId = useId();
   const { defaultSidebarOptions } = getSidebarCookies();
@@ -69,7 +70,6 @@ const AppSidebarFooter = () => {
 
   const toggleSidebarOptions = () => setOpen(!isOptionsOpen);
 
-  useHotkeys(Hotkeys.ToggleTheme, toggleTheme, [toggleTheme]);
   useHotkeys(Hotkeys.ToggleSidebarOptions, toggleSidebarOptions, [
     isOptionsOpen,
   ]);
@@ -103,14 +103,14 @@ const AppSidebarFooter = () => {
               <Tooltip
                 positioning={{ placement: "right" }}
                 tooltip="Expand Sidebar"
-                shortcut={Hotkeys.ToggleSidebar}
+                shortcut={GLOBAL_HOTKEYS.toggleSidebar}
                 disabled={isMobile || open}
                 trigger={
                   <SidebarMenuButton onClick={toggleSidebar}>
                     {open ? <PanelLeftCloseIcon /> : <PanelLeftIcon />}
                     <span className="flex w-full items-center">
                       Collapse Sidebar
-                      <Shortcut>{Hotkeys.ToggleSidebar}</Shortcut>
+                      <Shortcut>{GLOBAL_HOTKEYS.toggleSidebar}</Shortcut>
                     </span>
                   </SidebarMenuButton>
                 }
@@ -119,14 +119,14 @@ const AppSidebarFooter = () => {
               <Tooltip
                 positioning={{ placement: "right" }}
                 tooltip="Toggle Theme"
-                shortcut={Hotkeys.ToggleTheme}
+                shortcut={GLOBAL_HOTKEYS.toggleTheme}
                 disabled={isMobile || open}
                 trigger={
                   <SidebarMenuButton onClick={toggleTheme}>
                     {theme === "dark" ? <MoonIcon /> : <SunIcon />}
                     <span className="flex w-full items-center">
                       Toggle Theme
-                      <Shortcut>{Hotkeys.ToggleTheme}</Shortcut>
+                      <Shortcut>{GLOBAL_HOTKEYS.toggleTheme}</Shortcut>
                     </span>
                   </SidebarMenuButton>
                 }
@@ -144,7 +144,7 @@ const AppSidebarFooter = () => {
                       className="w-full"
                       tabIndex={-1}
                     >
-                      <SidebarMenuButton onClick={closeMobileSidebar}>
+                      <SidebarMenuButton onClick={() => setOpenMobile(false)}>
                         <TagIcon />
                         <span className="flex w-full items-center">
                           Pricing
@@ -238,7 +238,7 @@ const AppSidebarFooter = () => {
               <Link
                 to="/profile/$userId"
                 params={{ userId: session.user.identityProviderId }}
-                onClick={closeMobileSidebar}
+                onClick={() => setOpenMobile(false)}
               >
                 Profile
               </Link>

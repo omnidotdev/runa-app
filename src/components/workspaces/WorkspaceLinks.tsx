@@ -1,11 +1,11 @@
 import { gatekeeperOrgManageUrl } from "@omnidotdev/providers/react";
 import { normalizeWorkspaceLinks } from "@omnidotdev/providers/workspace-links";
+import { buttonVariants } from "@omnidotdev/thornberry/button";
 import { useQuery } from "@tanstack/react-query";
 import { useLoaderData, useParams } from "@tanstack/react-router";
 import { ExternalLinkIcon } from "lucide-react";
 
 import { Favicon } from "@/components/core";
-import { buttonVariants } from "@/components/ui/button";
 import { ACCOUNT_URL } from "@/lib/config/env.config";
 import organizationBySlugOptions from "@/lib/options/organizationBySlug.options";
 import getDomainLabel from "@/lib/util/getDomainLabel";

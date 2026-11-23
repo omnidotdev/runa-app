@@ -4,6 +4,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { Input } from "@omnidotdev/thornberry/input";
 import {
   PopoverContent,
   PopoverPositioner,
@@ -14,7 +15,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { SearchIcon } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
 import {
   useCreateAssigneeMutation,
   useDeleteAssigneeMutation,

@@ -3,6 +3,14 @@ import {
   CollapsibleRoot,
   CollapsibleTrigger,
 } from "@omnidotdev/thornberry/collapsible";
+import {
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  useSidebar,
+} from "@omnidotdev/thornberry/sidebar";
 import { Link, useLocation, useParams } from "@tanstack/react-router";
 import {
   CalendarIcon,
@@ -11,14 +19,6 @@ import {
   Settings2Icon,
 } from "lucide-react";
 
-import {
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  useSidebar,
-} from "@/components/ui/sidebar";
 import AppSidebarProjectList from "./AppSidebarProjectList";
 
 interface SidebarMenuItemType {
@@ -33,7 +33,7 @@ const AppSidebarContent = () => {
   const { workspaceSlug } = useParams({ strict: false });
   const { pathname } = useLocation();
 
-  const { closeMobileSidebar } = useSidebar();
+  const { setOpenMobile } = useSidebar();
 
   const workspaceMenuItems: SidebarMenuItemType[] = [
     {
@@ -60,7 +60,7 @@ const AppSidebarContent = () => {
   ];
 
   return (
-    <SidebarContent className="pt-2 group-data-[collapsible=icon]:gap-0">
+    <SidebarContent className="overflow-x-hidden overflow-y-auto pt-2 group-data-[collapsible=icon]:gap-0">
       {workspaceSlug && (
         <>
           <SidebarMenu className="ml-2 hidden gap-1 group-data-[collapsible=icon]:flex">
@@ -100,7 +100,7 @@ const AppSidebarContent = () => {
                       key={item.to}
                       to={item.to}
                       params={{ workspaceSlug }}
-                      onClick={closeMobileSidebar}
+                      onClick={() => setOpenMobile(false)}
                       tabIndex={-1}
                     >
                       <SidebarMenuButton isActive={item.isActive}>

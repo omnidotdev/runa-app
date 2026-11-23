@@ -1,7 +1,6 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { getRouteApi, useCanGoBack, useRouter } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 
 const routeApi = getRouteApi("/_app/@{$workspaceSlug}/$projectSlug/~/settings");
 

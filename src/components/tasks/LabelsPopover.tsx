@@ -1,4 +1,6 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { parseColor } from "@omnidotdev/thornberry/color-picker";
+import { Input } from "@omnidotdev/thornberry/input";
 import {
   PopoverContent,
   PopoverPositioner,
@@ -11,8 +13,6 @@ import { CheckIcon, PlusIcon } from "lucide-react";
 import { useRef, useState } from "react";
 
 import { ColorSelector, Label } from "@/components/core";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   useCreateLabelMutation,
   useCreateTaskLabelMutation,

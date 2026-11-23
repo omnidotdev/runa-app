@@ -18,7 +18,6 @@ export enum DialogType {
   MoveTask = "move_task",
   DeleteComment = "delete_comment",
   CreateTask = "create_task",
-  KeyboardShortcuts = "keyboard_shortcuts",
 }
 
 interface DialogState {

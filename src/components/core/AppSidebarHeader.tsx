@@ -1,15 +1,15 @@
 import { normalizeWorkspaceLinks } from "@omnidotdev/providers/workspace-links";
 import { Badge } from "@omnidotdev/thornberry/badge";
 import { LogoLockup } from "@omnidotdev/thornberry/logo-lockup";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "@tanstack/react-router";
-
-import { Favicon } from "@/components/core";
 import {
   SidebarHeader,
   SidebarMenuButton,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from "@omnidotdev/thornberry/sidebar";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
+
+import { Favicon } from "@/components/core";
 import app from "@/lib/config/app.config";
 import organizationBySlugOptions from "@/lib/options/organizationBySlug.options";
 import getDomainLabel from "@/lib/util/getDomainLabel";

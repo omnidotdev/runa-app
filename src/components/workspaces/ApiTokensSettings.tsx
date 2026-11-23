@@ -1,19 +1,20 @@
-import { useRouteContext } from "@tanstack/react-router";
-import { KeyIcon, Trash2Icon } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
   DialogContent,
   DialogDescription,
+  DialogPortal,
   DialogPositioner,
   DialogRoot,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+} from "@omnidotdev/thornberry/dialog";
+import { Input } from "@omnidotdev/thornberry/input";
+import { useRouteContext } from "@tanstack/react-router";
+import { KeyIcon, Trash2Icon } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+
 import {
   useApiTokensQuery,
   useCreateApiTokenMutation,
@@ -210,28 +211,30 @@ const ApiTokensSettings = () => {
           if (!details.open) setRevealedToken(null);
         }}
       >
-        <DialogBackdrop />
-        <DialogPositioner>
-          <DialogContent className="bg-background w-full max-w-md rounded-lg">
-            <DialogCloseTrigger />
-            <div className="mb-4 flex flex-col gap-4">
-              <DialogTitle>API token</DialogTitle>
-              <DialogDescription>
-                Copy this now. For your security it will not be shown again.
-                Send it as a Bearer token in the Authorization header.
-              </DialogDescription>
-              <code className="bg-base-100 dark:bg-base-800 block overflow-x-auto rounded-md border p-3 font-mono text-xs break-all">
-                {revealedToken}
-              </code>
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={onCopyToken}>
-                Copy
-              </Button>
-              <Button onClick={() => setRevealedToken(null)}>Done</Button>
-            </div>
-          </DialogContent>
-        </DialogPositioner>
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogPositioner>
+            <DialogContent className="max-w-md">
+              <DialogCloseTrigger />
+              <div className="flex flex-col gap-4">
+                <DialogTitle>API token</DialogTitle>
+                <DialogDescription>
+                  Copy this now. For your security it will not be shown again.
+                  Send it as a Bearer token in the Authorization header.
+                </DialogDescription>
+                <code className="bg-base-100 dark:bg-base-800 block overflow-x-auto rounded-md border p-3 font-mono text-xs break-all">
+                  {revealedToken}
+                </code>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={onCopyToken}>
+                  Copy
+                </Button>
+                <Button onClick={() => setRevealedToken(null)}>Done</Button>
+              </div>
+            </DialogContent>
+          </DialogPositioner>
+        </DialogPortal>
       </DialogRoot>
 
       {/* destructive revoke confirmation */}
@@ -241,33 +244,35 @@ const ApiTokensSettings = () => {
           if (!details.open) setRevokeTarget(null);
         }}
       >
-        <DialogBackdrop />
-        <DialogPositioner>
-          <DialogContent className="bg-background w-full max-w-md rounded-lg">
-            <DialogCloseTrigger />
-            <div className="mb-4 flex flex-col gap-4">
-              <DialogTitle>Revoke token?</DialogTitle>
-              <DialogDescription>
-                <span className="font-medium">{revokeTarget?.name}</span> will
-                stop working immediately for anything using it. This cannot be
-                undone.
-              </DialogDescription>
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setRevokeTarget(null)}>
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() =>
-                  revokeTarget && revokeToken({ id: revokeTarget.id })
-                }
-              >
-                Revoke
-              </Button>
-            </div>
-          </DialogContent>
-        </DialogPositioner>
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogPositioner>
+            <DialogContent className="max-w-md">
+              <DialogCloseTrigger />
+              <div className="flex flex-col gap-1.5">
+                <DialogTitle>Revoke token?</DialogTitle>
+                <DialogDescription>
+                  <span className="font-medium">{revokeTarget?.name}</span> will
+                  stop working immediately for anything using it. This cannot be
+                  undone.
+                </DialogDescription>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setRevokeTarget(null)}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() =>
+                    revokeTarget && revokeToken({ id: revokeTarget.id })
+                  }
+                >
+                  Revoke
+                </Button>
+              </div>
+            </DialogContent>
+          </DialogPositioner>
+        </DialogPortal>
       </DialogRoot>
     </div>
   );

@@ -1,10 +1,10 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData } from "@tanstack/react-router";
 import { BanIcon, CheckIcon, ImagePlus, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
 import {
   useProjectQuery,
   useProjectsQuery,

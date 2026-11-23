@@ -3,6 +3,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { Button } from "@omnidotdev/thornberry/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { SendIcon } from "lucide-react";
@@ -10,7 +11,6 @@ import { useRef, useState } from "react";
 
 import { RichTextEditor } from "@/components/core";
 import Shortcut from "@/components/core/Shortcut";
-import { Button } from "@/components/ui/button";
 import { useCreatePostMutation } from "@/generated/graphql";
 import useForm from "@/lib/hooks/useForm";
 import taskOptions from "@/lib/options/task.options";

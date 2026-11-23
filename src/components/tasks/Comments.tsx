@@ -3,7 +3,25 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { Button } from "@omnidotdev/thornberry/button";
 import { CardContent, CardHeader, CardRoot } from "@omnidotdev/thornberry/card";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogPortal,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@omnidotdev/thornberry/dialog";
+import {
+  MenuContent,
+  MenuItem,
+  MenuPositioner,
+  MenuRoot,
+  MenuTrigger,
+} from "@omnidotdev/thornberry/menu";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import dayjs from "dayjs";
@@ -12,23 +30,6 @@ import { MoreHorizontalIcon, PenLineIcon, Trash2Icon } from "lucide-react";
 import { Suspense, useEffect, useRef, useState } from "react";
 
 import { LinkPreviews, RichTextEditor, Tooltip } from "@/components/core";
-import { Button } from "@/components/ui/button";
-import {
-  DialogBackdrop,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogDescription,
-  DialogPositioner,
-  DialogRoot,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  MenuContent,
-  MenuItem,
-  MenuPositioner,
-  MenuRoot,
-  MenuTrigger,
-} from "@/components/ui/menu";
 import { useDeletePostMutation } from "@/generated/graphql";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import taskOptions from "@/lib/options/task.options";
@@ -269,30 +270,32 @@ const Comments = () => {
           setIsDeleteCommentDialogOpen(details.open);
         }}
       >
-        <DialogBackdrop />
-        <DialogPositioner>
-          <DialogContent className="bg-background w-full max-w-md rounded-lg">
-            <DialogCloseTrigger />
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogPositioner>
+            <DialogContent className="max-w-md">
+              <DialogCloseTrigger />
 
-            <div className="mb-4 flex flex-col gap-4">
-              <DialogTitle>Danger Zone</DialogTitle>
-              <DialogDescription>
-                This will delete your comment. This action cannot be undone.
-              </DialogDescription>
-            </div>
+              <div className="flex flex-col gap-1.5">
+                <DialogTitle>Danger Zone</DialogTitle>
+                <DialogDescription>
+                  This will delete your comment. This action cannot be undone.
+                </DialogDescription>
+              </div>
 
-            <Button
-              type="submit"
-              variant="destructive"
-              onClick={() => {
-                deletePost({ rowId: commentToDelete! });
-                setIsDeleteCommentDialogOpen(false);
-              }}
-            >
-              Delete
-            </Button>
-          </DialogContent>
-        </DialogPositioner>
+              <Button
+                type="submit"
+                variant="destructive"
+                onClick={() => {
+                  deletePost({ rowId: commentToDelete! });
+                  setIsDeleteCommentDialogOpen(false);
+                }}
+              >
+                Delete
+              </Button>
+            </DialogContent>
+          </DialogPositioner>
+        </DialogPortal>
       </DialogRoot>
     </>
   );

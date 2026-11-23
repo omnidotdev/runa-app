@@ -1,4 +1,5 @@
 import { parseAbsoluteToLocal, parseDate } from "@internationalized/date";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   DatePickerContent,
   DatePickerContext,
@@ -20,6 +21,7 @@ import {
   DatePickerViewControl,
   DatePickerViewTrigger,
 } from "@omnidotdev/thornberry/date-picker";
+import { Input } from "@omnidotdev/thornberry/input";
 import { useQueryClient } from "@tanstack/react-query";
 import * as chrono from "chrono-node";
 import dayjs from "dayjs";
@@ -31,8 +33,6 @@ import {
   XIcon,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
 import {

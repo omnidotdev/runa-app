@@ -3,11 +3,11 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { Button } from "@omnidotdev/thornberry/button";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
 import {
   useProjectQuery,
   useProjectsQuery,

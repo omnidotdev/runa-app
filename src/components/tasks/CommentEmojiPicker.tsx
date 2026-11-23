@@ -1,5 +1,6 @@
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   PopoverContent,
   PopoverPositioner,
@@ -11,7 +12,6 @@ import { useRouteContext } from "@tanstack/react-router";
 import { SmilePlusIcon } from "lucide-react";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
   useCreatePostEmojiMutation,
   usePostEmojisQuery,

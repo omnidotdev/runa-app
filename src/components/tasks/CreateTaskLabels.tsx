@@ -1,12 +1,6 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { parseColor } from "@omnidotdev/thornberry/color-picker";
-import { useField, useStore } from "@tanstack/react-form";
-import { PlusIcon, TagIcon } from "lucide-react";
-import { useId, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
-
-import { ColorSelector, Shortcut, Tooltip } from "@/components/core";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input } from "@omnidotdev/thornberry/input";
 import {
   MenuCheckboxItem,
   MenuContent,
@@ -17,7 +11,13 @@ import {
   MenuRoot,
   MenuSeparator,
   MenuTrigger,
-} from "@/components/ui/menu";
+} from "@omnidotdev/thornberry/menu";
+import { useField, useStore } from "@tanstack/react-form";
+import { PlusIcon, TagIcon } from "lucide-react";
+import { useId, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+
+import { ColorSelector, Shortcut, Tooltip } from "@/components/core";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
 import { withForm } from "@/lib/hooks/useForm";

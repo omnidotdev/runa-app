@@ -1,17 +1,18 @@
-import { AlertTriangle } from "lucide-react";
-import { useRef, useState } from "react";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "@omnidotdev/thornberry/button";
 import {
   DialogBackdrop,
   DialogCloseTrigger,
   DialogContent,
   DialogDescription,
+  DialogPortal,
   DialogPositioner,
   DialogRoot,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+} from "@omnidotdev/thornberry/dialog";
+import { Input } from "@omnidotdev/thornberry/input";
+import { AlertTriangle } from "lucide-react";
+import { useRef, useState } from "react";
+
 import useDialogStore from "@/lib/hooks/store/useDialogStore";
 
 import type { ComponentProps, ReactNode } from "react";
@@ -71,67 +72,69 @@ const DestructiveActionDialog = ({
       }
       {...rest}
     >
-      <DialogBackdrop />
-      <DialogPositioner>
-        <DialogContent className="bg-background w-full max-w-md rounded-lg">
-          <DialogCloseTrigger />
+      <DialogPortal>
+        <DialogBackdrop />
+        <DialogPositioner>
+          <DialogContent className="max-w-md">
+            <DialogCloseTrigger />
 
-          <div className="mb-4 flex flex-col gap-4">
-            <div className="border-destructive bg-destructive/10 flex size-10 items-center justify-center rounded-full border">
-              <AlertTriangle className="text-destructive size-5" />
+            <div className="flex flex-col gap-4">
+              <div className="border-destructive bg-destructive/10 flex size-10 items-center justify-center rounded-full border">
+                <AlertTriangle className="text-destructive size-5" />
+              </div>
+              <DialogTitle>{title}</DialogTitle>
+              <DialogDescription>{description}</DialogDescription>
             </div>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
-          </div>
 
-          {requiresTextConfirmation && (
-            <div className="mb-4 flex flex-col gap-2">
-              <label
-                className="text-foreground text-sm"
-                htmlFor="destructive-confirmation-input"
+            {requiresTextConfirmation && (
+              <div className="flex flex-col gap-2">
+                <label
+                  className="text-foreground text-sm"
+                  htmlFor="destructive-confirmation-input"
+                >
+                  Type{" "}
+                  <strong className="text-destructive">{confirmation}</strong>{" "}
+                  to confirm deletion
+                </label>
+
+                <Input
+                  ref={inputRef}
+                  id="destructive-confirmation-input"
+                  value={confirmationInput}
+                  onChange={(e) => setConfirmationInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && isConfirmed) {
+                      e.preventDefault();
+                      handleConfirm();
+                    }
+                  }}
+                  placeholder="Enter confirmation text..."
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  className="focus-visible:ring-red-500"
+                />
+              </div>
+            )}
+
+            <div className="flex justify-end gap-2">
+              <DialogCloseTrigger asChild>
+                <Button ref={cancelRef} variant="outline">
+                  Cancel
+                </Button>
+              </DialogCloseTrigger>
+
+              <Button
+                variant="destructive"
+                disabled={!isConfirmed}
+                onClick={handleConfirm}
               >
-                Type{" "}
-                <strong className="text-destructive">{confirmation}</strong> to
-                confirm deletion
-              </label>
-
-              <Input
-                ref={inputRef}
-                id="destructive-confirmation-input"
-                value={confirmationInput}
-                onChange={(e) => setConfirmationInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && isConfirmed) {
-                    e.preventDefault();
-                    handleConfirm();
-                  }
-                }}
-                placeholder="Enter confirmation text..."
-                autoComplete="off"
-                autoCorrect="off"
-                spellCheck="false"
-                className="focus-visible:ring-red-500"
-              />
-            </div>
-          )}
-
-          <div className="flex justify-end gap-2">
-            <DialogCloseTrigger asChild>
-              <Button ref={cancelRef} variant="outline">
-                Cancel
+                Delete
               </Button>
-            </DialogCloseTrigger>
-
-            <Button
-              variant="destructive"
-              disabled={!isConfirmed}
-              onClick={handleConfirm}
-            >
-              Delete
-            </Button>
-          </div>
-        </DialogContent>
-      </DialogPositioner>
+            </div>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogPortal>
     </DialogRoot>
   );
 };

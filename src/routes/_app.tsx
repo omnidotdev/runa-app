@@ -1,3 +1,5 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import { SidebarInset } from "@omnidotdev/thornberry/sidebar";
 import {
   Outlet,
   createFileRoute,
@@ -8,8 +10,6 @@ import { useEffect, useMemo } from "react";
 
 import { AppSidebar, Link, Logo, ThemeToggle } from "@/components/core";
 import { NotFound } from "@/components/layout";
-import { Button } from "@/components/ui/button";
-import { SidebarInset } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/workspaces";
 import { clearReauthAttempt } from "@/lib/auth/reauthGuard";
 import signIn from "@/lib/auth/signIn";

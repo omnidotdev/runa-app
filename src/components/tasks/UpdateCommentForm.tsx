@@ -1,10 +1,10 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { useForm } from "@tanstack/react-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useLoaderData, useRouteContext } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
 import { RichTextEditor } from "@/components/core";
-import { Button } from "@/components/ui/button";
 import { useUpdatePostMutation } from "@/generated/graphql";
 import taskOptions from "@/lib/options/task.options";
 import { cn } from "@/lib/utils";

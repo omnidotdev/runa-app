@@ -1,3 +1,5 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import { Input } from "@omnidotdev/thornberry/input";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useLoaderData } from "@tanstack/react-router";
 import { GripVerticalIcon, PlusIcon, Trash2Icon } from "lucide-react";
@@ -5,8 +7,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Favicon, Tooltip } from "@/components/core";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   useCreateProjectLinkMutation,
   useDeleteProjectLinkMutation,

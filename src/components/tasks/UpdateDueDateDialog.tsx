@@ -1,3 +1,15 @@
+import { Button } from "@omnidotdev/thornberry/button";
+import {
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogPortal,
+  DialogPositioner,
+  DialogRoot,
+  DialogTitle,
+} from "@omnidotdev/thornberry/dialog";
+import { Input } from "@omnidotdev/thornberry/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
 import * as chrono from "chrono-node";
@@ -6,17 +18,6 @@ import { useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
-import {
-  DialogBackdrop,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogDescription,
-  DialogPositioner,
-  DialogRoot,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { useTasksQuery, useUpdateTaskMutation } from "@/generated/graphql";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { taskFormDefaults } from "@/lib/constants/taskFormDefaults";
@@ -161,86 +162,91 @@ const UpdateDueDateDialog = () => {
       }}
       initialFocusEl={() => inputRef.current}
     >
-      <DialogBackdrop />
-      <DialogPositioner>
-        <DialogContent>
-          <DialogCloseTrigger />
-          <DialogTitle>Update Due Date</DialogTitle>
-          <DialogDescription>
-            Update the due date of this task.
-          </DialogDescription>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
-            }}
-            className="flex flex-col gap-2"
-          >
-            <div className="flex items-center gap-2">
-              <form.Field
-                name="dueDate"
-                validators={{
-                  onChangeAsyncDebounceMs: 300,
-                  onChangeAsync: z.string().min(1),
-                }}
-              >
-                {(field) => (
-                  <Input
-                    ref={inputRef}
-                    onChange={(e) => {
-                      const [result] = chrono.parse(e.target.value);
-                      if (!result) {
-                        setTimeOverride(null);
-                        field.handleChange("");
-                        return;
-                      }
-                      // timed only when the phrase specified an hour (chrono
-                      // defaults an unset time to noon); otherwise all-day
-                      const parsed = dayjs(result.start.date());
-                      setTimeOverride(
-                        result.start.isCertain("hour")
-                          ? parsed.format("HH:mm")
-                          : "",
-                      );
-                      field.handleChange(parsed.format("YYYY-MM-DD"));
-                    }}
-                    placeholder="Try: tomorrow, in 2 days, next wednesday"
-                    id="due-date-input"
-                    autoComplete="off"
-                  />
-                )}
-              </form.Field>
-
-              <CreateTaskDatePicker form={form} />
+      <DialogPortal>
+        <DialogBackdrop />
+        <DialogPositioner>
+          {/* the date picker opens inline, so the panel must not clip it */}
+          <DialogContent className="max-h-none overflow-visible">
+            <DialogCloseTrigger />
+            <div className="flex flex-col gap-1.5">
+              <DialogTitle>Update Due Date</DialogTitle>
+              <DialogDescription>
+                Update the due date of this task.
+              </DialogDescription>
             </div>
 
-            <div className="mt-4 flex justify-end gap-2">
-              <DialogCloseTrigger asChild>
-                <Button variant="outline">Cancel</Button>
-              </DialogCloseTrigger>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                form.handleSubmit();
+              }}
+              className="flex flex-col gap-2"
+            >
+              <div className="flex items-center gap-2">
+                <form.Field
+                  name="dueDate"
+                  validators={{
+                    onChangeAsyncDebounceMs: 300,
+                    onChangeAsync: z.string().min(1),
+                  }}
+                >
+                  {(field) => (
+                    <Input
+                      ref={inputRef}
+                      onChange={(e) => {
+                        const [result] = chrono.parse(e.target.value);
+                        if (!result) {
+                          setTimeOverride(null);
+                          field.handleChange("");
+                          return;
+                        }
+                        // timed only when the phrase specified an hour (chrono
+                        // defaults an unset time to noon); otherwise all-day
+                        const parsed = dayjs(result.start.date());
+                        setTimeOverride(
+                          result.start.isCertain("hour")
+                            ? parsed.format("HH:mm")
+                            : "",
+                        );
+                        field.handleChange(parsed.format("YYYY-MM-DD"));
+                      }}
+                      placeholder="Try: tomorrow, in 2 days, next wednesday"
+                      id="due-date-input"
+                      autoComplete="off"
+                    />
+                  )}
+                </form.Field>
 
-              <form.Subscribe
-                selector={(state) => [
-                  state.canSubmit,
-                  state.isSubmitting,
-                  state.isDefaultValue,
-                ]}
-              >
-                {([canSubmit, isSubmitting, isDefaultValue]) => (
-                  <Button
-                    type="submit"
-                    disabled={!canSubmit || isSubmitting || isDefaultValue}
-                  >
-                    Update Due Date
-                  </Button>
-                )}
-              </form.Subscribe>
-            </div>
-          </form>
-        </DialogContent>
-      </DialogPositioner>
+                <CreateTaskDatePicker form={form} />
+              </div>
+
+              <div className="mt-4 flex justify-end gap-2">
+                <DialogCloseTrigger asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DialogCloseTrigger>
+
+                <form.Subscribe
+                  selector={(state) => [
+                    state.canSubmit,
+                    state.isSubmitting,
+                    state.isDefaultValue,
+                  ]}
+                >
+                  {([canSubmit, isSubmitting, isDefaultValue]) => (
+                    <Button
+                      type="submit"
+                      disabled={!canSubmit || isSubmitting || isDefaultValue}
+                    >
+                      Update Due Date
+                    </Button>
+                  )}
+                </form.Subscribe>
+              </div>
+            </form>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogPortal>
     </DialogRoot>
   );
 };

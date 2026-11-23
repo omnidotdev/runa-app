@@ -1,6 +1,6 @@
+import { Button } from "@omnidotdev/thornberry/button";
 import { getRouteApi } from "@tanstack/react-router";
 
-import { Button } from "@/components/ui/button";
 import useDialogStore, { DialogType } from "@/lib/hooks/store/useDialogStore";
 import { useCurrentUserRole } from "@/lib/hooks/useCurrentUserRole";
 import { Role } from "@/lib/permissions";
