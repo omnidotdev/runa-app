@@ -5,7 +5,7 @@
 
 /** Board container styles */
 export const boardContainerStyles = {
-  base: "custom-scrollbar h-full cursor-grab select-none overflow-x-auto",
+  base: "h-full cursor-grab select-none overflow-x-auto",
   background: "bg-base-100/50 dark:bg-base-900/20",
 } as const;
 
@@ -14,7 +14,7 @@ export const boardColumnStyles = {
   wrapper: "relative flex h-full w-[320px] flex-col gap-2",
   droppable: "flex flex-1 flex-col rounded-xl",
   droppableActive: "bg-primary-100/40 dark:bg-primary-950/40",
-  itemsContainer: "no-scrollbar flex h-full flex-col overflow-y-auto",
+  itemsContainer: "flex h-full flex-col overflow-y-auto",
 } as const;
 
 /** Board layout styles */

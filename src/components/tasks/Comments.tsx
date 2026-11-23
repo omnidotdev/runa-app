@@ -128,7 +128,7 @@ const Comments = () => {
           )}
         </CardHeader>
 
-        <CardContent className="no-scrollbar max-h-120 overflow-auto p-0">
+        <CardContent className="max-h-120 overflow-auto p-0">
           {commentCount ? (
             <div className="grid gap-0">
               {task?.posts?.nodes?.map((post, index) => {

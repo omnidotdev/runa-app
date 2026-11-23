@@ -42,7 +42,7 @@ function ProfilePage() {
   const organizations = orgContext?.workspaces ?? [];
 
   return (
-    <div className="no-scrollbar from-background via-background to-muted/20 min-h-dvh overflow-y-auto bg-linear-to-br p-4 sm:p-6 lg:p-8">
+    <div className="from-background via-background to-muted/20 min-h-dvh overflow-y-auto bg-linear-to-br p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-12">
           <div className="xl:col-span-4">
