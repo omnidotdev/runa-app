@@ -30,6 +30,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import signOut from "@/lib/auth/signOut";
+import switchAccount from "@/lib/auth/switchAccount";
 import app from "@/lib/config/app.config";
 import { ACCOUNT_URL, hasBilling } from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
@@ -226,6 +227,7 @@ const AppSidebarFooter = () => {
             image: session?.user.image,
           }}
           onSignOut={() => void signOut()}
+          onSwitchAccount={() => void switchAccount()}
           manageAccountUrl={accountUrl(ACCOUNT_URL) || undefined}
           // Fixed, so the menu escapes the sidebar's overflow
           positioning={{
