@@ -5,6 +5,7 @@ import { getRequest, setCookie } from "@tanstack/react-start/server";
 
 import auth from "@/lib/auth/auth";
 import { authCache } from "@/lib/auth/authCache";
+import { toClientSession } from "@/lib/auth/clientSession";
 import { getAuth } from "@/lib/auth/getAuth";
 import { isSessionDegraded } from "@/lib/auth/sessionState";
 import {
@@ -33,7 +34,7 @@ const loadSession = async (forceRefreshOrgs = false) => {
   // (who has a valid access token), and the workspaces page uses it to prompt a
   // re-login instead of the silent "Create a workspace" empty state
   return {
-    session,
+    session: toClientSession(session),
     organizations: session?.organizations ?? [],
     authDegraded: isSessionDegraded(session),
   };
