@@ -23,29 +23,12 @@ import { fetchSession } from "@/server/functions/auth";
 import { getTheme } from "@/server/functions/theme";
 
 import type { QueryClient } from "@tanstack/react-query";
-import type { Session } from "better-auth/types";
 import type { ReactNode } from "react";
-
-interface ExtendedUser {
-  id: string;
-  email: string;
-  name?: string;
-  image?: string;
-  rowId?: string;
-  identityProviderId?: string;
-}
-
-import type { OrganizationClaim } from "@omnidotdev/providers/auth";
-
-interface ExtendedSession extends Omit<Session, "user"> {
-  user: ExtendedUser;
-  accessToken?: string;
-  organizations?: OrganizationClaim[];
-}
+import type { ClientSession } from "@/lib/auth/clientSession";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
-  session: ExtendedSession | null;
+  session: ClientSession | null;
   authDegraded: boolean;
 }>()({
   beforeLoad: async () => {
