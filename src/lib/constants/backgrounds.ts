@@ -1,3 +1,5 @@
+import { blurUpStyle } from "@omnidotdev/thornberry/image";
+
 import type { CSSProperties } from "react";
 
 /**
@@ -17,6 +19,8 @@ export type ProjectBackground =
       position?: string;
       blur?: number;
       chromeContrast?: "light" | "dark";
+      /** Blur-up placeholder (tiny webp data URI) shown until the image loads */
+      lqip?: string;
     };
 
 interface BackgroundPreset {
@@ -150,14 +154,21 @@ export const resolveBackgroundStyle = (
     // stay legible over any image.
     const scrim =
       "color-mix(in oklch, var(--color-background) 22%, transparent)";
+    const position = background.position ?? "center";
+
+    // The blurred placeholder is the bottom layer, so it shows until the photo
+    // above it loads
+    const placeholder = background.lqip
+      ? `, ${blurUpStyle(background.lqip, position).backgroundImage}`
+      : "";
 
     return {
       backgroundImage: `linear-gradient(${scrim}, ${scrim}), url("${imageAssetUrl(
         assetBaseUrl,
         background.assetId,
-      )}")`,
+      )}")${placeholder}`,
       backgroundSize: "cover",
-      backgroundPosition: background.position ?? "center",
+      backgroundPosition: position,
       backgroundRepeat: "no-repeat",
     };
   }

@@ -259,6 +259,7 @@ export default function ProjectGeneralForm() {
             projectId={projectId}
             name={project?.name ?? ""}
             image={project?.image}
+            imageLqip={project?.imageLqip}
             disabled={!canEdit}
           />
         </div>

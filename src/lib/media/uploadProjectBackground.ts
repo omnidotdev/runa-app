@@ -18,7 +18,8 @@ const authHeaders = async (): Promise<Record<string, string>> => {
 };
 
 /**
- * Upload a board background image and return its storage key (`assetId`).
+ * Upload a board background image and return its storage key (`assetId`)
+ * and blur-up placeholder (`lqip`, null when the API could not make one).
  *
  * @param file image file selected by the user
  * @param projectId rowId of the project whose background is being set
@@ -26,7 +27,7 @@ const authHeaders = async (): Promise<Record<string, string>> => {
 export const uploadProjectBackground = async (
   file: File,
   projectId: string,
-): Promise<{ assetId: string; url: string }> => {
+): Promise<{ assetId: string; url: string; lqip?: string | null }> => {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("projectId", projectId);
@@ -44,5 +45,9 @@ export const uploadProjectBackground = async (
     throw new Error(body?.error ?? `Upload failed (${response.status})`);
   }
 
-  return response.json() as Promise<{ assetId: string; url: string }>;
+  return response.json() as Promise<{
+    assetId: string;
+    url: string;
+    lqip?: string | null;
+  }>;
 };

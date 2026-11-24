@@ -3,6 +3,7 @@ import {
   AvatarImage,
   AvatarRoot,
 } from "@omnidotdev/thornberry/avatar";
+import { blurUpStyle } from "@omnidotdev/thornberry/image";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -29,6 +30,8 @@ interface Props {
   name: string;
   /** Current avatar URL, if any */
   image?: string | null;
+  /** Blur-up placeholder for the avatar, shown until it loads */
+  imageLqip?: string | null;
   /** Whether the current user may edit the avatar */
   disabled?: boolean;
 }
@@ -38,7 +41,13 @@ interface Props {
  * resulting URL to `project.image`, saving immediately rather than waiting for
  * the details form submit.
  */
-const ProjectAvatar = ({ projectId, name, image, disabled }: Props) => {
+const ProjectAvatar = ({
+  projectId,
+  name,
+  image,
+  imageLqip,
+  disabled,
+}: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isBusy, setIsBusy] = useState(false);
 
@@ -51,8 +60,11 @@ const ProjectAvatar = ({ projectId, name, image, disabled }: Props) => {
     },
   });
 
-  const persist = (nextImage: string | null) =>
-    updateProject({ rowId: projectId, patch: { image: nextImage } });
+  const persist = (nextImage: string | null, nextLqip: string | null = null) =>
+    updateProject({
+      rowId: projectId,
+      patch: { image: nextImage, imageLqip: nextLqip },
+    });
 
   const onSelectFile = async (file: File) => {
     const error = validateFile(file, MAX_PROJECT_IMAGE_BYTES);
@@ -67,8 +79,8 @@ const ProjectAvatar = ({ projectId, name, image, disabled }: Props) => {
 
     setIsBusy(true);
     try {
-      const { url } = await uploadProjectImage(file, projectId);
-      await persist(url);
+      const { url, lqip } = await uploadProjectImage(file, projectId);
+      await persist(url, lqip ?? null);
       toast.success("Avatar updated");
     } catch {
       toast.error("Could not upload avatar");
@@ -91,12 +103,19 @@ const ProjectAvatar = ({ projectId, name, image, disabled }: Props) => {
 
   const initial = name.trim().charAt(0).toUpperCase() || "?";
 
+  // While the avatar loads, the fallback behind it shows its blurred preview
+  // instead of the initial
+  const placeholder = image && imageLqip ? imageLqip : null;
+
   return (
     <div className="flex items-center gap-4">
       <AvatarRoot size="xl" className="rounded-xl border">
         {image ? <AvatarImage src={image} alt="" /> : null}
-        <AvatarFallback className="text-base-500 rounded-xl text-lg font-semibold">
-          {initial}
+        <AvatarFallback
+          className="text-base-500 rounded-xl text-lg font-semibold"
+          style={placeholder ? blurUpStyle(placeholder) : undefined}
+        >
+          {placeholder ? null : initial}
         </AvatarFallback>
       </AvatarRoot>
 

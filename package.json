@@ -39,7 +39,7 @@
     "@lexical/rich-text": "^0.53.0",
     "@omnidotdev/cadence": "github:omnidotdev/cadence#v0.1.0",
     "@omnidotdev/providers": "github:omnidotdev/providers#v0.7.0",
-    "@omnidotdev/thornberry": "github:omnidotdev/thornberry#4b7b5fa8e86e1e4c6a4db4c383a0e923a7c49c93",
+    "@omnidotdev/thornberry": "github:omnidotdev/thornberry#4a4aabc8681cc56eedcd967c71774499a2fbe235",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@tanstack/react-form": "^1.27.7",
