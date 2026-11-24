@@ -11,6 +11,7 @@ query Project($rowId: UUID!) {
     color
     background
     image
+    imageLqip
     tasks {
       totalCount
     }

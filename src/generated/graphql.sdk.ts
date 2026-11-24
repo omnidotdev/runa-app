@@ -4688,6 +4688,7 @@ export type Project = Node & {
   /** A globally unique identifier. Can be used in various places throughout the system to identify this single value. */
   id: Scalars['ID']['output'];
   image?: Maybe<Scalars['String']['output']>;
+  imageLqip?: Maybe<Scalars['String']['output']>;
   isPublic: Scalars['Boolean']['output'];
   /** Reads and enables pagination through a set of `Label`. */
   labels: LabelConnection;
@@ -5088,6 +5089,8 @@ export enum ProjectColumnOrderBy {
   ProjectsDistinctCountDescriptionDesc = 'PROJECTS_DISTINCT_COUNT_DESCRIPTION_DESC',
   ProjectsDistinctCountImageAsc = 'PROJECTS_DISTINCT_COUNT_IMAGE_ASC',
   ProjectsDistinctCountImageDesc = 'PROJECTS_DISTINCT_COUNT_IMAGE_DESC',
+  ProjectsDistinctCountImageLqipAsc = 'PROJECTS_DISTINCT_COUNT_IMAGE_LQIP_ASC',
+  ProjectsDistinctCountImageLqipDesc = 'PROJECTS_DISTINCT_COUNT_IMAGE_LQIP_DESC',
   ProjectsDistinctCountIsPublicAsc = 'PROJECTS_DISTINCT_COUNT_IS_PUBLIC_ASC',
   ProjectsDistinctCountIsPublicDesc = 'PROJECTS_DISTINCT_COUNT_IS_PUBLIC_DESC',
   ProjectsDistinctCountNameAsc = 'PROJECTS_DISTINCT_COUNT_NAME_ASC',
@@ -5163,6 +5166,8 @@ export type ProjectCondition = {
   description?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `image` field. */
   image?: InputMaybe<Scalars['String']['input']>;
+  /** Checks for equality with the object’s `imageLqip` field. */
+  imageLqip?: InputMaybe<Scalars['String']['input']>;
   /** Checks for equality with the object’s `isPublic` field. */
   isPublic?: InputMaybe<Scalars['Boolean']['input']>;
   /** Checks for equality with the object’s `name` field. */
@@ -5214,6 +5219,7 @@ export type ProjectDistinctCountAggregateFilter = {
   createdAt?: InputMaybe<BigIntFilter>;
   description?: InputMaybe<BigIntFilter>;
   image?: InputMaybe<BigIntFilter>;
+  imageLqip?: InputMaybe<BigIntFilter>;
   isPublic?: InputMaybe<BigIntFilter>;
   name?: InputMaybe<BigIntFilter>;
   nextTaskNumber?: InputMaybe<BigIntFilter>;
@@ -5239,6 +5245,8 @@ export type ProjectDistinctCountAggregates = {
   description?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of image across the matching connection */
   image?: Maybe<Scalars['BigInt']['output']>;
+  /** Distinct count of imageLqip across the matching connection */
+  imageLqip?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of isPublic across the matching connection */
   isPublic?: Maybe<Scalars['BigInt']['output']>;
   /** Distinct count of name across the matching connection */
@@ -5286,6 +5294,8 @@ export type ProjectFilter = {
   description?: InputMaybe<StringFilter>;
   /** Filter by the object’s `image` field. */
   image?: InputMaybe<StringFilter>;
+  /** Filter by the object’s `imageLqip` field. */
+  imageLqip?: InputMaybe<StringFilter>;
   /** Filter by the object’s `isPublic` field. */
   isPublic?: InputMaybe<BooleanFilter>;
   /** Filter by the object’s `labels` relation. */
@@ -5342,6 +5352,7 @@ export enum ProjectGroupBy {
   CreatedAtTruncatedToHour = 'CREATED_AT_TRUNCATED_TO_HOUR',
   Description = 'DESCRIPTION',
   Image = 'IMAGE',
+  ImageLqip = 'IMAGE_LQIP',
   IsPublic = 'IS_PUBLIC',
   Name = 'NAME',
   NextTaskNumber = 'NEXT_TASK_NUMBER',
@@ -5431,6 +5442,7 @@ export type ProjectInput = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
+  imageLqip?: InputMaybe<Scalars['String']['input']>;
   isPublic?: InputMaybe<Scalars['Boolean']['input']>;
   name: Scalars['String']['input'];
   nextTaskNumber?: InputMaybe<Scalars['Int']['input']>;
@@ -6139,6 +6151,8 @@ export enum ProjectOrderBy {
   DescriptionDesc = 'DESCRIPTION_DESC',
   ImageAsc = 'IMAGE_ASC',
   ImageDesc = 'IMAGE_DESC',
+  ImageLqipAsc = 'IMAGE_LQIP_ASC',
+  ImageLqipDesc = 'IMAGE_LQIP_DESC',
   IsPublicAsc = 'IS_PUBLIC_ASC',
   IsPublicDesc = 'IS_PUBLIC_DESC',
   LabelsCountAsc = 'LABELS_COUNT_ASC',
@@ -6306,6 +6320,7 @@ export type ProjectPatch = {
   createdAt?: InputMaybe<Scalars['Datetime']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
+  imageLqip?: InputMaybe<Scalars['String']['input']>;
   isPublic?: InputMaybe<Scalars['Boolean']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   nextTaskNumber?: InputMaybe<Scalars['Int']['input']>;
@@ -10948,7 +10963,7 @@ export type ProjectQueryVariables = Exact<{
 }>;
 
 
-export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, color?: string | null, background?: any | null, image?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: string, title: string, icon?: string | null, isDone: boolean, tasks: { __typename?: 'TaskConnection', totalCount: number } }> }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } } | null };
+export type ProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', rowId: string, name: string, slug: string, description?: string | null, prefix?: string | null, isPublic: boolean, projectColumnId: string, nextTaskNumber: number, color?: string | null, background?: any | null, image?: string | null, imageLqip?: string | null, tasks: { __typename?: 'TaskConnection', totalCount: number }, columns: { __typename?: 'ColumnConnection', nodes: Array<{ __typename?: 'Column', rowId: string, index: string, title: string, icon?: string | null, isDone: boolean, tasks: { __typename?: 'TaskConnection', totalCount: number } }> }, projectLinks: { __typename?: 'ProjectLinkConnection', nodes: Array<{ __typename?: 'ProjectLink', rowId: string, url: string, title?: string | null, order: number }> } } | null };
 
 export type ProjectBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
@@ -11780,6 +11795,7 @@ export const ProjectDocument = gql`
     color
     background
     image
+    imageLqip
     tasks {
       totalCount
     }

@@ -88,8 +88,8 @@ const ProjectBackgroundPicker = ({ disabled }: Props) => {
 
     setIsBusy(true);
     try {
-      const { assetId } = await uploadProjectBackground(file, projectId);
-      save({ kind: "image", assetId });
+      const { assetId, lqip } = await uploadProjectBackground(file, projectId);
+      save({ kind: "image", assetId, ...(lqip ? { lqip } : {}) });
       toast.success("Background updated");
     } catch {
       toast.error("Could not upload background");

@@ -15,7 +15,8 @@ const authHeaders = async (): Promise<Record<string, string>> => {
 };
 
 /**
- * Upload a project avatar image and return its serve URL.
+ * Upload a project avatar image and return its serve URL and blur-up
+ * placeholder (`lqip`, null when the API could not make one).
  *
  * @param file image file selected by the user
  * @param projectId rowId of the project whose avatar is being set
@@ -23,7 +24,7 @@ const authHeaders = async (): Promise<Record<string, string>> => {
 export const uploadProjectImage = async (
   file: File,
   projectId: string,
-): Promise<{ url: string }> => {
+): Promise<{ url: string; lqip?: string | null }> => {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("projectId", projectId);
@@ -41,5 +42,5 @@ export const uploadProjectImage = async (
     throw new Error(body?.error ?? `Upload failed (${response.status})`);
   }
 
-  return response.json() as Promise<{ url: string }>;
+  return response.json() as Promise<{ url: string; lqip?: string | null }>;
 };

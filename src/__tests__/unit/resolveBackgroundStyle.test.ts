@@ -51,4 +51,27 @@ describe("resolveBackgroundStyle", () => {
       'url("https://api.example.com/api/attachments/file/runa%2Forg%2Fbackgrounds%2Fx.jpg?w=1920&q=82&fm=webp")',
     );
   });
+
+  it("layers a blurred placeholder under the photo when one is stored", () => {
+    const lqip = "data:image/webp;base64,AAAA";
+    const style = resolveBackgroundStyle(
+      { kind: "image", assetId: "x.jpg", lqip },
+      { assetBaseUrl: "https://api.example.com" },
+    );
+    const layers = String(style?.backgroundImage);
+
+    // The placeholder is the last (bottom) layer, after the photo
+    expect(layers.indexOf("fm=webp")).toBeLessThan(
+      layers.indexOf(encodeURIComponent(lqip)),
+    );
+  });
+
+  it("adds no placeholder layer when none is stored", () => {
+    const style = resolveBackgroundStyle(
+      { kind: "image", assetId: "x.jpg" },
+      { assetBaseUrl: "https://api.example.com" },
+    );
+
+    expect(String(style?.backgroundImage)).not.toContain("svg+xml");
+  });
 });
