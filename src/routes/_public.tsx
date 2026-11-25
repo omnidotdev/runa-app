@@ -141,7 +141,7 @@ function PublicLayout() {
                 <ThemeToggle />
 
                 {session?.user?.rowId ? (
-                  <Button variant="outline" onClick={signOut}>
+                  <Button variant="outline" onClick={() => void signOut()}>
                     Sign Out
                   </Button>
                 ) : (
@@ -214,7 +214,7 @@ function PublicLayout() {
                 {session?.user?.rowId ? (
                   <Button
                     variant="outline"
-                    onClick={signOut}
+                    onClick={() => void signOut()}
                     className="w-full"
                   >
                     Sign Out

@@ -4,6 +4,7 @@ import { useNavigate, useParams, useRouter } from "@tanstack/react-router";
 import { LayoutGridIcon, PlusIcon } from "lucide-react";
 
 import { useSidebar } from "@/components/ui/sidebar";
+import useHubLoginHint from "@/lib/auth/useHubLoginHint";
 import { ACCOUNT_URL } from "@/lib/config/env.config";
 import {
   routeSlugForId,
@@ -29,9 +30,12 @@ const AppSidebarWorkspaceSwitcher = () => {
   const navigate = useNavigate();
   const { closeMobileSidebar } = useSidebar();
   const workspaces = useWorkspace()?.workspaces ?? [];
+  const loginHint = useHubLoginHint();
 
   // Workspace lifecycle lives on the account hub
-  const manageWorkspacesUrl = ACCOUNT_URL ? workspacesUrl(ACCOUNT_URL) : "";
+  const manageWorkspacesUrl = ACCOUNT_URL
+    ? workspacesUrl(ACCOUNT_URL, { loginHint })
+    : "";
 
   const preloadAllWorkspaces = () => {
     void router.preloadRoute({ to: "/workspaces" });

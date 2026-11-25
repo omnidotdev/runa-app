@@ -12,6 +12,7 @@ import { z } from "zod";
 import DegradedSessionRecovery from "@/components/auth/DegradedSessionRecovery";
 import { Link } from "@/components/core";
 import { Button, buttonVariants } from "@/components/ui/button";
+import useHubLoginHint from "@/lib/auth/useHubLoginHint";
 import { ACCOUNT_URL, BASE_URL } from "@/lib/config/env.config";
 import createMetaTags from "@/lib/util/createMetaTags";
 import { fetchFreshSession } from "@/server/functions/auth";
@@ -84,6 +85,7 @@ export const Route = createFileRoute("/_app/workspaces/")({
  */
 function WorkspacesOverviewPage() {
   const router = useRouter();
+  const loginHint = useHubLoginHint();
   const { organizations, authDegraded } = Route.useLoaderData();
 
   const { from } = Route.useSearch();
@@ -100,7 +102,7 @@ function WorkspacesOverviewPage() {
   // The account hub owns workspace creation; link out to it. Rendered only when
   // the hub URL is configured (optional env), so a missing config degrades to
   // no button rather than a dead link.
-  const newWorkspaceHref = workspacesUrl(ACCOUNT_URL);
+  const newWorkspaceHref = workspacesUrl(ACCOUNT_URL, { loginHint });
   const NewWorkspaceLink = newWorkspaceHref
     ? ({ className }: { className?: string }) => (
         <a href={newWorkspaceHref} className={buttonVariants({ className })}>

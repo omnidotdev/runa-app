@@ -16,6 +16,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
+import useHubLoginHint from "@/lib/auth/useHubLoginHint";
 import { manageSubscriptionUrl, upgradePlanUrl } from "@/lib/billing/hubLinks";
 import { ACCOUNT_URL, BASE_URL, hasBilling } from "@/lib/config/env.config";
 import { FREE_PRICE } from "@/lib/constants/tiers";
@@ -36,6 +37,7 @@ export default function WorkspaceBenefits() {
   const { organizationId, subscription, entitlements, prices } =
     routeApi.useLoaderData();
   const { workspaceSlug } = routeApi.useParams();
+  const loginHint = useHubLoginHint();
 
   // Resolve org slug from JWT claims (workspaceSlug in URL is already org slug)
   const orgSlug = workspaceSlug;
@@ -44,7 +46,12 @@ export default function WorkspaceBenefits() {
   const currentUserRole = useCurrentUserRole(organizationId);
   const canDeleteWorkspace = currentUserRole && isOwner(currentUserRole);
 
-  const manageHref = manageSubscriptionUrl(ACCOUNT_URL, BASE_URL, orgSlug);
+  const manageHref = manageSubscriptionUrl(
+    ACCOUNT_URL,
+    BASE_URL,
+    orgSlug,
+    loginHint,
+  );
 
   // Buy the picked plan for this workspace on the account hub, which confirms
   // it, runs checkout, and returns here
@@ -56,6 +63,7 @@ export default function WorkspaceBenefits() {
       plan: price.metadata.tier,
       interval: price.recurring?.interval === "year" ? "year" : "month",
       workspaceSlug: orgSlug,
+      loginHint,
     });
 
     if (href) window.location.assign(href);

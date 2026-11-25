@@ -12,6 +12,7 @@ import { Building2 } from "lucide-react";
 
 import { Link } from "@/components/core";
 import { buttonVariants } from "@/components/ui/button";
+import useHubLoginHint from "@/lib/auth/useHubLoginHint";
 import { ACCOUNT_URL } from "@/lib/config/env.config";
 import { Role } from "@/lib/permissions";
 import capitalizeFirstLetter from "@/lib/util/capitalizeFirstLetter";
@@ -24,6 +25,8 @@ interface Props {
 }
 
 const WorkspacesTable = ({ organizations }: Props) => {
+  const loginHint = useHubLoginHint();
+
   // Helper to get user's role for an organization from JWT claims
   const getUserRole = (org: OrganizationClaim): Role => {
     if (org.roles.includes("owner")) return Role.Owner;
@@ -37,7 +40,7 @@ const WorkspacesTable = ({ organizations }: Props) => {
         <p>
           No current workspaces.{" "}
           <a
-            href={workspacesUrl(ACCOUNT_URL) || undefined}
+            href={workspacesUrl(ACCOUNT_URL, { loginHint }) || undefined}
             className="text-md text-primary-600 p-0 underline"
           >
             Create a workspace

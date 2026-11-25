@@ -64,6 +64,22 @@ describe("upgradePlanUrl", () => {
     });
   });
 
+  it("opens the hub as the signed-in account", () => {
+    expect(
+      params(
+        upgradePlanUrl(HUB, RUNA, {
+          plan: "pro",
+          interval: "month",
+          workspaceSlug: "acme",
+          loginHint: "user-123",
+        }),
+      ),
+    ).toHaveProperty("login_hint", "user-123");
+    expect(
+      params(upgradePlanUrl(HUB, RUNA, { plan: "pro", interval: "month" })),
+    ).not.toHaveProperty("login_hint");
+  });
+
   it("is empty when no account hub is configured", () => {
     expect(
       upgradePlanUrl(undefined, RUNA, { plan: "pro", interval: "month" }),
@@ -82,6 +98,15 @@ describe("manageSubscriptionUrl", () => {
       manage: "1",
       return: `${RUNA}/@acme/~/settings`,
     });
+  });
+
+  it("opens the hub as the signed-in account", () => {
+    expect(
+      params(manageSubscriptionUrl(HUB, RUNA, "acme", "user-123")),
+    ).toHaveProperty("login_hint", "user-123");
+    expect(params(manageSubscriptionUrl(HUB, RUNA, "acme"))).not.toHaveProperty(
+      "login_hint",
+    );
   });
 
   it("is empty when no account hub is configured", () => {
