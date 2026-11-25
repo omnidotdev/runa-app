@@ -31,8 +31,13 @@ import {
 } from "@/components/ui/sidebar";
 import signOut from "@/lib/auth/signOut";
 import switchAccount from "@/lib/auth/switchAccount";
+import { useMenuAccounts } from "@/lib/auth/useMenuAccounts";
 import app from "@/lib/config/app.config";
-import { ACCOUNT_URL, hasBilling } from "@/lib/config/env.config";
+import {
+  ACCOUNT_URL,
+  AUTH_BASE_URL,
+  hasBilling,
+} from "@/lib/config/env.config";
 import { Hotkeys } from "@/lib/constants/hotkeys";
 import { getSidebarCookies } from "@/providers/SidebarProvider";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -44,6 +49,8 @@ const SIDEBAR_OPTIONS_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
 const AppSidebarFooter = () => {
   const { session } = useRouteContext({ strict: false });
+  // The other accounts signed in on this browser, one click to switch to
+  const accounts = useMenuAccounts(AUTH_BASE_URL, !!session);
   const { toggleSidebar, isMobile, open, closeMobileSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
   const triggerId = useId();
@@ -226,9 +233,16 @@ const AppSidebarFooter = () => {
             email: session?.user.email,
             image: session?.user.image,
           }}
-          onSignOut={() => void signOut()}
+          onSignOut={() => void signOut({ accounts: "current" })}
+          onSignOutAll={() => void signOut({ accounts: "all" })}
           onSwitchAccount={() => void switchAccount()}
-          manageAccountUrl={accountUrl(ACCOUNT_URL) || undefined}
+          accounts={accounts}
+          onSelectAccount={(account) => void switchAccount(account.id)}
+          manageAccountUrl={
+            accountUrl(ACCOUNT_URL, {
+              loginHint: session?.user.identityProviderId,
+            }) || undefined
+          }
           // Fixed, so the menu escapes the sidebar's overflow
           positioning={{
             strategy: "fixed",

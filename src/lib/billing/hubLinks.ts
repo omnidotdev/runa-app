@@ -7,8 +7,9 @@ import type { HubPlanInterval } from "@omnidotdev/providers/react";
  * product sells plans. Runa shows its own pricing, but its Upgrade and
  * Manage subscription actions link to the hub, which confirms the plan (names
  * and prices from Aether), runs checkout or the billing portal, and returns
- * here. Each helper is empty when no account hub is configured, so the action
- * is hidden rather than dead
+ * here. Each link carries the signed-in account's subject as `loginHint`, so
+ * the hub opens as the same account. Each helper is empty when no account hub
+ * is configured, so the action is hidden rather than dead
  */
 
 const PRODUCT = "runa";
@@ -49,7 +50,13 @@ export const upgradePlanUrl = (
     plan,
     interval,
     workspaceSlug,
-  }: { plan: string; interval: HubPlanInterval; workspaceSlug?: string },
+    loginHint,
+  }: {
+    plan: string;
+    interval: HubPlanInterval;
+    workspaceSlug?: string;
+    loginHint?: string | null;
+  },
 ): string => {
   const origin = appOrigin(baseUrl);
 
@@ -63,6 +70,7 @@ export const upgradePlanUrl = (
       : origin
         ? `${origin}/pricing`
         : undefined,
+    loginHint,
   });
 };
 
@@ -71,14 +79,18 @@ export const upgradePlanUrl = (
  * invoices) on the account hub, returning to the workspace's settings page
  * @param accountBaseUrl - Account hub base URL
  * @param baseUrl - Runa's base URL, for the return
+ * @param workspaceSlug - Workspace whose plan to manage
+ * @param loginHint - The signed-in account's subject, so the hub opens as it
  */
 export const manageSubscriptionUrl = (
   accountBaseUrl: string | undefined,
   baseUrl: string | undefined,
   workspaceSlug: string,
+  loginHint?: string | null,
 ): string =>
   hubManageUrl(accountBaseUrl, {
     product: PRODUCT,
     workspace: workspaceSlug,
     returnUrl: workspaceSettingsUrl(baseUrl, workspaceSlug),
+    loginHint,
   });

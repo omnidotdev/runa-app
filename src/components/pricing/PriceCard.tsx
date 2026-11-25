@@ -48,6 +48,8 @@ interface Props {
  */
 export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
   const { session } = useRouteContext({ strict: false });
+  // Hub links open the hub as the account Runa is signed in as
+  const loginHint = session?.user.identityProviderId;
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as { tier?: string };
 
@@ -91,11 +93,12 @@ export const PriceCard = ({ price, orgSubscriptions = {} }: Props) => {
       plan: tier,
       interval,
       workspaceSlug,
+      loginHint,
     });
 
   // A new workspace is created on the account hub's workspaces console, the
   // one place workspaces are made
-  const newWorkspaceHref = workspacesUrl(ACCOUNT_URL);
+  const newWorkspaceHref = workspacesUrl(ACCOUNT_URL, { loginHint });
 
   // Handle workspace selection from dropdown
   const handleWorkspaceSelect = (workspaceId: string) => {

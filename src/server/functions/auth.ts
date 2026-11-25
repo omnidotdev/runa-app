@@ -14,6 +14,8 @@ import {
   BASE_URL,
 } from "@/lib/config/env.config";
 
+import type { IdpLogoutConfig } from "@omnidotdev/providers/auth";
+
 /**
  * Resolve the current session and its organizations.
  *
@@ -79,8 +81,13 @@ export const signOutAndRedirect = createServerFn({ method: "POST" }).handler(
 
 /**
  * Build the IDP end_session URL for federated logout.
+ * @param idTokenHint - The user's id token, required by the end-session endpoint
+ * @param accounts - Which accounts on the browser to sign out of
  */
-export function getIdpLogoutUrl(idTokenHint?: string): string | null {
+export function getIdpLogoutUrl(
+  idTokenHint?: string,
+  accounts?: IdpLogoutConfig["accounts"],
+): string | null {
   // Returns null (falling back to a local-only sign-out) unless every part is
   // present, including the id token: Gatekeeper's end-session endpoint requires
   // id_token_hint, so redirecting without it 400s and breaks sign-out. The id
@@ -90,15 +97,25 @@ export function getIdpLogoutUrl(idTokenHint?: string): string | null {
     clientId: AUTH_CLIENT_ID,
     redirectUri: BASE_URL,
     idTokenHint,
+    accounts,
   });
 }
 
 /**
  * Sign out from the local session (server-side).
- * Returns the IDP logout URL for federated logout redirect.
+ * Returns the IDP logout URL for federated logout redirect. `accounts` picks
+ * which accounts it signs out of (see `getIdpLogoutUrl`)
  */
-export const signOutLocal = createServerFn({ method: "POST" }).handler(
-  async () => {
+export const signOutLocal = createServerFn({ method: "POST" })
+  .validator(
+    (data?: { accounts?: unknown }): Pick<IdpLogoutConfig, "accounts"> => ({
+      accounts:
+        data?.accounts === "current" || data?.accounts === "all"
+          ? data.accounts
+          : undefined,
+    }),
+  )
+  .handler(async ({ data }) => {
     const request = getRequest();
     const headers = request.headers;
 
@@ -119,6 +136,5 @@ export const signOutLocal = createServerFn({ method: "POST" }).handler(
     await auth.api.signOut({ headers });
     clearRowIdCacheCookie();
 
-    return { idpLogoutUrl: getIdpLogoutUrl(idToken) };
-  },
-);
+    return { idpLogoutUrl: getIdpLogoutUrl(idToken, data.accounts) };
+  });
