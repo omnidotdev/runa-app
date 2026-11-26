@@ -32,8 +32,8 @@ export const Route = createRootRouteWithContext<{
   authDegraded: boolean;
 }>()({
   beforeLoad: async () => {
-    const { session, authDegraded } = await fetchSession();
-    return { session, authDegraded };
+    const { session, authDegraded, authBaseUrl } = await fetchSession();
+    return { session, authDegraded, authBaseUrl };
   },
   loader: async () => {
     const theme = await getTheme();
