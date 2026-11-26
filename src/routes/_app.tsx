@@ -1,3 +1,4 @@
+import { useIdentitySync } from "@omnidotdev/providers/react";
 import {
   Outlet,
   createFileRoute,
@@ -11,6 +12,7 @@ import { NotFound } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { CreateProjectDialog } from "@/components/workspaces";
+import { followSignOut, followSwitch } from "@/lib/auth/followIdentity";
 import { clearReauthAttempt } from "@/lib/auth/reauthGuard";
 import signIn from "@/lib/auth/signIn";
 import app from "@/lib/config/app.config";
@@ -66,7 +68,16 @@ export const Route = createFileRoute("/_app")({
 });
 
 function AppLayout() {
-  const { session, authDegraded } = Route.useRouteContext();
+  const { session, authDegraded, authBaseUrl } = Route.useRouteContext();
+
+  // Stay signed in as the same account as Omni: follow a switch or sign-out
+  // made in another app
+  useIdentitySync({
+    authBaseUrl,
+    subject: session?.user?.identityProviderId,
+    onSignedOut: followSignOut,
+    onSwitched: followSwitch,
+  });
 
   const isAuthenticated = !!session?.user?.rowId;
 
