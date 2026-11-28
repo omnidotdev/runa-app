@@ -30,8 +30,9 @@ export const VIDEO_MIME_TYPES = new Set([
 ]);
 
 /**
- * Per-file cap for project images (avatars). Not a tier attachment limit;
- * project images are not counted against `max_attachment_bytes`.
+ * Per-file cap for project images (avatars and backgrounds). Mirrors runa-api's
+ * `MAX_PROJECT_IMAGE_BYTES`; it is below every plan's `max_attachment_bytes`,
+ * so it is the effective limit for project images on all tiers.
  */
 export const MAX_PROJECT_IMAGE_BYTES = 20 * MB;
 
