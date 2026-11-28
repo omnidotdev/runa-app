@@ -18,7 +18,7 @@ export const FREE_PRICE: Price = {
     marketing_features: [
       { name: "Up to 5 projects" },
       { name: "1,500 tasks" },
-      { name: "Up to 5 members" },
+      { name: "Unlimited members" },
       { name: "1 GB file storage" },
     ],
   },
