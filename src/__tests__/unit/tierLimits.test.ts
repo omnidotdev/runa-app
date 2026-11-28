@@ -21,8 +21,8 @@ describe("runa tier limit helpers", () => {
     expect(getMaxTasks(Tier.Free)).toBe(1500);
     expect(getMaxColumns(Tier.Free)).toBe(10);
     expect(getMaxLabels(Tier.Free)).toBe(25);
-    expect(getMaxMembers(Tier.Free)).toBe(5);
-    expect(getMaxAdmins(Tier.Free)).toBe(1);
+    expect(getMaxMembers(Tier.Free)).toBe(UNLIMITED);
+    expect(getMaxAdmins(Tier.Free)).toBe(UNLIMITED);
     expect(getMaxAttachmentBytes(Tier.Free)).toBe(26_214_400);
   });
 
