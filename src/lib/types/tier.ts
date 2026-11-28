@@ -86,7 +86,7 @@ const TIER_LIMITS: Record<Tier.Free | Tier.Pro | Tier.Team, TierLimits> = {
     maxColumns: 50,
     maxLabels: 100,
     maxAssignees: 5,
-    maxMembers: 25,
+    maxMembers: Number.POSITIVE_INFINITY,
     maxAdmins: Number.POSITIVE_INFINITY,
     maxAttachmentBytes: 104_857_600,
     maxStorageBytes: 53_687_091_200,

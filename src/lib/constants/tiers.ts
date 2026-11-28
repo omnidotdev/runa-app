@@ -16,9 +16,10 @@ export const FREE_PRICE: Price = {
     name: "Free",
     description: "Project management to get started",
     marketing_features: [
-      { name: "5 projects" },
-      { name: "1,500 total tasks" },
-      { name: "5 members" },
+      { name: "Up to 5 projects" },
+      { name: "1,500 tasks" },
+      { name: "Up to 5 members" },
+      { name: "1 GB file storage" },
     ],
   },
 };

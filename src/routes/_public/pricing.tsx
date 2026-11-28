@@ -32,7 +32,7 @@ const faqItems = [
   {
     question: "What happens to my data if I cancel?",
     answer:
-      "You can export all your data at any time. After cancellation, your data will be retained for 30 days before being permanently deleted.",
+      "Your data is not deleted. Your workspace moves to the Free plan and keeps its existing projects, tasks, and files. While it is over a Free plan limit, new items of that kind can't be added until you upgrade again or make room.",
   },
 ];
 
