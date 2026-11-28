@@ -1,5 +1,35 @@
 # @omnidotdev/runa-app
 
+## 0.2.0
+
+### Minor Changes
+
+- [#157](https://github.com/omnidotdev/runa-app/pull/157) [`6eb0fd6`](https://github.com/omnidotdev/runa-app/commit/6eb0fd66b3d398e58a25a9658889341b7d06132f) Thanks [@coopbri](https://github.com/coopbri)! - Signing in or out of Omni in another app now carries over here
+
+- [#156](https://github.com/omnidotdev/runa-app/pull/156) [`9d39b4e`](https://github.com/omnidotdev/runa-app/commit/9d39b4ea2b2e482694040d80459a7127f0f58129) Thanks [@coopbri](https://github.com/coopbri)! - The account menu lists the other Omni accounts signed in on your browser, so switching to one takes a single click. When more than one account is signed in, Sign out ends only the account you use in Runa, and a new Sign out of all accounts entry ends every one. Links to your Omni account now open it as the same account you use in Runa
+
+### Patch Changes
+
+- [#143](https://github.com/omnidotdev/runa-app/pull/143) [`3c6fc6e`](https://github.com/omnidotdev/runa-app/commit/3c6fc6e70bb4c42da6088fd8c29326d0be586865) Thanks [@coopbri](https://github.com/coopbri)! - Dropping a task on the calendar now glides it straight into the row where it will be listed, instead of settling over the day number and then jumping down. Other tasks in a day no longer shift while you drag over it, and the day number no longer squeezes when hovering a full day.
+
+- [#154](https://github.com/omnidotdev/runa-app/pull/154) [`c152ce4`](https://github.com/omnidotdev/runa-app/commit/c152ce430595262ee4bd907a8153471e9c56ab9c) Thanks [@coopbri](https://github.com/coopbri)! - Images show a soft blurred preview while they load: project avatars and board background images now blur in from a tiny preview instead of popping in
+
+- [#158](https://github.com/omnidotdev/runa-app/pull/158) [`68495b0`](https://github.com/omnidotdev/runa-app/commit/68495b0f811375eea94e4e0b27230137e77fcd8b) Thanks [@coopbri](https://github.com/coopbri)! - Pricing now matches the plans: the Pro plan shows unlimited members, the Free plan card lists its 1 GB of file storage, and the cancellation answer describes what actually happens to workspace data (it is kept and the workspace moves to the Free plan)
+
+- [#146](https://github.com/omnidotdev/runa-app/pull/146) [`1c9bad2`](https://github.com/omnidotdev/runa-app/commit/1c9bad27c98fdc81551ab2e9a2fdde78060f1ae6) Thanks [@coopbri](https://github.com/coopbri)! - Stop writing users' email addresses to the logs: a failed sign-in token check logs only the error message, not the user's email and name, by moving to `@omnidotdev/providers` v0.2.0.
+
+- [#145](https://github.com/omnidotdev/runa-app/pull/145) [`77cee80`](https://github.com/omnidotdev/runa-app/commit/77cee808f9a1f2a29a1367bc5ae156a07451a619) Thanks [@coopbri](https://github.com/coopbri)! - Keep you signed in after your session refreshes in the background
+
+- [#153](https://github.com/omnidotdev/runa-app/pull/153) [`e6de5ae`](https://github.com/omnidotdev/runa-app/commit/e6de5aee92693b129a323bfa6f56cbf3190e1d6b) Thanks [@coopbri](https://github.com/coopbri)! - Sign-in session data sent to the browser no longer includes the session token
+
+- [#155](https://github.com/omnidotdev/runa-app/pull/155) [`8adcad3`](https://github.com/omnidotdev/runa-app/commit/8adcad3d420891ee26a7ed13f00371c60422323e) Thanks [@coopbri](https://github.com/coopbri)! - The account menu has a Switch account entry that opens the Omni account picker and brings you back to the same page as the account you choose (cancelling keeps you signed in). Your sign-in token also now stays out of reach of scripts running on the page
+
+- [#150](https://github.com/omnidotdev/runa-app/pull/150) [`6af390c`](https://github.com/omnidotdev/runa-app/commit/6af390c12e89bd36ce4a7efce0ca47e4fc2c24d5) Thanks [@coopbri](https://github.com/coopbri)! - The workspace switcher in the sidebar now matches the one used across Omni apps. Each workspace shows its `@handle` under its name, and when the sidebar is collapsed the switcher shows the current workspace's logo and opens its menu beside the sidebar. With no workspaces yet, the switcher still offers links to view all workspaces and to manage them.
+
+- [#147](https://github.com/omnidotdev/runa-app/pull/147) [`44f7772`](https://github.com/omnidotdev/runa-app/commit/44f777230fa118083a57d236f9e5ac4d5f379650) Thanks [@coopbri](https://github.com/coopbri)! - The account row at the bottom of the sidebar is now the standard Omni account menu: it shows your avatar (or initials), name, and email, and opens one menu with Profile, Manage account, and Sign out, all reachable from the keyboard. In a collapsed sidebar it shrinks to your avatar.
+
+- [#159](https://github.com/omnidotdev/runa-app/pull/159) [`dde7a87`](https://github.com/omnidotdev/runa-app/commit/dde7a87230e85ff2b00c067645e30fef5e2a23ed) Thanks [@coopbri](https://github.com/coopbri)! - The Free plan now lists unlimited members, matching every plan
+
 ## 0.1.0
 
 ### Minor Changes
